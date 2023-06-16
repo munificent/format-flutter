@@ -113,7 +113,7 @@ class InputChip extends StatelessWidget
     this.avatarBorder = const CircleBorder(),
     @Deprecated(
       'Migrate to deleteButtonTooltipMessage. '
-      'This feature was deprecated after v2.10.0-0.3.pre.'
+      'This feature was deprecated after v2.10.0-0.3.pre.',
     )
     this.useDeleteButtonTooltip = true,
   }) : assert(pressElevation == null || pressElevation >= 0.0),
@@ -188,7 +188,7 @@ class InputChip extends StatelessWidget
   @override
   @Deprecated(
     'Migrate to deleteButtonTooltipMessage. '
-    'This feature was deprecated after v2.10.0-0.3.pre.'
+    'This feature was deprecated after v2.10.0-0.3.pre.',
   )
   final bool useDeleteButtonTooltip;
 
@@ -196,10 +196,12 @@ class InputChip extends StatelessWidget
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     final ChipThemeData? defaults = Theme.of(context).useMaterial3
-      ? _InputChipDefaultsM3(context, isEnabled, selected)
-      : null;
-    final Widget? resolvedDeleteIcon = deleteIcon
-      ?? (Theme.of(context).useMaterial3 ? const Icon(Icons.clear, size: 18) : null);
+        ? _InputChipDefaultsM3(context, isEnabled, selected)
+        : null;
+    final Widget? resolvedDeleteIcon = deleteIcon ??
+        (Theme.of(context).useMaterial3
+            ? const Icon(Icons.clear, size: 18)
+            : null);
     return RawChip(
       defaultProperties: defaults,
       avatar: avatar,
@@ -233,7 +235,8 @@ class InputChip extends StatelessWidget
       selectedShadowColor: selectedShadowColor,
       showCheckmark: showCheckmark,
       checkmarkColor: checkmarkColor,
-      isEnabled: isEnabled && (onSelected != null || onDeleted != null || onPressed != null),
+      isEnabled: isEnabled &&
+          (onSelected != null || onDeleted != null || onPressed != null),
       avatarBorder: avatarBorder,
     );
   }
@@ -250,7 +253,9 @@ class _InputChipDefaultsM3 extends ChipThemeData {
   _InputChipDefaultsM3(this.context, this.isEnabled, this.isSelected)
     : super(
         elevation: 0.0,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        ),
         showCheckmark: true,
       );
 
@@ -274,8 +279,8 @@ class _InputChipDefaultsM3 extends ChipThemeData {
 
   @override
   Color? get selectedColor => isEnabled
-    ? _colors.secondaryContainer
-    : _colors.onSurface.withOpacity(0.12);
+      ? _colors.secondaryContainer
+      : _colors.onSurface.withOpacity(0.12);
 
   @override
   Color? get checkmarkColor => null;
@@ -288,16 +293,14 @@ class _InputChipDefaultsM3 extends ChipThemeData {
 
   @override
   BorderSide? get side => !isSelected
-    ? isEnabled
-      ? BorderSide(color: _colors.outline)
-      : BorderSide(color: _colors.onSurface.withOpacity(0.12))
-    : const BorderSide(color: Colors.transparent);
+      ? isEnabled
+          ? BorderSide(color: _colors.outline)
+          : BorderSide(color: _colors.onSurface.withOpacity(0.12))
+      : const BorderSide(color: Colors.transparent);
 
   @override
   IconThemeData? get iconTheme => IconThemeData(
-    color: isEnabled
-      ? null
-      : _colors.onSurface,
+    color: isEnabled ? null : _colors.onSurface,
     size: 18.0,
   );
 

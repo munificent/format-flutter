@@ -54,7 +54,9 @@ class ImageFiltered extends SingleChildRenderObjectWidget {
   final bool enabled;
 
   @override
-  RenderObject createRenderObject(BuildContext context) => _ImageFilterRenderObject(imageFilter, enabled);
+  RenderObject createRenderObject(
+    BuildContext context,
+  ) => _ImageFilterRenderObject(imageFilter, enabled);
 
   @override
   void updateRenderObject(BuildContext context, RenderObject renderObject) {
@@ -66,7 +68,9 @@ class ImageFiltered extends SingleChildRenderObjectWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<ImageFilter>('imageFilter', imageFilter));
+    properties.add(
+      DiagnosticsProperty<ImageFilter>('imageFilter', imageFilter),
+    );
   }
 }
 
@@ -99,11 +103,13 @@ class _ImageFilterRenderObject extends RenderProxyBox {
   @override
   bool get alwaysNeedsCompositing => child != null && enabled;
 
-   @override
+  @override
   bool get isRepaintBoundary => alwaysNeedsCompositing;
 
   @override
-  OffsetLayer updateCompositedLayer({required covariant ImageFilterLayer? oldLayer}) {
+  OffsetLayer updateCompositedLayer({
+    required covariant ImageFilterLayer? oldLayer,
+  }) {
     final ImageFilterLayer layer = oldLayer ?? ImageFilterLayer();
     layer.imageFilter = imageFilter;
     return layer;

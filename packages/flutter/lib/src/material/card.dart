@@ -162,7 +162,9 @@ class Card extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CardTheme cardTheme = CardTheme.of(context);
-    final CardTheme defaults = Theme.of(context).useMaterial3 ? _CardDefaultsM3(context) : _CardDefaultsM2(context);
+    final CardTheme defaults = Theme.of(context).useMaterial3
+        ? _CardDefaultsM3(context)
+        : _CardDefaultsM2(context);
 
     return Semantics(
       container: semanticContainer,
@@ -171,16 +173,18 @@ class Card extends StatelessWidget {
         child: Material(
           type: MaterialType.card,
           color: color ?? cardTheme.color ?? defaults.color,
-          shadowColor: shadowColor ?? cardTheme.shadowColor ?? defaults.shadowColor,
-          surfaceTintColor: surfaceTintColor ?? cardTheme.surfaceTintColor ?? defaults.surfaceTintColor,
+          shadowColor:
+              shadowColor ?? cardTheme.shadowColor ?? defaults.shadowColor,
+          surfaceTintColor: surfaceTintColor ??
+              cardTheme.surfaceTintColor ??
+              defaults.surfaceTintColor,
           elevation: elevation ?? cardTheme.elevation ?? defaults.elevation!,
           shape: shape ?? cardTheme.shape ?? defaults.shape,
           borderOnForeground: borderOnForeground,
-          clipBehavior: clipBehavior ?? cardTheme.clipBehavior ?? defaults.clipBehavior!,
-          child: Semantics(
-            explicitChildNodes: !semanticContainer,
-            child: child,
-          ),
+          clipBehavior:
+              clipBehavior ?? cardTheme.clipBehavior ?? defaults.clipBehavior!,
+          child:
+              Semantics(explicitChildNodes: !semanticContainer, child: child),
         ),
       ),
     );
@@ -196,8 +200,8 @@ class _CardDefaultsM2 extends CardTheme {
         margin: const EdgeInsets.all(4.0),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        )
-    );
+        ),
+      );
 
   final BuildContext context;
 
@@ -221,7 +225,9 @@ class _CardDefaultsM3 extends CardTheme {
         clipBehavior: Clip.none,
         elevation: 1.0,
         margin: const EdgeInsets.all(4.0),
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        ),
       );
 
   final BuildContext context;

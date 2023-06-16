@@ -6,28 +6,37 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Can call setState from didUpdateWidget', (WidgetTester tester) async {
-    await tester.pumpWidget(const Directionality(
-      textDirection: TextDirection.ltr,
-      child: WidgetUnderTest(text: 'hello'),
-    ));
+  testWidgets(
+    'Can call setState from didUpdateWidget',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: WidgetUnderTest(text: 'hello'),
+        ),
+      );
 
-    expect(find.text('hello'), findsOneWidget);
-    expect(find.text('world'), findsNothing);
-    final _WidgetUnderTestState state = tester.state<_WidgetUnderTestState>(find.byType(WidgetUnderTest));
-    expect(state.setStateCalled, 0);
-    expect(state.didUpdateWidgetCalled, 0);
+      expect(find.text('hello'), findsOneWidget);
+      expect(find.text('world'), findsNothing);
+      final _WidgetUnderTestState state = tester.state<_WidgetUnderTestState>(
+        find.byType(WidgetUnderTest),
+      );
+      expect(state.setStateCalled, 0);
+      expect(state.didUpdateWidgetCalled, 0);
 
-    await tester.pumpWidget(const Directionality(
-      textDirection: TextDirection.ltr,
-      child: WidgetUnderTest(text: 'world'),
-    ));
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: WidgetUnderTest(text: 'world'),
+        ),
+      );
 
-    expect(find.text('world'), findsOneWidget);
-    expect(find.text('hello'), findsNothing);
-    expect(state.setStateCalled, 1);
-    expect(state.didUpdateWidgetCalled, 1);
-  });
+      expect(find.text('world'), findsOneWidget);
+      expect(find.text('hello'), findsNothing);
+      expect(state.setStateCalled, 1);
+      expect(state.didUpdateWidgetCalled, 1);
+    },
+  );
 }
 
 class WidgetUnderTest extends StatefulWidget {

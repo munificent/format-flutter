@@ -10,36 +10,35 @@ void main() {
     final List<String> log = <String>[];
     final Key rotatedBoxKey = UniqueKey();
 
-    await tester.pumpWidget(
-      Center(
-        child: RotatedBox(
-          key: rotatedBoxKey,
-          quarterTurns: 1,
-          child: Row(
-            textDirection: TextDirection.ltr,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              GestureDetector(
-                onTap: () { log.add('left'); },
-                child: Container(
-                  width: 100.0,
-                  height: 40.0,
-                  color: Colors.blue[500],
-                ),
+    await tester.pumpWidget(Center(
+      child: RotatedBox(
+        key: rotatedBoxKey,
+        quarterTurns: 1,
+        child: Row(
+          textDirection: TextDirection.ltr,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {
+                log.add('left');
+              },
+              child: Container(
+                width: 100.0,
+                height: 40.0,
+                color: Colors.blue[500],
               ),
-              GestureDetector(
-                onTap: () { log.add('right'); },
-                child: Container(
-                  width: 75.0,
-                  height: 65.0,
-                  color: Colors.blue[500],
-                ),
-              ),
-            ],
-          ),
+            ),
+            GestureDetector(
+              onTap: () {
+                log.add('right');
+              },
+              child:
+                  Container(width: 75.0, height: 65.0, color: Colors.blue[500]),
+            ),
+          ],
         ),
       ),
-    );
+    ));
 
     final RenderBox box = tester.renderObject(find.byKey(rotatedBoxKey));
     expect(box.size.width, equals(65.0));

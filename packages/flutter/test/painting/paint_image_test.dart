@@ -40,19 +40,29 @@ void main() {
       alignment: Alignment.centerLeft,
     );
 
-    final Invocation command = canvas.invocations.firstWhere((Invocation invocation) {
-      return invocation.memberName == #drawImageRect;
-    });
+    final Invocation command = canvas.invocations.firstWhere(
+      (Invocation invocation) {
+        return invocation.memberName == #drawImageRect;
+      },
+    );
 
     expect(command, isNotNull);
     expect(command.positionalArguments[0], equals(image300x300));
-    expect(command.positionalArguments[1], equals(const Rect.fromLTWH(0.0, 75.0, 300.0, 150.0)));
-    expect(command.positionalArguments[2], equals(const Rect.fromLTWH(50.0, 75.0, 200.0, 100.0)));
+    expect(
+      command.positionalArguments[1],
+      equals(const Rect.fromLTWH(0.0, 75.0, 300.0, 150.0)),
+    );
+    expect(
+      command.positionalArguments[2],
+      equals(const Rect.fromLTWH(50.0, 75.0, 200.0, 100.0)),
+    );
   });
 
   test('debugInvertOversizedImages', () async {
     debugInvertOversizedImages = true;
-    expect(PaintingBinding.instance.platformDispatcher.views.any((ui. FlutterView view) => view.devicePixelRatio > 1.0), isTrue);
+    expect(PaintingBinding.instance.platformDispatcher.views.any(
+      (ui.FlutterView view) => view.devicePixelRatio > 1.0,
+    ), isTrue);
     final FlutterExceptionHandler? oldFlutterError = FlutterError.onError;
 
     final List<String> messages = <String>[];
@@ -72,19 +82,37 @@ void main() {
     );
 
     final List<Invocation> commands = canvas.invocations
-      .skipWhile((Invocation invocation) => invocation.memberName != #saveLayer)
-      .take(4)
-      .toList();
+        .skipWhile(
+          (Invocation invocation) => invocation.memberName != #saveLayer,
+        )
+        .take(4)
+        .toList();
 
     expect(commands[0].positionalArguments[0], rect);
     final Paint paint = commands[0].positionalArguments[1] as Paint;
     expect(
       paint.colorFilter,
       const ColorFilter.matrix(<double>[
-        -1,  0,  0, 0, 255,
-         0, -1,  0, 0, 255,
-         0,  0, -1, 0, 255,
-         0,  0,  0, 1,   0,
+        -1,
+        0,
+        0,
+        0,
+        255,
+        0,
+        -1,
+        0,
+        0,
+        255,
+        0,
+        0,
+        -1,
+        0,
+        255,
+        0,
+        0,
+        0,
+        1,
+        0,
       ]),
     );
     expect(commands[1].memberName, #translate);
@@ -94,7 +122,6 @@ void main() {
     expect(commands[2].memberName, #scale);
     expect(commands[2].positionalArguments[0], 1.0);
     expect(commands[2].positionalArguments[1], -1.0);
-
 
     expect(commands[3].memberName, #translate);
     expect(commands[3].positionalArguments[0], 0.0);
@@ -150,14 +177,22 @@ void main() {
       centerSlice: const Rect.fromLTRB(50, 40, 250, 260),
     );
 
-    final Invocation command = canvas.invocations.firstWhere((Invocation invocation) {
-      return invocation.memberName == #drawImageNine;
-    });
+    final Invocation command = canvas.invocations.firstWhere(
+      (Invocation invocation) {
+        return invocation.memberName == #drawImageNine;
+      },
+    );
 
     expect(command, isNotNull);
     expect(command.positionalArguments[0], equals(image300x300));
-    expect(command.positionalArguments[1], equals(const Rect.fromLTRB(100.0, 80.0, 500.0, 520.0)));
-    expect(command.positionalArguments[2], equals(const Rect.fromLTRB(20.0, 40.0, 860.0, 840.0)));
+    expect(
+      command.positionalArguments[1],
+      equals(const Rect.fromLTRB(100.0, 80.0, 500.0, 520.0)),
+    );
+    expect(
+      command.positionalArguments[2],
+      equals(const Rect.fromLTRB(20.0, 40.0, 860.0, 840.0)),
+    );
   });
 
   testWidgets('Reports Image painting', (WidgetTester tester) async {
@@ -180,7 +215,10 @@ void main() {
     expect(imageSizeInfo, isNotNull);
     expect(imageSizeInfo.source, 'test.png');
     expect(imageSizeInfo.imageSize, const Size(300, 300));
-    expect(imageSizeInfo.displaySize, const Size(200, 100) * tester.view.devicePixelRatio);
+    expect(
+      imageSizeInfo.displaySize,
+      const Size(200, 100) * tester.view.devicePixelRatio,
+    );
 
     // Make sure that we don't report an identical image size info if we
     // redraw in the next frame.
@@ -199,72 +237,87 @@ void main() {
     debugOnPaintImage = null;
   });
 
-  testWidgets('Reports Image painting - change per frame', (WidgetTester tester) async {
-    late ImageSizeInfo imageSizeInfo;
-    int count = 0;
-    debugOnPaintImage = (ImageSizeInfo info) {
-      count += 1;
-      imageSizeInfo = info;
-    };
+  testWidgets(
+    'Reports Image painting - change per frame',
+    (WidgetTester tester) async {
+      late ImageSizeInfo imageSizeInfo;
+      int count = 0;
+      debugOnPaintImage = (ImageSizeInfo info) {
+        count += 1;
+        imageSizeInfo = info;
+      };
 
-    final TestCanvas canvas = TestCanvas();
-    paintImage(
-      canvas: canvas,
-      rect: const Rect.fromLTWH(50.0, 75.0, 200.0, 100.0),
-      image: image300x300,
-      debugImageLabel: 'test.png',
-    );
+      final TestCanvas canvas = TestCanvas();
+      paintImage(
+        canvas: canvas,
+        rect: const Rect.fromLTWH(50.0, 75.0, 200.0, 100.0),
+        image: image300x300,
+        debugImageLabel: 'test.png',
+      );
 
-    expect(count, 1);
-    expect(imageSizeInfo, isNotNull);
-    expect(imageSizeInfo.source, 'test.png');
-    expect(imageSizeInfo.imageSize, const Size(300, 300));
-    expect(imageSizeInfo.displaySize, const Size(200, 100) * tester.view.devicePixelRatio);
+      expect(count, 1);
+      expect(imageSizeInfo, isNotNull);
+      expect(imageSizeInfo.source, 'test.png');
+      expect(imageSizeInfo.imageSize, const Size(300, 300));
+      expect(
+        imageSizeInfo.displaySize,
+        const Size(200, 100) * tester.view.devicePixelRatio,
+      );
 
-    // Make sure that we don't report an identical image size info if we
-    // redraw in the next frame.
-    tester.binding.scheduleForcedFrame();
-    await tester.pump();
+      // Make sure that we don't report an identical image size info if we
+      // redraw in the next frame.
+      tester.binding.scheduleForcedFrame();
+      await tester.pump();
 
-    paintImage(
-      canvas: canvas,
-      rect: const Rect.fromLTWH(50.0, 75.0, 200.0, 150.0),
-      image: image300x300,
-      debugImageLabel: 'test.png',
-    );
+      paintImage(
+        canvas: canvas,
+        rect: const Rect.fromLTWH(50.0, 75.0, 200.0, 150.0),
+        image: image300x300,
+        debugImageLabel: 'test.png',
+      );
 
-    expect(count, 2);
-    expect(imageSizeInfo, isNotNull);
-    expect(imageSizeInfo.source, 'test.png');
-    expect(imageSizeInfo.imageSize, const Size(300, 300));
-    expect(imageSizeInfo.displaySize, const Size(200, 150) * tester.view.devicePixelRatio);
+      expect(count, 2);
+      expect(imageSizeInfo, isNotNull);
+      expect(imageSizeInfo.source, 'test.png');
+      expect(imageSizeInfo.imageSize, const Size(300, 300));
+      expect(
+        imageSizeInfo.displaySize,
+        const Size(200, 150) * tester.view.devicePixelRatio,
+      );
 
-    debugOnPaintImage = null;
-  });
+      debugOnPaintImage = null;
+    },
+  );
 
-  testWidgets('Reports Image painting - no debug label', (WidgetTester tester) async {
-    late ImageSizeInfo imageSizeInfo;
-    int count = 0;
-    debugOnPaintImage = (ImageSizeInfo info) {
-      count += 1;
-      imageSizeInfo = info;
-    };
+  testWidgets(
+    'Reports Image painting - no debug label',
+    (WidgetTester tester) async {
+      late ImageSizeInfo imageSizeInfo;
+      int count = 0;
+      debugOnPaintImage = (ImageSizeInfo info) {
+        count += 1;
+        imageSizeInfo = info;
+      };
 
-    final TestCanvas canvas = TestCanvas();
-    paintImage(
-      canvas: canvas,
-      rect: const Rect.fromLTWH(50.0, 75.0, 200.0, 100.0),
-      image: image300x200,
-    );
+      final TestCanvas canvas = TestCanvas();
+      paintImage(
+        canvas: canvas,
+        rect: const Rect.fromLTWH(50.0, 75.0, 200.0, 100.0),
+        image: image300x200,
+      );
 
-    expect(count, 1);
-    expect(imageSizeInfo, isNotNull);
-    expect(imageSizeInfo.source, '<Unknown Image(300×200)>');
-    expect(imageSizeInfo.imageSize, const Size(300, 200));
-    expect(imageSizeInfo.displaySize, const Size(200, 100) * tester.view.devicePixelRatio);
+      expect(count, 1);
+      expect(imageSizeInfo, isNotNull);
+      expect(imageSizeInfo.source, '<Unknown Image(300×200)>');
+      expect(imageSizeInfo.imageSize, const Size(300, 200));
+      expect(
+        imageSizeInfo.displaySize,
+        const Size(200, 100) * tester.view.devicePixelRatio,
+      );
 
-    debugOnPaintImage = null;
-  });
+      debugOnPaintImage = null;
+    },
+  );
 
   // See also the DecorationImage tests in: decoration_test.dart
 }

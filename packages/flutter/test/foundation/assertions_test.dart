@@ -18,7 +18,9 @@ void main() {
 
   test('should show message of ErrorDescription', () {
     const String descriptionMessage = 'This is the message';
-    final ErrorDescription errorDescription = ErrorDescription(descriptionMessage);
+    final ErrorDescription errorDescription = ErrorDescription(
+      descriptionMessage,
+    );
 
     expect(errorDescription.toString(), descriptionMessage);
   });
@@ -58,12 +60,12 @@ void main() {
           yield ErrorDescription('INFO');
         },
       ).toString(),
-        '══╡ EXCEPTION CAUGHT BY LIBRARY ╞════════════════════════════════\n'
-        'The following message was thrown CONTEXTING:\n'
-        'MESSAGE\n'
-        '\n'
-        'INFO\n'
-        '═════════════════════════════════════════════════════════════════\n',
+      '══╡ EXCEPTION CAUGHT BY LIBRARY ╞════════════════════════════════\n'
+      'The following message was thrown CONTEXTING:\n'
+      'MESSAGE\n'
+      '\n'
+      'INFO\n'
+      '═════════════════════════════════════════════════════════════════\n',
     );
     expect(
       FlutterErrorDetails(
@@ -73,12 +75,12 @@ void main() {
           yield ErrorDescription('INFO');
         },
       ).toString(),
-        '══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞══════════════════════\n'
-        'The following message was thrown CONTEXTING:\n'
-        'MESSAGE\n'
-        '\n'
-        'INFO\n'
-        '═════════════════════════════════════════════════════════════════\n',
+      '══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞══════════════════════\n'
+      'The following message was thrown CONTEXTING:\n'
+      'MESSAGE\n'
+      '\n'
+      'INFO\n'
+      '═════════════════════════════════════════════════════════════════\n',
     );
     expect(
       FlutterErrorDetails(
@@ -96,9 +98,7 @@ void main() {
       '═════════════════════════════════════════════════════════════════\n',
     );
     expect(
-      const FlutterErrorDetails(
-        exception: 'MESSAGE',
-      ).toString(),
+      const FlutterErrorDetails(exception: 'MESSAGE').toString(),
       '══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞══════════════════════\n'
       'The following message was thrown:\n'
       'MESSAGE\n'
@@ -108,15 +108,15 @@ void main() {
 
   test('FlutterErrorDetails.toStringShort', () {
     expect(
-        FlutterErrorDetails(
-          exception: 'MESSAGE',
-          library: 'library',
-          context: ErrorDescription('CONTEXTING'),
-          informationCollector: () sync* {
-            yield ErrorDescription('INFO');
-          },
-        ).toStringShort(),
-        'Exception caught by library',
+      FlutterErrorDetails(
+        exception: 'MESSAGE',
+        library: 'library',
+        context: ErrorDescription('CONTEXTING'),
+        informationCollector: () sync* {
+          yield ErrorDescription('INFO');
+        },
+      ).toStringShort(),
+      'Exception caught by library',
     );
   });
 
@@ -322,7 +322,8 @@ void main() {
       } catch (e) {
         node = FlutterErrorDetails(exception: e).toDiagnosticsNode();
       }
-      final ErrorSummary summary = node.getProperties().whereType<ErrorSummary>().single;
+      final ErrorSummary summary =
+          node.getProperties().whereType<ErrorSummary>().single;
       expect(summary.value, equals(<String>['User thrown string']));
     }
 
@@ -333,14 +334,19 @@ void main() {
       } catch (e) {
         node = FlutterErrorDetails(exception: e).toDiagnosticsNode();
       }
-      final ErrorSummary summary = node.getProperties().whereType<ErrorSummary>().single;
-      expect(summary.value, equals(<String>['Invalid argument(s) (myArgument): Must not be null']));
+      final ErrorSummary summary =
+          node.getProperties().whereType<ErrorSummary>().single;
+      expect(
+        summary.value,
+        equals(<String>['Invalid argument(s) (myArgument): Must not be null']),
+      );
     }
   });
 
   test('Identifies user fault', () {
     // User fault because they called `new Text(null)` from their own code.
-    final StackTrace stack = StackTrace.fromString('''
+    final StackTrace stack = StackTrace.fromString(
+      '''
 #0      _AssertionError._doThrowNew (dart:core-patch/errors_patch.dart:42:39)
 #1      _AssertionError._throwNew (dart:core-patch/errors_patch.dart:38:5)
 #2      new Text (package:flutter/src/widgets/text.dart:287:10)
@@ -353,7 +359,8 @@ void main() {
 #9      ComponentElement.mount (package:flutter/src/widgets/framework.dart:4281:5)
 #10      Element.inflateWidget (package:flutter/src/widgets/framework.dart:3276:14)
 #11     Element.updateChild (package:flutter/src/widgets/framework.dart:3070:12)
-#12     SingleChildRenderObjectElement.mount (package:flutter/blah.dart:999:9)''');
+#12     SingleChildRenderObjectElement.mount (package:flutter/blah.dart:999:9)''',
+    );
 
     final FlutterErrorDetails details = FlutterErrorDetails(
       exception: AssertionError('Test assertion'),
@@ -364,10 +371,14 @@ void main() {
     details.debugFillProperties(builder);
 
     expect(builder.properties.length, 4);
-    expect(builder.properties[0].toString(), 'The following assertion was thrown:');
+    expect(
+      builder.properties[0].toString(),
+      'The following assertion was thrown:',
+    );
     expect(builder.properties[1].toString(), contains('Assertion failed'));
     expect(builder.properties[2] is ErrorSpacer, true);
-    final DiagnosticsStackTrace trace = builder.properties[3] as DiagnosticsStackTrace;
+    final DiagnosticsStackTrace trace =
+        builder.properties[3] as DiagnosticsStackTrace;
     expect(trace, isNotNull);
     expect(trace.value, stack);
   });
@@ -375,7 +386,8 @@ void main() {
   test('Identifies our fault', () {
     // Our fault because we should either have an assertion in `text_helper.dart`
     // or we should make sure not to pass bad values into new Text.
-    final StackTrace stack = StackTrace.fromString('''
+    final StackTrace stack = StackTrace.fromString(
+      '''
 #0      _AssertionError._doThrowNew (dart:core-patch/errors_patch.dart:42:39)
 #1      _AssertionError._throwNew (dart:core-patch/errors_patch.dart:38:5)
 #2      new Text (package:flutter/src/widgets/text.dart:287:10)
@@ -389,7 +401,8 @@ void main() {
 #10     ComponentElement.mount (package:flutter/src/widgets/framework.dart:4281:5)
 #11     Element.inflateWidget (package:flutter/src/widgets/framework.dart:3276:14)
 #12     Element.updateChild (package:flutter/src/widgets/framework.dart:3070:12)
-#13     SingleChildRenderObjectElement.mount (package:flutter/blah.dart:999:9)''');
+#13     SingleChildRenderObjectElement.mount (package:flutter/blah.dart:999:9)''',
+    );
 
     final FlutterErrorDetails details = FlutterErrorDetails(
       exception: AssertionError('Test assertion'),
@@ -399,7 +412,10 @@ void main() {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     details.debugFillProperties(builder);
     expect(builder.properties.length, 6);
-    expect(builder.properties[0].toString(), 'The following assertion was thrown:');
+    expect(
+      builder.properties[0].toString(),
+      'The following assertion was thrown:',
+    );
     expect(builder.properties[1].toString(), contains('Assertion failed'));
     expect(builder.properties[2] is ErrorSpacer, true);
     expect(
@@ -411,7 +427,8 @@ void main() {
       '  https://github.com/flutter/flutter/issues/new?template=2_bug.yml',
     );
     expect(builder.properties[4] is ErrorSpacer, true);
-    final DiagnosticsStackTrace trace = builder.properties[5] as DiagnosticsStackTrace;
+    final DiagnosticsStackTrace trace =
+        builder.properties[5] as DiagnosticsStackTrace;
     expect(trace, isNotNull);
     expect(trace.value, stack);
   });
@@ -419,20 +436,49 @@ void main() {
   test('RepetitiveStackFrameFilter does not go out of range', () {
     const RepetitiveStackFrameFilter filter = RepetitiveStackFrameFilter(
       frames: <PartialStackFrame>[
-        PartialStackFrame(className: 'TestClass', method: 'test1', package: 'package:test/blah.dart'),
-        PartialStackFrame(className: 'TestClass', method: 'test2', package: 'package:test/blah.dart'),
-        PartialStackFrame(className: 'TestClass', method: 'test3', package: 'package:test/blah.dart'),
+        PartialStackFrame(
+          className: 'TestClass',
+          method: 'test1',
+          package: 'package:test/blah.dart',
+        ),
+        PartialStackFrame(
+          className: 'TestClass',
+          method: 'test2',
+          package: 'package:test/blah.dart',
+        ),
+        PartialStackFrame(
+          className: 'TestClass',
+          method: 'test3',
+          package: 'package:test/blah.dart',
+        ),
       ],
       replacement: 'test',
     );
     final List<String?> reasons = List<String?>.filled(2, null);
-    filter.filter(
-      const <StackFrame>[
-        StackFrame(className: 'TestClass', method: 'test1', packageScheme: 'package', package: 'test', packagePath: 'blah.dart', line: 1, column: 1, number: 0, source: ''),
-        StackFrame(className: 'TestClass', method: 'test2', packageScheme: 'package', package: 'test', packagePath: 'blah.dart', line: 1, column: 1, number: 0, source: ''),
-      ],
-      reasons,
-    );
+    filter.filter(const <StackFrame>[
+      StackFrame(
+        className: 'TestClass',
+        method: 'test1',
+        packageScheme: 'package',
+        package: 'test',
+        packagePath: 'blah.dart',
+        line: 1,
+        column: 1,
+        number: 0,
+        source: '',
+      ),
+      StackFrame(
+        className: 'TestClass',
+        method: 'test2',
+        packageScheme: 'package',
+        package: 'test',
+        packagePath: 'blah.dart',
+        line: 1,
+        column: 1,
+        number: 0,
+        source: '',
+      ),
+    ], reasons);
     expect(reasons, List<String?>.filled(2, null));
   });
 }

@@ -13,9 +13,7 @@ class WillPopScopeExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: WillPopScopeExample(),
-    );
+    return const MaterialApp(home: WillPopScopeExample());
   }
 }
 
@@ -35,9 +33,7 @@ class _WillPopScopeExampleState extends State<WillPopScopeExample> {
         return shouldPop;
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter WillPopScope demo'),
-        ),
+        appBar: AppBar(title: const Text('Flutter WillPopScope demo')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -45,29 +41,27 @@ class _WillPopScopeExampleState extends State<WillPopScopeExample> {
               OutlinedButton(
                 child: const Text('Push'),
                 onPressed: () {
-                  Navigator.of(context).push<void>(
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) {
-                        return const WillPopScopeExample();
-                      },
-                    ),
-                  );
+                  Navigator.of(context).push<void>(MaterialPageRoute<void>(
+                    builder: (BuildContext context) {
+                      return const WillPopScopeExample();
+                    },
+                  ));
                 },
               ),
               OutlinedButton(
                 child: Text('shouldPop: $shouldPop'),
                 onPressed: () {
-                  setState(
-                    () {
-                      shouldPop = !shouldPop;
-                    },
-                  );
+                  setState(() {
+                    shouldPop = !shouldPop;
+                  });
                 },
               ),
-              const Text('Push to a new screen, then tap on shouldPop '
-                  'button to toggle its value. Press the back '
-                  'button in the appBar to check its behavior '
-                  'for different values of shouldPop'),
+              const Text(
+                'Push to a new screen, then tap on shouldPop '
+                'button to toggle its value. Press the back '
+                'button in the appBar to check its behavior '
+                'for different values of shouldPop',
+              ),
             ],
           ),
         ),

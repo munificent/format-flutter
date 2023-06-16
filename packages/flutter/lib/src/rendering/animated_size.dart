@@ -93,10 +93,7 @@ class RenderAnimatedSize extends RenderAligningShiftedBox {
         markNeedsLayout();
       }
     });
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: curve,
-    );
+    _animation = CurvedAnimation(parent: _controller, curve: curve);
   }
 
   late final AnimationController _controller;
@@ -346,7 +343,8 @@ class RenderAnimatedSize extends RenderAligningShiftedBox {
     }
   }
 
-  final LayerHandle<ClipRectLayer> _clipRectLayer = LayerHandle<ClipRectLayer>();
+  final LayerHandle<ClipRectLayer> _clipRectLayer =
+      LayerHandle<ClipRectLayer>();
 
   @override
   void dispose() {

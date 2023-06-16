@@ -16,20 +16,16 @@ void main() {
   });
 
   testWidgets('Shadows on BoxDecoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          child: Container(
-            margin: const EdgeInsets.all(50.0),
-            decoration: BoxDecoration(
-              boxShadow: kElevationToShadow[9],
-            ),
-            height: 100.0,
-            width: 100.0,
-          ),
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        child: Container(
+          margin: const EdgeInsets.all(50.0),
+          decoration: BoxDecoration(boxShadow: kElevationToShadow[9]),
+          height: 100.0,
+          width: 100.0,
         ),
       ),
-    );
+    ));
     await expectLater(
       find.byType(Container),
       matchesGoldenFile('shadow.BoxDecoration.disabled.png'),
@@ -51,7 +47,9 @@ void main() {
           child: Container(
             margin: const EdgeInsets.all(150.0),
             decoration: ShapeDecoration(
-              shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              ),
               shadows: kElevationToShadow[elevation],
             ),
             height: 100.0,
@@ -60,6 +58,7 @@ void main() {
         ),
       );
     }
+
     for (final int elevation in kElevationToShadow.keys) {
       testWidgets('elevation $elevation', (WidgetTester tester) async {
         debugDisableShadows = false;
@@ -74,24 +73,19 @@ void main() {
   });
 
   testWidgets('Shadows with PhysicalLayer', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          child: Container(
-            margin: const EdgeInsets.all(150.0),
-            color: Colors.yellow[200],
-            child: PhysicalModel(
-              elevation: 9.0,
-              color: Colors.blue[900]!,
-              child: const SizedBox(
-                height: 100.0,
-                width: 100.0,
-              ),
-            ),
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        child: Container(
+          margin: const EdgeInsets.all(150.0),
+          color: Colors.yellow[200],
+          child: PhysicalModel(
+            elevation: 9.0,
+            color: Colors.blue[900]!,
+            child: const SizedBox(height: 100.0, width: 100.0),
           ),
         ),
       ),
-    );
+    ));
     await expectLater(
       find.byType(Container),
       matchesGoldenFile('shadow.PhysicalModel.disabled.png'),
@@ -121,10 +115,7 @@ void main() {
                 ),
               ),
               elevation: elevation,
-              child: const SizedBox(
-                height: 100.0,
-                width: 100.0,
-              ),
+              child: const SizedBox(height: 100.0, width: 100.0),
             ),
           ),
         ),

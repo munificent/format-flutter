@@ -72,18 +72,15 @@ void main() {
         userName: userName,
         state: state,
       );
-      expect(
-        link,
-        contains('https://github.com/flutter/engine/compare/'),
-      );
+      expect(link, contains('https://github.com/flutter/engine/compare/'));
       expect(
         link,
         contains('$candidateBranch...$userName:$workingBranch?expand=1'),
       );
       expect(
-          Uri.decodeQueryComponent(
-              titlePattern.firstMatch(link)?.group(1) ?? ''),
-          '[flutter_releases] Flutter $releaseChannel $releaseVersion Engine Cherrypicks');
+        Uri.decodeQueryComponent(titlePattern.firstMatch(link)?.group(1) ?? ''),
+        '[flutter_releases] Flutter $releaseChannel $releaseVersion Engine Cherrypicks',
+      );
       final String expectedBody = '''
 # Flutter $releaseChannel $releaseVersion Engine
 
@@ -105,18 +102,15 @@ void main() {
         userName: userName,
         state: state,
       );
-      expect(
-        link,
-        contains('https://github.com/flutter/flutter/compare/'),
-      );
+      expect(link, contains('https://github.com/flutter/flutter/compare/'));
       expect(
         link,
         contains('$candidateBranch...$userName:$workingBranch?expand=1'),
       );
       expect(
-          Uri.decodeQueryComponent(
-              titlePattern.firstMatch(link)?.group(1) ?? ''),
-          '[flutter_releases] Flutter $releaseChannel $releaseVersion Framework Cherrypicks');
+        Uri.decodeQueryComponent(titlePattern.firstMatch(link)?.group(1) ?? ''),
+        '[flutter_releases] Flutter $releaseChannel $releaseVersion Framework Cherrypicks',
+      );
       final String expectedBody = '''
 # Flutter $releaseChannel $releaseVersion Framework
 
@@ -135,28 +129,20 @@ void main() {
     const String flagName = 'a-cli-flag';
 
     test('prefers env over argResults', () {
-      final ArgResults argResults = FakeArgs(results: <String, Object>{
-        flagName: false,
-      });
-      final Map<String, String> env = <String, String>{'A_CLI_FLAG': 'TRUE'};
-      final bool result = getBoolFromEnvOrArgs(
-        flagName,
-        argResults,
-        env,
+      final ArgResults argResults = FakeArgs(
+        results: <String, Object>{flagName: false},
       );
+      final Map<String, String> env = <String, String>{'A_CLI_FLAG': 'TRUE'};
+      final bool result = getBoolFromEnvOrArgs(flagName, argResults, env);
       expect(result, true);
     });
 
     test('falls back to argResults if env is empty', () {
-      final ArgResults argResults = FakeArgs(results: <String, Object>{
-        flagName: false,
-      });
-      final Map<String, String> env = <String, String>{};
-      final bool result = getBoolFromEnvOrArgs(
-        flagName,
-        argResults,
-        env,
+      final ArgResults argResults = FakeArgs(
+        results: <String, Object>{flagName: false},
       );
+      final Map<String, String> env = <String, String>{};
+      final bool result = getBoolFromEnvOrArgs(flagName, argResults, env);
       expect(result, false);
     });
   });
@@ -192,7 +178,7 @@ class FakeArgs implements ArgResults {
   }
 
   @override
-  Object? operator[](String name) {
+  Object? operator [](String name) {
     return results[name];
   }
 }

@@ -8,11 +8,9 @@ import '../xcode_project.dart';
 
 /// Migrate the Xcode project for Xcode compatibility to avoid an "Update to recommended settings" Xcode warning.
 class XcodeProjectObjectVersionMigration extends ProjectMigrator {
-  XcodeProjectObjectVersionMigration(
-    XcodeBasedProject project,
-    super.logger,
-  )   : _xcodeProjectInfoFile = project.xcodeProjectInfoFile,
-        _xcodeProjectSchemeFile = project.xcodeProjectSchemeFile;
+  XcodeProjectObjectVersionMigration(XcodeBasedProject project, super.logger)
+    : _xcodeProjectInfoFile = project.xcodeProjectInfoFile,
+      _xcodeProjectSchemeFile = project.xcodeProjectSchemeFile;
 
   final File _xcodeProjectInfoFile;
   final File _xcodeProjectSchemeFile;
@@ -22,12 +20,16 @@ class XcodeProjectObjectVersionMigration extends ProjectMigrator {
     if (_xcodeProjectInfoFile.existsSync()) {
       processFileLines(_xcodeProjectInfoFile);
     } else {
-      logger.printTrace('Xcode project not found, skipping Xcode compatibility migration.');
+      logger.printTrace(
+        'Xcode project not found, skipping Xcode compatibility migration.',
+      );
     }
     if (_xcodeProjectSchemeFile.existsSync()) {
       processFileLines(_xcodeProjectSchemeFile);
     } else {
-      logger.printTrace('Runner scheme not found, skipping Xcode compatibility migration.');
+      logger.printTrace(
+        'Runner scheme not found, skipping Xcode compatibility migration.',
+      );
     }
   }
 

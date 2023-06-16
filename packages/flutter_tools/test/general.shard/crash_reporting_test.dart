@@ -48,7 +48,8 @@ void main() {
 #1      _rootRunUnary (dart:async/zone.dart:1141:38)''');
   });
 
-  Future<void> verifyCrashReportSent(RequestInfo crashInfo, {
+  Future<void> verifyCrashReportSent(
+    RequestInfo crashInfo, {
     int crashes = 1,
   }) async {
     // Verify that we sent the crash report.
@@ -70,38 +71,51 @@ void main() {
     expect(crashInfo.fields?['osVersion'], 'Linux');
     expect(crashInfo.fields?['type'], 'DartError');
     expect(crashInfo.fields?['error_runtime_type'], 'StateError');
-    expect(crashInfo.fields?['error_message'], 'Bad state: Test bad state error');
+    expect(
+      crashInfo.fields?['error_message'],
+      'Bad state: Test bad state error',
+    );
     expect(crashInfo.fields?['comments'], 'crash');
 
     expect(logger.traceText, contains('Sending crash report to Google.'));
-    expect(logger.traceText, contains('Crash report sent (report ID: test-report-id)'));
+    expect(
+      logger.traceText,
+      contains('Crash report sent (report ID: test-report-id)'),
+    );
   }
 
-  testWithoutContext('CrashReporter.informUser provides basic instructions without PII', () async {
-    final CrashReporter crashReporter = CrashReporter(
-      fileSystem: fs,
-      logger: logger,
-      flutterProjectFactory: FlutterProjectFactory(fileSystem: fs, logger: logger),
-    );
+  testWithoutContext(
+    'CrashReporter.informUser provides basic instructions without PII',
+    () async {
+      final CrashReporter crashReporter = CrashReporter(
+        fileSystem: fs,
+        logger: logger,
+        flutterProjectFactory:
+            FlutterProjectFactory(fileSystem: fs, logger: logger),
+      );
 
-    final File file = fs.file('flutter_00.log');
+      final File file = fs.file('flutter_00.log');
 
-    await crashReporter.informUser(
-      CrashDetails(
+      await crashReporter.informUser(CrashDetails(
         command: 'arg1 arg2 arg3',
         error: Exception('Dummy exception'),
         stackTrace: StackTrace.current,
         // Spaces are URL query encoded in the output, make it one word to make this test simpler.
         doctorText: FakeDoctorText('Ignored', 'NoPIIFakeDoctorText'),
-      ),
-      file,
-    );
+      ), file);
 
-    expect(logger.statusText, contains('NoPIIFakeDoctorText'));
-    expect(logger.statusText, isNot(contains('Ignored')));
-    expect(logger.statusText, contains('https://github.com/flutter/flutter/issues/new'));
-    expect(logger.errorText, contains('A crash report has been written to ${file.path}.'));
-  });
+      expect(logger.statusText, contains('NoPIIFakeDoctorText'));
+      expect(logger.statusText, isNot(contains('Ignored')));
+      expect(
+        logger.statusText,
+        contains('https://github.com/flutter/flutter/issues/new'),
+      );
+      expect(
+        logger.errorText,
+        contains('A crash report has been written to ${file.path}.'),
+      );
+    },
+  );
 
   testWithoutContext('suppress analytics', () async {
     testUsage.suppressAnalytics = true;
@@ -150,141 +164,165 @@ void main() {
       await verifyCrashReportSent(requestInfo);
     });
 
-    testWithoutContext('should print an explanatory message when there is a SocketException', () async {
-      final CrashReportSender crashReportSender = CrashReportSender(
-        client: CrashingCrashReportSender(const SocketException('no internets')),
-        usage: testUsage,
-        platform: platform,
-        logger: logger,
-        operatingSystemUtils: operatingSystemUtils,
-      );
-
-      await crashReportSender.sendReport(
-        error: StateError('Test bad state error'),
-        stackTrace: stackTrace,
-        getFlutterVersion: () => 'test-version',
-        command: 'crash',
-      );
-
-      expect(logger.errorText, contains('Failed to send crash report due to a network error'));
-    });
-
-    testWithoutContext('should print an explanatory message when there is an HttpException', () async {
-      final CrashReportSender crashReportSender = CrashReportSender(
-        client: CrashingCrashReportSender(const HttpException('no internets')),
-        usage: testUsage,
-        platform: platform,
-        logger: logger,
-        operatingSystemUtils: operatingSystemUtils,
-      );
-
-      await crashReportSender.sendReport(
-        error: StateError('Test bad state error'),
-        stackTrace: stackTrace,
-        getFlutterVersion: () => 'test-version',
-        command: 'crash',
-      );
-
-      expect(logger.errorText, contains('Failed to send crash report due to a network error'));
-    });
-
-    testWithoutContext('should print an explanatory message when there is a ClientException', () async {
-      final CrashReportSender crashReportSender = CrashReportSender(
-        client: CrashingCrashReportSender(const HttpException('no internets')),
-        usage: testUsage,
-        platform: platform,
-        logger: logger,
-        operatingSystemUtils: operatingSystemUtils,
-      );
-
-      await crashReportSender.sendReport(
-        error: ClientException('Test bad state error'),
-        stackTrace: stackTrace,
-        getFlutterVersion: () => 'test-version',
-        command: 'crash',
-      );
-
-      expect(logger.errorText, contains('Failed to send crash report due to a network error'));
-    });
-
-    testWithoutContext('should send only one crash report when sent many times', () async {
-      final RequestInfo requestInfo = RequestInfo();
-
-      final CrashReportSender crashReportSender = CrashReportSender(
-        client: MockCrashReportSender(requestInfo),
-        usage: testUsage,
-        platform: platform,
-        logger: logger,
-        operatingSystemUtils: operatingSystemUtils,
-      );
-
-      await crashReportSender.sendReport(
-        error: StateError('Test bad state error'),
-        stackTrace: stackTrace,
-        getFlutterVersion: () => 'test-version',
-        command: 'crash',
-      );
-
-      await crashReportSender.sendReport(
-        error: StateError('Test bad state error'),
-        stackTrace: stackTrace,
-        getFlutterVersion: () => 'test-version',
-        command: 'crash',
-      );
-
-      await crashReportSender.sendReport(
-        error: StateError('Test bad state error'),
-        stackTrace: stackTrace,
-        getFlutterVersion: () => 'test-version',
-        command: 'crash',
-      );
-
-      await crashReportSender.sendReport(
-        error: StateError('Test bad state error'),
-        stackTrace: stackTrace,
-        getFlutterVersion: () => 'test-version',
-        command: 'crash',
-      );
-
-      expect(MockCrashReportSender.sendCalls, 1);
-      await verifyCrashReportSent(requestInfo, crashes: 4);
-    });
-
-    testWithoutContext('should not send a crash report if on a user-branch', () async {
-      String? method;
-      Uri? uri;
-
-      final MockClient mockClient = MockClient((Request request) async {
-        method = request.method;
-        uri = request.url;
-
-        return Response(
-          'test-report-id',
-          200,
+    testWithoutContext(
+      'should print an explanatory message when there is a SocketException',
+      () async {
+        final CrashReportSender crashReportSender = CrashReportSender(
+          client:
+              CrashingCrashReportSender(const SocketException('no internets')),
+          usage: testUsage,
+          platform: platform,
+          logger: logger,
+          operatingSystemUtils: operatingSystemUtils,
         );
-      });
 
-      final CrashReportSender crashReportSender = CrashReportSender(
-        client: mockClient,
-        usage: testUsage,
-        platform: platform,
-        logger: logger,
-        operatingSystemUtils: operatingSystemUtils,
-      );
+        await crashReportSender.sendReport(
+          error: StateError('Test bad state error'),
+          stackTrace: stackTrace,
+          getFlutterVersion: () => 'test-version',
+          command: 'crash',
+        );
 
-      await crashReportSender.sendReport(
-        error: StateError('Test bad state error'),
-        stackTrace: stackTrace,
-        getFlutterVersion: () => '[user-branch]/v1.2.3',
-        command: 'crash',
-      );
+        expect(
+          logger.errorText,
+          contains('Failed to send crash report due to a network error'),
+        );
+      },
+    );
 
-      // Verify that the report wasn't sent
-      expect(method, null);
-      expect(uri, null);
+    testWithoutContext(
+      'should print an explanatory message when there is an HttpException',
+      () async {
+        final CrashReportSender crashReportSender = CrashReportSender(
+          client:
+              CrashingCrashReportSender(const HttpException('no internets')),
+          usage: testUsage,
+          platform: platform,
+          logger: logger,
+          operatingSystemUtils: operatingSystemUtils,
+        );
 
-      expect(logger.traceText, isNot(contains('Crash report sent')));
-    });
+        await crashReportSender.sendReport(
+          error: StateError('Test bad state error'),
+          stackTrace: stackTrace,
+          getFlutterVersion: () => 'test-version',
+          command: 'crash',
+        );
+
+        expect(
+          logger.errorText,
+          contains('Failed to send crash report due to a network error'),
+        );
+      },
+    );
+
+    testWithoutContext(
+      'should print an explanatory message when there is a ClientException',
+      () async {
+        final CrashReportSender crashReportSender = CrashReportSender(
+          client:
+              CrashingCrashReportSender(const HttpException('no internets')),
+          usage: testUsage,
+          platform: platform,
+          logger: logger,
+          operatingSystemUtils: operatingSystemUtils,
+        );
+
+        await crashReportSender.sendReport(
+          error: ClientException('Test bad state error'),
+          stackTrace: stackTrace,
+          getFlutterVersion: () => 'test-version',
+          command: 'crash',
+        );
+
+        expect(
+          logger.errorText,
+          contains('Failed to send crash report due to a network error'),
+        );
+      },
+    );
+
+    testWithoutContext(
+      'should send only one crash report when sent many times',
+      () async {
+        final RequestInfo requestInfo = RequestInfo();
+
+        final CrashReportSender crashReportSender = CrashReportSender(
+          client: MockCrashReportSender(requestInfo),
+          usage: testUsage,
+          platform: platform,
+          logger: logger,
+          operatingSystemUtils: operatingSystemUtils,
+        );
+
+        await crashReportSender.sendReport(
+          error: StateError('Test bad state error'),
+          stackTrace: stackTrace,
+          getFlutterVersion: () => 'test-version',
+          command: 'crash',
+        );
+
+        await crashReportSender.sendReport(
+          error: StateError('Test bad state error'),
+          stackTrace: stackTrace,
+          getFlutterVersion: () => 'test-version',
+          command: 'crash',
+        );
+
+        await crashReportSender.sendReport(
+          error: StateError('Test bad state error'),
+          stackTrace: stackTrace,
+          getFlutterVersion: () => 'test-version',
+          command: 'crash',
+        );
+
+        await crashReportSender.sendReport(
+          error: StateError('Test bad state error'),
+          stackTrace: stackTrace,
+          getFlutterVersion: () => 'test-version',
+          command: 'crash',
+        );
+
+        expect(MockCrashReportSender.sendCalls, 1);
+        await verifyCrashReportSent(requestInfo, crashes: 4);
+      },
+    );
+
+    testWithoutContext(
+      'should not send a crash report if on a user-branch',
+      () async {
+        String? method;
+        Uri? uri;
+
+        final MockClient mockClient = MockClient((Request request) async {
+          method = request.method;
+          uri = request.url;
+
+          return Response('test-report-id', 200);
+        });
+
+        final CrashReportSender crashReportSender = CrashReportSender(
+          client: mockClient,
+          usage: testUsage,
+          platform: platform,
+          logger: logger,
+          operatingSystemUtils: operatingSystemUtils,
+        );
+
+        await crashReportSender.sendReport(
+          error: StateError('Test bad state error'),
+          stackTrace: stackTrace,
+          getFlutterVersion: () => '[user-branch]/v1.2.3',
+          command: 'crash',
+        );
+
+        // Verify that the report wasn't sent
+        expect(method, null);
+        expect(uri, null);
+
+        expect(logger.traceText, isNot(contains('Crash report sent')));
+      },
+    );
 
     testWithoutContext('can override base URL', () async {
       Uri? uri;
@@ -296,7 +334,8 @@ void main() {
       final Platform environmentPlatform = FakePlatform(
         environment: <String, String>{
           'HOME': '/',
-          'FLUTTER_CRASH_SERVER_BASE_URL': 'https://localhost:12345/fake_server',
+          'FLUTTER_CRASH_SERVER_BASE_URL':
+              'https://localhost:12345/fake_server',
         },
         script: Uri(scheme: 'data'),
       );
@@ -339,54 +378,56 @@ class RequestInfo {
 }
 
 class MockCrashReportSender extends MockClient {
-  MockCrashReportSender(RequestInfo crashInfo) : super((Request request) async {
-    MockCrashReportSender.sendCalls++;
-    crashInfo.method = request.method;
-    crashInfo.uri = request.url;
+  MockCrashReportSender(
+    RequestInfo crashInfo,
+  ) : super((Request request) async {
+        MockCrashReportSender.sendCalls++;
+        crashInfo.method = request.method;
+        crashInfo.uri = request.url;
 
-    // A very ad-hoc multipart request parser. Good enough for this test.
-    String? boundary = request.headers['Content-Type'];
-    boundary = boundary?.substring(boundary.indexOf('boundary=') + 9);
-    crashInfo.fields = Map<String, String>.fromIterable(
-      utf8.decode(request.bodyBytes)
-        .split('--$boundary')
-        .map<List<String>?>((String part) {
-        final Match? nameMatch = RegExp(r'name="(.*)"').firstMatch(part);
-        if (nameMatch == null) {
-          return null;
-        }
-        final String name = nameMatch[1]!;
-        final String value = part.split('\n').skip(2).join('\n').trim();
-        return <String>[name, value];
-      }).whereType<List<String>>(),
-      key: (dynamic key) {
-        final List<String> pair = key as List<String>;
-        return pair[0];
-      },
-      value: (dynamic value) {
-        final List<String> pair = value as List<String>;
-        return pair[1];
-      },
-    );
+        // A very ad-hoc multipart request parser. Good enough for this test.
+        String? boundary = request.headers['Content-Type'];
+        boundary = boundary?.substring(boundary.indexOf('boundary=') + 9);
+        crashInfo.fields = Map<String, String>.fromIterable(
+          utf8.decode(request.bodyBytes).split('--$boundary').map<
+            List<String>?
+          >((String part) {
+            final Match? nameMatch = RegExp(r'name="(.*)"').firstMatch(part);
+            if (nameMatch == null) {
+              return null;
+            }
+            final String name = nameMatch[1]!;
+            final String value = part.split('\n').skip(2).join('\n').trim();
+            return <String>[name, value];
+          }).whereType<List<String>>(),
+          key: (dynamic key) {
+            final List<String> pair = key as List<String>;
+            return pair[0];
+          },
+          value: (dynamic value) {
+            final List<String> pair = value as List<String>;
+            return pair[1];
+          },
+        );
 
-    return Response(
-      'test-report-id',
-      200,
-    );
-  });
+        return Response('test-report-id', 200);
+      });
 
   static int sendCalls = 0;
 }
 
 class CrashingCrashReportSender extends MockClient {
-  CrashingCrashReportSender(Exception exception) : super((Request request) async {
-    throw exception;
-  });
+  CrashingCrashReportSender(
+    Exception exception,
+  ) : super((Request request) async {
+        throw exception;
+      });
 }
 
 class FakeDoctorText extends Fake implements DoctorText {
   FakeDoctorText(String text, String piiStrippedText)
-      : _text = text, _piiStrippedText = piiStrippedText;
+    : _text = text,
+      _piiStrippedText = piiStrippedText;
 
   @override
   Future<String> get text async => _text;

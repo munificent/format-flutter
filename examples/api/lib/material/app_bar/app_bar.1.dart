@@ -92,9 +92,8 @@ class _AppBarExampleState extends State<AppBarExample> {
                     shadowColor = !shadowColor;
                   });
                 },
-                icon: Icon(
-                  shadowColor ? Icons.visibility_off : Icons.visibility,
-                ),
+                icon:
+                    Icon(shadowColor ? Icons.visibility_off : Icons.visibility),
                 label: const Text('shadow color'),
               ),
               const SizedBox(width: 5),

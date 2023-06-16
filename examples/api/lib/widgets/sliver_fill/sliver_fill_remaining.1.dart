@@ -31,14 +31,12 @@ class SliverFillRemainingExample extends StatelessWidget {
       slivers: <Widget>[
         SliverFixedExtentList(
           itemExtent: 100.0,
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return Container(
-                color: index.isEven ? Colors.amber[200] : Colors.blue[200],
-              );
-            },
-            childCount: 3,
-          ),
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) {
+                return Container(
+                  color: index.isEven ? Colors.amber[200] : Colors.blue[200],
+                );
+              }, childCount: 3),
         ),
         SliverFillRemaining(
           hasScrollBody: false,

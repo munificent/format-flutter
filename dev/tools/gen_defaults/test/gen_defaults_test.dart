@@ -12,10 +12,15 @@ import 'package:test/test.dart';
 
 void main() {
   final TokenLogger logger = tokenLogger;
-  logger.init(allTokens: <String, dynamic>{}, versionMap: <String, List<String>>{});
+  logger.init(
+    allTokens: <String, dynamic>{},
+    versionMap: <String, List<String>>{},
+  );
 
   test('Templates will append to the end of a file', () {
-    final Directory tempDir = Directory.systemTemp.createTempSync('gen_defaults');
+    final Directory tempDir = Directory.systemTemp.createTempSync(
+      'gen_defaults',
+    );
     try {
       // Create a temporary file with some content.
       final File tempFile = File(path.join(tempDir.path, 'test_template.txt'));
@@ -28,7 +33,11 @@ void main() {
 
       // Have a test template append new parameterized content to the end of
       // the file.
-      final Map<String, dynamic> tokens = <String, dynamic>{'version': '0.0', 'foo': 'Foobar', 'bar': 'Barfoo'};
+      final Map<String, dynamic> tokens = <String, dynamic>{
+        'version': '0.0',
+        'foo': 'Foobar',
+        'bar': 'Barfoo',
+      };
       TestTemplate('Test', tempFile.path, tokens).updateFile();
 
       expect(tempFile.readAsStringSync(), '''
@@ -48,19 +57,24 @@ static final String tokenBar = 'Barfoo';
 
 // END GENERATED TOKEN PROPERTIES - Test
 ''');
-
     } finally {
       tempDir.deleteSync(recursive: true);
     }
   });
 
-  test('Templates will update over previously generated code at the end of a file', () {
-    final Directory tempDir = Directory.systemTemp.createTempSync('gen_defaults');
-    try {
-      // Create a temporary file with some content.
-      final File tempFile = File(path.join(tempDir.path, 'test_template.txt'));
-      tempFile.createSync();
-      tempFile.writeAsStringSync('''
+  test(
+    'Templates will update over previously generated code at the end of a file',
+    () {
+      final Directory tempDir = Directory.systemTemp.createTempSync(
+        'gen_defaults',
+      );
+      try {
+        // Create a temporary file with some content.
+        final File tempFile = File(
+          path.join(tempDir.path, 'test_template.txt'),
+        );
+        tempFile.createSync();
+        tempFile.writeAsStringSync('''
 // This is a file with stuff in it.
 // This part shouldn't be changed by
 // the template.
@@ -78,12 +92,16 @@ static final String tokenBar = 'Barfoo';
 // END GENERATED TOKEN PROPERTIES - Test
 ''');
 
-      // Have a test template append new parameterized content to the end of
-      // the file.
-      final Map<String, dynamic> tokens = <String, dynamic>{'version': '0.0', 'foo': 'foo', 'bar': 'bar'};
-      TestTemplate('Test', tempFile.path, tokens).updateFile();
+        // Have a test template append new parameterized content to the end of
+        // the file.
+        final Map<String, dynamic> tokens = <String, dynamic>{
+          'version': '0.0',
+          'foo': 'foo',
+          'bar': 'bar',
+        };
+        TestTemplate('Test', tempFile.path, tokens).updateFile();
 
-      expect(tempFile.readAsStringSync(), '''
+        expect(tempFile.readAsStringSync(), '''
 // This is a file with stuff in it.
 // This part shouldn't be changed by
 // the template.
@@ -100,30 +118,40 @@ static final String tokenBar = 'bar';
 
 // END GENERATED TOKEN PROPERTIES - Test
 ''');
+      } finally {
+        tempDir.deleteSync(recursive: true);
+      }
+    },
+  );
 
-    } finally {
-      tempDir.deleteSync(recursive: true);
-    }
-  });
-
-  test('Multiple templates can modify different code blocks in the same file', () {
-    final Directory tempDir = Directory.systemTemp.createTempSync('gen_defaults');
-    try {
-      // Create a temporary file with some content.
-      final File tempFile = File(path.join(tempDir.path, 'test_template.txt'));
-      tempFile.createSync();
-      tempFile.writeAsStringSync('''
+  test(
+    'Multiple templates can modify different code blocks in the same file',
+    () {
+      final Directory tempDir = Directory.systemTemp.createTempSync(
+        'gen_defaults',
+      );
+      try {
+        // Create a temporary file with some content.
+        final File tempFile = File(
+          path.join(tempDir.path, 'test_template.txt'),
+        );
+        tempFile.createSync();
+        tempFile.writeAsStringSync('''
 // This is a file with stuff in it.
 // This part shouldn't be changed by
 // the template.
 ''');
 
-      // Update file with a template for 'Block 1'
-      {
-        final Map<String, dynamic> tokens = <String, dynamic>{'version': '0.0', 'foo': 'foo', 'bar': 'bar'};
-        TestTemplate('Block 1', tempFile.path, tokens).updateFile();
-      }
-      expect(tempFile.readAsStringSync(), '''
+        // Update file with a template for 'Block 1'
+        {
+          final Map<String, dynamic> tokens = <String, dynamic>{
+            'version': '0.0',
+            'foo': 'foo',
+            'bar': 'bar',
+          };
+          TestTemplate('Block 1', tempFile.path, tokens).updateFile();
+        }
+        expect(tempFile.readAsStringSync(), '''
 // This is a file with stuff in it.
 // This part shouldn't be changed by
 // the template.
@@ -141,13 +169,17 @@ static final String tokenBar = 'bar';
 // END GENERATED TOKEN PROPERTIES - Block 1
 ''');
 
-      // Update file with a template for 'Block 2', which should append but not
-      // disturb the code in 'Block 1'.
-      {
-        final Map<String, dynamic> tokens = <String, dynamic>{'version': '0.0', 'foo': 'bar', 'bar': 'foo'};
-        TestTemplate('Block 2', tempFile.path, tokens).updateFile();
-      }
-      expect(tempFile.readAsStringSync(), '''
+        // Update file with a template for 'Block 2', which should append but not
+        // disturb the code in 'Block 1'.
+        {
+          final Map<String, dynamic> tokens = <String, dynamic>{
+            'version': '0.0',
+            'foo': 'bar',
+            'bar': 'foo',
+          };
+          TestTemplate('Block 2', tempFile.path, tokens).updateFile();
+        }
+        expect(tempFile.readAsStringSync(), '''
 // This is a file with stuff in it.
 // This part shouldn't be changed by
 // the template.
@@ -177,13 +209,17 @@ static final String tokenBar = 'foo';
 // END GENERATED TOKEN PROPERTIES - Block 2
 ''');
 
-      // Update 'Block 1' again which should just update that block,
-      // leaving 'Block 2' undisturbed.
-      {
-        final Map<String, dynamic> tokens = <String, dynamic>{'version': '0.0', 'foo': 'FOO', 'bar': 'BAR'};
-        TestTemplate('Block 1', tempFile.path, tokens).updateFile();
-      }
-      expect(tempFile.readAsStringSync(), '''
+        // Update 'Block 1' again which should just update that block,
+        // leaving 'Block 2' undisturbed.
+        {
+          final Map<String, dynamic> tokens = <String, dynamic>{
+            'version': '0.0',
+            'foo': 'FOO',
+            'bar': 'BAR',
+          };
+          TestTemplate('Block 1', tempFile.path, tokens).updateFile();
+        }
+        expect(tempFile.readAsStringSync(), '''
 // This is a file with stuff in it.
 // This part shouldn't be changed by
 // the template.
@@ -212,11 +248,11 @@ static final String tokenBar = 'foo';
 
 // END GENERATED TOKEN PROPERTIES - Block 2
 ''');
-
-    } finally {
-      tempDir.deleteSync(recursive: true);
-    }
-  });
+      } finally {
+        tempDir.deleteSync(recursive: true);
+      }
+    },
+  );
 
   test('Templates can get proper shapes from given data', () {
     const Map<String, dynamic> tokens = <String, dynamic>{
@@ -229,12 +265,13 @@ static final String tokenBar = 'foo';
         'bottomLeft': 3.0,
         'bottomRight': 4.0,
       },
-      'shape.full': <String, dynamic>{
-        'family': 'SHAPE_FAMILY_CIRCULAR',
-      },
+      'shape.full': <String, dynamic>{'family': 'SHAPE_FAMILY_CIRCULAR'},
     };
     final TestTemplate template = TestTemplate('Test', 'foobar.dart', tokens);
-    expect(template.shape('foo'), 'const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(1.0), topRight: Radius.circular(2.0), bottomLeft: Radius.circular(3.0), bottomRight: Radius.circular(4.0)))');
+    expect(
+      template.shape('foo'),
+      'const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(1.0), topRight: Radius.circular(2.0), bottomLeft: Radius.circular(3.0), bottomRight: Radius.circular(4.0)))',
+    );
     expect(template.shape('bar'), 'const StadiumBorder()');
   });
 
@@ -245,13 +282,13 @@ static final String tokenBar = 'foo';
 
     // Add to printLog instead of printing to stdout
     void Function() overridePrint(void Function() testFn) => () {
-      final ZoneSpecification spec = ZoneSpecification(
-        print: (_, __, ___, String msg) {
-          printLog.add(msg);
-        }
-      );
-      return Zone.current.fork(specification: spec).run<void>(testFn);
-    };
+          final ZoneSpecification spec = ZoneSpecification(
+            print: (_, __, ___, String msg) {
+              printLog.add(msg);
+            },
+          );
+          return Zone.current.fork(specification: spec).run<void>(testFn);
+        };
 
     setUp(() {
       logger.init(allTokens: allTokens, versionMap: versionMap);
@@ -326,7 +363,10 @@ static final String tokenBar = 'foo';
       logger.printTokensUsage(verbose: true);
 
       expect(printLog, contains(errorColoredString('Token unavailable: baz')));
-      expect(printLog, contains(errorColoredString('Token unavailable: foobar')));
+      expect(
+        printLog,
+        contains(errorColoredString('Token unavailable: foobar')),
+      );
       expect(printLog, contains('❌ foo'));
       expect(printLog, contains('Tokens used: 0/1'));
     }));

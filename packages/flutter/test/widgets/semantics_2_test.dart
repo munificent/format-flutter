@@ -17,35 +17,33 @@ void main() {
     // switching to not ignoring it.
 
     // forking semantics
-    await tester.pumpWidget(
-      Semantics(
-        container: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SizedBox(
-              height: 10.0,
+    await tester.pumpWidget(Semantics(
+      container: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SizedBox(
+            height: 10.0,
+            child: Semantics(
+              label: 'child1',
+              textDirection: TextDirection.ltr,
+              selected: true,
+            ),
+          ),
+          SizedBox(
+            height: 10.0,
+            child: ExcludeSemantics(
+              excluding: false,
               child: Semantics(
-                label: 'child1',
+                label: 'child2',
                 textDirection: TextDirection.ltr,
                 selected: true,
               ),
             ),
-            SizedBox(
-              height: 10.0,
-              child: ExcludeSemantics(
-                excluding: false,
-                child: Semantics(
-                  label: 'child2',
-                  textDirection: TextDirection.ltr,
-                  selected: true,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(semantics, hasSemantics(TestSemantics.root(
       children: <TestSemantics>[
@@ -71,34 +69,32 @@ void main() {
     ), ignoreTransform: true));
 
     // toggle a branch off
-    await tester.pumpWidget(
-      Semantics(
-        container: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SizedBox(
-              height: 10.0,
+    await tester.pumpWidget(Semantics(
+      container: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SizedBox(
+            height: 10.0,
+            child: Semantics(
+              label: 'child1',
+              textDirection: TextDirection.ltr,
+              selected: true,
+            ),
+          ),
+          SizedBox(
+            height: 10.0,
+            child: ExcludeSemantics(
               child: Semantics(
-                label: 'child1',
+                label: 'child2',
                 textDirection: TextDirection.ltr,
                 selected: true,
               ),
             ),
-            SizedBox(
-              height: 10.0,
-              child: ExcludeSemantics(
-                child: Semantics(
-                  label: 'child2',
-                  textDirection: TextDirection.ltr,
-                  selected: true,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(semantics, hasSemantics(TestSemantics.root(
       children: <TestSemantics>[
@@ -112,35 +108,33 @@ void main() {
     )));
 
     // toggle a branch back on
-    await tester.pumpWidget(
-      Semantics(
-        container: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SizedBox(
-              height: 10.0,
+    await tester.pumpWidget(Semantics(
+      container: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SizedBox(
+            height: 10.0,
+            child: Semantics(
+              label: 'child1',
+              textDirection: TextDirection.ltr,
+              selected: true,
+            ),
+          ),
+          SizedBox(
+            height: 10.0,
+            child: ExcludeSemantics(
+              excluding: false,
               child: Semantics(
-                label: 'child1',
+                label: 'child2',
                 textDirection: TextDirection.ltr,
                 selected: true,
               ),
             ),
-            SizedBox(
-              height: 10.0,
-              child: ExcludeSemantics(
-                excluding: false,
-                child: Semantics(
-                  label: 'child2',
-                  textDirection: TextDirection.ltr,
-                  selected: true,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(semantics, hasSemantics(TestSemantics.root(
       children: <TestSemantics>[

@@ -34,7 +34,9 @@ import '../material_localizations.dart';
 String generateMaterialConstructor(LocaleInfo locale) {
   final String localeName = locale.originalString;
   return '''
-  /// Create an instance of the translation bundle for ${describeLocale(localeName)}.
+  /// Create an instance of the translation bundle for ${describeLocale(
+    localeName,
+  )}.
   ///
   /// For details on the meaning of the arguments, see [GlobalMaterialLocalizations].
   const MaterialLocalization${locale.camelCase()}({
@@ -72,4 +74,5 @@ const String materialFactoryArguments =
 
 const String materialSupportedLanguagesConstant = 'kMaterialSupportedLanguages';
 
-const String materialSupportedLanguagesDocMacro = 'flutter.localizations.material.languages';
+const String materialSupportedLanguagesDocMacro =
+    'flutter.localizations.material.languages';

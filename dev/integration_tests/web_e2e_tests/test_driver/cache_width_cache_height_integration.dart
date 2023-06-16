@@ -34,50 +34,69 @@ class LoadTestImageProvider extends ImageProvider<Object> {
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Image.network uses cacheWidth and cacheHeight', (WidgetTester tester) async {
-    const int expectedCacheHeight = 9;
-    const int expectedCacheWidth = 11;
-    await tester.pumpAndSettle();
+  testWidgets(
+    'Image.network uses cacheWidth and cacheHeight',
+    (WidgetTester tester) async {
+      const int expectedCacheHeight = 9;
+      const int expectedCacheWidth = 11;
+      await tester.pumpAndSettle();
 
-    final Image image = Image.network(
-      'assets/packages/flutter_gallery_assets/assets/icons/material/material.png',
-      cacheHeight: 9,
-      cacheWidth: 11,
-    );
+      final Image image = Image.network(
+        'assets/packages/flutter_gallery_assets/assets/icons/material/material.png',
+        cacheHeight: 9,
+        cacheWidth: 11,
+      );
 
-    bool called = false;
+      bool called = false;
 
-    Future<ui.Codec> decode(ui.ImmutableBuffer buffer, {ui.TargetImageSizeCallback? getTargetSize}) {
-      return PaintingBinding.instance.instantiateImageCodecWithSize(buffer, getTargetSize: (int intrinsicWidth, int intrinsicHeight) {
-        expect(getTargetSize, isNotNull);
-        final ui.TargetImageSize targetSize = getTargetSize!(intrinsicWidth, intrinsicHeight);
-        expect(targetSize.width, expectedCacheWidth);
-        expect(targetSize.height, expectedCacheHeight);
-        called = true;
-        return targetSize;
-      });
-    }
+      Future<ui.Codec> decode(
+        ui.ImmutableBuffer buffer, {
+        ui.TargetImageSizeCallback? getTargetSize,
+      }) {
+        return PaintingBinding.instance.instantiateImageCodecWithSize(
+          buffer,
+          getTargetSize: (int intrinsicWidth, int intrinsicHeight) {
+            expect(getTargetSize, isNotNull);
+            final ui.TargetImageSize targetSize = getTargetSize!(
+              intrinsicWidth,
+              intrinsicHeight,
+            );
+            expect(targetSize.width, expectedCacheWidth);
+            expect(targetSize.height, expectedCacheHeight);
+            called = true;
+            return targetSize;
+          },
+        );
+      }
 
-    final ImageProvider resizeImage = image.image;
-    expect(image.image, isA<ResizeImage>());
+      final ImageProvider resizeImage = image.image;
+      expect(image.image, isA<ResizeImage>());
 
-    final LoadTestImageProvider testProvider = LoadTestImageProvider(image.image);
-    final ImageStreamCompleter streamCompleter = testProvider.testLoad(await resizeImage.obtainKey(ImageConfiguration.empty), decode);
+      final LoadTestImageProvider testProvider = LoadTestImageProvider(
+        image.image,
+      );
+      final ImageStreamCompleter streamCompleter = testProvider.testLoad(
+        await resizeImage.obtainKey(ImageConfiguration.empty),
+        decode,
+      );
 
-    final Completer<void> completer = Completer<void>();
-    int? imageInfoCachedWidth;
-    int? imageInfoCachedHeight;
-    streamCompleter.addListener(ImageStreamListener((ImageInfo imageInfo, bool syncCall) {
-      imageInfoCachedWidth = imageInfo.image.width;
-      imageInfoCachedHeight = imageInfo.image.height;
-      completer.complete();
-    }));
-    await completer.future;
+      final Completer<void> completer = Completer<void>();
+      int? imageInfoCachedWidth;
+      int? imageInfoCachedHeight;
+      streamCompleter.addListener(
+        ImageStreamListener((ImageInfo imageInfo, bool syncCall) {
+          imageInfoCachedWidth = imageInfo.image.width;
+          imageInfoCachedHeight = imageInfo.image.height;
+          completer.complete();
+        }),
+      );
+      await completer.future;
 
-    expect(imageInfoCachedHeight, isNotNull);
-    expect(imageInfoCachedHeight, expectedCacheHeight);
-    expect(imageInfoCachedWidth, isNotNull);
-    expect(imageInfoCachedWidth, expectedCacheWidth);
-    expect(called, true);
-  });
+      expect(imageInfoCachedHeight, isNotNull);
+      expect(imageInfoCachedHeight, expectedCacheHeight);
+      expect(imageInfoCachedWidth, isNotNull);
+      expect(imageInfoCachedWidth, expectedCacheWidth);
+      expect(called, true);
+    },
+  );
 }

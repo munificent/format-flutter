@@ -17,10 +17,7 @@ class TestPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Test',
-      theme: ThemeData(
-        useMaterial3: false,
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(useMaterial3: false, primarySwatch: Colors.blue),
       home: const HomePage(),
     );
   }
@@ -47,9 +44,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Center(
-        child: Text('Test Home'),
-      ),
+      body: const Center(child: Text('Test Home')),
       floatingActionButton: FloatingActionButton(
         onPressed: _presentModalPage,
         child: const Icon(Icons.add),
@@ -78,10 +73,7 @@ class ModalPage extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 150,
-                color: Colors.teal,
-              ),
+              child: Container(height: 150, color: Colors.teal),
             ),
           ],
         ),
@@ -91,13 +83,16 @@ class ModalPage extends StatelessWidget {
 }
 
 void main() {
-  testWidgets('Barriers show when using PageRouteBuilder', (WidgetTester tester) async {
-    await tester.pumpWidget(const TestPage());
-    await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
-    await expectLater(
-      find.byType(TestPage),
-      matchesGoldenFile('page_route_builder.barrier.png'),
-    );
-  });
+  testWidgets(
+    'Barriers show when using PageRouteBuilder',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const TestPage());
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+      await expectLater(
+        find.byType(TestPage),
+        matchesGoldenFile('page_route_builder.barrier.png'),
+      );
+    },
+  );
 }

@@ -13,38 +13,54 @@ import '../reporting/reporting.dart';
 import '../runner/flutter_command.dart';
 
 class ConfigCommand extends FlutterCommand {
-  ConfigCommand({ bool verboseHelp = false }) {
-    argParser.addFlag('analytics',
-      help: 'Enable or disable reporting anonymously tool usage statistics and crash reports.');
-    argParser.addFlag('clear-ios-signing-cert',
+  ConfigCommand({bool verboseHelp = false}) {
+    argParser.addFlag(
+      'analytics',
+      help:
+          'Enable or disable reporting anonymously tool usage statistics and crash reports.',
+    );
+    argParser.addFlag(
+      'clear-ios-signing-cert',
       negatable: false,
-      help: 'Clear the saved development certificate choice used to sign apps for iOS device deployment.');
+      help:
+          'Clear the saved development certificate choice used to sign apps for iOS device deployment.',
+    );
     argParser.addOption('android-sdk', help: 'The Android SDK directory.');
-    argParser.addOption('android-studio-dir', help: 'The Android Studio installation directory. If unset, flutter will search for valid installations at well-known locations.');
-    argParser.addOption('jdk-dir', help: 'The Java Development Kit (JDK) installation directory. '
-      'If unset, flutter will search for one in the following order:\n'
-      '    1) the JDK bundled with the latest installation of Android Studio,\n'
-      '    2) the JDK found at the directory found in the JAVA_HOME environment variable, and\n'
-      "    3) the directory containing the java binary found in the user's path.");
-    argParser.addOption('build-dir', help: 'The relative path to override a projects build directory.',
-        valueHelp: 'out/');
-    argParser.addFlag('machine',
+    argParser.addOption(
+      'android-studio-dir',
+      help:
+          'The Android Studio installation directory. If unset, flutter will search for valid installations at well-known locations.',
+    );
+    argParser.addOption(
+      'jdk-dir',
+      help: 'The Java Development Kit (JDK) installation directory. '
+          'If unset, flutter will search for one in the following order:\n'
+          '    1) the JDK bundled with the latest installation of Android Studio,\n'
+          '    2) the JDK found at the directory found in the JAVA_HOME environment variable, and\n'
+          "    3) the directory containing the java binary found in the user's path.",
+    );
+    argParser.addOption(
+      'build-dir',
+      help: 'The relative path to override a projects build directory.',
+      valueHelp: 'out/',
+    );
+    argParser.addFlag(
+      'machine',
       negatable: false,
       hide: !verboseHelp,
-      help: 'Print config values as json.');
+      help: 'Print config values as json.',
+    );
     for (final Feature feature in allFeatures) {
       final String? configSetting = feature.configSetting;
       if (configSetting == null) {
         continue;
       }
-      argParser.addFlag(
-        configSetting,
-        help: feature.generateHelpMessage(),
-      );
+      argParser.addFlag(configSetting, help: feature.generateHelpMessage());
     }
     argParser.addFlag(
       'clear-features',
-      help: 'Remove all configured features and restore them to the default values.',
+      help:
+          'Remove all configured features and restore them to the default values.',
       negatable: false,
     );
   }
@@ -53,11 +69,10 @@ class ConfigCommand extends FlutterCommand {
   final String name = 'config';
 
   @override
-  final String description =
-    'Configure Flutter settings.\n\n'
-    'To remove a setting, configure it to an empty string.\n\n'
-    'The Flutter tool anonymously reports feature usage statistics and basic crash reports to help improve '
-    "Flutter tools over time. See Google's privacy policy: https://www.google.com/intl/en/policies/privacy/";
+  final String description = 'Configure Flutter settings.\n\n'
+      'To remove a setting, configure it to an empty string.\n\n'
+      'The Flutter tool anonymously reports feature usage statistics and basic crash reports to help improve '
+      "Flutter tools over time. See Google's privacy policy: https://www.google.com/intl/en/policies/privacy/";
 
   @override
   final String category = FlutterCommandCategory.sdk;
@@ -80,25 +95,24 @@ class ConfigCommand extends FlutterCommand {
         featuresByName[configSetting] = feature;
       }
     }
-    String values = globals.config.keys
-        .map<String>((String key) {
-          String configFooter = '';
-          if (featuresByName.containsKey(key)) {
-            final FeatureChannelSetting setting = featuresByName[key]!.getSettingForChannel(channel);
-            if (!setting.available) {
-              configFooter = '(Unavailable)';
-            }
-          }
-          return '  $key: ${globals.config.getValue(key)} $configFooter';
-        }).join('\n');
+    String values = globals.config.keys.map<String>((String key) {
+      String configFooter = '';
+      if (featuresByName.containsKey(key)) {
+        final FeatureChannelSetting setting = featuresByName[key]!
+            .getSettingForChannel(channel);
+        if (!setting.available) {
+          configFooter = '(Unavailable)';
+        }
+      }
+      return '  $key: ${globals.config.getValue(key)} $configFooter';
+    }).join('\n');
     if (values.isEmpty) {
       values = '  No settings have been configured.';
     }
-    final bool analyticsEnabled = globals.flutterUsage.enabled &&
-                                  !globals.flutterUsage.suppressAnalytics;
-    return
-      '\nSettings:\n$values\n\n'
-      'Analytics reporting is currently ${analyticsEnabled ? 'enabled' : 'disabled'}.';
+    final bool analyticsEnabled =
+        globals.flutterUsage.enabled && !globals.flutterUsage.suppressAnalytics;
+    return '\nSettings:\n$values\n\n'
+        'Analytics reporting is currently ${analyticsEnabled ? 'enabled' : 'disabled'}.';
   }
 
   /// Return null to disable analytics recording of the `config` command.
@@ -109,12 +123,14 @@ class ConfigCommand extends FlutterCommand {
   Future<FlutterCommandResult> runCommand() async {
     final List<String> rest = argResults!.rest;
     if (rest.isNotEmpty) {
-      throwToolExit(exitCode: 2,
-          'error: flutter config: Too many arguments.\n'
-          '\n'
-          'If a value has a space in it, enclose in quotes on the command line\n'
-          'to make a single argument.  For example:\n'
-          '    flutter config --android-studio-dir "/opt/Android Studio"');
+      throwToolExit(
+        exitCode: 2,
+        'error: flutter config: Too many arguments.\n'
+        '\n'
+        'If a value has a space in it, enclose in quotes on the command line\n'
+        'to make a single argument.  For example:\n'
+        '    flutter config --android-studio-dir "/opt/Android Studio"',
+      );
     }
 
     if (boolArg('machine')) {
@@ -144,7 +160,9 @@ class ConfigCommand extends FlutterCommand {
         await globals.flutterUsage.ensureAnalyticsSent();
       }
       globals.flutterUsage.enabled = value;
-      globals.printStatus('Analytics reporting ${value ? 'enabled' : 'disabled'}.');
+      globals.printStatus(
+        'Analytics reporting ${value ? 'enabled' : 'disabled'}.',
+      );
 
       // TODO(eliasyishak): Set the telemetry for the unified_analytics
       //  package as well, the above will be removed once we have
@@ -191,7 +209,9 @@ class ConfigCommand extends FlutterCommand {
     if (argResults == null || argResults!.arguments.isEmpty) {
       globals.printStatus(usage);
     } else {
-      globals.printStatus('\nYou may need to restart any open editors for them to read new settings.');
+      globals.printStatus(
+        '\nYou may need to restart any open editors for them to read new settings.',
+      );
     }
 
     return FlutterCommandResult.success();

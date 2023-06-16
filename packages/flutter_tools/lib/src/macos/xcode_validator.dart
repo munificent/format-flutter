@@ -7,10 +7,8 @@ import '../doctor_validator.dart';
 import 'xcode.dart';
 
 class XcodeValidator extends DoctorValidator {
-  XcodeValidator({
-    required Xcode xcode,
-    required UserMessages userMessages,
-  }) : _xcode = xcode,
+  XcodeValidator({required Xcode xcode, required UserMessages userMessages})
+    : _xcode = xcode,
       _userMessages = userMessages,
       super('Xcode - develop for iOS and macOS');
 
@@ -28,13 +26,18 @@ class XcodeValidator extends DoctorValidator {
     if (_xcode.isInstalled) {
       xcodeStatus = ValidationType.success;
       if (xcodeSelectPath != null) {
-        messages.add(ValidationMessage(_userMessages.xcodeLocation(xcodeSelectPath)));
+        messages.add(
+          ValidationMessage(_userMessages.xcodeLocation(xcodeSelectPath)),
+        );
       }
       final String? versionText = _xcode.versionText;
       if (versionText != null) {
         xcodeVersionInfo = versionText;
         if (xcodeVersionInfo.contains(',')) {
-          xcodeVersionInfo = xcodeVersionInfo.substring(0, xcodeVersionInfo.indexOf(','));
+          xcodeVersionInfo = xcodeVersionInfo.substring(
+            0,
+            xcodeVersionInfo.indexOf(','),
+          );
         }
       }
       if (_xcode.buildVersion != null) {
@@ -42,10 +45,14 @@ class XcodeValidator extends DoctorValidator {
       }
       if (!_xcode.isInstalledAndMeetsVersionCheck) {
         xcodeStatus = ValidationType.partial;
-        messages.add(ValidationMessage.error(_userMessages.xcodeOutdated(xcodeRequiredVersion.toString())));
+        messages.add(ValidationMessage.error(
+          _userMessages.xcodeOutdated(xcodeRequiredVersion.toString()),
+        ));
       } else if (!_xcode.isRecommendedVersionSatisfactory) {
         xcodeStatus = ValidationType.partial;
-        messages.add(ValidationMessage.hint(_userMessages.xcodeRecommended(xcodeRecommendedVersion.toString())));
+        messages.add(ValidationMessage.hint(
+          _userMessages.xcodeRecommended(xcodeRecommendedVersion.toString()),
+        ));
       }
 
       if (!_xcode.eulaSigned) {
@@ -56,7 +63,6 @@ class XcodeValidator extends DoctorValidator {
         xcodeStatus = ValidationType.partial;
         messages.add(ValidationMessage.error(_userMessages.xcodeMissingSimct));
       }
-
     } else {
       xcodeStatus = ValidationType.missing;
       if (xcodeSelectPath == null || xcodeSelectPath.isEmpty) {
@@ -66,6 +72,10 @@ class XcodeValidator extends DoctorValidator {
       }
     }
 
-    return ValidationResult(xcodeStatus, messages, statusInfo: xcodeVersionInfo);
+    return ValidationResult(
+      xcodeStatus,
+      messages,
+      statusInfo: xcodeVersionInfo,
+    );
   }
 }

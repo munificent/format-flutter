@@ -12,13 +12,17 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final MagnifierController magnifierController = MagnifierController();
   const Rect reasonableTextField = Rect.fromLTRB(50, 100, 200, 100);
-  final Offset basicOffset = Offset(Magnifier.kDefaultMagnifierSize.width / 2,
-      Magnifier.kStandardVerticalFocalPointShift + Magnifier.kDefaultMagnifierSize.height);
+  final Offset basicOffset = Offset(
+    Magnifier.kDefaultMagnifierSize.width / 2,
+    Magnifier.kStandardVerticalFocalPointShift +
+        Magnifier.kDefaultMagnifierSize.height,
+  );
 
   Offset getMagnifierPosition(WidgetTester tester, [bool animated = false]) {
     if (animated) {
-      final AnimatedPositioned animatedPositioned =
-          tester.firstWidget(find.byType(AnimatedPositioned));
+      final AnimatedPositioned animatedPositioned = tester.firstWidget(
+        find.byType(AnimatedPositioned),
+      );
       return Offset(animatedPositioned.left ?? 0, animatedPositioned.top ?? 0);
     } else {
       final Positioned positioned = tester.firstWidget(find.byType(Positioned));
@@ -32,10 +36,9 @@ void main() {
     ValueNotifier<MagnifierInfo> magnifierInfo,
   ) async {
     final Future<void> magnifierShown = magnifierController.show(
-        context: context,
-        builder: (_) => TextMagnifier(
-              magnifierInfo: magnifierInfo,
-            ));
+      context: context,
+      builder: (_) => TextMagnifier(magnifierInfo: magnifierInfo),
+    );
 
     WidgetsBinding.instance.scheduleFrame();
     await tester.pumpAndSettle();
@@ -50,77 +53,82 @@ void main() {
   });
 
   group('adaptiveMagnifierControllerBuilder', () {
-    testWidgets('should return a TextEditingMagnifier on Android',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: Placeholder(),
-      ));
+    testWidgets(
+      'should return a TextEditingMagnifier on Android',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-      final BuildContext context = tester.firstElement(find.byType(Placeholder));
+        final BuildContext context = tester.firstElement(
+          find.byType(Placeholder),
+        );
 
-      final Widget? builtWidget = TextMagnifier.adaptiveMagnifierConfiguration.magnifierBuilder(
-        context,
-        MagnifierController(),
-        ValueNotifier<MagnifierInfo>(MagnifierInfo.empty),
-      );
+        final Widget? builtWidget = TextMagnifier.adaptiveMagnifierConfiguration
+            .magnifierBuilder(
+              context,
+              MagnifierController(),
+              ValueNotifier<MagnifierInfo>(MagnifierInfo.empty),
+            );
 
-      expect(builtWidget, isA<TextMagnifier>());
-    }, variant: TargetPlatformVariant.only(TargetPlatform.android));
+        expect(builtWidget, isA<TextMagnifier>());
+      },
+      variant: TargetPlatformVariant.only(TargetPlatform.android),
+    );
 
-    testWidgets('should return a CupertinoMagnifier on iOS',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: Placeholder(),
-      ));
+    testWidgets(
+      'should return a CupertinoMagnifier on iOS',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-      final BuildContext context = tester.firstElement(find.byType(Placeholder));
+        final BuildContext context = tester.firstElement(
+          find.byType(Placeholder),
+        );
 
-      final Widget? builtWidget = TextMagnifier.adaptiveMagnifierConfiguration.magnifierBuilder(
-        context,
-        MagnifierController(),
-        ValueNotifier<MagnifierInfo>(MagnifierInfo.empty),
-      );
+        final Widget? builtWidget = TextMagnifier.adaptiveMagnifierConfiguration
+            .magnifierBuilder(
+              context,
+              MagnifierController(),
+              ValueNotifier<MagnifierInfo>(MagnifierInfo.empty),
+            );
 
-      expect(builtWidget, isA<CupertinoTextMagnifier>());
-    }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
+        expect(builtWidget, isA<CupertinoTextMagnifier>());
+      },
+      variant: TargetPlatformVariant.only(TargetPlatform.iOS),
+    );
 
-    testWidgets('should return null on all platforms not Android, iOS',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: Placeholder(),
-      ));
+    testWidgets(
+      'should return null on all platforms not Android, iOS',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-      final BuildContext context = tester.firstElement(find.byType(Placeholder));
+        final BuildContext context = tester.firstElement(
+          find.byType(Placeholder),
+        );
 
-      final Widget? builtWidget = TextMagnifier.adaptiveMagnifierConfiguration.magnifierBuilder(
-        context,
-        MagnifierController(),
-        ValueNotifier<MagnifierInfo>(MagnifierInfo.empty),
-      );
+        final Widget? builtWidget = TextMagnifier.adaptiveMagnifierConfiguration
+            .magnifierBuilder(
+              context,
+              MagnifierController(),
+              ValueNotifier<MagnifierInfo>(MagnifierInfo.empty),
+            );
 
-      expect(builtWidget, isNull);
-    },
+        expect(builtWidget, isNull);
+      },
       variant: TargetPlatformVariant.all(
-        excluding: <TargetPlatform>{
-          TargetPlatform.iOS,
-          TargetPlatform.android
-        }),
-      );
+        excluding: <TargetPlatform>{TargetPlatform.iOS, TargetPlatform.android},
+      ),
+    );
   });
 
   group('magnifier', () {
     group('position', () {
       testWidgets(
-          'should be at gesture position if does not violate any positioning rules',
-          (WidgetTester tester) async {
-        final Key textField = UniqueKey();
+        'should be at gesture position if does not violate any positioning rules',
+        (WidgetTester tester) async {
+          final Key textField = UniqueKey();
 
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-        await tester.pumpWidget(
-          ColoredBox(
+          await tester.pumpWidget(ColoredBox(
             color: const Color.fromARGB(255, 0, 255, 179),
             child: MaterialApp(
               home: Center(
@@ -133,154 +141,157 @@ void main() {
                 ),
               ),
             ),
-          ),
-        );
+          ));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        // Magnifier should be positioned directly over the red square.
-        final RenderBox tapPointRenderBox =
-            tester.firstRenderObject(find.byKey(textField)) as RenderBox;
-        final Rect fakeTextFieldRect =
-            tapPointRenderBox.localToGlobal(Offset.zero) &
-                tapPointRenderBox.size;
+          // Magnifier should be positioned directly over the red square.
+          final RenderBox tapPointRenderBox =
+              tester.firstRenderObject(find.byKey(textField)) as RenderBox;
+          final Rect fakeTextFieldRect =
+              tapPointRenderBox.localToGlobal(Offset.zero) &
+                  tapPointRenderBox.size;
 
-        final ValueNotifier<MagnifierInfo> magnifierInfo =
-            ValueNotifier<MagnifierInfo>(
-                MagnifierInfo(
-          currentLineBoundaries: fakeTextFieldRect,
-          fieldBounds: fakeTextFieldRect,
-          caretRect: fakeTextFieldRect,
-          // The tap position is dragBelow units below the text field.
-          globalGesturePosition: fakeTextFieldRect.center,
-        ));
+          final ValueNotifier<MagnifierInfo> magnifierInfo =
+              ValueNotifier<MagnifierInfo>(MagnifierInfo(
+                currentLineBoundaries: fakeTextFieldRect,
+                fieldBounds: fakeTextFieldRect,
+                caretRect: fakeTextFieldRect,
+                // The tap position is dragBelow units below the text field.
+                globalGesturePosition: fakeTextFieldRect.center,
+              ));
 
-        await showMagnifier(context, tester, magnifierInfo);
+          await showMagnifier(context, tester, magnifierInfo);
 
-        // Should show two red squares; original, and one in the magnifier,
-        // directly ontop of one another.
-        await expectLater(
-          find.byType(MaterialApp),
-          matchesGoldenFile('magnifier.position.default.png'),
-        );
-      });
+          // Should show two red squares; original, and one in the magnifier,
+          // directly ontop of one another.
+          await expectLater(
+            find.byType(MaterialApp),
+            matchesGoldenFile('magnifier.position.default.png'),
+          );
+        },
+      );
 
       testWidgets(
-          'should never move outside the right bounds of the editing line',
-          (WidgetTester tester) async {
-        const double gestureOutsideLine = 100;
+        'should never move outside the right bounds of the editing line',
+        (WidgetTester tester) async {
+          const double gestureOutsideLine = 100;
 
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        await showMagnifier(
-          context,
-          tester,
-          ValueNotifier<MagnifierInfo>(
-            MagnifierInfo(
+          await showMagnifier(
+            context,
+            tester,
+            ValueNotifier<MagnifierInfo>(MagnifierInfo(
               currentLineBoundaries: reasonableTextField,
               // Inflate these two to make sure we're bounding on the
               // current line boundaries, not anything else.
               fieldBounds: reasonableTextField.inflate(gestureOutsideLine),
               caretRect: reasonableTextField.inflate(gestureOutsideLine),
               // The tap position is far out of the right side of the app.
-              globalGesturePosition: Offset(reasonableTextField.right + gestureOutsideLine, 0),
-            ),
-          ),
-        );
+              globalGesturePosition:
+                  Offset(reasonableTextField.right + gestureOutsideLine, 0),
+            )),
+          );
 
-        // Should be less than the right edge, since we have padding.
-        expect(getMagnifierPosition(tester).dx,
-            lessThanOrEqualTo(reasonableTextField.right));
-      });
+          // Should be less than the right edge, since we have padding.
+          expect(
+            getMagnifierPosition(tester).dx,
+            lessThanOrEqualTo(reasonableTextField.right),
+          );
+        },
+      );
 
       testWidgets(
-          'should never move outside the left bounds of the editing line',
-          (WidgetTester tester) async {
-        const double gestureOutsideLine = 100;
+        'should never move outside the left bounds of the editing line',
+        (WidgetTester tester) async {
+          const double gestureOutsideLine = 100;
 
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        await showMagnifier(
-          context,
-          tester,
-          ValueNotifier<MagnifierInfo>(
-            MagnifierInfo(
+          await showMagnifier(
+            context,
+            tester,
+            ValueNotifier<MagnifierInfo>(MagnifierInfo(
               currentLineBoundaries: reasonableTextField,
               // Inflate these two to make sure we're bounding on the
               // current line boundaries, not anything else.
               fieldBounds: reasonableTextField.inflate(gestureOutsideLine),
               caretRect: reasonableTextField.inflate(gestureOutsideLine),
               // The tap position is far out of the left side of the app.
-              globalGesturePosition: Offset(reasonableTextField.left - gestureOutsideLine, 0),
-            ),
-          ),
-        );
+              globalGesturePosition:
+                  Offset(reasonableTextField.left - gestureOutsideLine, 0),
+            )),
+          );
 
-        expect(getMagnifierPosition(tester).dx + basicOffset.dx,
-            greaterThanOrEqualTo(reasonableTextField.left));
-      });
+          expect(
+            getMagnifierPosition(tester).dx + basicOffset.dx,
+            greaterThanOrEqualTo(reasonableTextField.left),
+          );
+        },
+      );
 
-      testWidgets('should position vertically at the center of the line', (WidgetTester tester) async {
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+      testWidgets(
+        'should position vertically at the center of the line',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        await showMagnifier(
-            context,
-            tester,
-            ValueNotifier<MagnifierInfo>(
-                MagnifierInfo(
+          await showMagnifier(context, tester, ValueNotifier<MagnifierInfo>(
+            MagnifierInfo(
               currentLineBoundaries: reasonableTextField,
               fieldBounds: reasonableTextField,
               caretRect: reasonableTextField,
               globalGesturePosition: reasonableTextField.center,
-            )));
+            ),
+          ));
 
-        expect(getMagnifierPosition(tester).dy,
-            reasonableTextField.center.dy - basicOffset.dy);
-      });
+          expect(
+            getMagnifierPosition(tester).dy,
+            reasonableTextField.center.dy - basicOffset.dy,
+          );
+        },
+      );
 
-      testWidgets('should reposition vertically if mashed against the ceiling',
-          (WidgetTester tester) async {
-        final Rect topOfScreenTextFieldRect =
-            Rect.fromPoints(Offset.zero, const Offset(200, 0));
+      testWidgets(
+        'should reposition vertically if mashed against the ceiling',
+        (WidgetTester tester) async {
+          final Rect topOfScreenTextFieldRect = Rect.fromPoints(
+            Offset.zero,
+            const Offset(200, 0),
+          );
 
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        await showMagnifier(
-          context,
-          tester,
-          ValueNotifier<MagnifierInfo>(
+          await showMagnifier(context, tester, ValueNotifier<MagnifierInfo>(
             MagnifierInfo(
               currentLineBoundaries: topOfScreenTextFieldRect,
               fieldBounds: topOfScreenTextFieldRect,
               caretRect: topOfScreenTextFieldRect,
               globalGesturePosition: topOfScreenTextFieldRect.topCenter,
             ),
-          ),
-        );
+          ));
 
-        expect(getMagnifierPosition(tester).dy, greaterThanOrEqualTo(0));
-      });
+          expect(getMagnifierPosition(tester).dy, greaterThanOrEqualTo(0));
+        },
+      );
     });
 
     group('focal point', () {
@@ -290,203 +301,202 @@ void main() {
       }
 
       testWidgets(
-          'should shift focal point so that the lens sees nothing out of bounds',
-          (WidgetTester tester) async {
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+        'should shift focal point so that the lens sees nothing out of bounds',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        await showMagnifier(
-          context,
-          tester,
-          ValueNotifier<MagnifierInfo>(
-            MagnifierInfo(
+          await showMagnifier(
+            context,
+            tester,
+            ValueNotifier<MagnifierInfo>(MagnifierInfo(
               currentLineBoundaries: reasonableTextField,
               fieldBounds: reasonableTextField,
               caretRect: reasonableTextField,
               // Gesture on the far right of the magnifier.
               globalGesturePosition: reasonableTextField.topLeft,
-            ),
-          ),
-        );
+            )),
+          );
 
-        expect(getMagnifierAdditionalFocalPoint(tester).dx,
-            lessThan(reasonableTextField.left));
-      });
+          expect(
+            getMagnifierAdditionalFocalPoint(tester).dx,
+            lessThan(reasonableTextField.left),
+          );
+        },
+      );
 
       testWidgets(
-          'focal point should shift if mashed against the top to always point to text',
-          (WidgetTester tester) async {
-        final Rect topOfScreenTextFieldRect =
-            Rect.fromPoints(Offset.zero, const Offset(200, 0));
+        'focal point should shift if mashed against the top to always point to text',
+        (WidgetTester tester) async {
+          final Rect topOfScreenTextFieldRect = Rect.fromPoints(
+            Offset.zero,
+            const Offset(200, 0),
+          );
 
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        await showMagnifier(
-          context,
-          tester,
-          ValueNotifier<MagnifierInfo>(
+          await showMagnifier(context, tester, ValueNotifier<MagnifierInfo>(
             MagnifierInfo(
               currentLineBoundaries: topOfScreenTextFieldRect,
               fieldBounds: topOfScreenTextFieldRect,
               caretRect: topOfScreenTextFieldRect,
               globalGesturePosition: topOfScreenTextFieldRect.topCenter,
             ),
-          ),
-        );
+          ));
 
-        expect(getMagnifierAdditionalFocalPoint(tester).dy, lessThan(0));
-      });
+          expect(getMagnifierAdditionalFocalPoint(tester).dy, lessThan(0));
+        },
+      );
     });
 
     group('animation state', () {
       bool getIsAnimated(WidgetTester tester) {
-        final AnimatedPositioned animatedPositioned =
-            tester.firstWidget(find.byType(AnimatedPositioned));
+        final AnimatedPositioned animatedPositioned = tester.firstWidget(
+          find.byType(AnimatedPositioned),
+        );
         return animatedPositioned.duration.compareTo(Duration.zero) != 0;
       }
 
-      testWidgets('should not be animated on the initial state',
-          (WidgetTester tester) async {
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+      testWidgets(
+        'should not be animated on the initial state',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        await showMagnifier(
-          context,
-          tester,
-          ValueNotifier<MagnifierInfo>(
+          await showMagnifier(context, tester, ValueNotifier<MagnifierInfo>(
             MagnifierInfo(
               currentLineBoundaries: reasonableTextField,
               fieldBounds: reasonableTextField,
               caretRect: reasonableTextField,
               globalGesturePosition: reasonableTextField.center,
             ),
-          ),
-        );
+          ));
 
-        expect(getIsAnimated(tester), false);
-      });
+          expect(getIsAnimated(tester), false);
+        },
+      );
 
-      testWidgets('should not be animated on horizontal shifts',
-          (WidgetTester tester) async {
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+      testWidgets(
+        'should not be animated on horizontal shifts',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        final ValueNotifier<MagnifierInfo> magnifierPositioner =
-            ValueNotifier<MagnifierInfo>(
-          MagnifierInfo(
+          final ValueNotifier<MagnifierInfo> magnifierPositioner =
+              ValueNotifier<MagnifierInfo>(MagnifierInfo(
+                currentLineBoundaries: reasonableTextField,
+                fieldBounds: reasonableTextField,
+                caretRect: reasonableTextField,
+                globalGesturePosition: reasonableTextField.center,
+              ));
+
+          await showMagnifier(context, tester, magnifierPositioner);
+
+          // New position has a horizontal shift.
+          magnifierPositioner.value = MagnifierInfo(
             currentLineBoundaries: reasonableTextField,
             fieldBounds: reasonableTextField,
             caretRect: reasonableTextField,
-            globalGesturePosition: reasonableTextField.center,
-          ),
-        );
+            globalGesturePosition:
+                reasonableTextField.center + const Offset(200, 0),
+          );
+          await tester.pumpAndSettle();
 
-        await showMagnifier(context, tester, magnifierPositioner);
+          expect(getIsAnimated(tester), false);
+        },
+      );
 
-        // New position has a horizontal shift.
-        magnifierPositioner.value = MagnifierInfo(
-          currentLineBoundaries: reasonableTextField,
-          fieldBounds: reasonableTextField,
-          caretRect: reasonableTextField,
-          globalGesturePosition:
-              reasonableTextField.center + const Offset(200, 0),
-        );
-        await tester.pumpAndSettle();
+      testWidgets(
+        'should be animated on vertical shifts',
+        (WidgetTester tester) async {
+          const Offset verticalShift = Offset(0, 200);
 
-        expect(getIsAnimated(tester), false);
-      });
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-      testWidgets('should be animated on vertical shifts',
-          (WidgetTester tester) async {
-        const Offset verticalShift = Offset(0, 200);
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+          final ValueNotifier<MagnifierInfo> magnifierPositioner =
+              ValueNotifier<MagnifierInfo>(MagnifierInfo(
+                currentLineBoundaries: reasonableTextField,
+                fieldBounds: reasonableTextField,
+                caretRect: reasonableTextField,
+                globalGesturePosition: reasonableTextField.center,
+              ));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          await showMagnifier(context, tester, magnifierPositioner);
 
-        final ValueNotifier<MagnifierInfo> magnifierPositioner =
-            ValueNotifier<MagnifierInfo>(
-          MagnifierInfo(
-            currentLineBoundaries: reasonableTextField,
-            fieldBounds: reasonableTextField,
-            caretRect: reasonableTextField,
-            globalGesturePosition: reasonableTextField.center,
-          ),
-        );
+          // New position has a vertical shift.
+          magnifierPositioner.value = MagnifierInfo(
+            currentLineBoundaries: reasonableTextField.shift(verticalShift),
+            fieldBounds: Rect.fromPoints(
+              reasonableTextField.topLeft,
+              reasonableTextField.bottomRight + verticalShift,
+            ),
+            caretRect: reasonableTextField.shift(verticalShift),
+            globalGesturePosition: reasonableTextField.center + verticalShift,
+          );
 
-        await showMagnifier(context, tester, magnifierPositioner);
+          await tester.pump();
+          expect(getIsAnimated(tester), true);
+        },
+      );
 
-        // New position has a vertical shift.
-        magnifierPositioner.value = MagnifierInfo(
-          currentLineBoundaries: reasonableTextField.shift(verticalShift),
-          fieldBounds: Rect.fromPoints(reasonableTextField.topLeft,
-              reasonableTextField.bottomRight + verticalShift),
-          caretRect: reasonableTextField.shift(verticalShift),
-          globalGesturePosition: reasonableTextField.center + verticalShift,
-        );
+      testWidgets(
+        'should stop being animated when timer is up',
+        (WidgetTester tester) async {
+          const Offset verticalShift = Offset(0, 200);
 
-        await tester.pump();
-        expect(getIsAnimated(tester), true);
-      });
+          await tester.pumpWidget(const MaterialApp(home: Placeholder()));
 
-      testWidgets('should stop being animated when timer is up',
-          (WidgetTester tester) async {
-        const Offset verticalShift = Offset(0, 200);
+          final BuildContext context = tester.firstElement(
+            find.byType(Placeholder),
+          );
 
-        await tester.pumpWidget(const MaterialApp(
-          home: Placeholder(),
-        ));
+          final ValueNotifier<MagnifierInfo> magnifierPositioner =
+              ValueNotifier<MagnifierInfo>(MagnifierInfo(
+                currentLineBoundaries: reasonableTextField,
+                fieldBounds: reasonableTextField,
+                caretRect: reasonableTextField,
+                globalGesturePosition: reasonableTextField.center,
+              ));
 
-        final BuildContext context =
-            tester.firstElement(find.byType(Placeholder));
+          await showMagnifier(context, tester, magnifierPositioner);
 
-        final ValueNotifier<MagnifierInfo> magnifierPositioner =
-            ValueNotifier<MagnifierInfo>(
-          MagnifierInfo(
-            currentLineBoundaries: reasonableTextField,
-            fieldBounds: reasonableTextField,
-            caretRect: reasonableTextField,
-            globalGesturePosition: reasonableTextField.center,
-          ),
-        );
+          // New position has a vertical shift.
+          magnifierPositioner.value = MagnifierInfo(
+            currentLineBoundaries: reasonableTextField.shift(verticalShift),
+            fieldBounds: Rect.fromPoints(
+              reasonableTextField.topLeft,
+              reasonableTextField.bottomRight + verticalShift,
+            ),
+            caretRect: reasonableTextField.shift(verticalShift),
+            globalGesturePosition: reasonableTextField.center + verticalShift,
+          );
 
-        await showMagnifier(context, tester, magnifierPositioner);
-
-        // New position has a vertical shift.
-        magnifierPositioner.value = MagnifierInfo(
-          currentLineBoundaries: reasonableTextField.shift(verticalShift),
-          fieldBounds: Rect.fromPoints(reasonableTextField.topLeft,
-              reasonableTextField.bottomRight + verticalShift),
-          caretRect: reasonableTextField.shift(verticalShift),
-          globalGesturePosition: reasonableTextField.center + verticalShift,
-        );
-
-        await tester.pump();
-        expect(getIsAnimated(tester), true);
-        await tester.pump(TextMagnifier.jumpBetweenLinesAnimationDuration +
-            const Duration(seconds: 2));
-        expect(getIsAnimated(tester), false);
-      });
+          await tester.pump();
+          expect(getIsAnimated(tester), true);
+          await tester.pump(
+            TextMagnifier.jumpBetweenLinesAnimationDuration +
+                const Duration(seconds: 2),
+          );
+          expect(getIsAnimated(tester), false);
+        },
+      );
     });
   });
 }

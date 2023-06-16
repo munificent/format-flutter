@@ -23,20 +23,24 @@ class AppStateModel extends Model {
   Map<int, int> get productsInCart => Map<int, int>.from(_productsInCart);
 
   // Total number of items in the cart.
-  int get totalCartQuantity => _productsInCart.values.fold(0, (int v, int e) => v + e);
+  int get totalCartQuantity => _productsInCart.values.fold(
+    0,
+    (int v, int e) => v + e,
+  );
 
   Category get selectedCategory => _selectedCategory;
 
   // Totaled prices of the items in the cart.
   double get subtotalCost {
     return _productsInCart.keys
-      .map((int id) => _availableProducts![id].price * _productsInCart[id]!)
-      .fold(0.0, (double sum, int e) => sum + e);
+        .map((int id) => _availableProducts![id].price * _productsInCart[id]!)
+        .fold(0.0, (double sum, int e) => sum + e);
   }
 
   // Total shipping cost for the items in the cart.
   double get shippingCost {
-    return _shippingCostPerItem * _productsInCart.values.fold(0.0, (num sum, int e) => sum + e);
+    return _shippingCostPerItem *
+        _productsInCart.values.fold(0.0, (num sum, int e) => sum + e);
   }
 
   // Sales tax for the items in the cart
@@ -54,9 +58,9 @@ class AppStateModel extends Model {
     if (_selectedCategory == Category.all) {
       return List<Product>.from(_availableProducts!);
     } else {
-      return _availableProducts!
-        .where((Product p) => p.category == _selectedCategory)
-        .toList();
+      return _availableProducts!.where(
+        (Product p) => p.category == _selectedCategory,
+      ).toList();
     }
   }
 
@@ -66,7 +70,7 @@ class AppStateModel extends Model {
     if (value == null) {
       _productsInCart[productId] = 1;
     } else {
-      _productsInCart[productId] = value+1;
+      _productsInCart[productId] = value + 1;
     }
 
     notifyListeners();

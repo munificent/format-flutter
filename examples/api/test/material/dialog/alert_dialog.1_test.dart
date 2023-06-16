@@ -3,18 +3,15 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_api_samples/material/dialog/alert_dialog.1.dart' as example;
+import 'package:flutter_api_samples/material/dialog/alert_dialog.1.dart'
+    as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Show Alert dialog', (WidgetTester tester) async {
     const String dialogTitle = 'AlertDialog Title';
     await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
-          body: example.AlertDialogExampleApp(),
-        ),
-      ),
+      const MaterialApp(home: Scaffold(body: example.AlertDialogExampleApp())),
     );
 
     expect(find.text(dialogTitle), findsNothing);

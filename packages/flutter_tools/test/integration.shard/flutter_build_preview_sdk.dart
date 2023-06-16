@@ -15,11 +15,7 @@ void main() {
 
   setUp(() async {
     tempDir = createResolvedTempDirectorySync('flutter_plugin_test.');
-    flutterBin = fileSystem.path.join(
-      getFlutterRoot(),
-      'bin',
-      'flutter',
-    );
+    flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
     exampleAppDir = tempDir.childDirectory('aaa').childDirectory('example');
 
     processManager.runSync(<String>[
@@ -36,59 +32,85 @@ void main() {
     tryToDelete(tempDir);
   });
 
-  test(
-    'build succeeds targeting string compileSdkVersion',
-    () async {
-      final File buildGradleFile = exampleAppDir.childDirectory('android').childDirectory('app').childFile('build.gradle');
-      // write a build.gradle with compileSdkVersion as `android-Tiramisu` which is a string preview version
-      buildGradleFile.writeAsStringSync(
-        buildGradleFile.readAsStringSync().replaceFirst('compileSdkVersion flutter.compileSdkVersion', 'compileSdkVersion "android-Tiramisu"'),
-        flush: true
-      );
-      expect(buildGradleFile.readAsStringSync(), contains('compileSdkVersion "android-Tiramisu"'));
-
-      final ProcessResult result = await processManager.run(<String>[
-        flutterBin,
-        ...getLocalEngineArguments(),
-        'build',
-        'apk',
-        '--debug',
-      ], workingDirectory: exampleAppDir.path);
-      expect(result.stdout, contains('Built build/app/outputs/flutter-apk/app-debug.apk.'));
-      expect(exampleAppDir.childDirectory('build')
+  test('build succeeds targeting string compileSdkVersion', () async {
+    final File buildGradleFile = exampleAppDir
+        .childDirectory('android')
         .childDirectory('app')
-        .childDirectory('outputs')
-        .childDirectory('apk')
-        .childDirectory('debug')
-        .childFile('app-debug.apk').existsSync(), true);
-    },
-  );
+        .childFile('build.gradle');
+    // write a build.gradle with compileSdkVersion as `android-Tiramisu` which is a string preview version
+    buildGradleFile.writeAsStringSync(buildGradleFile
+        .readAsStringSync()
+        .replaceFirst(
+          'compileSdkVersion flutter.compileSdkVersion',
+          'compileSdkVersion "android-Tiramisu"',
+        ), flush: true);
+    expect(
+      buildGradleFile.readAsStringSync(),
+      contains('compileSdkVersion "android-Tiramisu"'),
+    );
 
-  test(
-    'build succeeds targeting string compileSdkPreview',
-    () async {
-      final File buildGradleFile = exampleAppDir.childDirectory('android').childDirectory('app').childFile('build.gradle');
-      // write a build.gradle with compileSdkPreview as `Tiramisu` which is a string preview version
-      buildGradleFile.writeAsStringSync(
-        buildGradleFile.readAsStringSync().replaceFirst('compileSdkVersion flutter.compileSdkVersion', 'compileSdkPreview "Tiramisu"'),
-        flush: true
-      );
-      expect(buildGradleFile.readAsStringSync(), contains('compileSdkPreview "Tiramisu"'));
+    final ProcessResult result = await processManager.run(<String>[
+      flutterBin,
+      ...getLocalEngineArguments(),
+      'build',
+      'apk',
+      '--debug',
+    ], workingDirectory: exampleAppDir.path);
+    expect(
+      result.stdout,
+      contains('Built build/app/outputs/flutter-apk/app-debug.apk.'),
+    );
+    expect(
+      exampleAppDir
+          .childDirectory('build')
+          .childDirectory('app')
+          .childDirectory('outputs')
+          .childDirectory('apk')
+          .childDirectory('debug')
+          .childFile('app-debug.apk')
+          .existsSync(),
+      true,
+    );
+  });
 
-      final ProcessResult result = await processManager.run(<String>[
-        flutterBin,
-        ...getLocalEngineArguments(),
-        'build',
-        'apk',
-        '--debug',
-      ], workingDirectory: exampleAppDir.path);
-      expect(result.stdout, contains('Built build/app/outputs/flutter-apk/app-debug.apk.'));
-      expect(exampleAppDir.childDirectory('build')
+  test('build succeeds targeting string compileSdkPreview', () async {
+    final File buildGradleFile = exampleAppDir
+        .childDirectory('android')
         .childDirectory('app')
-        .childDirectory('outputs')
-        .childDirectory('apk')
-        .childDirectory('debug')
-        .childFile('app-debug.apk').existsSync(), true);
-    },
-  );
+        .childFile('build.gradle');
+    // write a build.gradle with compileSdkPreview as `Tiramisu` which is a string preview version
+    buildGradleFile.writeAsStringSync(buildGradleFile
+        .readAsStringSync()
+        .replaceFirst(
+          'compileSdkVersion flutter.compileSdkVersion',
+          'compileSdkPreview "Tiramisu"',
+        ), flush: true);
+    expect(
+      buildGradleFile.readAsStringSync(),
+      contains('compileSdkPreview "Tiramisu"'),
+    );
+
+    final ProcessResult result = await processManager.run(<String>[
+      flutterBin,
+      ...getLocalEngineArguments(),
+      'build',
+      'apk',
+      '--debug',
+    ], workingDirectory: exampleAppDir.path);
+    expect(
+      result.stdout,
+      contains('Built build/app/outputs/flutter-apk/app-debug.apk.'),
+    );
+    expect(
+      exampleAppDir
+          .childDirectory('build')
+          .childDirectory('app')
+          .childDirectory('outputs')
+          .childDirectory('apk')
+          .childDirectory('debug')
+          .childFile('app-debug.apk')
+          .existsSync(),
+      true,
+    );
+  });
 }

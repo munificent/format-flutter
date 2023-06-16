@@ -10,9 +10,7 @@ Map<String, String> codepointsA = <String, String>{
   'airplane': '111',
   'boat': '222',
 };
-Map<String, String> codepointsB = <String, String>{
-  'airplane': '333',
-};
+Map<String, String> codepointsB = <String, String>{'airplane': '333'};
 Map<String, String> codepointsC = <String, String>{
   'airplane': '111',
   'train': '444',

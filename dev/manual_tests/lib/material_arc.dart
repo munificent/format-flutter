@@ -5,10 +5,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-enum _DragTarget {
-  start,
-  end
-}
+enum _DragTarget { start, end }
 
 // How close a drag's start position must be to the target point. This is
 // a distance squared.
@@ -40,14 +37,12 @@ class _DragHandler extends Drag {
   }
 }
 
-class _IgnoreDrag extends Drag {
-}
+class _IgnoreDrag extends Drag {}
 
 class _PointDemoPainter extends CustomPainter {
-  _PointDemoPainter({
-    Animation<double>? repaint,
-    required this.arc,
-  }) : _repaint = repaint, super(repaint: repaint);
+  _PointDemoPainter({Animation<double>? repaint, required this.arc})
+    : _repaint = repaint,
+      super(repaint: repaint);
 
   final MaterialPointArcTween arc;
   final Animation<double>? _repaint;
@@ -73,7 +68,8 @@ class _PointDemoPainter extends CustomPainter {
     }
 
     paint
-      ..isAntiAlias = false // Work-around for github.com/flutter/flutter/issues/5720
+      ..isAntiAlias =
+          false // Work-around for github.com/flutter/flutter/issues/5720
       ..color = Colors.green.withOpacity(0.25)
       ..strokeWidth = 4.0
       ..style = PaintingStyle.stroke;
@@ -94,8 +90,8 @@ class _PointDemoPainter extends CustomPainter {
 
   @override
   bool hitTest(Offset position) {
-    return (arc.begin! - position).distanceSquared < _kTargetSlop
-        || (arc.end! - position).distanceSquared < _kTargetSlop;
+    return (arc.begin! - position).distanceSquared < _kTargetSlop ||
+        (arc.end! - position).distanceSquared < _kTargetSlop;
   }
 
   @override
@@ -103,7 +99,7 @@ class _PointDemoPainter extends CustomPainter {
 }
 
 class _PointDemo extends StatefulWidget {
-  const _PointDemo({ super.key, required this.controller });
+  const _PointDemo({super.key, required this.controller});
 
   final AnimationController controller;
 
@@ -123,7 +119,10 @@ class _PointDemoState extends State<_PointDemo> {
   @override
   void initState() {
     super.initState();
-    _animation = CurvedAnimation(parent: widget.controller, curve: Curves.fastOutSlowIn);
+    _animation = CurvedAnimation(
+      parent: widget.controller,
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   @override
@@ -138,9 +137,12 @@ class _PointDemoState extends State<_PointDemo> {
       return _IgnoreDrag();
     }
 
-    final RenderBox? box = _painterKey.currentContext!.findRenderObject() as RenderBox?;
-    final double startOffset = (box!.localToGlobal(_begin!) - position).distanceSquared;
-    final double endOffset = (box.localToGlobal(_end!) - position).distanceSquared;
+    final RenderBox? box =
+        _painterKey.currentContext!.findRenderObject() as RenderBox?;
+    final double startOffset =
+        (box!.localToGlobal(_begin!) - position).distanceSquared;
+    final double endOffset =
+        (box.localToGlobal(_end!) - position).distanceSquared;
     setState(() {
       if (startOffset < endOffset && startOffset < _kTargetSlop) {
         _dragTarget = _DragTarget.start;
@@ -185,24 +187,29 @@ class _PointDemoState extends State<_PointDemo> {
       _end = Offset(screenSize.width * 0.1, screenSize.height * 0.4);
     }
 
-    final MaterialPointArcTween arc = MaterialPointArcTween(begin: _begin, end: _end);
+    final MaterialPointArcTween arc = MaterialPointArcTween(
+      begin: _begin,
+      end: _end,
+    );
     return RawGestureDetector(
-      behavior: _dragTarget == null ? HitTestBehavior.deferToChild : HitTestBehavior.opaque,
+      behavior: _dragTarget == null
+          ? HitTestBehavior.deferToChild
+          : HitTestBehavior.opaque,
       gestures: <Type, GestureRecognizerFactory>{
-        ImmediateMultiDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<ImmediateMultiDragGestureRecognizer>(
-          () => ImmediateMultiDragGestureRecognizer(),
-          (ImmediateMultiDragGestureRecognizer instance) {
-            instance.onStart = _handleOnStart;
-          },
-        ),
+        ImmediateMultiDragGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<
+          ImmediateMultiDragGestureRecognizer
+        >(
+              () => ImmediateMultiDragGestureRecognizer(),
+              (ImmediateMultiDragGestureRecognizer instance) {
+                instance.onStart = _handleOnStart;
+              },
+            ),
       },
       child: ClipRect(
         child: CustomPaint(
           key: _painterKey,
-          foregroundPainter: _PointDemoPainter(
-            repaint: _animation,
-            arc: arc,
-          ),
+          foregroundPainter: _PointDemoPainter(repaint: _animation, arc: arc),
           // Watch out: if this IgnorePointer is left out, then gestures that
           // fail _PointDemoPainter.hitTest() will still be recognized because
           // they do overlap this child, which is as big as the CustomPaint.
@@ -212,7 +219,9 @@ class _PointDemoState extends State<_PointDemo> {
               child: Text(
                 'Tap the refresh button to run the animation. Drag the green '
                 "and red points to change the animation's path.",
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 16.0),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 16.0,
+                ),
               ),
             ),
           ),
@@ -223,10 +232,9 @@ class _PointDemoState extends State<_PointDemo> {
 }
 
 class _RectangleDemoPainter extends CustomPainter {
-  _RectangleDemoPainter({
-    required Animation<double> repaint,
-    required this.arc,
-  }) : _repaint = repaint, super(repaint: repaint);
+  _RectangleDemoPainter({required Animation<double> repaint, required this.arc})
+    : _repaint = repaint,
+      super(repaint: repaint);
 
   final MaterialRectArcTween arc;
   final Animation<double> _repaint;
@@ -261,8 +269,8 @@ class _RectangleDemoPainter extends CustomPainter {
 
   @override
   bool hitTest(Offset position) {
-    return (arc.begin!.center - position).distanceSquared < _kTargetSlop
-        || (arc.end!.center - position).distanceSquared < _kTargetSlop;
+    return (arc.begin!.center - position).distanceSquared < _kTargetSlop ||
+        (arc.end!.center - position).distanceSquared < _kTargetSlop;
   }
 
   @override
@@ -270,7 +278,7 @@ class _RectangleDemoPainter extends CustomPainter {
 }
 
 class _RectangleDemo extends StatefulWidget {
-  const _RectangleDemo({ super.key, required this.controller });
+  const _RectangleDemo({super.key, required this.controller});
 
   final AnimationController controller;
 
@@ -281,7 +289,10 @@ class _RectangleDemo extends StatefulWidget {
 class _RectangleDemoState extends State<_RectangleDemo> {
   final GlobalKey _painterKey = GlobalKey();
 
-  late final CurvedAnimation _animation = CurvedAnimation(parent: widget.controller, curve: Curves.fastOutSlowIn);
+  late final CurvedAnimation _animation = CurvedAnimation(
+    parent: widget.controller,
+    curve: Curves.fastOutSlowIn,
+  );
   _DragTarget? _dragTarget;
   Size? _screenSize;
   Rect? _begin;
@@ -299,9 +310,12 @@ class _RectangleDemoState extends State<_RectangleDemo> {
       return _IgnoreDrag();
     }
 
-    final RenderBox? box = _painterKey.currentContext?.findRenderObject() as RenderBox?;
-    final double startOffset = (box!.localToGlobal(_begin!.center) - position).distanceSquared;
-    final double endOffset = (box.localToGlobal(_end!.center) - position).distanceSquared;
+    final RenderBox? box =
+        _painterKey.currentContext?.findRenderObject() as RenderBox?;
+    final double startOffset =
+        (box!.localToGlobal(_begin!.center) - position).distanceSquared;
+    final double endOffset =
+        (box.localToGlobal(_end!.center) - position).distanceSquared;
     setState(() {
       if (startOffset < endOffset && startOffset < _kTargetSlop) {
         _dragTarget = _DragTarget.start;
@@ -342,33 +356,43 @@ class _RectangleDemoState extends State<_RectangleDemo> {
     if (_screenSize == null || _screenSize != screenSize) {
       _screenSize = screenSize;
       _begin = Rect.fromLTWH(
-        screenSize.width * 0.5, screenSize.height * 0.2,
-        screenSize.width * 0.4, screenSize.height * 0.2,
+        screenSize.width * 0.5,
+        screenSize.height * 0.2,
+        screenSize.width * 0.4,
+        screenSize.height * 0.2,
       );
       _end = Rect.fromLTWH(
-        screenSize.width * 0.1, screenSize.height * 0.4,
-        screenSize.width * 0.3, screenSize.height * 0.3,
+        screenSize.width * 0.1,
+        screenSize.height * 0.4,
+        screenSize.width * 0.3,
+        screenSize.height * 0.3,
       );
     }
 
-    final MaterialRectArcTween arc = MaterialRectArcTween(begin: _begin, end: _end);
+    final MaterialRectArcTween arc = MaterialRectArcTween(
+      begin: _begin,
+      end: _end,
+    );
     return RawGestureDetector(
-      behavior: _dragTarget == null ? HitTestBehavior.deferToChild : HitTestBehavior.opaque,
+      behavior: _dragTarget == null
+          ? HitTestBehavior.deferToChild
+          : HitTestBehavior.opaque,
       gestures: <Type, GestureRecognizerFactory>{
-        ImmediateMultiDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<ImmediateMultiDragGestureRecognizer>(
-          () => ImmediateMultiDragGestureRecognizer(),
-          (ImmediateMultiDragGestureRecognizer instance) {
-            instance.onStart = _handleOnStart;
-          },
-        ),
+        ImmediateMultiDragGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<
+          ImmediateMultiDragGestureRecognizer
+        >(
+              () => ImmediateMultiDragGestureRecognizer(),
+              (ImmediateMultiDragGestureRecognizer instance) {
+                instance.onStart = _handleOnStart;
+              },
+            ),
       },
       child: ClipRect(
         child: CustomPaint(
           key: _painterKey,
-          foregroundPainter: _RectangleDemoPainter(
-            repaint: _animation,
-            arc: arc,
-          ),
+          foregroundPainter:
+              _RectangleDemoPainter(repaint: _animation, arc: arc),
           // Watch out: if this IgnorePointer is left out, then gestures that
           // fail _RectDemoPainter.hitTest() will still be recognized because
           // they do overlap this child, which is as big as the CustomPaint.
@@ -378,7 +402,9 @@ class _RectangleDemoState extends State<_RectangleDemo> {
               child: Text(
                 'Tap the refresh button to run the animation. Drag the rectangles '
                 "to change the animation's path.",
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 16.0),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  fontSize: 16.0,
+                ),
               ),
             ),
           ),
@@ -392,7 +418,10 @@ typedef _DemoBuilder = Widget Function(_ArcDemo demo);
 
 class _ArcDemo {
   _ArcDemo(this.title, this.builder, TickerProvider vsync)
-    : controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: vsync),
+    : controller = AnimationController(
+        duration: const Duration(milliseconds: 500),
+        vsync: vsync,
+      ),
       key = GlobalKey(debugLabel: title);
 
   final String title;
@@ -402,25 +431,20 @@ class _ArcDemo {
 }
 
 class AnimationDemo extends StatefulWidget {
-  const AnimationDemo({ super.key });
+  const AnimationDemo({super.key});
 
   @override
   State<AnimationDemo> createState() => _AnimationDemoState();
 }
 
-class _AnimationDemoState extends State<AnimationDemo> with TickerProviderStateMixin {
+class _AnimationDemoState extends State<AnimationDemo>
+    with TickerProviderStateMixin {
   late final List<_ArcDemo> _allDemos = <_ArcDemo>[
     _ArcDemo('POINT', (_ArcDemo demo) {
-      return _PointDemo(
-        key: demo.key,
-        controller: demo.controller,
-      );
+      return _PointDemo(key: demo.key, controller: demo.controller);
     }, this),
     _ArcDemo('RECTANGLE', (_ArcDemo demo) {
-      return _RectangleDemo(
-        key: demo.key,
-        controller: demo.controller,
-      );
+      return _RectangleDemo(key: demo.key, controller: demo.controller);
     }, this),
   ];
 
@@ -439,7 +463,9 @@ class _AnimationDemoState extends State<AnimationDemo> with TickerProviderStateM
         appBar: AppBar(
           title: const Text('Animation'),
           bottom: TabBar(
-            tabs: _allDemos.map<Tab>((_ArcDemo demo) => Tab(text: demo.title)).toList(),
+            tabs: _allDemos.map<Tab>(
+              (_ArcDemo demo) => Tab(text: demo.title),
+            ).toList(),
           ),
         ),
         floatingActionButton: Builder(
@@ -453,7 +479,9 @@ class _AnimationDemoState extends State<AnimationDemo> with TickerProviderStateM
           },
         ),
         body: TabBarView(
-          children: _allDemos.map<Widget>((_ArcDemo demo) => demo.builder(demo)).toList(),
+          children: _allDemos.map<Widget>(
+            (_ArcDemo demo) => demo.builder(demo),
+          ).toList(),
         ),
       ),
     );
@@ -461,7 +489,5 @@ class _AnimationDemoState extends State<AnimationDemo> with TickerProviderStateM
 }
 
 void main() {
-  runApp(const MaterialApp(
-    home: AnimationDemo(),
-  ));
+  runApp(const MaterialApp(home: AnimationDemo()));
 }

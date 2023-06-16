@@ -17,14 +17,15 @@ class WaitForCondition extends Command {
   ///
   /// The [json] argument cannot be null.
   WaitForCondition.deserialize(super.json)
-      : condition = _deserialize(json),
-        super.deserialize();
+    : condition = _deserialize(json),
+      super.deserialize();
 
   /// The condition that this command shall wait for.
   final SerializableWaitCondition condition;
 
   @override
-  Map<String, String> serialize() => super.serialize()..addAll(condition.serialize());
+  Map<String, String> serialize() =>
+      super.serialize()..addAll(condition.serialize());
 
   @override
   String get kind => 'waitForCondition';
@@ -62,9 +63,7 @@ abstract class SerializableWaitCondition {
 
   /// Serializes the object to JSON.
   Map<String, String> serialize() {
-    return <String, String>{
-      'conditionName': conditionName,
-    };
+    return <String, String>{'conditionName': conditionName};
   }
 
   /// Whether this command requires the widget tree to be initialized before
@@ -93,7 +92,9 @@ class NoTransientCallbacks extends SerializableWaitCondition {
   /// The [json] argument must not be null.
   factory NoTransientCallbacks.deserialize(Map<String, String> json) {
     if (json['conditionName'] != 'NoTransientCallbacksCondition') {
-      throw SerializationException('Error occurred during deserializing the NoTransientCallbacksCondition JSON string: $json');
+      throw SerializationException(
+        'Error occurred during deserializing the NoTransientCallbacksCondition JSON string: $json',
+      );
     }
     return const NoTransientCallbacks();
   }
@@ -113,7 +114,9 @@ class NoPendingFrame extends SerializableWaitCondition {
   /// The [json] argument must not be null.
   factory NoPendingFrame.deserialize(Map<String, String> json) {
     if (json['conditionName'] != 'NoPendingFrameCondition') {
-      throw SerializationException('Error occurred during deserializing the NoPendingFrameCondition JSON string: $json');
+      throw SerializationException(
+        'Error occurred during deserializing the NoPendingFrameCondition JSON string: $json',
+      );
     }
     return const NoPendingFrame();
   }
@@ -133,7 +136,9 @@ class FirstFrameRasterized extends SerializableWaitCondition {
   /// The [json] argument must not be null.
   factory FirstFrameRasterized.deserialize(Map<String, String> json) {
     if (json['conditionName'] != 'FirstFrameRasterizedCondition') {
-      throw SerializationException('Error occurred during deserializing the FirstFrameRasterizedCondition JSON string: $json');
+      throw SerializationException(
+        'Error occurred during deserializing the FirstFrameRasterizedCondition JSON string: $json',
+      );
     }
     return const FirstFrameRasterized();
   }
@@ -156,7 +161,9 @@ class NoPendingPlatformMessages extends SerializableWaitCondition {
   /// The [json] argument must not be null.
   factory NoPendingPlatformMessages.deserialize(Map<String, String> json) {
     if (json['conditionName'] != 'NoPendingPlatformMessagesCondition') {
-      throw SerializationException('Error occurred during deserializing the NoPendingPlatformMessagesCondition JSON string: $json');
+      throw SerializationException(
+        'Error occurred during deserializing the NoPendingPlatformMessagesCondition JSON string: $json',
+      );
     }
     return const NoPendingPlatformMessages();
   }
@@ -178,14 +185,19 @@ class CombinedCondition extends SerializableWaitCondition {
   /// The [jsonMap] argument must not be null.
   factory CombinedCondition.deserialize(Map<String, String> jsonMap) {
     if (jsonMap['conditionName'] != 'CombinedCondition') {
-      throw SerializationException('Error occurred during deserializing the CombinedCondition JSON string: $jsonMap');
+      throw SerializationException(
+        'Error occurred during deserializing the CombinedCondition JSON string: $jsonMap',
+      );
     }
     if (jsonMap['conditions'] == null) {
       return const CombinedCondition(<SerializableWaitCondition>[]);
     }
 
-    final List<SerializableWaitCondition> conditions = <SerializableWaitCondition>[];
-    for (final Map<String, dynamic> condition in (json.decode(jsonMap['conditions']!) as List<dynamic>).cast<Map<String, dynamic>>()) {
+    final List<SerializableWaitCondition> conditions =
+        <SerializableWaitCondition>[];
+    for (final Map<String, dynamic> condition
+        in (json.decode(jsonMap['conditions']!) as List<dynamic>)
+            .cast<Map<String, dynamic>>()) {
       conditions.add(_deserialize(condition.cast<String, String>()));
     }
     return CombinedCondition(conditions);
@@ -200,10 +212,10 @@ class CombinedCondition extends SerializableWaitCondition {
   @override
   Map<String, String> serialize() {
     final Map<String, String> jsonMap = super.serialize();
-    final List<Map<String, String>> jsonConditions = conditions.map(
-      (SerializableWaitCondition condition) {
-        return condition.serialize();
-      }).toList();
+    final List<Map<String, String>> jsonConditions =
+        conditions.map((SerializableWaitCondition condition) {
+          return condition.serialize();
+        }).toList();
     jsonMap['conditions'] = json.encode(jsonConditions);
     return jsonMap;
   }
@@ -227,5 +239,6 @@ SerializableWaitCondition _deserialize(Map<String, String> json) {
       return CombinedCondition.deserialize(json);
   }
   throw SerializationException(
-      'Unsupported wait condition $conditionName in the JSON string $json');
+    'Unsupported wait condition $conditionName in the JSON string $json',
+  );
 }

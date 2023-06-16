@@ -11,10 +11,11 @@ const String kUIThreadVsyncProcessEvent = 'VsyncProcessCallback';
 ///
 /// `RefreshRate` is the time between the start of a vsync pulse and the target time of that vsync.
 class RefreshRateSummary {
-
   /// Creates a [RefreshRateSummary] given the timeline events.
   factory RefreshRateSummary({required List<TimelineEvent> vsyncEvents}) {
-    return RefreshRateSummary._(refreshRates: _computeRefreshRates(vsyncEvents));
+    return RefreshRateSummary._(
+      refreshRates: _computeRefreshRates(vsyncEvents),
+    );
   }
 
   RefreshRateSummary._({required List<double> refreshRates}) {
@@ -42,13 +43,15 @@ class RefreshRateSummary {
       }
       _framesWithIllegalRefreshRate.add(refreshRate);
     }
-    assert(_numberOfTotalFrames ==
-        _numberOf30HzFrames +
-            _numberOf60HzFrames +
-            _numberOf80HzFrames +
-            _numberOf90HzFrames +
-            _numberOf120HzFrames +
-            _framesWithIllegalRefreshRate.length);
+    assert(
+      _numberOfTotalFrames ==
+          _numberOf30HzFrames +
+              _numberOf60HzFrames +
+              _numberOf80HzFrames +
+              _numberOf90HzFrames +
+              _numberOf120HzFrames +
+              _framesWithIllegalRefreshRate.length,
+    );
   }
 
   // The error margin to determine the frame refresh rate.
@@ -123,11 +126,16 @@ class RefreshRateSummary {
       assert(event.arguments != null);
       final Map<String, dynamic> arguments = event.arguments!;
       const double nanosecondsPerSecond = 1e+9;
-      final int startTimeInNanoseconds = int.parse(arguments['StartTime'] as String);
-      final int targetTimeInNanoseconds = int.parse(arguments['TargetTime'] as String);
-      final int frameDurationInNanoseconds = targetTimeInNanoseconds - startTimeInNanoseconds;
-      final double refreshRate = nanosecondsPerSecond /
-          frameDurationInNanoseconds;
+      final int startTimeInNanoseconds = int.parse(
+        arguments['StartTime'] as String,
+      );
+      final int targetTimeInNanoseconds = int.parse(
+        arguments['TargetTime'] as String,
+      );
+      final int frameDurationInNanoseconds =
+          targetTimeInNanoseconds - startTimeInNanoseconds;
+      final double refreshRate =
+          nanosecondsPerSecond / frameDurationInNanoseconds;
       result.add(refreshRate);
     }
     return result;

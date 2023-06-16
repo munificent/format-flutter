@@ -26,16 +26,16 @@ class MacOSDesignedForIPadDevice extends DesktopDevice {
     required Logger logger,
     required FileSystem fileSystem,
     required OperatingSystemUtils operatingSystemUtils,
-  })  : _operatingSystemUtils = operatingSystemUtils,
-        super(
-          'designed-for-ipad',
-          platformType: PlatformType.macos,
-          ephemeral: false,
-          processManager: processManager,
-          logger: logger,
-          fileSystem: fileSystem,
-          operatingSystemUtils: operatingSystemUtils,
-        );
+  }) : _operatingSystemUtils = operatingSystemUtils,
+       super(
+         'designed-for-ipad',
+         platformType: PlatformType.macos,
+         ephemeral: false,
+         processManager: processManager,
+         logger: logger,
+         fileSystem: fileSystem,
+         operatingSystemUtils: operatingSystemUtils,
+       );
 
   final OperatingSystemUtils _operatingSystemUtils;
 
@@ -46,15 +46,20 @@ class MacOSDesignedForIPadDevice extends DesktopDevice {
   Future<TargetPlatform> get targetPlatform async => TargetPlatform.darwin;
 
   @override
-  bool isSupported() => _operatingSystemUtils.hostPlatform == HostPlatform.darwin_arm64;
+  bool isSupported() =>
+      _operatingSystemUtils.hostPlatform == HostPlatform.darwin_arm64;
 
   @override
   bool isSupportedForProject(FlutterProject flutterProject) {
-    return flutterProject.ios.existsSync() && _operatingSystemUtils.hostPlatform == HostPlatform.darwin_arm64;
+    return flutterProject.ios.existsSync() &&
+        _operatingSystemUtils.hostPlatform == HostPlatform.darwin_arm64;
   }
 
   @override
-  String? executablePathForDevice(ApplicationPackage package, BuildInfo buildInfo) => null;
+  String? executablePathForDevice(
+    ApplicationPackage package,
+    BuildInfo buildInfo,
+  ) => null;
 
   @override
   Future<LaunchResult> startApp(
@@ -95,13 +100,13 @@ class MacOSDesignedForIPadDevices extends PollingDeviceDiscovery {
     required Logger logger,
     required FileSystem fileSystem,
     required OperatingSystemUtils operatingSystemUtils,
-  })  : _logger = logger,
-        _platform = platform,
-        _iosWorkflow = iosWorkflow,
-        _processManager = processManager,
-        _fileSystem = fileSystem,
-        _operatingSystemUtils = operatingSystemUtils,
-        super('Mac designed for iPad devices');
+  }) : _logger = logger,
+       _platform = platform,
+       _iosWorkflow = iosWorkflow,
+       _processManager = processManager,
+       _fileSystem = fileSystem,
+       _operatingSystemUtils = operatingSystemUtils,
+       super('Mac designed for iPad devices');
 
   final IOSWorkflow _iosWorkflow;
   final Platform _platform;
@@ -117,7 +122,9 @@ class MacOSDesignedForIPadDevices extends PollingDeviceDiscovery {
   /// and discovery is allowed for this command.
   @override
   bool get canListAnything =>
-      _iosWorkflow.canListDevices && _operatingSystemUtils.hostPlatform == HostPlatform.darwin_arm64 && allowDiscovery;
+      _iosWorkflow.canListDevices &&
+      _operatingSystemUtils.hostPlatform == HostPlatform.darwin_arm64 &&
+      allowDiscovery;
 
   /// Set to show ARM macOS as an iOS device target.
   static bool allowDiscovery = false;

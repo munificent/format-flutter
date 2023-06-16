@@ -29,9 +29,7 @@ class TogglerState extends State<Toggler> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('FlutterDriver test'),
-        ),
+        appBar: AppBar(title: const Text('FlutterDriver test')),
         body: Material(
           child: Column(
             children: <Widget>[
@@ -45,9 +43,7 @@ class TogglerState extends State<Toggler> {
                 },
               ),
               Expanded(
-                child: ListView(
-                  children: _buildRows(_visible ? 10 : 0),
-                ),
+                child: ListView(children: _buildRows(_visible ? 10 : 0)),
               ),
             ],
           ),
@@ -59,9 +55,7 @@ class TogglerState extends State<Toggler> {
 
 List<Widget> _buildRows(int count) {
   return List<Widget>.generate(count, (int i) {
-    return Row(
-      children: _buildCells(i / count),
-    );
+    return Row(children: _buildCells(i / count));
   });
 }
 

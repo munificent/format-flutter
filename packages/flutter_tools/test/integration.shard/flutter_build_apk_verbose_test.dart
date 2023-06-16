@@ -16,11 +16,7 @@ void main() {
 
   setUp(() async {
     tempDir = createResolvedTempDirectorySync('flutter_build_test.');
-    flutterBin = fileSystem.path.join(
-      getFlutterRoot(),
-      'bin',
-      'flutter',
-    );
+    flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
     exampleAppDir = tempDir.childDirectory('aaa').childDirectory('example');
 
     processManager.runSync(<String>[
@@ -49,7 +45,9 @@ void main() {
         '-v',
       ], workingDirectory: exampleAppDir.path);
       expect(
-          result.stdout, contains(RegExp(r'executing:\s+\S+gen_snapshot\s+')));
+        result.stdout,
+        contains(RegExp(r'executing:\s+\S+gen_snapshot\s+')),
+      );
     },
   );
 }

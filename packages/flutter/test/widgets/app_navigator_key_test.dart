@@ -7,7 +7,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 Route<void> generateRoute(RouteSettings settings) => PageRouteBuilder<void>(
   settings: settings,
-  pageBuilder: (BuildContext context, Animation<double> animation1, Animation<double> animation2) {
+  pageBuilder: (
+    BuildContext context,
+    Animation<double> animation1,
+    Animation<double> animation2,
+  ) {
     return const Placeholder();
   },
 );

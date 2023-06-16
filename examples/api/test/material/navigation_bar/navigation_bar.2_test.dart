@@ -3,46 +3,50 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_api_samples/material/navigation_bar/navigation_bar.2.dart' as example;
+import 'package:flutter_api_samples/material/navigation_bar/navigation_bar.2.dart'
+    as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('RootPage: only selected destination is on stage', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: example.Home()));
+  testWidgets(
+    'RootPage: only selected destination is on stage',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const MaterialApp(home: example.Home()));
 
-    const String tealTitle = 'Teal RootPage - /';
-    const String cyanTitle = 'Cyan RootPage - /';
-    const String orangeTitle = 'Orange RootPage - /';
-    const String blueTitle = 'Blue RootPage - /';
+      const String tealTitle = 'Teal RootPage - /';
+      const String cyanTitle = 'Cyan RootPage - /';
+      const String orangeTitle = 'Orange RootPage - /';
+      const String blueTitle = 'Blue RootPage - /';
 
-    await tester.tap(find.widgetWithText(NavigationDestination, 'Teal'));
-    await tester.pumpAndSettle();
-    expect(find.text(tealTitle), findsOneWidget);
-    expect(find.text(cyanTitle), findsNothing);
-    expect(find.text(orangeTitle), findsNothing);
-    expect(find.text(blueTitle), findsNothing);
+      await tester.tap(find.widgetWithText(NavigationDestination, 'Teal'));
+      await tester.pumpAndSettle();
+      expect(find.text(tealTitle), findsOneWidget);
+      expect(find.text(cyanTitle), findsNothing);
+      expect(find.text(orangeTitle), findsNothing);
+      expect(find.text(blueTitle), findsNothing);
 
-    await tester.tap(find.widgetWithText(NavigationDestination, 'Cyan'));
-    await tester.pumpAndSettle();
-    expect(find.text(tealTitle), findsNothing);
-    expect(find.text(cyanTitle), findsOneWidget);
-    expect(find.text(orangeTitle), findsNothing);
-    expect(find.text(blueTitle), findsNothing);
+      await tester.tap(find.widgetWithText(NavigationDestination, 'Cyan'));
+      await tester.pumpAndSettle();
+      expect(find.text(tealTitle), findsNothing);
+      expect(find.text(cyanTitle), findsOneWidget);
+      expect(find.text(orangeTitle), findsNothing);
+      expect(find.text(blueTitle), findsNothing);
 
-    await tester.tap(find.widgetWithText(NavigationDestination, 'Orange'));
-    await tester.pumpAndSettle();
-    expect(find.text(tealTitle), findsNothing);
-    expect(find.text(cyanTitle), findsNothing);
-    expect(find.text(orangeTitle), findsOneWidget);
-    expect(find.text(blueTitle), findsNothing);
+      await tester.tap(find.widgetWithText(NavigationDestination, 'Orange'));
+      await tester.pumpAndSettle();
+      expect(find.text(tealTitle), findsNothing);
+      expect(find.text(cyanTitle), findsNothing);
+      expect(find.text(orangeTitle), findsOneWidget);
+      expect(find.text(blueTitle), findsNothing);
 
-    await tester.tap(find.widgetWithText(NavigationDestination, 'Blue'));
-    await tester.pumpAndSettle();
-    expect(find.text(tealTitle), findsNothing);
-    expect(find.text(cyanTitle), findsNothing);
-    expect(find.text(orangeTitle), findsNothing);
-    expect(find.text(blueTitle), findsOneWidget);
-  });
+      await tester.tap(find.widgetWithText(NavigationDestination, 'Blue'));
+      await tester.pumpAndSettle();
+      expect(find.text(tealTitle), findsNothing);
+      expect(find.text(cyanTitle), findsNothing);
+      expect(find.text(orangeTitle), findsNothing);
+      expect(find.text(blueTitle), findsOneWidget);
+    },
+  );
 
   testWidgets('RootPage', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: example.Home()));
@@ -75,7 +79,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Teal ListPage - /list'), findsOneWidget);
   });
-
 
   testWidgets('ListPage', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: example.Home()));

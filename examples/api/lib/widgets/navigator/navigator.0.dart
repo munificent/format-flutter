@@ -51,7 +51,9 @@ class CollectPersonalInfoPage extends StatelessWidget {
         onTap: () {
           // This moves from the personal info page to the credentials page,
           // replacing this page with that one.
-          Navigator.of(context).pushReplacementNamed('signup/choose_credentials');
+          Navigator.of(context).pushReplacementNamed(
+            'signup/choose_credentials',
+          );
         },
         child: Container(
           color: Colors.lightBlue,
@@ -64,10 +66,7 @@ class CollectPersonalInfoPage extends StatelessWidget {
 }
 
 class ChooseCredentialsPage extends StatelessWidget {
-  const ChooseCredentialsPage({
-    super.key,
-    required this.onSignupComplete,
-  });
+  const ChooseCredentialsPage({super.key, required this.onSignupComplete});
 
   final VoidCallback onSignupComplete;
 

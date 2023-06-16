@@ -73,7 +73,9 @@ const List<Feature> allFeatures = <Feature>[
 /// All current Flutter feature flags that can be configured.
 ///
 /// [Feature.configSetting] is not `null`.
-Iterable<Feature> get allConfigurableFeatures => allFeatures.where((Feature feature) => feature.configSetting != null);
+Iterable<Feature> get allConfigurableFeatures => allFeatures.where(
+  (Feature feature) => feature.configSetting != null,
+);
 
 /// The [Feature] for flutter web.
 const Feature flutterWebFeature = Feature.fullyEnabled(
@@ -120,24 +122,16 @@ const Feature flutterFuchsiaFeature = Feature(
   name: 'Flutter for Fuchsia',
   configSetting: 'enable-fuchsia',
   environmentOverride: 'FLUTTER_FUCHSIA',
-  master: FeatureChannelSetting(
-    available: true,
-  ),
+  master: FeatureChannelSetting(available: true),
 );
 
 const Feature flutterCustomDevicesFeature = Feature(
   name: 'Early support for custom device types',
   configSetting: 'enable-custom-devices',
   environmentOverride: 'FLUTTER_CUSTOM_DEVICES',
-  master: FeatureChannelSetting(
-    available: true,
-  ),
-  beta: FeatureChannelSetting(
-    available: true,
-  ),
-  stable: FeatureChannelSetting(
-    available: true,
-  ),
+  master: FeatureChannelSetting(available: true),
+  beta: FeatureChannelSetting(available: true),
+  stable: FeatureChannelSetting(available: true),
 );
 
 /// The fast hot reload feature for https://github.com/flutter/flutter/issues/61407.
@@ -145,23 +139,15 @@ const Feature singleWidgetReload = Feature(
   name: 'Hot reload optimization for changes to class body of a single widget',
   configSetting: 'single-widget-reload-optimization',
   environmentOverride: 'FLUTTER_SINGLE_WIDGET_RELOAD',
-  master: FeatureChannelSetting(
-    available: true,
-    enabledByDefault: true,
-  ),
-  beta: FeatureChannelSetting(
-    available: true,
-  ),
+  master: FeatureChannelSetting(available: true, enabledByDefault: true),
+  beta: FeatureChannelSetting(available: true),
 );
 
 /// Enabling WebAssembly compilation from `flutter build web`
 const Feature flutterWebWasm = Feature(
   name: 'WebAssembly compilation from flutter build web',
   environmentOverride: 'FLUTTER_WEB_WASM',
-  master: FeatureChannelSetting(
-    available: true,
-    enabledByDefault: true,
-  ),
+  master: FeatureChannelSetting(available: true, enabledByDefault: true),
 );
 
 /// A [Feature] is a process for conditionally enabling tool features.
@@ -181,27 +167,27 @@ class Feature {
     this.extraHelpText,
     this.master = const FeatureChannelSetting(),
     this.beta = const FeatureChannelSetting(),
-    this.stable = const FeatureChannelSetting()
+    this.stable = const FeatureChannelSetting(),
   });
 
   /// Creates a [Feature] that is fully enabled across channels.
-  const Feature.fullyEnabled(
-      {required this.name,
-      this.environmentOverride,
-      this.configSetting,
-      this.extraHelpText})
-      : master = const FeatureChannelSetting(
-          available: true,
-          enabledByDefault: true,
-        ),
-        beta = const FeatureChannelSetting(
-          available: true,
-          enabledByDefault: true,
-        ),
-        stable = const FeatureChannelSetting(
-          available: true,
-          enabledByDefault: true,
-        );
+  const Feature.fullyEnabled({
+    required this.name,
+    this.environmentOverride,
+    this.configSetting,
+    this.extraHelpText,
+  }) : master = const FeatureChannelSetting(
+         available: true,
+         enabledByDefault: true,
+       ),
+       beta = const FeatureChannelSetting(
+         available: true,
+         enabledByDefault: true,
+       ),
+       stable = const FeatureChannelSetting(
+         available: true,
+         enabledByDefault: true,
+       );
 
   /// The user visible name for this feature.
   final String name;
@@ -247,9 +233,15 @@ class Feature {
     ];
     // Add channel info for settings only on some channels.
     if (channels.length == 1) {
-      buffer.write('\nThis setting applies to only the ${channels.single} channel.');
+      buffer.write(
+        '\nThis setting applies to only the ${channels.single} channel.',
+      );
     } else if (channels.length == 2) {
-      buffer.write('\nThis setting applies to only the ${channels.join(' and ')} channels.');
+      buffer.write(
+        '\nThis setting applies to only the ${channels.join(
+          ' and ',
+        )} channels.',
+      );
     }
     if (extraHelpText != null) {
       buffer.write(' $extraHelpText');

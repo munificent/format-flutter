@@ -12,7 +12,9 @@ import 'package:flutter_devicelab/framework/utils.dart';
 import 'package:path/path.dart' as path;
 
 final String gradlew = Platform.isWindows ? 'gradlew.bat' : 'gradlew';
-final String gradlewExecutable = Platform.isWindows ? '.\\$gradlew' : './$gradlew';
+final String gradlewExecutable = Platform.isWindows
+    ? '.\\$gradlew'
+    : './$gradlew';
 
 /// Tests that we respect storage proxy URLs in gradle dependencies.
 Future<void> main() async {
@@ -27,57 +29,64 @@ Future<void> main() async {
 
     section('Create project');
     await runProjectTest((FlutterProject flutterProject) async {
-      await inDirectory(path.join(flutterProject.rootPath, 'android'), () async {
-        section('Insert gradle testing script');
-        final File build = File(path.join(
-	    flutterProject.rootPath, 'android', 'app', 'build.gradle'));
-        build.writeAsStringSync(
-          '''
+      await inDirectory(
+        path.join(flutterProject.rootPath, 'android'),
+        () async {
+          section('Insert gradle testing script');
+          final File build = File(path.join(
+            flutterProject.rootPath,
+            'android',
+            'app',
+            'build.gradle',
+          ));
+          build.writeAsStringSync('''
 task printEngineMavenUrl() {
     doLast {
         println project.repositories.find { it.name == 'maven' }.url
     }
 }
-          ''',
-          mode: FileMode.append,
-          flush: true,
-        );
+          ''', mode: FileMode.append, flush: true);
 
-        section('Checking default maven URL');
-        String gradleOutput = await eval(
-          gradlewExecutable,
-          <String>['printEngineMavenUrl', '-q'],
-        );
-        const LineSplitter splitter = LineSplitter();
-        List<String> outputLines = splitter.convert(gradleOutput);
-        String mavenUrl = outputLines.last;
-        print('Returned maven url: $mavenUrl');
+          section('Checking default maven URL');
+          String gradleOutput = await eval(gradlewExecutable, <String>[
+            'printEngineMavenUrl',
+            '-q',
+          ]);
+          const LineSplitter splitter = LineSplitter();
+          List<String> outputLines = splitter.convert(gradleOutput);
+          String mavenUrl = outputLines.last;
+          print('Returned maven url: $mavenUrl');
 
-        if (mavenUrl != 'https://storage.googleapis.com/download.flutter.io') {
-          throw TaskResult.failure('Expected Android engine maven dependency URL to '
+          if (mavenUrl !=
+              'https://storage.googleapis.com/download.flutter.io') {
+            throw TaskResult.failure(
+              'Expected Android engine maven dependency URL to '
               'resolve to https://storage.googleapis.com/download.flutter.io. Got '
-              '$mavenUrl instead');
-        }
+              '$mavenUrl instead',
+            );
+          }
 
-        section('Checking overridden maven URL');
-        gradleOutput = await eval(
-	    gradlewExecutable,
-	    <String>['printEngineMavenUrl','-q'],
-	    environment: <String, String>{
+          section('Checking overridden maven URL');
+          gradleOutput = await eval(
+            gradlewExecutable,
+            <String>['printEngineMavenUrl', '-q'],
+            environment: <String, String>{
               'FLUTTER_STORAGE_BASE_URL': 'https://my.special.proxy',
-            }
-	);
-        outputLines = splitter.convert(gradleOutput);
-        mavenUrl = outputLines.last;
+            },
+          );
+          outputLines = splitter.convert(gradleOutput);
+          mavenUrl = outputLines.last;
 
-        if (mavenUrl != 'https://my.special.proxy/download.flutter.io') {
-          throw TaskResult.failure(
-	      'Expected overridden Android engine maven '
+          if (mavenUrl != 'https://my.special.proxy/download.flutter.io') {
+            throw TaskResult.failure(
+              'Expected overridden Android engine maven '
               'dependency URL to resolve to proxy location '
               'https://my.special.proxy/download.flutter.io. Got '
-              '$mavenUrl instead');
-        }
-      });
+              '$mavenUrl instead',
+            );
+          }
+        },
+      );
     });
     return TaskResult.success(null);
   });

@@ -13,9 +13,7 @@ class RefreshIndicatorExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: RefreshIndicatorExample(),
-    );
+    return const MaterialApp(home: RefreshIndicatorExample());
   }
 }
 
@@ -25,9 +23,7 @@ class RefreshIndicatorExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('RefreshIndicator Sample'),
-      ),
+      appBar: AppBar(title: const Text('RefreshIndicator Sample')),
       body: RefreshIndicator(
         color: Colors.white,
         backgroundColor: Colors.blue,

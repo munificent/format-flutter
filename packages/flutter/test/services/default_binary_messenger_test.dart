@@ -14,8 +14,9 @@ void main() {
 
   ByteData makeByteData(String str) {
     final List<int> list = utf8.encode(str);
-    final ByteBuffer buffer =
-        list is Uint8List ? list.buffer : Uint8List.fromList(list).buffer;
+    final ByteBuffer buffer = list is Uint8List
+        ? list.buffer
+        : Uint8List.fromList(list).buffer;
     return ByteData.view(buffer);
   }
 
@@ -53,7 +54,8 @@ void main() {
 
   test('can check the mock handler', () {
     Future<ByteData?> handler(ByteData? call) => Future<ByteData?>.value();
-    final TestDefaultBinaryMessenger messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    final TestDefaultBinaryMessenger messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
 
     expect(messenger.checkMockMessageHandler('test_channel', null), true);
     expect(messenger.checkMockMessageHandler('test_channel', handler), false);

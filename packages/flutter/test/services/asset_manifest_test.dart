@@ -13,22 +13,16 @@ class TestAssetBundle extends AssetBundle {
     if (key == 'AssetManifest.bin') {
       final Map<String, List<Object>> binManifestData = <String, List<Object>>{
         'assets/foo.png': <Object>[
-          <String, Object>{
-            'asset': 'assets/foo.png',
-          },
-          <String, Object>{
-            'asset': 'assets/2x/foo.png',
-            'dpr': 2.0
-          },
+          <String, Object>{'asset': 'assets/foo.png'},
+          <String, Object>{'asset': 'assets/2x/foo.png', 'dpr': 2.0},
         ],
         'assets/bar.png': <Object>[
-          <String, Object>{
-            'asset': 'assets/bar.png',
-          },
+          <String, Object>{'asset': 'assets/bar.png'},
         ],
       };
 
-      final ByteData data = const StandardMessageCodec().encodeMessage(binManifestData)!;
+      final ByteData data =
+          const StandardMessageCodec().encodeMessage(binManifestData)!;
       return data;
     }
 
@@ -36,7 +30,10 @@ class TestAssetBundle extends AssetBundle {
   }
 
   @override
-  Future<T> loadStructuredData<T>(String key, Future<T> Function(String value) parser) async {
+  Future<T> loadStructuredData<T>(
+    String key,
+    Future<T> Function(String value) parser,
+  ) async {
     return parser(await loadString(key));
   }
 }
@@ -45,11 +42,16 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test('loadFromBundle correctly parses a binary asset manifest', () async {
-    final AssetManifest manifest = await AssetManifest.loadFromAssetBundle(TestAssetBundle());
+    final AssetManifest manifest =
+        await AssetManifest.loadFromAssetBundle(TestAssetBundle());
 
-    expect(manifest.listAssets(), unorderedEquals(<String>['assets/foo.png', 'assets/bar.png']));
+    expect(
+      manifest.listAssets(),
+      unorderedEquals(<String>['assets/foo.png', 'assets/bar.png']),
+    );
 
-    final List<AssetMetadata> fooVariants = manifest.getAssetVariants('assets/foo.png')!;
+    final List<AssetMetadata> fooVariants =
+        manifest.getAssetVariants('assets/foo.png')!;
     expect(fooVariants.length, 2);
     final AssetMetadata firstFooVariant = fooVariants[0];
     expect(firstFooVariant.key, 'assets/foo.png');
@@ -60,7 +62,8 @@ void main() {
     expect(secondFooVariant.targetDevicePixelRatio, 2.0);
     expect(secondFooVariant.main, false);
 
-    final List<AssetMetadata> barVariants = manifest.getAssetVariants('assets/bar.png')!;
+    final List<AssetMetadata> barVariants =
+        manifest.getAssetVariants('assets/bar.png')!;
     expect(barVariants.length, 1);
     final AssetMetadata firstBarVariant = barVariants[0];
     expect(firstBarVariant.key, 'assets/bar.png');
@@ -68,33 +71,40 @@ void main() {
     expect(firstBarVariant.main, true);
   });
 
-  test('getAssetVariants returns null if the key not contained in the asset manifest', () async {
-    final AssetManifest manifest = await AssetManifest.loadFromAssetBundle(TestAssetBundle());
-    expect(manifest.getAssetVariants('invalid asset key'), isNull);
-  });
+  test(
+    'getAssetVariants returns null if the key not contained in the asset manifest',
+    () async {
+      final AssetManifest manifest =
+          await AssetManifest.loadFromAssetBundle(TestAssetBundle());
+      expect(manifest.getAssetVariants('invalid asset key'), isNull);
+    },
+  );
 }
 
 String createAssetManifestJson(Map<String, List<AssetMetadata>> manifest) {
   final Map<Object, Object> jsonObject = manifest.map(
     (String key, List<AssetMetadata> value) {
-      final List<String> variants = value.map((AssetMetadata e) => e.key).toList();
+      final List<String> variants =
+          value.map((AssetMetadata e) => e.key).toList();
       return MapEntry<String, List<String>>(key, variants);
-    }
+    },
   );
 
   return json.encode(jsonObject);
 }
 
 ByteData createAssetManifestSmcBin(Map<String, List<AssetMetadata>> manifest) {
-  final Map<Object, Object> smcObject  = manifest.map(
+  final Map<Object, Object> smcObject = manifest.map(
     (String key, List<AssetMetadata> value) {
-      final List<Object> variants = value.map((AssetMetadata variant) => <String, Object?>{
-        'asset': variant.key,
-        'dpr': variant.targetDevicePixelRatio,
-      }).toList();
+      final List<Object> variants = value.map(
+        (AssetMetadata variant) => <String, Object?>{
+          'asset': variant.key,
+          'dpr': variant.targetDevicePixelRatio,
+        },
+      ).toList();
 
       return MapEntry<String, List<Object>>(key, variants);
-    }
+    },
   );
 
   return const StandardMessageCodec().encodeMessage(smcObject)!;

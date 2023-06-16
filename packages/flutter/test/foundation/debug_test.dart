@@ -14,7 +14,7 @@ void main() {
       debugInstrumentationEnabled = true;
       printBuffer = StringBuffer();
       originalDebugPrintCallback = debugPrint;
-      debugPrint = (String? message, { int? wrapWidth }) {
+      debugPrint = (String? message, {int? wrapWidth}) {
         printBuffer.writeln(message);
       };
     });
@@ -30,10 +30,9 @@ void main() {
         return 1;
       });
       expect(result, 1);
-      expect(
-        printBuffer.toString(),
-        matches(RegExp('^action\\(\\)\nAction "no-op" took .+\$', multiLine: true)),
-      );
+      expect(printBuffer.toString(), matches(
+        RegExp('^action\\(\\)\nAction "no-op" took .+\$', multiLine: true),
+      ));
     });
 
     test('returns failing future if action throws', () async {

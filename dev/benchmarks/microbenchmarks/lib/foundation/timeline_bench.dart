@@ -9,8 +9,10 @@ import '../common.dart';
 const int _kNumIterations = 10000;
 
 void main() {
-  assert(false,
-      "Don't run benchmarks in debug mode! Use 'flutter run --release'.");
+  assert(
+    false,
+    "Don't run benchmarks in debug mode! Use 'flutter run --release'.",
+  );
   final BenchmarkResultPrinter printer = BenchmarkResultPrinter();
 
   final Stopwatch watch = Stopwatch();
@@ -31,13 +33,16 @@ void main() {
   watch.reset();
   watch.start();
   for (int i = 0; i < _kNumIterations; i += 1) {
-    Timeline.startSync('foo', arguments: <String, dynamic>{
-      'int': 1234,
-      'double': 0.3,
-      'list': <int>[1, 2, 3, 4],
-      'map': <String, dynamic>{'map': true},
-      'bool': false,
-    });
+    Timeline.startSync(
+      'foo',
+      arguments: <String, dynamic>{
+        'int': 1234,
+        'double': 0.3,
+        'list': <int>[1, 2, 3, 4],
+        'map': <String, dynamic>{'map': true},
+        'bool': false,
+      },
+    );
     Timeline.finishSync();
   }
   watch.stop();

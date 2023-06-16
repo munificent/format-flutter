@@ -8,139 +8,152 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('RichText with recognizers without handlers does not throw', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: RichText(
-          text: TextSpan(text: 'root', children: <InlineSpan>[
-            TextSpan(text: 'one', recognizer: TapGestureRecognizer()),
-            TextSpan(text: 'two', recognizer: LongPressGestureRecognizer()),
-            TextSpan(text: 'three', recognizer: DoubleTapGestureRecognizer()),
-          ]),
-        ),
-      ),
-    );
-
-    expect(tester.getSemantics(find.byType(RichText)), matchesSemantics(
-      children: <Matcher>[
-        matchesSemantics(
-          label: 'root',
-        ),
-        matchesSemantics(
-          label: 'one',
-        ),
-        matchesSemantics(
-          label: 'two',
-        ),
-        matchesSemantics(
-          label: 'three',
-        ),
-      ],
-    ));
-  });
-
-  testWidgets('TextSpan Locale works', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
+  testWidgets(
+    'RichText with recognizers without handlers does not throw',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: RichText(
           text: TextSpan(
             text: 'root',
-            locale: const Locale('es', 'MX'),
             children: <InlineSpan>[
               TextSpan(text: 'one', recognizer: TapGestureRecognizer()),
-              const WidgetSpan(
-                child: SizedBox(),
-              ),
+              TextSpan(text: 'two', recognizer: LongPressGestureRecognizer()),
               TextSpan(text: 'three', recognizer: DoubleTapGestureRecognizer()),
-            ]
+            ],
           ),
+        ),
+      ));
+
+      expect(
+        tester.getSemantics(find.byType(RichText)),
+        matchesSemantics(
+          children: <Matcher>[
+            matchesSemantics(label: 'root'),
+            matchesSemantics(label: 'one'),
+            matchesSemantics(label: 'two'),
+            matchesSemantics(label: 'three'),
+          ],
+        ),
+      );
+    },
+  );
+
+  testWidgets('TextSpan Locale works', (WidgetTester tester) async {
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: RichText(
+        text: TextSpan(
+          text: 'root',
+          locale: const Locale('es', 'MX'),
+          children: <InlineSpan>[
+            TextSpan(text: 'one', recognizer: TapGestureRecognizer()),
+            const WidgetSpan(child: SizedBox()),
+            TextSpan(text: 'three', recognizer: DoubleTapGestureRecognizer()),
+          ],
         ),
       ),
-    );
-    expect(tester.getSemantics(find.byType(RichText)), matchesSemantics(
-      children: <Matcher>[
-        matchesSemantics(
-          attributedLabel: AttributedString(
-            'root',
-            attributes: <StringAttribute>[
-              LocaleStringAttribute(range: const TextRange(start: 0, end: 4), locale: const Locale('es', 'MX')),
-            ]
-          ),
-        ),
-        matchesSemantics(
-          attributedLabel: AttributedString(
-            'one',
-            attributes: <StringAttribute>[
-              LocaleStringAttribute(range: const TextRange(start: 0, end: 3), locale: const Locale('es', 'MX')),
-            ]
-          ),
-        ),
-        matchesSemantics(
-          attributedLabel: AttributedString(
-            'three',
-            attributes: <StringAttribute>[
-              LocaleStringAttribute(range: const TextRange(start: 0, end: 5), locale: const Locale('es', 'MX')),
-            ]
-          ),
-        ),
-      ],
     ));
+    expect(
+      tester.getSemantics(find.byType(RichText)),
+      matchesSemantics(
+        children: <Matcher>[
+          matchesSemantics(
+            attributedLabel: AttributedString(
+              'root',
+              attributes: <StringAttribute>[
+                LocaleStringAttribute(
+                  range: const TextRange(start: 0, end: 4),
+                  locale: const Locale('es', 'MX'),
+                ),
+              ],
+            ),
+          ),
+          matchesSemantics(
+            attributedLabel: AttributedString(
+              'one',
+              attributes: <StringAttribute>[
+                LocaleStringAttribute(
+                  range: const TextRange(start: 0, end: 3),
+                  locale: const Locale('es', 'MX'),
+                ),
+              ],
+            ),
+          ),
+          matchesSemantics(
+            attributedLabel: AttributedString(
+              'three',
+              attributes: <StringAttribute>[
+                LocaleStringAttribute(
+                  range: const TextRange(start: 0, end: 5),
+                  locale: const Locale('es', 'MX'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   });
 
   testWidgets('TextSpan spellOut works', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: RichText(
-          text: TextSpan(
-              text: 'root',
-              spellOut: true,
-              children: <InlineSpan>[
-                TextSpan(text: 'one', recognizer: TapGestureRecognizer()),
-                const WidgetSpan(
-                  child: SizedBox(),
-                ),
-                TextSpan(text: 'three', recognizer: DoubleTapGestureRecognizer()),
-              ]
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: RichText(
+        text: TextSpan(
+          text: 'root',
+          spellOut: true,
+          children: <InlineSpan>[
+            TextSpan(text: 'one', recognizer: TapGestureRecognizer()),
+            const WidgetSpan(child: SizedBox()),
+            TextSpan(text: 'three', recognizer: DoubleTapGestureRecognizer()),
+          ],
         ),
       ),
-    );
-    expect(tester.getSemantics(find.byType(RichText)), matchesSemantics(
-      children: <Matcher>[
-        matchesSemantics(
-          attributedLabel: AttributedString(
+    ));
+    expect(
+      tester.getSemantics(find.byType(RichText)),
+      matchesSemantics(
+        children: <Matcher>[
+          matchesSemantics(
+            attributedLabel: AttributedString(
               'root',
               attributes: <StringAttribute>[
-                SpellOutStringAttribute(range: const TextRange(start: 0, end: 4)),
-              ]
+                SpellOutStringAttribute(
+                  range: const TextRange(start: 0, end: 4),
+                ),
+              ],
+            ),
           ),
-        ),
-        matchesSemantics(
-          attributedLabel: AttributedString(
+          matchesSemantics(
+            attributedLabel: AttributedString(
               'one',
               attributes: <StringAttribute>[
-                SpellOutStringAttribute(range: const TextRange(start: 0, end: 3)),
-              ]
+                SpellOutStringAttribute(
+                  range: const TextRange(start: 0, end: 3),
+                ),
+              ],
+            ),
           ),
-        ),
-        matchesSemantics(
-          attributedLabel: AttributedString(
+          matchesSemantics(
+            attributedLabel: AttributedString(
               'three',
               attributes: <StringAttribute>[
-                SpellOutStringAttribute(range: const TextRange(start: 0, end: 5)),
-              ]
+                SpellOutStringAttribute(
+                  range: const TextRange(start: 0, end: 5),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
   });
 
-  testWidgets('WidgetSpan calculate correct intrinsic heights', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
+  testWidgets(
+    'WidgetSpan calculate correct intrinsic heights',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Center(
           child: ColoredBox(
@@ -149,28 +162,34 @@ void main() {
               child: RichText(
                 text: const TextSpan(
                   children: <InlineSpan>[
-                    TextSpan(text: 'Start\n', style: TextStyle(height: 1.0, fontSize: 16)),
+                    TextSpan(
+                      text: 'Start\n',
+                      style: TextStyle(height: 1.0, fontSize: 16),
+                    ),
                     WidgetSpan(
                       child: Row(
-                        children: <Widget>[
-                          SizedBox(height: 16, width: 16),
-                        ],
+                        children: <Widget>[SizedBox(height: 16, width: 16)],
                       ),
                     ),
-                    TextSpan(text: 'End', style: TextStyle(height: 1.0, fontSize: 16)),
+                    TextSpan(
+                      text: 'End',
+                      style: TextStyle(height: 1.0, fontSize: 16),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      ));
 
-    expect(tester.getSize(find.byType(IntrinsicHeight)).height, 3 * 16);
-  });
+      expect(tester.getSize(find.byType(IntrinsicHeight)).height, 3 * 16);
+    },
+  );
 
-  testWidgets('RichText implements debugFillProperties', (WidgetTester tester) async {
+  testWidgets('RichText implements debugFillProperties', (
+    WidgetTester tester,
+  ) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     RichText(
       text: const TextSpan(text: 'rich text'),
@@ -181,17 +200,16 @@ void main() {
       textScaleFactor: 1.3,
       maxLines: 1,
       locale: const Locale('zh', 'HK'),
-      strutStyle: const StrutStyle(
-        fontSize: 16,
-      ),
+      strutStyle: const StrutStyle(fontSize: 16),
       textWidthBasis: TextWidthBasis.longestLine,
-      textHeightBehavior: const TextHeightBehavior(applyHeightToFirstAscent: false),
+      textHeightBehavior:
+          const TextHeightBehavior(applyHeightToFirstAscent: false),
     ).debugFillProperties(builder);
 
     final List<String> description = builder.properties
-      .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
-      .map((DiagnosticsNode node) => node.toString())
-      .toList();
+        .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
+        .map((DiagnosticsNode node) => node.toString())
+        .toList();
 
     expect(description, unorderedMatches(<dynamic>[
       contains('textAlign: center'),

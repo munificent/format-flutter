@@ -15,9 +15,7 @@ class TextInputControlExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: TextInputControlExample(),
-    );
+    return const MaterialApp(home: TextInputControlExample());
   }
 }
 

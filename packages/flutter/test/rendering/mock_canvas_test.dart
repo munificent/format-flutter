@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'mock_canvas.dart';
 
 class MyPainter extends CustomPainter {
-  const MyPainter({
-    required this.color,
-  });
+  const MyPainter({required this.color});
 
   final Color color;
 
@@ -54,63 +52,73 @@ class MethodAndArguments {
 
 void main() {
   group('something', () {
-    testWidgets('matches when the predicate returns true', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const CustomPaint(
-          painter: MyPainter(color: Colors.transparent),
-          child: SizedBox(width: 50, height: 50),
-        ),
-      );
+    testWidgets(
+      'matches when the predicate returns true',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          const CustomPaint(
+            painter: MyPainter(color: Colors.transparent),
+            child: SizedBox(width: 50, height: 50),
+          ),
+        );
 
-      final List<MethodAndArguments> methodsAndArguments = <MethodAndArguments>[];
+        final List<MethodAndArguments> methodsAndArguments =
+            <MethodAndArguments>[];
 
-      expect(
-        tester.renderObject(find.byType(CustomPaint)),
-        paints..something((Symbol method, List<dynamic> arguments) {
-          methodsAndArguments.add(MethodAndArguments(method, arguments));
-          return method == #drawColor;
-        }),
-      );
+        expect(
+          tester.renderObject(find.byType(CustomPaint)),
+          paints
+            ..something((Symbol method, List<dynamic> arguments) {
+              methodsAndArguments.add(MethodAndArguments(method, arguments));
+              return method == #drawColor;
+            }),
+        );
 
-      expect(
-        methodsAndArguments,
-        <MethodAndArguments>[
+        expect(methodsAndArguments, <MethodAndArguments>[
           const MethodAndArguments(#save, <dynamic>[]),
-          const MethodAndArguments(#drawColor, <dynamic>[Colors.transparent, BlendMode.color]),
+          const MethodAndArguments(#drawColor, <dynamic>[
+            Colors.transparent,
+            BlendMode.color,
+          ]),
           // The #restore call is never evaluated
-        ],
-      );
-    });
+        ]);
+      },
+    );
 
-    testWidgets('fails when the predicate always returns false', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const CustomPaint(
-          painter: MyPainter(color: Colors.transparent),
-          child: SizedBox(width: 50, height: 50),
-        ),
-      );
+    testWidgets(
+      'fails when the predicate always returns false',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          const CustomPaint(
+            painter: MyPainter(color: Colors.transparent),
+            child: SizedBox(width: 50, height: 50),
+          ),
+        );
 
-      final List<MethodAndArguments> methodsAndArguments = <MethodAndArguments>[];
+        final List<MethodAndArguments> methodsAndArguments =
+            <MethodAndArguments>[];
 
-      expect(
-        tester.renderObject(find.byType(CustomPaint)),
-        isNot(
-          paints..something((Symbol method, List<dynamic> arguments) {
-            methodsAndArguments.add(MethodAndArguments(method, arguments));
-            return false;
-          }),
-        ),
-      );
+        expect(
+          tester.renderObject(find.byType(CustomPaint)),
+          isNot(
+            paints
+              ..something((Symbol method, List<dynamic> arguments) {
+                methodsAndArguments.add(MethodAndArguments(method, arguments));
+                return false;
+              }),
+          ),
+        );
 
-      expect(
-        methodsAndArguments,
-        <MethodAndArguments>[
+        expect(methodsAndArguments, <MethodAndArguments>[
           const MethodAndArguments(#save, <dynamic>[]),
-          const MethodAndArguments(#drawColor, <dynamic>[Colors.transparent, BlendMode.color]),
+          const MethodAndArguments(#drawColor, <dynamic>[
+            Colors.transparent,
+            BlendMode.color,
+          ]),
           const MethodAndArguments(#restore, <dynamic>[]),
-        ],
-      );
-    });
+        ]);
+      },
+    );
 
     testWidgets('fails when the predicate throws', (WidgetTester tester) async {
       await tester.pumpWidget(
@@ -120,126 +128,143 @@ void main() {
         ),
       );
 
-      final List<MethodAndArguments> methodsAndArguments = <MethodAndArguments>[];
+      final List<MethodAndArguments> methodsAndArguments =
+          <MethodAndArguments>[];
 
       expect(
         tester.renderObject(find.byType(CustomPaint)),
         isNot(
-          paints..something((Symbol method, List<dynamic> arguments) {
-            methodsAndArguments.add(MethodAndArguments(method, arguments));
-            if (method == #save) {
-              return false;
-            }
-            if (method == #drawColor) {
-              throw 'fail';
-            }
-            return true;
-          }),
+          paints
+            ..something((Symbol method, List<dynamic> arguments) {
+              methodsAndArguments.add(MethodAndArguments(method, arguments));
+              if (method == #save) {
+                return false;
+              }
+              if (method == #drawColor) {
+                throw 'fail';
+              }
+              return true;
+            }),
         ),
       );
 
-      expect(
-        methodsAndArguments,
-        <MethodAndArguments>[
-          const MethodAndArguments(#save, <dynamic>[]),
-          const MethodAndArguments(#drawColor, <dynamic>[Colors.transparent, BlendMode.color]),
-          // The #restore call is never evaluated
-        ],
-      );
+      expect(methodsAndArguments, <MethodAndArguments>[
+        const MethodAndArguments(#save, <dynamic>[]),
+        const MethodAndArguments(#drawColor, <dynamic>[
+          Colors.transparent,
+          BlendMode.color,
+        ]),
+        // The #restore call is never evaluated
+      ]);
     });
   });
 
   group('everything', () {
-    testWidgets('matches when the predicate always returns true', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const CustomPaint(
-          painter: MyPainter(color: Colors.transparent),
-          child: SizedBox(width: 50, height: 50),
-        ),
-      );
+    testWidgets(
+      'matches when the predicate always returns true',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          const CustomPaint(
+            painter: MyPainter(color: Colors.transparent),
+            child: SizedBox(width: 50, height: 50),
+          ),
+        );
 
-      final List<MethodAndArguments> methodsAndArguments = <MethodAndArguments>[];
+        final List<MethodAndArguments> methodsAndArguments =
+            <MethodAndArguments>[];
 
-      expect(
-        tester.renderObject(find.byType(CustomPaint)),
-        paints..everything((Symbol method, List<dynamic> arguments) {
-          methodsAndArguments.add(MethodAndArguments(method, arguments));
-          return true;
-        }),
-      );
+        expect(
+          tester.renderObject(find.byType(CustomPaint)),
+          paints
+            ..everything((Symbol method, List<dynamic> arguments) {
+              methodsAndArguments.add(MethodAndArguments(method, arguments));
+              return true;
+            }),
+        );
 
-      expect(
-        methodsAndArguments,
-        <MethodAndArguments>[
+        expect(methodsAndArguments, <MethodAndArguments>[
           const MethodAndArguments(#save, <dynamic>[]),
-          const MethodAndArguments(#drawColor, <dynamic>[Colors.transparent, BlendMode.color]),
+          const MethodAndArguments(#drawColor, <dynamic>[
+            Colors.transparent,
+            BlendMode.color,
+          ]),
           const MethodAndArguments(#restore, <dynamic>[]),
-        ],
-      );
-    });
+        ]);
+      },
+    );
 
-    testWidgets('fails when the predicate returns false', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const CustomPaint(
-          painter: MyPainter(color: Colors.transparent),
-          child: SizedBox(width: 50, height: 50),
-        ),
-      );
+    testWidgets(
+      'fails when the predicate returns false',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          const CustomPaint(
+            painter: MyPainter(color: Colors.transparent),
+            child: SizedBox(width: 50, height: 50),
+          ),
+        );
 
-      final List<MethodAndArguments> methodsAndArguments = <MethodAndArguments>[];
+        final List<MethodAndArguments> methodsAndArguments =
+            <MethodAndArguments>[];
 
-      expect(
-        tester.renderObject(find.byType(CustomPaint)),
-        isNot(
-          paints..everything((Symbol method, List<dynamic> arguments) {
-            methodsAndArguments.add(MethodAndArguments(method, arguments));
-            // returns false on #drawColor
-            return method == #restore || method == #save;
-          }),
-        ),
-      );
+        expect(
+          tester.renderObject(find.byType(CustomPaint)),
+          isNot(
+            paints
+              ..everything((Symbol method, List<dynamic> arguments) {
+                methodsAndArguments.add(MethodAndArguments(method, arguments));
+                // returns false on #drawColor
+                return method == #restore || method == #save;
+              }),
+          ),
+        );
 
-      expect(
-        methodsAndArguments,
-        <MethodAndArguments>[
+        expect(methodsAndArguments, <MethodAndArguments>[
           const MethodAndArguments(#save, <dynamic>[]),
-          const MethodAndArguments(#drawColor, <dynamic>[Colors.transparent, BlendMode.color]),
+          const MethodAndArguments(#drawColor, <dynamic>[
+            Colors.transparent,
+            BlendMode.color,
+          ]),
           // The #restore call is never evaluated
-        ],
-      );
-    });
+        ]);
+      },
+    );
 
-    testWidgets('fails if the predicate ever throws', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const CustomPaint(
-          painter: MyPainter(color: Colors.transparent),
-          child: SizedBox(width: 50, height: 50),
-        ),
-      );
+    testWidgets(
+      'fails if the predicate ever throws',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          const CustomPaint(
+            painter: MyPainter(color: Colors.transparent),
+            child: SizedBox(width: 50, height: 50),
+          ),
+        );
 
-      final List<MethodAndArguments> methodsAndArguments = <MethodAndArguments>[];
+        final List<MethodAndArguments> methodsAndArguments =
+            <MethodAndArguments>[];
 
-      expect(
-        tester.renderObject(find.byType(CustomPaint)),
-        isNot(
-          paints..everything((Symbol method, List<dynamic> arguments) {
-            methodsAndArguments.add(MethodAndArguments(method, arguments));
-            if (method == #drawColor) {
-              throw 'failed ';
-            }
-            return true;
-          }),
-        ),
-      );
+        expect(
+          tester.renderObject(find.byType(CustomPaint)),
+          isNot(
+            paints
+              ..everything((Symbol method, List<dynamic> arguments) {
+                methodsAndArguments.add(MethodAndArguments(method, arguments));
+                if (method == #drawColor) {
+                  throw 'failed ';
+                }
+                return true;
+              }),
+          ),
+        );
 
-      expect(
-        methodsAndArguments,
-        <MethodAndArguments>[
+        expect(methodsAndArguments, <MethodAndArguments>[
           const MethodAndArguments(#save, <dynamic>[]),
-          const MethodAndArguments(#drawColor, <dynamic>[Colors.transparent, BlendMode.color]),
+          const MethodAndArguments(#drawColor, <dynamic>[
+            Colors.transparent,
+            BlendMode.color,
+          ]),
           // The #restore call is never evaluated
-        ],
-      );
-    });
+        ]);
+      },
+    );
   });
 }

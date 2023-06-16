@@ -16,9 +16,7 @@ class ListenerApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Listener Sample')),
-        body: const Center(
-          child: ListenerExample(),
-        ),
+        body: const Center(child: ListenerExample()),
       ),
     );
   }
@@ -71,13 +69,17 @@ class _ListenerExampleState extends State<ListenerExample> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text('You have pressed or released in this area this many times:'),
+              const Text(
+                'You have pressed or released in this area this many times:',
+              ),
               Text(
                 '$_downCounter presses\n$_upCounter releases',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               Text(
-                'The cursor is here: (${x.toStringAsFixed(2)}, ${y.toStringAsFixed(2)})',
+                'The cursor is here: (${x.toStringAsFixed(
+                  2,
+                )}, ${y.toStringAsFixed(2)})',
               ),
             ],
           ),

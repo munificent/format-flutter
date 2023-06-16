@@ -40,10 +40,7 @@ class BenchUpdateManyChildLayers extends SceneBuilderRecorder {
   Future<void> setUpAll() async {
     _pictures = <Picture>[];
     viewSize = view.physicalSize;
-    cellSize = Size(
-      viewSize.width / kColumns,
-      viewSize.height / kRows,
-    );
+    cellSize = Size(viewSize.width / kColumns, viewSize.height / kRows);
     rectSize = cellSize * 0.8;
 
     final Paint paint = Paint()..color = const Color.fromARGB(255, 255, 0, 0);
@@ -65,7 +62,8 @@ class BenchUpdateManyChildLayers extends SceneBuilderRecorder {
       for (int col = 0; col < kColumns; col++) {
         final int layerId = 1000000 * row + col;
         final OffsetEngineLayer? oldLayer = _layers[layerId];
-        final double wobbleOffsetX = col * cellSize.width + (wobbleCounter - 5).abs();
+        final double wobbleOffsetX =
+            col * cellSize.width + (wobbleCounter - 5).abs();
         final double offsetY = row * cellSize.height;
         // Retain every other layer, so we exercise the update path 50% of the
         // time and the retain path the other 50%.

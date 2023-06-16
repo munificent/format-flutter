@@ -8,24 +8,27 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('lerp Duration', () {
     test('linearly interpolates between positive Durations', () {
-      expect(
-        lerpDuration(const Duration(seconds: 1), const Duration(seconds: 2), 0.5),
-        const Duration(milliseconds: 1500),
-      );
+      expect(lerpDuration(
+        const Duration(seconds: 1),
+        const Duration(seconds: 2),
+        0.5,
+      ), const Duration(milliseconds: 1500));
     });
 
     test('linearly interpolates between negative Durations', () {
-      expect(
-        lerpDuration(const Duration(seconds: -1), const Duration(seconds: -2), 0.5),
-        const Duration(milliseconds: -1500),
-      );
+      expect(lerpDuration(
+        const Duration(seconds: -1),
+        const Duration(seconds: -2),
+        0.5,
+      ), const Duration(milliseconds: -1500));
     });
 
     test('linearly interpolates between positive and negative Durations', () {
-      expect(
-        lerpDuration(const Duration(seconds: -1), const Duration(seconds:2), 0.5),
-        const Duration(milliseconds: 500),
-      );
+      expect(lerpDuration(
+        const Duration(seconds: -1),
+        const Duration(seconds: 2),
+        0.5,
+      ), const Duration(milliseconds: 500));
     });
 
     test('starts at first Duration', () {
@@ -48,10 +51,11 @@ void main() {
         const Duration(seconds: 6),
       );
 
-      expect(
-        lerpDuration(const Duration(seconds: -1), const Duration(seconds: -2), 5),
-        const Duration(seconds: -6),
-      );
+      expect(lerpDuration(
+        const Duration(seconds: -1),
+        const Duration(seconds: -2),
+        5,
+      ), const Duration(seconds: -6));
     });
   });
 }

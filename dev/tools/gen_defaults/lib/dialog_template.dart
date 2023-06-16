@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class DialogTemplate extends TokenTemplate {
-  const DialogTemplate(super.blockName, super.fileName, super.tokens, {
+  const DialogTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   @override
@@ -31,16 +34,22 @@ class _${blockName}DefaultsM3 extends DialogTheme {
   Color? get backgroundColor => ${componentColor("md.comp.dialog.container")};
 
   @override
-  Color? get shadowColor => ${colorOrTransparent("md.comp.dialog.container.shadow-color")};
+  Color? get shadowColor => ${colorOrTransparent(
+        "md.comp.dialog.container.shadow-color",
+      )};
 
   @override
-  Color? get surfaceTintColor => ${colorOrTransparent("md.comp.dialog.container.surface-tint-layer.color")};
+  Color? get surfaceTintColor => ${colorOrTransparent(
+        "md.comp.dialog.container.surface-tint-layer.color",
+      )};
 
   @override
   TextStyle? get titleTextStyle => ${textStyle("md.comp.dialog.headline")};
 
   @override
-  TextStyle? get contentTextStyle => ${textStyle("md.comp.dialog.supporting-text")};
+  TextStyle? get contentTextStyle => ${textStyle(
+        "md.comp.dialog.supporting-text",
+      )};
 
   @override
   EdgeInsetsGeometry? get actionsPadding => const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0);
@@ -59,7 +68,9 @@ class _${blockName}DefaultsM3 extends DialogTheme {
   final BuildContext context;
 
   @override
-  Color? get backgroundColor => ${componentColor("md.comp.full-screen-dialog.container")};
+  Color? get backgroundColor => ${componentColor(
+        "md.comp.full-screen-dialog.container",
+      )};
 }
 ''';
 }

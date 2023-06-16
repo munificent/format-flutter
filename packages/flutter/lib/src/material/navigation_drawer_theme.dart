@@ -124,7 +124,11 @@ class NavigationDrawerThemeData with Diagnosticable {
   /// If both arguments are null then null is returned.
   ///
   /// {@macro dart.ui.shadow.lerp}
-  static NavigationDrawerThemeData? lerp(NavigationDrawerThemeData? a, NavigationDrawerThemeData? b, double t) {
+  static NavigationDrawerThemeData? lerp(
+    NavigationDrawerThemeData? a,
+    NavigationDrawerThemeData? b,
+    double t,
+  ) {
     if (identical(a, b)) {
       return a;
     }
@@ -138,25 +142,33 @@ class NavigationDrawerThemeData with Diagnosticable {
       indicatorShape: ShapeBorder.lerp(a?.indicatorShape, b?.indicatorShape, t),
       indicatorSize: Size.lerp(a?.indicatorSize, a?.indicatorSize, t),
       labelTextStyle: MaterialStateProperty.lerp<TextStyle?>(
-          a?.labelTextStyle, b?.labelTextStyle, t, TextStyle.lerp),
+        a?.labelTextStyle,
+        b?.labelTextStyle,
+        t,
+        TextStyle.lerp,
+      ),
       iconTheme: MaterialStateProperty.lerp<IconThemeData?>(
-          a?.iconTheme, b?.iconTheme, t, IconThemeData.lerp),
+        a?.iconTheme,
+        b?.iconTheme,
+        t,
+        IconThemeData.lerp,
+      ),
     );
   }
 
   @override
   int get hashCode => Object.hash(
-        tileHeight,
-        backgroundColor,
-        elevation,
-        shadowColor,
-        surfaceTintColor,
-        indicatorColor,
-        indicatorShape,
-        indicatorSize,
-        labelTextStyle,
-        iconTheme,
-      );
+    tileHeight,
+    backgroundColor,
+    elevation,
+    shadowColor,
+    surfaceTintColor,
+    indicatorColor,
+    indicatorShape,
+    indicatorSize,
+    labelTextStyle,
+    iconTheme,
+  );
 
   @override
   bool operator ==(Object other) {
@@ -182,27 +194,42 @@ class NavigationDrawerThemeData with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DoubleProperty('tileHeight', tileHeight, defaultValue: null));
     properties.add(
-        ColorProperty('backgroundColor', backgroundColor, defaultValue: null));
+      DoubleProperty('tileHeight', tileHeight, defaultValue: null),
+    );
+    properties.add(
+      ColorProperty('backgroundColor', backgroundColor, defaultValue: null),
+    );
     properties.add(DoubleProperty('elevation', elevation, defaultValue: null));
-    properties.add(ColorProperty('shadowColor', shadowColor, defaultValue: null));
-    properties.add(ColorProperty('surfaceTintColor', surfaceTintColor,
-        defaultValue: null));
     properties.add(
-        ColorProperty('indicatorColor', indicatorColor, defaultValue: null));
+      ColorProperty('shadowColor', shadowColor, defaultValue: null),
+    );
+    properties.add(
+      ColorProperty('surfaceTintColor', surfaceTintColor, defaultValue: null),
+    );
+    properties.add(
+      ColorProperty('indicatorColor', indicatorColor, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<ShapeBorder>(
-        'indicatorShape', indicatorShape,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty<Size>('indicatorSize', indicatorSize,
-        defaultValue: null));
+      'indicatorShape',
+      indicatorShape,
+      defaultValue: null,
+    ));
+    properties.add(DiagnosticsProperty<Size>(
+      'indicatorSize',
+      indicatorSize,
+      defaultValue: null,
+    ));
     properties.add(DiagnosticsProperty<MaterialStateProperty<TextStyle?>>(
-        'labelTextStyle', labelTextStyle,
-        defaultValue: null));
+      'labelTextStyle',
+      labelTextStyle,
+      defaultValue: null,
+    ));
     properties.add(DiagnosticsProperty<MaterialStateProperty<IconThemeData?>>(
-        'iconTheme', iconTheme,
-        defaultValue: null));
+      'iconTheme',
+      iconTheme,
+      defaultValue: null,
+    ));
   }
 }
 

@@ -30,32 +30,32 @@ void main() {
     logger = BufferLogger.test();
   });
 
-  testUsingContext('devices can display no connected devices with the --machine flag', () async {
-    final DevicesCommand command = DevicesCommand();
-    final CommandRunner<void> runner = createTestCommandRunner(command);
-    await runner.run(<String>['devices', '--machine']);
+  testUsingContext(
+    'devices can display no connected devices with the --machine flag',
+    () async {
+      final DevicesCommand command = DevicesCommand();
+      final CommandRunner<void> runner = createTestCommandRunner(command);
+      await runner.run(<String>['devices', '--machine']);
 
-    expect(
-      json.decode(logger.statusText),
-      isEmpty,
-    );
-  }, overrides: <Type, Generator>{
-    FeatureFlags: () => TestFeatureFlags(),
-    Logger: () => logger,
-  });
+      expect(json.decode(logger.statusText), isEmpty);
+    },
+    overrides: <Type, Generator>{
+      FeatureFlags: () => TestFeatureFlags(),
+      Logger: () => logger,
+    },
+  );
 
-  testUsingContext('devices can display via the --machine flag', () async {
-    deviceManager.devices = <Device>[
-      WebServerDevice(logger: logger),
-    ];
-    final DevicesCommand command = DevicesCommand();
-    final CommandRunner<void> runner = createTestCommandRunner(command);
-    await runner.run(<String>['devices', '--machine']);
+  testUsingContext(
+    'devices can display via the --machine flag',
+    () async {
+      deviceManager.devices = <Device>[WebServerDevice(logger: logger)];
+      final DevicesCommand command = DevicesCommand();
+      final CommandRunner<void> runner = createTestCommandRunner(command);
+      await runner.run(<String>['devices', '--machine']);
 
-    expect(
-      json.decode(logger.statusText),
-      contains(equals(
-        <String, Object>{
+      expect(
+        json.decode(logger.statusText),
+        contains(equals(<String, Object>{
           'name': 'Web Server',
           'id': 'web-server',
           'isSupported': true,
@@ -71,14 +71,15 @@ void main() {
             'hardwareRendering': false,
             'startPaused': true,
           },
-        },
-      )),
-    );
-  }, overrides: <Type, Generator>{
-    FeatureFlags: () => TestFeatureFlags(isWebEnabled: true),
-    DeviceManager: () => deviceManager,
-    Logger: () => logger,
-  });
+        })),
+      );
+    },
+    overrides: <Type, Generator>{
+      FeatureFlags: () => TestFeatureFlags(isWebEnabled: true),
+      DeviceManager: () => deviceManager,
+      Logger: () => logger,
+    },
+  );
 }
 
 class FakeDeviceManager extends Fake implements DeviceManager {
@@ -88,9 +89,7 @@ class FakeDeviceManager extends Fake implements DeviceManager {
   String? specifiedDeviceId;
 
   @override
-  Future<List<Device>> getAllDevices({
-    DeviceDiscoveryFilter? filter,
-  }) async {
+  Future<List<Device>> getAllDevices({DeviceDiscoveryFilter? filter}) async {
     return devices;
   }
 

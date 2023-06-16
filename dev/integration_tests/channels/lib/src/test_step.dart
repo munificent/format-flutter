@@ -84,7 +84,8 @@ class TestStepResult {
         Text(
           status.name,
           key: ValueKey<String>(
-              status == TestStatus.pending ? 'nostatus' : 'status'),
+            status == TestStatus.pending ? 'nostatus' : 'status',
+          ),
           style: bold,
         ),
       ],
@@ -136,9 +137,10 @@ Future<TestStepResult> resultOfHandshake(
 
 String _toString(dynamic message) {
   if (message is ByteData) {
-    return message.buffer
-        .asUint8List(message.offsetInBytes, message.lengthInBytes)
-        .toString();
+    return message.buffer.asUint8List(
+      message.offsetInBytes,
+      message.lengthInBytes,
+    ).toString();
   } else {
     return '$message';
   }

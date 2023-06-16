@@ -29,21 +29,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _controller =
-  TextEditingController(text: 'Text1');
+  final TextEditingController _controller = TextEditingController(
+    text: 'Text1',
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: Text(widget.title)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-              const Text('Hello World',
-            ),
+            const Text('Hello World'),
             // Create a text form field since we can't test clipboard unless
             // html document has focus.
             TextFormField(
@@ -51,9 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
               enabled: true,
               controller: _controller,
               //initialValue: 'Text1',
-              decoration: const InputDecoration(
-                labelText: 'Text Input Field:',
-              ),
+              decoration: const InputDecoration(labelText: 'Text Input Field:'),
             ),
           ],
         ),

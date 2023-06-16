@@ -16,12 +16,15 @@ final String rootDirectoryPath = Directory.current.path;
 
 void main() {
   for (final String language in kCupertinoSupportedLanguages) {
-    testWidgets('translations exist for $language', (WidgetTester tester) async {
+    testWidgets('translations exist for $language', (
+      WidgetTester tester,
+    ) async {
       final Locale locale = Locale(language);
 
       expect(GlobalCupertinoLocalizations.delegate.isSupported(locale), isTrue);
 
-      final CupertinoLocalizations localizations = await GlobalCupertinoLocalizations.delegate.load(locale);
+      final CupertinoLocalizations localizations =
+          await GlobalCupertinoLocalizations.delegate.load(locale);
 
       expect(localizations.datePickerYear(0), isNotNull);
       expect(localizations.datePickerYear(1), isNotNull);
@@ -43,7 +46,10 @@ void main() {
       expect(localizations.datePickerDayOfMonth(2, 3), isNotNull);
       expect(localizations.datePickerDayOfMonth(10, 4), isNotNull);
 
-      expect(localizations.datePickerMediumDate(DateTime(2019, 3, 25)), isNotNull);
+      expect(
+        localizations.datePickerMediumDate(DateTime(2019, 3, 25)),
+        isNotNull,
+      );
 
       expect(localizations.datePickerHour(0), isNotNull);
       expect(localizations.datePickerHour(1), isNotNull);
@@ -54,10 +60,22 @@ void main() {
       expect(localizations.datePickerHourSemanticsLabel(1), isNotNull);
       expect(localizations.datePickerHourSemanticsLabel(2), isNotNull);
       expect(localizations.datePickerHourSemanticsLabel(10), isNotNull);
-      expect(localizations.datePickerHourSemanticsLabel(0), isNot(contains(r'$hour')));
-      expect(localizations.datePickerHourSemanticsLabel(1), isNot(contains(r'$hour')));
-      expect(localizations.datePickerHourSemanticsLabel(2), isNot(contains(r'$hour')));
-      expect(localizations.datePickerHourSemanticsLabel(10), isNot(contains(r'$hour')));
+      expect(
+        localizations.datePickerHourSemanticsLabel(0),
+        isNot(contains(r'$hour')),
+      );
+      expect(
+        localizations.datePickerHourSemanticsLabel(1),
+        isNot(contains(r'$hour')),
+      );
+      expect(
+        localizations.datePickerHourSemanticsLabel(2),
+        isNot(contains(r'$hour')),
+      );
+      expect(
+        localizations.datePickerHourSemanticsLabel(10),
+        isNot(contains(r'$hour')),
+      );
 
       expect(localizations.datePickerDateOrder, isNotNull);
       expect(localizations.datePickerDateTimeOrder, isNotNull);
@@ -100,18 +118,34 @@ void main() {
       expect(localizations.pasteButtonLabel, isNotNull);
       expect(localizations.selectAllButtonLabel, isNotNull);
 
-      expect(localizations.tabSemanticsLabel(tabIndex: 2, tabCount: 5), isNotNull);
-      expect(localizations.tabSemanticsLabel(tabIndex: 2, tabCount: 5), isNot(contains(r'$tabIndex')));
-      expect(localizations.tabSemanticsLabel(tabIndex: 2, tabCount: 5), isNot(contains(r'$tabCount')));
-      expect(() => localizations.tabSemanticsLabel(tabIndex: 0, tabCount: 5), throwsAssertionError);
-      expect(() => localizations.tabSemanticsLabel(tabIndex: 2, tabCount: 0), throwsAssertionError);
+      expect(
+        localizations.tabSemanticsLabel(tabIndex: 2, tabCount: 5),
+        isNotNull,
+      );
+      expect(
+        localizations.tabSemanticsLabel(tabIndex: 2, tabCount: 5),
+        isNot(contains(r'$tabIndex')),
+      );
+      expect(
+        localizations.tabSemanticsLabel(tabIndex: 2, tabCount: 5),
+        isNot(contains(r'$tabCount')),
+      );
+      expect(
+        () => localizations.tabSemanticsLabel(tabIndex: 0, tabCount: 5),
+        throwsAssertionError,
+      );
+      expect(
+        () => localizations.tabSemanticsLabel(tabIndex: 2, tabCount: 0),
+        throwsAssertionError,
+      );
     });
   }
 
   testWidgets('Spot check French', (WidgetTester tester) async {
     const Locale locale = Locale('fr');
     expect(GlobalCupertinoLocalizations.delegate.isSupported(locale), isTrue);
-    final CupertinoLocalizations localizations = await GlobalCupertinoLocalizations.delegate.load(locale);
+    final CupertinoLocalizations localizations =
+        await GlobalCupertinoLocalizations.delegate.load(locale);
     expect(localizations, isA<CupertinoLocalizationFr>());
     expect(localizations.alertDialogLabel, 'Alerte');
     expect(localizations.datePickerHourSemanticsLabel(1), '1 heure');
@@ -126,7 +160,8 @@ void main() {
   testWidgets('Spot check Chinese', (WidgetTester tester) async {
     const Locale locale = Locale('zh');
     expect(GlobalCupertinoLocalizations.delegate.isSupported(locale), isTrue);
-    final CupertinoLocalizations localizations = await GlobalCupertinoLocalizations.delegate.load(locale);
+    final CupertinoLocalizations localizations =
+        await GlobalCupertinoLocalizations.delegate.load(locale);
     expect(localizations, isA<CupertinoLocalizationZh>());
     expect(localizations.alertDialogLabel, '提醒');
     expect(localizations.datePickerHourSemanticsLabel(1), '1 点');
@@ -139,42 +174,55 @@ void main() {
   });
 
   // Regression test for https://github.com/flutter/flutter/issues/53036.
-  testWidgets('`nb` uses `no` as its synonym when `nb` arb file is not present', (WidgetTester tester) async {
-    final File nbCupertinoArbFile = File(
-      path.join(rootDirectoryPath, 'lib', 'src', 'l10n', 'cupertino_nb.arb'),
-    );
-    final File noCupertinoArbFile = File(
-      path.join(rootDirectoryPath, 'lib', 'src', 'l10n', 'cupertino_no.arb'),
-    );
+  testWidgets(
+    '`nb` uses `no` as its synonym when `nb` arb file is not present',
+    (WidgetTester tester) async {
+      final File nbCupertinoArbFile = File(
+        path.join(rootDirectoryPath, 'lib', 'src', 'l10n', 'cupertino_nb.arb'),
+      );
+      final File noCupertinoArbFile = File(
+        path.join(rootDirectoryPath, 'lib', 'src', 'l10n', 'cupertino_no.arb'),
+      );
 
+      if (noCupertinoArbFile.existsSync() && !nbCupertinoArbFile.existsSync()) {
+        Locale locale = const Locale.fromSubtags(languageCode: 'no');
+        expect(
+          GlobalCupertinoLocalizations.delegate.isSupported(locale),
+          isTrue,
+        );
+        CupertinoLocalizations localizations =
+            await GlobalCupertinoLocalizations.delegate.load(locale);
+        expect(localizations, isA<CupertinoLocalizationNo>());
 
-    if (noCupertinoArbFile.existsSync() && !nbCupertinoArbFile.existsSync()) {
-      Locale locale = const Locale.fromSubtags(languageCode: 'no');
-      expect(GlobalCupertinoLocalizations.delegate.isSupported(locale), isTrue);
-      CupertinoLocalizations localizations = await GlobalCupertinoLocalizations.delegate.load(locale);
-      expect(localizations, isA<CupertinoLocalizationNo>());
+        final String pasteButtonLabelNo = localizations.pasteButtonLabel;
+        final String copyButtonLabelNo = localizations.copyButtonLabel;
+        final String cutButtonLabelNo = localizations.cutButtonLabel;
 
-      final String pasteButtonLabelNo = localizations.pasteButtonLabel;
-      final String copyButtonLabelNo = localizations.copyButtonLabel;
-      final String cutButtonLabelNo = localizations.cutButtonLabel;
-
-      locale = const Locale.fromSubtags(languageCode: 'nb');
-      expect(GlobalCupertinoLocalizations.delegate.isSupported(locale), isTrue);
-      localizations = await GlobalCupertinoLocalizations.delegate.load(locale);
-      expect(localizations, isA<CupertinoLocalizationNb>());
-      expect(localizations.pasteButtonLabel, pasteButtonLabelNo);
-      expect(localizations.copyButtonLabel, copyButtonLabelNo);
-      expect(localizations.cutButtonLabel, cutButtonLabelNo);
-    }
-  });
+        locale = const Locale.fromSubtags(languageCode: 'nb');
+        expect(
+          GlobalCupertinoLocalizations.delegate.isSupported(locale),
+          isTrue,
+        );
+        localizations =
+            await GlobalCupertinoLocalizations.delegate.load(locale);
+        expect(localizations, isA<CupertinoLocalizationNb>());
+        expect(localizations.pasteButtonLabel, pasteButtonLabelNo);
+        expect(localizations.copyButtonLabel, copyButtonLabelNo);
+        expect(localizations.cutButtonLabel, cutButtonLabelNo);
+      }
+    },
+  );
 
   // Regression test for https://github.com/flutter/flutter/issues/36704.
-  testWidgets('kn arb file should be properly Unicode escaped', (WidgetTester tester) async {
+  testWidgets('kn arb file should be properly Unicode escaped', (
+    WidgetTester tester,
+  ) async {
     final File file = File(
       path.join(rootDirectoryPath, 'lib', 'src', 'l10n', 'cupertino_kn.arb'),
     );
 
-    final Map<String, dynamic> bundle = json.decode(file.readAsStringSync()) as Map<String, dynamic>;
+    final Map<String, dynamic> bundle =
+        json.decode(file.readAsStringSync()) as Map<String, dynamic>;
 
     // Encodes the arb resource values if they have not already been
     // encoded.

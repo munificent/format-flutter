@@ -54,7 +54,8 @@ class TestStepResult {
         Text(
           status.toString().substring('TestStatus.'.length),
           key: ValueKey<String>(
-              status == TestStatus.pending ? 'nostatus' : 'status'),
+            status == TestStatus.pending ? 'nostatus' : 'status',
+          ),
           style: bold,
         ),
       ],

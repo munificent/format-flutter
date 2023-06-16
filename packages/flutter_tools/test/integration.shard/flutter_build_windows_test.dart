@@ -21,14 +21,9 @@ void main() {
   group('flutter build windows command', () {
     setUpAll(() {
       tempDir = createResolvedTempDirectorySync('build_windows_test.');
-      flutterBin = fileSystem.path.join(
-        getFlutterRoot(),
-        'bin',
-        'flutter',
-      );
-      ProcessResult result = processManager.runSync(<String>[flutterBin, 'config',
-        '--enable-windows-desktop',
-      ]);
+      flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
+      ProcessResult result = processManager
+          .runSync(<String>[flutterBin, 'config', '--enable-windows-desktop']);
       expect(result, const ProcessResultMatcher());
 
       result = processManager.runSync(<String>[
@@ -49,10 +44,9 @@ void main() {
         'Release',
       ));
 
-      exeFile = fileSystem.file(fileSystem.path.join(
-        releaseDir.path,
-        'hello.exe',
-      ));
+      exeFile = fileSystem.file(
+        fileSystem.path.join(releaseDir.path, 'hello.exe'),
+      );
     });
 
     tearDownAll(() {
@@ -99,26 +93,29 @@ void main() {
       expect(productVersion, equals('1.2.3'));
     });
 
-    testWithoutContext('flutter build windows sets build name and build number', () {
-      final ProcessResult result = processManager.runSync(<String>[
-        flutterBin,
-        ...getLocalEngineArguments(),
-        'build',
-        'windows',
-        '--no-pub',
-        '--build-name',
-        '1.2.3',
-        '--build-number',
-        '4',
-      ], workingDirectory: projectRoot.path);
-      expect(result, const ProcessResultMatcher());
+    testWithoutContext(
+      'flutter build windows sets build name and build number',
+      () {
+        final ProcessResult result = processManager.runSync(<String>[
+          flutterBin,
+          ...getLocalEngineArguments(),
+          'build',
+          'windows',
+          '--no-pub',
+          '--build-name',
+          '1.2.3',
+          '--build-number',
+          '4',
+        ], workingDirectory: projectRoot.path);
+        expect(result, const ProcessResultMatcher());
 
-      final String fileVersion = _getFileVersion(exeFile);
-      final String productVersion = _getProductVersion(exeFile);
+        final String fileVersion = _getFileVersion(exeFile);
+        final String productVersion = _getProductVersion(exeFile);
 
-      expect(fileVersion, equals('1.2.3.4'));
-      expect(productVersion, equals('1.2.3+4'));
-    });
+        expect(fileVersion, equals('1.2.3.4'));
+        expect(productVersion, equals('1.2.3+4'));
+      },
+    );
   }, skip: !io.Platform.isWindows); // [intended] Windows integration build.
 }
 
@@ -130,7 +127,7 @@ String _getFileVersion(File file) {
     '\$v = [System.Diagnostics.FileVersionInfo]::GetVersionInfo(\\"${file.path}\\"); '
     r'Write-Output \"$($v.FileMajorPart).$($v.FileMinorPart).$($v.FileBuildPart).$($v.FilePrivatePart)\" '
     '"',
-    <String>[]
+    <String>[],
   );
 
   expect(result, const ProcessResultMatcher());
@@ -143,7 +140,7 @@ String _getFileVersion(File file) {
 String _getProductVersion(File file) {
   final ProcessResult result = Process.runSync(
     'powershell.exe -command "[System.Diagnostics.FileVersionInfo]::GetVersionInfo(\\"${file.path}\\").ProductVersion"',
-    <String>[]
+    <String>[],
   );
 
   expect(result, const ProcessResultMatcher());

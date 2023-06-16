@@ -40,7 +40,9 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
     _restorationManager = createRestorationManager();
     _initKeyboard();
     initLicenses();
-    SystemChannels.system.setMessageHandler((dynamic message) => handleSystemMessage(message as Object));
+    SystemChannels.system.setMessageHandler(
+      (dynamic message) => handleSystemMessage(message as Object),
+    );
     SystemChannels.lifecycle.setMessageHandler(_handleLifecycleMessage);
     SystemChannels.platform.setMethodCallHandler(_handlePlatformMessage);
     TextInput.ensureInitialized();
@@ -71,7 +73,9 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
     _keyEventManager = KeyEventManager(_keyboard, RawKeyboard.instance);
     _keyboard.syncKeyboardState().then((_) {
       platformDispatcher.onKeyData = _keyEventManager.handleKeyData;
-      SystemChannels.keyEvent.setMessageHandler(_keyEventManager.handleRawKeyMessage);
+      SystemChannels.keyEvent.setMessageHandler(
+        _keyEventManager.handleRawKeyMessage,
+      );
     });
   }
 
@@ -93,7 +97,8 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
   /// [BackgroundIsolateBinaryMessenger.ensureInitialized], which takes a
   /// [RootIsolateToken] as its argument. The value `null` is returned when
   /// executed from background isolates.
-  static ui.RootIsolateToken? get rootIsolateToken => ui.RootIsolateToken.instance;
+  static ui.RootIsolateToken? get rootIsolateToken =>
+      ui.RootIsolateToken.instance;
 
   /// The low level buffering and dispatch mechanism for messages sent by
   /// plugins on the engine side to their corresponding plugin code on
@@ -180,10 +185,23 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
           // The compressed version doesn't have a more common .gz extension
           // because gradle for Android non-transparently manipulates .gz files.
           final ByteData licenseBytes = await rootBundle.load('NOTICES.Z');
-          final List<int> unzippedBytes = await compute<List<int>, List<int>>(gzip.decode, licenseBytes.buffer.asUint8List(), debugLabel: 'decompressLicenses');
-          rawLicenses = await compute<List<int>, String>(utf8.decode, unzippedBytes, debugLabel: 'utf8DecodeLicenses');
+          final List<int> unzippedBytes = await compute<List<int>, List<int>>(
+            gzip.decode,
+            licenseBytes.buffer.asUint8List(),
+            debugLabel: 'decompressLicenses',
+          );
+          rawLicenses = await compute<List<int>, String>(
+            utf8.decode,
+            unzippedBytes,
+            debugLabel: 'utf8DecodeLicenses',
+          );
         }
-        final List<LicenseEntry> licenses = await compute<String, List<LicenseEntry>>(_parseLicenses, rawLicenses, debugLabel: 'parseLicenses');
+        final List<LicenseEntry> licenses =
+            await compute<String, List<LicenseEntry>>(
+          _parseLicenses,
+          rawLicenses,
+          debugLabel: 'parseLicenses',
+        );
         licenses.forEach(controller.add);
         await controller.close();
       },
@@ -214,16 +232,18 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
   void initServiceExtensions() {
     super.initServiceExtensions();
 
-    assert(() {
-      registerStringServiceExtension(
-        name: ServicesServiceExtensions.evict.name,
-        getter: () async => '',
-        setter: (String value) async {
-          evict(value);
-        },
-      );
-      return true;
-    }());
+    assert(
+      () {
+        registerStringServiceExtension(
+          name: ServicesServiceExtensions.evict.name,
+          getter: () async => '',
+          setter: (String value) async {
+            evict(value);
+          },
+        );
+        return true;
+      }(),
+    );
   }
 
   /// Called in response to the `ext.flutter.evict` service extension.
@@ -251,7 +271,8 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
   /// [WidgetsBindingObserver.didChangeAppLifecycleState].
   @protected
   void readInitialLifecycleStateFromNativeWindow() {
-    if (lifecycleState != null || platformDispatcher.initialLifecycleState.isEmpty) {
+    if (lifecycleState != null ||
+        platformDispatcher.initialLifecycleState.isEmpty) {
       return;
     }
     _handleLifecycleMessage(platformDispatcher.initialLifecycleState);
@@ -259,29 +280,39 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
 
   Future<String?> _handleLifecycleMessage(String? message) async {
     final AppLifecycleState? state = _parseAppLifecycleMessage(message!);
-    final List<AppLifecycleState> generated = _generateStateTransitions(lifecycleState, state!);
+    final List<AppLifecycleState> generated = _generateStateTransitions(
+      lifecycleState,
+      state!,
+    );
     generated.forEach(handleAppLifecycleStateChanged);
     return null;
   }
 
-  List<AppLifecycleState> _generateStateTransitions(AppLifecycleState? previousState, AppLifecycleState state) {
+  List<AppLifecycleState> _generateStateTransitions(
+    AppLifecycleState? previousState,
+    AppLifecycleState state,
+  ) {
     if (previousState == state) {
       return const <AppLifecycleState>[];
     }
-    if (previousState == AppLifecycleState.paused && state == AppLifecycleState.detached) {
+    if (previousState == AppLifecycleState.paused &&
+        state == AppLifecycleState.detached) {
       // Handle the wrap-around from paused to detached
-      return const <AppLifecycleState>[
-        AppLifecycleState.detached,
-      ];
+      return const <AppLifecycleState>[AppLifecycleState.detached];
     }
     final List<AppLifecycleState> stateChanges = <AppLifecycleState>[];
     if (previousState == null) {
       // If there was no previous state, just jump directly to the new state.
       stateChanges.add(state);
     } else {
-      final int previousStateIndex = AppLifecycleState.values.indexOf(previousState);
+      final int previousStateIndex = AppLifecycleState.values.indexOf(
+        previousState,
+      );
       final int stateIndex = AppLifecycleState.values.indexOf(state);
-      assert(previousStateIndex != -1, 'State $previousState missing in stateOrder array');
+      assert(
+        previousStateIndex != -1,
+        'State $previousState missing in stateOrder array',
+      );
       assert(stateIndex != -1, 'State $state missing in stateOrder array');
       if (previousStateIndex > stateIndex) {
         for (int i = stateIndex; i < previousStateIndex; ++i) {
@@ -293,20 +324,26 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
         }
       }
     }
-    assert((){
-      AppLifecycleState? starting = previousState;
-      for (final AppLifecycleState ending in stateChanges) {
-        if (!_debugVerifyLifecycleChange(starting, ending)) {
-          return false;
+    assert(
+      () {
+        AppLifecycleState? starting = previousState;
+        for (final AppLifecycleState ending in stateChanges) {
+          if (!_debugVerifyLifecycleChange(starting, ending)) {
+            return false;
+          }
+          starting = ending;
         }
-        starting = ending;
-      }
-      return true;
-    }(), 'Invalid lifecycle state transition generated from $previousState to $state (generated $stateChanges)');
+        return true;
+      }(),
+      'Invalid lifecycle state transition generated from $previousState to $state (generated $stateChanges)',
+    );
     return stateChanges;
   }
 
-  static bool _debugVerifyLifecycleChange(AppLifecycleState? starting, AppLifecycleState ending) {
+  static bool _debugVerifyLifecycleChange(
+    AppLifecycleState? starting,
+    AppLifecycleState ending,
+  ) {
     if (starting == null) {
       // Any transition from null is fine, since it is initializing the state.
       return true;
@@ -317,7 +354,8 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
     }
     switch (starting) {
       case AppLifecycleState.detached:
-        if (ending == AppLifecycleState.resumed || ending == AppLifecycleState.paused) {
+        if (ending == AppLifecycleState.resumed ||
+            ending == AppLifecycleState.paused) {
           return true;
         }
       case AppLifecycleState.resumed:
@@ -326,15 +364,18 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
           return true;
         }
       case AppLifecycleState.inactive:
-        if (ending == AppLifecycleState.resumed || ending == AppLifecycleState.hidden) {
+        if (ending == AppLifecycleState.resumed ||
+            ending == AppLifecycleState.hidden) {
           return true;
         }
       case AppLifecycleState.hidden:
-        if (ending == AppLifecycleState.inactive || ending == AppLifecycleState.paused) {
+        if (ending == AppLifecycleState.inactive ||
+            ending == AppLifecycleState.paused) {
           return true;
         }
       case AppLifecycleState.paused:
-        if (ending == AppLifecycleState.hidden || ending == AppLifecycleState.detached) {
+        if (ending == AppLifecycleState.hidden ||
+            ending == AppLifecycleState.detached) {
           return true;
         }
     }
@@ -343,7 +384,10 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
 
   Future<dynamic> _handlePlatformMessage(MethodCall methodCall) async {
     final String method = methodCall.method;
-    assert(method == 'SystemChrome.systemUIChange' || method == 'System.requestAppExit');
+    assert(
+      method == 'SystemChrome.systemUIChange' ||
+          method == 'System.requestAppExit',
+    );
     switch (method) {
       case 'SystemChrome.systemUIChange':
         final List<dynamic> args = methodCall.arguments as List<dynamic>;
@@ -351,7 +395,9 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
           await _systemUiChangeCallback!(args[0] as bool);
         }
       case 'System.requestAppExit':
-        return <String, dynamic>{'response': (await handleRequestAppExit()).name};
+        return <String, dynamic>{
+          'response': (await handleRequestAppExit()).name,
+        };
     }
   }
 
@@ -435,12 +481,16 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
   ///
   /// * [WidgetsBindingObserver.didRequestAppExit] for a handler you can
   ///   override on a [WidgetsBindingObserver] to receive exit requests.
-  Future<ui.AppExitResponse> exitApplication(ui.AppExitType exitType, [int exitCode = 0]) async {
-    final Map<String, Object?>? result = await SystemChannels.platform.invokeMethod<Map<String, Object?>>(
-      'System.exitApplication',
-      <String, Object?>{'type': exitType.name, 'exitCode': exitCode},
-    );
-    if (result == null ) {
+  Future<ui.AppExitResponse> exitApplication(
+    ui.AppExitType exitType, [
+    int exitCode = 0,
+  ]) async {
+    final Map<String, Object?>? result = await SystemChannels.platform
+        .invokeMethod<Map<String, Object?>>(
+          'System.exitApplication',
+          <String, Object?>{'type': exitType.name, 'exitCode': exitCode},
+        );
+    if (result == null) {
       return ui.AppExitResponse.cancel;
     }
     switch (result['response']) {
@@ -506,7 +556,9 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
 /// Signature for listening to changes in the [SystemUiMode].
 ///
 /// Set by [SystemChrome.setSystemUIChangeCallback].
-typedef SystemUiChangeCallback = Future<void> Function(bool systemOverlaysAreVisible);
+typedef SystemUiChangeCallback = Future<void> Function(
+  bool systemOverlaysAreVisible,
+);
 
 /// The default implementation of [BinaryMessenger].
 ///
@@ -541,18 +593,23 @@ class _DefaultBinaryMessenger extends BinaryMessenger {
     // access at this location seems to be the least bad option.
     // TODO(ianh): Use ServicesBinding.instance once we have better diagnostics
     // on that getter.
-    ui.PlatformDispatcher.instance.sendPlatformMessage(channel, message, (ByteData? reply) {
-      try {
-        completer.complete(reply);
-      } catch (exception, stack) {
-        FlutterError.reportError(FlutterErrorDetails(
-          exception: exception,
-          stack: stack,
-          library: 'services library',
-          context: ErrorDescription('during a platform message response callback'),
-        ));
-      }
-    });
+    ui.PlatformDispatcher.instance.sendPlatformMessage(
+      channel,
+      message,
+      (ByteData? reply) {
+        try {
+          completer.complete(reply);
+        } catch (exception, stack) {
+          FlutterError.reportError(FlutterErrorDetails(
+            exception: exception,
+            stack: stack,
+            library: 'services library',
+            context:
+                ErrorDescription('during a platform message response callback'),
+          ));
+        }
+      },
+    );
     return completer.future;
   }
 
@@ -561,21 +618,24 @@ class _DefaultBinaryMessenger extends BinaryMessenger {
     if (handler == null) {
       ui.channelBuffers.clearListener(channel);
     } else {
-      ui.channelBuffers.setListener(channel, (ByteData? data, ui.PlatformMessageResponseCallback callback) async {
-        ByteData? response;
-        try {
-          response = await handler(data);
-        } catch (exception, stack) {
-          FlutterError.reportError(FlutterErrorDetails(
-            exception: exception,
-            stack: stack,
-            library: 'services library',
-            context: ErrorDescription('during a platform message callback'),
-          ));
-        } finally {
-          callback(response);
-        }
-      });
+      ui.channelBuffers.setListener(
+        channel,
+        (ByteData? data, ui.PlatformMessageResponseCallback callback) async {
+          ByteData? response;
+          try {
+            response = await handler(data);
+          } catch (exception, stack) {
+            FlutterError.reportError(FlutterErrorDetails(
+              exception: exception,
+              stack: stack,
+              library: 'services library',
+              context: ErrorDescription('during a platform message callback'),
+            ));
+          } finally {
+            callback(response);
+          }
+        },
+      );
     }
   }
 }

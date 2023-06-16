@@ -11,9 +11,7 @@ void main() {
   testWidgets('has four containers', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(
-          body: example.CustomMultiChildLayoutApp(),
-        ),
+        home: Scaffold(body: example.CustomMultiChildLayoutApp()),
       ),
     );
     final Finder containerFinder = find.byType(Container);
@@ -23,9 +21,7 @@ void main() {
   testWidgets('containers are the same size', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(
-          body: example.CustomMultiChildLayoutExample(),
-        ),
+        home: Scaffold(body: example.CustomMultiChildLayoutExample()),
       ),
     );
     final Finder containerFinder = find.byType(Container);
@@ -39,9 +35,7 @@ void main() {
   testWidgets('containers are offset', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(
-          body: example.CustomMultiChildLayoutExample(),
-        ),
+        home: Scaffold(body: example.CustomMultiChildLayoutExample()),
       ),
     );
     final Finder containerFinder = find.byType(Container);

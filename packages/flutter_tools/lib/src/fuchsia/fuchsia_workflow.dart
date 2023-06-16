@@ -29,7 +29,9 @@ class FuchsiaWorkflow implements Workflow {
   final FuchsiaArtifacts _fuchsiaArtifacts;
 
   @override
-  bool get appliesToHostPlatform => _featureFlags.isFuchsiaEnabled && (_platform.isLinux || _platform.isMacOS);
+  bool get appliesToHostPlatform =>
+      _featureFlags.isFuchsiaEnabled &&
+      (_platform.isLinux || _platform.isMacOS);
 
   @override
   bool get canListDevices {

@@ -16,10 +16,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
-      home:  const MyHomePage(),
+      theme: ThemeData(useMaterial3: true),
+      home: const MyHomePage(),
     );
   }
 }
@@ -30,18 +28,16 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Drawer Demo'),
-      ),
+      appBar: AppBar(title: const Text('Drawer Demo')),
       drawer: NavigationDrawer(
         children: <Widget>[
           Padding(
-                padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
-                child: Text(
-                  'Drawer Header',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ),
+            padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
+            child: Text(
+              'Drawer Header',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
           const NavigationDrawerDestination(
             icon: Icon(Icons.message),
             label: Text('Messages'),
@@ -54,7 +50,8 @@ class MyHomePage extends StatelessWidget {
             icon: Icon(Icons.settings),
             label: Text('Settings'),
           ),
-        ])
+        ],
+      ),
     );
   }
 }

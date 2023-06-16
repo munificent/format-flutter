@@ -25,7 +25,10 @@ abstract final class SystemNavigator {
   /// method, as the latter may cause the underlying platform to act
   /// as if the application had crashed.
   static Future<void> pop({bool? animated}) async {
-    await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop', animated);
+    await SystemChannels.platform.invokeMethod<void>(
+      'SystemNavigator.pop',
+      animated,
+    );
   }
 
   /// Selects the single-entry history mode.
@@ -41,7 +44,9 @@ abstract final class SystemNavigator {
   ///  * [selectMultiEntryHistory], which enables the browser history to have
   ///    multiple entries.
   static Future<void> selectSingleEntryHistory() {
-    return SystemChannels.navigation.invokeMethod<void>('selectSingleEntryHistory');
+    return SystemChannels.navigation.invokeMethod<void>(
+      'selectSingleEntryHistory',
+    );
   }
 
   /// Selects the multiple-entry history mode.
@@ -57,7 +62,9 @@ abstract final class SystemNavigator {
   ///  * [selectSingleEntryHistory], which forces the history to only have one
   ///    entry.
   static Future<void> selectMultiEntryHistory() {
-    return SystemChannels.navigation.invokeMethod<void>('selectMultiEntryHistory');
+    return SystemChannels.navigation.invokeMethod<void>(
+      'selectMultiEntryHistory',
+    );
   }
 
   /// Notifies the platform for a route information change.
@@ -82,14 +89,17 @@ abstract final class SystemNavigator {
   static Future<void> routeInformationUpdated({
     @Deprecated(
       'Pass Uri.parse(location) to uri parameter instead. '
-      'This feature was deprecated after v3.8.0-3.0.pre.'
+      'This feature was deprecated after v3.8.0-3.0.pre.',
     )
     String? location,
     Uri? uri,
     Object? state,
     bool replace = false,
   }) {
-    assert((location != null) != (uri != null), 'One of uri or location must be provided, but not both.');
+    assert(
+      (location != null) != (uri != null),
+      'One of uri or location must be provided, but not both.',
+    );
     uri ??= Uri.parse(location!);
     return SystemChannels.navigation.invokeMethod<void>(
       'routeInformationUpdated',

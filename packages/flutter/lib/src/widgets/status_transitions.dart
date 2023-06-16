@@ -10,10 +10,7 @@ abstract class StatusTransitionWidget extends StatefulWidget {
   /// Initializes fields for subclasses.
   ///
   /// The [animation] argument must not be null.
-  const StatusTransitionWidget({
-    super.key,
-    required this.animation,
-  });
+  const StatusTransitionWidget({super.key, required this.animation});
 
   /// The animation to which this widget is listening.
   final Animation<double> animation;

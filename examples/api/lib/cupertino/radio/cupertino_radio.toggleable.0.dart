@@ -18,9 +18,7 @@ class CupertinoRadioApp extends StatelessWidget {
         navigationBar: CupertinoNavigationBar(
           middle: Text('CupertinoRadio Toggleable Example'),
         ),
-        child: SafeArea(
-          child: CupertinoRadioExample(),
-        ),
+        child: SafeArea(child: CupertinoRadioExample()),
       ),
     );
   }

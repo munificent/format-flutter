@@ -53,11 +53,11 @@ class BrowserContextMenu {
   ///  * [enableContextMenu], which performs the opposite operation.
   static Future<void> disableContextMenu() {
     assert(kIsWeb, 'This has no effect on platforms other than web.');
-    return _instance._channel.invokeMethod<void>(
-      'disableContextMenu',
-    ).then((_) {
-      _instance._enabled = false;
-    });
+    return _instance._channel.invokeMethod<void>('disableContextMenu').then(
+      (_) {
+        _instance._enabled = false;
+      },
+    );
   }
 
   /// Enable the browser's context menu.
@@ -74,9 +74,7 @@ class BrowserContextMenu {
   ///  * [disableContextMenu], which performs the opposite operation.
   static Future<void> enableContextMenu() {
     assert(kIsWeb, 'This has no effect on platforms other than web.');
-    return _instance._channel.invokeMethod<void>(
-      'enableContextMenu',
-    ).then((_) {
+    return _instance._channel.invokeMethod<void>('enableContextMenu').then((_) {
       _instance._enabled = true;
     });
   }

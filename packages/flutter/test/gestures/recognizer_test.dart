@@ -20,10 +20,7 @@ const PointerMoveEvent move = PointerMoveEvent(
   position: Offset(15, 15),
 );
 
-const PointerUpEvent up = PointerUpEvent(
-  pointer: 5,
-  position: Offset(15, 15),
-);
+const PointerUpEvent up = PointerUpEvent(pointer: 5, position: Offset(15, 15));
 
 // Down/move/up pair 2: tap sequence with a large move in the middle
 const PointerDownEvent down2 = PointerDownEvent(
@@ -45,7 +42,9 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test('GestureRecognizer smoketest', () {
-    final TestGestureRecognizer recognizer = TestGestureRecognizer(debugOwner: 0);
+    final TestGestureRecognizer recognizer = TestGestureRecognizer(
+      debugOwner: 0,
+    );
     expect(recognizer, hasAGoodToStringDeep);
   });
 
@@ -75,8 +74,10 @@ void main() {
   group('PrimaryPointerGestureRecognizer', () {
     testGesture('cleans up state after winning arena', (GestureTester tester) {
       final List<String> resolutions = <String>[];
-      final IndefiniteGestureRecognizer indefinite = IndefiniteGestureRecognizer();
-      final TestPrimaryPointerGestureRecognizer<PointerUpEvent> accepting = TestPrimaryPointerGestureRecognizer<PointerUpEvent>(
+      final IndefiniteGestureRecognizer indefinite =
+          IndefiniteGestureRecognizer();
+      final TestPrimaryPointerGestureRecognizer<PointerUpEvent> accepting =
+          TestPrimaryPointerGestureRecognizer<PointerUpEvent>(
         GestureDisposition.accepted,
         onAcceptGesture: () => resolutions.add('accepted'),
         onRejectGesture: () => resolutions.add('rejected'),
@@ -106,8 +107,10 @@ void main() {
 
     testGesture('cleans up state after losing arena', (GestureTester tester) {
       final List<String> resolutions = <String>[];
-      final IndefiniteGestureRecognizer indefinite = IndefiniteGestureRecognizer();
-      final TestPrimaryPointerGestureRecognizer<PointerMoveEvent> rejecting = TestPrimaryPointerGestureRecognizer<PointerMoveEvent>(
+      final IndefiniteGestureRecognizer indefinite =
+          IndefiniteGestureRecognizer();
+      final TestPrimaryPointerGestureRecognizer<PointerMoveEvent> rejecting =
+          TestPrimaryPointerGestureRecognizer<PointerMoveEvent>(
         GestureDisposition.rejected,
         onAcceptGesture: () => resolutions.add('accepted'),
         onRejectGesture: () => resolutions.add('rejected'),
@@ -144,8 +147,10 @@ void main() {
 
     testGesture('works properly when recycled', (GestureTester tester) {
       final List<String> resolutions = <String>[];
-      final IndefiniteGestureRecognizer indefinite = IndefiniteGestureRecognizer();
-      final TestPrimaryPointerGestureRecognizer<PointerUpEvent> accepting = TestPrimaryPointerGestureRecognizer<PointerUpEvent>(
+      final IndefiniteGestureRecognizer indefinite =
+          IndefiniteGestureRecognizer();
+      final TestPrimaryPointerGestureRecognizer<PointerUpEvent> accepting =
+          TestPrimaryPointerGestureRecognizer<PointerUpEvent>(
         GestureDisposition.accepted,
         preAcceptSlopTolerance: 15,
         postAcceptSlopTolerance: 1000,
@@ -178,19 +183,19 @@ void main() {
 }
 
 class TestGestureRecognizer extends GestureRecognizer {
-  TestGestureRecognizer({ super.debugOwner });
+  TestGestureRecognizer({super.debugOwner});
 
   @override
   String get debugDescription => 'debugDescription content';
 
   @override
-  void addPointer(PointerDownEvent event) { }
+  void addPointer(PointerDownEvent event) {}
 
   @override
-  void acceptGesture(int pointer) { }
+  void acceptGesture(int pointer) {}
 
   @override
-  void rejectGesture(int pointer) { }
+  void rejectGesture(int pointer) {}
 }
 
 /// Gesture recognizer that adds itself to the gesture arena but never
@@ -202,10 +207,10 @@ class IndefiniteGestureRecognizer extends GestureRecognizer {
   }
 
   @override
-  void acceptGesture(int pointer) { }
+  void acceptGesture(int pointer) {}
 
   @override
-  void rejectGesture(int pointer) { }
+  void rejectGesture(int pointer) {}
 
   @override
   String get debugDescription => 'Unresolving';
@@ -213,7 +218,8 @@ class IndefiniteGestureRecognizer extends GestureRecognizer {
 
 /// Gesture recognizer that resolves with [resolution] when it handles an event
 /// on the primary pointer of type [T]
-class TestPrimaryPointerGestureRecognizer<T extends PointerEvent> extends PrimaryPointerGestureRecognizer {
+class TestPrimaryPointerGestureRecognizer<T extends PointerEvent>
+    extends PrimaryPointerGestureRecognizer {
   TestPrimaryPointerGestureRecognizer(
     this.resolution, {
     this.onAcceptGesture,

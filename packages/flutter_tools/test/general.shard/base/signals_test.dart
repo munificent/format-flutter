@@ -54,20 +54,23 @@ void main() {
       await completer.future;
     });
 
-    testWithoutContext('signal handlers do not cause concurrent modification errors when removing handlers in a signal callback', () async {
-      final Completer<void> completer = Completer<void>();
-      late Object token;
-      Future<void> handle(ProcessSignal s) async {
-        expect(s, signalUnderTest);
-        expect(await signals.removeHandler(signalUnderTest, token), true);
-        completer.complete();
-      }
+    testWithoutContext(
+      'signal handlers do not cause concurrent modification errors when removing handlers in a signal callback',
+      () async {
+        final Completer<void> completer = Completer<void>();
+        late Object token;
+        Future<void> handle(ProcessSignal s) async {
+          expect(s, signalUnderTest);
+          expect(await signals.removeHandler(signalUnderTest, token), true);
+          completer.complete();
+        }
 
-      token = signals.addHandler(signalUnderTest, handle);
+        token = signals.addHandler(signalUnderTest, handle);
 
-      fakeSignal.controller.add(fakeSignal);
-      await completer.future;
-    });
+        fakeSignal.controller.add(fakeSignal);
+        await completer.future;
+      },
+    );
 
     testWithoutContext('signal handler error goes on error stream', () async {
       final Exception exn = Exception('Error');
@@ -168,45 +171,49 @@ void main() {
       expect(errList, isEmpty);
     });
 
-    testWithoutContext('all handlers for exiting signals are run before exit', () async {
-      final Signals signals = Signals.test(
-        exitSignals: <ProcessSignal>[signalUnderTest],
-      );
-      final Completer<void> completer = Completer<void>();
-      bool first = false;
-      bool second = false;
+    testWithoutContext(
+      'all handlers for exiting signals are run before exit',
+      () async {
+        final Signals signals = Signals.test(
+          exitSignals: <ProcessSignal>[signalUnderTest],
+        );
+        final Completer<void> completer = Completer<void>();
+        bool first = false;
+        bool second = false;
 
-      setExitFunctionForTests((int exitCode) {
-        // Both handlers have run before exit is called.
-        expect(first, isTrue);
-        expect(second, isTrue);
-        expect(exitCode, 0);
-        restoreExitFunction();
-        completer.complete();
-      });
+        setExitFunctionForTests((int exitCode) {
+          // Both handlers have run before exit is called.
+          expect(first, isTrue);
+          expect(second, isTrue);
+          expect(exitCode, 0);
+          restoreExitFunction();
+          completer.complete();
+        });
 
-      signals.addHandler(signalUnderTest, (ProcessSignal s) {
-        expect(s, signalUnderTest);
-        expect(first, isFalse);
-        expect(second, isFalse);
-        first = true;
-      });
+        signals.addHandler(signalUnderTest, (ProcessSignal s) {
+          expect(s, signalUnderTest);
+          expect(first, isFalse);
+          expect(second, isFalse);
+          first = true;
+        });
 
-      signals.addHandler(signalUnderTest, (ProcessSignal s) {
-        expect(s, signalUnderTest);
-        expect(first, isTrue);
-        expect(second, isFalse);
-        second = true;
-      });
+        signals.addHandler(signalUnderTest, (ProcessSignal s) {
+          expect(s, signalUnderTest);
+          expect(first, isTrue);
+          expect(second, isFalse);
+          second = true;
+        });
 
-      fakeSignal.controller.add(fakeSignal);
-      await completer.future;
-    });
+        fakeSignal.controller.add(fakeSignal);
+        await completer.future;
+      },
+    );
   });
 }
 
 class FakeProcessSignal extends Fake implements io.ProcessSignal {
-  final StreamController<io.ProcessSignal> controller = StreamController<io.ProcessSignal>();
+  final StreamController<io.ProcessSignal> controller =
+      StreamController<io.ProcessSignal>();
 
   @override
   Stream<io.ProcessSignal> watch() => controller.stream;

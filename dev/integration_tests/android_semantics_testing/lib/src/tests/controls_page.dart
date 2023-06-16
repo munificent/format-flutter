@@ -16,13 +16,19 @@ class SelectionControlsPage extends StatefulWidget {
 }
 
 class _SelectionControlsPageState extends State<SelectionControlsPage> {
-  static const ValueKey<String> checkbox1Key = ValueKey<String>(checkboxKeyValue);
-  static const ValueKey<String> checkbox2Key = ValueKey<String>(disabledCheckboxKeyValue);
+  static const ValueKey<String> checkbox1Key = ValueKey<String>(
+    checkboxKeyValue,
+  );
+  static const ValueKey<String> checkbox2Key = ValueKey<String>(
+    disabledCheckboxKeyValue,
+  );
   static const ValueKey<String> radio1Key = ValueKey<String>(radio1KeyValue);
   static const ValueKey<String> radio2Key = ValueKey<String>(radio2KeyValue);
   static const ValueKey<String> radio3Key = ValueKey<String>(radio3KeyValue);
   static const ValueKey<String> switchKey = ValueKey<String>(switchKeyValue);
-  static const ValueKey<String> labeledSwitchKey = ValueKey<String>(labeledSwitchKeyValue);
+  static const ValueKey<String> labeledSwitchKey = ValueKey<String>(
+    labeledSwitchKeyValue,
+  );
   bool _isChecked = false;
   bool _isOn = false;
   bool _isLabeledOn = false;
@@ -57,49 +63,64 @@ class _SelectionControlsPageState extends State<SelectionControlsPage> {
     return Scaffold(
       appBar: AppBar(leading: const BackButton(key: ValueKey<String>('back'))),
       body: Material(
-        child: Column(children: <Widget>[
-          Row(
-            children: <Widget>[
-              Checkbox(
-                key: checkbox1Key,
-                value: _isChecked,
-                onChanged: _updateCheckbox,
-              ),
-              const Checkbox(
-                key: checkbox2Key,
-                value: false,
-                // TODO(scheglov): Requires linter fix, https://github.com/dart-lang/sdk/issues/49596.
-                // ignore: avoid_redundant_argument_values
-                onChanged: null,
-              ),
-            ],
-          ),
-          const Spacer(),
-          Row(children: <Widget>[
-            Radio<int>(key: radio1Key, value: 0, groupValue: _radio, onChanged: _updateRadio),
-            Radio<int>(key: radio2Key, value: 1, groupValue: _radio, onChanged: _updateRadio),
-            Radio<int>(key: radio3Key, value: 2, groupValue: _radio, onChanged: _updateRadio),
-          ]),
-          const Spacer(),
-          Switch(
-            key: switchKey,
-            value: _isOn,
-            onChanged: _updateSwitch,
-          ),
-          const Spacer(),
-          MergeSemantics(
-            child: Row(
+        child: Column(
+          children: <Widget>[
+            Row(
               children: <Widget>[
-                const Text(switchLabel),
-                Switch(
-                  key: labeledSwitchKey,
-                  value: _isLabeledOn,
-                  onChanged: _updateLabeledSwitch,
+                Checkbox(
+                  key: checkbox1Key,
+                  value: _isChecked,
+                  onChanged: _updateCheckbox,
+                ),
+                const Checkbox(
+                  key: checkbox2Key,
+                  value: false,
+                  // TODO(scheglov): Requires linter fix, https://github.com/dart-lang/sdk/issues/49596.
+                  // ignore: avoid_redundant_argument_values
+                  onChanged: null,
                 ),
               ],
             ),
-          ),
-        ]),
+            const Spacer(),
+            Row(
+              children: <Widget>[
+                Radio<int>(
+                  key: radio1Key,
+                  value: 0,
+                  groupValue: _radio,
+                  onChanged: _updateRadio,
+                ),
+                Radio<int>(
+                  key: radio2Key,
+                  value: 1,
+                  groupValue: _radio,
+                  onChanged: _updateRadio,
+                ),
+                Radio<int>(
+                  key: radio3Key,
+                  value: 2,
+                  groupValue: _radio,
+                  onChanged: _updateRadio,
+                ),
+              ],
+            ),
+            const Spacer(),
+            Switch(key: switchKey, value: _isOn, onChanged: _updateSwitch),
+            const Spacer(),
+            MergeSemantics(
+              child: Row(
+                children: <Widget>[
+                  const Text(switchLabel),
+                  Switch(
+                    key: labeledSwitchKey,
+                    value: _isLabeledOn,
+                    onChanged: _updateLabeledSwitch,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -27,7 +27,7 @@ mixin ViewportNotificationMixin on Notification {
   @override
   void debugFillDescription(List<String> description) {
     super.debugFillDescription(description);
-    description.add('depth: $depth (${ depth == 0 ? "local" : "remote"})');
+    description.add('depth: $depth (${depth == 0 ? "local" : "remote"})');
   }
 }
 
@@ -37,7 +37,7 @@ mixin ViewportNotificationMixin on Notification {
 /// See also:
 ///   * [Viewport], which creates a custom [MultiChildRenderObjectElement] that mixes
 ///     this in.
-mixin ViewportElementMixin  on NotifiableElementMixin {
+mixin ViewportElementMixin on NotifiableElementMixin {
   @override
   bool onNotification(Notification notification) {
     if (notification is ViewportNotificationMixin) {
@@ -114,12 +114,10 @@ mixin ViewportElementMixin  on NotifiableElementMixin {
 /// ** See code in examples/api/lib/widgets/scroll_position/scroll_metrics_notification.0.dart **
 /// {@end-tool}
 ///
-abstract class ScrollNotification extends LayoutChangedNotification with ViewportNotificationMixin {
+abstract class ScrollNotification extends LayoutChangedNotification
+    with ViewportNotificationMixin {
   /// Initializes fields for subclasses.
-  ScrollNotification({
-    required this.metrics,
-    required this.context,
-  });
+  ScrollNotification({required this.metrics, required this.context});
 
   /// A description of a [Scrollable]'s contents, useful for modeling the state
   /// of its viewport.
@@ -336,7 +334,9 @@ class UserScrollNotification extends ScrollNotification {
 
 /// A predicate for [ScrollNotification], used to customize widgets that
 /// listen to notifications from their children.
-typedef ScrollNotificationPredicate = bool Function(ScrollNotification notification);
+typedef ScrollNotificationPredicate = bool Function(
+  ScrollNotification notification,
+);
 
 /// A [ScrollNotificationPredicate] that checks whether
 /// `notification.depth == 0`, which means that the notification did not bubble

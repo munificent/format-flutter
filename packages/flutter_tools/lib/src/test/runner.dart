@@ -93,49 +93,42 @@ class _FlutterTestRunnerImpl implements FlutterTestRunner {
     TestTimeRecorder? testTimeRecorder,
   }) async {
     // Configure package:test to use the Flutter engine for child processes.
-    final String shellPath = globals.artifacts!.getArtifactPath(Artifact.flutterTester);
+    final String shellPath = globals.artifacts!.getArtifactPath(
+      Artifact.flutterTester,
+    );
 
     // Compute the command-line arguments for package:test.
     final List<String> testArgs = <String>[
-      if (!globals.terminal.supportsColor)
-        '--no-color',
-      if (debuggingOptions.startPaused)
-        '--pause-after-load',
-      if (machine)
-        ...<String>['-r', 'json']
-      else if (reporter != null)
-        ...<String>['-r', reporter],
-      if (fileReporter != null)
-        '--file-reporter=$fileReporter',
-      if (timeout != null)
-        ...<String>['--timeout', timeout],
-      if (concurrency != null)
-        '--concurrency=$concurrency',
-      for (final String name in names)
-        ...<String>['--name', name],
-      for (final String plainName in plainNames)
-        ...<String>['--plain-name', plainName],
-      if (randomSeed != null)
-        '--test-randomize-ordering-seed=$randomSeed',
-      if (tags != null)
-        ...<String>['--tags', tags],
-      if (excludeTags != null)
-        ...<String>['--exclude-tags', excludeTags],
-      if (runSkipped)
-        '--run-skipped',
-      if (totalShards != null)
-        '--total-shards=$totalShards',
-      if (shardIndex != null)
-        '--shard-index=$shardIndex',
+      if (!globals.terminal.supportsColor) '--no-color',
+      if (debuggingOptions.startPaused) '--pause-after-load',
+      if (machine) ...<String>[
+        '-r',
+        'json',
+      ] else if (reporter != null) ...<String>[
+        '-r',
+        reporter,
+      ],
+      if (fileReporter != null) '--file-reporter=$fileReporter',
+      if (timeout != null) ...<String>['--timeout', timeout],
+      if (concurrency != null) '--concurrency=$concurrency',
+      for (final String name in names) ...<String>['--name', name],
+      for (final String plainName in plainNames) ...<String>[
+        '--plain-name',
+        plainName,
+      ],
+      if (randomSeed != null) '--test-randomize-ordering-seed=$randomSeed',
+      if (tags != null) ...<String>['--tags', tags],
+      if (excludeTags != null) ...<String>['--exclude-tags', excludeTags],
+      if (runSkipped) '--run-skipped',
+      if (totalShards != null) '--total-shards=$totalShards',
+      if (shardIndex != null) '--shard-index=$shardIndex',
       '--chain-stack-traces',
     ];
 
     if (web) {
-      final String tempBuildDir = globals.fs.systemTempDirectory
-        .createTempSync('flutter_test.')
-        .absolute
-        .uri
-        .toFilePath();
+      final String tempBuildDir = globals.fs.systemTempDirectory.createTempSync(
+        'flutter_test.',
+      ).absolute.uri.toFilePath();
       final WebMemoryFS result = await WebTestCompiler(
         logger: globals.logger,
         fileSystem: globals.fs,
@@ -153,34 +146,31 @@ class _FlutterTestRunnerImpl implements FlutterTestRunner {
         ..add('--platform=chrome')
         ..add('--')
         ..addAll(testFiles.map((Uri uri) => uri.toString()));
-      testWrapper.registerPlatformPlugin(
-        <Runtime>[Runtime.chrome],
-        () {
-          return FlutterWebPlatform.start(
-            flutterProject.directory.path,
-            updateGoldens: updateGoldens,
-            shellPath: shellPath,
-            flutterProject: flutterProject,
-            pauseAfterLoad: debuggingOptions.startPaused,
-            nullAssertions: debuggingOptions.nullAssertions,
-            buildInfo: debuggingOptions.buildInfo,
-            webMemoryFS: result,
-            logger: globals.logger,
+      testWrapper.registerPlatformPlugin(<Runtime>[Runtime.chrome], () {
+        return FlutterWebPlatform.start(
+          flutterProject.directory.path,
+          updateGoldens: updateGoldens,
+          shellPath: shellPath,
+          flutterProject: flutterProject,
+          pauseAfterLoad: debuggingOptions.startPaused,
+          nullAssertions: debuggingOptions.nullAssertions,
+          buildInfo: debuggingOptions.buildInfo,
+          webMemoryFS: result,
+          logger: globals.logger,
+          fileSystem: globals.fs,
+          artifacts: globals.artifacts,
+          processManager: globals.processManager,
+          chromiumLauncher: ChromiumLauncher(
             fileSystem: globals.fs,
-            artifacts: globals.artifacts,
+            platform: globals.platform,
             processManager: globals.processManager,
-            chromiumLauncher: ChromiumLauncher(
-              fileSystem: globals.fs,
-              platform: globals.platform,
-              processManager: globals.processManager,
-              operatingSystemUtils: globals.os,
-              browserFinder: findChromeExecutable,
-              logger: globals.logger,
-            ),
-            testTimeRecorder: testTimeRecorder,
-          );
-        },
-      );
+            operatingSystemUtils: globals.os,
+            browserFinder: findChromeExecutable,
+            logger: globals.logger,
+          ),
+          testTimeRecorder: testTimeRecorder,
+        );
+      });
       await testWrapper.main(testArgs);
       return exitCode;
     }
@@ -189,8 +179,9 @@ class _FlutterTestRunnerImpl implements FlutterTestRunner {
       ..add('--')
       ..addAll(testFiles.map((Uri uri) => uri.toString()));
 
-    final InternetAddressType serverType =
-        ipv6 ? InternetAddressType.IPv6 : InternetAddressType.IPv4;
+    final InternetAddressType serverType = ipv6
+        ? InternetAddressType.IPv6
+        : InternetAddressType.IPv4;
 
     final loader.FlutterPlatform platform = loader.installHook(
       testWrapper: testWrapper,

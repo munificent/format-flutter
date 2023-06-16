@@ -26,7 +26,8 @@ class NavigationExample extends StatefulWidget {
 
 class _NavigationExampleState extends State<NavigationExample> {
   int currentPageIndex = 0;
-  NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.alwaysShow;
+  NavigationDestinationLabelBehavior labelBehavior =
+      NavigationDestinationLabelBehavior.alwaysShow;
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +41,8 @@ class _NavigationExampleState extends State<NavigationExample> {
           });
         },
         destinations: const <Widget>[
-          NavigationDestination(
-            icon: Icon(Icons.explore),
-            label: 'Explore',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.commute),
-            label: 'Commute',
-          ),
+          NavigationDestination(icon: Icon(Icons.explore), label: 'Explore'),
+          NavigationDestination(icon: Icon(Icons.commute), label: 'Commute'),
           NavigationDestination(
             selectedIcon: Icon(Icons.bookmark),
             icon: Icon(Icons.bookmark_border),
@@ -67,7 +62,8 @@ class _NavigationExampleState extends State<NavigationExample> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      labelBehavior = NavigationDestinationLabelBehavior.alwaysShow;
+                      labelBehavior =
+                          NavigationDestinationLabelBehavior.alwaysShow;
                     });
                   },
                   child: const Text('alwaysShow'),
@@ -75,7 +71,8 @@ class _NavigationExampleState extends State<NavigationExample> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
+                      labelBehavior =
+                          NavigationDestinationLabelBehavior.onlyShowSelected;
                     });
                   },
                   child: const Text('onlyShowSelected'),
@@ -83,7 +80,8 @@ class _NavigationExampleState extends State<NavigationExample> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      labelBehavior = NavigationDestinationLabelBehavior.alwaysHide;
+                      labelBehavior =
+                          NavigationDestinationLabelBehavior.alwaysHide;
                     });
                   },
                   child: const Text('alwaysHide'),

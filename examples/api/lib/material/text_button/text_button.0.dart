@@ -32,17 +32,15 @@ class TextButtonExample extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           TextButton(
-            style: TextButton.styleFrom(
-              textStyle: const TextStyle(fontSize: 20),
-            ),
+            style:
+                TextButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
             onPressed: null,
             child: const Text('Disabled'),
           ),
           const SizedBox(height: 30),
           TextButton(
-            style: TextButton.styleFrom(
-              textStyle: const TextStyle(fontSize: 20),
-            ),
+            style:
+                TextButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
             onPressed: () {},
             child: const Text('Enabled'),
           ),

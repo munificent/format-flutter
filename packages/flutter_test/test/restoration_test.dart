@@ -10,13 +10,13 @@ void main() {
     await tester.pumpWidget(
       const RootRestorationScope(
         restorationId: 'root-child',
-        child: _RestorableWidget(
-          restorationId: 'restorable-widget',
-        ),
+        child: _RestorableWidget(restorationId: 'restorable-widget'),
       ),
     );
 
-    final _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
+    final _RestorableWidgetState state = tester.state(
+      find.byType(_RestorableWidget),
+    );
     expect(find.text('Hello World 100'), findsOneWidget);
     expect(state.doubleValue, 1.0);
 
@@ -30,45 +30,50 @@ void main() {
 
     expect(find.text('Guten Morgen 200'), findsOneWidget);
     expect(find.text('Hello World 100'), findsNothing);
-    final _RestorableWidgetState restoredState = tester.state(find.byType(_RestorableWidget));
+    final _RestorableWidgetState restoredState = tester.state(
+      find.byType(_RestorableWidget),
+    );
     expect(restoredState, isNot(same(state)));
     expect(restoredState.doubleValue, 1.0);
   });
 
-  testWidgets('restore from previous restoration data', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const RootRestorationScope(
-        restorationId: 'root-child',
-        child: _RestorableWidget(
-          restorationId: 'restorable-widget',
+  testWidgets(
+    'restore from previous restoration data',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const RootRestorationScope(
+          restorationId: 'root-child',
+          child: _RestorableWidget(restorationId: 'restorable-widget'),
         ),
-      ),
-    );
+      );
 
-    final _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
-    expect(find.text('Hello World 100'), findsOneWidget);
-    expect(state.doubleValue, 1.0);
+      final _RestorableWidgetState state = tester.state(
+        find.byType(_RestorableWidget),
+      );
+      expect(find.text('Hello World 100'), findsOneWidget);
+      expect(state.doubleValue, 1.0);
 
-    state.setValues('Guten Morgen', 200, 33.4);
-    await tester.pump();
+      state.setValues('Guten Morgen', 200, 33.4);
+      await tester.pump();
 
-    expect(find.text('Guten Morgen 200'), findsOneWidget);
-    expect(state.doubleValue, 33.4);
+      expect(find.text('Guten Morgen 200'), findsOneWidget);
+      expect(state.doubleValue, 33.4);
 
-    final TestRestorationData data = await tester.getRestorationData();
+      final TestRestorationData data = await tester.getRestorationData();
 
-    state.setValues('See you later!', 400, 123.5);
-    await tester.pump();
+      state.setValues('See you later!', 400, 123.5);
+      await tester.pump();
 
-    expect(find.text('See you later! 400'), findsOneWidget);
-    expect(state.doubleValue, 123.5);
+      expect(find.text('See you later! 400'), findsOneWidget);
+      expect(state.doubleValue, 123.5);
 
-    await tester.restoreFrom(data);
+      await tester.restoreFrom(data);
 
-    expect(tester.state(find.byType(_RestorableWidget)), same(state));
-    expect(find.text('Guten Morgen 200'), findsOneWidget);
-    expect(state.doubleValue, 123.5);
-  });
+      expect(tester.state(find.byType(_RestorableWidget)), same(state));
+      expect(find.text('Guten Morgen 200'), findsOneWidget);
+      expect(state.doubleValue, 123.5);
+    },
+  );
 }
 
 class _RestorableWidget extends StatefulWidget {
@@ -80,7 +85,8 @@ class _RestorableWidget extends StatefulWidget {
   State<_RestorableWidget> createState() => _RestorableWidgetState();
 }
 
-class _RestorableWidgetState extends State<_RestorableWidget> with RestorationMixin {
+class _RestorableWidgetState extends State<_RestorableWidget>
+    with RestorationMixin {
   final RestorableString stringValue = RestorableString('Hello World');
   final RestorableInt intValue = RestorableInt(100);
 
@@ -102,7 +108,10 @@ class _RestorableWidgetState extends State<_RestorableWidget> with RestorationMi
 
   @override
   Widget build(BuildContext context) {
-    return Text('${stringValue.value} ${intValue.value}', textDirection: TextDirection.ltr);
+    return Text(
+      '${stringValue.value} ${intValue.value}',
+      textDirection: TextDirection.ltr,
+    );
   }
 
   @override

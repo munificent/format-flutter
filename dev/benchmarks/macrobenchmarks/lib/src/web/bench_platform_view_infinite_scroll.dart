@@ -13,35 +13,38 @@ import 'recorder.dart';
 const String benchmarkViewType = 'benchmark_element';
 
 void _registerFactory() {
-  ui_web.platformViewRegistry.registerViewFactory(benchmarkViewType, (int viewId) {
-    final web.HTMLElement htmlElement =
-      web.document.createElement('div') as web.HTMLDivElement;
-    htmlElement.id = '${benchmarkViewType}_$viewId';
-    htmlElement.innerText = 'Google';
-    htmlElement.style
-      ..setProperty('width', '100%')
-      ..setProperty('height', '100%')
-      ..setProperty('color', 'black')
-      ..setProperty('backgroundColor', 'rgba(0, 255, 0, .5)')
-      ..setProperty('textAlign', 'center')
-      ..setProperty('border', '1px solid black');
-    return htmlElement;
-  });
+  ui_web.platformViewRegistry.registerViewFactory(
+    benchmarkViewType,
+    (int viewId) {
+      final web.HTMLElement htmlElement =
+          web.document.createElement('div') as web.HTMLDivElement;
+      htmlElement.id = '${benchmarkViewType}_$viewId';
+      htmlElement.innerText = 'Google';
+      htmlElement.style
+        ..setProperty('width', '100%')
+        ..setProperty('height', '100%')
+        ..setProperty('color', 'black')
+        ..setProperty('backgroundColor', 'rgba(0, 255, 0, .5)')
+        ..setProperty('textAlign', 'center')
+        ..setProperty('border', '1px solid black');
+      return htmlElement;
+    },
+  );
 }
 
 /// Creates an infinite list of Link widgets and scrolls it.
 class BenchPlatformViewInfiniteScroll extends WidgetRecorder {
   BenchPlatformViewInfiniteScroll.forward()
-      : initialOffset = 0.0,
-        finalOffset = 30000.0,
-        super(name: benchmarkName) {
+    : initialOffset = 0.0,
+      finalOffset = 30000.0,
+      super(name: benchmarkName) {
     _registerFactory();
   }
 
   BenchPlatformViewInfiniteScroll.backward()
-      : initialOffset = 30000.0,
-        finalOffset = 0.0,
-        super(name: benchmarkNameBackward) {
+    : initialOffset = 30000.0,
+      finalOffset = 0.0,
+      super(name: benchmarkNameBackward) {
     _registerFactory();
   }
 
@@ -54,9 +57,9 @@ class BenchPlatformViewInfiniteScroll extends WidgetRecorder {
 
   @override
   Widget createWidget() => MaterialApp(
-        title: 'Infinite Platform View Scroll Benchmark',
-        home: _InfiniteScrollPlatformViews(initialOffset, finalOffset),
-      );
+    title: 'Infinite Platform View Scroll Benchmark',
+    home: _InfiniteScrollPlatformViews(initialOffset, finalOffset),
+  );
 }
 
 class _InfiniteScrollPlatformViews extends StatefulWidget {
@@ -66,10 +69,12 @@ class _InfiniteScrollPlatformViews extends StatefulWidget {
   final double finalOffset;
 
   @override
-  State<_InfiniteScrollPlatformViews> createState() => _InfiniteScrollPlatformViewsState();
+  State<_InfiniteScrollPlatformViews> createState() =>
+      _InfiniteScrollPlatformViewsState();
 }
 
-class _InfiniteScrollPlatformViewsState extends State<_InfiniteScrollPlatformViews> {
+class _InfiniteScrollPlatformViewsState
+    extends State<_InfiniteScrollPlatformViews> {
   static const Duration stepDuration = Duration(seconds: 20);
 
   late ScrollController scrollController;
@@ -81,9 +86,7 @@ class _InfiniteScrollPlatformViewsState extends State<_InfiniteScrollPlatformVie
 
     offset = widget.initialOffset;
 
-    scrollController = ScrollController(
-      initialScrollOffset: offset,
-    );
+    scrollController = ScrollController(initialScrollOffset: offset);
 
     // Without the timer the animation doesn't begin.
     Timer.run(() async {

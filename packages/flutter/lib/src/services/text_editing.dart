@@ -134,8 +134,8 @@ class TextSelection extends TextRange {
       return '$typeName.invalid';
     }
     return isCollapsed
-      ? '$typeName.collapsed(offset: $baseOffset, affinity: $affinity, isDirectional: $isDirectional)'
-      : '$typeName(baseOffset: $baseOffset, extentOffset: $extentOffset, isDirectional: $isDirectional)';
+        ? '$typeName.collapsed(offset: $baseOffset, affinity: $affinity, isDirectional: $isDirectional)'
+        : '$typeName(baseOffset: $baseOffset, extentOffset: $extentOffset, isDirectional: $isDirectional)';
   }
 
   @override
@@ -149,22 +149,32 @@ class TextSelection extends TextRange {
     if (!isValid) {
       return !other.isValid;
     }
-    return other.baseOffset == baseOffset
-        && other.extentOffset == extentOffset
-        && (!isCollapsed || other.affinity == affinity)
-        && other.isDirectional == isDirectional;
+    return other.baseOffset == baseOffset &&
+        other.extentOffset == extentOffset &&
+        (!isCollapsed || other.affinity == affinity) &&
+        other.isDirectional == isDirectional;
   }
 
   @override
   int get hashCode {
     if (!isValid) {
-      return Object.hash(-1.hashCode, -1.hashCode, TextAffinity.downstream.hashCode);
+      return Object.hash(
+        -1.hashCode,
+        -1.hashCode,
+        TextAffinity.downstream.hashCode,
+      );
     }
 
-    final int affinityHash = isCollapsed ? affinity.hashCode : TextAffinity.downstream.hashCode;
-    return Object.hash(baseOffset.hashCode, extentOffset.hashCode, affinityHash, isDirectional.hashCode);
+    final int affinityHash = isCollapsed
+        ? affinity.hashCode
+        : TextAffinity.downstream.hashCode;
+    return Object.hash(
+      baseOffset.hashCode,
+      extentOffset.hashCode,
+      affinityHash,
+      isDirectional.hashCode,
+    );
   }
-
 
   /// Creates a new [TextSelection] based on the current selection, with the
   /// provided parameters overridden.
@@ -254,9 +264,6 @@ class TextSelection extends TextRange {
       return this;
     }
 
-    return copyWith(
-      extentOffset: position.offset,
-      affinity: position.affinity,
-    );
+    return copyWith(extentOffset: position.offset, affinity: position.affinity);
   }
 }

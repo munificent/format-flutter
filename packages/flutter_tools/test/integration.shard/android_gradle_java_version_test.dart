@@ -22,36 +22,44 @@ void main() {
   });
 
   testWithoutContext(
-      'gradle task exists named javaVersion that prints jdk version', () async {
-    // Create a new flutter project.
-    final String flutterBin =
-        fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
-    ProcessResult result = await processManager.run(<String>[
-      flutterBin,
-      'create',
-      tempDir.path,
-      '--project-name=testapp',
-    ], workingDirectory: tempDir.path);
-    expect(result, const ProcessResultMatcher());
-    // Ensure that gradle files exists from templates.
-    result = await processManager.run(<String>[
-      flutterBin,
-      'build',
-      'apk',
-      '--config-only',
-    ], workingDirectory: tempDir.path);
-    expect(result, const ProcessResultMatcher());
+    'gradle task exists named javaVersion that prints jdk version',
+    () async {
+      // Create a new flutter project.
+      final String flutterBin = fileSystem.path.join(
+        getFlutterRoot(),
+        'bin',
+        'flutter',
+      );
+      ProcessResult result = await processManager.run(<String>[
+        flutterBin,
+        'create',
+        tempDir.path,
+        '--project-name=testapp',
+      ], workingDirectory: tempDir.path);
+      expect(result, const ProcessResultMatcher());
+      // Ensure that gradle files exists from templates.
+      result = await processManager.run(<String>[
+        flutterBin,
+        'build',
+        'apk',
+        '--config-only',
+      ], workingDirectory: tempDir.path);
+      expect(result, const ProcessResultMatcher());
 
-    final Directory androidApp = tempDir.childDirectory('android');
-    result = await processManager.run(<String>[
-      '.${platform.pathSeparator}${getGradlewFileName(platform)}',
-      ...getLocalEngineArguments(),
-      '-q', // quiet output.
-      'javaVersion',
-    ], workingDirectory: androidApp.path);
-    // Verify that gradlew has a javaVersion task.
-    expect(result, const ProcessResultMatcher());
-    // Verify the format is a number on its own line.
-    expect(result.stdout.toString(), matches(RegExp(r'\d+$', multiLine: true)));
-  });
+      final Directory androidApp = tempDir.childDirectory('android');
+      result = await processManager.run(<String>[
+        '.${platform.pathSeparator}${getGradlewFileName(platform)}',
+        ...getLocalEngineArguments(),
+        '-q', // quiet output.
+        'javaVersion',
+      ], workingDirectory: androidApp.path);
+      // Verify that gradlew has a javaVersion task.
+      expect(result, const ProcessResultMatcher());
+      // Verify the format is a number on its own line.
+      expect(
+        result.stdout.toString(),
+        matches(RegExp(r'\d+$', multiLine: true)),
+      );
+    },
+  );
 }

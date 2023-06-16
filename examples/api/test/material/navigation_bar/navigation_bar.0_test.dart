@@ -8,29 +8,31 @@ import 'package:flutter_api_samples/material/navigation_bar/navigation_bar.0.dar
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Navigation bar updates destination on tap',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.NavigationBarApp(),
-    );
-    final NavigationBar navigationBarWidget = tester.firstWidget(find.byType(NavigationBar));
+  testWidgets(
+    'Navigation bar updates destination on tap',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const example.NavigationBarApp());
+      final NavigationBar navigationBarWidget = tester.firstWidget(
+        find.byType(NavigationBar),
+      );
 
-    /// NavigationDestinations must be rendered
-    expect(find.text('Home'), findsOneWidget);
-    expect(find.text('Business'), findsOneWidget);
-    expect(find.text('School'), findsOneWidget);
+      /// NavigationDestinations must be rendered
+      expect(find.text('Home'), findsOneWidget);
+      expect(find.text('Business'), findsOneWidget);
+      expect(find.text('School'), findsOneWidget);
 
-    /// initial index must be zero
-    expect(navigationBarWidget.selectedIndex, 0);
+      /// initial index must be zero
+      expect(navigationBarWidget.selectedIndex, 0);
 
-    /// switch to second tab
-    await tester.tap(find.text('Business'));
-    await tester.pumpAndSettle();
-    expect(find.text('Page 2'), findsOneWidget);
+      /// switch to second tab
+      await tester.tap(find.text('Business'));
+      await tester.pumpAndSettle();
+      expect(find.text('Page 2'), findsOneWidget);
 
-    /// switch to third tab
-    await tester.tap(find.text('School'));
-    await tester.pumpAndSettle();
-    expect(find.text('Page 3'), findsOneWidget);
-  });
+      /// switch to third tab
+      await tester.tap(find.text('School'));
+      await tester.pumpAndSettle();
+      expect(find.text('Page 3'), findsOneWidget);
+    },
+  );
 }

@@ -41,10 +41,12 @@ class BenchMouseRegionGridScroll extends WidgetRecorder {
   void frameDidDraw() {
     if (!started) {
       started = true;
-      SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) async {
-        _tester.start();
-        registerDidStop(_tester.stop);
-      });
+      SchedulerBinding.instance.addPostFrameCallback(
+        (Duration timeStamp) async {
+          _tester.start();
+          registerDidStop(_tester.stop);
+        },
+      );
     }
     super.frameDidDraw();
   }
@@ -66,21 +68,26 @@ class BenchMouseRegionGridScroll extends WidgetRecorder {
             cacheExtent: rowsCount * containerSize,
             physics: const ClampingScrollPhysics(),
             itemBuilder: (BuildContext context, int rowIndex) => Row(
-              children: List<Widget>.generate(
-                columnsCount,
-                (int columnIndex) => MouseRegion(
-                  onEnter: (_) {},
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: _getBorder(columnIndex, rowIndex),
-                      color: Color.fromARGB(255, rowIndex * 20 % 256, 127, 127),
+                  children: List<Widget>.generate(
+                    columnsCount,
+                    (int columnIndex) => MouseRegion(
+                      onEnter: (_) {},
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: _getBorder(columnIndex, rowIndex),
+                          color: Color.fromARGB(
+                            255,
+                            rowIndex * 20 % 256,
+                            127,
+                            127,
+                          ),
+                        ),
+                        width: containerSize,
+                        height: containerSize,
+                      ),
                     ),
-                    width: containerSize,
-                    height: containerSize,
                   ),
                 ),
-              ),
-            ),
           ),
         ),
       ),
@@ -120,20 +127,25 @@ class _Tester {
       kind: PointerDeviceKind.mouse,
     );
   }
+
   TestGesture? _gesture;
 
   Duration currentTime = Duration.zero;
 
   Future<void> _scroll(Offset start, Offset offset, Duration duration) async {
     final int durationMs = duration.inMilliseconds;
-    final Duration fullFrameDuration = const Duration(seconds: 1) ~/ scrollFrequency;
+    final Duration fullFrameDuration =
+        const Duration(seconds: 1) ~/ scrollFrequency;
     final int frameDurationMs = fullFrameDuration.inMilliseconds;
 
     final int fullFrames = duration.inMilliseconds ~/ frameDurationMs;
-    final Offset fullFrameOffset = offset * ((frameDurationMs as double) / durationMs);
+    final Offset fullFrameOffset =
+        offset * ((frameDurationMs as double) / durationMs);
 
-    final Duration finalFrameDuration = duration - fullFrameDuration * fullFrames;
-    final Offset finalFrameOffset = offset - fullFrameOffset * (fullFrames as double);
+    final Duration finalFrameDuration =
+        duration - fullFrameDuration * fullFrames;
+    final Offset finalFrameOffset =
+        offset - fullFrameOffset * (fullFrames as double);
 
     await gesture.down(start, timeStamp: currentTime);
 

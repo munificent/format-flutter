@@ -48,7 +48,11 @@ class SuggestionSpan {
   }
 
   @override
-  int get hashCode => Object.hash(range.start, range.end, Object.hashAll(suggestions));
+  int get hashCode => Object.hash(
+    range.start,
+    range.end,
+    Object.hashAll(suggestions),
+  );
 }
 
 /// A data structure grouping together the [SuggestionSpan]s and related text of
@@ -72,7 +76,7 @@ class SpellCheckResults {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
-        return true;
+      return true;
     }
 
     return other is SpellCheckResults &&
@@ -81,7 +85,10 @@ class SpellCheckResults {
   }
 
   @override
-  int get hashCode => Object.hash(spellCheckedText, Object.hashAll(suggestionSpans));
+  int get hashCode => Object.hash(
+    spellCheckedText,
+    Object.hashAll(suggestionSpans),
+  );
 }
 
 /// Determines how spell check results are received for text input.
@@ -91,7 +98,8 @@ abstract class SpellCheckService {
   /// Returns a [Future] that resolves with a [List] of [SuggestionSpan]s for
   /// all misspelled words in the given [String] for the given [Locale].
   Future<List<SuggestionSpan>?> fetchSpellCheckSuggestions(
-    Locale locale, String text
+    Locale locale,
+    String text,
   );
 }
 
@@ -129,7 +137,9 @@ class DefaultSpellCheckService implements SpellCheckService {
   /// Assumes that the lists provided as parameters are sorted by range start
   /// and that both list of [SuggestionSpan]s apply to the same text.
   static List<SuggestionSpan> mergeResults(
-      List<SuggestionSpan> oldResults, List<SuggestionSpan> newResults) {
+    List<SuggestionSpan> oldResults,
+    List<SuggestionSpan> newResults,
+  ) {
     final List<SuggestionSpan> mergedResults = <SuggestionSpan>[];
 
     SuggestionSpan oldSpan;
@@ -165,8 +175,9 @@ class DefaultSpellCheckService implements SpellCheckService {
 
   @override
   Future<List<SuggestionSpan>?> fetchSpellCheckSuggestions(
-      Locale locale, String text) async {
-
+    Locale locale,
+    String text,
+  ) async {
     final List<dynamic> rawResults;
     final String languageTag = locale.toLanguageTag();
 
@@ -183,27 +194,29 @@ class DefaultSpellCheckService implements SpellCheckService {
     List<SuggestionSpan> suggestionSpans = <SuggestionSpan>[];
 
     for (final dynamic result in rawResults) {
-      final Map<String, dynamic> resultMap =
-        Map<String,dynamic>.from(result as Map<dynamic, dynamic>);
-      suggestionSpans.add(
-        SuggestionSpan(
-          TextRange(
-            start: resultMap['startIndex'] as int,
-            end: resultMap['endIndex'] as int),
-          (resultMap['suggestions'] as List<dynamic>).cast<String>(),
-        )
+      final Map<String, dynamic> resultMap = Map<String, dynamic>.from(
+        result as Map<dynamic, dynamic>,
       );
+      suggestionSpans.add(SuggestionSpan(TextRange(
+        start: resultMap['startIndex'] as int,
+        end: resultMap['endIndex'] as int,
+      ), (resultMap['suggestions'] as List<dynamic>).cast<String>()));
     }
 
     if (lastSavedResults != null) {
       // Merge current and previous spell check results if between requests,
       // the text has not changed but the spell check results have.
       final bool textHasNotChanged = lastSavedResults!.spellCheckedText == text;
-      final bool spansHaveChanged =
-          listEquals(lastSavedResults!.suggestionSpans, suggestionSpans);
+      final bool spansHaveChanged = listEquals(
+        lastSavedResults!.suggestionSpans,
+        suggestionSpans,
+      );
 
       if (textHasNotChanged && spansHaveChanged) {
-        suggestionSpans = mergeResults(lastSavedResults!.suggestionSpans, suggestionSpans);
+        suggestionSpans = mergeResults(
+          lastSavedResults!.suggestionSpans,
+          suggestionSpans,
+        );
       }
     }
     lastSavedResults = SpellCheckResults(text, suggestionSpans);

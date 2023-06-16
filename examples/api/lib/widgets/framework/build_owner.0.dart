@@ -12,30 +12,25 @@ void main() {
   final Size size = measureWidget(const SizedBox(width: 640, height: 480));
 
   // Just displays the size calculated above.
-  runApp(
-    WidgetsApp(
-      title: 'BuildOwner Sample',
-      color: const Color(0xff000000),
-      builder: (BuildContext context, Widget? child) {
-        return Scaffold(
-          body: Center(
-            child: Text(size.toString()),
-          ),
-        );
-      },
-    ),
-  );
+  runApp(WidgetsApp(
+    title: 'BuildOwner Sample',
+    color: const Color(0xff000000),
+    builder: (BuildContext context, Widget? child) {
+      return Scaffold(body: Center(child: Text(size.toString())));
+    },
+  ));
 }
 
 Size measureWidget(Widget widget) {
   final PipelineOwner pipelineOwner = PipelineOwner();
   final MeasurementView rootView = pipelineOwner.rootNode = MeasurementView();
   final BuildOwner buildOwner = BuildOwner(focusManager: FocusManager());
-  final RenderObjectToWidgetElement<RenderBox> element = RenderObjectToWidgetAdapter<RenderBox>(
-    container: rootView,
-    debugShortDescription: '[root]',
-    child: widget,
-  ).attachToRenderTree(buildOwner);
+  final RenderObjectToWidgetElement<RenderBox> element =
+      RenderObjectToWidgetAdapter<RenderBox>(
+        container: rootView,
+        debugShortDescription: '[root]',
+        child: widget,
+      ).attachToRenderTree(buildOwner);
   try {
     rootView.scheduleInitialLayout();
     pipelineOwner.flushLayout();
@@ -47,7 +42,8 @@ Size measureWidget(Widget widget) {
   }
 }
 
-class MeasurementView extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
+class MeasurementView extends RenderBox
+    with RenderObjectWithChildMixin<RenderBox> {
   @override
   void performLayout() {
     assert(child != null);

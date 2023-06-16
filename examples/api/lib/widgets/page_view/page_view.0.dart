@@ -33,15 +33,9 @@ class PageViewExample extends StatelessWidget {
       /// Use [Axis.vertical] to scroll vertically.
       controller: controller,
       children: const <Widget>[
-        Center(
-          child: Text('First Page'),
-        ),
-        Center(
-          child: Text('Second Page'),
-        ),
-        Center(
-          child: Text('Third Page'),
-        ),
+        Center(child: Text('First Page')),
+        Center(child: Text('Second Page')),
+        Center(child: Text('Third Page')),
       ],
     );
   }

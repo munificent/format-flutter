@@ -22,16 +22,15 @@ class ShoppingCartPage extends StatefulWidget {
 
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
   List<Widget> _createShoppingCartRows(AppStateModel model) {
-    return model.productsInCart.keys
-        .map((int id) => ShoppingCartRow(
-            product: model.getProductById(id),
-            quantity: model.productsInCart[id],
-            onPressed: () {
-              model.removeItemFromCart(id);
-            },
-          ),
-        )
-        .toList();
+    return model.productsInCart.keys.map(
+      (int id) => ShoppingCartRow(
+        product: model.getProductById(id),
+        quantity: model.productsInCart[id],
+        onPressed: () {
+          model.removeItemFromCart(id);
+        },
+      ),
+    ).toList();
   }
 
   @override
@@ -53,21 +52,22 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                           width: _leftColumnWidth,
                           child: IconButton(
                             icon: const Icon(Icons.keyboard_arrow_down),
-                            onPressed: () => ExpandingBottomSheet.of(context)!.close(),
+                            onPressed: () =>
+                                ExpandingBottomSheet.of(context)!.close(),
                           ),
                         ),
                         Text(
                           'CART',
-                          style: localTheme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
+                          style: localTheme.textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(width: 16.0),
                         Text('${model.totalCartQuantity} ITEMS'),
                       ],
                     ),
                     const SizedBox(height: 16.0),
-                    Column(
-                      children: _createShoppingCartRows(model),
-                    ),
+                    Column(children: _createShoppingCartRows(model)),
                     ShoppingCartSummary(model: model),
                     const SizedBox(height: 100.0),
                   ],
@@ -109,8 +109,12 @@ class ShoppingCartSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle smallAmountStyle = Theme.of(context).textTheme.bodyMedium!.copyWith(color: kShrineBrown600);
-    final TextStyle? largeAmountStyle = Theme.of(context).textTheme.headlineMedium;
+    final TextStyle smallAmountStyle = Theme.of(context)
+        .textTheme
+        .bodyMedium!
+        .copyWith(color: kShrineBrown600);
+    final TextStyle? largeAmountStyle =
+        Theme.of(context).textTheme.headlineMedium;
     final NumberFormat formatter = NumberFormat.simpleCurrency(
       decimalDigits: 2,
       locale: Localizations.localeOf(context).toString(),
@@ -126,9 +130,7 @@ class ShoppingCartSummary extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    const Expanded(
-                      child: Text('TOTAL'),
-                    ),
+                    const Expanded(child: Text('TOTAL')),
                     Text(
                       formatter.format(model!.totalCost),
                       style: largeAmountStyle,
@@ -138,9 +140,7 @@ class ShoppingCartSummary extends StatelessWidget {
                 const SizedBox(height: 16.0),
                 Row(
                   children: <Widget>[
-                    const Expanded(
-                      child: Text('Subtotal:'),
-                    ),
+                    const Expanded(child: Text('Subtotal:')),
                     Text(
                       formatter.format(model!.subtotalCost),
                       style: smallAmountStyle,
@@ -150,9 +150,7 @@ class ShoppingCartSummary extends StatelessWidget {
                 const SizedBox(height: 4.0),
                 Row(
                   children: <Widget>[
-                    const Expanded(
-                      child: Text('Shipping:'),
-                    ),
+                    const Expanded(child: Text('Shipping:')),
                     Text(
                       formatter.format(model!.shippingCost),
                       style: smallAmountStyle,
@@ -162,13 +160,8 @@ class ShoppingCartSummary extends StatelessWidget {
                 const SizedBox(height: 4.0),
                 Row(
                   children: <Widget>[
-                    const Expanded(
-                      child: Text('Tax:'),
-                    ),
-                    Text(
-                      formatter.format(model!.tax),
-                      style: smallAmountStyle,
-                    ),
+                    const Expanded(child: Text('Tax:')),
+                    Text(formatter.format(model!.tax), style: smallAmountStyle),
                   ],
                 ),
               ],
@@ -235,15 +228,15 @@ class ShoppingCartRow extends StatelessWidget {
                           children: <Widget>[
                             Row(
                               children: <Widget>[
-                                Expanded(
-                                  child: Text('Quantity: $quantity'),
-                                ),
+                                Expanded(child: Text('Quantity: $quantity')),
                                 Text('x ${formatter.format(product.price)}'),
                               ],
                             ),
                             Text(
                               product.name,
-                              style: localTheme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
+                              style: localTheme.textTheme.titleMedium!.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),
@@ -251,10 +244,7 @@ class ShoppingCartRow extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16.0),
-                  const Divider(
-                    color: kShrineBrown900,
-                    height: 10.0,
-                  ),
+                  const Divider(color: kShrineBrown900, height: 10.0),
                 ],
               ),
             ),

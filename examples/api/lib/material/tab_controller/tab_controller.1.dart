@@ -13,9 +13,7 @@ class TabControllerExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: TabControllerExample(),
-    );
+    return const MaterialApp(home: TabControllerExample());
   }
 }
 
@@ -34,32 +32,30 @@ class TabControllerExample extends StatelessWidget {
       length: tabs.length,
       // The Builder widget is used to have a different BuildContext to access
       // closest DefaultTabController.
-      child: Builder(builder: (BuildContext context) {
-        final TabController tabController = DefaultTabController.of(context);
-        tabController.addListener(() {
-          if (!tabController.indexIsChanging) {
-            // Your code goes here.
-            // To get index of current tab use tabController.index
-          }
-        });
-        return Scaffold(
-          appBar: AppBar(
-            bottom: const TabBar(
-              tabs: tabs,
+      child: Builder(
+        builder: (BuildContext context) {
+          final TabController tabController = DefaultTabController.of(context);
+          tabController.addListener(() {
+            if (!tabController.indexIsChanging) {
+              // Your code goes here.
+              // To get index of current tab use tabController.index
+            }
+          });
+          return Scaffold(
+            appBar: AppBar(bottom: const TabBar(tabs: tabs)),
+            body: TabBarView(
+              children: tabs.map((Tab tab) {
+                return Center(
+                  child: Text(
+                    '${tab.text!} Tab',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                );
+              }).toList(),
             ),
-          ),
-          body: TabBarView(
-            children: tabs.map((Tab tab) {
-              return Center(
-                child: Text(
-                  '${tab.text!} Tab',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-              );
-            }).toList(),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 }

@@ -141,7 +141,10 @@ mixin class ChangeNotifier implements Listenable {
   // keeping runtime type the same during the lifetime of this class lets the
   // compiler to infer concrete type for this property, and thus improves
   // performance.
-  static final List<VoidCallback?> _emptyListeners = List<VoidCallback?>.filled(0, null);
+  static final List<VoidCallback?> _emptyListeners = List<VoidCallback?>.filled(
+    0,
+    null,
+  );
   List<VoidCallback?> _listeners = _emptyListeners;
   int _notificationCallStackDepth = 0;
   int _reentrantlyRemovedListeners = 0;
@@ -174,16 +177,18 @@ mixin class ChangeNotifier implements Listenable {
   // implement ChangeNotifier instead of extending it (and so it is too breaking
   // to add a method, especially for debug).
   static bool debugAssertNotDisposed(ChangeNotifier notifier) {
-    assert(() {
-      if (notifier._debugDisposed) {
-        throw FlutterError(
-          'A ${notifier.runtimeType} was used after being disposed.\n'
-          'Once you have called dispose() on a ${notifier.runtimeType}, it '
-          'can no longer be used.',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (notifier._debugDisposed) {
+          throw FlutterError(
+            'A ${notifier.runtimeType} was used after being disposed.\n'
+            'Once you have called dispose() on a ${notifier.runtimeType}, it '
+            'can no longer be used.',
+          );
+        }
+        return true;
+      }(),
+    );
     return true;
   }
 
@@ -248,8 +253,10 @@ mixin class ChangeNotifier implements Listenable {
       if (_count == 0) {
         _listeners = List<VoidCallback?>.filled(1, null);
       } else {
-        final List<VoidCallback?> newListeners =
-            List<VoidCallback?>.filled(_listeners.length * 2, null);
+        final List<VoidCallback?> newListeners = List<VoidCallback?>.filled(
+          _listeners.length * 2,
+          null,
+        );
         for (int i = 0; i < _count; i++) {
           newListeners[i] = _listeners[i];
         }
@@ -267,7 +274,10 @@ mixin class ChangeNotifier implements Listenable {
     // of our list.
     _count -= 1;
     if (_count * 2 <= _listeners.length) {
-      final List<VoidCallback?> newListeners = List<VoidCallback?>.filled(_count, null);
+      final List<VoidCallback?> newListeners = List<VoidCallback?>.filled(
+        _count,
+        null,
+      );
 
       // Listeners before the index are at the same place.
       for (int i = 0; i < index; i++) {
@@ -349,10 +359,12 @@ mixin class ChangeNotifier implements Listenable {
       '"notifyListeners()". This is likely to cause errors since it modifies '
       'the list of listeners while the list is being used.',
     );
-    assert(() {
-      _debugDisposed = true;
-      return true;
-    }());
+    assert(
+      () {
+        _debugDisposed = true;
+        return true;
+      }(),
+    );
     if (kFlutterMemoryAllocationsEnabled && _creationDispatched) {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
@@ -406,14 +418,16 @@ mixin class ChangeNotifier implements Listenable {
           exception: exception,
           stack: stack,
           library: 'foundation library',
-          context: ErrorDescription('while dispatching notifications for $runtimeType'),
+          context: ErrorDescription(
+            'while dispatching notifications for $runtimeType',
+          ),
           informationCollector: () => <DiagnosticsNode>[
-            DiagnosticsProperty<ChangeNotifier>(
-              'The $runtimeType sending notification was',
-              this,
-              style: DiagnosticsTreeStyle.errorProperty,
-            ),
-          ],
+                DiagnosticsProperty<ChangeNotifier>(
+                  'The $runtimeType sending notification was',
+                  this,
+                  style: DiagnosticsTreeStyle.errorProperty,
+                ),
+              ],
         ));
       }
     }
@@ -426,7 +440,10 @@ mixin class ChangeNotifier implements Listenable {
       if (newLength * 2 <= _listeners.length) {
         // As in _removeAt, we only shrink the list when the real number of
         // listeners is half the length of our list.
-        final List<VoidCallback?> newListeners = List<VoidCallback?>.filled(newLength, null);
+        final List<VoidCallback?> newListeners = List<VoidCallback?>.filled(
+          newLength,
+          null,
+        );
 
         int newIndex = 0;
         for (int i = 0; i < _count; i++) {

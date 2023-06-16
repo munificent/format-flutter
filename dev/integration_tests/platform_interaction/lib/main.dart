@@ -23,9 +23,7 @@ class TestApp extends StatefulWidget {
 }
 
 class _TestAppState extends State<TestApp> {
-  static final List<TestStep> steps = <TestStep>[
-    () => systemNavigatorPop(),
-  ];
+  static final List<TestStep> steps = <TestStep>[() => systemNavigatorPop()];
   Future<TestStepResult>? _result;
   int _step = 0;
 
@@ -51,9 +49,7 @@ class _TestAppState extends State<TestApp> {
     return MaterialApp(
       title: 'Platform Interaction Test',
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Platform Interaction Test'),
-        ),
+        appBar: AppBar(title: const Text('Platform Interaction Test')),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: FutureBuilder<TestStepResult>(

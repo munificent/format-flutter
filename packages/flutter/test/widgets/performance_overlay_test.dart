@@ -12,29 +12,37 @@ void main() {
     await tester.pumpWidget(PerformanceOverlay.allEnabled());
   });
 
-  testWidgets('update widget field checkerboardRasterCacheImages',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(const PerformanceOverlay());
-    await tester.pumpWidget(
-        const PerformanceOverlay(checkerboardRasterCacheImages: true));
-    final Finder finder = find.byType(PerformanceOverlay);
-    expect(
-        tester
-            .renderObject<RenderPerformanceOverlay>(finder)
-            .checkerboardRasterCacheImages,
-        true);
-  });
+  testWidgets(
+    'update widget field checkerboardRasterCacheImages',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const PerformanceOverlay());
+      await tester.pumpWidget(
+        const PerformanceOverlay(checkerboardRasterCacheImages: true),
+      );
+      final Finder finder = find.byType(PerformanceOverlay);
+      expect(
+        tester.renderObject<RenderPerformanceOverlay>(
+          finder,
+        ).checkerboardRasterCacheImages,
+        true,
+      );
+    },
+  );
 
-  testWidgets('update widget field checkerboardOffscreenLayers',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(const PerformanceOverlay());
-    await tester.pumpWidget(
-        const PerformanceOverlay(checkerboardOffscreenLayers: true));
-    final Finder finder = find.byType(PerformanceOverlay);
-    expect(
-        tester
-            .renderObject<RenderPerformanceOverlay>(finder)
-            .checkerboardOffscreenLayers,
-        true);
-  });
+  testWidgets(
+    'update widget field checkerboardOffscreenLayers',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const PerformanceOverlay());
+      await tester.pumpWidget(
+        const PerformanceOverlay(checkerboardOffscreenLayers: true),
+      );
+      final Finder finder = find.byType(PerformanceOverlay);
+      expect(
+        tester.renderObject<RenderPerformanceOverlay>(
+          finder,
+        ).checkerboardOffscreenLayers,
+        true,
+      );
+    },
+  );
 }

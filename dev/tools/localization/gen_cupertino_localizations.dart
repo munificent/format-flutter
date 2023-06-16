@@ -34,7 +34,9 @@ import '../cupertino_localizations.dart';
 String generateCupertinoConstructor(LocaleInfo locale) {
   final String localeName = locale.originalString;
   return '''
-  /// Create an instance of the translation bundle for ${describeLocale(localeName)}.
+  /// Create an instance of the translation bundle for ${describeLocale(
+    localeName,
+  )}.
   ///
   /// For details on the meaning of the arguments, see [GlobalCupertinoLocalizations].
   const CupertinoLocalization${locale.camelCase()}({
@@ -68,6 +70,8 @@ GlobalCupertinoLocalizations? getCupertinoTranslation(
 const String cupertinoFactoryArguments =
     'fullYearFormat: fullYearFormat, dayFormat: dayFormat, mediumDateFormat: mediumDateFormat, singleDigitHourFormat: singleDigitHourFormat, singleDigitMinuteFormat: singleDigitMinuteFormat, doubleDigitMinuteFormat: doubleDigitMinuteFormat, singleDigitSecondFormat: singleDigitSecondFormat, decimalFormat: decimalFormat';
 
-const String cupertinoSupportedLanguagesConstant = 'kCupertinoSupportedLanguages';
+const String cupertinoSupportedLanguagesConstant =
+    'kCupertinoSupportedLanguages';
 
-const String cupertinoSupportedLanguagesDocMacro = 'flutter.localizations.cupertino.languages';
+const String cupertinoSupportedLanguagesDocMacro =
+    'flutter.localizations.cupertino.languages';

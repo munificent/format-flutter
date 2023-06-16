@@ -23,17 +23,25 @@ class KeyCodesCcGenerator extends BaseCodeGenerator {
     final OutputLines<int> lines = OutputLines<int>('Physical Key list');
     for (final PhysicalKeyEntry entry in keyData.entries) {
       lines.add(entry.usbHidCode, '''
-constexpr uint64_t kPhysical${_toUpperCamel(entry.constantName)} = ${toHex(entry.usbHidCode)};''');
+constexpr uint64_t kPhysical${_toUpperCamel(entry.constantName)} = ${toHex(
+        entry.usbHidCode,
+      )};''');
     }
     return lines.sortedJoin().trimRight();
   }
 
   /// Gets the generated definitions of PhysicalKeyboardKeys.
   String get _logicalDefinitions {
-    final OutputLines<int> lines = OutputLines<int>('Logical Key list', behavior: DeduplicateBehavior.kSkip);
+    final OutputLines<int> lines = OutputLines<int>(
+      'Logical Key list',
+      behavior: DeduplicateBehavior.kSkip,
+    );
     for (final LogicalKeyEntry entry in logicalData.entries) {
       lines.add(entry.value, '''
-constexpr uint64_t kLogical${_toUpperCamel(entry.constantName)} = ${toHex(entry.value, digits: 11)};''');
+constexpr uint64_t kLogical${_toUpperCamel(entry.constantName)} = ${toHex(
+        entry.value,
+        digits: 11,
+      )};''');
     }
     return lines.sortedJoin().trimRight();
   }

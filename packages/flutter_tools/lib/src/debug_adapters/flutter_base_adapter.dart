@@ -15,8 +15,11 @@ import 'flutter_adapter_args.dart';
 import 'mixins.dart';
 
 /// A base DAP Debug Adapter for Flutter applications and tests.
-abstract class FlutterBaseDebugAdapter extends DartDebugAdapter<FlutterLaunchRequestArguments, FlutterAttachRequestArguments>
-    with PidTracker {
+abstract class FlutterBaseDebugAdapter
+    extends DartDebugAdapter<
+      FlutterLaunchRequestArguments,
+      FlutterAttachRequestArguments
+    > with PidTracker {
   FlutterBaseDebugAdapter(
     super.channel, {
     required this.fileSystem,
@@ -27,11 +30,11 @@ abstract class FlutterBaseDebugAdapter extends DartDebugAdapter<FlutterLaunchReq
     super.logger,
     super.onError,
   }) : flutterSdkRoot = Cache.flutterRoot!,
-      // Always disable in the DAP layer as it's handled in the spawned
-      // 'flutter' process.
-      super(enableDds: false) {
-        configureOrgDartlangSdkMappings();
-      }
+       // Always disable in the DAP layer as it's handled in the spawned
+       // 'flutter' process.
+       super(enableDds: false) {
+    configureOrgDartlangSdkMappings();
+  }
 
   FileSystem fileSystem;
   Platform platform;
@@ -47,11 +50,11 @@ abstract class FlutterBaseDebugAdapter extends DartDebugAdapter<FlutterLaunchReq
 
   @override
   final FlutterLaunchRequestArguments Function(Map<String, Object?> obj)
-      parseLaunchArgs = FlutterLaunchRequestArguments.fromJson;
+  parseLaunchArgs = FlutterLaunchRequestArguments.fromJson;
 
   @override
   final FlutterAttachRequestArguments Function(Map<String, Object?> obj)
-      parseAttachArgs = FlutterAttachRequestArguments.fromJson;
+  parseAttachArgs = FlutterAttachRequestArguments.fromJson;
 
   /// Whether the VM Service closing should be used as a signal to terminate the debug session.
   ///
@@ -97,12 +100,30 @@ abstract class FlutterBaseDebugAdapter extends DartDebugAdapter<FlutterLaunchReq
     orgDartlangSdkMappings.clear();
 
     // 'dart:ui' maps to /flutter/lib/ui
-    final String flutterRoot = fileSystem.path.join(flutterSdkRoot, 'bin', 'cache', 'pkg', 'sky_engine', 'lib', 'ui');
-    orgDartlangSdkMappings[flutterRoot] = Uri.parse('org-dartlang-sdk:///flutter/lib/ui');
+    final String flutterRoot = fileSystem.path.join(
+      flutterSdkRoot,
+      'bin',
+      'cache',
+      'pkg',
+      'sky_engine',
+      'lib',
+      'ui',
+    );
+    orgDartlangSdkMappings[flutterRoot] = Uri.parse(
+      'org-dartlang-sdk:///flutter/lib/ui',
+    );
 
     // The rest of the Dart SDK maps to /third_party/dart/sdk
-    final String dartRoot = fileSystem.path.join(flutterSdkRoot, 'bin', 'cache', 'pkg', 'sky_engine');
-    orgDartlangSdkMappings[dartRoot] = Uri.parse('org-dartlang-sdk:///third_party/dart/sdk');
+    final String dartRoot = fileSystem.path.join(
+      flutterSdkRoot,
+      'bin',
+      'cache',
+      'pkg',
+      'sky_engine',
+    );
+    orgDartlangSdkMappings[dartRoot] = Uri.parse(
+      'org-dartlang-sdk:///third_party/dart/sdk',
+    );
   }
 
   @override

@@ -15,10 +15,9 @@ import './version.dart';
 const String kRemote = 'remote';
 
 class CandidatesCommand extends Command<void> {
-  CandidatesCommand({
-    required this.flutterRoot,
-    required this.checkouts,
-  }) : git = Git(checkouts.processManager), stdio = checkouts.stdio {
+  CandidatesCommand({required this.flutterRoot, required this.checkouts})
+    : git = Git(checkouts.processManager),
+      stdio = checkouts.stdio {
     argParser.addOption(
       kRemote,
       help: 'Which remote name to query for branches.',
@@ -55,22 +54,20 @@ class CandidatesCommand extends Command<void> {
     final Version currentVersion = await framework.flutterVersion();
     stdio.printStatus('currentVersion = $currentVersion');
 
-    final List<String> branches = (await git.getOutput(
-      <String>[
-        'branch',
-        '--no-color',
-        '--remotes',
-        '--list',
-        '${results[kRemote]}/*',
-      ],
-      'List all remote branches',
-      workingDirectory: flutterRoot.path,
-    )).split('\n');
+    final List<String> branches = (await git.getOutput(<String>[
+          'branch',
+          '--no-color',
+          '--remotes',
+          '--list',
+          '${results[kRemote]}/*',
+        ], 'List all remote branches', workingDirectory: flutterRoot.path))
+        .split('\n');
 
     // Pattern for extracting only the branch name via sub-group 1
     final RegExp remotePattern = RegExp('${results[kRemote]}\\/(.*)');
     for (final String branchName in branches) {
-      final RegExpMatch? candidateMatch = releaseCandidateBranchRegex.firstMatch(branchName);
+      final RegExpMatch? candidateMatch = releaseCandidateBranchRegex
+          .firstMatch(branchName);
       if (candidateMatch == null) {
         continue;
       }

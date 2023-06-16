@@ -17,7 +17,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final AutomatedTestWidgetsFlutterBinding binding = AutomatedTestWidgetsFlutterBinding();
+  final AutomatedTestWidgetsFlutterBinding binding =
+      AutomatedTestWidgetsFlutterBinding();
 
   group(TestViewConfiguration, () {
     test('is initialized with top-level window if one is not provided', () {
@@ -71,32 +72,37 @@ void main() {
     testWidgets('can use to simulate slow build', (WidgetTester tester) async {
       final DateTime beforeTime = binding.clock.now();
 
-      await tester.pumpWidget(Builder(builder: (_) {
-        bool timerCalled = false;
-        Timer.run(() => timerCalled = true);
+      await tester.pumpWidget(Builder(
+        builder: (_) {
+          bool timerCalled = false;
+          Timer.run(() => timerCalled = true);
 
-        binding.elapseBlocking(const Duration(seconds: 1));
+          binding.elapseBlocking(const Duration(seconds: 1));
 
-        // if we use `delayed` instead of `elapseBlocking`, such as
-        // binding.delayed(const Duration(seconds: 1));
-        // the timer will be called here. Surely, that violates how
-        // a flutter widget build works
-        expect(timerCalled, false);
+          // if we use `delayed` instead of `elapseBlocking`, such as
+          // binding.delayed(const Duration(seconds: 1));
+          // the timer will be called here. Surely, that violates how
+          // a flutter widget build works
+          expect(timerCalled, false);
 
-        return Container();
-      }));
+          return Container();
+        },
+      ));
 
       expect(binding.clock.now(), beforeTime.add(const Duration(seconds: 1)));
       binding.idle();
     });
   });
 
-  testWidgets('Assets in the tester can be loaded without turning event loop', (WidgetTester tester) async {
-    bool responded = false;
-    // The particular asset does not matter, as long as it exists.
-    rootBundle.load('AssetManifest.json').then((ByteData data) {
-      responded = true;
-    });
-    expect(responded, true);
-  });
+  testWidgets(
+    'Assets in the tester can be loaded without turning event loop',
+    (WidgetTester tester) async {
+      bool responded = false;
+      // The particular asset does not matter, as long as it exists.
+      rootBundle.load('AssetManifest.json').then((ByteData data) {
+        responded = true;
+      });
+      expect(responded, true);
+    },
+  );
 }

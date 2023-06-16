@@ -8,15 +8,13 @@ import 'package:flutter/rendering.dart';
 /// Flutter code sample for [SlottedMultiChildRenderObjectWidget].
 
 /// Slots used for the children of [Diagonal] and [RenderDiagonal].
-enum DiagonalSlot {
-  topLeft,
-  bottomRight,
-}
+enum DiagonalSlot { topLeft, bottomRight }
 
 /// A widget that demonstrates the usage of
 /// [SlottedMultiChildRenderObjectWidget] by providing slots for two
 /// children that will be arranged diagonally.
-class Diagonal extends SlottedMultiChildRenderObjectWidget<DiagonalSlot, RenderBox> {
+class Diagonal
+    extends SlottedMultiChildRenderObjectWidget<DiagonalSlot, RenderBox> {
   const Diagonal({
     super.key,
     this.topLeft,
@@ -52,9 +50,7 @@ class Diagonal extends SlottedMultiChildRenderObjectWidget<DiagonalSlot, RenderB
   SlottedContainerRenderObjectMixin<DiagonalSlot, RenderBox> createRenderObject(
     BuildContext context,
   ) {
-    return RenderDiagonal(
-      backgroundColor: backgroundColor,
-    );
+    return RenderDiagonal(backgroundColor: backgroundColor);
   }
 
   @override
@@ -70,7 +66,9 @@ class Diagonal extends SlottedMultiChildRenderObjectWidget<DiagonalSlot, RenderB
 /// [SlottedContainerRenderObjectMixin] by providing slots for two children that
 /// will be arranged diagonally.
 class RenderDiagonal extends RenderBox
-    with SlottedContainerRenderObjectMixin<DiagonalSlot, RenderBox>, DebugOverflowIndicatorMixin {
+    with
+        SlottedContainerRenderObjectMixin<DiagonalSlot, RenderBox>,
+        DebugOverflowIndicatorMixin {
   RenderDiagonal({Color? backgroundColor}) : _backgroundColor = backgroundColor;
 
   // Getters and setters to configure the [RenderObject] with the configuration
@@ -154,10 +152,7 @@ class RenderDiagonal extends RenderBox
   void paint(PaintingContext context, Offset offset) {
     // Paint the background.
     if (backgroundColor != null) {
-      context.canvas.drawRect(
-        offset & size,
-        Paint()..color = backgroundColor!,
-      );
+      context.canvas.drawRect(offset & size, Paint()..color = backgroundColor!);
     }
 
     void paintChild(RenderBox child, PaintingContext context, Offset offset) {
@@ -177,15 +172,17 @@ class RenderDiagonal extends RenderBox
 
     // Paint an overflow indicator in debug mode if the children want to be
     // larger than the incoming constraints allow.
-    assert(() {
-      paintOverflowIndicator(
-        context,
-        offset,
-        Offset.zero & size,
-        Offset.zero & _childrenSize,
-      );
-      return true;
-    }());
+    assert(
+      () {
+        paintOverflowIndicator(
+          context,
+          offset,
+          Offset.zero & size,
+          Offset.zero & _childrenSize,
+        );
+        return true;
+      }(),
+    );
   }
 
   // HIT TEST
@@ -215,37 +212,47 @@ class RenderDiagonal extends RenderBox
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    final double topLeftWidth = _topLeft?.getMinIntrinsicWidth(double.infinity) ?? 0;
-    final double bottomRightWith = _bottomRight?.getMinIntrinsicWidth(double.infinity) ?? 0;
+    final double topLeftWidth =
+        _topLeft?.getMinIntrinsicWidth(double.infinity) ?? 0;
+    final double bottomRightWith =
+        _bottomRight?.getMinIntrinsicWidth(double.infinity) ?? 0;
     return topLeftWidth + bottomRightWith;
   }
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    final double topLeftWidth = _topLeft?.getMaxIntrinsicWidth(double.infinity) ?? 0;
-    final double bottomRightWith = _bottomRight?.getMaxIntrinsicWidth(double.infinity) ?? 0;
+    final double topLeftWidth =
+        _topLeft?.getMaxIntrinsicWidth(double.infinity) ?? 0;
+    final double bottomRightWith =
+        _bottomRight?.getMaxIntrinsicWidth(double.infinity) ?? 0;
     return topLeftWidth + bottomRightWith;
   }
 
   @override
   double computeMinIntrinsicHeight(double width) {
-    final double topLeftHeight = _topLeft?.getMinIntrinsicHeight(double.infinity) ?? 0;
-    final double bottomRightHeight = _bottomRight?.getMinIntrinsicHeight(double.infinity) ?? 0;
+    final double topLeftHeight =
+        _topLeft?.getMinIntrinsicHeight(double.infinity) ?? 0;
+    final double bottomRightHeight =
+        _bottomRight?.getMinIntrinsicHeight(double.infinity) ?? 0;
     return topLeftHeight + bottomRightHeight;
   }
 
   @override
   double computeMaxIntrinsicHeight(double width) {
-    final double topLeftHeight = _topLeft?.getMaxIntrinsicHeight(double.infinity) ?? 0;
-    final double bottomRightHeight = _bottomRight?.getMaxIntrinsicHeight(double.infinity) ?? 0;
+    final double topLeftHeight =
+        _topLeft?.getMaxIntrinsicHeight(double.infinity) ?? 0;
+    final double bottomRightHeight =
+        _bottomRight?.getMaxIntrinsicHeight(double.infinity) ?? 0;
     return topLeftHeight + bottomRightHeight;
   }
 
   @override
   Size computeDryLayout(BoxConstraints constraints) {
     const BoxConstraints childConstraints = BoxConstraints();
-    final Size topLeftSize = _topLeft?.computeDryLayout(childConstraints) ?? Size.zero;
-    final Size bottomRightSize = _bottomRight?.computeDryLayout(childConstraints) ?? Size.zero;
+    final Size topLeftSize =
+        _topLeft?.computeDryLayout(childConstraints) ?? Size.zero;
+    final Size bottomRightSize =
+        _bottomRight?.computeDryLayout(childConstraints) ?? Size.zero;
     return constraints.constrain(Size(
       topLeftSize.width + bottomRightSize.width,
       topLeftSize.height + bottomRightSize.height,
@@ -267,17 +274,13 @@ class ExampleWidget extends StatelessWidget {
               color: Colors.green,
               height: 100,
               width: 200,
-              child: const Center(
-                child: Text('topLeft'),
-              ),
+              child: const Center(child: Text('topLeft')),
             ),
             bottomRight: Container(
               color: Colors.yellow,
               height: 60,
               width: 30,
-              child: const Center(
-                child: Text('bottomRight'),
-              ),
+              child: const Center(child: Text('bottomRight')),
             ),
             backgroundColor: Colors.blue,
           ),

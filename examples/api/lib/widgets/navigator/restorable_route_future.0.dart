@@ -40,20 +40,23 @@ class _MyHomeState extends State<MyHome> with RestorationMixin {
   @override
   void initState() {
     super.initState();
-    _counterRoute = RestorableRouteFuture<int>(onPresent: (NavigatorState navigator, Object? arguments) {
-      // Defines what route should be shown (and how it should be added
-      // to the navigator) when `RestorableRouteFuture.present` is called.
-      return navigator.restorablePush(
-        _counterRouteBuilder,
-        arguments: arguments,
-      );
-    }, onComplete: (int count) {
-      // Defines what should happen with the return value when the route
-      // completes.
-      setState(() {
-        _lastCount.value = count;
-      });
-    });
+    _counterRoute = RestorableRouteFuture<int>(
+      onPresent: (NavigatorState navigator, Object? arguments) {
+        // Defines what route should be shown (and how it should be added
+        // to the navigator) when `RestorableRouteFuture.present` is called.
+        return navigator.restorablePush(
+          _counterRouteBuilder,
+          arguments: arguments,
+        );
+      },
+      onComplete: (int count) {
+        // Defines what should happen with the return value when the route
+        // completes.
+        setState(() {
+          _lastCount.value = count;
+        });
+      },
+    );
   }
 
   @override
@@ -73,11 +76,13 @@ class _MyHomeState extends State<MyHome> with RestorationMixin {
   // A static `RestorableRouteBuilder` that can re-create the route during
   // state restoration.
   @pragma('vm:entry-point')
-  static Route<int> _counterRouteBuilder(BuildContext context, Object? arguments) {
+  static Route<int> _counterRouteBuilder(
+    BuildContext context,
+    Object? arguments,
+  ) {
     return MaterialPageRoute<int>(
-      builder: (BuildContext context) => MyCounter(
-        title: arguments!.toString(),
-      ),
+      builder:
+          (BuildContext context) => MyCounter(title: arguments!.toString()),
     );
   }
 
@@ -140,9 +145,7 @@ class _MyCounterState extends State<MyCounter> with RestorationMixin {
           },
         ),
       ),
-      body: Center(
-        child: Text('Count: ${_count.value}'),
-      ),
+      body: Center(child: Text('Count: ${_count.value}')),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {

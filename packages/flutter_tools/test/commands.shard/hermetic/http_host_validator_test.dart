@@ -52,11 +52,31 @@ void main() {
             platform: platform,
             featureFlags: TestFeatureFlags(),
             httpClient: FakeHttpClient.list(<FakeRequest>[
-              FakeRequest(Uri.parse(kCloudHost), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
-              FakeRequest(Uri.parse(kCocoaPods), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
-              FakeRequest(Uri.parse(kGitHub), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
-              FakeRequest(Uri.parse(kMaven), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
-              FakeRequest(Uri.parse(kPubDev), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
+              FakeRequest(
+                Uri.parse(kCloudHost),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
+              FakeRequest(
+                Uri.parse(kCocoaPods),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
+              FakeRequest(
+                Uri.parse(kGitHub),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
+              FakeRequest(
+                Uri.parse(kMaven),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
+              FakeRequest(
+                Uri.parse(kPubDev),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
             ]),
           );
 
@@ -76,7 +96,11 @@ void main() {
             platform: platform,
             featureFlags: TestFeatureFlags(),
             httpClient: FakeHttpClient.list(<FakeRequest>[
-              FakeRequest(Uri.parse(kCloudHost), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
+              FakeRequest(
+                Uri.parse(kCloudHost),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
               FakeRequest(Uri.parse(kCocoaPods), method: HttpMethod.head),
               FakeRequest(Uri.parse(kGitHub), method: HttpMethod.head),
               FakeRequest(Uri.parse(kMaven), method: HttpMethod.head),
@@ -100,7 +124,10 @@ void main() {
         // Run the check for all operating systems one by one
         for (final String os in osTested) {
           final HttpHostValidator httpHostValidator = HttpHostValidator(
-            platform: FakePlatform(operatingSystem: os, environment: kTestEnvironment),
+            platform: FakePlatform(
+              operatingSystem: os,
+              environment: kTestEnvironment,
+            ),
             featureFlags: TestFeatureFlags(),
             httpClient: mockClient,
           );
@@ -116,15 +143,34 @@ void main() {
       testWithoutContext('all http hosts are not available', () async {
         // Run the check for all operating systems one by one
         for (final String os in osTested) {
-          final Platform platform = FakePlatform(operatingSystem: os, environment: kTestEnvironment);
+          final Platform platform = FakePlatform(
+            operatingSystem: os,
+            environment: kTestEnvironment,
+          );
           final HttpHostValidator httpHostValidator = HttpHostValidator(
             platform: platform,
             featureFlags: TestFeatureFlags(),
             httpClient: FakeHttpClient.list(<FakeRequest>[
-              FakeRequest(Uri.parse(kCocoaPods), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
-              FakeRequest(Uri.parse(kGitHub), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
-              FakeRequest(Uri.parse(kTestEnvGCloudHost), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
-              FakeRequest(Uri.parse(kTestEnvPubHost), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
+              FakeRequest(
+                Uri.parse(kCocoaPods),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
+              FakeRequest(
+                Uri.parse(kGitHub),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
+              FakeRequest(
+                Uri.parse(kTestEnvGCloudHost),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
+              FakeRequest(
+                Uri.parse(kTestEnvPubHost),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
             ]),
           );
 
@@ -139,14 +185,25 @@ void main() {
       testWithoutContext('one http host is not available', () async {
         // Run the check for all operating systems one by one
         for (final String os in osTested) {
-          final Platform platform = FakePlatform(operatingSystem: os, environment: kTestEnvironment);
+          final Platform platform = FakePlatform(
+            operatingSystem: os,
+            environment: kTestEnvironment,
+          );
           final HttpHostValidator httpHostValidator = HttpHostValidator(
             platform: platform,
             featureFlags: TestFeatureFlags(),
             httpClient: FakeHttpClient.list(<FakeRequest>[
               FakeRequest(Uri.parse(kCocoaPods), method: HttpMethod.head),
-              FakeRequest(Uri.parse(kGitHub), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
-              FakeRequest(Uri.parse(kTestEnvGCloudHost), method: HttpMethod.head, responseError: const OSError('Name or service not known', -2)),
+              FakeRequest(
+                Uri.parse(kGitHub),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
+              FakeRequest(
+                Uri.parse(kTestEnvGCloudHost),
+                method: HttpMethod.head,
+                responseError: const OSError('Name or service not known', -2),
+              ),
               FakeRequest(Uri.parse(kTestEnvPubHost), method: HttpMethod.head),
             ]),
           );
@@ -159,123 +216,139 @@ void main() {
         }
       });
 
-      testWithoutContext('does not throw on unparseable user-defined host uri', () async {
-        final HttpHostValidator httpHostValidator = HttpHostValidator(
-          platform: FakePlatform(
-            environment: <String,String> {
-              'PUB_HOSTED_URL': '::Not A Uri::',
-              'FLUTTER_STORAGE_BASE_URL': kTestEnvGCloudHost,
-            },
-          ),
-          featureFlags: TestFeatureFlags(isAndroidEnabled: false),
-          httpClient: FakeHttpClient.any(),
-        );
+      testWithoutContext(
+        'does not throw on unparseable user-defined host uri',
+        () async {
+          final HttpHostValidator httpHostValidator = HttpHostValidator(
+            platform: FakePlatform(
+              environment: <String, String>{
+                'PUB_HOSTED_URL': '::Not A Uri::',
+                'FLUTTER_STORAGE_BASE_URL': kTestEnvGCloudHost,
+              },
+            ),
+            featureFlags: TestFeatureFlags(isAndroidEnabled: false),
+            httpClient: FakeHttpClient.any(),
+          );
 
-        // Run the validation check and get the results
-        final ValidationResult result = await httpHostValidator.validate();
+          // Run the validation check and get the results
+          final ValidationResult result = await httpHostValidator.validate();
 
-        expect(result.type, equals(ValidationType.partial));
-        expect(
-          result.messages,
-          contains(const ValidationMessage.error(
-            'Environment variable PUB_HOSTED_URL does not specify a valid URL: "::Not A Uri::"\n'
-            'Please see https://flutter.dev/community/china for an example of how to use it.',
-          )),
-        );
-      });
+          expect(result.type, equals(ValidationType.partial));
+          expect(result.messages, contains(
+            const ValidationMessage.error(
+              'Environment variable PUB_HOSTED_URL does not specify a valid URL: "::Not A Uri::"\n'
+              'Please see https://flutter.dev/community/china for an example of how to use it.',
+            ),
+          ));
+        },
+      );
 
-      testWithoutContext('does not throw on invalid user-defined host', () async {
-        final HttpHostValidator httpHostValidator = HttpHostValidator(
-          platform: FakePlatform(
-            environment: <String,String> {
-              'PUB_HOSTED_URL': kTestEnvPubHost,
-              'FLUTTER_STORAGE_BASE_URL': '',
-            },
-          ),
-          featureFlags: TestFeatureFlags(isAndroidEnabled: false),
-          httpClient: FakeHttpClient.any(),
-        );
+      testWithoutContext(
+        'does not throw on invalid user-defined host',
+        () async {
+          final HttpHostValidator httpHostValidator = HttpHostValidator(
+            platform: FakePlatform(
+              environment: <String, String>{
+                'PUB_HOSTED_URL': kTestEnvPubHost,
+                'FLUTTER_STORAGE_BASE_URL': '',
+              },
+            ),
+            featureFlags: TestFeatureFlags(isAndroidEnabled: false),
+            httpClient: FakeHttpClient.any(),
+          );
 
-        // Run the validation check and get the results
-        final ValidationResult result = await httpHostValidator.validate();
+          // Run the validation check and get the results
+          final ValidationResult result = await httpHostValidator.validate();
 
-        expect(result.type, equals(ValidationType.partial));
-        expect(
-          result.messages,
-          contains(const ValidationMessage.error(
-            'Environment variable FLUTTER_STORAGE_BASE_URL does not specify a valid URL: ""\n'
-            'Please see https://flutter.dev/community/china for an example of how to use it.'
-          )),
-        );
-      });
+          expect(result.type, equals(ValidationType.partial));
+          expect(result.messages, contains(
+            const ValidationMessage.error(
+              'Environment variable FLUTTER_STORAGE_BASE_URL does not specify a valid URL: ""\n'
+              'Please see https://flutter.dev/community/china for an example of how to use it.',
+            ),
+          ));
+        },
+      );
     });
 
     group('specific os disabled', () {
-      testWithoutContext('all http hosts are available - android disabled', () async {
-        // Run the check for all operating systems one by one
-        for (final String os in osTested) {
-          final HttpHostValidator httpHostValidator = HttpHostValidator(
-            platform: FakePlatform(operatingSystem: os),
-            featureFlags: TestFeatureFlags(isAndroidEnabled: false),
-            httpClient: FakeHttpClient.list(<FakeRequest>[
-              FakeRequest(Uri.parse(kCloudHost), method: HttpMethod.head),
-              FakeRequest(Uri.parse(kCocoaPods), method: HttpMethod.head),
-              FakeRequest(Uri.parse(kGitHub), method: HttpMethod.head),
-              FakeRequest(Uri.parse(kPubDev), method: HttpMethod.head),
-            ]),
-          );
+      testWithoutContext(
+        'all http hosts are available - android disabled',
+        () async {
+          // Run the check for all operating systems one by one
+          for (final String os in osTested) {
+            final HttpHostValidator httpHostValidator = HttpHostValidator(
+              platform: FakePlatform(operatingSystem: os),
+              featureFlags: TestFeatureFlags(isAndroidEnabled: false),
+              httpClient: FakeHttpClient.list(<FakeRequest>[
+                FakeRequest(Uri.parse(kCloudHost), method: HttpMethod.head),
+                FakeRequest(Uri.parse(kCocoaPods), method: HttpMethod.head),
+                FakeRequest(Uri.parse(kGitHub), method: HttpMethod.head),
+                FakeRequest(Uri.parse(kPubDev), method: HttpMethod.head),
+              ]),
+            );
 
-          // Run the validation check and get the results
-          final ValidationResult result = await httpHostValidator.validate();
+            // Run the validation check and get the results
+            final ValidationResult result = await httpHostValidator.validate();
 
-          // Check for a ValidationType.success result
-          expect(result.type, equals(ValidationType.success));
-        }
-      });
+            // Check for a ValidationType.success result
+            expect(result.type, equals(ValidationType.success));
+          }
+        },
+      );
 
-      testWithoutContext('all http hosts are available - iOS disabled', () async {
-        // Run the check for all operating systems one by one
-        for (final String os in osTested) {
-          final Platform platform = FakePlatform(operatingSystem: os);
-          final HttpHostValidator httpHostValidator = HttpHostValidator(
-            platform: platform,
-            featureFlags: TestFeatureFlags(isIOSEnabled: false),
-            httpClient: FakeHttpClient.list(<FakeRequest>[
-              FakeRequest(Uri.parse(kCloudHost), method: HttpMethod.head),
-              FakeRequest(Uri.parse(kGitHub), method: HttpMethod.head),
-              FakeRequest(Uri.parse(kMaven), method: HttpMethod.head),
-              FakeRequest(Uri.parse(kPubDev), method: HttpMethod.head),
-            ]),
-          );
+      testWithoutContext(
+        'all http hosts are available - iOS disabled',
+        () async {
+          // Run the check for all operating systems one by one
+          for (final String os in osTested) {
+            final Platform platform = FakePlatform(operatingSystem: os);
+            final HttpHostValidator httpHostValidator = HttpHostValidator(
+              platform: platform,
+              featureFlags: TestFeatureFlags(isIOSEnabled: false),
+              httpClient: FakeHttpClient.list(<FakeRequest>[
+                FakeRequest(Uri.parse(kCloudHost), method: HttpMethod.head),
+                FakeRequest(Uri.parse(kGitHub), method: HttpMethod.head),
+                FakeRequest(Uri.parse(kMaven), method: HttpMethod.head),
+                FakeRequest(Uri.parse(kPubDev), method: HttpMethod.head),
+              ]),
+            );
 
-          // Run the validation check and get the results
-          final ValidationResult result = await httpHostValidator.validate();
+            // Run the validation check and get the results
+            final ValidationResult result = await httpHostValidator.validate();
 
-          // Check for a ValidationType.success result
-          expect(result.type, equals(ValidationType.success));
-        }
-      });
+            // Check for a ValidationType.success result
+            expect(result.type, equals(ValidationType.success));
+          }
+        },
+      );
 
-      testWithoutContext('all http hosts are available - android, iOS disabled', () async {
-        // Run the check for all operating systems one by one
-        for (final String os in osTested) {
-          final HttpHostValidator httpHostValidator = HttpHostValidator(
-            platform: FakePlatform(operatingSystem: os),
-            featureFlags: TestFeatureFlags(isAndroidEnabled: false, isIOSEnabled: false),
-            httpClient: FakeHttpClient.list(<FakeRequest>[
-              FakeRequest(Uri.parse(kCloudHost), method: HttpMethod.head),
-              FakeRequest(Uri.parse(kGitHub), method: HttpMethod.head),
-              FakeRequest(Uri.parse(kPubDev), method: HttpMethod.head),
-            ]),
-          );
+      testWithoutContext(
+        'all http hosts are available - android, iOS disabled',
+        () async {
+          // Run the check for all operating systems one by one
+          for (final String os in osTested) {
+            final HttpHostValidator httpHostValidator = HttpHostValidator(
+              platform: FakePlatform(operatingSystem: os),
+              featureFlags: TestFeatureFlags(
+                isAndroidEnabled: false,
+                isIOSEnabled: false,
+              ),
+              httpClient: FakeHttpClient.list(<FakeRequest>[
+                FakeRequest(Uri.parse(kCloudHost), method: HttpMethod.head),
+                FakeRequest(Uri.parse(kGitHub), method: HttpMethod.head),
+                FakeRequest(Uri.parse(kPubDev), method: HttpMethod.head),
+              ]),
+            );
 
-          // Run the validation check and get the results
-          final ValidationResult result = await httpHostValidator.validate();
+            // Run the validation check and get the results
+            final ValidationResult result = await httpHostValidator.validate();
 
-          // Check for a ValidationType.success result
-          expect(result.type, equals(ValidationType.success));
-        }
-      });
+            // Check for a ValidationType.success result
+            expect(result.type, equals(ValidationType.success));
+          }
+        },
+      );
     });
   });
 
@@ -304,13 +377,10 @@ Handshake error in client (OS Error:
     // Run the validation check and get the results
     final ValidationResult result = await httpHostValidator.validate();
 
-    expect(
-      result.messages.first,
-      isA<ValidationMessage>().having(
-        (ValidationMessage msg) => msg.message,
-        'message',
-        contains(handshakeMessage),
-      ),
-    );
+    expect(result.messages.first, isA<ValidationMessage>().having(
+      (ValidationMessage msg) => msg.message,
+      'message',
+      contains(handshakeMessage),
+    ));
   });
 }

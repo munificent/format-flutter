@@ -58,49 +58,57 @@ void main() {
 
     group('missed budget count', () {
       test('when single element missed budget', () {
-        final FrameTimingSummarizer summary = FrameTimingSummarizer(<FrameTiming>[
-          FrameTiming(
-            buildStart: 0,
-            buildFinish: (kBuildBudget + const Duration(microseconds: 1)).inMicroseconds,
-            vsyncStart: 0,
-            rasterStart: 0,
-            rasterFinish: 0,
-            rasterFinishWallTime: 0,
-          ),
-        ]);
+        final FrameTimingSummarizer summary = FrameTimingSummarizer(
+          <FrameTiming>[
+            FrameTiming(
+              buildStart: 0,
+              buildFinish: (kBuildBudget + const Duration(microseconds: 1))
+                  .inMicroseconds,
+              vsyncStart: 0,
+              rasterStart: 0,
+              rasterFinish: 0,
+              rasterFinishWallTime: 0,
+            ),
+          ],
+        );
         expect(summary.missedFrameBuildBudget, 1);
       });
 
       test('when single element within budget', () {
-        final FrameTimingSummarizer summary = FrameTimingSummarizer(<FrameTiming>[
-          FrameTiming(
-            buildStart: 0,
-            buildFinish: 0,
-            vsyncStart: 0,
-            rasterStart: 0,
-            rasterFinish: 0,
-            rasterFinishWallTime: 0,
-          ),
-        ]);
+        final FrameTimingSummarizer summary = FrameTimingSummarizer(
+          <FrameTiming>[
+            FrameTiming(
+              buildStart: 0,
+              buildFinish: 0,
+              vsyncStart: 0,
+              rasterStart: 0,
+              rasterFinish: 0,
+              rasterFinishWallTime: 0,
+            ),
+          ],
+        );
         expect(summary.missedFrameBuildBudget, 0);
       });
 
       test('when single element exactly within budget', () {
-        final FrameTimingSummarizer summary = FrameTimingSummarizer(<FrameTiming>[
-          FrameTiming(
-            buildStart: 0,
-            buildFinish: kBuildBudget.inMicroseconds,
-            vsyncStart: 0,
-            rasterStart: 0,
-            rasterFinish: 0,
-            rasterFinishWallTime: 0,
-          ),
-        ]);
+        final FrameTimingSummarizer summary = FrameTimingSummarizer(
+          <FrameTiming>[
+            FrameTiming(
+              buildStart: 0,
+              buildFinish: kBuildBudget.inMicroseconds,
+              vsyncStart: 0,
+              rasterStart: 0,
+              rasterFinish: 0,
+              rasterFinishWallTime: 0,
+            ),
+          ],
+        );
         expect(summary.missedFrameBuildBudget, 0);
       });
 
       test('when many missed budget', () {
-        final FrameTimingSummarizer summary = FrameTimingSummarizer(<FrameTiming>[
+        final FrameTimingSummarizer
+        summary = FrameTimingSummarizer(<FrameTiming>[
           FrameTiming(
             buildStart: 0,
             buildFinish: 0,
@@ -119,7 +127,8 @@ void main() {
           ),
           FrameTiming(
             buildStart: 0,
-            buildFinish: (kBuildBudget + const Duration(microseconds: 1)).inMicroseconds,
+            buildFinish:
+                (kBuildBudget + const Duration(microseconds: 1)).inMicroseconds,
             vsyncStart: 0,
             rasterStart: 0,
             rasterFinish: 0,
@@ -127,7 +136,8 @@ void main() {
           ),
           FrameTiming(
             buildStart: 0,
-            buildFinish: (kBuildBudget + const Duration(microseconds: 2)).inMicroseconds,
+            buildFinish:
+                (kBuildBudget + const Duration(microseconds: 2)).inMicroseconds,
             vsyncStart: 0,
             rasterStart: 0,
             rasterFinish: 0,

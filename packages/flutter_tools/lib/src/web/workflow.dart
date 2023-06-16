@@ -17,10 +17,9 @@ class WebWorkflow extends Workflow {
   final FeatureFlags _featureFlags;
 
   @override
-  bool get appliesToHostPlatform => _featureFlags.isWebEnabled &&
-    (_platform.isWindows ||
-       _platform.isMacOS ||
-       _platform.isLinux);
+  bool get appliesToHostPlatform =>
+      _featureFlags.isWebEnabled &&
+      (_platform.isWindows || _platform.isMacOS || _platform.isLinux);
 
   @override
   bool get canLaunchDevices => _featureFlags.isWebEnabled;

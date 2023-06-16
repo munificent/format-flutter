@@ -34,9 +34,8 @@ class _CupertinoSliderExampleState extends State<CupertinoSliderExample> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('CupertinoSlider Sample'),
-      ),
+      navigationBar:
+          const CupertinoNavigationBar(middle: Text('CupertinoSlider Sample')),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -75,8 +74,8 @@ class _CupertinoSliderExampleState extends State<CupertinoSliderExample> {
             Text(
               _sliderStatus ?? '',
               style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
-                    fontSize: 12,
-                  ),
+                fontSize: 12,
+              ),
             ),
           ],
         ),

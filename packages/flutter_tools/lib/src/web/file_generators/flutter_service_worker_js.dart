@@ -35,7 +35,7 @@ enum ServiceWorkerStrategy implements CliEnum {
         ServiceWorkerStrategy.none =>
           'Generate a service worker with no body. This is useful for local '
               'testing or in cases where the service worker caching '
-              'functionality is not desirable'
+              'functionality is not desirable',
       };
 }
 
@@ -65,7 +65,10 @@ String generateServiceWorker(
       .readAsStringSync()
       .replaceAll(
         r'$$RESOURCES_MAP',
-        '{${resources.entries.map((MapEntry<String, String> entry) => '"${entry.key}": "${entry.value}"').join(",\n")}}',
+        '{${resources.entries.map(
+          (MapEntry<String, String> entry) =>
+              '"${entry.key}": "${entry.value}"',
+        ).join(",\n")}}',
       )
       .replaceAll(
         r'$$CORE_LIST',

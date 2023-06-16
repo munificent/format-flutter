@@ -43,9 +43,8 @@ class StockRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 20.0),
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Theme.of(context).dividerColor)
-          )
+          border:
+              Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
         ),
         child: Row(
           children: <Widget>[
@@ -61,23 +60,10 @@ class StockRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: DefaultTextStyle.of(context).style.textBaseline,
                 children: <Widget>[
+                  Expanded(flex: 2, child: Text(stock.symbol)),
+                  Expanded(child: Text(lastSale, textAlign: TextAlign.right)),
                   Expanded(
-                    flex: 2,
-                    child: Text(
-                      stock.symbol
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      lastSale,
-                      textAlign: TextAlign.right,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      changeInPrice,
-                      textAlign: TextAlign.right,
-                    ),
+                    child: Text(changeInPrice, textAlign: TextAlign.right),
                   ),
                 ],
               ),

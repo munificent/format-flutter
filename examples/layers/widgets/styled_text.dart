@@ -19,12 +19,18 @@ HAL: This mission is too important for me to allow you to jeopardize it.''';
 
 // [["Dave", "Open the pod bay..."] ...]
 final List<List<String>> _kNameLines = _kDialogText
-  .split('\n')
-  .map<List<String>>((String line) => line.split(':'))
-  .toList();
+    .split('\n')
+    .map<List<String>>((String line) => line.split(':'))
+    .toList();
 
-final TextStyle _kDaveStyle = TextStyle(color: Colors.indigo.shade400, height: 1.8);
-final TextStyle _kHalStyle = TextStyle(color: Colors.red.shade400, fontFamily: 'monospace');
+final TextStyle _kDaveStyle = TextStyle(
+  color: Colors.indigo.shade400,
+  height: 1.8,
+);
+final TextStyle _kHalStyle = TextStyle(
+  color: Colors.red.shade400,
+  fontFamily: 'monospace',
+);
 const TextStyle _kBold = TextStyle(fontWeight: FontWeight.bold);
 const TextStyle _kUnderline = TextStyle(
   decoration: TextDecoration.underline,
@@ -42,10 +48,7 @@ Widget toStyledText(String name, String text) {
         TextSpan(
           style: _kBold,
           children: <TextSpan>[
-            TextSpan(
-              style: _kUnderline,
-              text: name,
-            ),
+            TextSpan(style: _kUnderline, text: name),
             const TextSpan(text: ':'),
           ],
         ),
@@ -66,9 +69,7 @@ class SpeakerSeparator extends StatelessWidget {
       constraints: const BoxConstraints.expand(height: 0.0),
       margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 64.0),
       decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Color.fromARGB(24, 0, 0, 0)),
-        ),
+        border: Border(bottom: BorderSide(color: Color.fromARGB(24, 0, 0, 0))),
       ),
     );
   }
@@ -100,12 +101,15 @@ class _StyledTextDemoState extends State<StyledTextDemo> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: _kNameLines
-            .map<Widget>((List<String> nameAndText) => _toText(nameAndText[0], nameAndText[1]))
-            .expand((Widget line) => <Widget>[
-              line,
-              const SpeakerSeparator(),
-            ])
-            .toList()..removeLast(),
+              .map<Widget>(
+                (List<String> nameAndText) => _toText(
+                  nameAndText[0],
+                  nameAndText[1],
+                ),
+              )
+              .expand((Widget line) => <Widget>[line, const SpeakerSeparator()])
+              .toList()
+            ..removeLast(),
         ),
       ),
     );
@@ -116,13 +120,8 @@ void main() {
   runApp(MaterialApp(
     theme: ThemeData.light(),
     home: Scaffold(
-      appBar: AppBar(
-        title: const Text('Hal and Dave'),
-      ),
-      body: Material(
-        color: Colors.grey.shade50,
-        child: const StyledTextDemo(),
-      ),
+      appBar: AppBar(title: const Text('Hal and Dave')),
+      body: Material(color: Colors.grey.shade50, child: const StyledTextDemo()),
     ),
   ));
 }

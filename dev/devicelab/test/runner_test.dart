@@ -17,12 +17,9 @@ void main() {
   group('run.dart script', () {
     test('Reruns - Test passes the first time.', () async {
       printLog = <String>[];
-      await runTasks(
-        <String>['smoke_test_success'],
-        isolateParams: isolateParams,
-        print: print,
-        logs: printLog,
-      );
+      await runTasks(<String>[
+        'smoke_test_success',
+      ], isolateParams: isolateParams, print: print, logs: printLog);
       expect(printLog.length, 2);
       expect(printLog[0], 'Test passed on first attempt.');
       expect(printLog[1], 'flaky: false');
@@ -30,12 +27,9 @@ void main() {
 
     test('Reruns - Test fails all reruns.', () async {
       printLog = <String>[];
-      await runTasks(
-        <String>['smoke_test_failure'],
-        isolateParams: isolateParams,
-        print: print,
-        logs: printLog,
-      );
+      await runTasks(<String>[
+        'smoke_test_failure',
+      ], isolateParams: isolateParams, print: print, logs: printLog);
       expect(printLog.length, 2);
       expect(printLog[0], 'Consistently failed across all 3 executions.');
       expect(printLog[1], 'flaky: false');

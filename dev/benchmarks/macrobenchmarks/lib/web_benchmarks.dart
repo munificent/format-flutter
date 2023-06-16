@@ -44,32 +44,42 @@ final Map<String, RecorderFactory> benchmarks = <String, RecorderFactory>{
   // Benchmarks that run both in CanvasKit and HTML modes
   BenchDefaultTargetPlatform.benchmarkName: () => BenchDefaultTargetPlatform(),
   BenchBuildImage.benchmarkName: () => BenchBuildImage(),
-  BenchCardInfiniteScroll.benchmarkName: () => BenchCardInfiniteScroll.forward(),
-  BenchCardInfiniteScroll.benchmarkNameBackward: () => BenchCardInfiniteScroll.backward(),
+  BenchCardInfiniteScroll.benchmarkName: () =>
+      BenchCardInfiniteScroll.forward(),
+  BenchCardInfiniteScroll.benchmarkNameBackward: () =>
+      BenchCardInfiniteScroll.backward(),
   BenchClippedOutPictures.benchmarkName: () => BenchClippedOutPictures(),
   BenchDrawRect.benchmarkName: () => BenchDrawRect.staticPaint(),
   BenchDrawRect.variablePaintBenchmarkName: () => BenchDrawRect.variablePaint(),
   BenchPathRecording.benchmarkName: () => BenchPathRecording(),
-  BenchTextOutOfPictureBounds.benchmarkName: () => BenchTextOutOfPictureBounds(),
+  BenchTextOutOfPictureBounds.benchmarkName: () =>
+      BenchTextOutOfPictureBounds(),
   BenchSimpleLazyTextScroll.benchmarkName: () => BenchSimpleLazyTextScroll(),
   BenchBuildMaterialCheckbox.benchmarkName: () => BenchBuildMaterialCheckbox(),
-  BenchDynamicClipOnStaticPicture.benchmarkName: () => BenchDynamicClipOnStaticPicture(),
-  BenchPageViewScrollLineThrough.benchmarkName: () => BenchPageViewScrollLineThrough(),
+  BenchDynamicClipOnStaticPicture.benchmarkName: () =>
+      BenchDynamicClipOnStaticPicture(),
+  BenchPageViewScrollLineThrough.benchmarkName: () =>
+      BenchPageViewScrollLineThrough(),
   BenchPictureRecording.benchmarkName: () => BenchPictureRecording(),
   BenchUpdateManyChildLayers.benchmarkName: () => BenchUpdateManyChildLayers(),
   BenchMouseRegionGridScroll.benchmarkName: () => BenchMouseRegionGridScroll(),
   BenchMouseRegionGridHover.benchmarkName: () => BenchMouseRegionGridHover(),
-  BenchMouseRegionMixedGridHover.benchmarkName: () => BenchMouseRegionMixedGridHover(),
+  BenchMouseRegionMixedGridHover.benchmarkName: () =>
+      BenchMouseRegionMixedGridHover(),
   BenchWrapBoxScroll.benchmarkName: () => BenchWrapBoxScroll(),
-  BenchPlatformViewInfiniteScroll.benchmarkName: () => BenchPlatformViewInfiniteScroll.forward(),
-  BenchPlatformViewInfiniteScroll.benchmarkNameBackward: () => BenchPlatformViewInfiniteScroll.backward(),
+  BenchPlatformViewInfiniteScroll.benchmarkName: () =>
+      BenchPlatformViewInfiniteScroll.forward(),
+  BenchPlatformViewInfiniteScroll.benchmarkNameBackward: () =>
+      BenchPlatformViewInfiniteScroll.backward(),
   BenchMaterial3Components.benchmarkName: () => BenchMaterial3Components(),
 
   // CanvasKit-only benchmarks
   if (isCanvasKit) ...<String, RecorderFactory>{
     BenchTextLayout.canvasKitBenchmarkName: () => BenchTextLayout.canvasKit(),
-    BenchBuildColorsGrid.canvasKitBenchmarkName: () => BenchBuildColorsGrid.canvasKit(),
-    BenchTextCachedLayout.canvasKitBenchmarkName: () => BenchTextCachedLayout.canvasKit(),
+    BenchBuildColorsGrid.canvasKitBenchmarkName: () =>
+        BenchBuildColorsGrid.canvasKit(),
+    BenchTextCachedLayout.canvasKitBenchmarkName: () =>
+        BenchTextCachedLayout.canvasKit(),
 
     // The HTML renderer does not decode frame-by-frame. It just drops an <img>
     // element and lets it animate automatically with no feedback to the
@@ -80,8 +90,10 @@ final Map<String, RecorderFactory> benchmarks = <String, RecorderFactory>{
   // HTML-only benchmarks
   if (!isCanvasKit) ...<String, RecorderFactory>{
     BenchTextLayout.canvasBenchmarkName: () => BenchTextLayout.canvas(),
-    BenchTextCachedLayout.canvasBenchmarkName: () => BenchTextCachedLayout.canvas(),
-    BenchBuildColorsGrid.canvasBenchmarkName: () => BenchBuildColorsGrid.canvas(),
+    BenchTextCachedLayout.canvasBenchmarkName: () =>
+        BenchTextCachedLayout.canvas(),
+    BenchBuildColorsGrid.canvasBenchmarkName: () =>
+        BenchBuildColorsGrid.canvas(),
   },
 };
 
@@ -92,7 +104,9 @@ Future<void> main() async {
   final String nextBenchmark = await _client.requestNextBenchmark();
 
   if (nextBenchmark == LocalBenchmarkServerClient.kManualFallback) {
-    _fallbackToManual('The server did not tell us which benchmark to run next.');
+    _fallbackToManual(
+      'The server did not tell us which benchmark to run next.',
+    );
     return;
   }
 
@@ -114,7 +128,8 @@ Future<void> _runBenchmark(String benchmarkName) async {
       final Runner runner = recorder.isTracingEnabled && !_client.isInManualMode
           ? Runner(
               recorder: recorder,
-              setUpAllDidRun: () => _client.startPerformanceTracing(benchmarkName),
+              setUpAllDidRun:
+                  () => _client.startPerformanceTracing(benchmarkName),
               tearDownAllWillRun: _client.stopPerformanceTracing,
             )
           : Runner(recorder: recorder);
@@ -138,7 +153,8 @@ Future<void> _runBenchmark(String benchmarkName) async {
       handleUncaughtError: (
         Zone self,
         ZoneDelegate parent,
-        Zone zone, Object error,
+        Zone zone,
+        Object error,
         StackTrace stackTrace,
       ) async {
         if (_client.isInManualMode) {
@@ -154,8 +170,8 @@ Future<void> _runBenchmark(String benchmarkName) async {
 
 extension WebHTMLElementExtension on web.HTMLElement {
   void appendHtml(String html) {
-    final web.HTMLDivElement div = web.document.createElement('div') as
-        web.HTMLDivElement;
+    final web.HTMLDivElement div =
+        web.document.createElement('div') as web.HTMLDivElement;
     div.innerHTML = html;
     final web.DocumentFragment fragment = web.document.createDocumentFragment();
     fragment.append(div);
@@ -173,23 +189,25 @@ void _fallbackToManual(String error) {
 
       <!-- Absolutely position it so it receives the clicks and not the glasspane -->
       <ul style="position: absolute">
-        ${
-          benchmarks.keys
-            .map((String name) => '<li><button id="$name">$name</button></li>')
-            .join('\n')
-        }
+        ${benchmarks.keys.map(
+    (String name) => '<li><button id="$name">$name</button></li>',
+  ).join('\n')}
       </ul>
     </div>
   ''');
 
   for (final String benchmarkName in benchmarks.keys) {
     final web.Element button = web.document.querySelector('#$benchmarkName')!;
-    button.addEventListener('click', (JSObject _) {
-      final web.Element? manualPanel =
-          web.document.querySelector('#manual-panel');
-      manualPanel?.remove();
-      _runBenchmark(benchmarkName);
-    }.toJS);
+    button.addEventListener(
+      'click',
+      (JSObject _) {
+        final web.Element? manualPanel = web.document.querySelector(
+          '#manual-panel',
+        );
+        manualPanel?.remove();
+        _runBenchmark(benchmarkName);
+      }.toJS,
+    );
   }
 }
 
@@ -216,17 +234,18 @@ class TimeseriesVisualization {
     _canvas.height = (_kCanvasHeight * web.window.devicePixelRatio).round();
     _canvas.style
       ..setProperty('width', '100%')
-      ..setProperty('height',  '${_kCanvasHeight}px')
+      ..setProperty('height', '${_kCanvasHeight}px')
       ..setProperty('outline', '1px solid green');
     _ctx = _canvas.getContext('2d')! as web.CanvasRenderingContext2D;
 
     // The amount of vertical space available on the chart. Because some
     // outliers can be huge they can dwarf all the useful values. So we
     // limit it to 1.5 x the biggest non-outlier.
-    _maxValueChartRange = 1.5 * _stats.samples
-      .where((AnnotatedSample sample) => !sample.isOutlier)
-      .map<double>((AnnotatedSample sample) => sample.magnitude)
-      .fold<double>(0, math.max);
+    _maxValueChartRange = 1.5 *
+        _stats.samples
+            .where((AnnotatedSample sample) => !sample.isOutlier)
+            .map<double>((AnnotatedSample sample) => sample.magnitude)
+            .fold<double>(0, math.max);
   }
 
   static const double _kCanvasHeight = 200;
@@ -288,11 +307,21 @@ class TimeseriesVisualization {
 
     // Draw a horizontal solid line corresponding to the average.
     _ctx.lineWidth = 1;
-    drawLine(0, _normalized(_stats.average), _screenWidth, _normalized(_stats.average));
+    drawLine(
+      0,
+      _normalized(_stats.average),
+      _screenWidth,
+      _normalized(_stats.average),
+    );
 
     // Draw a horizontal dashed line corresponding to the outlier cut off.
     _ctx.setLineDash(<JSAny?>[5.toJS, 5.toJS].toJS);
-    drawLine(0, _normalized(_stats.outlierCutOff), _screenWidth, _normalized(_stats.outlierCutOff));
+    drawLine(
+      0,
+      _normalized(_stats.outlierCutOff),
+      _screenWidth,
+      _normalized(_stats.outlierCutOff),
+    );
 
     // Draw a light red band that shows the noise (1 stddev in each direction).
     _ctx.fillStyle = 'rgba(255,50,50,0.3)'.toJS;
@@ -390,7 +419,7 @@ class LocalBenchmarkServerClient {
     if (request.status != 200) {
       throw Exception(
         'Failed to report profile data to benchmark server. '
-        'The server responded with status code ${request.status}.'
+        'The server responded with status code ${request.status}.',
       );
     }
   }
@@ -433,7 +462,8 @@ class LocalBenchmarkServerClient {
     Map<String, String>? requestHeaders,
     dynamic sendData,
   }) {
-    final Completer<web.XMLHttpRequest> completer = Completer<web.XMLHttpRequest>();
+    final Completer<web.XMLHttpRequest> completer =
+        Completer<web.XMLHttpRequest>();
     final web.XMLHttpRequest xhr = web.XMLHttpRequest();
 
     method ??= 'GET';
@@ -457,13 +487,19 @@ class LocalBenchmarkServerClient {
       });
     }
 
-    xhr.addEventListener('load', (web.ProgressEvent e) {
-      completer.complete(xhr);
-    }.toJS);
+    xhr.addEventListener(
+      'load',
+      (web.ProgressEvent e) {
+        completer.complete(xhr);
+      }.toJS,
+    );
 
-    xhr.addEventListener('error', (JSObject error) {
+    xhr.addEventListener(
+      'error',
+      (JSObject error) {
         return completer.completeError(error);
-    }.toJS);
+      }.toJS,
+    );
 
     if (sendData != null) {
       xhr.send((sendData as Object?).jsify());

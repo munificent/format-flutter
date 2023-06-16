@@ -31,12 +31,8 @@ void main() {
       data: theme,
       child: Material(
         child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: 2,
-            onChanged: log.add,
-          ),
+          child:
+              Radio<int>(key: key, value: 1, groupValue: 2, onChanged: log.add),
         ),
       ),
     ));
@@ -69,12 +65,7 @@ void main() {
       data: theme,
       child: Material(
         child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: 2,
-            onChanged: null,
-          ),
+          child: Radio<int>(key: key, value: 1, groupValue: 2, onChanged: null),
         ),
       ),
     ));
@@ -84,134 +75,133 @@ void main() {
     expect(log, isEmpty);
   });
 
-  testWidgets('Radio can be toggled when toggleable is set', (WidgetTester tester) async {
-    final Key key = UniqueKey();
-    final List<int?> log = <int?>[];
+  testWidgets(
+    'Radio can be toggled when toggleable is set',
+    (WidgetTester tester) async {
+      final Key key = UniqueKey();
+      final List<int?> log = <int?>[];
 
-    await tester.pumpWidget(Theme(
-      data: theme,
-      child: Material(
-        child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: 2,
-            onChanged: log.add,
-            toggleable: true,
+      await tester.pumpWidget(Theme(
+        data: theme,
+        child: Material(
+          child: Center(
+            child: Radio<int>(
+              key: key,
+              value: 1,
+              groupValue: 2,
+              onChanged: log.add,
+              toggleable: true,
+            ),
           ),
         ),
-      ),
-    ));
+      ));
 
-    await tester.tap(find.byKey(key));
+      await tester.tap(find.byKey(key));
 
-    expect(log, equals(<int>[1]));
-    log.clear();
+      expect(log, equals(<int>[1]));
+      log.clear();
 
-    await tester.pumpWidget(Theme(
-      data: theme,
-      child: Material(
-        child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: 1,
-            onChanged: log.add,
-            toggleable: true,
+      await tester.pumpWidget(Theme(
+        data: theme,
+        child: Material(
+          child: Center(
+            child: Radio<int>(
+              key: key,
+              value: 1,
+              groupValue: 1,
+              onChanged: log.add,
+              toggleable: true,
+            ),
           ),
         ),
-      ),
-    ));
+      ));
 
-    await tester.tap(find.byKey(key));
+      await tester.tap(find.byKey(key));
 
-    expect(log, equals(<int?>[null]));
-    log.clear();
+      expect(log, equals(<int?>[null]));
+      log.clear();
 
-    await tester.pumpWidget(Theme(
-      data: theme,
-      child: Material(
-        child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: null,
-            onChanged: log.add,
-            toggleable: true,
+      await tester.pumpWidget(Theme(
+        data: theme,
+        child: Material(
+          child: Center(
+            child: Radio<int>(
+              key: key,
+              value: 1,
+              groupValue: null,
+              onChanged: log.add,
+              toggleable: true,
+            ),
           ),
         ),
-      ),
-    ));
+      ));
 
-    await tester.tap(find.byKey(key));
+      await tester.tap(find.byKey(key));
 
-    expect(log, equals(<int>[1]));
-  });
+      expect(log, equals(<int>[1]));
+    },
+  );
 
-  testWidgets('Radio size is configurable by ThemeData.materialTapTargetSize', (WidgetTester tester) async {
+  testWidgets('Radio size is configurable by ThemeData.materialTapTargetSize', (
+    WidgetTester tester,
+  ) async {
     final Key key1 = UniqueKey();
-    await tester.pumpWidget(
-      Theme(
-        data: theme.copyWith(materialTapTargetSize: MaterialTapTargetSize.padded),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Material(
-            child: Center(
-              child: Radio<bool>(
-                key: key1,
-                groupValue: true,
-                value: true,
-                onChanged: (bool? newValue) { },
-              ),
+    await tester.pumpWidget(Theme(
+      data: theme.copyWith(materialTapTargetSize: MaterialTapTargetSize.padded),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Material(
+          child: Center(
+            child: Radio<bool>(
+              key: key1,
+              groupValue: true,
+              value: true,
+              onChanged: (bool? newValue) {},
             ),
           ),
         ),
       ),
-    );
+    ));
 
     expect(tester.getSize(find.byKey(key1)), const Size(48.0, 48.0));
 
     final Key key2 = UniqueKey();
-    await tester.pumpWidget(
-      Theme(
-        data: theme.copyWith(materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Material(
-            child: Center(
-              child: Radio<bool>(
-                key: key2,
-                groupValue: true,
-                value: true,
-                onChanged: (bool? newValue) { },
-              ),
+    await tester.pumpWidget(Theme(
+      data: theme.copyWith(
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Material(
+          child: Center(
+            child: Radio<bool>(
+              key: key2,
+              groupValue: true,
+              value: true,
+              onChanged: (bool? newValue) {},
             ),
           ),
         ),
       ),
-    );
+    ));
 
     expect(tester.getSize(find.byKey(key2)), const Size(40.0, 40.0));
   });
 
-  testWidgets('Radio selected semantics - platform adaptive', (WidgetTester tester) async {
-    final SemanticsTester semantics = SemanticsTester(tester);
+  testWidgets(
+    'Radio selected semantics - platform adaptive',
+    (WidgetTester tester) async {
+      final SemanticsTester semantics = SemanticsTester(tester);
 
-    await tester.pumpWidget(Theme(
-      data: theme,
-      child: Material(
-        child: Radio<int>(
-          value: 1,
-          groupValue: 1,
-          onChanged: (int? i) {},
+      await tester.pumpWidget(Theme(
+        data: theme,
+        child: Material(
+          child: Radio<int>(value: 1, groupValue: 1, onChanged: (int? i) {}),
         ),
-      ),
-    ));
-    final bool isApple = defaultTargetPlatform == TargetPlatform.iOS ||
-                         defaultTargetPlatform == TargetPlatform.macOS;
-    expect(
-      semantics,
-      includesNodeWith(
+      ));
+      final bool isApple = defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.macOS;
+      expect(semantics, includesNodeWith(
         flags: <SemanticsFlag>[
           SemanticsFlag.isInMutuallyExclusiveGroup,
           SemanticsFlag.hasCheckedState,
@@ -221,13 +211,12 @@ void main() {
           SemanticsFlag.isChecked,
           if (isApple) SemanticsFlag.isSelected,
         ],
-        actions: <SemanticsAction>[
-          SemanticsAction.tap,
-        ],
-      ),
-    );
-    semantics.dispose();
-  }, variant: TargetPlatformVariant.all());
+        actions: <SemanticsAction>[SemanticsAction.tap],
+      ));
+      semantics.dispose();
+    },
+    variant: TargetPlatformVariant.all(),
+  );
 
   testWidgets('Radio semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
@@ -235,11 +224,7 @@ void main() {
     await tester.pumpWidget(Theme(
       data: theme,
       child: Material(
-        child: Radio<int>(
-          value: 1,
-          groupValue: 2,
-          onChanged: (int? i) { },
-        ),
+        child: Radio<int>(value: 1, groupValue: 2, onChanged: (int? i) {}),
       ),
     ));
 
@@ -254,9 +239,7 @@ void main() {
             SemanticsFlag.isEnabled,
             SemanticsFlag.isFocusable,
           ],
-          actions: <SemanticsAction>[
-            SemanticsAction.tap,
-          ],
+          actions: <SemanticsAction>[SemanticsAction.tap],
         ),
       ],
     ), ignoreRect: true, ignoreTransform: true));
@@ -264,11 +247,7 @@ void main() {
     await tester.pumpWidget(Theme(
       data: theme,
       child: Material(
-        child: Radio<int>(
-          value: 2,
-          groupValue: 2,
-          onChanged: (int? i) { },
-        ),
+        child: Radio<int>(value: 2, groupValue: 2, onChanged: (int? i) {}),
       ),
     ));
 
@@ -284,9 +263,7 @@ void main() {
             SemanticsFlag.isEnabled,
             SemanticsFlag.isFocusable,
           ],
-          actions: <SemanticsAction>[
-            SemanticsAction.tap,
-          ],
+          actions: <SemanticsAction>[SemanticsAction.tap],
         ),
       ],
     ), ignoreRect: true, ignoreTransform: true));
@@ -294,11 +271,7 @@ void main() {
     await tester.pumpWidget(Theme(
       data: theme,
       child: const Material(
-        child: Radio<int>(
-          value: 1,
-          groupValue: 2,
-          onChanged: null,
-        ),
+        child: Radio<int>(value: 1, groupValue: 2, onChanged: null),
       ),
     ));
 
@@ -310,7 +283,7 @@ void main() {
             SemanticsFlag.hasCheckedState,
             SemanticsFlag.hasEnabledState,
             SemanticsFlag.isInMutuallyExclusiveGroup,
-            SemanticsFlag.isFocusable,  // This flag is delayed by 1 frame.
+            SemanticsFlag.isFocusable, // This flag is delayed by 1 frame.
           ],
         ),
       ],
@@ -335,11 +308,7 @@ void main() {
     await tester.pumpWidget(Theme(
       data: theme,
       child: const Material(
-        child: Radio<int>(
-          value: 2,
-          groupValue: 2,
-          onChanged: null,
-        ),
+        child: Radio<int>(value: 2, groupValue: 2, onChanged: null),
       ),
     ));
 
@@ -365,9 +334,12 @@ void main() {
     final Key key = UniqueKey();
     dynamic semanticEvent;
     int? radioValue = 2;
-    tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(SystemChannels.accessibility, (dynamic message) async {
-      semanticEvent = message;
-    });
+    tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(
+      SystemChannels.accessibility,
+      (dynamic message) async {
+        semanticEvent = message;
+      },
+    );
 
     await tester.pumpWidget(Theme(
       data: theme,
@@ -392,337 +364,424 @@ void main() {
       'nodeId': object.debugSemantics!.id,
       'data': <String, dynamic>{},
     });
-    expect(object.debugSemantics!.getSemanticsData().hasAction(SemanticsAction.tap), true);
+    expect(
+      object.debugSemantics!.getSemanticsData().hasAction(SemanticsAction.tap),
+      true,
+    );
 
     semantics.dispose();
-    tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(SystemChannels.accessibility, null);
+    tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(
+      SystemChannels.accessibility,
+      null,
+    );
   });
 
-  testWidgets('Radio ink ripple is displayed correctly - M2', (WidgetTester tester) async {
-    final Key painterKey = UniqueKey();
-    const Key radioKey = Key('radio');
+  testWidgets(
+    'Radio ink ripple is displayed correctly - M2',
+    (WidgetTester tester) async {
+      final Key painterKey = UniqueKey();
+      const Key radioKey = Key('radio');
 
-    await tester.pumpWidget(MaterialApp(
-      theme: ThemeData(useMaterial3: false),
-      home: Scaffold(
-        body: RepaintBoundary(
-          key: painterKey,
-          child: Center(
-            child: Container(
-              width: 100,
-              height: 100,
-              color: Colors.white,
-              child: Radio<int>(
-                key: radioKey,
-                value: 1,
-                groupValue: 1,
-                onChanged: (int? value) { },
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(useMaterial3: false),
+        home: Scaffold(
+          body: RepaintBoundary(
+            key: painterKey,
+            child: Center(
+              child: Container(
+                width: 100,
+                height: 100,
+                color: Colors.white,
+                child: Radio<int>(
+                  key: radioKey,
+                  value: 1,
+                  groupValue: 1,
+                  onChanged: (int? value) {},
+                ),
               ),
             ),
           ),
         ),
-      ),
-    ));
+      ));
 
-    await tester.press(find.byKey(radioKey));
-    await tester.pumpAndSettle();
-    await expectLater(
-      find.byKey(painterKey),
-      matchesGoldenFile('radio.ink_ripple.png'),
-    );
-  });
+      await tester.press(find.byKey(radioKey));
+      await tester.pumpAndSettle();
+      await expectLater(
+        find.byKey(painterKey),
+        matchesGoldenFile('radio.ink_ripple.png'),
+      );
+    },
+  );
 
   testWidgets('Radio with splash radius set', (WidgetTester tester) async {
-    tester.binding.focusManager.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
+    tester.binding.focusManager.highlightStrategy =
+        FocusHighlightStrategy.alwaysTraditional;
     const double splashRadius = 30;
     Widget buildApp() {
       return MaterialApp(
         theme: theme,
         home: Material(
           child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: Colors.white,
-                child: Radio<int>(
-                  value: 0,
-                  onChanged: (int? newValue) {},
-                  focusColor: Colors.orange[500],
-                  autofocus: true,
-                  groupValue: 0,
-                  splashRadius: splashRadius,
-                ),
-              );
-            }),
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.white,
+                  child: Radio<int>(
+                    value: 0,
+                    onChanged: (int? newValue) {},
+                    focusColor: Colors.orange[500],
+                    autofocus: true,
+                    groupValue: 0,
+                    splashRadius: splashRadius,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       );
     }
+
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
-    expect(
-      Material.of(tester.element(
-        find.byWidgetPredicate((Widget widget) => widget is Radio<int>),
-      )),
-      paints..circle(color: Colors.orange[500], radius: splashRadius),
-    );
+    expect(Material.of(tester.element(
+      find.byWidgetPredicate((Widget widget) => widget is Radio<int>),
+    )), paints..circle(color: Colors.orange[500], radius: splashRadius));
   });
 
-  testWidgets('Radio is focusable and has correct focus color', (WidgetTester tester) async {
-    final FocusNode focusNode = FocusNode(debugLabel: 'Radio');
-    tester.binding.focusManager.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
-    int? groupValue = 0;
-    const Key radioKey = Key('radio');
-    final bool material3 = theme.useMaterial3;
-    Widget buildApp({bool enabled = true}) {
-      return MaterialApp(
-        theme: theme,
-        home: Material(
-          child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: Colors.white,
-                child: Radio<int>(
-                  key: radioKey,
-                  value: 0,
-                  onChanged: enabled ? (int? newValue) {
-                    setState(() {
-                      groupValue = newValue;
-                    });
-                  } : null,
-                  focusColor: Colors.orange[500],
-                  autofocus: true,
-                  focusNode: focusNode,
-                  groupValue: groupValue,
-                ),
-              );
-            }),
-          ),
-        ),
-      );
-    }
-    await tester.pumpWidget(buildApp());
-
-    await tester.pumpAndSettle();
-    expect(focusNode.hasPrimaryFocus, isTrue);
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      paints
-        ..rect(
-          color: const Color(0xffffffff),
-          rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-        )
-        ..circle(color: Colors.orange[500])
-        ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xff2196f3))
-        ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xff2196f3)),
-    );
-
-    // Check when the radio isn't selected.
-    groupValue = 1;
-    await tester.pumpWidget(buildApp());
-    await tester.pumpAndSettle();
-    expect(focusNode.hasPrimaryFocus, isTrue);
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      theme.useMaterial3
-        ? (paints..rect()..circle(color: Colors.orange[500])..circle(color: theme.colorScheme.onSurface))
-        : (paints
-          ..rect(
-              color: const Color(0xffffffff),
-              rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-            )
-          ..circle(color: Colors.orange[500])
-          ..circle(color: const Color(0x8a000000), style: PaintingStyle.stroke, strokeWidth: 2.0)),
-    );
-
-    // Check when the radio is selected, but disabled.
-    groupValue = 0;
-    await tester.pumpWidget(buildApp(enabled: false));
-    await tester.pumpAndSettle();
-    expect(focusNode.hasPrimaryFocus, isFalse);
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
-        ..circle(color: material3 ? theme.colorScheme.onSurface.withOpacity(0.38) : const Color(0x61000000))
-        ..circle(color: material3 ? theme.colorScheme.onSurface.withOpacity(0.38) : const Color(0x61000000)),
-    );
-  });
-
-  testWidgets('Radio can be hovered and has correct hover color', (WidgetTester tester) async {
-    tester.binding.focusManager.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
-    int? groupValue = 0;
-    const Key radioKey = Key('radio');
-    final bool material3 = theme.useMaterial3;
-    Widget buildApp({bool enabled = true}) {
-      return MaterialApp(
-        theme: theme,
-        home: Material(
-          child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: Colors.white,
-                child: Radio<int>(
-                  key: radioKey,
-                  value: 0,
-                  onChanged: enabled ? (int? newValue) {
-                    setState(() {
-                      groupValue = newValue;
-                    });
-                  } : null,
-                  hoverColor: Colors.orange[500],
-                  groupValue: groupValue,
-                ),
-              );
-            }),
-          ),
-        ),
-      );
-    }
-    await tester.pumpWidget(buildApp());
-
-    await tester.pump();
-    await tester.pumpAndSettle();
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
-        ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xff2196f3))
-        ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xff2196f3)),
-    );
-
-    // Start hovering
-    final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.moveTo(tester.getCenter(find.byKey(radioKey)));
-
-    // Check when the radio isn't selected.
-    groupValue = 1;
-    await tester.pumpWidget(buildApp());
-    await tester.pump();
-    await tester.pumpAndSettle();
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
-        ..circle(color: Colors.orange[500])
-        ..circle(color: theme.useMaterial3 ? theme.colorScheme.onSurface : const Color(0x8a000000), style: PaintingStyle.stroke, strokeWidth: 2.0),
-    );
-
-    // Check when the radio is selected, but disabled.
-    groupValue = 0;
-    await tester.pumpWidget(buildApp(enabled: false));
-    await tester.pump();
-    await tester.pumpAndSettle();
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
-        ..circle(color: material3 ? theme.colorScheme.onSurface.withOpacity(0.38) : const Color(0x61000000))
-        ..circle(color: material3 ? theme.colorScheme.onSurface.withOpacity(0.38) : const Color(0x61000000)),
-    );
-  });
-
-  testWidgets('Radio can be controlled by keyboard shortcuts', (WidgetTester tester) async {
-    tester.binding.focusManager.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
-    int? groupValue = 1;
-    const Key radioKey0 = Key('radio0');
-    const Key radioKey1 = Key('radio1');
-    const Key radioKey2 = Key('radio2');
-    final FocusNode focusNode2 = FocusNode(debugLabel: 'radio2');
-    Widget buildApp({bool enabled = true}) {
-      return MaterialApp(
-        theme: theme,
-        home: Material(
-          child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 200,
-                height: 100,
-                color: Colors.white,
-                child: Row(
-                  children: <Widget>[
-                    Radio<int>(
-                      key: radioKey0,
+  testWidgets(
+    'Radio is focusable and has correct focus color',
+    (WidgetTester tester) async {
+      final FocusNode focusNode = FocusNode(debugLabel: 'Radio');
+      tester.binding.focusManager.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      int? groupValue = 0;
+      const Key radioKey = Key('radio');
+      final bool material3 = theme.useMaterial3;
+      Widget buildApp({bool enabled = true}) {
+        return MaterialApp(
+          theme: theme,
+          home: Material(
+            child: Center(
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Container(
+                    width: 100,
+                    height: 100,
+                    color: Colors.white,
+                    child: Radio<int>(
+                      key: radioKey,
                       value: 0,
-                      onChanged: enabled ? (int? newValue) {
-                        setState(() {
-                          groupValue = newValue;
-                        });
-                      } : null,
-                      hoverColor: Colors.orange[500],
-                      groupValue: groupValue,
+                      onChanged: enabled
+                          ? (int? newValue) {
+                              setState(() {
+                                groupValue = newValue;
+                              });
+                            }
+                          : null,
+                      focusColor: Colors.orange[500],
                       autofocus: true,
-                    ),
-                    Radio<int>(
-                      key: radioKey1,
-                      value: 1,
-                      onChanged: enabled ? (int? newValue) {
-                        setState(() {
-                          groupValue = newValue;
-                        });
-                      } : null,
-                      hoverColor: Colors.orange[500],
+                      focusNode: focusNode,
                       groupValue: groupValue,
                     ),
-                    Radio<int>(
-                      key: radioKey2,
-                      value: 2,
-                      onChanged: enabled ? (int? newValue) {
-                        setState(() {
-                          groupValue = newValue;
-                        });
-                      } : null,
-                      hoverColor: Colors.orange[500],
-                      groupValue: groupValue,
-                      focusNode: focusNode2,
-                    ),
-                  ],
-                ),
-              );
-            }),
+                  );
+                },
+              ),
+            ),
           ),
-        ),
+        );
+      }
+
+      await tester.pumpWidget(buildApp());
+
+      await tester.pumpAndSettle();
+      expect(focusNode.hasPrimaryFocus, isTrue);
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        paints
+          ..rect(
+            color: const Color(0xffffffff),
+            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
+          )
+          ..circle(color: Colors.orange[500])
+          ..circle(
+            color: material3
+                ? theme.colorScheme.primary
+                : const Color(0xff2196f3),
+          )
+          ..circle(
+            color: material3
+                ? theme.colorScheme.primary
+                : const Color(0xff2196f3),
+          ),
       );
-    }
 
-    await tester.pumpWidget(buildApp());
-    await tester.pumpAndSettle();
+      // Check when the radio isn't selected.
+      groupValue = 1;
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+      expect(focusNode.hasPrimaryFocus, isTrue);
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        theme.useMaterial3
+            ? (paints
+                ..rect()
+                ..circle(color: Colors.orange[500])
+                ..circle(color: theme.colorScheme.onSurface))
+            : (paints
+                ..rect(
+                  color: const Color(0xffffffff),
+                  rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
+                )
+                ..circle(color: Colors.orange[500])
+                ..circle(
+                  color: const Color(0x8a000000),
+                  style: PaintingStyle.stroke,
+                  strokeWidth: 2.0,
+                )),
+      );
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
-    // On web, radios don't respond to the enter key.
-    expect(groupValue, kIsWeb ? equals(1) : equals(0));
+      // Check when the radio is selected, but disabled.
+      groupValue = 0;
+      await tester.pumpWidget(buildApp(enabled: false));
+      await tester.pumpAndSettle();
+      expect(focusNode.hasPrimaryFocus, isFalse);
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        paints
+          ..rect(
+            color: const Color(0xffffffff),
+            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
+          )
+          ..circle(
+            color: material3
+                ? theme.colorScheme.onSurface.withOpacity(0.38)
+                : const Color(0x61000000),
+          )
+          ..circle(
+            color: material3
+                ? theme.colorScheme.onSurface.withOpacity(0.38)
+                : const Color(0x61000000),
+          ),
+      );
+    },
+  );
 
-    focusNode2.requestFocus();
-    await tester.pumpAndSettle();
+  testWidgets(
+    'Radio can be hovered and has correct hover color',
+    (WidgetTester tester) async {
+      tester.binding.focusManager.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      int? groupValue = 0;
+      const Key radioKey = Key('radio');
+      final bool material3 = theme.useMaterial3;
+      Widget buildApp({bool enabled = true}) {
+        return MaterialApp(
+          theme: theme,
+          home: Material(
+            child: Center(
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Container(
+                    width: 100,
+                    height: 100,
+                    color: Colors.white,
+                    child: Radio<int>(
+                      key: radioKey,
+                      value: 0,
+                      onChanged: enabled
+                          ? (int? newValue) {
+                              setState(() {
+                                groupValue = newValue;
+                              });
+                            }
+                          : null,
+                      hoverColor: Colors.orange[500],
+                      groupValue: groupValue,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      }
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.space);
-    await tester.pumpAndSettle();
-    expect(groupValue, equals(2));
-  });
+      await tester.pumpWidget(buildApp());
 
-  testWidgets('Radio responds to density changes.', (WidgetTester tester) async {
-    const Key key = Key('test');
-    Future<void> buildTest(VisualDensity visualDensity) async {
-      return tester.pumpWidget(
-        MaterialApp(
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        paints
+          ..rect(
+            color: const Color(0xffffffff),
+            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
+          )
+          ..circle(
+            color: material3
+                ? theme.colorScheme.primary
+                : const Color(0xff2196f3),
+          )
+          ..circle(
+            color: material3
+                ? theme.colorScheme.primary
+                : const Color(0xff2196f3),
+          ),
+      );
+
+      // Start hovering
+      final TestGesture gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.moveTo(tester.getCenter(find.byKey(radioKey)));
+
+      // Check when the radio isn't selected.
+      groupValue = 1;
+      await tester.pumpWidget(buildApp());
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        paints
+          ..rect(
+            color: const Color(0xffffffff),
+            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
+          )
+          ..circle(color: Colors.orange[500])
+          ..circle(
+            color: theme.useMaterial3
+                ? theme.colorScheme.onSurface
+                : const Color(0x8a000000),
+            style: PaintingStyle.stroke,
+            strokeWidth: 2.0,
+          ),
+      );
+
+      // Check when the radio is selected, but disabled.
+      groupValue = 0;
+      await tester.pumpWidget(buildApp(enabled: false));
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        paints
+          ..rect(
+            color: const Color(0xffffffff),
+            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
+          )
+          ..circle(
+            color: material3
+                ? theme.colorScheme.onSurface.withOpacity(0.38)
+                : const Color(0x61000000),
+          )
+          ..circle(
+            color: material3
+                ? theme.colorScheme.onSurface.withOpacity(0.38)
+                : const Color(0x61000000),
+          ),
+      );
+    },
+  );
+
+  testWidgets(
+    'Radio can be controlled by keyboard shortcuts',
+    (WidgetTester tester) async {
+      tester.binding.focusManager.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      int? groupValue = 1;
+      const Key radioKey0 = Key('radio0');
+      const Key radioKey1 = Key('radio1');
+      const Key radioKey2 = Key('radio2');
+      final FocusNode focusNode2 = FocusNode(debugLabel: 'radio2');
+      Widget buildApp({bool enabled = true}) {
+        return MaterialApp(
+          theme: theme,
+          home: Material(
+            child: Center(
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Container(
+                    width: 200,
+                    height: 100,
+                    color: Colors.white,
+                    child: Row(
+                      children: <Widget>[
+                        Radio<int>(
+                          key: radioKey0,
+                          value: 0,
+                          onChanged: enabled
+                              ? (int? newValue) {
+                                  setState(() {
+                                    groupValue = newValue;
+                                  });
+                                }
+                              : null,
+                          hoverColor: Colors.orange[500],
+                          groupValue: groupValue,
+                          autofocus: true,
+                        ),
+                        Radio<int>(
+                          key: radioKey1,
+                          value: 1,
+                          onChanged: enabled
+                              ? (int? newValue) {
+                                  setState(() {
+                                    groupValue = newValue;
+                                  });
+                                }
+                              : null,
+                          hoverColor: Colors.orange[500],
+                          groupValue: groupValue,
+                        ),
+                        Radio<int>(
+                          key: radioKey2,
+                          value: 2,
+                          onChanged: enabled
+                              ? (int? newValue) {
+                                  setState(() {
+                                    groupValue = newValue;
+                                  });
+                                }
+                              : null,
+                          hoverColor: Colors.orange[500],
+                          groupValue: groupValue,
+                          focusNode: focusNode2,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      }
+
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      // On web, radios don't respond to the enter key.
+      expect(groupValue, kIsWeb ? equals(1) : equals(0));
+
+      focusNode2.requestFocus();
+      await tester.pumpAndSettle();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pumpAndSettle();
+      expect(groupValue, equals(2));
+    },
+  );
+
+  testWidgets(
+    'Radio responds to density changes.',
+    (WidgetTester tester) async {
+      const Key key = Key('test');
+      Future<void> buildTest(VisualDensity visualDensity) async {
+        return tester.pumpWidget(MaterialApp(
           theme: theme,
           home: Material(
             child: Center(
@@ -735,33 +794,34 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
-    }
+        ));
+      }
 
-    await buildTest(VisualDensity.standard);
-    final RenderBox box = tester.renderObject(find.byKey(key));
-    await tester.pumpAndSettle();
-    expect(box.size, equals(const Size(48, 48)));
+      await buildTest(VisualDensity.standard);
+      final RenderBox box = tester.renderObject(find.byKey(key));
+      await tester.pumpAndSettle();
+      expect(box.size, equals(const Size(48, 48)));
 
-    await buildTest(const VisualDensity(horizontal: 3.0, vertical: 3.0));
-    await tester.pumpAndSettle();
-    expect(box.size, equals(const Size(60, 60)));
+      await buildTest(const VisualDensity(horizontal: 3.0, vertical: 3.0));
+      await tester.pumpAndSettle();
+      expect(box.size, equals(const Size(60, 60)));
 
-    await buildTest(const VisualDensity(horizontal: -3.0, vertical: -3.0));
-    await tester.pumpAndSettle();
-    expect(box.size, equals(const Size(36, 36)));
+      await buildTest(const VisualDensity(horizontal: -3.0, vertical: -3.0));
+      await tester.pumpAndSettle();
+      expect(box.size, equals(const Size(36, 36)));
 
-    await buildTest(const VisualDensity(horizontal: 3.0, vertical: -3.0));
-    await tester.pumpAndSettle();
-    expect(box.size, equals(const Size(60, 36)));
-  });
+      await buildTest(const VisualDensity(horizontal: 3.0, vertical: -3.0));
+      await tester.pumpAndSettle();
+      expect(box.size, equals(const Size(60, 36)));
+    },
+  );
 
-  testWidgets('Radio changes mouse cursor when hovered', (WidgetTester tester) async {
-    const Key key = ValueKey<int>(1);
-    // Test Radio() constructor
-    await tester.pumpWidget(
-      MaterialApp(
+  testWidgets(
+    'Radio changes mouse cursor when hovered',
+    (WidgetTester tester) async {
+      const Key key = ValueKey<int>(1);
+      // Test Radio() constructor
+      await tester.pumpWidget(MaterialApp(
         theme: theme,
         home: Scaffold(
           body: Align(
@@ -780,20 +840,21 @@ void main() {
             ),
           ),
         ),
-      ),
-    );
+      ));
 
-    final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse, pointer: 1);
-    await gesture.addPointer(location: tester.getCenter(find.byKey(key)));
+      final TestGesture gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse, pointer: 1);
+      await gesture.addPointer(location: tester.getCenter(find.byKey(key)));
 
-    await tester.pump();
+      await tester.pump();
 
-    expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.text);
+      expect(
+        RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
+        SystemMouseCursors.text,
+      );
 
-
-    // Test default cursor
-    await tester.pumpWidget(
-      MaterialApp(
+      // Test default cursor
+      await tester.pumpWidget(MaterialApp(
         theme: theme,
         home: Scaffold(
           body: Align(
@@ -801,23 +862,21 @@ void main() {
             child: Material(
               child: MouseRegion(
                 cursor: SystemMouseCursors.forbidden,
-                child: Radio<int>(
-                  value: 1,
-                  onChanged: (int? v) {},
-                  groupValue: 2,
-                ),
+                child:
+                    Radio<int>(value: 1, onChanged: (int? v) {}, groupValue: 2),
               ),
             ),
           ),
         ),
-      ),
-    );
+      ));
 
-    expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.click);
+      expect(
+        RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
+        SystemMouseCursors.click,
+      );
 
-    // Test default cursor when disabled
-    await tester.pumpWidget(
-      MaterialApp(
+      // Test default cursor when disabled
+      await tester.pumpWidget(MaterialApp(
         theme: theme,
         home: const Scaffold(
           body: Align(
@@ -825,402 +884,441 @@ void main() {
             child: Material(
               child: MouseRegion(
                 cursor: SystemMouseCursors.forbidden,
-                child: Radio<int>(
-                  value: 1,
-                  onChanged: null,
-                  groupValue: 2,
-                ),
+                child: Radio<int>(value: 1, onChanged: null, groupValue: 2),
               ),
             ),
           ),
         ),
-      ),
-    );
+      ));
 
-    expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.basic);
-  });
-
-  testWidgets('Radio button fill color resolves in enabled/disabled states', (WidgetTester tester) async {
-    const Color activeEnabledFillColor = Color(0xFF000001);
-    const Color activeDisabledFillColor = Color(0xFF000002);
-    const Color inactiveEnabledFillColor = Color(0xFF000003);
-    const Color inactiveDisabledFillColor = Color(0xFF000004);
-
-    Color getFillColor(Set<MaterialState> states) {
-      if (states.contains(MaterialState.disabled)) {
-        if (states.contains(MaterialState.selected)) {
-          return activeDisabledFillColor;
-        }
-        return inactiveDisabledFillColor;
-      }
-      if (states.contains(MaterialState.selected)) {
-        return activeEnabledFillColor;
-      }
-      return inactiveEnabledFillColor;
-    }
-
-    final MaterialStateProperty<Color> fillColor =
-      MaterialStateColor.resolveWith(getFillColor);
-
-    int? groupValue = 0;
-    const Key radioKey = Key('radio');
-    Widget buildApp({required bool enabled}) {
-      return MaterialApp(
-        theme: theme,
-        home: Material(
-          child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: Colors.white,
-                child: Radio<int>(
-                  key: radioKey,
-                  value: 0,
-                  fillColor: fillColor,
-                  onChanged: enabled ? (int? newValue) {
-                    setState(() {
-                      groupValue = newValue;
-                    });
-                  } : null,
-                  groupValue: groupValue,
-                ),
-              );
-            }),
-          ),
-        ),
+      expect(
+        RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
+        SystemMouseCursors.basic,
       );
-    }
+    },
+  );
 
-    await tester.pumpWidget(buildApp(enabled: true));
+  testWidgets(
+    'Radio button fill color resolves in enabled/disabled states',
+    (WidgetTester tester) async {
+      const Color activeEnabledFillColor = Color(0xFF000001);
+      const Color activeDisabledFillColor = Color(0xFF000002);
+      const Color inactiveEnabledFillColor = Color(0xFF000003);
+      const Color inactiveDisabledFillColor = Color(0xFF000004);
 
-    // Selected and enabled.
-    await tester.pumpAndSettle();
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
-        ..circle(color: activeEnabledFillColor)
-        ..circle(color: activeEnabledFillColor),
-    );
+      Color getFillColor(Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          if (states.contains(MaterialState.selected)) {
+            return activeDisabledFillColor;
+          }
+          return inactiveDisabledFillColor;
+        }
+        if (states.contains(MaterialState.selected)) {
+          return activeEnabledFillColor;
+        }
+        return inactiveEnabledFillColor;
+      }
 
-    // Check when the radio isn't selected.
-    groupValue = 1;
-    await tester.pumpWidget(buildApp(enabled: true));
-    await tester.pumpAndSettle();
-    expect(
+      final MaterialStateProperty<Color> fillColor =
+          MaterialStateColor.resolveWith(getFillColor);
+
+      int? groupValue = 0;
+      const Key radioKey = Key('radio');
+      Widget buildApp({required bool enabled}) {
+        return MaterialApp(
+          theme: theme,
+          home: Material(
+            child: Center(
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Container(
+                    width: 100,
+                    height: 100,
+                    color: Colors.white,
+                    child: Radio<int>(
+                      key: radioKey,
+                      value: 0,
+                      fillColor: fillColor,
+                      onChanged: enabled
+                          ? (int? newValue) {
+                              setState(() {
+                                groupValue = newValue;
+                              });
+                            }
+                          : null,
+                      groupValue: groupValue,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      }
+
+      await tester.pumpWidget(buildApp(enabled: true));
+
+      // Selected and enabled.
+      await tester.pumpAndSettle();
+      expect(
         Material.of(tester.element(find.byKey(radioKey))),
         paints
           ..rect(
-              color: const Color(0xffffffff),
-              rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-            )
-          ..circle(color: inactiveEnabledFillColor, style: PaintingStyle.stroke, strokeWidth: 2.0),
-    );
-
-    // Check when the radio is selected, but disabled.
-    groupValue = 0;
-    await tester.pumpWidget(buildApp(enabled: false));
-    await tester.pumpAndSettle();
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      paints
-        ..rect(
             color: const Color(0xffffffff),
             rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
           )
-        ..circle(color: activeDisabledFillColor)
-        ..circle(color: activeDisabledFillColor),
-    );
-
-    // Check when the radio is unselected and disabled.
-    groupValue = 1;
-    await tester.pumpWidget(buildApp(enabled: false));
-    await tester.pumpAndSettle();
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
-        ..circle(color: inactiveDisabledFillColor, style: PaintingStyle.stroke, strokeWidth: 2.0),
-    );
-  });
-
-  testWidgets('Radio fill color resolves in hovered/focused states', (WidgetTester tester) async {
-    final FocusNode focusNode = FocusNode(debugLabel: 'radio');
-    tester.binding.focusManager.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
-    const Color hoveredFillColor = Color(0xFF000001);
-    const Color focusedFillColor = Color(0xFF000002);
-
-    Color getFillColor(Set<MaterialState> states) {
-      if (states.contains(MaterialState.hovered)) {
-        return hoveredFillColor;
-      }
-      if (states.contains(MaterialState.focused)) {
-        return focusedFillColor;
-      }
-      return Colors.transparent;
-    }
-
-    final MaterialStateProperty<Color> fillColor =
-      MaterialStateColor.resolveWith(getFillColor);
-
-    int? groupValue = 0;
-    const Key radioKey = Key('radio');
-    Widget buildApp() {
-      return MaterialApp(
-        theme: theme,
-        home: Material(
-          child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: Colors.white,
-                child: Radio<int>(
-                  autofocus: true,
-                  focusNode: focusNode,
-                  key: radioKey,
-                  value: 0,
-                  fillColor: fillColor,
-                  onChanged: (int? newValue) {
-                    setState(() {
-                      groupValue = newValue;
-                    });
-                  },
-                  groupValue: groupValue,
-                ),
-              );
-            }),
-          ),
-        ),
+          ..circle(color: activeEnabledFillColor)
+          ..circle(color: activeEnabledFillColor),
       );
-    }
 
-    await tester.pumpWidget(buildApp());
-    await tester.pumpAndSettle();
-    expect(focusNode.hasPrimaryFocus, isTrue);
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      theme.useMaterial3
-        ? (paints..rect()..circle(color: theme.colorScheme.primary.withOpacity(0.12))..circle(color: focusedFillColor))
-        : (paints
+      // Check when the radio isn't selected.
+      groupValue = 1;
+      await tester.pumpWidget(buildApp(enabled: true));
+      await tester.pumpAndSettle();
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        paints
           ..rect(
-              color: const Color(0xffffffff),
-              rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-            )
-          ..circle(color: Colors.black12)
-          ..circle(color: focusedFillColor)),
-    );
-
-    // Start hovering
-    final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer();
-    await gesture.moveTo(tester.getCenter(find.byKey(radioKey)));
-    await tester.pumpAndSettle();
-
-    expect(
-      Material.of(tester.element(find.byKey(radioKey))),
-      paints
-        ..rect(
             color: const Color(0xffffffff),
             rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
           )
-        ..circle(color: theme.useMaterial3 ? theme.colorScheme.primary.withOpacity(0.08) : theme.hoverColor)
-        ..circle(color: hoveredFillColor),
-    );
-  });
+          ..circle(
+            color: inactiveEnabledFillColor,
+            style: PaintingStyle.stroke,
+            strokeWidth: 2.0,
+          ),
+      );
 
-  testWidgets('Radio overlay color resolves in active/pressed/focused/hovered states', (WidgetTester tester) async {
-    final FocusNode focusNode = FocusNode(debugLabel: 'Radio');
-    tester.binding.focusManager.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
+      // Check when the radio is selected, but disabled.
+      groupValue = 0;
+      await tester.pumpWidget(buildApp(enabled: false));
+      await tester.pumpAndSettle();
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        paints
+          ..rect(
+            color: const Color(0xffffffff),
+            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
+          )
+          ..circle(color: activeDisabledFillColor)
+          ..circle(color: activeDisabledFillColor),
+      );
 
-    const Color fillColor = Color(0xFF000000);
-    const Color activePressedOverlayColor = Color(0xFF000001);
-    const Color inactivePressedOverlayColor = Color(0xFF000002);
-    const Color hoverOverlayColor = Color(0xFF000003);
-    const Color focusOverlayColor = Color(0xFF000004);
-    const Color hoverColor = Color(0xFF000005);
-    const Color focusColor = Color(0xFF000006);
+      // Check when the radio is unselected and disabled.
+      groupValue = 1;
+      await tester.pumpWidget(buildApp(enabled: false));
+      await tester.pumpAndSettle();
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        paints
+          ..rect(
+            color: const Color(0xffffffff),
+            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
+          )
+          ..circle(
+            color: inactiveDisabledFillColor,
+            style: PaintingStyle.stroke,
+            strokeWidth: 2.0,
+          ),
+      );
+    },
+  );
 
-    Color? getOverlayColor(Set<MaterialState> states) {
-      if (states.contains(MaterialState.pressed)) {
-        if (states.contains(MaterialState.selected)) {
-          return activePressedOverlayColor;
+  testWidgets(
+    'Radio fill color resolves in hovered/focused states',
+    (WidgetTester tester) async {
+      final FocusNode focusNode = FocusNode(debugLabel: 'radio');
+      tester.binding.focusManager.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      const Color hoveredFillColor = Color(0xFF000001);
+      const Color focusedFillColor = Color(0xFF000002);
+
+      Color getFillColor(Set<MaterialState> states) {
+        if (states.contains(MaterialState.hovered)) {
+          return hoveredFillColor;
         }
-        return inactivePressedOverlayColor;
+        if (states.contains(MaterialState.focused)) {
+          return focusedFillColor;
+        }
+        return Colors.transparent;
       }
-      if (states.contains(MaterialState.hovered)) {
-        return hoverOverlayColor;
-      }
-      if (states.contains(MaterialState.focused)) {
-        return focusOverlayColor;
-      }
-      return null;
-    }
-    const double splashRadius = 24.0;
 
-    Finder findRadio() {
-      return find.byWidgetPredicate((Widget widget) => widget is Radio<bool>);
-    }
+      final MaterialStateProperty<Color> fillColor =
+          MaterialStateColor.resolveWith(getFillColor);
 
-    MaterialInkController? getRadioMaterial(WidgetTester tester) {
-      return Material.of(tester.element(findRadio()));
-    }
-
-    Widget buildRadio({bool active = false, bool focused = false, bool useOverlay = true}) {
-      return MaterialApp(
-        theme: theme,
-        home: Scaffold(
-          body: Radio<bool>(
-            focusNode: focusNode,
-            autofocus: focused,
-            value: active,
-            groupValue: true,
-            onChanged: (_) { },
-            fillColor: const MaterialStatePropertyAll<Color>(fillColor),
-            overlayColor: useOverlay ? MaterialStateProperty.resolveWith(getOverlayColor) : null,
-            hoverColor: hoverColor,
-            focusColor: focusColor,
-            splashRadius: splashRadius,
+      int? groupValue = 0;
+      const Key radioKey = Key('radio');
+      Widget buildApp() {
+        return MaterialApp(
+          theme: theme,
+          home: Material(
+            child: Center(
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Container(
+                    width: 100,
+                    height: 100,
+                    color: Colors.white,
+                    child: Radio<int>(
+                      autofocus: true,
+                      focusNode: focusNode,
+                      key: radioKey,
+                      value: 0,
+                      fillColor: fillColor,
+                      onChanged: (int? newValue) {
+                        setState(() {
+                          groupValue = newValue;
+                        });
+                      },
+                      groupValue: groupValue,
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
-        ),
+        );
+      }
+
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+      expect(focusNode.hasPrimaryFocus, isTrue);
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        theme.useMaterial3
+            ? (paints
+                ..rect()
+                ..circle(color: theme.colorScheme.primary.withOpacity(0.12))
+                ..circle(color: focusedFillColor))
+            : (paints
+                ..rect(
+                  color: const Color(0xffffffff),
+                  rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
+                )
+                ..circle(color: Colors.black12)
+                ..circle(color: focusedFillColor)),
       );
-    }
 
-    await tester.pumpWidget(buildRadio(useOverlay: false));
-    await tester.press(findRadio());
-    await tester.pumpAndSettle();
+      // Start hovering
+      final TestGesture gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer();
+      await gesture.moveTo(tester.getCenter(find.byKey(radioKey)));
+      await tester.pumpAndSettle();
 
-    expect(
-      getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: fillColor.withAlpha(kRadialReactionAlpha),
-          radius: splashRadius,
-        ),
-      reason: 'Default inactive pressed Radio should have overlay color from fillColor',
-    );
+      expect(
+        Material.of(tester.element(find.byKey(radioKey))),
+        paints
+          ..rect(
+            color: const Color(0xffffffff),
+            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
+          )
+          ..circle(
+            color: theme.useMaterial3
+                ? theme.colorScheme.primary.withOpacity(0.08)
+                : theme.hoverColor,
+          )
+          ..circle(color: hoveredFillColor),
+      );
+    },
+  );
 
-    await tester.pumpWidget(buildRadio(active: true, useOverlay: false));
-    await tester.press(findRadio());
-    await tester.pumpAndSettle();
+  testWidgets(
+    'Radio overlay color resolves in active/pressed/focused/hovered states',
+    (WidgetTester tester) async {
+      final FocusNode focusNode = FocusNode(debugLabel: 'Radio');
+      tester.binding.focusManager.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
 
-    expect(
-      getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: fillColor.withAlpha(kRadialReactionAlpha),
-          radius: splashRadius,
-        ),
-      reason: 'Default active pressed Radio should have overlay color from fillColor',
-    );
+      const Color fillColor = Color(0xFF000000);
+      const Color activePressedOverlayColor = Color(0xFF000001);
+      const Color inactivePressedOverlayColor = Color(0xFF000002);
+      const Color hoverOverlayColor = Color(0xFF000003);
+      const Color focusOverlayColor = Color(0xFF000004);
+      const Color hoverColor = Color(0xFF000005);
+      const Color focusColor = Color(0xFF000006);
 
-    await tester.pumpWidget(buildRadio());
-    await tester.press(findRadio());
-    await tester.pumpAndSettle();
+      Color? getOverlayColor(Set<MaterialState> states) {
+        if (states.contains(MaterialState.pressed)) {
+          if (states.contains(MaterialState.selected)) {
+            return activePressedOverlayColor;
+          }
+          return inactivePressedOverlayColor;
+        }
+        if (states.contains(MaterialState.hovered)) {
+          return hoverOverlayColor;
+        }
+        if (states.contains(MaterialState.focused)) {
+          return focusOverlayColor;
+        }
+        return null;
+      }
 
-    expect(
-      getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: inactivePressedOverlayColor,
-          radius: splashRadius,
-        ),
-      reason: 'Inactive pressed Radio should have overlay color: $inactivePressedOverlayColor',
-    );
+      const double splashRadius = 24.0;
 
-    await tester.pumpWidget(buildRadio(active: true));
-    await tester.press(findRadio());
-    await tester.pumpAndSettle();
+      Finder findRadio() {
+        return find.byWidgetPredicate((Widget widget) => widget is Radio<bool>);
+      }
 
-    expect(
-      getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: activePressedOverlayColor,
-          radius: splashRadius,
-        ),
-      reason: 'Active pressed Radio should have overlay color: $activePressedOverlayColor',
-    );
+      MaterialInkController? getRadioMaterial(WidgetTester tester) {
+        return Material.of(tester.element(findRadio()));
+      }
 
-    await tester.pumpWidget(Container());
-    await tester.pumpWidget(buildRadio(focused: true));
-    await tester.pumpAndSettle();
-
-    expect(focusNode.hasPrimaryFocus, isTrue);
-    expect(
-      getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: focusOverlayColor,
-          radius: splashRadius,
-        ),
-      reason: 'Focused Radio should use overlay color $focusOverlayColor over $focusColor',
-    );
-
-    // Start hovering
-    final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer();
-    await gesture.moveTo(tester.getCenter(findRadio()));
-    await tester.pumpAndSettle();
-
-    expect(
-      getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: hoverOverlayColor,
-          radius: splashRadius,
-        ),
-      reason: 'Hovered Radio should use overlay color $hoverOverlayColor over $hoverColor',
-    );
-  });
-
-  testWidgets('Do not crash when widget disappears while pointer is down', (WidgetTester tester) async {
-    final Key key = UniqueKey();
-
-    Widget buildRadio(bool show) {
-      return MaterialApp(
-        theme: theme,
-        home: Material(
-          child: Center(
-            child: show ? Radio<bool>(key: key, value: true, groupValue: false, onChanged: (_) { }) : Container(),
+      Widget buildRadio({
+        bool active = false,
+        bool focused = false,
+        bool useOverlay = true,
+      }) {
+        return MaterialApp(
+          theme: theme,
+          home: Scaffold(
+            body: Radio<bool>(
+              focusNode: focusNode,
+              autofocus: focused,
+              value: active,
+              groupValue: true,
+              onChanged: (_) {},
+              fillColor: const MaterialStatePropertyAll<Color>(fillColor),
+              overlayColor: useOverlay
+                  ? MaterialStateProperty.resolveWith(getOverlayColor)
+                  : null,
+              hoverColor: hoverColor,
+              focusColor: focusColor,
+              splashRadius: splashRadius,
+            ),
           ),
-        ),
-      );
-    }
+        );
+      }
 
-    await tester.pumpWidget(buildRadio(true));
-    final Offset center = tester.getCenter(find.byKey(key));
-    // Put a pointer down on the screen.
-    final TestGesture gesture = await tester.startGesture(center);
-    await tester.pump();
-    // While the pointer is down, the widget disappears.
-    await tester.pumpWidget(buildRadio(false));
-    expect(find.byKey(key), findsNothing);
-    // Release pointer after widget disappeared.
-    await gesture.up();
-  });
+      await tester.pumpWidget(buildRadio(useOverlay: false));
+      await tester.press(findRadio());
+      await tester.pumpAndSettle();
+
+      expect(
+        getRadioMaterial(tester),
+        paints
+          ..circle(
+            color: fillColor.withAlpha(kRadialReactionAlpha),
+            radius: splashRadius,
+          ),
+        reason:
+            'Default inactive pressed Radio should have overlay color from fillColor',
+      );
+
+      await tester.pumpWidget(buildRadio(active: true, useOverlay: false));
+      await tester.press(findRadio());
+      await tester.pumpAndSettle();
+
+      expect(
+        getRadioMaterial(tester),
+        paints
+          ..circle(
+            color: fillColor.withAlpha(kRadialReactionAlpha),
+            radius: splashRadius,
+          ),
+        reason:
+            'Default active pressed Radio should have overlay color from fillColor',
+      );
+
+      await tester.pumpWidget(buildRadio());
+      await tester.press(findRadio());
+      await tester.pumpAndSettle();
+
+      expect(
+        getRadioMaterial(tester),
+        paints
+          ..circle(color: inactivePressedOverlayColor, radius: splashRadius),
+        reason:
+            'Inactive pressed Radio should have overlay color: $inactivePressedOverlayColor',
+      );
+
+      await tester.pumpWidget(buildRadio(active: true));
+      await tester.press(findRadio());
+      await tester.pumpAndSettle();
+
+      expect(
+        getRadioMaterial(tester),
+        paints..circle(color: activePressedOverlayColor, radius: splashRadius),
+        reason:
+            'Active pressed Radio should have overlay color: $activePressedOverlayColor',
+      );
+
+      await tester.pumpWidget(Container());
+      await tester.pumpWidget(buildRadio(focused: true));
+      await tester.pumpAndSettle();
+
+      expect(focusNode.hasPrimaryFocus, isTrue);
+      expect(
+        getRadioMaterial(tester),
+        paints..circle(color: focusOverlayColor, radius: splashRadius),
+        reason:
+            'Focused Radio should use overlay color $focusOverlayColor over $focusColor',
+      );
+
+      // Start hovering
+      final TestGesture gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer();
+      await gesture.moveTo(tester.getCenter(findRadio()));
+      await tester.pumpAndSettle();
+
+      expect(
+        getRadioMaterial(tester),
+        paints..circle(color: hoverOverlayColor, radius: splashRadius),
+        reason:
+            'Hovered Radio should use overlay color $hoverOverlayColor over $hoverColor',
+      );
+    },
+  );
+
+  testWidgets(
+    'Do not crash when widget disappears while pointer is down',
+    (WidgetTester tester) async {
+      final Key key = UniqueKey();
+
+      Widget buildRadio(bool show) {
+        return MaterialApp(
+          theme: theme,
+          home: Material(
+            child: Center(
+              child: show
+                  ? Radio<bool>(
+                      key: key,
+                      value: true,
+                      groupValue: false,
+                      onChanged: (_) {},
+                    )
+                  : Container(),
+            ),
+          ),
+        );
+      }
+
+      await tester.pumpWidget(buildRadio(true));
+      final Offset center = tester.getCenter(find.byKey(key));
+      // Put a pointer down on the screen.
+      final TestGesture gesture = await tester.startGesture(center);
+      await tester.pump();
+      // While the pointer is down, the widget disappears.
+      await tester.pumpWidget(buildRadio(false));
+      expect(find.byKey(key), findsNothing);
+      // Release pointer after widget disappeared.
+      await gesture.up();
+    },
+  );
 
   testWidgets('disabled radio shows tooltip', (WidgetTester tester) async {
     const String longPressTooltip = 'long press tooltip';
     const String tapTooltip = 'tap tooltip';
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Material(
-          child: Tooltip(
-            message: longPressTooltip,
-            child: Radio<bool>(value: true, groupValue: false, onChanged: null),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: const Material(
+        child: Tooltip(
+          message: longPressTooltip,
+          child: Radio<bool>(value: true, groupValue: false, onChanged: null),
         ),
-      )
-    );
+      ),
+    ));
 
     // Default tooltip shows up after long pressed.
     final Finder tooltip0 = find.byType(Tooltip);
@@ -1230,7 +1328,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 10));
     expect(find.text(longPressTooltip), findsNothing);
 
-    final TestGesture gestureLongPress = await tester.startGesture(tester.getCenter(tooltip0));
+    final TestGesture gestureLongPress =
+        await tester.startGesture(tester.getCenter(tooltip0));
     await tester.pump();
     await tester.pump(kLongPressTimeout);
     await gestureLongPress.up();
@@ -1239,18 +1338,16 @@ void main() {
     expect(find.text(longPressTooltip), findsOneWidget);
 
     // Tooltip shows up after tapping when set triggerMode to TooltipTriggerMode.tap.
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Material(
-          child: Tooltip(
-            triggerMode: TooltipTriggerMode.tap,
-            message: tapTooltip,
-            child: Radio<bool>(value: true, groupValue: false, onChanged: null),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: const Material(
+        child: Tooltip(
+          triggerMode: TooltipTriggerMode.tap,
+          message: tapTooltip,
+          child: Radio<bool>(value: true, groupValue: false, onChanged: null),
         ),
-      )
-    );
+      ),
+    ));
 
     await tester.pump(const Duration(days: 1));
     await tester.pumpAndSettle();
@@ -1274,7 +1371,7 @@ void main() {
             groupValue: true,
             onChanged: enabled ? (_) {} : null,
           ),
-        )
+        ),
       );
     }
 
@@ -1284,8 +1381,17 @@ void main() {
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
       paints
-        ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xFF2196F3)) // Outer circle - primary value
-        ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xFF2196F3))..restore(), // Inner circle - primary value
+        ..circle(
+          color: material3
+              ? theme.colorScheme.primary
+              : const Color(0xFF2196F3),
+        ) // Outer circle - primary value
+        ..circle(
+          color: material3
+              ? theme.colorScheme.primary
+              : const Color(0xFF2196F3),
+        )
+        ..restore(), // Inner circle - primary value
     );
 
     await tester.pumpWidget(Container());
@@ -1296,7 +1402,11 @@ void main() {
       Material.of(tester.element(find.byType(Radio<bool>))),
       paints
         ..save()
-        ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xFF2196F3))
+        ..circle(
+          color: material3
+              ? theme.colorScheme.primary
+              : const Color(0xFF2196F3),
+        )
         ..restore(),
     );
 
@@ -1307,137 +1417,171 @@ void main() {
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
       theme.useMaterial3
-        ? (paints
-          ..circle(color: theme.colorScheme.onSurface.withOpacity(0.38)))
-        : (paints..circle(color: Colors.black38))
+          ? (paints
+              ..circle(color: theme.colorScheme.onSurface.withOpacity(0.38)))
+          : (paints..circle(color: Colors.black38)),
     );
   });
 
-  testWidgets('Radio button default overlay colors in hover/focus/press states', (WidgetTester tester) async {
-    final FocusNode focusNode = FocusNode(debugLabel: 'Radio');
-    tester.binding.focusManager.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
+  testWidgets(
+    'Radio button default overlay colors in hover/focus/press states',
+    (WidgetTester tester) async {
+      final FocusNode focusNode = FocusNode(debugLabel: 'Radio');
+      tester.binding.focusManager.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
 
-    final ColorScheme colors = theme.colorScheme;
-    final bool material3 = theme.useMaterial3;
-    Widget buildRadio({bool enabled = true, bool focused = false, bool selected = true}) {
-      return MaterialApp(
-        theme: theme,
-        home: Scaffold(
-          body: Radio<bool>(
-            focusNode: focusNode,
-            autofocus: focused,
-            value: true,
-            groupValue: selected,
-            onChanged: enabled ? (_) {} : null,
+      final ColorScheme colors = theme.colorScheme;
+      final bool material3 = theme.useMaterial3;
+      Widget buildRadio({
+        bool enabled = true,
+        bool focused = false,
+        bool selected = true,
+      }) {
+        return MaterialApp(
+          theme: theme,
+          home: Scaffold(
+            body: Radio<bool>(
+              focusNode: focusNode,
+              autofocus: focused,
+              value: true,
+              groupValue: selected,
+              onChanged: enabled ? (_) {} : null,
+            ),
           ),
-        ),
+        );
+      }
+
+      // default selected radio
+      await tester.pumpWidget(buildRadio());
+      await tester.pumpAndSettle();
+      expect(
+        Material.of(tester.element(find.byType(Radio<bool>))),
+        material3
+            ? (paints..circle(color: colors.primary.withOpacity(1)))
+            : (paints..circle(color: colors.secondary)),
       );
-    }
 
-    // default selected radio
-    await tester.pumpWidget(buildRadio());
-    await tester.pumpAndSettle();
-    expect(
-      Material.of(tester.element(find.byType(Radio<bool>))),
-      material3
-        ? (paints..circle(color: colors.primary.withOpacity(1)))
-        : (paints..circle(color: colors.secondary))
-    );
+      // selected radio in pressed state
+      await tester.pumpWidget(buildRadio());
+      await tester.startGesture(tester.getCenter(find.byType(Radio<bool>)));
+      await tester.pumpAndSettle();
 
-    // selected radio in pressed state
-    await tester.pumpWidget(buildRadio());
-    await tester.startGesture(tester.getCenter(find.byType(Radio<bool>)));
-    await tester.pumpAndSettle();
+      expect(
+        Material.of(tester.element(find.byType(Radio<bool>))),
+        paints
+          ..circle(
+            color: material3
+                ? colors.onSurface.withOpacity(0.12)
+                : colors.secondary.withAlpha(0x1F),
+          )
+          ..circle(
+            color: material3 ? colors.primary.withOpacity(1) : colors.secondary,
+          ),
+      );
 
-    expect(
-      Material.of(tester.element(find.byType(Radio<bool>))),
-      paints..circle(color: material3
-        ? colors.onSurface.withOpacity(0.12)
-        : colors.secondary.withAlpha(0x1F))
-      ..circle(color: material3
-        ? colors.primary.withOpacity(1)
-        : colors.secondary
-      )
-    );
+      // unselected radio in pressed state
+      await tester.pumpWidget(buildRadio(selected: false));
+      await tester.startGesture(tester.getCenter(find.byType(Radio<bool>)));
+      await tester.pumpAndSettle();
 
-    // unselected radio in pressed state
-    await tester.pumpWidget(buildRadio(selected: false));
-    await tester.startGesture(tester.getCenter(find.byType(Radio<bool>)));
-    await tester.pumpAndSettle();
+      expect(
+        Material.of(tester.element(find.byType(Radio<bool>))),
+        material3
+            ? (paints
+                ..circle(color: colors.primary.withOpacity(0.12))
+                ..circle(color: colors.onSurfaceVariant.withOpacity(1)))
+            : (paints
+                ..circle(color: theme.unselectedWidgetColor.withAlpha(0x1F))
+                ..circle(color: theme.unselectedWidgetColor)),
+      );
 
-    expect(
-      Material.of(tester.element(find.byType(Radio<bool>))),
-      material3
-        ? (paints..circle(color: colors.primary.withOpacity(0.12))..circle(color: colors.onSurfaceVariant.withOpacity(1)))
-        : (paints..circle(color: theme.unselectedWidgetColor.withAlpha(0x1F))..circle(color: theme.unselectedWidgetColor))
-    );
+      // selected radio in focused state
+      await tester.pumpWidget(Container()); // reset test
+      await tester.pumpWidget(buildRadio(focused: true));
+      await tester.pumpAndSettle();
+      expect(focusNode.hasPrimaryFocus, isTrue);
 
-    // selected radio in focused state
-    await tester.pumpWidget(Container()); // reset test
-    await tester.pumpWidget(buildRadio(focused: true));
-    await tester.pumpAndSettle();
-    expect(focusNode.hasPrimaryFocus, isTrue);
+      expect(
+        Material.of(tester.element(find.byType(Radio<bool>))),
+        material3
+            ? (paints
+                ..circle(color: colors.primary.withOpacity(0.12))
+                ..circle(color: colors.primary.withOpacity(1)))
+            : (paints
+                ..circle(color: theme.focusColor)
+                ..circle(color: colors.secondary)),
+      );
 
-    expect(
-      Material.of(tester.element(find.byType(Radio<bool>))),
-      material3
-        ? (paints..circle(color: colors.primary.withOpacity(0.12))..circle(color: colors.primary.withOpacity(1)))
-        : (paints..circle(color: theme.focusColor)..circle(color: colors.secondary))
-    );
+      // unselected radio in focused state
+      await tester.pumpWidget(Container()); // reset test
+      await tester.pumpWidget(buildRadio(focused: true, selected: false));
+      await tester.pumpAndSettle();
+      expect(focusNode.hasPrimaryFocus, isTrue);
 
-    // unselected radio in focused state
-    await tester.pumpWidget(Container()); // reset test
-    await tester.pumpWidget(buildRadio(focused: true, selected: false));
-    await tester.pumpAndSettle();
-    expect(focusNode.hasPrimaryFocus, isTrue);
+      expect(
+        Material.of(tester.element(find.byType(Radio<bool>))),
+        material3
+            ? (paints
+                ..circle(color: colors.onSurface.withOpacity(0.12))
+                ..circle(color: colors.onSurface.withOpacity(1)))
+            : (paints
+                ..circle(color: theme.focusColor)
+                ..circle(color: theme.unselectedWidgetColor)),
+      );
 
-    expect(
-      Material.of(tester.element(find.byType(Radio<bool>))),
-      material3
-        ? (paints..circle(color: colors.onSurface.withOpacity(0.12))..circle(color: colors.onSurface.withOpacity(1)))
-        : (paints..circle(color: theme.focusColor)..circle(color: theme.unselectedWidgetColor))
-    );
+      // selected radio in hovered state
+      await tester.pumpWidget(Container()); // reset test
+      await tester.pumpWidget(buildRadio());
+      final TestGesture gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer();
+      await gesture.moveTo(tester.getCenter(find.byType(Radio<bool>)));
+      await tester.pumpAndSettle();
 
-    // selected radio in hovered state
-    await tester.pumpWidget(Container()); // reset test
-    await tester.pumpWidget(buildRadio());
-    final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer();
-    await gesture.moveTo(tester.getCenter(find.byType(Radio<bool>)));
-    await tester.pumpAndSettle();
+      expect(
+        Material.of(tester.element(find.byType(Radio<bool>))),
+        material3
+            ? (paints
+                ..circle(color: colors.primary.withOpacity(0.08))
+                ..circle(color: colors.primary.withOpacity(1)))
+            : (paints
+                ..circle(color: theme.hoverColor)
+                ..circle(color: colors.secondary)),
+      );
+    },
+  );
 
-    expect(
-      Material.of(tester.element(find.byType(Radio<bool>))),
-      material3
-        ? (paints..circle(color: colors.primary.withOpacity(0.08))..circle(color: colors.primary.withOpacity(1)))
-        : (paints..circle(color: theme.hoverColor)..circle(color: colors.secondary))
-    );
-  });
-
-  testWidgets('Radio.adaptive shows the correct platform widget', (WidgetTester tester) async {
+  testWidgets('Radio.adaptive shows the correct platform widget', (
+    WidgetTester tester,
+  ) async {
     Widget buildApp(TargetPlatform platform) {
       return MaterialApp(
         theme: ThemeData(platform: platform),
         home: Material(
           child: Center(
-            child: Radio<int>.adaptive(
-              value: 1,
-              groupValue: 2,
-              onChanged: (_) {},
-            ),
+            child:
+                Radio<int>.adaptive(value: 1, groupValue: 2, onChanged: (_) {}),
           ),
         ),
       );
     }
 
-    for (final TargetPlatform platform in <TargetPlatform>[ TargetPlatform.iOS, TargetPlatform.macOS ]) {
+    for (final TargetPlatform platform in <TargetPlatform>[
+          TargetPlatform.iOS,
+          TargetPlatform.macOS,
+        ]) {
       await tester.pumpWidget(buildApp(platform));
       await tester.pumpAndSettle();
 
       expect(find.byType(CupertinoRadio<int>), findsOneWidget);
     }
 
-    for (final TargetPlatform platform in <TargetPlatform>[ TargetPlatform.android, TargetPlatform.fuchsia, TargetPlatform.linux, TargetPlatform.windows ]) {
+    for (final TargetPlatform platform in <TargetPlatform>[
+          TargetPlatform.android,
+          TargetPlatform.fuchsia,
+          TargetPlatform.linux,
+          TargetPlatform.windows,
+        ]) {
       await tester.pumpWidget(buildApp(platform));
       await tester.pumpAndSettle();
 
@@ -1445,68 +1589,99 @@ void main() {
     }
   });
 
-  testWidgets('Radio default overlayColor and fillColor resolves pressed state', (WidgetTester tester) async {
-    final FocusNode focusNode = FocusNode(debugLabel: 'Radio');
-    tester.binding.focusManager.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
-    final bool material3 = theme.useMaterial3;
+  testWidgets(
+    'Radio default overlayColor and fillColor resolves pressed state',
+    (WidgetTester tester) async {
+      final FocusNode focusNode = FocusNode(debugLabel: 'Radio');
+      tester.binding.focusManager.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      final bool material3 = theme.useMaterial3;
 
-    Finder findRadio() {
-      return find.byWidgetPredicate((Widget widget) => widget is Radio<bool>);
-    }
+      Finder findRadio() {
+        return find.byWidgetPredicate((Widget widget) => widget is Radio<bool>);
+      }
 
-    MaterialInkController? getRadioMaterial(WidgetTester tester) {
-      return Material.of(tester.element(findRadio()));
-    }
-    await tester.pumpWidget(MaterialApp(
-      theme: theme,
-      home: Scaffold(
-        body: Radio<bool>(
-          focusNode: focusNode,
-          value: true,
-          groupValue: true,
-          onChanged: (_) { },
+      MaterialInkController? getRadioMaterial(WidgetTester tester) {
+        return Material.of(tester.element(findRadio()));
+      }
+
+      await tester.pumpWidget(MaterialApp(
+        theme: theme,
+        home: Scaffold(
+          body: Radio<bool>(
+            focusNode: focusNode,
+            value: true,
+            groupValue: true,
+            onChanged: (_) {},
+          ),
         ),
-      ),
-    ));
+      ));
 
-    // Hover
-    final Offset center = tester.getCenter(find.byType(Radio<bool>));
-    final TestGesture gesture = await tester.createGesture(
-      kind: PointerDeviceKind.mouse,
-    );
-    await gesture.addPointer();
-    await gesture.moveTo(center);
-    await tester.pumpAndSettle();
+      // Hover
+      final Offset center = tester.getCenter(find.byType(Radio<bool>));
+      final TestGesture gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer();
+      await gesture.moveTo(center);
+      await tester.pumpAndSettle();
 
-    expect(getRadioMaterial(tester),
-      paints
-        ..circle(color: material3 ? theme.colorScheme.primary.withOpacity(0.08) : theme.hoverColor)
-        ..circle(color: material3 ? theme.colorScheme.primary : theme.colorScheme.secondary)
-    );
+      expect(
+        getRadioMaterial(tester),
+        paints
+          ..circle(
+            color: material3
+                ? theme.colorScheme.primary.withOpacity(0.08)
+                : theme.hoverColor,
+          )
+          ..circle(
+            color: material3
+                ? theme.colorScheme.primary
+                : theme.colorScheme.secondary,
+          ),
+      );
 
-    // Highlighted (pressed).
-    await gesture.down(center);
-    await tester.pumpAndSettle();
+      // Highlighted (pressed).
+      await gesture.down(center);
+      await tester.pumpAndSettle();
 
-    expect(getRadioMaterial(tester),
-      paints
-        ..circle(color: material3 ? theme.colorScheme.onSurface.withOpacity(0.12) : theme.colorScheme.secondary.withAlpha(kRadialReactionAlpha))
-        ..circle(color: material3 ? theme.colorScheme.primary : theme.colorScheme.secondary)
-    );
-    // Remove pressed and hovered states
-    await gesture.up();
-    await tester.pumpAndSettle();
-    await gesture.moveTo(const Offset(0, 50));
-    await tester.pumpAndSettle();
+      expect(
+        getRadioMaterial(tester),
+        paints
+          ..circle(
+            color: material3
+                ? theme.colorScheme.onSurface.withOpacity(0.12)
+                : theme.colorScheme.secondary.withAlpha(kRadialReactionAlpha),
+          )
+          ..circle(
+            color: material3
+                ? theme.colorScheme.primary
+                : theme.colorScheme.secondary,
+          ),
+      );
+      // Remove pressed and hovered states
+      await gesture.up();
+      await tester.pumpAndSettle();
+      await gesture.moveTo(const Offset(0, 50));
+      await tester.pumpAndSettle();
 
-    // Focused.
-    focusNode.requestFocus();
-    await tester.pumpAndSettle();
+      // Focused.
+      focusNode.requestFocus();
+      await tester.pumpAndSettle();
 
-    expect(getRadioMaterial(tester),
-      paints
-        ..circle(color: material3 ? theme.colorScheme.primary.withOpacity(0.12) : theme.focusColor)
-        ..circle(color: material3 ? theme.colorScheme.primary : theme.colorScheme.secondary)
-    );
-  });
+      expect(
+        getRadioMaterial(tester),
+        paints
+          ..circle(
+            color: material3
+                ? theme.colorScheme.primary.withOpacity(0.12)
+                : theme.focusColor,
+          )
+          ..circle(
+            color: material3
+                ? theme.colorScheme.primary
+                : theme.colorScheme.secondary,
+          ),
+      );
+    },
+  );
 }

@@ -36,21 +36,17 @@ void main() {
       // could look up environment variables in this test that were passed to
       // the run command via `--dart-define=`, and then pass the values to the
       // [integrationDriver.onScreenshot] handler through this 'args' map.
-      <String, Object?>{
-        'someArgumentKey': 'someArgumentValue',
-      },
+      <String, Object?>{'someArgumentKey': 'someArgumentValue'},
     );
 
     // Verify that platform is retrieved.
-    expect(
-      find.byWidgetPredicate(
-        (Widget widget) =>
-            widget is Text &&
-            widget.data!
-                .startsWith('Platform: ${html.window.navigator.platform}\n'),
-      ),
-      findsOneWidget,
-    );
+    expect(find.byWidgetPredicate(
+      (Widget widget) =>
+          widget is Text &&
+          widget.data!.startsWith(
+            'Platform: ${html.window.navigator.platform}\n',
+          ),
+    ), findsOneWidget);
   });
 
   testWidgets('verify screenshot', (WidgetTester tester) async {
@@ -72,9 +68,7 @@ void main() {
       // could look up environment variables in this test that were passed to
       // the run command via `--dart-define=`, and then pass the values to the
       // [integrationDriver.onScreenshot] handler through this 'args' map.
-      <String, Object?>{
-        'someArgumentKey': 'someArgumentValue',
-      },
+      <String, Object?>{'someArgumentKey': 'someArgumentValue'},
     );
   });
 }

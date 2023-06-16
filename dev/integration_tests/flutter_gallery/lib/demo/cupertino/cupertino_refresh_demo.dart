@@ -14,10 +14,12 @@ class CupertinoRefreshControlDemo extends StatefulWidget {
   static const String routeName = '/cupertino/refresh';
 
   @override
-  State<CupertinoRefreshControlDemo> createState() => _CupertinoRefreshControlDemoState();
+  State<CupertinoRefreshControlDemo> createState() =>
+      _CupertinoRefreshControlDemoState();
 }
 
-class _CupertinoRefreshControlDemoState extends State<CupertinoRefreshControlDemo> {
+class _CupertinoRefreshControlDemoState
+    extends State<CupertinoRefreshControlDemo> {
   late List<List<String>> randomizedContacts;
 
   @override
@@ -28,14 +30,11 @@ class _CupertinoRefreshControlDemoState extends State<CupertinoRefreshControlDem
 
   void repopulateList() {
     final Random random = Random();
-    randomizedContacts = List<List<String>>.generate(
-      100,
-      (int index) {
-        return contacts[random.nextInt(contacts.length)]
-            // Randomly adds a telephone icon next to the contact or not.
-            ..add(random.nextBool().toString());
-      },
-    );
+    randomizedContacts = List<List<String>>.generate(100, (int index) {
+      return contacts[random.nextInt(contacts.length)]
+        // Randomly adds a telephone icon next to the contact or not.
+        ..add(random.nextBool().toString());
+    });
   }
 
   @override
@@ -53,7 +52,9 @@ class _CupertinoRefreshControlDemoState extends State<CupertinoRefreshControlDem
           // To demonstrate the iOS behavior in this demo and to ensure that the list
           // always scrolls, we specifically use a [BouncingScrollPhysics] combined
           // with a [AlwaysScrollableScrollPhysics]
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
           slivers: <Widget>[
             CupertinoSliverNavigationBar(
               largeTitle: const Text('Refresh'),
@@ -61,16 +62,18 @@ class _CupertinoRefreshControlDemoState extends State<CupertinoRefreshControlDem
               // is a Material page. CupertinoPageRoutes could auto-populate
               // these back labels.
               previousPageTitle: 'Cupertino',
-              trailing: CupertinoDemoDocumentationButton(CupertinoRefreshControlDemo.routeName),
+              trailing: CupertinoDemoDocumentationButton(
+                CupertinoRefreshControlDemo.routeName,
+              ),
             ),
             CupertinoSliverRefreshControl(
               onRefresh: () {
                 return Future<void>.delayed(const Duration(seconds: 2))
-                ..then((_) {
+                  ..then((_) {
                     if (mounted) {
                       setState(() => repopulateList());
                     }
-                });
+                  });
               },
             ),
             SliverSafeArea(
@@ -144,12 +147,7 @@ List<List<String>> contacts = <List<String>>[
 ];
 
 class _ListItem extends StatelessWidget {
-  const _ListItem({
-    this.name,
-    this.place,
-    this.date,
-    this.called,
-  });
+  const _ListItem({this.name, this.place, this.date, this.called});
 
   final String? name;
   final String? place;
@@ -159,7 +157,10 @@ class _ListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: CupertinoDynamicColor.resolve(CupertinoColors.systemBackground, context),
+      color: CupertinoDynamicColor.resolve(
+        CupertinoColors.systemBackground,
+        context,
+      ),
       height: 60.0,
       padding: const EdgeInsets.only(top: 9.0),
       child: Row(
@@ -177,14 +178,15 @@ class _ListItem extends StatelessWidget {
                   )
                 : null,
           ),
-        Expanded(
-          child: Container(
+          Expanded(
+            child: Container(
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(color: Color(0xFFBCBBC1), width: 0.0),
                 ),
               ),
-              padding: const EdgeInsets.only(left: 1.0, bottom: 9.0, right: 10.0),
+              padding:
+                  const EdgeInsets.only(left: 1.0, bottom: 9.0, right: 10.0),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -208,7 +210,9 @@ class _ListItem extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 15.0,
                             letterSpacing: -0.24,
-                            color: CupertinoColors.inactiveGray.resolveFrom(context),
+                            color: CupertinoColors.inactiveGray.resolveFrom(
+                              context,
+                            ),
                           ),
                         ),
                       ],

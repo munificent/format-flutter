@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class ListTileTemplate extends TokenTemplate {
-  const ListTileTemplate(super.blockName, super.fileName, super.tokens, {
+  const ListTileTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
     super.textThemePrefix = '_textTheme.',
   });
@@ -32,16 +35,26 @@ class _${blockName}DefaultsM3 extends ListTileThemeData {
   Color? get tileColor =>  Colors.transparent;
 
   @override
-  TextStyle? get titleTextStyle => ${textStyle("$tokenGroup.label-text")}!.copyWith(color: ${componentColor('$tokenGroup.label-text')});
+  TextStyle? get titleTextStyle => ${textStyle(
+        "$tokenGroup.label-text",
+      )}!.copyWith(color: ${componentColor('$tokenGroup.label-text')});
 
   @override
-  TextStyle? get subtitleTextStyle => ${textStyle("$tokenGroup.supporting-text")}!.copyWith(color: ${componentColor('$tokenGroup.supporting-text')});
+  TextStyle? get subtitleTextStyle => ${textStyle(
+        "$tokenGroup.supporting-text",
+      )}!.copyWith(color: ${componentColor('$tokenGroup.supporting-text')});
 
   @override
-  TextStyle? get leadingAndTrailingTextStyle => ${textStyle("$tokenGroup.trailing-supporting-text")}!.copyWith(color: ${componentColor('$tokenGroup.trailing-supporting-text')});
+  TextStyle? get leadingAndTrailingTextStyle => ${textStyle(
+        "$tokenGroup.trailing-supporting-text",
+      )}!.copyWith(color: ${componentColor(
+        '$tokenGroup.trailing-supporting-text',
+      )});
 
   @override
-  Color? get selectedColor => ${componentColor('$tokenGroup.selected.trailing-icon')};
+  Color? get selectedColor => ${componentColor(
+        '$tokenGroup.selected.trailing-icon',
+      )};
 
   @override
   Color? get iconColor => ${componentColor('$tokenGroup.trailing-icon')};

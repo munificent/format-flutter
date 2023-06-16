@@ -64,18 +64,16 @@ void main() {
   });
 
   testWidgets('Drag vertically', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          itemExtent: 290.0,
-          padding: const EdgeInsets.only(top: 250.0),
-          children: items.map<Widget>((int item) {
-            return Text('$item');
-          }).toList(),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        itemExtent: 290.0,
+        padding: const EdgeInsets.only(top: 250.0),
+        children: items.map<Widget>((int item) {
+          return Text('$item');
+        }).toList(),
       ),
-    );
+    ));
 
     await tester.pump();
     // screen is 600px high, and has the following items:

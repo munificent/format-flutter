@@ -16,7 +16,7 @@ import 'package:meta/dart2js.dart';
 // framework's ability to parse stack traces in all build modes.
 Future<void> main() async {
   final StringBuffer errorMessage = StringBuffer();
-  debugPrint = (String? message, { int? wrapWidth }) {
+  debugPrint = (String? message, {int? wrapWidth}) {
     errorMessage.writeln(message);
   };
 
@@ -28,18 +28,14 @@ Future<void> main() async {
   final StringBuffer output = StringBuffer();
   if (_errorMessageFormattedCorrectly(errorMessage.toString())) {
     output.writeln('--- TEST SUCCEEDED ---');
-  } else  {
+  } else {
     output.writeln('--- UNEXPECTED ERROR MESSAGE FORMAT ---');
     output.writeln(errorMessage);
     output.writeln('--- TEST FAILED ---');
   }
 
   print(output);
-  html.HttpRequest.request(
-    '/test-result',
-    method: 'POST',
-    sendData: '$output',
-  );
+  html.HttpRequest.request('/test-result', method: 'POST', sendData: '$output');
 }
 
 bool _errorMessageFormattedCorrectly(String errorMessage) {

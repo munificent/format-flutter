@@ -16,7 +16,8 @@ class ExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WidgetsApp(
-      builder: (BuildContext context, Widget? navigator) => const ExampleWidget(),
+      builder: (BuildContext context, Widget? navigator) =>
+          const ExampleWidget(),
       color: const Color(0xffffffff),
     );
   }
@@ -33,9 +34,7 @@ class ExampleWidget extends StatelessWidget {
       'One million is: 1,000,000.00',
       style: TextStyle(
         fontFamily: 'Source Code Pro',
-        fontFeatures: <FontFeature>[
-          FontFeature.slashedZero(),
-        ],
+        fontFeatures: <FontFeature>[FontFeature.slashedZero()],
       ),
     );
   }

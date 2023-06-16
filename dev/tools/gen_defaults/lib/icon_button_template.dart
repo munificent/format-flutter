@@ -5,7 +5,11 @@
 import 'template.dart';
 
 class IconButtonTemplate extends TokenTemplate {
-  const IconButtonTemplate(this.tokenGroup, super.blockName, super.fileName, super.tokens, {
+  const IconButtonTemplate(
+    this.tokenGroup,
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
   });
 
@@ -96,24 +100,36 @@ class IconButtonTemplate extends TokenTemplate {
     MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
         if (states.contains(MaterialState.pressed)) {
-          return ${componentColor('$tokenGroup.toggle.selected.pressed.state-layer')}.withOpacity(${opacity('$tokenGroup.pressed.state-layer.opacity')});
+          return ${componentColor(
+          '$tokenGroup.toggle.selected.pressed.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.pressed.state-layer.opacity')});
         }
         if (states.contains(MaterialState.hovered)) {
-          return ${componentColor('$tokenGroup.toggle.selected.hover.state-layer')}.withOpacity(${opacity('$tokenGroup.hover.state-layer.opacity')});
+          return ${componentColor(
+          '$tokenGroup.toggle.selected.hover.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.hover.state-layer.opacity')});
         }
         if (states.contains(MaterialState.focused)) {
-          return ${componentColor('$tokenGroup.toggle.selected.focus.state-layer')}.withOpacity(${opacity('$tokenGroup.focus.state-layer.opacity')});
+          return ${componentColor(
+          '$tokenGroup.toggle.selected.focus.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.focus.state-layer.opacity')});
         }
       }
       if (toggleable) { // toggleable but unselected case
         if (states.contains(MaterialState.pressed)) {
-          return ${componentColor('$tokenGroup.toggle.unselected.pressed.state-layer')}.withOpacity(${opacity('$tokenGroup.pressed.state-layer.opacity')});
+          return ${componentColor(
+          '$tokenGroup.toggle.unselected.pressed.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.pressed.state-layer.opacity')});
         }
         if (states.contains(MaterialState.hovered)) {
-          return ${componentColor('$tokenGroup.toggle.unselected.hover.state-layer')}.withOpacity(${opacity('$tokenGroup.hover.state-layer.opacity')});
+          return ${componentColor(
+          '$tokenGroup.toggle.unselected.hover.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.hover.state-layer.opacity')});
         }
         if (states.contains(MaterialState.focused)) {
-          return ${componentColor('$tokenGroup.toggle.unselected.focus.state-layer')}.withOpacity(${opacity('$tokenGroup.focus.state-layer.opacity')});
+          return ${componentColor(
+          '$tokenGroup.toggle.unselected.focus.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.focus.state-layer.opacity')});
         }
       }
       if (states.contains(MaterialState.pressed)) {
@@ -132,23 +148,35 @@ class IconButtonTemplate extends TokenTemplate {
     MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
         if (states.contains(MaterialState.pressed)) {
-          return ${componentColor('$tokenGroup.selected.pressed.state-layer')}.withOpacity(${opacity('$tokenGroup.pressed.state-layer.opacity')});
+          return ${componentColor(
+          '$tokenGroup.selected.pressed.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.pressed.state-layer.opacity')});
         }
         if (states.contains(MaterialState.hovered)) {
-          return ${componentColor('$tokenGroup.selected.hover.state-layer')}.withOpacity(${opacity('$tokenGroup.hover.state-layer.opacity')});
+          return ${componentColor(
+          '$tokenGroup.selected.hover.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.hover.state-layer.opacity')});
         }
         if (states.contains(MaterialState.focused)) {
-          return ${componentColor('$tokenGroup.selected.focus.state-layer')}.withOpacity(${opacity('$tokenGroup.focus.state-layer.opacity')});
+          return ${componentColor(
+          '$tokenGroup.selected.focus.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.focus.state-layer.opacity')});
         }
       }
       if (states.contains(MaterialState.pressed)) {
-        return ${componentColor('$tokenGroup.unselected.pressed.state-layer')}.withOpacity(${opacity('$tokenGroup.pressed.state-layer.opacity')});
+        return ${componentColor(
+          '$tokenGroup.unselected.pressed.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.pressed.state-layer.opacity')});
       }
       if (states.contains(MaterialState.hovered)) {
-        return ${componentColor('$tokenGroup.unselected.hover.state-layer')}.withOpacity(${opacity('$tokenGroup.hover.state-layer.opacity')});
+        return ${componentColor(
+          '$tokenGroup.unselected.hover.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.hover.state-layer.opacity')});
       }
       if (states.contains(MaterialState.focused)) {
-        return ${componentColor('$tokenGroup.unselected.focus.state-layer')}.withOpacity(${opacity('$tokenGroup.focus.state-layer.opacity')});
+        return ${componentColor(
+          '$tokenGroup.unselected.focus.state-layer',
+        )}.withOpacity(${opacity('$tokenGroup.focus.state-layer.opacity')});
       }
       return Colors.transparent;
     })''';
@@ -188,11 +216,15 @@ class IconButtonTemplate extends TokenTemplate {
     if (tokenAvailable('$tokenGroup.container.size')) {
       return '''
 
-    const MaterialStatePropertyAll<Size>(Size(${getToken('$tokenGroup.container.size')}, ${getToken('$tokenGroup.container.size')}))''';
+    const MaterialStatePropertyAll<Size>(Size(${getToken(
+        '$tokenGroup.container.size',
+      )}, ${getToken('$tokenGroup.container.size')}))''';
     } else {
       return '''
 
-    const MaterialStatePropertyAll<Size>(Size(${getToken('$tokenGroup.state-layer.size')}, ${getToken('$tokenGroup.state-layer.size')}))''';
+    const MaterialStatePropertyAll<Size>(Size(${getToken(
+        '$tokenGroup.state-layer.size',
+      )}, ${getToken('$tokenGroup.state-layer.size')}))''';
     }
   }
 
@@ -200,11 +232,17 @@ class IconButtonTemplate extends TokenTemplate {
     if (tokenAvailable('$tokenGroup.container.shape')) {
       return '''
 
-    const MaterialStatePropertyAll<OutlinedBorder>(${shape("$tokenGroup.container", "")})''';
+    const MaterialStatePropertyAll<OutlinedBorder>(${shape(
+        "$tokenGroup.container",
+        "",
+      )})''';
     } else {
       return '''
 
-    const MaterialStatePropertyAll<OutlinedBorder>(${shape("$tokenGroup.state-layer", "")})''';
+    const MaterialStatePropertyAll<OutlinedBorder>(${shape(
+        "$tokenGroup.state-layer",
+        "",
+      )})''';
     }
   }
 
@@ -217,9 +255,13 @@ class IconButtonTemplate extends TokenTemplate {
         return null;
       } else {
         if (states.contains(MaterialState.disabled)) {
-          return BorderSide(color: ${componentColor('$tokenGroup.disabled.unselected.outline')});
+          return BorderSide(color: ${componentColor(
+        '$tokenGroup.disabled.unselected.outline',
+      )});
         }
-        return BorderSide(color: ${componentColor('$tokenGroup.unselected.outline')});
+        return BorderSide(color: ${componentColor(
+        '$tokenGroup.unselected.outline',
+      )});
       }
     })''';
     }
@@ -286,7 +328,9 @@ class _${blockName}DefaultsM3 extends ButtonStyle {
 
   @override
   MaterialStateProperty<double>? get iconSize =>
-    const MaterialStatePropertyAll<double>(${getToken("$tokenGroup.icon.size")});
+    const MaterialStatePropertyAll<double>(${getToken(
+        "$tokenGroup.icon.size",
+      )});
 
   @override
   MaterialStateProperty<BorderSide?>? get side =>${_side()};
@@ -313,5 +357,4 @@ class _${blockName}DefaultsM3 extends ButtonStyle {
   InteractiveInkFeatureFactory? get splashFactory => Theme.of(context).splashFactory;
 }
 ''';
-
 }

@@ -15,23 +15,28 @@ const String _kInitialVersion = '3.0.0';
 const String _kBranch = 'beta';
 
 final Stdio stdio = Stdio();
-final ProcessUtils processUtils = ProcessUtils(processManager: processManager, logger: StdoutLogger(
-  terminal: AnsiTerminal(
-    platform: platform,
+final ProcessUtils processUtils = ProcessUtils(
+  processManager: processManager,
+  logger: StdoutLogger(
+    terminal: AnsiTerminal(platform: platform, stdio: stdio),
     stdio: stdio,
+    outputPreferences: OutputPreferences.test(wrapText: true),
   ),
-  stdio: stdio,
-  outputPreferences: OutputPreferences.test(wrapText: true),
-));
-final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', platform.isWindows ? 'flutter.bat' : 'flutter');
+);
+final String flutterBin = fileSystem.path.join(
+  getFlutterRoot(),
+  'bin',
+  platform.isWindows ? 'flutter.bat' : 'flutter',
+);
 
 /// A test for flutter upgrade & downgrade that checks out a parallel flutter repo.
 void main() {
   late Directory parentDirectory;
 
   setUp(() {
-    parentDirectory = fileSystem.systemTempDirectory
-      .createTempSync('flutter_tools.');
+    parentDirectory = fileSystem.systemTempDirectory.createTempSync(
+      'flutter_tools.',
+    );
     parentDirectory.createSync(recursive: true);
   });
 
@@ -44,11 +49,12 @@ void main() {
     testDirectory.createSync(recursive: true);
 
     // Enable longpaths for windows integration test.
-    await processManager.run(<String>[
-      'git', 'config', '--system', 'core.longpaths', 'true',
-    ]);
+    await processManager
+        .run(<String>['git', 'config', '--system', 'core.longpaths', 'true']);
 
-    printOnFailure('Step 1 - clone the $_kBranch of flutter into the test directory');
+    printOnFailure(
+      'Step 1 - clone the $_kBranch of flutter into the test directory',
+    );
     exitCode = await processUtils.stream(<String>[
       'git',
       'clone',
@@ -97,18 +103,22 @@ void main() {
       '--tags',
     ], workingDirectory: testDirectory.path);
     expect(versionResult.stdout, isNot(contains(_kInitialVersion)));
-    printOnFailure('current version is ${versionResult.stdout.trim()}\ninitial was $_kInitialVersion');
+    printOnFailure(
+      'current version is ${versionResult.stdout.trim()}\ninitial was $_kInitialVersion',
+    );
 
     printOnFailure('Step 6 - downgrade back to the initial version');
     exitCode = await processUtils.stream(<String>[
-       flutterBin,
+      flutterBin,
       'downgrade',
       '--no-prompt',
       '--working-directory=${testDirectory.path}',
     ], workingDirectory: testDirectory.path, trace: true);
     expect(exitCode, 0);
 
-    printOnFailure('Step 7 - verify downgraded version matches original version');
+    printOnFailure(
+      'Step 7 - verify downgraded version matches original version',
+    );
     final RunResult oldVersionResult = await processUtils.run(<String>[
       'git',
       'describe',
@@ -118,6 +128,8 @@ void main() {
       '--tags',
     ], workingDirectory: testDirectory.path);
     expect(oldVersionResult.stdout, contains(_kInitialVersion));
-    printOnFailure('current version is ${oldVersionResult.stdout.trim()}\ninitial was $_kInitialVersion');
+    printOnFailure(
+      'current version is ${oldVersionResult.stdout.trim()}\ninitial was $_kInitialVersion',
+    );
   });
 }

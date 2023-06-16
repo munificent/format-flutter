@@ -47,15 +47,15 @@ class DowngradeCommand extends FlutterCommand {
       'working-directory',
       hide: !verboseHelp,
       help: 'Override the downgrade working directory. '
-            'This is only intended to enable integration testing of the tool itself. '
-            'It allows one to use the flutter tool from one checkout to downgrade a '
-            'different checkout.'
+          'This is only intended to enable integration testing of the tool itself. '
+          'It allows one to use the flutter tool from one checkout to downgrade a '
+          'different checkout.',
     );
     argParser.addFlag(
       'prompt',
       defaultsTo: true,
       hide: !verboseHelp,
-      help: 'Show the downgrade prompt.'
+      help: 'Show the downgrade prompt.',
     );
   }
 
@@ -69,7 +69,8 @@ class DowngradeCommand extends FlutterCommand {
   FileSystem? _fileSystem;
 
   @override
-  String get description => 'Downgrade Flutter to the last active version for the current channel.';
+  String get description =>
+      'Downgrade Flutter to the last active version for the current channel.';
 
   @override
   String get name => 'downgrade';
@@ -86,7 +87,10 @@ class DowngradeCommand extends FlutterCommand {
     _flutterVersion ??= globals.flutterVersion;
     _persistentToolState ??= globals.persistentToolState;
     _processManager ??= globals.processManager;
-    _processUtils ??= ProcessUtils(processManager: _processManager!, logger: _logger);
+    _processUtils ??= ProcessUtils(
+      processManager: _processManager!,
+      logger: _logger,
+    );
     _stdio ??= globals.stdio;
     _fileSystem ??= globals.fs;
     String workingDirectory = Cache.flutterRoot!;
@@ -103,27 +107,36 @@ class DowngradeCommand extends FlutterCommand {
     if (channel == null) {
       throwToolExit(
         'Flutter is not currently on a known channel. '
-        'Use "flutter channel" to switch to an official channel. '
+        'Use "flutter channel" to switch to an official channel. ',
       );
     }
     final PersistentToolState persistentToolState = _persistentToolState!;
-    final String? lastFlutterVersion = persistentToolState.lastActiveVersion(channel);
+    final String? lastFlutterVersion = persistentToolState.lastActiveVersion(
+      channel,
+    );
     final String? currentFlutterVersion = _flutterVersion?.frameworkRevision;
-    if (lastFlutterVersion == null || currentFlutterVersion == lastFlutterVersion) {
-      final String trailing = await _createErrorMessage(workingDirectory, channel);
+    if (lastFlutterVersion == null ||
+        currentFlutterVersion == lastFlutterVersion) {
+      final String trailing =
+          await _createErrorMessage(workingDirectory, channel);
       throwToolExit(
         'There is no previously recorded version for channel "$currentChannel".\n'
-        '$trailing'
+        '$trailing',
       );
     }
 
     // Detect unknown versions.
     final ProcessUtils processUtils = _processUtils!;
     final RunResult parseResult = await processUtils.run(<String>[
-      'git', 'describe', '--tags', lastFlutterVersion,
+      'git',
+      'describe',
+      '--tags',
+      lastFlutterVersion,
     ], workingDirectory: workingDirectory);
     if (parseResult.exitCode != 0) {
-      throwToolExit('Failed to parse version for downgrade:\n${parseResult.stderr}');
+      throwToolExit(
+        'Failed to parse version for downgrade:\n${parseResult.stderr}',
+      );
     }
     final String humanReadableVersion = parseResult.stdout;
 
@@ -141,23 +154,26 @@ class DowngradeCommand extends FlutterCommand {
         return FlutterCommandResult.success();
       }
     } else {
-      _logger.printStatus('Downgrading Flutter to version $humanReadableVersion');
+      _logger.printStatus(
+        'Downgrading Flutter to version $humanReadableVersion',
+      );
     }
 
     // To downgrade the tool, we perform a git checkout --hard, and then
     // switch channels. The version recorded must have existed on that branch
     // so this operation is safe.
     try {
-      await processUtils.run(
-        <String>['git', 'reset', '--hard', lastFlutterVersion],
-        throwOnError: true,
-        workingDirectory: workingDirectory,
-      );
+      await processUtils.run(<String>[
+        'git',
+        'reset',
+        '--hard',
+        lastFlutterVersion,
+      ], throwOnError: true, workingDirectory: workingDirectory);
     } on ProcessException catch (error) {
       throwToolExit(
         'Unable to downgrade Flutter: The tool could not update to the version '
         '$humanReadableVersion.\n'
-        'Error: $error'
+        'Error: $error',
       );
     }
     try {
@@ -172,7 +188,7 @@ class DowngradeCommand extends FlutterCommand {
       throwToolExit(
         'Unable to downgrade Flutter: The tool could not switch to the channel '
         '$currentChannel.\n'
-        'Error: $error'
+        'Error: $error',
       );
     }
     await FlutterVersion.resetFlutterVersionFreshnessCheck();
@@ -181,7 +197,10 @@ class DowngradeCommand extends FlutterCommand {
   }
 
   // Formats an error message that lists the currently stored versions.
-  Future<String> _createErrorMessage(String workingDirectory, Channel currentChannel) async {
+  Future<String> _createErrorMessage(
+    String workingDirectory,
+    Channel currentChannel,
+  ) async {
     final StringBuffer buffer = StringBuffer();
     for (final Channel channel in Channel.values) {
       if (channel == currentChannel) {
@@ -192,10 +211,17 @@ class DowngradeCommand extends FlutterCommand {
         continue;
       }
       final RunResult parseResult = await _processUtils!.run(<String>[
-        'git', 'describe', '--tags', sha,
+        'git',
+        'describe',
+        '--tags',
+        sha,
       ], workingDirectory: workingDirectory);
       if (parseResult.exitCode == 0) {
-        buffer.writeln('Channel "${getNameForChannel(channel)}" was previously on: ${parseResult.stdout}.');
+        buffer.writeln(
+          'Channel "${getNameForChannel(
+            channel,
+          )}" was previously on: ${parseResult.stdout}.',
+        );
       }
     }
     return buffer.toString();

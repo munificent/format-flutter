@@ -10,7 +10,7 @@ const double kSectionIndicatorWidth = 32.0;
 
 // The card for a single section. Displays the section's gradient and background image.
 class SectionCard extends StatelessWidget {
-  const SectionCard({ super.key, required this.section });
+  const SectionCard({super.key, required this.section});
 
   final Section section;
 
@@ -22,10 +22,7 @@ class SectionCard extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: <Color>[
-              section.leftColor!,
-              section.rightColor!,
-            ],
+            colors: <Color>[section.leftColor!, section.rightColor!],
           ),
         ),
         child: Image.asset(
@@ -92,7 +89,7 @@ class SectionTitle extends StatelessWidget {
 
 // Small horizontal bar that indicates the selected section.
 class SectionIndicator extends StatelessWidget {
-  const SectionIndicator({ super.key, this.opacity = 1.0 });
+  const SectionIndicator({super.key, this.opacity = 1.0});
 
   final double opacity;
 
@@ -110,9 +107,11 @@ class SectionIndicator extends StatelessWidget {
 
 // Display a single SectionDetail.
 class SectionDetailView extends StatelessWidget {
-  SectionDetailView({ super.key, required this.detail })
-    : assert(detail.imageAsset != null),
-      assert((detail.imageAsset ?? detail.title) != null);
+  SectionDetailView({
+    super.key,
+    required this.detail,
+  }) : assert(detail.imageAsset != null),
+       assert((detail.imageAsset ?? detail.title) != null);
 
   final SectionDetail detail;
 
@@ -122,10 +121,8 @@ class SectionDetailView extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6.0),
         image: DecorationImage(
-          image: AssetImage(
-            detail.imageAsset!,
-            package: detail.imageAssetPackage,
-          ),
+          image:
+              AssetImage(detail.imageAsset!, package: detail.imageAssetPackage),
           fit: BoxFit.cover,
         ),
       ),
@@ -136,11 +133,7 @@ class SectionDetailView extends StatelessWidget {
       item = Container(
         height: 240.0,
         padding: const EdgeInsets.all(16.0),
-        child: SafeArea(
-          top: false,
-          bottom: false,
-          child: image,
-        ),
+        child: SafeArea(top: false, bottom: false, child: image),
       );
     } else {
       item = ListTile(

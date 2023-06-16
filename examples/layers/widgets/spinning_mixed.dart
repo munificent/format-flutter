@@ -8,7 +8,11 @@ import 'package:flutter/rendering.dart';
 import '../rendering/src/solid_color_box.dart';
 
 // Solid color, RenderObject version
-void addFlexChildSolidColor(RenderFlex parent, Color backgroundColor, { int flex = 0 }) {
+void addFlexChildSolidColor(
+  RenderFlex parent,
+  Color backgroundColor, {
+  int flex = 0,
+}) {
   final RenderSolidColorBox child = RenderSolidColorBox(backgroundColor);
   parent.add(child);
   final FlexParentData childParentData = child.parentData! as FlexParentData;
@@ -17,17 +21,13 @@ void addFlexChildSolidColor(RenderFlex parent, Color backgroundColor, { int flex
 
 // Solid color, Widget version
 class Rectangle extends StatelessWidget {
-  const Rectangle(this.color, { super.key });
+  const Rectangle(this.color, {super.key});
 
   final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        color: color,
-      ),
-    );
+    return Expanded(child: Container(color: color));
   }
 }
 
@@ -54,7 +54,9 @@ void attachWidgetTreeToRenderTree(RenderProxyBox container) {
                     ElevatedButton(
                       child: Row(
                         children: <Widget>[
-                          Image.network('https://flutter.dev/images/favicon.png'),
+                          Image.network(
+                            'https://flutter.dev/images/favicon.png',
+                          ),
                           const Text('PRESS ME'),
                         ],
                       ),
@@ -81,7 +83,8 @@ late RenderTransform transformBox;
 
 void rotate(Duration timeStamp) {
   timeBase ??= timeStamp;
-  final double delta = (timeStamp - timeBase!).inMicroseconds.toDouble() / Duration.microsecondsPerSecond; // radians
+  final double delta = (timeStamp - timeBase!).inMicroseconds.toDouble() /
+      Duration.microsecondsPerSecond; // radians
 
   transformBox.setIdentity();
   transformBox.rotateZ(delta);
@@ -99,8 +102,15 @@ void main() {
   flexRoot.add(proxy);
   addFlexChildSolidColor(flexRoot, const Color(0xFF0000FF), flex: 1);
 
-  transformBox = RenderTransform(child: flexRoot, transform: Matrix4.identity(), alignment: Alignment.center);
-  final RenderPadding root = RenderPadding(padding: const EdgeInsets.all(80.0), child: transformBox);
+  transformBox = RenderTransform(
+    child: flexRoot,
+    transform: Matrix4.identity(),
+    alignment: Alignment.center,
+  );
+  final RenderPadding root = RenderPadding(
+    padding: const EdgeInsets.all(80.0),
+    child: transformBox,
+  );
 
   binding.renderView.child = root;
   binding.addPersistentFrameCallback(rotate);

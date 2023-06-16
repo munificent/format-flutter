@@ -39,9 +39,7 @@ class _ElevationDemoState extends State<ElevationDemo> {
           child: SizedBox(
             height: 100.0,
             width: 100.0,
-            child: Center(
-              child: Text('${elevation.toStringAsFixed(0)} pt'),
-            ),
+            child: Center(child: Text('${elevation.toStringAsFixed(0)} pt')),
           ),
         ),
       );
@@ -64,12 +62,7 @@ class _ElevationDemoState extends State<ElevationDemo> {
           ),
         ],
       ),
-      body: Scrollbar(
-        child: ListView(
-          primary: true,
-          children: buildCards(),
-        ),
-      ),
+      body: Scrollbar(child: ListView(primary: true, children: buildCards())),
     );
   }
 }

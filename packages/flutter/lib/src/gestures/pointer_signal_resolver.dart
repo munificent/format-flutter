@@ -76,7 +76,10 @@ class PointerSignalResolver {
   ///
   /// See the documentation for the [PointerSignalResolver] class for an example of
   /// using this method.
-  void register(PointerSignalEvent event, PointerSignalResolvedCallback callback) {
+  void register(
+    PointerSignalEvent event,
+    PointerSignalResolvedCallback callback,
+  ) {
     assert(_currentEvent == null || _isSameEvent(_currentEvent!, event));
     if (_firstRegisteredCallback != null) {
       return;
@@ -101,12 +104,18 @@ class PointerSignalResolver {
       _firstRegisteredCallback!(_currentEvent!);
     } catch (exception, stack) {
       InformationCollector? collector;
-      assert(() {
-        collector = () => <DiagnosticsNode>[
-          DiagnosticsProperty<PointerSignalEvent>('Event', event, style: DiagnosticsTreeStyle.errorProperty),
-        ];
-        return true;
-      }());
+      assert(
+        () {
+          collector = () => <DiagnosticsNode>[
+                DiagnosticsProperty<PointerSignalEvent>(
+                  'Event',
+                  event,
+                  style: DiagnosticsTreeStyle.errorProperty,
+                ),
+              ];
+          return true;
+        }(),
+      );
       FlutterError.reportError(FlutterErrorDetails(
         exception: exception,
         stack: stack,

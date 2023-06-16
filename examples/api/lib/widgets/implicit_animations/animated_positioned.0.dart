@@ -16,9 +16,7 @@ class AnimatedPositionedExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('AnimatedPositioned Sample')),
-        body: const Center(
-          child: AnimatedPositionedExample(),
-        ),
+        body: const Center(child: AnimatedPositionedExample()),
       ),
     );
   }
@@ -28,7 +26,8 @@ class AnimatedPositionedExample extends StatefulWidget {
   const AnimatedPositionedExample({super.key});
 
   @override
-  State<AnimatedPositionedExample> createState() => _AnimatedPositionedExampleState();
+  State<AnimatedPositionedExample> createState() =>
+      _AnimatedPositionedExampleState();
 }
 
 class _AnimatedPositionedExampleState extends State<AnimatedPositionedExample> {

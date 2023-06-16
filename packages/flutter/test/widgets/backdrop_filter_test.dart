@@ -13,9 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets("BackdropFilter's cull rect does not shrink", (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
+  testWidgets(
+    "BackdropFilter's cull rect does not shrink",
+    (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
         theme: ThemeData(useMaterial3: false),
         home: Scaffold(
           body: Stack(
@@ -27,10 +28,7 @@ void main() {
                 // whole screen.
                 child: ClipRect(
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: 5.0,
-                      sigmaY: 5.0,
-                    ),
+                    filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                     child: Container(
                       alignment: Alignment.center,
                       width: 200.0,
@@ -43,17 +41,18 @@ void main() {
             ],
           ),
         ),
-      ),
-    );
-    await expectLater(
-      find.byType(RepaintBoundary).first,
-      matchesGoldenFile('backdrop_filter_test.cull_rect.png'),
-    );
-  });
+      ));
+      await expectLater(
+        find.byType(RepaintBoundary).first,
+        matchesGoldenFile('backdrop_filter_test.cull_rect.png'),
+      );
+    },
+  );
 
-  testWidgets('BackdropFilter blendMode on saveLayer', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
+  testWidgets(
+    'BackdropFilter blendMode on saveLayer',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
         theme: ThemeData(useMaterial3: false),
         home: Scaffold(
           body: Opacity(
@@ -69,10 +68,7 @@ void main() {
                   children: <Widget>[
                     ClipRect(
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: 5.0,
-                          sigmaY: 5.0,
-                        ),
+                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                         child: Container(
                           alignment: Alignment.center,
                           width: 200.0,
@@ -83,10 +79,7 @@ void main() {
                     ),
                     ClipRect(
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: 5.0,
-                          sigmaY: 5.0,
-                        ),
+                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                         blendMode: BlendMode.src,
                         child: Container(
                           alignment: Alignment.center,
@@ -102,11 +95,11 @@ void main() {
             ),
           ),
         ),
-      ),
-    );
-    await expectLater(
-      find.byType(RepaintBoundary).first,
-      matchesGoldenFile('backdrop_filter_test.saveLayer.blendMode.png'),
-    );
-  });
+      ));
+      await expectLater(
+        find.byType(RepaintBoundary).first,
+        matchesGoldenFile('backdrop_filter_test.saveLayer.blendMode.png'),
+      );
+    },
+  );
 }

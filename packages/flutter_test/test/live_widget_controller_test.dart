@@ -21,7 +21,9 @@ class TestBinding extends WidgetsFlutterBinding {
   }
 
   @override
-  bool debugCheckZone(String entryPoint) { return true; }
+  bool debugCheckZone(String entryPoint) {
+    return true;
+  }
 
   static TestBinding get instance => BindingBase.checkInstance(_instance);
   static TestBinding? _instance;
@@ -98,8 +100,9 @@ void main() {
     runApp(const MaterialApp(home: Center(child: CountButton())));
 
     await SchedulerBinding.instance.endOfFrame;
-    final WidgetController controller =
-        LiveWidgetController(WidgetsBinding.instance);
+    final WidgetController controller = LiveWidgetController(
+      WidgetsBinding.instance,
+    );
     await controller.tap(find.text('Counter 0'));
     expect(find.text('Counter 0'), findsOneWidget);
     expect(find.text('Counter 1'), findsNothing);
@@ -111,8 +114,9 @@ void main() {
   test('Test pumpAndSettle on LiveWidgetController', () async {
     runApp(const MaterialApp(home: Center(child: AnimateSample())));
     await SchedulerBinding.instance.endOfFrame;
-    final WidgetController controller =
-        LiveWidgetController(WidgetsBinding.instance);
+    final WidgetController controller = LiveWidgetController(
+      WidgetsBinding.instance,
+    );
     expect(find.text('Value: 1.0'), findsNothing);
     await controller.pumpAndSettle();
     expect(find.text('Value: 1.0'), findsOneWidget);
@@ -120,28 +124,27 @@ void main() {
 
   test('Input event array on LiveWidgetController', () async {
     final List<String> logs = <String>[];
-    runApp(
-      MaterialApp(
-        home: Listener(
-          onPointerDown: (PointerDownEvent event) => logs.add('down ${event.buttons}'),
-          onPointerMove: (PointerMoveEvent event) => logs.add('move ${event.buttons}'),
-          onPointerUp: (PointerUpEvent event) => logs.add('up ${event.buttons}'),
-          child: const Text('test'),
-        ),
+    runApp(MaterialApp(
+      home: Listener(
+        onPointerDown:
+            (PointerDownEvent event) => logs.add('down ${event.buttons}'),
+        onPointerMove:
+            (PointerMoveEvent event) => logs.add('move ${event.buttons}'),
+        onPointerUp: (PointerUpEvent event) => logs.add('up ${event.buttons}'),
+        child: const Text('test'),
       ),
-    );
+    ));
     await SchedulerBinding.instance.endOfFrame;
-    final WidgetController controller =
-        LiveWidgetController(WidgetsBinding.instance);
+    final WidgetController controller = LiveWidgetController(
+      WidgetsBinding.instance,
+    );
 
     final Offset location = controller.getCenter(find.text('test'));
     final List<PointerEventRecord> records = <PointerEventRecord>[
       PointerEventRecord(Duration.zero, <PointerEvent>[
         // Typically PointerAddedEvent is not used in testers, but for records
         // captured on a device it is usually what starts a gesture.
-        PointerAddedEvent(
-          position: location,
-        ),
+        PointerAddedEvent(position: location),
         PointerDownEvent(
           position: location,
           buttons: kSecondaryMouseButton,
@@ -150,8 +153,8 @@ void main() {
       ]),
       ...<PointerEventRecord>[
         for (Duration t = const Duration(milliseconds: 5);
-             t < const Duration(milliseconds: 80);
-             t += const Duration(milliseconds: 16))
+            t < const Duration(milliseconds: 80);
+            t += const Duration(milliseconds: 16))
           PointerEventRecord(t, <PointerEvent>[
             PointerMoveEvent(
               timeStamp: t - const Duration(milliseconds: 1),
@@ -179,7 +182,10 @@ void main() {
       // TODO(pdblasi-google): The expected wiggle room should be -1, but occasional
       // results were reaching -6. This assert has been adjusted to reduce flakiness,
       // but the root cause is still unknown. (https://github.com/flutter/flutter/issues/109638)
-      assert(diff.inMilliseconds > -7, 'timeDiffs were: $timeDiffs (offending time was ${diff.inMilliseconds}ms)');
+      assert(
+        diff.inMilliseconds > -7,
+        'timeDiffs were: $timeDiffs (offending time was ${diff.inMilliseconds}ms)',
+      );
     }
 
     const String b = '$kSecondaryMouseButton';

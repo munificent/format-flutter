@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('positions itself at anchorAbove if it fits and shifts up when not', (WidgetTester tester) async {
-    late StateSetter setState;
-    const double toolbarOverlap = 100;
-    const double height = 500;
-    double anchorY = 200.0;
+  testWidgets(
+    'positions itself at anchorAbove if it fits and shifts up when not',
+    (WidgetTester tester) async {
+      late StateSetter setState;
+      const double toolbarOverlap = 100;
+      const double height = 500;
+      double anchorY = 200.0;
 
-    await tester.pumpWidget(
-      MediaQuery(
+      await tester.pumpWidget(MediaQuery(
         data: const MediaQueryData(),
         child: Directionality(
           textDirection: TextDirection.ltr,
@@ -33,21 +34,21 @@ void main() {
             },
           ),
         ),
-      ),
-    );
+      ));
 
-    // When the toolbar doesn't fit below anchor, it positions itself such that
-    // it can just fit.
-    double toolbarY = tester.getTopLeft(find.byType(Container)).dy;
-    // Total height available is 600.
-    expect(toolbarY, equals(toolbarOverlap));
+      // When the toolbar doesn't fit below anchor, it positions itself such that
+      // it can just fit.
+      double toolbarY = tester.getTopLeft(find.byType(Container)).dy;
+      // Total height available is 600.
+      expect(toolbarY, equals(toolbarOverlap));
 
-    // When it does fit below anchor, it positions itself there.
-    setState(() {
-      anchorY = anchorY - toolbarOverlap;
-    });
-    await tester.pump();
-    toolbarY = tester.getTopLeft(find.byType(Container)).dy;
-    expect(toolbarY, equals(anchorY));
-  });
+      // When it does fit below anchor, it positions itself there.
+      setState(() {
+        anchorY = anchorY - toolbarOverlap;
+      });
+      await tester.pump();
+      toolbarY = tester.getTopLeft(find.byType(Container)).dy;
+      expect(toolbarY, equals(anchorY));
+    },
+  );
 }

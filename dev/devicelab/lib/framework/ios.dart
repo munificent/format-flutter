@@ -17,12 +17,8 @@ Future<String> fileType(String pathToBinary) {
 }
 
 Future<String?> minPhoneOSVersion(String pathToBinary) async {
-  final String loadCommands = await eval('otool', <String>[
-    '-l',
-    '-arch',
-    'arm64',
-    pathToBinary,
-  ]);
+  final String loadCommands =
+      await eval('otool', <String>['-l', '-arch', 'arm64', pathToBinary]);
   if (!loadCommands.contains('LC_VERSION_MIN_IPHONEOS')) {
     return null;
   }
@@ -36,10 +32,9 @@ Future<String?> minPhoneOSVersion(String pathToBinary) async {
   //  ...
   final List<String> lines = LineSplitter.split(loadCommands).toList();
   lines.asMap().forEach((int index, String line) {
-    if (line.contains('LC_VERSION_MIN_IPHONEOS') && lines.length - index - 1 > 3) {
-      final String versionLine = lines
-          .skip(index - 1)
-          .take(4).last;
+    if (line.contains('LC_VERSION_MIN_IPHONEOS') &&
+        lines.length - index - 1 > 3) {
+      final String versionLine = lines.skip(index - 1).take(4).last;
       final RegExp versionRegex = RegExp(r'\s*version\s*(\S*)');
       minVersion = versionRegex.firstMatch(versionLine)?.group(1);
     }
@@ -58,15 +53,11 @@ Future<void> testWithNewIOSSimulator(
 }) async {
   // Xcode 11.4 simctl create makes the runtime argument optional, and defaults to latest.
   // TODO(jmagman): Remove runtime parsing when devicelab upgrades to Xcode 11.4 https://github.com/flutter/flutter/issues/54889
-  final String availableRuntimes = await eval(
-    'xcrun',
-    <String>[
-      'simctl',
-      'list',
-      'runtimes',
-    ],
-    workingDirectory: flutterDirectory.path,
-  );
+  final String availableRuntimes = await eval('xcrun', <String>[
+    'simctl',
+    'list',
+    'runtimes',
+  ], workingDirectory: flutterDirectory.path);
 
   String? iOSSimRuntime;
 
@@ -85,26 +76,18 @@ Future<void> testWithNewIOSSimulator(
     throw 'No iOS simulator runtime found. Available runtimes:\n$availableRuntimes';
   }
 
-  final String deviceId = await eval(
-    'xcrun',
-    <String>[
-      'simctl',
-      'create',
-      deviceName,
-      deviceTypeId,
-      iOSSimRuntime,
-    ],
-    workingDirectory: flutterDirectory.path,
-  );
-  await eval(
-    'xcrun',
-    <String>[
-      'simctl',
-      'boot',
-      deviceId,
-    ],
-    workingDirectory: flutterDirectory.path,
-  );
+  final String deviceId = await eval('xcrun', <String>[
+    'simctl',
+    'create',
+    deviceName,
+    deviceTypeId,
+    iOSSimRuntime,
+  ], workingDirectory: flutterDirectory.path);
+  await eval('xcrun', <String>[
+    'simctl',
+    'boot',
+    deviceId,
+  ], workingDirectory: flutterDirectory.path);
 
   await testFunction(deviceId);
 }
@@ -112,26 +95,16 @@ Future<void> testWithNewIOSSimulator(
 /// Shuts down and deletes simulator with deviceId.
 Future<void> removeIOSimulator(String? deviceId) async {
   if (deviceId != null && deviceId != '') {
-    await eval(
-      'xcrun',
-      <String>[
-        'simctl',
-        'shutdown',
-        deviceId,
-      ],
-      canFail: true,
-      workingDirectory: flutterDirectory.path,
-    );
-    await eval(
-      'xcrun',
-      <String>[
-        'simctl',
-        'delete',
-        deviceId,
-      ],
-      canFail: true,
-      workingDirectory: flutterDirectory.path,
-    );
+    await eval('xcrun', <String>[
+      'simctl',
+      'shutdown',
+      deviceId,
+    ], canFail: true, workingDirectory: flutterDirectory.path);
+    await eval('xcrun', <String>[
+      'simctl',
+      'delete',
+      deviceId,
+    ], canFail: true, workingDirectory: flutterDirectory.path);
   }
 }
 
@@ -148,46 +121,46 @@ Future<bool> runXcodeTests({
   String? provisioningProfile;
   if (!skipCodesign) {
     // If not running on CI, inject the Flutter team code signing properties.
-    developmentTeam = environment['FLUTTER_XCODE_DEVELOPMENT_TEAM'] ?? 'S8QB4VV633';
+    developmentTeam =
+        environment['FLUTTER_XCODE_DEVELOPMENT_TEAM'] ?? 'S8QB4VV633';
     codeSignStyle = environment['FLUTTER_XCODE_CODE_SIGN_STYLE'];
-    provisioningProfile = environment['FLUTTER_XCODE_PROVISIONING_PROFILE_SPECIFIER'];
+    provisioningProfile =
+        environment['FLUTTER_XCODE_PROVISIONING_PROFILE_SPECIFIER'];
   }
-  final String resultBundleTemp = Directory.systemTemp.createTempSync('flutter_xcresult.').path;
+  final String resultBundleTemp =
+      Directory.systemTemp.createTempSync('flutter_xcresult.').path;
   final String resultBundlePath = path.join(resultBundleTemp, 'result');
-  final int testResultExit = await exec(
-    'xcodebuild',
-    <String>[
-      '-workspace',
-      'Runner.xcworkspace',
-      '-scheme',
-      'Runner',
-      '-configuration',
-      configuration,
-      '-destination',
-      destination,
-      '-resultBundlePath',
-      resultBundlePath,
-      'test',
-      'COMPILER_INDEX_STORE_ENABLE=NO',
-      if (developmentTeam != null)
-        'DEVELOPMENT_TEAM=$developmentTeam',
-      if (codeSignStyle != null)
-        'CODE_SIGN_STYLE=$codeSignStyle',
-      if (provisioningProfile != null)
-        'PROVISIONING_PROFILE_SPECIFIER=$provisioningProfile',
-    ],
-    workingDirectory: platformDirectory,
-    canFail: true,
-  );
+  final int testResultExit = await exec('xcodebuild', <String>[
+    '-workspace',
+    'Runner.xcworkspace',
+    '-scheme',
+    'Runner',
+    '-configuration',
+    configuration,
+    '-destination',
+    destination,
+    '-resultBundlePath',
+    resultBundlePath,
+    'test',
+    'COMPILER_INDEX_STORE_ENABLE=NO',
+    if (developmentTeam != null) 'DEVELOPMENT_TEAM=$developmentTeam',
+    if (codeSignStyle != null) 'CODE_SIGN_STYLE=$codeSignStyle',
+    if (provisioningProfile != null)
+      'PROVISIONING_PROFILE_SPECIFIER=$provisioningProfile',
+  ], workingDirectory: platformDirectory, canFail: true);
 
   if (testResultExit != 0) {
     final Directory? dumpDirectory = hostAgent.dumpDirectory;
-    final Directory xcresultBundle = Directory(path.join(resultBundleTemp, 'result.xcresult'));
+    final Directory xcresultBundle = Directory(
+      path.join(resultBundleTemp, 'result.xcresult'),
+    );
     if (dumpDirectory != null) {
       if (xcresultBundle.existsSync()) {
         // Zip the test results to the artifacts directory for upload.
-        final String zipPath = path.join(dumpDirectory.path,
-            '$testName-${DateTime.now().toLocal().toIso8601String()}.zip');
+        final String zipPath = path.join(
+          dumpDirectory.path,
+          '$testName-${DateTime.now().toLocal().toIso8601String()}.zip',
+        );
         await exec(
           'zip',
           <String>[
@@ -201,7 +174,9 @@ Future<bool> runXcodeTests({
           canFail: true, // Best effort to get the logs.
         );
       } else {
-        print('xcresult bundle ${xcresultBundle.path} does not exist, skipping upload');
+        print(
+          'xcresult bundle ${xcresultBundle.path} does not exist, skipping upload',
+        );
       }
     }
     return false;

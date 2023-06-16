@@ -7,19 +7,19 @@ import 'package:flutter/material.dart';
 import '../../gallery/demo.dart';
 
 const String _text1 =
-  'Snackbars provide lightweight feedback about an operation by '
-  'showing a brief message at the bottom of the screen. Snackbars '
-  'can contain an action.';
+    'Snackbars provide lightweight feedback about an operation by '
+    'showing a brief message at the bottom of the screen. Snackbars '
+    'can contain an action.';
 
 const String _text2 =
-  'Snackbars should contain a single line of text directly related '
-  'to the operation performed. They cannot contain icons.';
+    'Snackbars should contain a single line of text directly related '
+    'to the operation performed. They cannot contain icons.';
 
 const String _text3 =
-  'By default snackbars automatically disappear after a few seconds ';
+    'By default snackbars automatically disappear after a few seconds ';
 
 class SnackBarDemo extends StatefulWidget {
-  const SnackBarDemo({ super.key });
+  const SnackBarDemo({super.key});
 
   static const String routeName = '/material/snack-bar';
 
@@ -50,7 +50,9 @@ class _SnackBarDemoState extends State<SnackBarDemo> {
                     label: 'ACTION',
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("You pressed snackbar $thisSnackBarIndex's action."),
+                        content: Text(
+                          "You pressed snackbar $thisSnackBarIndex's action.",
+                        ),
                       ));
                     },
                   ),
@@ -59,14 +61,12 @@ class _SnackBarDemoState extends State<SnackBarDemo> {
             ),
           ),
           const Text(_text3),
-        ]
-        .map<Widget>((Widget child) {
+        ].map<Widget>((Widget child) {
           return Container(
             margin: const EdgeInsets.symmetric(vertical: 12.0),
             child: child,
           );
-        })
-        .toList(),
+        }).toList(),
       ),
     );
   }
@@ -76,12 +76,14 @@ class _SnackBarDemoState extends State<SnackBarDemo> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Snackbar'),
-        actions: <Widget>[MaterialDemoDocumentationButton(SnackBarDemo.routeName)],
+        actions: <Widget>[
+          MaterialDemoDocumentationButton(SnackBarDemo.routeName),
+        ],
       ),
       body: Builder(
         // Create an inner BuildContext so that the snackBar onPressed methods
         // can refer to the Scaffold with Scaffold.of().
-        builder: buildBody
+        builder: buildBody,
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Create',

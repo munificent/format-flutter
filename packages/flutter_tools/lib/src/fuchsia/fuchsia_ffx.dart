@@ -37,11 +37,12 @@ class FuchsiaFfx {
     FuchsiaArtifacts? fuchsiaArtifacts,
     Logger? logger,
     ProcessManager? processManager,
-  })  : _fuchsiaArtifacts = fuchsiaArtifacts ?? globals.fuchsiaArtifacts,
-        _logger = logger ?? globals.logger,
-        _processUtils = ProcessUtils(
-            logger: logger ?? globals.logger,
-            processManager: processManager ?? globals.processManager);
+  }) : _fuchsiaArtifacts = fuchsiaArtifacts ?? globals.fuchsiaArtifacts,
+       _logger = logger ?? globals.logger,
+       _processUtils = ProcessUtils(
+         logger: logger ?? globals.logger,
+         processManager: processManager ?? globals.processManager,
+       );
 
   final FuchsiaArtifacts? _fuchsiaArtifacts;
   final Logger _logger;
@@ -111,11 +112,7 @@ class FuchsiaFfx {
     if (ffx == null || !ffx.existsSync()) {
       throwToolExit('Fuchsia ffx tool not found.');
     }
-    final List<String> command = <String>[
-      ffx.path,
-      'session',
-      'show',
-    ];
+    final List<String> command = <String>[ffx.path, 'session', 'show'];
     final RunResult result = await _processUtils.run(command);
     if (result.exitCode != 0) {
       _logger.printError('ffx failed: ${result.stderr}');
@@ -134,12 +131,7 @@ class FuchsiaFfx {
     if (ffx == null || !ffx.existsSync()) {
       throwToolExit('Fuchsia ffx tool not found.');
     }
-    final List<String> command = <String>[
-      ffx.path,
-      'session',
-      'add',
-      url,
-    ];
+    final List<String> command = <String>[ffx.path, 'session', 'add', url];
     final RunResult result = await _processUtils.run(command);
     if (result.exitCode != 0) {
       _logger.printError('ffx failed: ${result.stderr}');

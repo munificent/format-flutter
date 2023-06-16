@@ -16,11 +16,12 @@ class ButtonApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(colorSchemeSeed: const Color(0xff6750a4), useMaterial3: true),
-      title: 'Button Types',
-      home: const Scaffold(
-        body: ButtonTypesExample(),
+      theme: ThemeData(
+        colorSchemeSeed: const Color(0xff6750a4),
+        useMaterial3: true,
       ),
+      title: 'Button Types',
+      home: const Scaffold(body: ButtonTypesExample()),
     );
   }
 }
@@ -59,7 +60,10 @@ class ButtonTypesGroup extends StatelessWidget {
         children: <Widget>[
           ElevatedButton(onPressed: onPressed, child: const Text('Elevated')),
           FilledButton(onPressed: onPressed, child: const Text('Filled')),
-          FilledButton.tonal(onPressed: onPressed, child: const Text('Filled Tonal')),
+          FilledButton.tonal(
+            onPressed: onPressed,
+            child: const Text('Filled Tonal'),
+          ),
           OutlinedButton(onPressed: onPressed, child: const Text('Outlined')),
           TextButton(onPressed: onPressed, child: const Text('Text')),
         ],

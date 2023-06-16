@@ -26,9 +26,9 @@ class NavigationIconView {
          duration: kThemeAnimationDuration,
          vsync: vsync,
        ) {
-    _animation = controller.drive(CurveTween(
-      curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
-    ));
+    _animation = controller.drive(
+      CurveTween(curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn)),
+    );
   }
 
   final Widget _icon;
@@ -38,7 +38,10 @@ class NavigationIconView {
   final AnimationController controller;
   late Animation<double> _animation;
 
-  FadeTransition transition(BottomNavigationBarType type, BuildContext context) {
+  FadeTransition transition(
+    BottomNavigationBarType type,
+    BuildContext context,
+  ) {
     Color? iconColor;
     if (type == BottomNavigationBarType.shifting) {
       iconColor = _color;
@@ -53,21 +56,13 @@ class NavigationIconView {
     return FadeTransition(
       opacity: _animation,
       child: SlideTransition(
-        position: _animation.drive(
-          Tween<Offset>(
-            begin: const Offset(0.0, 0.02), // Slightly down.
-            end: Offset.zero,
-          ),
-        ),
+        position: _animation.drive(Tween<Offset>(
+          begin: const Offset(0.0, 0.02), // Slightly down.
+          end: Offset.zero,
+        )),
         child: IconTheme(
-          data: IconThemeData(
-            color: iconColor,
-            size: 120.0,
-          ),
-          child: Semantics(
-            label: 'Placeholder for $_title tab',
-            child: _icon,
-          ),
+          data: IconThemeData(color: iconColor, size: 120.0),
+          child: Semantics(label: 'Placeholder for $_title tab', child: _icon),
         ),
       ),
     );
@@ -173,7 +168,8 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo>
 
   Widget _buildTransitionsStack() {
     final List<FadeTransition> transitions = <FadeTransition>[
-      for (final NavigationIconView view in _navigationViews) view.transition(_type, context),
+      for (final NavigationIconView view in _navigationViews)
+        view.transition(_type, context),
     ];
 
     // We want to have the newly animating (fading in) views on top.
@@ -191,9 +187,9 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo>
   @override
   Widget build(BuildContext context) {
     final BottomNavigationBar botNavBar = BottomNavigationBar(
-      items: _navigationViews
-          .map<BottomNavigationBarItem>((NavigationIconView navigationView) => navigationView.item)
-          .toList(),
+      items: _navigationViews.map<BottomNavigationBarItem>(
+        (NavigationIconView navigationView) => navigationView.item,
+      ).toList(),
       currentIndex: _currentIndex,
       type: _type,
       onTap: (int index) {
@@ -216,22 +212,22 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo>
                 _type = value;
               });
             },
-            itemBuilder: (BuildContext context) => <PopupMenuItem<BottomNavigationBarType>>[
-              const PopupMenuItem<BottomNavigationBarType>(
-                value: BottomNavigationBarType.fixed,
-                child: Text('Fixed'),
-              ),
-              const PopupMenuItem<BottomNavigationBarType>(
-                value: BottomNavigationBarType.shifting,
-                child: Text('Shifting'),
-              ),
-            ],
+            itemBuilder: (
+              BuildContext context,
+            ) => <PopupMenuItem<BottomNavigationBarType>>[
+                  const PopupMenuItem<BottomNavigationBarType>(
+                    value: BottomNavigationBarType.fixed,
+                    child: Text('Fixed'),
+                  ),
+                  const PopupMenuItem<BottomNavigationBarType>(
+                    value: BottomNavigationBarType.shifting,
+                    child: Text('Shifting'),
+                  ),
+                ],
           ),
         ],
       ),
-      body: Center(
-        child: _buildTransitionsStack(),
-      ),
+      body: Center(child: _buildTransitionsStack()),
       bottomNavigationBar: botNavBar,
     );
   }

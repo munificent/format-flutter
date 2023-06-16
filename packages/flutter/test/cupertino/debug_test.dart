@@ -6,27 +6,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('debugCheckHasCupertinoLocalizations throws', (WidgetTester tester) async {
-    final GlobalKey noLocalizationsAvailable = GlobalKey();
-    final GlobalKey localizationsAvailable = GlobalKey();
+  testWidgets(
+    'debugCheckHasCupertinoLocalizations throws',
+    (WidgetTester tester) async {
+      final GlobalKey noLocalizationsAvailable = GlobalKey();
+      final GlobalKey localizationsAvailable = GlobalKey();
 
-    await tester.pumpWidget(
-      Container(
+      await tester.pumpWidget(Container(
         key: noLocalizationsAvailable,
-        child: CupertinoApp(
-          home: Container(
-            key: localizationsAvailable,
-          ),
+        child: CupertinoApp(home: Container(key: localizationsAvailable)),
+      ));
+
+      expect(
+        () => debugCheckHasCupertinoLocalizations(
+          noLocalizationsAvailable.currentContext!,
         ),
-      ),
-    );
+        throwsA(isAssertionError.having(
+          (AssertionError e) => e.message,
+          'message',
+          contains('No CupertinoLocalizations found'),
+        )),
+      );
 
-    expect(() => debugCheckHasCupertinoLocalizations(noLocalizationsAvailable.currentContext!), throwsA(isAssertionError.having(
-      (AssertionError e) => e.message,
-      'message',
-      contains('No CupertinoLocalizations found'),
-    )));
-
-    expect(debugCheckHasCupertinoLocalizations(localizationsAvailable.currentContext!), isTrue);
-  });
+      expect(debugCheckHasCupertinoLocalizations(
+        localizationsAvailable.currentContext!,
+      ), isTrue);
+    },
+  );
 }

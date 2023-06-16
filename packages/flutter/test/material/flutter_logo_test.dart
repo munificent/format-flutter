@@ -13,13 +13,12 @@ import 'package:flutter_test/flutter_test.dart';
 import '../foundation/leak_tracking.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('Flutter Logo golden test', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('Flutter Logo golden test', (
+    WidgetTester tester,
+  ) async {
     final Key logo = UniqueKey();
     await tester.pumpWidget(FlutterLogo(key: logo));
 
-    await expectLater(
-      find.byKey(logo),
-      matchesGoldenFile('flutter_logo.png'),
-    );
+    await expectLater(find.byKey(logo), matchesGoldenFile('flutter_logo.png'));
   });
 }

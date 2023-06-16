@@ -15,17 +15,20 @@ void main() {
         matching: find.byType(Material),
       ));
 
-      await tester.pumpWidget(
-        const example.AppBarApp(),
-      );
+      await tester.pumpWidget(const example.AppBarApp());
 
       // Starts with the base elevation.
       expect(getMaterial().elevation, 0.0);
 
-      await tester.fling(find.text('Beach 3'), const Offset(0.0, -600.0), 2000.0);
+      await tester.fling(
+        find.text('Beach 3'),
+        const Offset(0.0, -600.0),
+        2000.0,
+      );
       await tester.pumpAndSettle();
 
       // After scrolling it should be the scrolledUnderElevation.
       expect(getMaterial().elevation, 4.0);
-  });
+    },
+  );
 }

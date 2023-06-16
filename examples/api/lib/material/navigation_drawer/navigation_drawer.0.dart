@@ -20,27 +20,42 @@ class ExampleDestination {
 }
 
 const List<ExampleDestination> destinations = <ExampleDestination>[
-  ExampleDestination('page 0', Icon(Icons.widgets_outlined), Icon(Icons.widgets)),
-  ExampleDestination('page 1', Icon(Icons.format_paint_outlined), Icon(Icons.format_paint)),
-  ExampleDestination('page 2', Icon(Icons.text_snippet_outlined), Icon(Icons.text_snippet)),
-  ExampleDestination('page 3', Icon(Icons.invert_colors_on_outlined), Icon(Icons.opacity)),
+  ExampleDestination(
+    'page 0',
+    Icon(Icons.widgets_outlined),
+    Icon(Icons.widgets),
+  ),
+  ExampleDestination(
+    'page 1',
+    Icon(Icons.format_paint_outlined),
+    Icon(Icons.format_paint),
+  ),
+  ExampleDestination(
+    'page 2',
+    Icon(Icons.text_snippet_outlined),
+    Icon(Icons.text_snippet),
+  ),
+  ExampleDestination(
+    'page 3',
+    Icon(Icons.invert_colors_on_outlined),
+    Icon(Icons.opacity),
+  ),
 ];
 
 void main() {
-  runApp(
-    MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true),
-      home: const NavigationDrawerExample(),
-    ),
-  );
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(useMaterial3: true),
+    home: const NavigationDrawerExample(),
+  ));
 }
 
 class NavigationDrawerExample extends StatefulWidget {
   const NavigationDrawerExample({super.key});
 
   @override
-  State<NavigationDrawerExample> createState() => _NavigationDrawerExampleState();
+  State<NavigationDrawerExample> createState() =>
+      _NavigationDrawerExampleState();
 }
 
 class _NavigationDrawerExampleState extends State<NavigationDrawerExample> {
@@ -64,9 +79,7 @@ class _NavigationDrawerExampleState extends State<NavigationDrawerExample> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Text('Page Index =  $screenIndex'),
-          ],
+          children: <Widget>[Text('Page Index =  $screenIndex')],
         ),
       ),
       bottomNavigationBar: NavigationBar(
@@ -76,16 +89,14 @@ class _NavigationDrawerExampleState extends State<NavigationDrawerExample> {
             screenIndex = index;
           });
         },
-        destinations: destinations.map(
-          (ExampleDestination destination) {
-            return NavigationDestination(
-              label: destination.label,
-              icon: destination.icon,
-              selectedIcon: destination.selectedIcon,
-              tooltip: destination.label,
-            );
-          },
-        ).toList(),
+        destinations: destinations.map((ExampleDestination destination) {
+          return NavigationDestination(
+            label: destination.label,
+            icon: destination.icon,
+            selectedIcon: destination.selectedIcon,
+            tooltip: destination.label,
+          );
+        }).toList(),
       ),
     );
   }
@@ -102,15 +113,14 @@ class _NavigationDrawerExampleState extends State<NavigationDrawerExample> {
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: NavigationRail(
                 minWidth: 50,
-                destinations: destinations.map(
-                  (ExampleDestination destination) {
-                    return NavigationRailDestination(
-                      label: Text(destination.label),
-                      icon: destination.icon,
-                      selectedIcon: destination.selectedIcon,
-                    );
-                  },
-                ).toList(),
+                destinations:
+                    destinations.map((ExampleDestination destination) {
+                      return NavigationRailDestination(
+                        label: Text(destination.label),
+                        icon: destination.icon,
+                        selectedIcon: destination.selectedIcon,
+                      );
+                    }).toList(),
                 selectedIndex: screenIndex,
                 useIndicator: true,
                 onDestinationSelected: (int index) {
@@ -142,20 +152,16 @@ class _NavigationDrawerExampleState extends State<NavigationDrawerExample> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
-            child: Text(
-              'Header',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            child:
+                Text('Header', style: Theme.of(context).textTheme.titleSmall),
           ),
-          ...destinations.map(
-            (ExampleDestination destination) {
-              return NavigationDrawerDestination(
-                label: Text(destination.label),
-                icon: destination.icon,
-                selectedIcon: destination.selectedIcon,
-              );
-            },
-          ),
+          ...destinations.map((ExampleDestination destination) {
+            return NavigationDrawerDestination(
+              label: Text(destination.label),
+              icon: destination.icon,
+              selectedIcon: destination.selectedIcon,
+            );
+          }),
           const Padding(
             padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
             child: Divider(),
@@ -173,6 +179,8 @@ class _NavigationDrawerExampleState extends State<NavigationDrawerExample> {
 
   @override
   Widget build(BuildContext context) {
-    return showNavigationDrawer ? buildDrawerScaffold(context) : buildBottomBarScaffold();
+    return showNavigationDrawer
+        ? buildDrawerScaffold(context)
+        : buildBottomBarScaffold();
   }
 }

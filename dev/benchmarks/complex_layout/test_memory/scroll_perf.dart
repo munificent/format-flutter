@@ -27,9 +27,7 @@ Future<void> main() async {
       ready.complete();
     },
     behavior: HitTestBehavior.opaque,
-    child: const IgnorePointer(
-      child: ComplexLayoutApp(),
-    ),
+    child: const IgnorePointer(child: ComplexLayoutApp()),
   ));
   await SchedulerBinding.instance.endOfFrame;
 
@@ -44,26 +42,33 @@ Future<void> main() async {
 
   // remove onTap handler, enable pointer events for app
   runApp(GestureDetector(
-    child: const IgnorePointer(
-      ignoring: false,
-      child: ComplexLayoutApp(),
-    ),
+    child: const IgnorePointer(ignoring: false, child: ComplexLayoutApp()),
   ));
   await SchedulerBinding.instance.endOfFrame;
 
-  final WidgetController controller = LiveWidgetController(WidgetsBinding.instance);
+  final WidgetController controller = LiveWidgetController(
+    WidgetsBinding.instance,
+  );
 
   // Scroll down
   for (int iteration = 0; iteration < maxIterations; iteration += 1) {
     debugPrint('Scroll down... $iteration/$maxIterations');
-    await controller.fling(find.byType(ListView), const Offset(0.0, -700.0), speed);
+    await controller.fling(
+      find.byType(ListView),
+      const Offset(0.0, -700.0),
+      speed,
+    );
     await Future<void>.delayed(pauses);
   }
 
   // Scroll up
   for (int iteration = 0; iteration < maxIterations; iteration += 1) {
     debugPrint('Scroll up... $iteration/$maxIterations');
-    await controller.fling(find.byType(ListView), const Offset(0.0, 300.0), speed);
+    await controller.fling(
+      find.byType(ListView),
+      const Offset(0.0, 300.0),
+      speed,
+    );
     await Future<void>.delayed(pauses);
   }
 

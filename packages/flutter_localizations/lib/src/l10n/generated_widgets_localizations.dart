@@ -1368,22 +1368,28 @@ class WidgetsLocalizationKn extends GlobalWidgetsLocalizations {
   const WidgetsLocalizationKn() : super(TextDirection.ltr);
 
   @override
-  String get reorderItemDown => '\u{c95}\u{cc6}\u{cb3}\u{c97}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
+  String get reorderItemDown =>
+      '\u{c95}\u{cc6}\u{cb3}\u{c97}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
 
   @override
-  String get reorderItemLeft => '\u{c8e}\u{ca1}\u{c95}\u{ccd}\u{c95}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
+  String get reorderItemLeft =>
+      '\u{c8e}\u{ca1}\u{c95}\u{ccd}\u{c95}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
 
   @override
-  String get reorderItemRight => '\u{cac}\u{cb2}\u{c95}\u{ccd}\u{c95}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
+  String get reorderItemRight =>
+      '\u{cac}\u{cb2}\u{c95}\u{ccd}\u{c95}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
 
   @override
-  String get reorderItemToEnd => '\u{c95}\u{cca}\u{ca8}\u{cc6}\u{c97}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
+  String get reorderItemToEnd =>
+      '\u{c95}\u{cca}\u{ca8}\u{cc6}\u{c97}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
 
   @override
-  String get reorderItemToStart => '\u{caa}\u{ccd}\u{cb0}\u{cbe}\u{cb0}\u{c82}\u{cad}\u{c95}\u{ccd}\u{c95}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
+  String get reorderItemToStart =>
+      '\u{caa}\u{ccd}\u{cb0}\u{cbe}\u{cb0}\u{c82}\u{cad}\u{c95}\u{ccd}\u{c95}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
 
   @override
-  String get reorderItemUp => '\u{cae}\u{cc7}\u{cb2}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
+  String get reorderItemUp =>
+      '\u{cae}\u{cc7}\u{cb2}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
 }
 
 /// The translations for Korean (`ko`).
@@ -2538,87 +2544,89 @@ class WidgetsLocalizationZu extends GlobalWidgetsLocalizations {
 /// See also:
 ///
 ///  * [getWidgetsTranslation], whose documentation describes these values.
-final Set<String> kWidgetsSupportedLanguages = HashSet<String>.from(const <String>[
-  'af', // Afrikaans
-  'am', // Amharic
-  'ar', // Arabic
-  'as', // Assamese
-  'az', // Azerbaijani
-  'be', // Belarusian
-  'bg', // Bulgarian
-  'bn', // Bengali Bangla
-  'bs', // Bosnian
-  'ca', // Catalan Valencian
-  'cs', // Czech
-  'cy', // Welsh
-  'da', // Danish
-  'de', // German
-  'el', // Modern Greek
-  'en', // English
-  'es', // Spanish Castilian
-  'et', // Estonian
-  'eu', // Basque
-  'fa', // Persian
-  'fi', // Finnish
-  'fil', // Filipino Pilipino
-  'fr', // French
-  'gl', // Galician
-  'gsw', // Swiss German Alemannic Alsatian
-  'gu', // Gujarati
-  'he', // Hebrew
-  'hi', // Hindi
-  'hr', // Croatian
-  'hu', // Hungarian
-  'hy', // Armenian
-  'id', // Indonesian
-  'is', // Icelandic
-  'it', // Italian
-  'ja', // Japanese
-  'ka', // Georgian
-  'kk', // Kazakh
-  'km', // Khmer Central Khmer
-  'kn', // Kannada
-  'ko', // Korean
-  'ky', // Kirghiz Kyrgyz
-  'lo', // Lao
-  'lt', // Lithuanian
-  'lv', // Latvian
-  'mk', // Macedonian
-  'ml', // Malayalam
-  'mn', // Mongolian
-  'mr', // Marathi
-  'ms', // Malay
-  'my', // Burmese
-  'nb', // Norwegian Bokmål
-  'ne', // Nepali
-  'nl', // Dutch Flemish
-  'no', // Norwegian
-  'or', // Oriya
-  'pa', // Panjabi Punjabi
-  'pl', // Polish
-  'ps', // Pushto Pashto
-  'pt', // Portuguese
-  'ro', // Romanian Moldavian Moldovan
-  'ru', // Russian
-  'si', // Sinhala Sinhalese
-  'sk', // Slovak
-  'sl', // Slovenian
-  'sq', // Albanian
-  'sr', // Serbian
-  'sv', // Swedish
-  'sw', // Swahili
-  'ta', // Tamil
-  'te', // Telugu
-  'th', // Thai
-  'tl', // Tagalog
-  'tr', // Turkish
-  'uk', // Ukrainian
-  'ur', // Urdu
-  'uz', // Uzbek
-  'vi', // Vietnamese
-  'zh', // Chinese
-  'zu', // Zulu
-]);
+final Set<String> kWidgetsSupportedLanguages = HashSet<String>.from(
+  const <String>[
+    'af', // Afrikaans
+    'am', // Amharic
+    'ar', // Arabic
+    'as', // Assamese
+    'az', // Azerbaijani
+    'be', // Belarusian
+    'bg', // Bulgarian
+    'bn', // Bengali Bangla
+    'bs', // Bosnian
+    'ca', // Catalan Valencian
+    'cs', // Czech
+    'cy', // Welsh
+    'da', // Danish
+    'de', // German
+    'el', // Modern Greek
+    'en', // English
+    'es', // Spanish Castilian
+    'et', // Estonian
+    'eu', // Basque
+    'fa', // Persian
+    'fi', // Finnish
+    'fil', // Filipino Pilipino
+    'fr', // French
+    'gl', // Galician
+    'gsw', // Swiss German Alemannic Alsatian
+    'gu', // Gujarati
+    'he', // Hebrew
+    'hi', // Hindi
+    'hr', // Croatian
+    'hu', // Hungarian
+    'hy', // Armenian
+    'id', // Indonesian
+    'is', // Icelandic
+    'it', // Italian
+    'ja', // Japanese
+    'ka', // Georgian
+    'kk', // Kazakh
+    'km', // Khmer Central Khmer
+    'kn', // Kannada
+    'ko', // Korean
+    'ky', // Kirghiz Kyrgyz
+    'lo', // Lao
+    'lt', // Lithuanian
+    'lv', // Latvian
+    'mk', // Macedonian
+    'ml', // Malayalam
+    'mn', // Mongolian
+    'mr', // Marathi
+    'ms', // Malay
+    'my', // Burmese
+    'nb', // Norwegian Bokmål
+    'ne', // Nepali
+    'nl', // Dutch Flemish
+    'no', // Norwegian
+    'or', // Oriya
+    'pa', // Panjabi Punjabi
+    'pl', // Polish
+    'ps', // Pushto Pashto
+    'pt', // Portuguese
+    'ro', // Romanian Moldavian Moldovan
+    'ru', // Russian
+    'si', // Sinhala Sinhalese
+    'sk', // Slovak
+    'sl', // Slovenian
+    'sq', // Albanian
+    'sr', // Serbian
+    'sv', // Swedish
+    'sw', // Swahili
+    'ta', // Tamil
+    'te', // Telugu
+    'th', // Thai
+    'tl', // Tagalog
+    'tr', // Turkish
+    'uk', // Ukrainian
+    'ur', // Urdu
+    'uz', // Uzbek
+    'vi', // Vietnamese
+    'zh', // Chinese
+    'zu', // Zulu
+  ],
+);
 
 /// Creates a [GlobalWidgetsLocalizations] instance for the given `locale`.
 ///
@@ -2713,9 +2721,7 @@ final Set<String> kWidgetsSupportedLanguages = HashSet<String>.from(const <Strin
 ///
 /// Generally speaking, this method is only intended to be used by
 /// [GlobalWidgetsLocalizations.delegate].
-GlobalWidgetsLocalizations? getWidgetsTranslation(
-  Locale locale,
-) {
+GlobalWidgetsLocalizations? getWidgetsTranslation(Locale locale) {
   switch (locale.languageCode) {
     case 'af':
       return const WidgetsLocalizationAf();
@@ -2743,81 +2749,84 @@ GlobalWidgetsLocalizations? getWidgetsTranslation(
       return const WidgetsLocalizationCy();
     case 'da':
       return const WidgetsLocalizationDa();
-    case 'de': {
-      switch (locale.countryCode) {
-        case 'CH':
-          return const WidgetsLocalizationDeCh();
+    case 'de':
+      {
+        switch (locale.countryCode) {
+          case 'CH':
+            return const WidgetsLocalizationDeCh();
+        }
+        return const WidgetsLocalizationDe();
       }
-      return const WidgetsLocalizationDe();
-    }
     case 'el':
       return const WidgetsLocalizationEl();
-    case 'en': {
-      switch (locale.countryCode) {
-        case 'AU':
-          return const WidgetsLocalizationEnAu();
-        case 'CA':
-          return const WidgetsLocalizationEnCa();
-        case 'GB':
-          return const WidgetsLocalizationEnGb();
-        case 'IE':
-          return const WidgetsLocalizationEnIe();
-        case 'IN':
-          return const WidgetsLocalizationEnIn();
-        case 'NZ':
-          return const WidgetsLocalizationEnNz();
-        case 'SG':
-          return const WidgetsLocalizationEnSg();
-        case 'ZA':
-          return const WidgetsLocalizationEnZa();
+    case 'en':
+      {
+        switch (locale.countryCode) {
+          case 'AU':
+            return const WidgetsLocalizationEnAu();
+          case 'CA':
+            return const WidgetsLocalizationEnCa();
+          case 'GB':
+            return const WidgetsLocalizationEnGb();
+          case 'IE':
+            return const WidgetsLocalizationEnIe();
+          case 'IN':
+            return const WidgetsLocalizationEnIn();
+          case 'NZ':
+            return const WidgetsLocalizationEnNz();
+          case 'SG':
+            return const WidgetsLocalizationEnSg();
+          case 'ZA':
+            return const WidgetsLocalizationEnZa();
+        }
+        return const WidgetsLocalizationEn();
       }
-      return const WidgetsLocalizationEn();
-    }
-    case 'es': {
-      switch (locale.countryCode) {
-        case '419':
-          return const WidgetsLocalizationEs419();
-        case 'AR':
-          return const WidgetsLocalizationEsAr();
-        case 'BO':
-          return const WidgetsLocalizationEsBo();
-        case 'CL':
-          return const WidgetsLocalizationEsCl();
-        case 'CO':
-          return const WidgetsLocalizationEsCo();
-        case 'CR':
-          return const WidgetsLocalizationEsCr();
-        case 'DO':
-          return const WidgetsLocalizationEsDo();
-        case 'EC':
-          return const WidgetsLocalizationEsEc();
-        case 'GT':
-          return const WidgetsLocalizationEsGt();
-        case 'HN':
-          return const WidgetsLocalizationEsHn();
-        case 'MX':
-          return const WidgetsLocalizationEsMx();
-        case 'NI':
-          return const WidgetsLocalizationEsNi();
-        case 'PA':
-          return const WidgetsLocalizationEsPa();
-        case 'PE':
-          return const WidgetsLocalizationEsPe();
-        case 'PR':
-          return const WidgetsLocalizationEsPr();
-        case 'PY':
-          return const WidgetsLocalizationEsPy();
-        case 'SV':
-          return const WidgetsLocalizationEsSv();
-        case 'US':
-          return const WidgetsLocalizationEsUs();
-        case 'UY':
-          return const WidgetsLocalizationEsUy();
-        case 'VE':
-          return const WidgetsLocalizationEsVe();
+    case 'es':
+      {
+        switch (locale.countryCode) {
+          case '419':
+            return const WidgetsLocalizationEs419();
+          case 'AR':
+            return const WidgetsLocalizationEsAr();
+          case 'BO':
+            return const WidgetsLocalizationEsBo();
+          case 'CL':
+            return const WidgetsLocalizationEsCl();
+          case 'CO':
+            return const WidgetsLocalizationEsCo();
+          case 'CR':
+            return const WidgetsLocalizationEsCr();
+          case 'DO':
+            return const WidgetsLocalizationEsDo();
+          case 'EC':
+            return const WidgetsLocalizationEsEc();
+          case 'GT':
+            return const WidgetsLocalizationEsGt();
+          case 'HN':
+            return const WidgetsLocalizationEsHn();
+          case 'MX':
+            return const WidgetsLocalizationEsMx();
+          case 'NI':
+            return const WidgetsLocalizationEsNi();
+          case 'PA':
+            return const WidgetsLocalizationEsPa();
+          case 'PE':
+            return const WidgetsLocalizationEsPe();
+          case 'PR':
+            return const WidgetsLocalizationEsPr();
+          case 'PY':
+            return const WidgetsLocalizationEsPy();
+          case 'SV':
+            return const WidgetsLocalizationEsSv();
+          case 'US':
+            return const WidgetsLocalizationEsUs();
+          case 'UY':
+            return const WidgetsLocalizationEsUy();
+          case 'VE':
+            return const WidgetsLocalizationEsVe();
+        }
+        return const WidgetsLocalizationEs();
       }
-      return const WidgetsLocalizationEs();
-    }
     case 'et':
       return const WidgetsLocalizationEt();
     case 'eu':
@@ -2828,13 +2837,14 @@ GlobalWidgetsLocalizations? getWidgetsTranslation(
       return const WidgetsLocalizationFi();
     case 'fil':
       return const WidgetsLocalizationFil();
-    case 'fr': {
-      switch (locale.countryCode) {
-        case 'CA':
-          return const WidgetsLocalizationFrCa();
+    case 'fr':
+      {
+        switch (locale.countryCode) {
+          case 'CA':
+            return const WidgetsLocalizationFrCa();
+        }
+        return const WidgetsLocalizationFr();
       }
-      return const WidgetsLocalizationFr();
-    }
     case 'gl':
       return const WidgetsLocalizationGl();
     case 'gsw':
@@ -2905,13 +2915,14 @@ GlobalWidgetsLocalizations? getWidgetsTranslation(
       return const WidgetsLocalizationPl();
     case 'ps':
       return const WidgetsLocalizationPs();
-    case 'pt': {
-      switch (locale.countryCode) {
-        case 'PT':
-          return const WidgetsLocalizationPtPt();
+    case 'pt':
+      {
+        switch (locale.countryCode) {
+          case 'PT':
+            return const WidgetsLocalizationPtPt();
+        }
+        return const WidgetsLocalizationPt();
       }
-      return const WidgetsLocalizationPt();
-    }
     case 'ro':
       return const WidgetsLocalizationRo();
     case 'ru':
@@ -2924,17 +2935,20 @@ GlobalWidgetsLocalizations? getWidgetsTranslation(
       return const WidgetsLocalizationSl();
     case 'sq':
       return const WidgetsLocalizationSq();
-    case 'sr': {
-      switch (locale.scriptCode) {
-        case 'Cyrl': {
-          return const WidgetsLocalizationSrCyrl();
+    case 'sr':
+      {
+        switch (locale.scriptCode) {
+          case 'Cyrl':
+            {
+              return const WidgetsLocalizationSrCyrl();
+            }
+          case 'Latn':
+            {
+              return const WidgetsLocalizationSrLatn();
+            }
         }
-        case 'Latn': {
-          return const WidgetsLocalizationSrLatn();
-        }
+        return const WidgetsLocalizationSr();
       }
-      return const WidgetsLocalizationSr();
-    }
     case 'sv':
       return const WidgetsLocalizationSv();
     case 'sw':
@@ -2957,32 +2971,38 @@ GlobalWidgetsLocalizations? getWidgetsTranslation(
       return const WidgetsLocalizationUz();
     case 'vi':
       return const WidgetsLocalizationVi();
-    case 'zh': {
-      switch (locale.scriptCode) {
-        case 'Hans': {
-          return const WidgetsLocalizationZhHans();
+    case 'zh':
+      {
+        switch (locale.scriptCode) {
+          case 'Hans':
+            {
+              return const WidgetsLocalizationZhHans();
+            }
+          case 'Hant':
+            {
+              switch (locale.countryCode) {
+                case 'HK':
+                  return const WidgetsLocalizationZhHantHk();
+                case 'TW':
+                  return const WidgetsLocalizationZhHantTw();
+              }
+              return const WidgetsLocalizationZhHant();
+            }
         }
-        case 'Hant': {
-          switch (locale.countryCode) {
-            case 'HK':
-              return const WidgetsLocalizationZhHantHk();
-            case 'TW':
-              return const WidgetsLocalizationZhHantTw();
-          }
-          return const WidgetsLocalizationZhHant();
+        switch (locale.countryCode) {
+          case 'HK':
+            return const WidgetsLocalizationZhHantHk();
+          case 'TW':
+            return const WidgetsLocalizationZhHantTw();
         }
+        return const WidgetsLocalizationZh();
       }
-      switch (locale.countryCode) {
-        case 'HK':
-          return const WidgetsLocalizationZhHantHk();
-        case 'TW':
-          return const WidgetsLocalizationZhHantTw();
-      }
-      return const WidgetsLocalizationZh();
-    }
     case 'zu':
       return const WidgetsLocalizationZu();
   }
-  assert(false, 'getWidgetsTranslation() called for unsupported locale "$locale"');
+  assert(
+    false,
+    'getWidgetsTranslation() called for unsupported locale "$locale"',
+  );
   return null;
 }

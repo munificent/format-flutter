@@ -39,13 +39,19 @@ class PreviewDevice extends Device {
     required ProcessManager processManager,
     required Logger logger,
     required FileSystem fileSystem,
-    @visibleForTesting BundleBuilderFactory builderFactory = _defaultBundleBuilder,
+    @visibleForTesting
+    BundleBuilderFactory builderFactory = _defaultBundleBuilder,
   }) : _platform = platform,
        _processManager = processManager,
        _logger = logger,
        _fileSystem = fileSystem,
        _bundleBuilderFactory = builderFactory,
-       super('preview', ephemeral: false, category: Category.desktop, platformType: PlatformType.custom);
+       super(
+         'preview',
+         ephemeral: false,
+         category: Category.desktop,
+         platformType: PlatformType.custom,
+       );
 
   final Platform _platform;
   final ProcessManager _processManager;
@@ -54,10 +60,10 @@ class PreviewDevice extends Device {
   final BundleBuilderFactory _bundleBuilderFactory;
 
   @override
-  void clearLogs() { }
+  void clearLogs() {}
 
   @override
-  Future<void> dispose() async { }
+  Future<void> dispose() async {}
 
   @override
   Future<String?> get emulatorId async => null;
@@ -65,13 +71,22 @@ class PreviewDevice extends Device {
   final DesktopLogReader _logReader = DesktopLogReader();
 
   @override
-  FutureOr<DeviceLogReader> getLogReader({ApplicationPackage? app, bool includePastLogs = false}) => _logReader;
+  FutureOr<DeviceLogReader> getLogReader({
+    ApplicationPackage? app,
+    bool includePastLogs = false,
+  }) => _logReader;
 
   @override
-  Future<bool> installApp(ApplicationPackage? app, {String? userIdentifier}) async => true;
+  Future<bool> installApp(
+    ApplicationPackage? app, {
+    String? userIdentifier,
+  }) async => true;
 
   @override
-  Future<bool> isAppInstalled(ApplicationPackage app, {String? userIdentifier}) async => false;
+  Future<bool> isAppInstalled(
+    ApplicationPackage app, {
+    String? userIdentifier,
+  }) async => false;
 
   @override
   Future<bool> isLatestBuildInstalled(ApplicationPackage app) async => false;
@@ -97,7 +112,8 @@ class PreviewDevice extends Device {
   Process? _process;
 
   @override
-  Future<LaunchResult> startApp(ApplicationPackage? package, {
+  Future<LaunchResult> startApp(
+    ApplicationPackage? package, {
     String? mainPath,
     String? route,
     required DebuggingOptions debuggingOptions,
@@ -107,7 +123,7 @@ class PreviewDevice extends Device {
     String? userIdentifier,
   }) async {
     final Directory assetDirectory = _fileSystem.systemTempDirectory
-      .createTempSync('flutter_preview.');
+        .createTempSync('flutter_preview.');
 
     // Build assets and perform initial compilation.
     Status? status;
@@ -119,8 +135,8 @@ class PreviewDevice extends Device {
         platform: TargetPlatform.tester,
         assetDirPath: getAssetBuildDirectory(),
       );
-      copyDirectory(_fileSystem.directory(
-        getAssetBuildDirectory()),
+      copyDirectory(
+        _fileSystem.directory(getAssetBuildDirectory()),
         assetDirectory.childDirectory('data').childDirectory('flutter_assets'),
       );
     } finally {
@@ -128,18 +144,18 @@ class PreviewDevice extends Device {
     }
 
     // Merge with precompiled executable.
-    final Directory precompiledDirectory = _fileSystem.directory(_fileSystem.path.join(Cache.flutterRoot!, 'artifacts_temp', 'Debug'));
+    final Directory precompiledDirectory = _fileSystem.directory(
+      _fileSystem.path.join(Cache.flutterRoot!, 'artifacts_temp', 'Debug'),
+    );
     copyDirectory(precompiledDirectory, assetDirectory);
 
-    final Process process = await _processManager.start(
-      <String>[
-        assetDirectory.childFile('splash').path,
-      ],
-    );
+    final Process process = await _processManager
+        .start(<String>[assetDirectory.childFile('splash').path]);
     _process = process;
     _logReader.initializeProcess(process);
 
-    final ProtocolDiscovery vmServiceDiscovery = ProtocolDiscovery.vmService(_logReader,
+    final ProtocolDiscovery vmServiceDiscovery = ProtocolDiscovery.vmService(
+      _logReader,
       devicePort: debuggingOptions.deviceVmServicePort,
       hostPort: debuggingOptions.hostVmServicePort,
       ipv6: ipv6,
@@ -163,7 +179,10 @@ class PreviewDevice extends Device {
   }
 
   @override
-  Future<bool> stopApp(ApplicationPackage? app, {String? userIdentifier}) async {
+  Future<bool> stopApp(
+    ApplicationPackage? app, {
+    String? userIdentifier,
+  }) async {
     return _process?.kill() ?? false;
   }
 
@@ -176,12 +195,18 @@ class PreviewDevice extends Device {
   }
 
   @override
-  Future<bool> uninstallApp(ApplicationPackage app, {String? userIdentifier}) async {
+  Future<bool> uninstallApp(
+    ApplicationPackage app, {
+    String? userIdentifier,
+  }) async {
     return true;
   }
 
   @override
-  DevFSWriter createDevFSWriter(ApplicationPackage? app, String? userIdentifier) {
+  DevFSWriter createDevFSWriter(
+    ApplicationPackage? app,
+    String? userIdentifier,
+  ) {
     return LocalDevFSWriter(fileSystem: _fileSystem);
   }
 }

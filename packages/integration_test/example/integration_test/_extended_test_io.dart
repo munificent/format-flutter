@@ -18,7 +18,8 @@ import 'package:integration_test/integration_test.dart';
 import 'package:integration_test_example/main.dart' as app;
 
 void main() {
-  final IntegrationTestWidgetsFlutterBinding binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final IntegrationTestWidgetsFlutterBinding binding =
+      IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('verify text', (WidgetTester tester) async {
     // Build our app.
@@ -28,14 +29,11 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify that platform version is retrieved.
-    expect(
-      find.byWidgetPredicate(
-        (Widget widget) =>
-            widget is Text &&
-            widget.data!.startsWith('Platform: ${Platform.operatingSystem}'),
-      ),
-      findsOneWidget,
-    );
+    expect(find.byWidgetPredicate(
+      (Widget widget) =>
+          widget is Text &&
+          widget.data!.startsWith('Platform: ${Platform.operatingSystem}'),
+    ), findsOneWidget);
   });
 
   testWidgets('verify screenshot', (WidgetTester tester) async {

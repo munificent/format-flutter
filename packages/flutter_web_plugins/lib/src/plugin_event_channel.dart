@@ -68,9 +68,10 @@ class PluginEventChannel<T> {
   /// and providing a getter would require making this class non-const.
   @Deprecated(
     'Replace calls to the "controller" setter with calls to the "setController" method. '
-    'This feature was deprecated after v1.23.0-7.0.pre.'
+    'This feature was deprecated after v1.23.0-7.0.pre.',
   )
-  set controller(StreamController<T> controller) { // ignore: avoid_setters_without_getters
+  set controller(StreamController<T> controller) {
+    // ignore: avoid_setters_without_getters
     setController(controller);
   }
 
@@ -102,12 +103,7 @@ class PluginEventChannel<T> {
 }
 
 class _EventChannelHandler<T> {
-  _EventChannelHandler(
-    this.name,
-    this.codec,
-    this.controller,
-    this.messenger,
-  );
+  _EventChannelHandler(this.name, this.codec, this.controller, this.messenger);
 
   final String name;
   final MethodCodec codec;
@@ -132,11 +128,17 @@ class _EventChannelHandler<T> {
   Future<ByteData> _listen() async {
     // Cancel any existing subscription.
     await subscription?.cancel();
-    subscription = controller.stream.listen((dynamic event) {
-      messenger.send(name, codec.encodeSuccessEnvelope(event));
-    }, onError: (dynamic error) {
-      messenger.send(name, codec.encodeErrorEnvelope(code: 'error', message: '$error'));
-    });
+    subscription = controller.stream.listen(
+      (dynamic event) {
+        messenger.send(name, codec.encodeSuccessEnvelope(event));
+      },
+      onError: (dynamic error) {
+        messenger.send(
+          name,
+          codec.encodeErrorEnvelope(code: 'error', message: '$error'),
+        );
+      },
+    );
     return codec.encodeSuccessEnvelope(null);
   }
 

@@ -9,8 +9,11 @@ import 'package:integration_test/integration_test.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('isCanvasKit returns true in CanvasKit mode', (WidgetTester tester) async {
-    await tester.pumpAndSettle();
-    expect(isCanvasKit, true);
-  });
+  testWidgets(
+    'isCanvasKit returns true in CanvasKit mode',
+    (WidgetTester tester) async {
+      await tester.pumpAndSettle();
+      expect(isCanvasKit, true);
+    },
+  );
 }

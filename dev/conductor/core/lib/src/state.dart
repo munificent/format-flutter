@@ -56,8 +56,9 @@ String luciConsoleLink(String channel, String groupName) {
     <String>['flutter', 'engine', 'packaging'].contains(groupName),
     'group named $groupName not recognized',
   );
-  final String consoleName =
-      channel == 'master' ? groupName : '${channel}_$groupName';
+  final String consoleName = channel == 'master'
+      ? groupName
+      : '${channel}_$groupName';
   if (groupName == 'packaging') {
     return 'https://luci-milo.appspot.com/p/dart-internal/g/flutter_packaging/console';
   }
@@ -68,12 +69,10 @@ String defaultStateFilePath(Platform platform) {
   final String? home = platform.environment['HOME'];
   if (home == null) {
     throw globals.ConductorException(
-        r'Environment variable $HOME must be set!');
+      r'Environment variable $HOME must be set!',
+    );
   }
-  return <String>[
-    home,
-    kStateFileName,
-  ].join(platform.pathSeparator);
+  return <String>[home, kStateFileName].join(platform.pathSeparator);
 }
 
 String presentState(pb.ConductorState state) {
@@ -83,9 +82,15 @@ String presentState(pb.ConductorState state) {
   buffer.writeln('Release version: ${state.releaseVersion}');
   buffer.writeln();
   buffer.writeln(
-      'Release started at: ${DateTime.fromMillisecondsSinceEpoch(state.createdDate.toInt())}');
+    'Release started at: ${DateTime.fromMillisecondsSinceEpoch(
+      state.createdDate.toInt(),
+    )}',
+  );
   buffer.writeln(
-      'Last updated at: ${DateTime.fromMillisecondsSinceEpoch(state.lastUpdatedDate.toInt())}');
+    'Last updated at: ${DateTime.fromMillisecondsSinceEpoch(
+      state.lastUpdatedDate.toInt(),
+    )}',
+  );
   buffer.writeln();
   buffer.writeln('Engine Repo');
   buffer.writeln('\tCandidate branch: ${state.engine.candidateBranch}');
@@ -93,7 +98,11 @@ String presentState(pb.ConductorState state) {
   buffer.writeln('\tCurrent git HEAD: ${state.engine.currentGitHead}');
   buffer.writeln('\tPath to checkout: ${state.engine.checkoutPath}');
   buffer.writeln(
-      '\tPost-submit LUCI dashboard: ${luciConsoleLink(state.releaseChannel, 'engine')}');
+    '\tPost-submit LUCI dashboard: ${luciConsoleLink(
+      state.releaseChannel,
+      'engine',
+    )}',
+  );
   if (state.engine.cherrypicks.isNotEmpty) {
     buffer.writeln('${state.engine.cherrypicks.length} Engine Cherrypicks:');
     for (final pb.Cherrypick cherrypick in state.engine.cherrypicks) {
@@ -111,10 +120,15 @@ String presentState(pb.ConductorState state) {
   buffer.writeln('\tCurrent git HEAD: ${state.framework.currentGitHead}');
   buffer.writeln('\tPath to checkout: ${state.framework.checkoutPath}');
   buffer.writeln(
-      '\tPost-submit LUCI dashboard: ${luciConsoleLink(state.releaseChannel, 'flutter')}');
+    '\tPost-submit LUCI dashboard: ${luciConsoleLink(
+      state.releaseChannel,
+      'flutter',
+    )}',
+  );
   if (state.framework.cherrypicks.isNotEmpty) {
     buffer.writeln(
-        '${state.framework.cherrypicks.length} Framework Cherrypicks:');
+      '${state.framework.cherrypicks.length} Framework Cherrypicks:',
+    );
     for (final pb.Cherrypick cherrypick in state.framework.cherrypicks) {
       buffer.writeln('\t${cherrypick.trunkRevision} - ${cherrypick.state}');
     }
@@ -197,12 +211,10 @@ String phaseInstructions(pb.ConductorState state) {
       ].join('\n');
     case ReleasePhase.APPLY_FRAMEWORK_CHERRYPICKS:
       final List<pb.Cherrypick> outstandingCherrypicks =
-          state.framework.cherrypicks.where(
-        (pb.Cherrypick cp) {
-          return cp.state == pb.CherrypickState.PENDING ||
-              cp.state == pb.CherrypickState.PENDING_WITH_CONFLICT;
-        },
-      ).toList();
+          state.framework.cherrypicks.where((pb.Cherrypick cp) {
+            return cp.state == pb.CherrypickState.PENDING ||
+                cp.state == pb.CherrypickState.PENDING_WITH_CONFLICT;
+          }).toList();
       if (outstandingCherrypicks.isNotEmpty) {
         return <String>[
           'You must now manually apply the following framework cherrypicks to the checkout',
@@ -234,7 +246,10 @@ String phaseInstructions(pb.ConductorState state) {
     case ReleasePhase.PUBLISH_CHANNEL:
       return 'Issue `conductor next` to publish your release to the release branch.';
     case ReleasePhase.VERIFY_RELEASE:
-      return 'Release archive packages must be verified on cloud storage: ${luciConsoleLink(state.releaseChannel, 'packaging')}';
+      return 'Release archive packages must be verified on cloud storage: ${luciConsoleLink(
+        state.releaseChannel,
+        'packaging',
+      )}';
     case ReleasePhase.RELEASE_COMPLETED:
       if (state.releaseChannel == 'beta') {
         return <String>[
@@ -259,7 +274,8 @@ String phaseInstructions(pb.ConductorState state) {
 /// Second group = account name
 /// Third group = repo name
 final RegExp githubRemotePattern = RegExp(
-    r'^(git@github\.com:|https?:\/\/github\.com\/)([a-zA-Z0-9_-]+)\/([a-zA-Z0-9_-]+)(\.git)?$');
+  r'^(git@github\.com:|https?:\/\/github\.com\/)([a-zA-Z0-9_-]+)\/([a-zA-Z0-9_-]+)(\.git)?$',
+);
 
 /// Parses a Git remote URL and returns the account name.
 ///
@@ -298,18 +314,13 @@ const JsonEncoder _encoder = JsonEncoder.withIndent('  ');
 
 void writeStateToFile(File file, pb.ConductorState state, List<String> logs) {
   state.logs.addAll(logs);
-  file.writeAsStringSync(
-    _encoder.convert(state.toProto3Json()),
-    flush: true,
-  );
+  file.writeAsStringSync(_encoder.convert(state.toProto3Json()), flush: true);
 }
 
 pb.ConductorState readStateFromFile(File file) {
   final pb.ConductorState state = pb.ConductorState();
   final String stateAsString = file.readAsStringSync();
-  state.mergeFromProto3Json(
-    jsonDecode(stateAsString),
-  );
+  state.mergeFromProto3Json(jsonDecode(stateAsString));
   return state;
 }
 
@@ -335,8 +346,9 @@ bool requiresFrameworkPR(pb.ConductorState state) {
   if (requiresEnginePR(state)) {
     return true;
   }
-  final bool hasRequiredCherrypicks = state.framework.cherrypicks
-      .any((pb.Cherrypick cp) => cp.state != pb.CherrypickState.ABANDONED);
+  final bool hasRequiredCherrypicks = state.framework.cherrypicks.any(
+    (pb.Cherrypick cp) => cp.state != pb.CherrypickState.ABANDONED,
+  );
   if (hasRequiredCherrypicks) {
     return true;
   }

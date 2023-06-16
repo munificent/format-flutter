@@ -22,7 +22,8 @@ List<String> _allDemos = kAllGalleryDemos.map(
 
 void main([List<String> args = const <String>[]]) {
   final bool withSemantics = args.contains('--with_semantics');
-  final IntegrationTestWidgetsFlutterBinding binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final IntegrationTestWidgetsFlutterBinding binding =
+      IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
   group('flutter gallery transitions on e2e', () {
     testWidgets('find.bySemanticsLabel', (WidgetTester tester) async {
@@ -32,22 +33,18 @@ void main([List<String> args = const <String>[]]) {
       expect(id, greaterThan(-1));
     }, skip: !withSemantics);
 
-    testWidgets(
-      'all demos',
-      (WidgetTester tester) async {
-        runApp(const GalleryApp(testMode: true));
-        await tester.pumpAndSettle();
-        // Collect timeline data for just a limited set of demos to avoid OOMs.
-        await binding.watchPerformance(() async {
-          await runDemos(kProfiledDemos, tester);
-        });
+    testWidgets('all demos', (WidgetTester tester) async {
+      runApp(const GalleryApp(testMode: true));
+      await tester.pumpAndSettle();
+      // Collect timeline data for just a limited set of demos to avoid OOMs.
+      await binding.watchPerformance(() async {
+        await runDemos(kProfiledDemos, tester);
+      });
 
-        // Execute the remaining tests.
-        final Set<String> unprofiledDemos = Set<String>.from(_allDemos)
-          ..removeAll(kProfiledDemos);
-        await runDemos(unprofiledDemos.toList(), tester);
-      },
-      semanticsEnabled: withSemantics,
-    );
+      // Execute the remaining tests.
+      final Set<String> unprofiledDemos = Set<String>.from(_allDemos)
+        ..removeAll(kProfiledDemos);
+      await runDemos(unprofiledDemos.toList(), tester);
+    }, semanticsEnabled: withSemantics);
   });
 }

@@ -22,10 +22,8 @@ class DragDownDetails {
   /// Creates details for a [GestureDragDownCallback].
   ///
   /// The [globalPosition] argument must not be null.
-  DragDownDetails({
-    this.globalPosition = Offset.zero,
-    Offset? localPosition,
-  }) : localPosition = localPosition ?? globalPosition;
+  DragDownDetails({this.globalPosition = Offset.zero, Offset? localPosition})
+    : localPosition = localPosition ?? globalPosition;
 
   /// The global position at which the pointer contacted the screen.
   ///
@@ -44,7 +42,8 @@ class DragDownDetails {
   final Offset localPosition;
 
   @override
-  String toString() => '${objectRuntimeType(this, 'DragDownDetails')}($globalPosition)';
+  String toString() =>
+      '${objectRuntimeType(this, 'DragDownDetails')}($globalPosition)';
 }
 
 /// Signature for when a pointer has contacted the screen and might begin to
@@ -104,7 +103,8 @@ class DragStartDetails {
   // instead).
 
   @override
-  String toString() => '${objectRuntimeType(this, 'DragStartDetails')}($globalPosition)';
+  String toString() =>
+      '${objectRuntimeType(this, 'DragStartDetails')}($globalPosition)';
 }
 
 /// {@template flutter.gestures.dragdetails.GestureDragStartCallback}
@@ -141,9 +141,9 @@ class DragUpdateDetails {
     required this.globalPosition,
     Offset? localPosition,
   }) : assert(
-         primaryDelta == null
-           || (primaryDelta == delta.dx && delta.dy == 0.0)
-           || (primaryDelta == delta.dy && delta.dx == 0.0),
+         primaryDelta == null ||
+             (primaryDelta == delta.dx && delta.dy == 0.0) ||
+             (primaryDelta == delta.dy && delta.dx == 0.0),
        ),
        localPosition = localPosition ?? globalPosition;
 
@@ -191,7 +191,8 @@ class DragUpdateDetails {
   final Offset localPosition;
 
   @override
-  String toString() => '${objectRuntimeType(this, 'DragUpdateDetails')}($delta)';
+  String toString() =>
+      '${objectRuntimeType(this, 'DragUpdateDetails')}($delta)';
 }
 
 /// {@template flutter.gestures.dragdetails.GestureDragUpdateCallback}
@@ -225,9 +226,11 @@ class DragEndDetails {
     this.velocity = Velocity.zero,
     this.primaryVelocity,
   }) : assert(
-         primaryVelocity == null
-           || (primaryVelocity == velocity.pixelsPerSecond.dx && velocity.pixelsPerSecond.dy == 0)
-           || (primaryVelocity == velocity.pixelsPerSecond.dy && velocity.pixelsPerSecond.dx == 0),
+         primaryVelocity == null ||
+             (primaryVelocity == velocity.pixelsPerSecond.dx &&
+                 velocity.pixelsPerSecond.dy == 0) ||
+             (primaryVelocity == velocity.pixelsPerSecond.dy &&
+                 velocity.pixelsPerSecond.dx == 0),
        );
 
   /// The velocity the pointer was moving when it stopped contacting the screen.
@@ -248,5 +251,6 @@ class DragEndDetails {
   final double? primaryVelocity;
 
   @override
-  String toString() => '${objectRuntimeType(this, 'DragEndDetails')}($velocity)';
+  String toString() =>
+      '${objectRuntimeType(this, 'DragEndDetails')}($velocity)';
 }

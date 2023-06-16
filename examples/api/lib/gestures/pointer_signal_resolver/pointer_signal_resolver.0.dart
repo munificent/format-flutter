@@ -15,9 +15,7 @@ class PointerSignalResolverExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: PointerSignalResolverExample(),
-    );
+    return const MaterialApp(home: PointerSignalResolverExample());
   }
 }
 
@@ -62,9 +60,12 @@ class _ColorChangerState extends State<ColorChanger> {
       child: Listener(
         onPointerSignal: (PointerSignalEvent event) {
           if (widget.useResolver) {
-            GestureBinding.instance.pointerSignalResolver.register(event, (PointerSignalEvent event) {
-              rotateColor();
-            });
+            GestureBinding.instance.pointerSignalResolver.register(
+              event,
+              (PointerSignalEvent event) {
+                rotateColor();
+              },
+            );
           } else {
             rotateColor();
           }
@@ -85,10 +86,12 @@ class PointerSignalResolverExample extends StatefulWidget {
   const PointerSignalResolverExample({super.key});
 
   @override
-  State<PointerSignalResolverExample> createState() => _PointerSignalResolverExampleState();
+  State<PointerSignalResolverExample> createState() =>
+      _PointerSignalResolverExampleState();
 }
 
-class _PointerSignalResolverExampleState extends State<PointerSignalResolverExample> {
+class _PointerSignalResolverExampleState
+    extends State<PointerSignalResolverExample> {
   bool useResolver = false;
 
   @override

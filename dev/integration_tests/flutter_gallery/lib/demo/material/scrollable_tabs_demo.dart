@@ -6,14 +6,10 @@ import 'package:flutter/material.dart';
 
 import '../../gallery/demo.dart';
 
-enum TabsDemoStyle {
-  iconsAndText,
-  iconsOnly,
-  textOnly
-}
+enum TabsDemoStyle { iconsAndText, iconsOnly, textOnly }
 
 class _Page {
-  const _Page({ this.icon, this.text });
+  const _Page({this.icon, this.text});
   final IconData? icon;
   final String? text;
 }
@@ -44,7 +40,8 @@ class ScrollableTabsDemo extends StatefulWidget {
   ScrollableTabsDemoState createState() => ScrollableTabsDemoState();
 }
 
-class ScrollableTabsDemoState extends State<ScrollableTabsDemo> with SingleTickerProviderStateMixin {
+class ScrollableTabsDemoState extends State<ScrollableTabsDemo>
+    with SingleTickerProviderStateMixin {
   TabController? _controller;
   TabsDemoStyle _demoStyle = TabsDemoStyle.iconsAndText;
   bool _customIndicator = false;
@@ -76,48 +73,33 @@ class ScrollableTabsDemoState extends State<ScrollableTabsDemo> with SingleTicke
       case TabsDemoStyle.iconsAndText:
         return ShapeDecoration(
           shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4.0)),
-            side: BorderSide(
-              color: Colors.white24,
-              width: 2.0,
-            ),
-          ) + const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4.0)),
-            side: BorderSide(
-              color: Colors.transparent,
-              width: 4.0,
-            ),
-          ),
+                borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                side: BorderSide(color: Colors.white24, width: 2.0),
+              ) +
+              const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                side: BorderSide(color: Colors.transparent, width: 4.0),
+              ),
         );
 
       case TabsDemoStyle.iconsOnly:
         return ShapeDecoration(
           shape: const CircleBorder(
-            side: BorderSide(
-              color: Colors.white24,
-              width: 4.0,
-            ),
-          ) + const CircleBorder(
-            side: BorderSide(
-              color: Colors.transparent,
-              width: 4.0,
-            ),
-          ),
+                side: BorderSide(color: Colors.white24, width: 4.0),
+              ) +
+              const CircleBorder(
+                side: BorderSide(color: Colors.transparent, width: 4.0),
+              ),
         );
 
       case TabsDemoStyle.textOnly:
         return ShapeDecoration(
           shape: const StadiumBorder(
-            side: BorderSide(
-              color: Colors.white24,
-              width: 2.0,
-            ),
-          ) + const StadiumBorder(
-            side: BorderSide(
-              color: Colors.transparent,
-              width: 4.0,
-            ),
-          ),
+                side: BorderSide(color: Colors.white24, width: 2.0),
+              ) +
+              const StadiumBorder(
+                side: BorderSide(color: Colors.transparent, width: 4.0),
+              ),
         );
     }
   }
@@ -142,20 +124,21 @@ class ScrollableTabsDemoState extends State<ScrollableTabsDemo> with SingleTicke
           PopupMenuButton<TabsDemoStyle>(
             tooltip: 'Popup Menu',
             onSelected: changeDemoStyle,
-            itemBuilder: (BuildContext context) => <PopupMenuItem<TabsDemoStyle>>[
-              const PopupMenuItem<TabsDemoStyle>(
-                value: TabsDemoStyle.iconsAndText,
-                child: Text('Icons and text'),
-              ),
-              const PopupMenuItem<TabsDemoStyle>(
-                value: TabsDemoStyle.iconsOnly,
-                child: Text('Icons only'),
-              ),
-              const PopupMenuItem<TabsDemoStyle>(
-                value: TabsDemoStyle.textOnly,
-                child: Text('Text only'),
-              ),
-            ],
+            itemBuilder:
+                (BuildContext context) => <PopupMenuItem<TabsDemoStyle>>[
+                  const PopupMenuItem<TabsDemoStyle>(
+                    value: TabsDemoStyle.iconsAndText,
+                    child: Text('Icons and text'),
+                  ),
+                  const PopupMenuItem<TabsDemoStyle>(
+                    value: TabsDemoStyle.iconsOnly,
+                    child: Text('Icons only'),
+                  ),
+                  const PopupMenuItem<TabsDemoStyle>(
+                    value: TabsDemoStyle.textOnly,
+                    child: Text('Text only'),
+                  ),
+                ],
           ),
         ],
         bottom: TabBar(
@@ -171,7 +154,7 @@ class ScrollableTabsDemoState extends State<ScrollableTabsDemo> with SingleTicke
               case TabsDemoStyle.textOnly:
                 return Tab(text: page.text);
             }
-          }).toList()
+          }).toList(),
         ),
       ),
       body: TabBarView(

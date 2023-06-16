@@ -35,7 +35,9 @@ class _FocusExampleState extends State<FocusExample> {
 
   KeyEventResult _handleKeyPress(FocusNode node, RawKeyEvent event) {
     if (event is RawKeyDownEvent) {
-      debugPrint('Focus node ${node.debugLabel} got key event: ${event.logicalKey}');
+      debugPrint(
+        'Focus node ${node.debugLabel} got key event: ${event.logicalKey}',
+      );
       if (event.logicalKey == LogicalKeyboardKey.keyR) {
         debugPrint('Changing color to red.');
         setState(() {
@@ -88,7 +90,11 @@ class _FocusExampleState extends State<FocusExample> {
                     height: 100,
                     alignment: Alignment.center,
                     color: hasFocus ? _color : Colors.white,
-                    child: Text(hasFocus ? "I'm in color! Press R,G,B!" : 'Press to focus'),
+                    child: Text(
+                      hasFocus
+                          ? "I'm in color! Press R,G,B!"
+                          : 'Press to focus',
+                    ),
                   ),
                 ),
               );

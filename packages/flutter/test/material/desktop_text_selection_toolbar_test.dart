@@ -12,21 +12,19 @@ void main() {
     // An arbitrary point on the screen to position at.
     const Offset anchor = Offset(30.0, 40.0);
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Center(
-          child: DesktopTextSelectionToolbar(
-            anchor: anchor,
-            children: <Widget>[
-              DesktopTextSelectionToolbarButton(
-                child: const Text('Tap me'),
-                onPressed: () {},
-              ),
-            ],
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Center(
+        child: DesktopTextSelectionToolbar(
+          anchor: anchor,
+          children: <Widget>[
+            DesktopTextSelectionToolbarButton(
+              child: const Text('Tap me'),
+              onPressed: () {},
+            ),
+          ],
         ),
       ),
-    );
+    ));
 
     expect(
       tester.getTopLeft(find.byType(DesktopTextSelectionToolbarButton)),

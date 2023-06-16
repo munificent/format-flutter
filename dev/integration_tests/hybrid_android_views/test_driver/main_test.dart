@@ -18,7 +18,9 @@ Future<void> main() async {
 
   // Each test below must return back to the home page after finishing.
   test('MotionEvent recomposition', () async {
-    final SerializableFinder motionEventsListTile = find.byValueKey('MotionEventsListTile');
+    final SerializableFinder motionEventsListTile = find.byValueKey(
+      'MotionEventsListTile',
+    );
     await driver.tap(motionEventsListTile);
     await driver.waitFor(find.byValueKey('PlatformView'));
     final String errorMessage = await driver.requestData('run test');
@@ -29,8 +31,9 @@ Future<void> main() async {
 
   group('Nested View Event', () {
     setUpAll(() async {
-      final SerializableFinder wmListTile =
-      find.byValueKey('NestedViewEventTile');
+      final SerializableFinder wmListTile = find.byValueKey(
+        'NestedViewEventTile',
+      );
       await driver.tap(wmListTile);
     });
 
@@ -40,7 +43,9 @@ Future<void> main() async {
     });
 
     test('AlertDialog from platform view context', () async {
-      final SerializableFinder showAlertDialog = find.byValueKey('ShowAlertDialog');
+      final SerializableFinder showAlertDialog = find.byValueKey(
+        'ShowAlertDialog',
+      );
       await driver.waitFor(showAlertDialog);
       await driver.tap(showAlertDialog);
       final String status = await driver.getText(find.byValueKey('Status'));
@@ -54,7 +59,7 @@ Future<void> main() async {
       final SerializableFinder tapChildView = find.byValueKey('TapChildView');
       await driver.tap(tapChildView);
       final String nestedViewClickCount =
-        await driver.getText(find.byValueKey('NestedViewClickCount'));
+          await driver.getText(find.byValueKey('NestedViewClickCount'));
       expect(nestedViewClickCount, 'Click count: 1');
     }, timeout: Timeout.none);
   });
@@ -69,40 +74,46 @@ Future<void> main() async {
       await driver.tap(find.pageBack());
     });
 
-    test('Uses FlutterSurfaceView when Android view is on the screen', () async {
-      await driver.waitFor(find.byValueKey('PlatformView'));
+    test(
+      'Uses FlutterSurfaceView when Android view is on the screen',
+      () async {
+        await driver.waitFor(find.byValueKey('PlatformView'));
 
-      expect(
-        await driver.requestData('hierarchy'),
-        '|-FlutterView\n'
-        '  |-FlutterSurfaceView\n' // Flutter UI
-        '  |-ViewGroup\n'  // Platform View
-        '    |-ViewGroup\n'
-      );
+        expect(
+          await driver.requestData('hierarchy'),
+          '|-FlutterView\n'
+          '  |-FlutterSurfaceView\n' // Flutter UI
+          '  |-ViewGroup\n' // Platform View
+          '    |-ViewGroup\n',
+        );
 
-      // Hide platform view.
-      final SerializableFinder togglePlatformView = find.byValueKey('TogglePlatformView');
-      await driver.tap(togglePlatformView);
-      await driver.waitForAbsent(find.byValueKey('PlatformView'));
+        // Hide platform view.
+        final SerializableFinder togglePlatformView = find.byValueKey(
+          'TogglePlatformView',
+        );
+        await driver.tap(togglePlatformView);
+        await driver.waitForAbsent(find.byValueKey('PlatformView'));
 
-      expect(
-        await driver.requestData('hierarchy'),
-        '|-FlutterView\n'
-        '  |-FlutterSurfaceView\n' // Just the Flutter UI
-      );
+        expect(
+          await driver.requestData('hierarchy'),
+          '|-FlutterView\n'
+          '  |-FlutterSurfaceView\n', // Just the Flutter UI
+        );
 
-      // Show platform view again.
-      await driver.tap(togglePlatformView);
-      await driver.waitFor(find.byValueKey('PlatformView'));
+        // Show platform view again.
+        await driver.tap(togglePlatformView);
+        await driver.waitFor(find.byValueKey('PlatformView'));
 
-      expect(
-        await driver.requestData('hierarchy'),
-        '|-FlutterView\n'
-        '  |-FlutterSurfaceView\n' // Flutter UI
-        '  |-ViewGroup\n' // Platform View
-        '    |-ViewGroup\n'
-      );
-    }, timeout: Timeout.none);
+        expect(
+          await driver.requestData('hierarchy'),
+          '|-FlutterView\n'
+          '  |-FlutterSurfaceView\n' // Flutter UI
+          '  |-ViewGroup\n' // Platform View
+          '    |-ViewGroup\n',
+        );
+      },
+      timeout: Timeout.none,
+    );
   });
 
   group('Flutter surface with hybrid composition', () {
@@ -124,22 +135,24 @@ Future<void> main() async {
       expect(
         await driver.requestData('hierarchy'),
         '|-FlutterView\n'
-        '  |-FlutterSurfaceView\n'  // Flutter UI (hidden)
+        '  |-FlutterSurfaceView\n' // Flutter UI (hidden)
         '  |-FlutterImageView\n' // Flutter UI (background surface)
-        '  |-ViewGroup\n'  // Platform View
+        '  |-ViewGroup\n' // Platform View
         '    |-ViewGroup\n'
-        '  |-FlutterImageView\n'  // Flutter UI (overlay surface)
+        '  |-FlutterImageView\n', // Flutter UI (overlay surface)
       );
 
       // Hide platform view.
-      final SerializableFinder togglePlatformView = find.byValueKey('TogglePlatformView');
+      final SerializableFinder togglePlatformView = find.byValueKey(
+        'TogglePlatformView',
+      );
       await driver.tap(togglePlatformView);
       await driver.waitForAbsent(find.byValueKey('PlatformView'));
 
       expect(
         await driver.requestData('hierarchy'),
         '|-FlutterView\n'
-        '  |-FlutterSurfaceView\n' // Just the Flutter UI
+        '  |-FlutterSurfaceView\n', // Just the Flutter UI
       );
 
       // Show platform view again.
@@ -153,7 +166,7 @@ Future<void> main() async {
         '  |-FlutterImageView\n' // Flutter UI (background surface)
         '  |-ViewGroup\n' // Platform View
         '    |-ViewGroup\n'
-        '  |-FlutterImageView\n' // Flutter UI (overlay surface)
+        '  |-FlutterImageView\n', // Flutter UI (overlay surface)
       );
     }, timeout: Timeout.none);
   });

@@ -14,7 +14,9 @@ void main() {
     // Regression test for https://github.com/flutter/flutter/issues/112403
     // and b/249091367
     final DragGestureRecognizer recognizer = VerticalDragGestureRecognizer();
-    const PointerDownEvent event = PointerDownEvent(timeStamp: Duration(days: 10));
+    const PointerDownEvent event = PointerDownEvent(
+      timeStamp: Duration(days: 10),
+    );
 
     expect(recognizer.debugLastPendingEventTimestamp, null);
 
@@ -35,113 +37,130 @@ void main() {
     expect(recognizer.debugLastPendingEventTimestamp, null);
   });
 
-  testGesture('do not crash on up event for a pending pointer after winning arena for another pointer', (GestureTester tester) {
-    // Regression test for https://github.com/flutter/flutter/issues/75061.
+  testGesture(
+    'do not crash on up event for a pending pointer after winning arena for another pointer',
+    (GestureTester tester) {
+      // Regression test for https://github.com/flutter/flutter/issues/75061.
 
-    final VerticalDragGestureRecognizer v = VerticalDragGestureRecognizer()
-      ..onStart = (_) { };
-    final HorizontalDragGestureRecognizer h = HorizontalDragGestureRecognizer()
-      ..onStart = (_) { };
+      final VerticalDragGestureRecognizer v = VerticalDragGestureRecognizer()
+        ..onStart = (_) {};
+      final HorizontalDragGestureRecognizer h =
+          HorizontalDragGestureRecognizer()..onStart = (_) {};
 
-    const PointerDownEvent down90 = PointerDownEvent(
-      pointer: 90,
-      position: Offset(10.0, 10.0),
-    );
+      const PointerDownEvent down90 = PointerDownEvent(
+        pointer: 90,
+        position: Offset(10.0, 10.0),
+      );
 
-    const PointerUpEvent up90 = PointerUpEvent(
-      pointer: 90,
-      position: Offset(10.0, 10.0),
-    );
+      const PointerUpEvent up90 = PointerUpEvent(
+        pointer: 90,
+        position: Offset(10.0, 10.0),
+      );
 
-    const PointerDownEvent down91 = PointerDownEvent(
-      pointer: 91,
-      position: Offset(20.0, 20.0),
-    );
+      const PointerDownEvent down91 = PointerDownEvent(
+        pointer: 91,
+        position: Offset(20.0, 20.0),
+      );
 
-    const PointerUpEvent up91 = PointerUpEvent(
-      pointer: 91,
-      position: Offset(20.0, 20.0),
-    );
+      const PointerUpEvent up91 = PointerUpEvent(
+        pointer: 91,
+        position: Offset(20.0, 20.0),
+      );
 
-    v.addPointer(down90);
-    GestureBinding.instance.gestureArena.close(90);
-    h.addPointer(down91);
-    v.addPointer(down91);
-    GestureBinding.instance.gestureArena.close(91);
-    tester.async.flushMicrotasks();
+      v.addPointer(down90);
+      GestureBinding.instance.gestureArena.close(90);
+      h.addPointer(down91);
+      v.addPointer(down91);
+      GestureBinding.instance.gestureArena.close(91);
+      tester.async.flushMicrotasks();
 
-    GestureBinding.instance.handleEvent(up90, HitTestEntry(MockHitTestTarget()));
-    GestureBinding.instance.handleEvent(up91, HitTestEntry(MockHitTestTarget()));
-  });
+      GestureBinding.instance.handleEvent(
+        up90,
+        HitTestEntry(MockHitTestTarget()),
+      );
+      GestureBinding.instance.handleEvent(
+        up91,
+        HitTestEntry(MockHitTestTarget()),
+      );
+    },
+  );
 
-  testGesture('DragGestureRecognizer should not dispatch drag callbacks when it wins the arena if onlyAcceptDragOnThreshold is true and the threshold has not been met', (GestureTester tester) {
-    final VerticalDragGestureRecognizer verticalDrag = VerticalDragGestureRecognizer();
-    final List<String> dragCallbacks = <String>[];
-    verticalDrag
-      ..onlyAcceptDragOnThreshold = true
-      ..onStart = (DragStartDetails details) {
-        dragCallbacks.add('onStart');
-      }
-      ..onUpdate = (DragUpdateDetails details) {
-        dragCallbacks.add('onUpdate');
-      }
-      ..onEnd = (DragEndDetails details) {
-        dragCallbacks.add('onEnd');
-      };
+  testGesture(
+    'DragGestureRecognizer should not dispatch drag callbacks when it wins the arena if onlyAcceptDragOnThreshold is true and the threshold has not been met',
+    (GestureTester tester) {
+      final VerticalDragGestureRecognizer verticalDrag =
+          VerticalDragGestureRecognizer();
+      final List<String> dragCallbacks = <String>[];
+      verticalDrag
+        ..onlyAcceptDragOnThreshold = true
+        ..onStart = (DragStartDetails details) {
+          dragCallbacks.add('onStart');
+        }
+        ..onUpdate = (DragUpdateDetails details) {
+          dragCallbacks.add('onUpdate');
+        }
+        ..onEnd = (DragEndDetails details) {
+          dragCallbacks.add('onEnd');
+        };
 
-    const PointerDownEvent down1 = PointerDownEvent(
-      pointer: 6,
-      position: Offset(10.0, 10.0),
-    );
+      const PointerDownEvent down1 = PointerDownEvent(
+        pointer: 6,
+        position: Offset(10.0, 10.0),
+      );
 
-    const PointerUpEvent up1 = PointerUpEvent(
-      pointer: 6,
-      position: Offset(10.0, 10.0),
-    );
+      const PointerUpEvent up1 = PointerUpEvent(
+        pointer: 6,
+        position: Offset(10.0, 10.0),
+      );
 
-    verticalDrag.addPointer(down1);
-    tester.closeArena(down1.pointer);
-    tester.route(down1);
-    tester.route(up1);
-    expect(dragCallbacks.isEmpty, true);
-    verticalDrag.dispose();
-    dragCallbacks.clear();
-  });
+      verticalDrag.addPointer(down1);
+      tester.closeArena(down1.pointer);
+      tester.route(down1);
+      tester.route(up1);
+      expect(dragCallbacks.isEmpty, true);
+      verticalDrag.dispose();
+      dragCallbacks.clear();
+    },
+  );
 
-  testGesture('DragGestureRecognizer should dispatch drag callbacks when it wins the arena if onlyAcceptDragOnThreshold is false and the threshold has not been met', (GestureTester tester) {
-    final VerticalDragGestureRecognizer verticalDrag = VerticalDragGestureRecognizer();
-    final List<String> dragCallbacks = <String>[];
-    verticalDrag
-      ..onlyAcceptDragOnThreshold = false
-      ..onStart = (DragStartDetails details) {
-        dragCallbacks.add('onStart');
-      }
-      ..onUpdate = (DragUpdateDetails details) {
-        dragCallbacks.add('onUpdate');
-      }
-      ..onEnd = (DragEndDetails details) {
-        dragCallbacks.add('onEnd');
-      };
+  testGesture(
+    'DragGestureRecognizer should dispatch drag callbacks when it wins the arena if onlyAcceptDragOnThreshold is false and the threshold has not been met',
+    (GestureTester tester) {
+      final VerticalDragGestureRecognizer verticalDrag =
+          VerticalDragGestureRecognizer();
+      final List<String> dragCallbacks = <String>[];
+      verticalDrag
+        ..onlyAcceptDragOnThreshold = false
+        ..onStart = (DragStartDetails details) {
+          dragCallbacks.add('onStart');
+        }
+        ..onUpdate = (DragUpdateDetails details) {
+          dragCallbacks.add('onUpdate');
+        }
+        ..onEnd = (DragEndDetails details) {
+          dragCallbacks.add('onEnd');
+        };
 
-    const PointerDownEvent down1 = PointerDownEvent(
-      pointer: 6,
-      position: Offset(10.0, 10.0),
-    );
+      const PointerDownEvent down1 = PointerDownEvent(
+        pointer: 6,
+        position: Offset(10.0, 10.0),
+      );
 
-    const PointerUpEvent up1 = PointerUpEvent(
-      pointer: 6,
-      position: Offset(10.0, 10.0),
-    );
+      const PointerUpEvent up1 = PointerUpEvent(
+        pointer: 6,
+        position: Offset(10.0, 10.0),
+      );
 
-    verticalDrag.addPointer(down1);
-    tester.closeArena(down1.pointer);
-    tester.route(down1);
-    tester.route(up1);
-    expect(dragCallbacks.isEmpty, false);
-    expect(dragCallbacks, <String>['onStart', 'onEnd']);
-    verticalDrag.dispose();
-    dragCallbacks.clear();
-  });
+      verticalDrag.addPointer(down1);
+      tester.closeArena(down1.pointer);
+      tester.route(down1);
+      tester.route(up1);
+      expect(dragCallbacks.isEmpty, false);
+      expect(dragCallbacks, <String>['onStart', 'onEnd']);
+      verticalDrag.dispose();
+      dragCallbacks.clear();
+    },
+  );
 
   group('Recognizers on different button filters:', () {
     final List<String> recognized = <String>[];
@@ -149,13 +168,13 @@ void main() {
     late HorizontalDragGestureRecognizer secondaryRecognizer;
     setUp(() {
       primaryRecognizer = HorizontalDragGestureRecognizer(
-          allowedButtonsFilter: (int buttons) => kPrimaryButton == buttons)
-        ..onStart = (DragStartDetails details) {
+        allowedButtonsFilter: (int buttons) => kPrimaryButton == buttons,
+      )..onStart = (DragStartDetails details) {
           recognized.add('onStartPrimary');
         };
       secondaryRecognizer = HorizontalDragGestureRecognizer(
-          allowedButtonsFilter: (int buttons) => kSecondaryButton == buttons)
-        ..onStart = (DragStartDetails details) {
+        allowedButtonsFilter: (int buttons) => kSecondaryButton == buttons,
+      )..onStart = (DragStartDetails details) {
           recognized.add('onStartSecondary');
         };
     });
@@ -197,5 +216,5 @@ void main() {
 
 class MockHitTestTarget implements HitTestTarget {
   @override
-  void handleEvent(PointerEvent event, HitTestEntry entry) { }
+  void handleEvent(PointerEvent event, HitTestEntry entry) {}
 }

@@ -9,15 +9,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'semantics_tester.dart';
 
 void main() {
-  testWidgets('has only root node if surface size is 0x0', (WidgetTester tester) async {
-    final SemanticsTester semantics = SemanticsTester(tester);
+  testWidgets(
+    'has only root node if surface size is 0x0',
+    (WidgetTester tester) async {
+      final SemanticsTester semantics = SemanticsTester(tester);
 
-    await tester.pumpWidget(Semantics(
-      selected: true,
-    ));
+      await tester.pumpWidget(Semantics(selected: true));
 
-    expect(semantics, hasSemantics(
-      TestSemantics(
+      expect(semantics, hasSemantics(TestSemantics(
         id: 0,
         rect: const Rect.fromLTRB(0.0, 0.0, 2400.0, 1800.0),
         children: <TestSemantics>[
@@ -27,20 +26,18 @@ void main() {
             flags: <SemanticsFlag>[SemanticsFlag.isSelected],
           ),
         ],
-      ), ignoreTransform: true,
-    ));
+      ), ignoreTransform: true));
 
-    await tester.binding.setSurfaceSize(Size.zero);
-    await tester.pumpAndSettle();
+      await tester.binding.setSurfaceSize(Size.zero);
+      await tester.pumpAndSettle();
 
-    expect(semantics, hasSemantics(
-      TestSemantics(
-        id: 0,
-        rect: Rect.zero,
-      ), ignoreTransform: true,
-    ));
+      expect(semantics, hasSemantics(
+        TestSemantics(id: 0, rect: Rect.zero),
+        ignoreTransform: true,
+      ));
 
-    await tester.binding.setSurfaceSize(null);
-    semantics.dispose();
-  });
+      await tester.binding.setSurfaceSize(null);
+      semantics.dispose();
+    },
+  );
 }

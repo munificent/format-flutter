@@ -8,96 +8,101 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets(
-      '_SliverScrollingPersistentHeader should update stretchConfiguration',
-      (WidgetTester tester) async {
-    for (final double stretchTriggerOffset in <double>[10.0, 20.0]) {
-      await tester.pumpWidget(MaterialApp(
-        home: CustomScrollView(
-          slivers: <Widget>[
-            SliverPersistentHeader(
-              delegate: TestDelegate(
-                stretchConfiguration: OverScrollHeaderStretchConfiguration(
-                  stretchTriggerOffset: stretchTriggerOffset,
+    '_SliverScrollingPersistentHeader should update stretchConfiguration',
+    (WidgetTester tester) async {
+      for (final double stretchTriggerOffset in <double>[10.0, 20.0]) {
+        await tester.pumpWidget(MaterialApp(
+          home: CustomScrollView(
+            slivers: <Widget>[
+              SliverPersistentHeader(
+                delegate: TestDelegate(
+                  stretchConfiguration: OverScrollHeaderStretchConfiguration(
+                    stretchTriggerOffset: stretchTriggerOffset,
+                  ),
                 ),
               ),
-            )
-          ],
-        ),
-      ));
-    }
+            ],
+          ),
+        ));
+      }
 
-    expect(
-        tester.allWidgets.where((Widget w) =>
-            w.runtimeType.toString() == '_SliverScrollingPersistentHeader'),
-        isNotEmpty);
+      expect(tester.allWidgets.where(
+        (Widget w) =>
+            w.runtimeType.toString() == '_SliverScrollingPersistentHeader',
+      ), isNotEmpty);
 
-    final RenderSliverScrollingPersistentHeader render = tester.allRenderObjects
-        .whereType<RenderSliverScrollingPersistentHeader>()
-        .first;
-    expect(render.stretchConfiguration?.stretchTriggerOffset, 20);
-  });
+      final RenderSliverScrollingPersistentHeader render = tester
+          .allRenderObjects
+          .whereType<RenderSliverScrollingPersistentHeader>()
+          .first;
+      expect(render.stretchConfiguration?.stretchTriggerOffset, 20);
+    },
+  );
 
   testWidgets(
-      '_SliverPinnedPersistentHeader should update stretchConfiguration',
-      (WidgetTester tester) async {
-    for (final double stretchTriggerOffset in <double>[10.0, 20.0]) {
-      await tester.pumpWidget(MaterialApp(
-        home: CustomScrollView(
-          slivers: <Widget>[
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: TestDelegate(
-                stretchConfiguration: OverScrollHeaderStretchConfiguration(
-                  stretchTriggerOffset: stretchTriggerOffset,
+    '_SliverPinnedPersistentHeader should update stretchConfiguration',
+    (WidgetTester tester) async {
+      for (final double stretchTriggerOffset in <double>[10.0, 20.0]) {
+        await tester.pumpWidget(MaterialApp(
+          home: CustomScrollView(
+            slivers: <Widget>[
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: TestDelegate(
+                  stretchConfiguration: OverScrollHeaderStretchConfiguration(
+                    stretchTriggerOffset: stretchTriggerOffset,
+                  ),
                 ),
               ),
-            )
-          ],
-        ),
-      ));
-    }
+            ],
+          ),
+        ));
+      }
 
-    expect(
-        tester.allWidgets.where((Widget w) =>
-            w.runtimeType.toString() == '_SliverPinnedPersistentHeader'),
-        isNotEmpty);
+      expect(tester.allWidgets.where(
+        (Widget w) =>
+            w.runtimeType.toString() == '_SliverPinnedPersistentHeader',
+      ), isNotEmpty);
 
-    final RenderSliverPinnedPersistentHeader render = tester.allRenderObjects
-        .whereType<RenderSliverPinnedPersistentHeader>()
-        .first;
-    expect(render.stretchConfiguration?.stretchTriggerOffset, 20);
-  });
+      final RenderSliverPinnedPersistentHeader render = tester.allRenderObjects
+          .whereType<RenderSliverPinnedPersistentHeader>()
+          .first;
+      expect(render.stretchConfiguration?.stretchTriggerOffset, 20);
+    },
+  );
 
   testWidgets(
-      '_SliverPinnedPersistentHeader should update showOnScreenConfiguration',
-      (WidgetTester tester) async {
-    for (final double maxShowOnScreenExtent in <double>[1000, 2000]) {
-      await tester.pumpWidget(MaterialApp(
-        home: CustomScrollView(
-          slivers: <Widget>[
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: TestDelegate(
-                showOnScreenConfiguration:
-                    PersistentHeaderShowOnScreenConfiguration(
-                        maxShowOnScreenExtent: maxShowOnScreenExtent),
+    '_SliverPinnedPersistentHeader should update showOnScreenConfiguration',
+    (WidgetTester tester) async {
+      for (final double maxShowOnScreenExtent in <double>[1000, 2000]) {
+        await tester.pumpWidget(MaterialApp(
+          home: CustomScrollView(
+            slivers: <Widget>[
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: TestDelegate(
+                  showOnScreenConfiguration:
+                      PersistentHeaderShowOnScreenConfiguration(
+                    maxShowOnScreenExtent: maxShowOnScreenExtent,
+                  ),
+                ),
               ),
-            )
-          ],
-        ),
-      ));
-    }
+            ],
+          ),
+        ));
+      }
 
-    expect(
-        tester.allWidgets.where((Widget w) =>
-            w.runtimeType.toString() == '_SliverPinnedPersistentHeader'),
-        isNotEmpty);
+      expect(tester.allWidgets.where(
+        (Widget w) =>
+            w.runtimeType.toString() == '_SliverPinnedPersistentHeader',
+      ), isNotEmpty);
 
-    final RenderSliverPinnedPersistentHeader render = tester.allRenderObjects
-        .whereType<RenderSliverPinnedPersistentHeader>()
-        .first;
-    expect(render.showOnScreenConfiguration?.maxShowOnScreenExtent, 2000);
-  });
+      final RenderSliverPinnedPersistentHeader render = tester.allRenderObjects
+          .whereType<RenderSliverPinnedPersistentHeader>()
+          .first;
+      expect(render.showOnScreenConfiguration?.maxShowOnScreenExtent, 2000);
+    },
+  );
 }
 
 class TestDelegate extends SliverPersistentHeaderDelegate {
@@ -111,7 +116,10 @@ class TestDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Container(height: maxExtent);
   }
 

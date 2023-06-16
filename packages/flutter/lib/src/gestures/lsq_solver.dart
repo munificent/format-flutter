@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -86,9 +85,13 @@ class PolynomialFit {
 
   @override
   String toString() {
-    final String coefficientString =
-        coefficients.map((double c) => c.toStringAsPrecision(3)).toList().toString();
-    return '${objectRuntimeType(this, 'PolynomialFit')}($coefficientString, confidence: ${confidence.toStringAsFixed(3)})';
+    final String coefficientString = coefficients.map(
+      (double c) => c.toStringAsPrecision(3),
+    ).toList().toString();
+    return '${objectRuntimeType(
+      this,
+      'PolynomialFit',
+    )}($coefficientString, confidence: ${confidence.toStringAsFixed(3)})';
   }
 }
 
@@ -97,8 +100,11 @@ class LeastSquaresSolver {
   /// Creates a least-squares solver.
   ///
   /// The [x], [y], and [w] arguments must not be null.
-  LeastSquaresSolver(this.x, this.y, this.w)
-    : assert(x.length == y.length),
+  LeastSquaresSolver(
+    this.x,
+    this.y,
+    this.w,
+  ) : assert(x.length == y.length),
       assert(y.length == w.length);
 
   /// The x-coordinates of each data point.
@@ -205,10 +211,10 @@ class LeastSquaresSolver {
       sumSquaredTotal += w[h] * w[h] * v * v;
     }
 
-    result.confidence = sumSquaredTotal <= precisionErrorTolerance ? 1.0 :
-                          1.0 - (sumSquaredError / sumSquaredTotal);
+    result.confidence = sumSquaredTotal <= precisionErrorTolerance
+        ? 1.0
+        : 1.0 - (sumSquaredError / sumSquaredTotal);
 
     return result;
   }
-
 }

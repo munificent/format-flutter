@@ -37,9 +37,7 @@ class MyMenuBar extends StatelessWidget {
                       MenuItemButton(
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Saved!'),
-                            ),
+                            const SnackBar(content: Text('Saved!')),
                           );
                         },
                         child: const MenuAcceleratorLabel('&Save'),
@@ -47,9 +45,7 @@ class MyMenuBar extends StatelessWidget {
                       MenuItemButton(
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Quit!'),
-                            ),
+                            const SnackBar(content: Text('Quit!')),
                           );
                         },
                         child: const MenuAcceleratorLabel('&Quit'),
@@ -62,9 +58,7 @@ class MyMenuBar extends StatelessWidget {
                       MenuItemButton(
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Magnify!'),
-                            ),
+                            const SnackBar(content: Text('Magnify!')),
                           );
                         },
                         child: const MenuAcceleratorLabel('&Magnify'),
@@ -72,9 +66,7 @@ class MyMenuBar extends StatelessWidget {
                       MenuItemButton(
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Minify!'),
-                            ),
+                            const SnackBar(content: Text('Minify!')),
                           );
                         },
                         child: const MenuAcceleratorLabel('Mi&nify'),
@@ -88,9 +80,8 @@ class MyMenuBar extends StatelessWidget {
           ],
         ),
         Expanded(
-          child: FlutterLogo(
-            size: MediaQuery.of(context).size.shortestSide * 0.5,
-          ),
+          child:
+              FlutterLogo(size: MediaQuery.of(context).size.shortestSide * 0.5),
         ),
       ],
     );
@@ -106,9 +97,10 @@ class MenuAcceleratorApp extends StatelessWidget {
       theme: ThemeData(useMaterial3: true),
       home: Shortcuts(
         shortcuts: <ShortcutActivator, Intent>{
-          const SingleActivator(LogicalKeyboardKey.keyT, control: true): VoidCallbackIntent(() {
-            debugDumpApp();
-          }),
+          const SingleActivator(LogicalKeyboardKey.keyT, control: true):
+              VoidCallbackIntent(() {
+                debugDumpApp();
+              }),
         },
         child: const Scaffold(body: MyMenuBar()),
       ),

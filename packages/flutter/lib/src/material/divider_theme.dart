@@ -31,7 +31,6 @@ import 'theme.dart';
 ///    application.
 @immutable
 class DividerThemeData with Diagnosticable {
-
   /// Creates a theme that can be used for [DividerTheme] or
   /// [ThemeData.dividerTheme].
   const DividerThemeData({
@@ -86,7 +85,11 @@ class DividerThemeData with Diagnosticable {
   /// The argument `t` must not be null.
   ///
   /// {@macro dart.ui.shadow.lerp}
-  static DividerThemeData lerp(DividerThemeData? a, DividerThemeData? b, double t) {
+  static DividerThemeData lerp(
+    DividerThemeData? a,
+    DividerThemeData? b,
+    double t,
+  ) {
     if (identical(a, b) && a != null) {
       return a;
     }
@@ -100,13 +103,7 @@ class DividerThemeData with Diagnosticable {
   }
 
   @override
-  int get hashCode => Object.hash(
-    color,
-    space,
-    thickness,
-    indent,
-    endIndent,
-  );
+  int get hashCode => Object.hash(color, space, thickness, indent, endIndent);
 
   @override
   bool operator ==(Object other) {
@@ -116,12 +113,12 @@ class DividerThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is DividerThemeData
-        && other.color == color
-        && other.space == space
-        && other.thickness == thickness
-        && other.indent == indent
-        && other.endIndent == endIndent;
+    return other is DividerThemeData &&
+        other.color == color &&
+        other.space == space &&
+        other.thickness == thickness &&
+        other.indent == indent &&
+        other.endIndent == endIndent;
   }
 
   @override
@@ -142,11 +139,7 @@ class DividerTheme extends InheritedTheme {
   /// Creates a divider theme that controls the configurations for
   /// [Divider]s, [VerticalDivider]s, dividers between [ListTile]s, and dividers
   /// between rows in [DataTable]s in its widget subtree.
-  const DividerTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const DividerTheme({super.key, required this.data, required super.child});
 
   /// The properties for descendant [Divider]s, [VerticalDivider]s, dividers
   /// between [ListTile]s, and dividers between rows in [DataTable]s.
@@ -164,7 +157,8 @@ class DividerTheme extends InheritedTheme {
   /// DividerThemeData theme = DividerTheme.of(context);
   /// ```
   static DividerThemeData of(BuildContext context) {
-    final DividerTheme? dividerTheme = context.dependOnInheritedWidgetOfExactType<DividerTheme>();
+    final DividerTheme? dividerTheme =
+        context.dependOnInheritedWidgetOfExactType<DividerTheme>();
     return dividerTheme?.data ?? Theme.of(context).dividerTheme;
   }
 

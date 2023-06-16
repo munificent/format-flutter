@@ -16,7 +16,11 @@ class ShowSharedValue extends StatelessWidget {
     // The SharedAppData.getValue() call causes this widget to depend on the
     // value of the SharedAppData's 'foo' key. If it's changed, with
     // SharedAppData.setValue(), then this widget will be rebuilt.
-    final String value = SharedAppData.getValue<String, String>(context, appDataKey, () => 'initial');
+    final String value = SharedAppData.getValue<String, String>(
+      context,
+      appDataKey,
+      () => 'initial',
+    );
     return Text('$appDataKey: $value');
   }
 }
@@ -53,7 +57,10 @@ class _HomeState extends State<Home> {
                 // Changing the SharedAppData's value for 'foo' causes the
                 // widgets that depend on 'foo' to be rebuilt.
                 SharedAppData.setValue<String, String?>(
-                    context, 'foo', 'FOO $_fooVersion'); // no need to call setState()
+                  context,
+                  'foo',
+                  'FOO $_fooVersion',
+                ); // no need to call setState()
               },
             ),
             const SizedBox(height: 16),
@@ -62,7 +69,10 @@ class _HomeState extends State<Home> {
               onPressed: () {
                 _barVersion += 1;
                 SharedAppData.setValue<String, String?>(
-                    context, 'bar', 'BAR $_barVersion'); // no need to call setState()
+                  context,
+                  'bar',
+                  'BAR $_barVersion',
+                ); // no need to call setState()
               },
             ),
           ],

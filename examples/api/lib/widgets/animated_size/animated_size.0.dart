@@ -16,9 +16,7 @@ class AnimatedSizeExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('AnimatedSize Sample')),
-        body: const Center(
-          child: AnimatedSizeExample(),
-        ),
+        body: const Center(child: AnimatedSizeExample()),
       ),
     );
   }

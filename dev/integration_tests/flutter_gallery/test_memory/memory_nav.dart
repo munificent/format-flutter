@@ -30,9 +30,7 @@ Future<void> main() async {
       ready.complete();
     },
     behavior: HitTestBehavior.opaque,
-    child: const IgnorePointer(
-      child: GalleryApp(testMode: true),
-    ),
+    child: const IgnorePointer(child: GalleryApp(testMode: true)),
   ));
   await SchedulerBinding.instance.endOfFrame;
   await Future<void>.delayed(const Duration(milliseconds: 50));
@@ -43,14 +41,14 @@ Future<void> main() async {
 
   // remove onTap handler, enable pointer events for app
   runApp(GestureDetector(
-    child: const IgnorePointer(
-      ignoring: false,
-      child: GalleryApp(testMode: true),
-    ),
+    child:
+        const IgnorePointer(ignoring: false, child: GalleryApp(testMode: true)),
   ));
   await SchedulerBinding.instance.endOfFrame;
 
-  final WidgetController controller = LiveWidgetController(WidgetsBinding.instance);
+  final WidgetController controller = LiveWidgetController(
+    WidgetsBinding.instance,
+  );
 
   debugPrint('Navigating...');
   await controller.tap(find.text('Material'));
@@ -67,7 +65,10 @@ Future<void> main() async {
   final Rect demoItemBounds = boundsFor(controller, demoItem);
   final Rect demoListBounds = boundsFor(controller, demoList);
   if (!demoListBounds.contains(demoItemBounds.center)) {
-    await controller.drag(demoList, Offset(0.0, demoListBounds.center.dy - demoItemBounds.center.dy));
+    await controller.drag(
+      demoList,
+      Offset(0.0, demoListBounds.center.dy - demoItemBounds.center.dy),
+    );
     await endOfAnimation();
   }
 

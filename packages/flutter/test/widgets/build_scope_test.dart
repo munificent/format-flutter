@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'test_widgets.dart';
 
 class ProbeWidget extends StatefulWidget {
-  const ProbeWidget({ super.key });
+  const ProbeWidget({super.key});
   @override
   ProbeWidgetState createState() => ProbeWidgetState();
 }
@@ -19,25 +19,25 @@ class ProbeWidgetState extends State<ProbeWidget> {
   @override
   void initState() {
     super.initState();
-    setState(() { });
+    setState(() {});
   }
 
   @override
   void didUpdateWidget(ProbeWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    setState(() { });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    setState(() { });
+    setState(() {});
     buildCount++;
     return Container();
   }
 }
 
 class BadWidget extends StatelessWidget {
-  const BadWidget(this.parentState, { super.key });
+  const BadWidget(this.parentState, {super.key});
 
   final BadWidgetParentState parentState;
 
@@ -49,7 +49,7 @@ class BadWidget extends StatelessWidget {
 }
 
 class BadWidgetParent extends StatefulWidget {
-  const BadWidgetParent({ super.key });
+  const BadWidgetParent({super.key});
   @override
   BadWidgetParentState createState() => BadWidgetParentState();
 }
@@ -69,7 +69,7 @@ class BadWidgetParentState extends State<BadWidgetParent> {
 }
 
 class BadDisposeWidget extends StatefulWidget {
-  const BadDisposeWidget({ super.key });
+  const BadDisposeWidget({super.key});
   @override
   BadDisposeWidgetState createState() => BadDisposeWidgetState();
 }
@@ -82,16 +82,13 @@ class BadDisposeWidgetState extends State<BadDisposeWidget> {
 
   @override
   void dispose() {
-    setState(() { /* This is invalid behavior. */ });
+    setState(() {/* This is invalid behavior. */});
     super.dispose();
   }
 }
 
 class StatefulWrapper extends StatefulWidget {
-  const StatefulWrapper({
-    super.key,
-    required this.child,
-  });
+  const StatefulWrapper({super.key, required this.child});
 
   final Widget child;
 
@@ -100,9 +97,10 @@ class StatefulWrapper extends StatefulWidget {
 }
 
 class StatefulWrapperState extends State<StatefulWrapper> {
-
   void trigger() {
-    setState(() { built = null; });
+    setState(() {
+      built = null;
+    });
   }
 
   int? built;
@@ -119,10 +117,7 @@ class StatefulWrapperState extends State<StatefulWrapper> {
 }
 
 class Wrapper extends StatelessWidget {
-  const Wrapper({
-    super.key,
-    required this.child,
-  });
+  const Wrapper({super.key, required this.child});
 
   final Widget child;
 
@@ -158,18 +153,24 @@ void main() {
     expect(ProbeWidgetState.buildCount, equals(3));
   });
 
-  testWidgets('Setting parent state during build is forbidden', (WidgetTester tester) async {
-    await tester.pumpWidget(const BadWidgetParent());
-    expect(tester.takeException(), isFlutterError);
-    await tester.pumpWidget(Container());
-  });
+  testWidgets(
+    'Setting parent state during build is forbidden',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const BadWidgetParent());
+      expect(tester.takeException(), isFlutterError);
+      await tester.pumpWidget(Container());
+    },
+  );
 
-  testWidgets('Setting state during dispose is forbidden', (WidgetTester tester) async {
-    await tester.pumpWidget(const BadDisposeWidget());
-    expect(tester.takeException(), isNull);
-    await tester.pumpWidget(Container());
-    expect(tester.takeException(), isNotNull);
-  });
+  testWidgets(
+    'Setting state during dispose is forbidden',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const BadDisposeWidget());
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(Container());
+      expect(tester.takeException(), isNotNull);
+    },
+  );
 
   testWidgets('Dirty element list sort order', (WidgetTester tester) async {
     final GlobalKey key1 = GlobalKey(debugLabel: 'key1');
@@ -184,39 +185,29 @@ void main() {
       didMiddle = true;
       return Wrapper(
         child: Wrapper(
-          child: StatefulWrapper(
-            child: returnMiddle ? middle : Container(),
-          ),
+          child: StatefulWrapper(child: returnMiddle ? middle : Container()),
         ),
       );
     }
+
     final Widget part1 = Wrapper(
-      child: KeyedSubtree(
-        key: key1,
-        child: StatefulBuilder(
-          builder: builder,
-        ),
-      ),
+      child: KeyedSubtree(key: key1, child: StatefulBuilder(builder: builder)),
     );
     final Widget part2 = Wrapper(
-      child: KeyedSubtree(
-        key: key2,
-        child: StatefulBuilder(
-          builder: builder,
-        ),
-      ),
+      child: KeyedSubtree(key: key2, child: StatefulBuilder(builder: builder)),
     );
 
     middle = part2;
     await tester.pumpWidget(part1);
 
-    for (final StatefulWrapperState state in tester.stateList<StatefulWrapperState>(find.byType(StatefulWrapper))) {
+    for (final StatefulWrapperState state in tester
+        .stateList<StatefulWrapperState>(find.byType(StatefulWrapper))) {
       expect(state.built, isNotNull);
       state.oldBuilt = state.built!;
       state.trigger();
     }
     for (final StateSetter setState in setStates) {
-      setState(() { });
+      setState(() {});
     }
 
     StatefulWrapperState.buildId = 0;
@@ -224,10 +215,10 @@ void main() {
     didMiddle = false;
     await tester.pumpWidget(part2);
 
-    for (final StatefulWrapperState state in tester.stateList<StatefulWrapperState>(find.byType(StatefulWrapper))) {
+    for (final StatefulWrapperState state in tester
+        .stateList<StatefulWrapperState>(find.byType(StatefulWrapper))) {
       expect(state.built, isNotNull);
       expect(state.built, isNot(equals(state.oldBuilt)));
     }
-
   });
 }

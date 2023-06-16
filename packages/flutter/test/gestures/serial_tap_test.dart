@@ -37,9 +37,7 @@ void main() {
     position: Offset(10.0, 10.0),
   );
 
-  const PointerCancelEvent cancel1 = PointerCancelEvent(
-    pointer: 1,
-  );
+  const PointerCancelEvent cancel1 = PointerCancelEvent(pointer: 1);
 
   const PointerUpEvent up1 = PointerUpEvent(
     pointer: 1,
@@ -135,7 +133,9 @@ void main() {
   });
 
   // Because tap gesture will hold off on declaring victory.
-  testGesture('Wins over tap gesture below it in the tree', (GestureTester tester) {
+  testGesture('Wins over tap gesture below it in the tree', (
+    GestureTester tester,
+  ) {
     bool recognizedSingleTap = false;
     bool canceledSingleTap = false;
     final TapGestureRecognizer singleTap = TapGestureRecognizer()
@@ -158,7 +158,9 @@ void main() {
     expect(canceledSingleTap, isTrue);
   });
 
-  testGesture('Wins over tap gesture above it in the tree', (GestureTester tester) {
+  testGesture('Wins over tap gesture above it in the tree', (
+    GestureTester tester,
+  ) {
     bool recognizedSingleTap = false;
     bool canceledSingleTap = false;
     final TapGestureRecognizer singleTap = TapGestureRecognizer()
@@ -181,162 +183,183 @@ void main() {
     expect(canceledSingleTap, isTrue);
   });
 
-  testGesture('Loses to release gesture below it in the tree', (GestureTester tester) {
-    bool recognizedRelease = false;
-    final ReleaseGestureRecognizer release = ReleaseGestureRecognizer()
-      ..onRelease = () {
-        recognizedRelease = true;
-      };
+  testGesture(
+    'Loses to release gesture below it in the tree',
+    (GestureTester tester) {
+      bool recognizedRelease = false;
+      final ReleaseGestureRecognizer release = ReleaseGestureRecognizer()
+        ..onRelease = () {
+          recognizedRelease = true;
+        };
 
-    release.addPointer(down1);
-    serial.addPointer(down1);
-    tester.closeArena(1);
-    tester.route(down1);
-    tester.route(up1);
-    GestureBinding.instance.gestureArena.sweep(1);
-    expect(events, <String>['down#1', 'cancel#1']);
-    expect(recognizedRelease, isTrue);
-  });
+      release.addPointer(down1);
+      serial.addPointer(down1);
+      tester.closeArena(1);
+      tester.route(down1);
+      tester.route(up1);
+      GestureBinding.instance.gestureArena.sweep(1);
+      expect(events, <String>['down#1', 'cancel#1']);
+      expect(recognizedRelease, isTrue);
+    },
+  );
 
-  testGesture('Wins over release gesture above it in the tree', (GestureTester tester) {
-    bool recognizedRelease = false;
-    final ReleaseGestureRecognizer release = ReleaseGestureRecognizer()
-      ..onRelease = () {
-        recognizedRelease = true;
-      };
+  testGesture(
+    'Wins over release gesture above it in the tree',
+    (GestureTester tester) {
+      bool recognizedRelease = false;
+      final ReleaseGestureRecognizer release = ReleaseGestureRecognizer()
+        ..onRelease = () {
+          recognizedRelease = true;
+        };
 
-    serial.addPointer(down1);
-    release.addPointer(down1);
-    tester.closeArena(1);
-    tester.route(down1);
-    tester.route(up1);
-    GestureBinding.instance.gestureArena.sweep(1);
-    expect(events, <String>['down#1', 'up#1']);
-    expect(recognizedRelease, isFalse);
-  });
+      serial.addPointer(down1);
+      release.addPointer(down1);
+      tester.closeArena(1);
+      tester.route(down1);
+      tester.route(up1);
+      GestureBinding.instance.gestureArena.sweep(1);
+      expect(events, <String>['down#1', 'up#1']);
+      expect(recognizedRelease, isFalse);
+    },
+  );
 
-  testGesture('Fires cancel if competing recognizer declares victory', (GestureTester tester) {
-    final WinningGestureRecognizer winner = WinningGestureRecognizer();
-    winner.addPointer(down1);
-    serial.addPointer(down1);
-    tester.closeArena(1);
-    tester.route(down1);
-    tester.route(up1);
-    GestureBinding.instance.gestureArena.sweep(1);
-    expect(events, <String>['down#1', 'cancel#1']);
-  });
+  testGesture(
+    'Fires cancel if competing recognizer declares victory',
+    (GestureTester tester) {
+      final WinningGestureRecognizer winner = WinningGestureRecognizer();
+      winner.addPointer(down1);
+      serial.addPointer(down1);
+      tester.closeArena(1);
+      tester.route(down1);
+      tester.route(up1);
+      GestureBinding.instance.gestureArena.sweep(1);
+      expect(events, <String>['down#1', 'cancel#1']);
+    },
+  );
 
-  testGesture('Wins over double-tap recognizer below it in the tree', (GestureTester tester) {
-    bool recognizedDoubleTap = false;
-    final DoubleTapGestureRecognizer doubleTap = DoubleTapGestureRecognizer()
-      ..onDoubleTap = () {
-        recognizedDoubleTap = true;
-      };
+  testGesture(
+    'Wins over double-tap recognizer below it in the tree',
+    (GestureTester tester) {
+      bool recognizedDoubleTap = false;
+      final DoubleTapGestureRecognizer doubleTap = DoubleTapGestureRecognizer()
+        ..onDoubleTap = () {
+          recognizedDoubleTap = true;
+        };
 
-    doubleTap.addPointer(down1);
-    serial.addPointer(down1);
-    tester.closeArena(1);
-    tester.route(down1);
-    tester.route(up1);
-    GestureBinding.instance.gestureArena.sweep(1);
-    expect(events, <String>['down#1', 'up#1']);
-    expect(recognizedDoubleTap, isFalse);
+      doubleTap.addPointer(down1);
+      serial.addPointer(down1);
+      tester.closeArena(1);
+      tester.route(down1);
+      tester.route(up1);
+      GestureBinding.instance.gestureArena.sweep(1);
+      expect(events, <String>['down#1', 'up#1']);
+      expect(recognizedDoubleTap, isFalse);
 
-    events.clear();
-    tester.async.elapse(kSerialTapDelay);
-    doubleTap.addPointer(down2);
-    serial.addPointer(down2);
-    tester.closeArena(2);
-    tester.route(down2);
-    tester.route(up2);
-    GestureBinding.instance.gestureArena.sweep(2);
-    expect(events, <String>['down#2', 'up#2']);
-    expect(recognizedDoubleTap, isFalse);
+      events.clear();
+      tester.async.elapse(kSerialTapDelay);
+      doubleTap.addPointer(down2);
+      serial.addPointer(down2);
+      tester.closeArena(2);
+      tester.route(down2);
+      tester.route(up2);
+      GestureBinding.instance.gestureArena.sweep(2);
+      expect(events, <String>['down#2', 'up#2']);
+      expect(recognizedDoubleTap, isFalse);
 
-    events.clear();
-    tester.async.elapse(kSerialTapDelay);
-    serial.addPointer(down3);
-    tester.closeArena(3);
-    tester.route(down3);
-    tester.route(up3);
-    GestureBinding.instance.gestureArena.sweep(3);
-    expect(events, <String>['down#3', 'up#3']);
-  });
+      events.clear();
+      tester.async.elapse(kSerialTapDelay);
+      serial.addPointer(down3);
+      tester.closeArena(3);
+      tester.route(down3);
+      tester.route(up3);
+      GestureBinding.instance.gestureArena.sweep(3);
+      expect(events, <String>['down#3', 'up#3']);
+    },
+  );
 
-  testGesture('Wins over double-tap recognizer above it in the tree', (GestureTester tester) {
-    bool recognizedDoubleTap = false;
-    final DoubleTapGestureRecognizer doubleTap = DoubleTapGestureRecognizer()
-      ..onDoubleTap = () {
-        recognizedDoubleTap = true;
-      };
+  testGesture(
+    'Wins over double-tap recognizer above it in the tree',
+    (GestureTester tester) {
+      bool recognizedDoubleTap = false;
+      final DoubleTapGestureRecognizer doubleTap = DoubleTapGestureRecognizer()
+        ..onDoubleTap = () {
+          recognizedDoubleTap = true;
+        };
 
-    serial.addPointer(down1);
-    doubleTap.addPointer(down1);
-    tester.closeArena(1);
-    tester.route(down1);
-    tester.route(up1);
-    GestureBinding.instance.gestureArena.sweep(1);
-    expect(events, <String>['down#1', 'up#1']);
-    expect(recognizedDoubleTap, isFalse);
+      serial.addPointer(down1);
+      doubleTap.addPointer(down1);
+      tester.closeArena(1);
+      tester.route(down1);
+      tester.route(up1);
+      GestureBinding.instance.gestureArena.sweep(1);
+      expect(events, <String>['down#1', 'up#1']);
+      expect(recognizedDoubleTap, isFalse);
 
-    events.clear();
-    tester.async.elapse(kSerialTapDelay);
-    serial.addPointer(down2);
-    doubleTap.addPointer(down2);
-    tester.closeArena(2);
-    tester.route(down2);
-    tester.route(up2);
-    GestureBinding.instance.gestureArena.sweep(2);
-    expect(events, <String>['down#2', 'up#2']);
-    expect(recognizedDoubleTap, isFalse);
+      events.clear();
+      tester.async.elapse(kSerialTapDelay);
+      serial.addPointer(down2);
+      doubleTap.addPointer(down2);
+      tester.closeArena(2);
+      tester.route(down2);
+      tester.route(up2);
+      GestureBinding.instance.gestureArena.sweep(2);
+      expect(events, <String>['down#2', 'up#2']);
+      expect(recognizedDoubleTap, isFalse);
 
-    events.clear();
-    tester.async.elapse(kSerialTapDelay);
-    serial.addPointer(down3);
-    doubleTap.addPointer(down3);
-    tester.closeArena(3);
-    tester.route(down3);
-    tester.route(up3);
-    GestureBinding.instance.gestureArena.sweep(3);
-    expect(events, <String>['down#3', 'up#3']);
-  });
+      events.clear();
+      tester.async.elapse(kSerialTapDelay);
+      serial.addPointer(down3);
+      doubleTap.addPointer(down3);
+      tester.closeArena(3);
+      tester.route(down3);
+      tester.route(up3);
+      GestureBinding.instance.gestureArena.sweep(3);
+      expect(events, <String>['down#3', 'up#3']);
+    },
+  );
 
-  testGesture('Fires cancel and resets for PointerCancelEvent', (GestureTester tester) {
-    serial.addPointer(down1);
-    tester.closeArena(1);
-    tester.route(down1);
-    tester.route(cancel1);
-    GestureBinding.instance.gestureArena.sweep(1);
-    expect(events, <String>['down#1', 'cancel#1']);
+  testGesture(
+    'Fires cancel and resets for PointerCancelEvent',
+    (GestureTester tester) {
+      serial.addPointer(down1);
+      tester.closeArena(1);
+      tester.route(down1);
+      tester.route(cancel1);
+      GestureBinding.instance.gestureArena.sweep(1);
+      expect(events, <String>['down#1', 'cancel#1']);
 
-    events.clear();
-    tester.async.elapse(const Duration(milliseconds: 100));
-    serial.addPointer(down2);
-    tester.closeArena(2);
-    tester.route(down2);
-    tester.route(up2);
-    GestureBinding.instance.gestureArena.sweep(2);
-    expect(events, <String>['down#1', 'up#1']);
-  });
+      events.clear();
+      tester.async.elapse(const Duration(milliseconds: 100));
+      serial.addPointer(down2);
+      tester.closeArena(2);
+      tester.route(down2);
+      tester.route(up2);
+      GestureBinding.instance.gestureArena.sweep(2);
+      expect(events, <String>['down#1', 'up#1']);
+    },
+  );
 
-  testGesture('Fires cancel and resets when pointer dragged past slop tolerance', (GestureTester tester) {
-    serial.addPointer(down5);
-    tester.closeArena(5);
-    tester.route(down5);
-    tester.route(move5);
-    tester.route(up5);
-    GestureBinding.instance.gestureArena.sweep(5);
-    expect(events, <String>['down#1', 'cancel#1']);
+  testGesture(
+    'Fires cancel and resets when pointer dragged past slop tolerance',
+    (GestureTester tester) {
+      serial.addPointer(down5);
+      tester.closeArena(5);
+      tester.route(down5);
+      tester.route(move5);
+      tester.route(up5);
+      GestureBinding.instance.gestureArena.sweep(5);
+      expect(events, <String>['down#1', 'cancel#1']);
 
-    events.clear();
-    tester.async.elapse(const Duration(milliseconds: 1000));
-    serial.addPointer(down1);
-    tester.closeArena(1);
-    tester.route(down1);
-    tester.route(up1);
-    GestureBinding.instance.gestureArena.sweep(1);
-    expect(events, <String>['down#1', 'up#1']);
-  });
+      events.clear();
+      tester.async.elapse(const Duration(milliseconds: 1000));
+      serial.addPointer(down1);
+      tester.closeArena(1);
+      tester.route(down1);
+      tester.route(up1);
+      GestureBinding.instance.gestureArena.sweep(1);
+      expect(events, <String>['down#1', 'up#1']);
+    },
+  );
 
   testGesture('Resets if times out in between taps', (GestureTester tester) {
     serial.addPointer(down1);
@@ -374,39 +397,45 @@ void main() {
     expect(events, <String>['down#1', 'up#1']);
   });
 
-  testGesture('Serial taps with different buttons will start a new tap sequence', (GestureTester tester) {
-    serial.addPointer(down1);
-    tester.closeArena(1);
-    tester.route(down1);
-    tester.route(up1);
-    GestureBinding.instance.gestureArena.sweep(1);
-    expect(events, <String>['down#1', 'up#1']);
+  testGesture(
+    'Serial taps with different buttons will start a new tap sequence',
+    (GestureTester tester) {
+      serial.addPointer(down1);
+      tester.closeArena(1);
+      tester.route(down1);
+      tester.route(up1);
+      GestureBinding.instance.gestureArena.sweep(1);
+      expect(events, <String>['down#1', 'up#1']);
 
-    events.clear();
-    tester.async.elapse(const Duration(milliseconds: 1000));
-    serial.addPointer(down6);
-    tester.closeArena(6);
-    tester.route(down6);
-    tester.route(up6);
-    GestureBinding.instance.gestureArena.sweep(6);
-    expect(events, <String>['down#1', 'up#1']);
-  });
+      events.clear();
+      tester.async.elapse(const Duration(milliseconds: 1000));
+      serial.addPointer(down6);
+      tester.closeArena(6);
+      tester.route(down6);
+      tester.route(up6);
+      GestureBinding.instance.gestureArena.sweep(6);
+      expect(events, <String>['down#1', 'up#1']);
+    },
+  );
 
-  testGesture('Interleaving taps cancel first sequence and start second sequence', (GestureTester tester) {
-    serial.addPointer(down1);
-    tester.closeArena(1);
-    tester.route(down1);
+  testGesture(
+    'Interleaving taps cancel first sequence and start second sequence',
+    (GestureTester tester) {
+      serial.addPointer(down1);
+      tester.closeArena(1);
+      tester.route(down1);
 
-    serial.addPointer(down2);
-    tester.closeArena(2);
-    tester.route(down2);
+      serial.addPointer(down2);
+      tester.closeArena(2);
+      tester.route(down2);
 
-    tester.route(up1);
-    GestureBinding.instance.gestureArena.sweep(1);
-    tester.route(up2);
-    GestureBinding.instance.gestureArena.sweep(2);
-    expect(events, <String>['down#1', 'cancel#1', 'down#1', 'up#1']);
-  });
+      tester.route(up1);
+      GestureBinding.instance.gestureArena.sweep(1);
+      tester.route(up2);
+      GestureBinding.instance.gestureArena.sweep(2);
+      expect(events, <String>['down#1', 'cancel#1', 'down#1', 'up#1']);
+    },
+  );
 
   testGesture('Is no-op if no callbacks are specified', (GestureTester tester) {
     serial = SerialTapGestureRecognizer();

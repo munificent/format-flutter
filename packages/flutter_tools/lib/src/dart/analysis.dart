@@ -92,8 +92,10 @@ class AnalysisServer {
       'subscriptions': <String>['STATUS'],
     });
 
-    _sendCommand('analysis.setAnalysisRoots',
-        <String, dynamic>{'included': directories, 'excluded': <String>[]});
+    _sendCommand('analysis.setAnalysisRoots', <String, dynamic>{
+      'included': directories,
+      'excluded': <String>[],
+    });
   }
 
   final List<String> _logs = <String>[];
@@ -162,9 +164,13 @@ class AnalysisServer {
         }
       } else if (response['error'] != null) {
         // Fields are 'code', 'message', and 'stackTrace'.
-        final Map<String, dynamic> error = castStringKeyedMap(response['error'])!;
+        final Map<String, dynamic> error =
+            castStringKeyedMap(response['error'])!;
         _logger.printError(
-            'Error response from the server: ${error['code']} ${error['message']}');
+          'Error response from the server: ${error['code']} ${error[
+            'message'
+          ]}',
+        );
         if (error['stackTrace'] != null) {
           _logger.printError(error['stackTrace'] as String);
         }
@@ -175,7 +181,8 @@ class AnalysisServer {
   void _handleStatus(Map<String, dynamic> statusInfo) {
     // {"event":"server.status","params":{"analysis":{"isAnalyzing":true}}}
     if (statusInfo['analysis'] != null && !_analyzingController.isClosed) {
-      final bool isAnalyzing = (statusInfo['analysis'] as Map<String, dynamic>)['isAnalyzing'] as bool;
+      final bool isAnalyzing = (statusInfo['analysis']
+          as Map<String, dynamic>)['isAnalyzing'] as bool;
       _analyzingController.add(isAnalyzing);
     }
   }
@@ -194,9 +201,12 @@ class AnalysisServer {
     final String file = issueInfo['file'] as String;
     final List<dynamic> errorsList = issueInfo['errors'] as List<dynamic>;
     final List<AnalysisError> errors = errorsList
-        .map<Map<String, dynamic>>((dynamic e) => castStringKeyedMap(e) ?? <String, dynamic>{})
+        .map<Map<String, dynamic>>(
+          (dynamic e) => castStringKeyedMap(e) ?? <String, dynamic>{},
+        )
         .map<AnalysisError>((Map<String, dynamic> json) {
-          return AnalysisError(WrittenError.fromJson(json),
+          return AnalysisError(
+            WrittenError.fromJson(json),
             fileSystem: _fileSystem,
             platform: _platform,
             terminal: _terminal,
@@ -215,12 +225,7 @@ class AnalysisServer {
   }
 }
 
-enum AnalysisSeverity {
-  error,
-  warning,
-  info,
-  none,
-}
+enum AnalysisSeverity { error, warning, info, none }
 
 /// [AnalysisError] with command line style.
 class AnalysisError implements Comparable<AnalysisError> {
@@ -282,7 +287,9 @@ class AnalysisError implements Comparable<AnalysisError> {
     final String padding = ' ' * math.max(0, 7 - writtenError.severity.length);
     return '$padding${colorSeverity.toLowerCase()} $_separator '
         '${writtenError.messageSentenceFragment} $_separator '
-        '${_fileSystem.path.relative(writtenError.file)}:${writtenError.startLine}:${writtenError.startColumn} $_separator '
+        '${_fileSystem.path.relative(
+          writtenError.file,
+        )}:${writtenError.startLine}:${writtenError.startColumn} $_separator '
         '$code';
   }
 
@@ -318,7 +325,8 @@ class WrittenError {
   ///      "hasFix":false
   ///  }
   static WrittenError fromJson(Map<String, dynamic> json) {
-    final Map<String, dynamic> location = json['location'] as Map<String, dynamic>;
+    final Map<String, dynamic> location =
+        json['location'] as Map<String, dynamic>;
     return WrittenError._(
       severity: json['severity'] as String,
       type: json['type'] as String,
@@ -341,7 +349,8 @@ class WrittenError {
   final int startColumn;
   final int offset;
 
-  static final Map<String, AnalysisSeverity> _severityMap = <String, AnalysisSeverity>{
+  static final Map<String, AnalysisSeverity> _severityMap =
+      <String, AnalysisSeverity>{
     'INFO': AnalysisSeverity.info,
     'WARNING': AnalysisSeverity.warning,
     'ERROR': AnalysisSeverity.error,

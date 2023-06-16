@@ -31,30 +31,39 @@ void main() {
     final BasicProject project = BasicProject();
     await project.setUpIn(tempDir);
 
-    final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
-
-    const ProcessManager processManager = LocalProcessManager();
-    daemonProcess = await processManager.start(
-      <String>[flutterBin, ...getLocalEngineArguments(), '--show-test-device', 'daemon'],
-      workingDirectory: tempDir.path,
+    final String flutterBin = fileSystem.path.join(
+      getFlutterRoot(),
+      'bin',
+      'flutter',
     );
 
-    final StreamController<String> stdout = StreamController<String>.broadcast();
-    transformToLines(daemonProcess.stdout).listen((String line) => stdout.add(line));
-    final Stream<Map<String, Object?>?> stream = stdout
-      .stream
-      .map<Map<String, Object?>?>(parseFlutterResponse)
-      .where((Map<String, Object?>? value) => value != null);
+    const ProcessManager processManager = LocalProcessManager();
+    daemonProcess = await processManager.start(<String>[
+      flutterBin,
+      ...getLocalEngineArguments(),
+      '--show-test-device',
+      'daemon',
+    ], workingDirectory: tempDir.path);
+
+    final StreamController<String> stdout =
+        StreamController<String>.broadcast();
+    transformToLines(daemonProcess.stdout).listen(
+      (String line) => stdout.add(line),
+    );
+    final Stream<Map<String, Object?>?> stream = stdout.stream
+        .map<Map<String, Object?>?>(parseFlutterResponse)
+        .where((Map<String, Object?>? value) => value != null);
 
     Map<String, Object?> response = (await stream.first)!;
     expect(response['event'], 'daemon.connected');
 
     // start listening for devices
-    daemonProcess.stdin.writeln('[${jsonEncode(<String, dynamic>{
-      'id': 1,
-      'method': 'device.enable',
-    })}]');
-    response = (await stream.firstWhere((Map<String, Object?>? json) => json!['id'] == 1))!;
+    daemonProcess.stdin.writeln(
+      '[${jsonEncode(<String, dynamic>{'id': 1, 'method': 'device.enable'})}]',
+    );
+    response = (await stream.firstWhere(
+      (Map<String, Object?>? json) => json!['id'] == 1,
+    ))!;
     expect(response['id'], 1);
     expect(response['error'], isNull);
 
@@ -64,12 +73,16 @@ void main() {
     expect(response['event'], 'device.added');
 
     // get the list of all devices
-    daemonProcess.stdin.writeln('[${jsonEncode(<String, dynamic>{
-      'id': 2,
-      'method': 'device.getDevices',
-    })}]');
+    daemonProcess.stdin.writeln(
+      '[${jsonEncode(<String, dynamic>{
+            'id': 2,
+            'method': 'device.getDevices',
+          })}]',
+    );
     // Skip other device.added events that may fire (desktop/web devices).
-    response = (await stream.firstWhere((Map<String, Object?>? response) => response!['event'] != 'device.added'))!;
+    response = (await stream.firstWhere(
+      (Map<String, Object?>? response) => response!['event'] != 'device.added',
+    ))!;
     expect(response['id'], 2);
     expect(response['error'], isNull);
 

@@ -10,44 +10,59 @@ import 'package:flutter_test/flutter_test.dart';
 PopupMenuThemeData _popupMenuThemeM2() {
   return PopupMenuThemeData(
     color: Colors.orange,
-    shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+    shape: const BeveledRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(12)),
+    ),
     elevation: 12.0,
-    textStyle: const TextStyle(color: Color(0xffffffff), textBaseline: TextBaseline.alphabetic),
-    mouseCursor: MaterialStateProperty.resolveWith<MouseCursor?>((Set<MaterialState> states) {
-      if (states.contains(MaterialState.disabled)) {
-        return SystemMouseCursors.contextMenu;
-      }
-      return SystemMouseCursors.alias;
-    }),
+    textStyle: const TextStyle(
+      color: Color(0xffffffff),
+      textBaseline: TextBaseline.alphabetic,
+    ),
+    mouseCursor: MaterialStateProperty.resolveWith<MouseCursor?>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return SystemMouseCursors.contextMenu;
+        }
+        return SystemMouseCursors.alias;
+      },
+    ),
   );
 }
 
 PopupMenuThemeData _popupMenuThemeM3() {
   return PopupMenuThemeData(
     color: Colors.orange,
-    shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+    shape: const BeveledRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(12)),
+    ),
     elevation: 12.0,
     shadowColor: const Color(0xff00ff00),
     surfaceTintColor: const Color(0xff00ff00),
-    labelTextStyle: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
-      if (states.contains(MaterialState.disabled)) {
-        return const TextStyle(color: Color(0xfff99ff0), fontSize: 12.0);
-      }
-      return const TextStyle(color: Color(0xfff12099), fontSize: 17.0);
-    }),
-    mouseCursor: MaterialStateProperty.resolveWith<MouseCursor?>((Set<MaterialState> states) {
-      if (states.contains(MaterialState.disabled)) {
-        return SystemMouseCursors.contextMenu;
-      }
-      return SystemMouseCursors.alias;
-    }),
+    labelTextStyle:
+        MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return const TextStyle(color: Color(0xfff99ff0), fontSize: 12.0);
+          }
+          return const TextStyle(color: Color(0xfff12099), fontSize: 17.0);
+        }),
+    mouseCursor: MaterialStateProperty.resolveWith<MouseCursor?>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return SystemMouseCursors.contextMenu;
+        }
+        return SystemMouseCursors.alias;
+      },
+    ),
   );
 }
 
 void main() {
   test('PopupMenuThemeData copyWith, ==, hashCode basics', () {
     expect(const PopupMenuThemeData(), const PopupMenuThemeData().copyWith());
-    expect(const PopupMenuThemeData().hashCode, const PopupMenuThemeData().copyWith().hashCode);
+    expect(
+      const PopupMenuThemeData().hashCode,
+      const PopupMenuThemeData().copyWith().hashCode,
+    );
   });
 
   test('PopupMenuThemeData lerp special cases', () {
@@ -69,7 +84,9 @@ void main() {
     expect(popupMenuTheme.mouseCursor, null);
   });
 
-  testWidgets('Default PopupMenuThemeData debugFillProperties', (WidgetTester tester) async {
+  testWidgets('Default PopupMenuThemeData debugFillProperties', (
+    WidgetTester tester,
+  ) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     const PopupMenuThemeData().debugFillProperties(builder);
 
@@ -81,21 +98,26 @@ void main() {
     expect(description, <String>[]);
   });
 
-  testWidgets('PopupMenuThemeData implements debugFillProperties', (WidgetTester tester) async {
+  testWidgets('PopupMenuThemeData implements debugFillProperties', (
+    WidgetTester tester,
+  ) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
-     PopupMenuThemeData(
+    PopupMenuThemeData(
       color: const Color(0xFFFFFFFF),
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(2.0))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(2.0)),
+      ),
       elevation: 2.0,
       shadowColor: const Color(0xff00ff00),
       surfaceTintColor: const Color(0xff00ff00),
       textStyle: const TextStyle(color: Color(0xffffffff)),
-      labelTextStyle: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
-        if (states.contains(MaterialState.disabled)) {
-          return const TextStyle(color: Color(0xfff99ff0), fontSize: 12.0);
-        }
-        return const TextStyle(color: Color(0xfff12099), fontSize: 17.0);
-      }),
+      labelTextStyle:
+          MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return const TextStyle(color: Color(0xfff99ff0), fontSize: 12.0);
+            }
+            return const TextStyle(color: Color(0xfff12099), fontSize: 17.0);
+          }),
       mouseCursor: MaterialStateMouseCursor.clickable,
     ).debugFillProperties(builder);
 
@@ -116,108 +138,123 @@ void main() {
     ]);
   });
 
-  testWidgets('Passing no PopupMenuThemeData returns defaults', (WidgetTester tester) async {
-    final Key popupButtonKey = UniqueKey();
-    final Key popupButtonApp = UniqueKey();
-    final Key enabledPopupItemKey = UniqueKey();
-    final Key disabledPopupItemKey = UniqueKey();
-    final ThemeData theme = ThemeData(useMaterial3: true);
+  testWidgets(
+    'Passing no PopupMenuThemeData returns defaults',
+    (WidgetTester tester) async {
+      final Key popupButtonKey = UniqueKey();
+      final Key popupButtonApp = UniqueKey();
+      final Key enabledPopupItemKey = UniqueKey();
+      final Key disabledPopupItemKey = UniqueKey();
+      final ThemeData theme = ThemeData(useMaterial3: true);
 
-    await tester.pumpWidget(MaterialApp(
-      theme: theme,
-      key: popupButtonApp,
-      home: Material(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              // The padding makes sure the menu has enough space around it to
-              // get properly aligned when displayed (`_kMenuScreenPadding`).
-              padding: const EdgeInsets.all(8.0),
-              child: PopupMenuButton<void>(
-                key: popupButtonKey,
-                itemBuilder: (BuildContext context) {
-                  return <PopupMenuEntry<void>>[
-                    PopupMenuItem<void>(
-                      key: enabledPopupItemKey,
-                      child: const Text('Enabled PopupMenuItem'),
-                    ),
-                    const PopupMenuDivider(),
-                    PopupMenuItem<void>(
-                      key: disabledPopupItemKey,
-                      enabled: false,
-                      child: const Text('Disabled PopupMenuItem'),
-                    ),
-                  ];
-                },
+      await tester.pumpWidget(MaterialApp(
+        theme: theme,
+        key: popupButtonApp,
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              Padding(
+                // The padding makes sure the menu has enough space around it to
+                // get properly aligned when displayed (`_kMenuScreenPadding`).
+                padding: const EdgeInsets.all(8.0),
+                child: PopupMenuButton<void>(
+                  key: popupButtonKey,
+                  itemBuilder: (BuildContext context) {
+                    return <PopupMenuEntry<void>>[
+                      PopupMenuItem<void>(
+                        key: enabledPopupItemKey,
+                        child: const Text('Enabled PopupMenuItem'),
+                      ),
+                      const PopupMenuDivider(),
+                      PopupMenuItem<void>(
+                        key: disabledPopupItemKey,
+                        enabled: false,
+                        child: const Text('Disabled PopupMenuItem'),
+                      ),
+                    ];
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ));
+      ));
 
-    await tester.tap(find.byKey(popupButtonKey));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byKey(popupButtonKey));
+      await tester.pumpAndSettle();
 
-    /// The last Material widget under popupButtonApp is the [PopupMenuButton]
-    /// specified above, so by finding the last descendent of popupButtonApp
-    /// that is of type Material, this code retrieves the built
-    /// [PopupMenuButton].
-    final Material button = tester.widget<Material>(
-      find.descendant(
-        of: find.byKey(popupButtonApp),
-        matching: find.byType(Material),
-      ).last,
-    );
-    expect(button.color, theme.colorScheme.surface);
-    expect(button.shadowColor, theme.colorScheme.shadow);
-    expect(button.surfaceTintColor, theme.colorScheme.surfaceTint);
-    expect(button.shape, RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)));
-    expect(button.elevation, 3.0);
+      /// The last Material widget under popupButtonApp is the [PopupMenuButton]
+      /// specified above, so by finding the last descendent of popupButtonApp
+      /// that is of type Material, this code retrieves the built
+      /// [PopupMenuButton].
+      final Material button = tester.widget<Material>(
+        find.descendant(
+          of: find.byKey(popupButtonApp),
+          matching: find.byType(Material),
+        ).last,
+      );
+      expect(button.color, theme.colorScheme.surface);
+      expect(button.shadowColor, theme.colorScheme.shadow);
+      expect(button.surfaceTintColor, theme.colorScheme.surfaceTint);
+      expect(
+        button.shape,
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+      );
+      expect(button.elevation, 3.0);
 
-    /// The last DefaultTextStyle widget under popupItemKey is the
-    /// [PopupMenuItem] specified above, so by finding the last descendent of
-    /// popupItemKey that is of type DefaultTextStyle, this code retrieves the
-    /// built [PopupMenuItem].
-    final DefaultTextStyle enabledText = tester.widget<DefaultTextStyle>(
-      find.descendant(
-        of: find.byKey(enabledPopupItemKey),
-        matching: find.byType(DefaultTextStyle),
-      ).last,
-    );
-    expect(enabledText.style.fontFamily, 'Roboto');
-    expect(enabledText.style.color, theme.colorScheme.onSurface);
-    /// Test disabled text color
-    final DefaultTextStyle disabledText = tester.widget<DefaultTextStyle>(
-      find.descendant(
-        of: find.byKey(disabledPopupItemKey),
-        matching: find.byType(DefaultTextStyle),
-      ).last,
-    );
-    expect(disabledText.style.color, theme.colorScheme.onSurface.withOpacity(0.38));
+      /// The last DefaultTextStyle widget under popupItemKey is the
+      /// [PopupMenuItem] specified above, so by finding the last descendent of
+      /// popupItemKey that is of type DefaultTextStyle, this code retrieves the
+      /// built [PopupMenuItem].
+      final DefaultTextStyle enabledText = tester.widget<DefaultTextStyle>(
+        find.descendant(
+          of: find.byKey(enabledPopupItemKey),
+          matching: find.byType(DefaultTextStyle),
+        ).last,
+      );
+      expect(enabledText.style.fontFamily, 'Roboto');
+      expect(enabledText.style.color, theme.colorScheme.onSurface);
 
-    final Offset topLeftButton = tester.getTopLeft(find.byType(PopupMenuButton<void>));
-    final Offset topLeftMenu = tester.getTopLeft(find.byWidget(button));
-    expect(topLeftMenu, topLeftButton);
+      /// Test disabled text color
+      final DefaultTextStyle disabledText = tester.widget<DefaultTextStyle>(
+        find.descendant(
+          of: find.byKey(disabledPopupItemKey),
+          matching: find.byType(DefaultTextStyle),
+        ).last,
+      );
+      expect(
+        disabledText.style.color,
+        theme.colorScheme.onSurface.withOpacity(0.38),
+      );
 
-    final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer();
-    addTearDown(gesture.removePointer);
-    await gesture.moveTo(tester.getCenter(find.byKey(disabledPopupItemKey)));
-    await tester.pumpAndSettle();
-    expect(
-      RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
-      SystemMouseCursors.basic,
-    );
-    await gesture.down(tester.getCenter(find.byKey(enabledPopupItemKey)));
-    await tester.pumpAndSettle();
-    expect(
-      RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
-      SystemMouseCursors.click,
-    );
-  });
+      final Offset topLeftButton = tester.getTopLeft(
+        find.byType(PopupMenuButton<void>),
+      );
+      final Offset topLeftMenu = tester.getTopLeft(find.byWidget(button));
+      expect(topLeftMenu, topLeftButton);
 
-  testWidgets('Popup menu uses values from PopupMenuThemeData', (WidgetTester tester) async {
+      final TestGesture gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer();
+      addTearDown(gesture.removePointer);
+      await gesture.moveTo(tester.getCenter(find.byKey(disabledPopupItemKey)));
+      await tester.pumpAndSettle();
+      expect(
+        RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
+        SystemMouseCursors.basic,
+      );
+      await gesture.down(tester.getCenter(find.byKey(enabledPopupItemKey)));
+      await tester.pumpAndSettle();
+      expect(
+        RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
+        SystemMouseCursors.click,
+      );
+    },
+  );
+
+  testWidgets('Popup menu uses values from PopupMenuThemeData', (
+    WidgetTester tester,
+  ) async {
     final PopupMenuThemeData popupMenuTheme = _popupMenuThemeM3();
     final Key popupButtonKey = UniqueKey();
     final Key popupButtonApp = UniqueKey();
@@ -246,7 +283,7 @@ void main() {
                   const PopupMenuDivider(),
                   PopupMenuItem<Object>(
                     key: enabledPopupItemKey,
-                    onTap: () { },
+                    onTap: () {},
                     child: const Text('enabled'),
                   ),
                 ];
@@ -273,7 +310,12 @@ void main() {
     expect(button.color, Colors.orange);
     expect(button.surfaceTintColor, const Color(0xff00ff00));
     expect(button.shadowColor, const Color(0xff00ff00));
-    expect(button.shape, const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))));
+    expect(
+      button.shape,
+      const BeveledRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+    );
     expect(button.elevation, 12.0);
 
     final DefaultTextStyle enabledText = tester.widget<DefaultTextStyle>(
@@ -282,10 +324,8 @@ void main() {
         matching: find.byType(DefaultTextStyle),
       ).last,
     );
-    expect(
-      enabledText.style,
-      popupMenuTheme.labelTextStyle?.resolve(enabled),
-    );
+    expect(enabledText.style, popupMenuTheme.labelTextStyle?.resolve(enabled));
+
     /// Test disabled text color
     final DefaultTextStyle disabledText = tester.widget<DefaultTextStyle>(
       find.descendant(
@@ -298,7 +338,8 @@ void main() {
       popupMenuTheme.labelTextStyle?.resolve(disabled),
     );
 
-    final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    final TestGesture gesture =
+        await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer();
     addTearDown(gesture.removePointer);
     await gesture.moveTo(tester.getCenter(find.byKey(disabledPopupItemKey)));
@@ -315,97 +356,110 @@ void main() {
     );
   });
 
-  testWidgets('Popup menu widget properties take priority over theme', (WidgetTester tester) async {
-    final PopupMenuThemeData popupMenuTheme = _popupMenuThemeM3();
-    final Key popupButtonKey = UniqueKey();
-    final Key popupButtonApp = UniqueKey();
-    final Key popupItemKey = UniqueKey();
+  testWidgets(
+    'Popup menu widget properties take priority over theme',
+    (WidgetTester tester) async {
+      final PopupMenuThemeData popupMenuTheme = _popupMenuThemeM3();
+      final Key popupButtonKey = UniqueKey();
+      final Key popupButtonApp = UniqueKey();
+      final Key popupItemKey = UniqueKey();
 
-    const Color color = Colors.purple;
-    const Color surfaceTintColor = Colors.amber;
-    const Color shadowColor = Colors.green;
-    const ShapeBorder shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(9.0)),
-    );
-    const double elevation = 7.0;
-    const TextStyle textStyle = TextStyle(color: Color(0xffffffef), fontSize: 19.0);
-    const MouseCursor cursor =  SystemMouseCursors.forbidden;
+      const Color color = Colors.purple;
+      const Color surfaceTintColor = Colors.amber;
+      const Color shadowColor = Colors.green;
+      const ShapeBorder shape = RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(9.0)),
+      );
+      const double elevation = 7.0;
+      const TextStyle textStyle = TextStyle(
+        color: Color(0xffffffef),
+        fontSize: 19.0,
+      );
+      const MouseCursor cursor = SystemMouseCursors.forbidden;
 
-    await tester.pumpWidget(MaterialApp(
-      theme: ThemeData(useMaterial3: true, popupMenuTheme: popupMenuTheme),
-      key: popupButtonApp,
-      home: Material(
-        child: Column(
-          children: <Widget>[
-            PopupMenuButton<void>(
-              key: popupButtonKey,
-              elevation: elevation,
-              shadowColor: shadowColor,
-              surfaceTintColor: surfaceTintColor,
-              color: color,
-              shape: shape,
-              itemBuilder: (BuildContext context) {
-                return <PopupMenuEntry<void>>[
-                  PopupMenuItem<void>(
-                    key: popupItemKey,
-                    labelTextStyle: MaterialStateProperty.all<TextStyle>(textStyle),
-                    mouseCursor: cursor,
-                    child: const Text('Example'),
-                  ),
-                ];
-              },
-            ),
-          ],
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(useMaterial3: true, popupMenuTheme: popupMenuTheme),
+        key: popupButtonApp,
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              PopupMenuButton<void>(
+                key: popupButtonKey,
+                elevation: elevation,
+                shadowColor: shadowColor,
+                surfaceTintColor: surfaceTintColor,
+                color: color,
+                shape: shape,
+                itemBuilder: (BuildContext context) {
+                  return <PopupMenuEntry<void>>[
+                    PopupMenuItem<void>(
+                      key: popupItemKey,
+                      labelTextStyle:
+                          MaterialStateProperty.all<TextStyle>(textStyle),
+                      mouseCursor: cursor,
+                      child: const Text('Example'),
+                    ),
+                  ];
+                },
+              ),
+            ],
+          ),
         ),
-      ),
-    ));
+      ));
 
-    await tester.tap(find.byKey(popupButtonKey));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byKey(popupButtonKey));
+      await tester.pumpAndSettle();
 
-    /// The last Material widget under popupButtonApp is the [PopupMenuButton]
-    /// specified above, so by finding the last descendent of popupButtonApp
-    /// that is of type Material, this code retrieves the built
-    /// [PopupMenuButton].
-    final Material button = tester.widget<Material>(
-      find.descendant(
-        of: find.byKey(popupButtonApp),
-        matching: find.byType(Material),
-      ).last,
-    );
-    expect(button.color, color);
-    expect(button.shape, shape);
-    expect(button.elevation, elevation);
-    expect(button.shadowColor, shadowColor);
-    expect(button.surfaceTintColor, surfaceTintColor);
+      /// The last Material widget under popupButtonApp is the [PopupMenuButton]
+      /// specified above, so by finding the last descendent of popupButtonApp
+      /// that is of type Material, this code retrieves the built
+      /// [PopupMenuButton].
+      final Material button = tester.widget<Material>(
+        find.descendant(
+          of: find.byKey(popupButtonApp),
+          matching: find.byType(Material),
+        ).last,
+      );
+      expect(button.color, color);
+      expect(button.shape, shape);
+      expect(button.elevation, elevation);
+      expect(button.shadowColor, shadowColor);
+      expect(button.surfaceTintColor, surfaceTintColor);
 
-    /// The last DefaultTextStyle widget under popupItemKey is the
-    /// [PopupMenuItem] specified above, so by finding the last descendent of
-    /// popupItemKey that is of type DefaultTextStyle, this code retrieves the
-    /// built [PopupMenuItem].
-    final DefaultTextStyle text = tester.widget<DefaultTextStyle>(
-      find.descendant(
-        of: find.byKey(popupItemKey),
-        matching: find.byType(DefaultTextStyle),
-      ).last,
-    );
-    expect(text.style, textStyle);
+      /// The last DefaultTextStyle widget under popupItemKey is the
+      /// [PopupMenuItem] specified above, so by finding the last descendent of
+      /// popupItemKey that is of type DefaultTextStyle, this code retrieves the
+      /// built [PopupMenuItem].
+      final DefaultTextStyle text = tester.widget<DefaultTextStyle>(
+        find.descendant(
+          of: find.byKey(popupItemKey),
+          matching: find.byType(DefaultTextStyle),
+        ).last,
+      );
+      expect(text.style, textStyle);
 
-    final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer();
-    addTearDown(gesture.removePointer);
-    await gesture.moveTo(tester.getCenter(find.byKey(popupItemKey)));
-    await tester.pumpAndSettle();
-    expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), cursor);
-  });
+      final TestGesture gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer();
+      addTearDown(gesture.removePointer);
+      await gesture.moveTo(tester.getCenter(find.byKey(popupItemKey)));
+      await tester.pumpAndSettle();
+      expect(
+        RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
+        cursor,
+      );
+    },
+  );
 
   group('Material 2', () {
     // These tests are only relevant for Material 2. Once Material 2
     // support is deprecated and the APIs are removed, these tests
     // can be deleted.
 
-    testWidgets('Passing no PopupMenuThemeData returns defaults', (WidgetTester tester) async {
-     final Key popupButtonKey = UniqueKey();
+    testWidgets('Passing no PopupMenuThemeData returns defaults', (
+      WidgetTester tester,
+    ) async {
+      final Key popupButtonKey = UniqueKey();
       final Key popupButtonApp = UniqueKey();
       final Key enabledPopupItemKey = UniqueKey();
       final Key disabledPopupItemKey = UniqueKey();
@@ -418,9 +472,9 @@ void main() {
           child: Column(
             children: <Widget>[
               Padding(
-              // The padding makes sure the menu has enough space around it to
-              // get properly aligned when displayed (`_kMenuScreenPadding`).
-              padding: const EdgeInsets.all(8.0),
+                // The padding makes sure the menu has enough space around it to
+                // get properly aligned when displayed (`_kMenuScreenPadding`).
+                padding: const EdgeInsets.all(8.0),
                 child: PopupMenuButton<void>(
                   key: popupButtonKey,
                   itemBuilder: (BuildContext context) {
@@ -473,6 +527,7 @@ void main() {
       );
       expect(enabledText.style.fontFamily, 'Roboto');
       expect(enabledText.style.color, const Color(0xdd000000));
+
       /// Test disabled text color
       final DefaultTextStyle disabledText = tester.widget<DefaultTextStyle>(
         find.descendant(
@@ -482,11 +537,14 @@ void main() {
       );
       expect(disabledText.style.color, theme.disabledColor);
 
-      final Offset topLeftButton = tester.getTopLeft(find.byType(PopupMenuButton<void>));
+      final Offset topLeftButton = tester.getTopLeft(
+        find.byType(PopupMenuButton<void>),
+      );
       final Offset topLeftMenu = tester.getTopLeft(find.byWidget(button));
       expect(topLeftMenu, topLeftButton);
 
-      final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      final TestGesture gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer();
       addTearDown(gesture.removePointer);
       await gesture.moveTo(tester.getCenter(find.byKey(disabledPopupItemKey)));
@@ -503,7 +561,9 @@ void main() {
       );
     });
 
-    testWidgets('Popup menu uses values from PopupMenuThemeData', (WidgetTester tester) async {
+    testWidgets('Popup menu uses values from PopupMenuThemeData', (
+      WidgetTester tester,
+    ) async {
       final PopupMenuThemeData popupMenuTheme = _popupMenuThemeM2();
       final Key popupButtonKey = UniqueKey();
       final Key popupButtonApp = UniqueKey();
@@ -532,7 +592,7 @@ void main() {
                     const PopupMenuDivider(),
                     PopupMenuItem<Object>(
                       key: enabledPopupItemKey,
-                      onTap: () { },
+                      onTap: () {},
                       child: const Text('enabled'),
                     ),
                   ];
@@ -572,7 +632,8 @@ void main() {
       );
       expect(text.style, popupMenuTheme.textStyle);
 
-      final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      final TestGesture gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer();
       addTearDown(gesture.removePointer);
       await gesture.moveTo(tester.getCenter(find.byKey(disabledPopupItemKey)));
@@ -589,89 +650,100 @@ void main() {
       );
     });
 
-    testWidgets('Popup menu widget properties take priority over theme', (WidgetTester tester) async {
-      final PopupMenuThemeData popupMenuTheme = _popupMenuThemeM2();
-      final Key popupButtonKey = UniqueKey();
-      final Key popupButtonApp = UniqueKey();
-      final Key popupItemKey = UniqueKey();
+    testWidgets(
+      'Popup menu widget properties take priority over theme',
+      (WidgetTester tester) async {
+        final PopupMenuThemeData popupMenuTheme = _popupMenuThemeM2();
+        final Key popupButtonKey = UniqueKey();
+        final Key popupButtonApp = UniqueKey();
+        final Key popupItemKey = UniqueKey();
 
-      const Color color = Colors.purple;
-      const Color surfaceTintColor = Colors.amber;
-      const Color shadowColor = Colors.green;
-      const ShapeBorder shape = RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(9.0)),
-      );
-      const double elevation = 7.0;
-      const TextStyle textStyle = TextStyle(color: Color(0xffffffef), fontSize: 19.0);
-      const MouseCursor cursor =  SystemMouseCursors.forbidden;
+        const Color color = Colors.purple;
+        const Color surfaceTintColor = Colors.amber;
+        const Color shadowColor = Colors.green;
+        const ShapeBorder shape = RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(9.0)),
+        );
+        const double elevation = 7.0;
+        const TextStyle textStyle = TextStyle(
+          color: Color(0xffffffef),
+          fontSize: 19.0,
+        );
+        const MouseCursor cursor = SystemMouseCursors.forbidden;
 
-      await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(useMaterial3: true, popupMenuTheme: popupMenuTheme),
-        key: popupButtonApp,
-        home: Material(
-          child: Column(
-            children: <Widget>[
-              PopupMenuButton<void>(
-                key: popupButtonKey,
-                elevation: elevation,
-                shadowColor: shadowColor,
-                surfaceTintColor: surfaceTintColor,
-                color: color,
-                shape: shape,
-                itemBuilder: (BuildContext context) {
-                  return <PopupMenuEntry<void>>[
-                    PopupMenuItem<void>(
-                      key: popupItemKey,
-                      labelTextStyle: MaterialStateProperty.all<TextStyle>(textStyle),
-                      mouseCursor: cursor,
-                      child: const Text('Example'),
-                    ),
-                  ];
-                },
-              ),
-            ],
+        await tester.pumpWidget(MaterialApp(
+          theme: ThemeData(useMaterial3: true, popupMenuTheme: popupMenuTheme),
+          key: popupButtonApp,
+          home: Material(
+            child: Column(
+              children: <Widget>[
+                PopupMenuButton<void>(
+                  key: popupButtonKey,
+                  elevation: elevation,
+                  shadowColor: shadowColor,
+                  surfaceTintColor: surfaceTintColor,
+                  color: color,
+                  shape: shape,
+                  itemBuilder: (BuildContext context) {
+                    return <PopupMenuEntry<void>>[
+                      PopupMenuItem<void>(
+                        key: popupItemKey,
+                        labelTextStyle:
+                            MaterialStateProperty.all<TextStyle>(textStyle),
+                        mouseCursor: cursor,
+                        child: const Text('Example'),
+                      ),
+                    ];
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
-      ));
+        ));
 
-      await tester.tap(find.byKey(popupButtonKey));
-      await tester.pumpAndSettle();
+        await tester.tap(find.byKey(popupButtonKey));
+        await tester.pumpAndSettle();
 
-      /// The last Material widget under popupButtonApp is the [PopupMenuButton]
-      /// specified above, so by finding the last descendent of popupButtonApp
-      /// that is of type Material, this code retrieves the built
-      /// [PopupMenuButton].
-      final Material button = tester.widget<Material>(
-        find.descendant(
-          of: find.byKey(popupButtonApp),
-          matching: find.byType(Material),
-        ).last,
-      );
-      expect(button.color, color);
-      expect(button.shape, shape);
-      expect(button.elevation, elevation);
-      expect(button.shadowColor, shadowColor);
-      expect(button.surfaceTintColor, surfaceTintColor);
+        /// The last Material widget under popupButtonApp is the [PopupMenuButton]
+        /// specified above, so by finding the last descendent of popupButtonApp
+        /// that is of type Material, this code retrieves the built
+        /// [PopupMenuButton].
+        final Material button = tester.widget<Material>(
+          find.descendant(
+            of: find.byKey(popupButtonApp),
+            matching: find.byType(Material),
+          ).last,
+        );
+        expect(button.color, color);
+        expect(button.shape, shape);
+        expect(button.elevation, elevation);
+        expect(button.shadowColor, shadowColor);
+        expect(button.surfaceTintColor, surfaceTintColor);
 
-      /// The last DefaultTextStyle widget under popupItemKey is the
-      /// [PopupMenuItem] specified above, so by finding the last descendent of
-      /// popupItemKey that is of type DefaultTextStyle, this code retrieves the
-      /// built [PopupMenuItem].
-      final DefaultTextStyle text = tester.widget<DefaultTextStyle>(
-        find.descendant(
-          of: find.byKey(popupItemKey),
-          matching: find.byType(DefaultTextStyle),
-        ).last,
-      );
-      expect(text.style, textStyle);
+        /// The last DefaultTextStyle widget under popupItemKey is the
+        /// [PopupMenuItem] specified above, so by finding the last descendent of
+        /// popupItemKey that is of type DefaultTextStyle, this code retrieves the
+        /// built [PopupMenuItem].
+        final DefaultTextStyle text = tester.widget<DefaultTextStyle>(
+          find.descendant(
+            of: find.byKey(popupItemKey),
+            matching: find.byType(DefaultTextStyle),
+          ).last,
+        );
+        expect(text.style, textStyle);
 
-      final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-      await gesture.addPointer();
-      addTearDown(gesture.removePointer);
-      await gesture.moveTo(tester.getCenter(find.byKey(popupItemKey)));
-      await tester.pumpAndSettle();
-      expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), cursor);
-    });
+        final TestGesture gesture =
+            await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await gesture.addPointer();
+        addTearDown(gesture.removePointer);
+        await gesture.moveTo(tester.getCenter(find.byKey(popupItemKey)));
+        await tester.pumpAndSettle();
+        expect(
+          RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
+          cursor,
+        );
+      },
+    );
   });
 }
 

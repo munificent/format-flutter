@@ -458,7 +458,8 @@ class RadioListTile<T> extends StatelessWidget {
           onChanged: onChanged,
           toggleable: toggleable,
           activeColor: activeColor,
-          materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap,
+          materialTapTargetSize:
+              materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap,
           autofocus: autofocus,
           fillColor: fillColor,
           mouseCursor: mouseCursor,
@@ -473,7 +474,8 @@ class RadioListTile<T> extends StatelessWidget {
           onChanged: onChanged,
           toggleable: toggleable,
           activeColor: activeColor,
-          materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap,
+          materialTapTargetSize:
+              materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap,
           autofocus: autofocus,
           fillColor: fillColor,
           mouseCursor: mouseCursor,
@@ -499,9 +501,9 @@ class RadioListTile<T> extends StatelessWidget {
     final Set<MaterialState> states = <MaterialState>{
       if (selected) MaterialState.selected,
     };
-    final Color effectiveActiveColor = activeColor
-      ?? radioThemeData.fillColor?.resolve(states)
-      ?? theme.colorScheme.secondary;
+    final Color effectiveActiveColor = activeColor ??
+        radioThemeData.fillColor?.resolve(states) ??
+        theme.colorScheme.secondary;
     return MergeSemantics(
       child: ListTile(
         selectedColor: effectiveActiveColor,
@@ -515,15 +517,17 @@ class RadioListTile<T> extends StatelessWidget {
         shape: shape,
         tileColor: tileColor,
         selectedTileColor: selectedTileColor,
-        onTap: onChanged != null ? () {
-          if (toggleable && checked) {
-            onChanged!(null);
-            return;
-          }
-          if (!checked) {
-            onChanged!(value);
-          }
-        } : null,
+        onTap: onChanged != null
+            ? () {
+                if (toggleable && checked) {
+                  onChanged!(null);
+                  return;
+                }
+                if (!checked) {
+                  onChanged!(value);
+                }
+              }
+            : null,
         selected: selected,
         autofocus: autofocus,
         contentPadding: contentPadding,

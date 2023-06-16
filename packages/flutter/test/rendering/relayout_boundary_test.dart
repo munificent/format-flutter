@@ -6,15 +6,16 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('relayout boundary change does not trigger relayout', (WidgetTester tester) async {
-    final RenderLayoutCount renderLayoutCount = RenderLayoutCount();
-    final Widget layoutCounter = Center(
-      key: GlobalKey(),
-      child: WidgetToRenderBoxAdapter(renderBox: renderLayoutCount),
-    );
+  testWidgets(
+    'relayout boundary change does not trigger relayout',
+    (WidgetTester tester) async {
+      final RenderLayoutCount renderLayoutCount = RenderLayoutCount();
+      final Widget layoutCounter = Center(
+        key: GlobalKey(),
+        child: WidgetToRenderBoxAdapter(renderBox: renderLayoutCount),
+      );
 
-    await tester.pumpWidget(
-      Center(
+      await tester.pumpWidget(Center(
         child: SizedBox(
           width: 100,
           height: 100,
@@ -22,29 +23,21 @@ void main() {
             child: SizedBox(
               width: 100,
               height: 100,
-              child: Center(
-                child: layoutCounter,
-              ),
+              child: Center(child: layoutCounter),
             ),
           ),
         ),
-      ),
-    );
+      ));
 
-    expect(renderLayoutCount.layoutCount, 1);
+      expect(renderLayoutCount.layoutCount, 1);
 
-    await tester.pumpWidget(
-      Center(
-        child: SizedBox(
-          width: 100,
-          height: 100,
-          child: layoutCounter,
-        ),
-      ),
-    );
+      await tester.pumpWidget(
+        Center(child: SizedBox(width: 100, height: 100, child: layoutCounter)),
+      );
 
-    expect(renderLayoutCount.layoutCount, 1);
-  });
+      expect(renderLayoutCount.layoutCount, 1);
+    },
+  );
 }
 
 // This class is needed because LayoutBuilder's RenderObject does not always

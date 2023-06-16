@@ -26,7 +26,11 @@ class ExampleDragTargetState extends State<ExampleDragTarget> {
   Widget build(BuildContext context) {
     return DragTarget<Color>(
       onAccept: _handleAccept,
-      builder: (BuildContext context, List<Color?> data, List<dynamic> rejectedData) {
+      builder: (
+        BuildContext context,
+        List<Color?> data,
+        List<dynamic> rejectedData,
+      ) {
         return Container(
           height: 100.0,
           margin: const EdgeInsets.all(10.0),
@@ -44,7 +48,13 @@ class ExampleDragTargetState extends State<ExampleDragTarget> {
 }
 
 class Dot extends StatefulWidget {
-  const Dot({ super.key, this.color, this.size, this.child, this.tappable = false });
+  const Dot({
+    super.key,
+    this.color,
+    this.size,
+    this.child,
+    this.tappable = false,
+  });
 
   final Color? color;
   final double? size;
@@ -54,13 +64,20 @@ class Dot extends StatefulWidget {
   @override
   DotState createState() => DotState();
 }
+
 class DotState extends State<Dot> {
   int taps = 0;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.tappable ? () { setState(() { taps += 1; }); } : null,
+      onTap: widget.tappable
+          ? () {
+              setState(() {
+                taps += 1;
+              });
+            }
+          : null,
       child: Container(
         width: widget.size,
         height: widget.size,
@@ -103,24 +120,17 @@ class ExampleDragSource extends StatelessWidget {
     final Widget contents = DefaultTextStyle(
       style: Theme.of(context).textTheme.bodyMedium!,
       textAlign: TextAlign.center,
-      child: Dot(
-        color: color,
-        size: size,
-        child: Center(child: child),
-      ),
+      child: Dot(color: color, size: size, child: Center(child: child)),
     );
 
-    Widget feedback = Opacity(
-      opacity: 0.75,
-      child: contents,
-    );
+    Widget feedback = Opacity(opacity: 0.75, child: contents);
 
     Offset feedbackOffset;
     DragAnchorStrategy dragAnchorStrategy;
     if (!under) {
       feedback = Transform(
         transform: Matrix4.identity()
-                     ..translate(-size / 2.0, -(size / 2.0 + kFingerSize)),
+          ..translate(-size / 2.0, -(size / 2.0 + kFingerSize)),
         child: feedback,
       );
       feedbackOffset = const Offset(0.0, -kFingerSize);
@@ -178,7 +188,12 @@ class DashOutlineCirclePainter extends CustomPainter {
 }
 
 class MovableBall extends StatelessWidget {
-  const MovableBall(this.position, this.ballPosition, this.callback, {super.key});
+  const MovableBall(
+    this.position,
+    this.ballPosition,
+    this.callback, {
+    super.key,
+  });
 
   final int position;
   final int ballPosition;
@@ -203,9 +218,7 @@ class MovableBall extends StatelessWidget {
     const Widget dashedBall = SizedBox(
       width: kBallSize,
       height: kBallSize,
-      child: CustomPaint(
-        painter: DashOutlineCirclePainter()
-      ),
+      child: CustomPaint(painter: DashOutlineCirclePainter()),
     );
     if (position == ballPosition) {
       return Draggable<bool>(
@@ -217,8 +230,14 @@ class MovableBall extends StatelessWidget {
       );
     } else {
       return DragTarget<bool>(
-        onAccept: (bool data) { callback(position); },
-        builder: (BuildContext context, List<bool?> accepted, List<dynamic> rejected) {
+        onAccept: (bool data) {
+          callback(position);
+        },
+        builder: (
+          BuildContext context,
+          List<bool?> accepted,
+          List<dynamic> rejected,
+        ) {
           return dashedBall;
         },
       );
@@ -237,15 +256,15 @@ class DragAndDropAppState extends State<DragAndDropApp> {
   int position = 1;
 
   void moveBall(int newPosition) {
-    setState(() { position = newPosition; });
+    setState(() {
+      position = newPosition;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Drag and Drop Flutter Demo'),
-      ),
+      appBar: AppBar(title: const Text('Drag and Drop Flutter Demo')),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -297,8 +316,10 @@ class DragAndDropAppState extends State<DragAndDropApp> {
 }
 
 void main() {
-  runApp(const MaterialApp(
-    title: 'Drag and Drop Flutter Demo',
-    home: DragAndDropApp(),
-  ));
+  runApp(
+    const MaterialApp(
+      title: 'Drag and Drop Flutter Demo',
+      home: DragAndDropApp(),
+    ),
+  );
 }

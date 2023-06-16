@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class TimePickerTemplate extends TokenTemplate {
-  const TimePickerTemplate(super.blockName, super.fileName, super.tokens, {
+  const TimePickerTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   static const String tokenGroup = 'md.comp.time-picker';
@@ -61,7 +64,9 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
 
   @override
   OutlinedBorder get dayPeriodShape {
-    return ${shape("$dayPeriodComponent.container")}.copyWith(side: dayPeriodBorderSide);
+    return ${shape(
+        "$dayPeriodComponent.container",
+      )}.copyWith(side: dayPeriodBorderSide);
   }
 
   @override
@@ -93,46 +98,64 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
       Color? textColor;
       if (states.contains(MaterialState.selected)) {
         if (states.contains(MaterialState.pressed)) {
-          textColor = ${componentColor("$dayPeriodComponent.selected.pressed.label-text")};
+          textColor = ${componentColor(
+        "$dayPeriodComponent.selected.pressed.label-text",
+      )};
         } else {
           // not pressed
           if (states.contains(MaterialState.hovered)) {
-            textColor = ${componentColor("$dayPeriodComponent.selected.hover.label-text")};
+            textColor = ${componentColor(
+        "$dayPeriodComponent.selected.hover.label-text",
+      )};
           } else {
             // not hovered
             if (states.contains(MaterialState.focused)) {
-              textColor = ${componentColor("$dayPeriodComponent.selected.focus.label-text")};
+              textColor = ${componentColor(
+        "$dayPeriodComponent.selected.focus.label-text",
+      )};
             }
           }
         }
       } else {
         // unselected
         if (states.contains(MaterialState.pressed)) {
-          textColor = ${componentColor("$dayPeriodComponent.unselected.pressed.label-text")};
+          textColor = ${componentColor(
+        "$dayPeriodComponent.unselected.pressed.label-text",
+      )};
         } else {
           // not pressed
           if (states.contains(MaterialState.hovered)) {
-            textColor = ${componentColor("$dayPeriodComponent.unselected.hover.label-text")};
+            textColor = ${componentColor(
+        "$dayPeriodComponent.unselected.hover.label-text",
+      )};
           } else {
             // not hovered
             if (states.contains(MaterialState.focused)) {
-              textColor = ${componentColor("$dayPeriodComponent.unselected.focus.label-text")};
+              textColor = ${componentColor(
+        "$dayPeriodComponent.unselected.focus.label-text",
+      )};
             }
           }
         }
       }
-      return textColor ?? ${componentColor("$dayPeriodComponent.selected.label-text")};
+      return textColor ?? ${componentColor(
+        "$dayPeriodComponent.selected.label-text",
+      )};
     });
   }
 
   @override
   TextStyle get dayPeriodTextStyle {
-    return ${textStyle("$dayPeriodComponent.label-text")}!.copyWith(color: dayPeriodTextColor);
+    return ${textStyle(
+        "$dayPeriodComponent.label-text",
+      )}!.copyWith(color: dayPeriodTextColor);
   }
 
   @override
   Color get dialBackgroundColor {
-    return ${componentColor(dialComponent)}.withOpacity(_colors.brightness == Brightness.dark ? 0.12 : 0.08);
+    return ${componentColor(
+        dialComponent,
+      )}.withOpacity(_colors.brightness == Brightness.dark ? 0.12 : 0.08);
   }
 
   @override
@@ -189,7 +212,9 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
   TextStyle get helpTextStyle {
     return MaterialStateTextStyle.resolveWith((Set<MaterialState> states) {
       final TextStyle textStyle = ${textStyle('$tokenGroup.headline')}!;
-      return textStyle.copyWith(color: ${componentColor('$tokenGroup.headline')});
+      return textStyle.copyWith(color: ${componentColor(
+        '$tokenGroup.headline',
+      )});
     });
   }
 
@@ -202,29 +227,57 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
   Color get hourMinuteColor {
     return MaterialStateColor.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
-        Color overlayColor = ${componentColor('$hourMinuteComponent.selected.container')};
+        Color overlayColor = ${componentColor(
+        '$hourMinuteComponent.selected.container',
+      )};
         if (states.contains(MaterialState.pressed)) {
-          overlayColor = ${componentColor('$hourMinuteComponent.selected.pressed.state-layer')};
+          overlayColor = ${componentColor(
+        '$hourMinuteComponent.selected.pressed.state-layer',
+      )};
         } else if (states.contains(MaterialState.hovered)) {
-          const double hoverOpacity = ${opacity('$hourMinuteComponent.hover.state-layer.opacity')};
-          overlayColor = ${componentColor('$hourMinuteComponent.selected.hover.state-layer')}.withOpacity(hoverOpacity);
+          const double hoverOpacity = ${opacity(
+        '$hourMinuteComponent.hover.state-layer.opacity',
+      )};
+          overlayColor = ${componentColor(
+        '$hourMinuteComponent.selected.hover.state-layer',
+      )}.withOpacity(hoverOpacity);
         } else if (states.contains(MaterialState.focused)) {
-          const double focusOpacity = ${opacity('$hourMinuteComponent.focus.state-layer.opacity')};
-          overlayColor = ${componentColor('$hourMinuteComponent.selected.focus.state-layer')}.withOpacity(focusOpacity);
+          const double focusOpacity = ${opacity(
+        '$hourMinuteComponent.focus.state-layer.opacity',
+      )};
+          overlayColor = ${componentColor(
+        '$hourMinuteComponent.selected.focus.state-layer',
+      )}.withOpacity(focusOpacity);
         }
-        return Color.alphaBlend(overlayColor, ${componentColor('$hourMinuteComponent.selected.container')});
+        return Color.alphaBlend(overlayColor, ${componentColor(
+        '$hourMinuteComponent.selected.container',
+      )});
       } else {
-        Color overlayColor = ${componentColor('$hourMinuteComponent.unselected.container')};
+        Color overlayColor = ${componentColor(
+        '$hourMinuteComponent.unselected.container',
+      )};
         if (states.contains(MaterialState.pressed)) {
-          overlayColor = ${componentColor('$hourMinuteComponent.unselected.pressed.state-layer')};
+          overlayColor = ${componentColor(
+        '$hourMinuteComponent.unselected.pressed.state-layer',
+      )};
         } else if (states.contains(MaterialState.hovered)) {
-          const double hoverOpacity = ${opacity('$hourMinuteComponent.hover.state-layer.opacity')};
-          overlayColor = ${componentColor('$hourMinuteComponent.unselected.hover.state-layer')}.withOpacity(hoverOpacity);
+          const double hoverOpacity = ${opacity(
+        '$hourMinuteComponent.hover.state-layer.opacity',
+      )};
+          overlayColor = ${componentColor(
+        '$hourMinuteComponent.unselected.hover.state-layer',
+      )}.withOpacity(hoverOpacity);
         } else if (states.contains(MaterialState.focused)) {
-          const double focusOpacity = ${opacity('$hourMinuteComponent.focus.state-layer.opacity')};
-          overlayColor = ${componentColor('$hourMinuteComponent.unselected.focus.state-layer')}.withOpacity(focusOpacity);
+          const double focusOpacity = ${opacity(
+        '$hourMinuteComponent.focus.state-layer.opacity',
+      )};
+          overlayColor = ${componentColor(
+        '$hourMinuteComponent.unselected.focus.state-layer',
+      )}.withOpacity(focusOpacity);
         }
-        return Color.alphaBlend(overlayColor, ${componentColor('$hourMinuteComponent.unselected.container')});
+        return Color.alphaBlend(overlayColor, ${componentColor(
+        '$hourMinuteComponent.unselected.container',
+      )});
       }
     });
   }
@@ -241,7 +294,9 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
 
   @override
   Size get hourMinuteSize24Hour {
-    return Size(${size('$hourMinuteComponent.24h-vertical.container')}.width, hourMinuteSize.height);
+    return Size(${size(
+        '$hourMinuteComponent.24h-vertical.container',
+      )}.width, hourMinuteSize.height);
   }
 
   @override
@@ -269,25 +324,37 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
     return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
         if (states.contains(MaterialState.pressed)) {
-          return ${componentColor("$hourMinuteComponent.selected.pressed.label-text")};
+          return ${componentColor(
+        "$hourMinuteComponent.selected.pressed.label-text",
+      )};
         }
         if (states.contains(MaterialState.hovered)) {
-          return ${componentColor("$hourMinuteComponent.selected.hover.label-text")};
+          return ${componentColor(
+        "$hourMinuteComponent.selected.hover.label-text",
+      )};
         }
         if (states.contains(MaterialState.focused)) {
-          return ${componentColor("$hourMinuteComponent.selected.focus.label-text")};
+          return ${componentColor(
+        "$hourMinuteComponent.selected.focus.label-text",
+      )};
         }
         return ${componentColor("$hourMinuteComponent.selected.label-text")};
       } else {
         // unselected
         if (states.contains(MaterialState.pressed)) {
-          return ${componentColor("$hourMinuteComponent.unselected.pressed.label-text")};
+          return ${componentColor(
+        "$hourMinuteComponent.unselected.pressed.label-text",
+      )};
         }
         if (states.contains(MaterialState.hovered)) {
-          return ${componentColor("$hourMinuteComponent.unselected.hover.label-text")};
+          return ${componentColor(
+        "$hourMinuteComponent.unselected.hover.label-text",
+      )};
         }
         if (states.contains(MaterialState.focused)) {
-          return ${componentColor("$hourMinuteComponent.unselected.focus.label-text")};
+          return ${componentColor(
+        "$hourMinuteComponent.unselected.focus.label-text",
+      )};
         }
         return ${componentColor("$hourMinuteComponent.unselected.label-text")};
       }
@@ -297,7 +364,9 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
   @override
   TextStyle get hourMinuteTextStyle {
     return MaterialStateTextStyle.resolveWith((Set<MaterialState> states) {
-      return ${textStyle('$hourMinuteComponent.label-text')}!.copyWith(color: _hourMinuteTextColor.resolve(states));
+      return ${textStyle(
+        '$hourMinuteComponent.label-text',
+      )}!.copyWith(color: _hourMinuteTextColor.resolve(states));
     });
   }
 
@@ -307,7 +376,9 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
     // 'time-input.container.shape', so this is using the radius from the shape
     // for the hour/minute selector. It's a BorderRadiusGeometry, so we have to
     // resolve it before we can use it.
-    final BorderRadius selectorRadius = ${shape('$hourMinuteComponent.container')}
+    final BorderRadius selectorRadius = ${shape(
+        '$hourMinuteComponent.container',
+      )}
       .borderRadius
       .resolve(Directionality.of(context));
     return InputDecorationTheme(

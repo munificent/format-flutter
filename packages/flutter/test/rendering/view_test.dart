@@ -24,10 +24,18 @@ void main() {
     test('accounts for device pixel ratio in paintBounds', () {
       layout(RenderAspectRatio(aspectRatio: 1.0));
       pumpFrame();
-      final Size logicalSize = TestRenderingFlutterBinding.instance.renderView.configuration.size;
-      final double devicePixelRatio = TestRenderingFlutterBinding.instance.renderView.configuration.devicePixelRatio;
+      final Size logicalSize =
+          TestRenderingFlutterBinding.instance.renderView.configuration.size;
+      final double devicePixelRatio = TestRenderingFlutterBinding
+          .instance
+          .renderView
+          .configuration
+          .devicePixelRatio;
       final Size physicalSize = logicalSize * devicePixelRatio;
-      expect(TestRenderingFlutterBinding.instance.renderView.paintBounds, Offset.zero & physicalSize);
+      expect(
+        TestRenderingFlutterBinding.instance.renderView.paintBounds,
+        Offset.zero & physicalSize,
+      );
     });
 
     test('does not replace the root layer unnecessarily', () {
@@ -55,7 +63,9 @@ void main() {
       view.attach(owner);
       view.prepareInitialFrame();
       final ContainerLayer firstLayer = view.debugLayer!;
-      view.configuration = createViewConfiguration(size: const Size(100.0, 1117.0));
+      view.configuration = createViewConfiguration(
+        size: const Size(100.0, 1117.0),
+      );
       expect(identical(view.debugLayer, firstLayer), true);
     });
   });
@@ -63,7 +73,9 @@ void main() {
   test('ViewConfiguration == and hashCode', () {
     final ViewConfiguration viewConfigurationA = createViewConfiguration();
     final ViewConfiguration viewConfigurationB = createViewConfiguration();
-    final ViewConfiguration viewConfigurationC = createViewConfiguration(devicePixelRatio: 3.0);
+    final ViewConfiguration viewConfigurationC = createViewConfiguration(
+      devicePixelRatio: 3.0,
+    );
 
     expect(viewConfigurationA == viewConfigurationB, true);
     expect(viewConfigurationA != viewConfigurationC, true);
@@ -72,35 +84,23 @@ void main() {
   });
 
   test('invokes DebugPaintCallback', () {
-    final PaintPattern paintsOrangeRect = paints..rect(
-      color: orange,
-      rect: orangeRect,
-    );
-    final PaintPattern paintsGreenRect = paints..rect(
-      color: green,
-      rect: greenRect,
-    );
+    final PaintPattern paintsOrangeRect = paints
+      ..rect(color: orange, rect: orangeRect);
+    final PaintPattern paintsGreenRect = paints
+      ..rect(color: green, rect: greenRect);
     final PaintPattern paintOrangeAndGreenRect = paints
-      ..rect(
-        color: orange,
-        rect: orangeRect,
-      )
-      ..rect(
-        color: green,
-        rect: greenRect,
-      );
-    void paintCallback(PaintingContext context, Offset offset, RenderView renderView) {
-      context.canvas.drawRect(
-        greenRect,
-        Paint()..color = green,
-      );
+      ..rect(color: orange, rect: orangeRect)
+      ..rect(color: green, rect: greenRect);
+    void paintCallback(
+      PaintingContext context,
+      Offset offset,
+      RenderView renderView,
+    ) {
+      context.canvas.drawRect(greenRect, Paint()..color = green);
     }
 
     layout(TestRenderObject());
-    expect(
-      TestRenderingFlutterBinding.instance.renderView,
-      paintsOrangeRect,
-    );
+    expect(TestRenderingFlutterBinding.instance.renderView, paintsOrangeRect);
     expect(
       TestRenderingFlutterBinding.instance.renderView,
       isNot(paintsGreenRect),
@@ -113,10 +113,7 @@ void main() {
     );
 
     RenderView.debugRemovePaintCallback(paintCallback);
-    expect(
-      TestRenderingFlutterBinding.instance.renderView,
-      paintsOrangeRect,
-    );
+    expect(TestRenderingFlutterBinding.instance.renderView, paintsOrangeRect);
     expect(
       TestRenderingFlutterBinding.instance.renderView,
       isNot(paintsGreenRect),
@@ -137,9 +134,6 @@ class TestRenderObject extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    context.canvas.drawRect(
-      orangeRect,
-      Paint()..color = orange,
-    );
+    context.canvas.drawRect(orangeRect, Paint()..color = orange);
   }
 }

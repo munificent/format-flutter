@@ -12,41 +12,29 @@ void main() {
   const String branchName = 'stable';
   test('getBranchName does not call git if env LUCI_BRANCH provided', () {
     final Platform platform = FakePlatform(
-      environment: <String, String>{
-        'LUCI_BRANCH': branchName,
-      },
+      environment: <String, String>{'LUCI_BRANCH': branchName},
     );
 
     final ProcessManager processManager = FakeProcessManager.empty();
 
     expect(
-      getBranchName(
-        platform: platform,
-        processManager: processManager,
-      ),
+      getBranchName(platform: platform, processManager: processManager),
       branchName,
     );
   });
 
   test('getBranchName calls git if env LUCI_BRANCH not provided', () {
-    final Platform platform = FakePlatform(
-      environment: <String, String>{},
-    );
+    final Platform platform = FakePlatform(environment: <String, String>{});
 
-    final ProcessManager processManager = FakeProcessManager.list(
-      <FakeCommand>[
-        const FakeCommand(
-          command: <String>['git', 'status', '-b', '--porcelain'],
-          stdout: '## $branchName',
-        ),
-      ],
-    );
+    final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
+      const FakeCommand(
+        command: <String>['git', 'status', '-b', '--porcelain'],
+        stdout: '## $branchName',
+      ),
+    ]);
 
     expect(
-      getBranchName(
-        platform: platform,
-        processManager: processManager,
-      ),
+      getBranchName(platform: platform, processManager: processManager),
       branchName,
     );
     expect(processManager, hasNoRemainingExpectations);
@@ -54,38 +42,27 @@ void main() {
 
   test('getBranchName calls git if env LUCI_BRANCH is empty', () {
     final Platform platform = FakePlatform(
-      environment: <String, String>{
-        'LUCI_BRANCH': '',
-      },
+      environment: <String, String>{'LUCI_BRANCH': ''},
     );
 
-    final ProcessManager processManager = FakeProcessManager.list(
-      <FakeCommand>[
-        const FakeCommand(
-          command: <String>['git', 'status', '-b', '--porcelain'],
-          stdout: '## $branchName',
-        ),
-      ],
-    );
+    final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
+      const FakeCommand(
+        command: <String>['git', 'status', '-b', '--porcelain'],
+        stdout: '## $branchName',
+      ),
+    ]);
 
     expect(
-      getBranchName(
-        platform: platform,
-        processManager: processManager,
-      ),
+      getBranchName(platform: platform, processManager: processManager),
       branchName,
     );
     expect(processManager, hasNoRemainingExpectations);
   });
 
   test("runPubProcess doesn't use the pub binary", () {
-    final ProcessManager processManager = FakeProcessManager.list(
-      <FakeCommand>[
-        const FakeCommand(
-          command: <String>['dart', 'pub', '--one', '--two'],
-        ),
-      ],
-    );
+    final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
+      const FakeCommand(command: <String>['dart', 'pub', '--one', '--two']),
+    ]);
 
     runPubProcess(
       dartBinaryPath: 'dart',

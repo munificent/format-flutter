@@ -3,17 +3,18 @@
 // found in the LICENSE file.
 
 import 'dart:math' show max, min;
-import 'dart:ui' as ui show
-  BoxHeightStyle,
-  BoxWidthStyle,
-  LineMetrics,
-  Paragraph,
-  ParagraphBuilder,
-  ParagraphConstraints,
-  ParagraphStyle,
-  PlaceholderAlignment,
-  TextHeightBehavior,
-  TextStyle;
+import 'dart:ui' as ui
+    show
+        BoxHeightStyle,
+        BoxWidthStyle,
+        LineMetrics,
+        Paragraph,
+        ParagraphBuilder,
+        ParagraphConstraints,
+        ParagraphStyle,
+        PlaceholderAlignment,
+        TextHeightBehavior,
+        TextStyle;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -77,7 +78,10 @@ class PlaceholderDimensions {
   });
 
   /// A constant representing an empty placeholder.
-  static const PlaceholderDimensions empty = PlaceholderDimensions(size: Size.zero, alignment: ui.PlaceholderAlignment.bottom);
+  static const PlaceholderDimensions empty = PlaceholderDimensions(
+    size: Size.zero,
+    alignment: ui.PlaceholderAlignment.bottom,
+  );
 
   /// Width and height dimensions of the placeholder.
   final Size size;
@@ -112,11 +116,11 @@ class PlaceholderDimensions {
     if (identical(this, other)) {
       return true;
     }
-    return other is PlaceholderDimensions
-        && other.size == size
-        && other.alignment == alignment
-        && other.baseline == baseline
-        && other.baselineOffset == baselineOffset;
+    return other is PlaceholderDimensions &&
+        other.size == size &&
+        other.alignment == alignment &&
+        other.baseline == baseline &&
+        other.baselineOffset == baselineOffset;
   }
 
   @override
@@ -129,8 +133,10 @@ class PlaceholderDimensions {
       ui.PlaceholderAlignment.bottom ||
       ui.PlaceholderAlignment.middle ||
       ui.PlaceholderAlignment.aboveBaseline ||
-      ui.PlaceholderAlignment.belowBaseline => 'PlaceholderDimensions($size, $alignment)',
-      ui.PlaceholderAlignment.baseline      => 'PlaceholderDimensions($size, $alignment($baselineOffset from top))',
+      ui.PlaceholderAlignment.belowBaseline =>
+        'PlaceholderDimensions($size, $alignment)',
+      ui.PlaceholderAlignment.baseline =>
+        'PlaceholderDimensions($size, $alignment($baselineOffset from top))',
     };
   }
 }
@@ -171,18 +177,26 @@ class WordBoundary extends TextBoundary {
   final ui.Paragraph _paragraph;
 
   @override
-  TextRange getTextBoundaryAt(int position) => _paragraph.getWordBoundary(TextPosition(offset: max(position, 0)));
+  TextRange getTextBoundaryAt(int position) => _paragraph.getWordBoundary(
+    TextPosition(offset: max(position, 0)),
+  );
 
   // Combines two UTF-16 code units (high surrogate + low surrogate) into a
   // single code point that represents a supplementary character.
   static int _codePointFromSurrogates(int highSurrogate, int lowSurrogate) {
     assert(
       TextPainter.isHighSurrogate(highSurrogate),
-      'U+${highSurrogate.toRadixString(16).toUpperCase().padLeft(4, "0")}) is not a high surrogate.',
+      'U+${highSurrogate.toRadixString(16).toUpperCase().padLeft(
+        4,
+        "0",
+      )}) is not a high surrogate.',
     );
     assert(
       TextPainter.isLowSurrogate(lowSurrogate),
-      'U+${lowSurrogate.toRadixString(16).toUpperCase().padLeft(4, "0")}) is not a low surrogate.',
+      'U+${lowSurrogate.toRadixString(16).toUpperCase().padLeft(
+        4,
+        "0",
+      )}) is not a low surrogate.',
     );
     const int base = 0x010000 - (0xD800 << 10) - 0xDC00;
     return (highSurrogate << 10) + lowSurrogate + base;
@@ -195,9 +209,11 @@ class WordBoundary extends TextBoundary {
       return null;
     }
     return switch (codeUnitAtIndex & 0xFC00) {
-      0xD800 => _codePointFromSurrogates(codeUnitAtIndex, _text.codeUnitAt(index + 1)!),
-      0xDC00 => _codePointFromSurrogates(_text.codeUnitAt(index - 1)!, codeUnitAtIndex),
-      _      => codeUnitAtIndex,
+      0xD800 =>
+        _codePointFromSurrogates(codeUnitAtIndex, _text.codeUnitAt(index + 1)!),
+      0xDC00 =>
+        _codePointFromSurrogates(_text.codeUnitAt(index - 1)!, codeUnitAtIndex),
+      _ => codeUnitAtIndex,
     };
   }
 
@@ -221,10 +237,15 @@ class WordBoundary extends TextBoundary {
     // https://unicode-org.github.io/icu/userguide/boundaryanalysis/break-rules.html#word-dictionaries
     //
     // WB1 & WB2: always break at the start or the end of the text.
-    final bool hardBreakRulesApply = innerCodePoint == null || outerCodeUnit == null
-    // WB3a & WB3b: always break before and after newlines.
-                                  || _isNewline(innerCodePoint) || _isNewline(outerCodeUnit);
-    return hardBreakRulesApply || !RegExp(r'[\p{Space_Separator}\p{Punctuation}]', unicode: true).hasMatch(String.fromCharCode(innerCodePoint));
+    final bool hardBreakRulesApply = innerCodePoint == null ||
+        outerCodeUnit == null
+        // WB3a & WB3b: always break before and after newlines.
+        ||
+        _isNewline(innerCodePoint) ||
+        _isNewline(outerCodeUnit);
+    return hardBreakRulesApply ||
+        !RegExp(r'[\p{Space_Separator}\p{Punctuation}]', unicode: true)
+            .hasMatch(String.fromCharCode(innerCodePoint));
   }
 
   /// Returns a [TextBoundary] suitable for handling keyboard navigation
@@ -238,7 +259,10 @@ class WordBoundary extends TextBoundary {
   /// except that word breaks end on a space separator or a punctuation will be
   /// skipped, to match the behavior of most platforms. Additional rules may be
   /// added in the future to better match platform behaviors.
-  late final TextBoundary moveByWordBoundary = _UntilTextBoundary(this, _skipSpacesAndPunctuations);
+  late final TextBoundary moveByWordBoundary = _UntilTextBoundary(
+    this,
+    _skipSpacesAndPunctuations,
+  );
 }
 
 class _UntilTextBoundary extends TextBoundary {
@@ -254,16 +278,18 @@ class _UntilTextBoundary extends TextBoundary {
     }
     final int? offset = _textBoundary.getLeadingTextBoundaryAt(position);
     return offset == null || _predicate(offset, false)
-      ? offset
-      : getLeadingTextBoundaryAt(offset - 1);
+        ? offset
+        : getLeadingTextBoundaryAt(offset - 1);
   }
 
   @override
   int? getTrailingTextBoundaryAt(int position) {
-    final int? offset = _textBoundary.getTrailingTextBoundaryAt(max(position, 0));
+    final int? offset = _textBoundary.getTrailingTextBoundaryAt(
+      max(position, 0),
+    );
     return offset == null || _predicate(offset, true)
-      ? offset
-      : getTrailingTextBoundaryAt(offset);
+        ? offset
+        : getTrailingTextBoundaryAt(offset);
   }
 }
 
@@ -279,12 +305,14 @@ class _TextLayout {
   ui.Paragraph _paragraph;
 
   /// Whether to enable the rounding in _applyFloatingPointHack and SkParagraph.
-  static const bool _shouldApplyFloatingPointHack = !bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK');
+  static const bool _shouldApplyFloatingPointHack =
+      !bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK');
 
   // TODO(LongCatIsLooong): https://github.com/flutter/flutter/issues/31707
   // remove this hack as well as the flooring in `layout`.
   @pragma('vm:prefer-inline')
-  static double _applyFloatingPointHack(double layoutValue) => _shouldApplyFloatingPointHack ? layoutValue.ceilToDouble() : layoutValue;
+  static double _applyFloatingPointHack(double layoutValue) =>
+      _shouldApplyFloatingPointHack ? layoutValue.ceilToDouble() : layoutValue;
 
   /// Whether this layout has been invalidated and disposed.
   ///
@@ -302,12 +330,16 @@ class _TextLayout {
 
   /// The width at which decreasing the width of the text would prevent it from
   /// painting itself completely within its bounds.
-  double get minIntrinsicLineExtent => _applyFloatingPointHack(_paragraph.minIntrinsicWidth);
+  double get minIntrinsicLineExtent => _applyFloatingPointHack(
+    _paragraph.minIntrinsicWidth,
+  );
 
   /// The width at which increasing the width of the text no longer decreases the height.
   ///
   /// Includes trailing spaces if any.
-  double get maxIntrinsicLineExtent => _applyFloatingPointHack(_paragraph.maxIntrinsicWidth);
+  double get maxIntrinsicLineExtent => _applyFloatingPointHack(
+    _paragraph.maxIntrinsicWidth,
+  );
 
   /// The distance from the left edge of the leftmost glyph to the right edge of
   /// the rightmost glyph in the paragraph.
@@ -328,8 +360,13 @@ class _TextLayout {
 // depends on the current text layout, which will be invalidated as soon as the
 // text layout is invalidated.
 class _TextPainterLayoutCacheWithOffset {
-  _TextPainterLayoutCacheWithOffset(this.layout, this.textAlignment, double minWidth, double maxWidth, TextWidthBasis widthBasis)
-    : contentWidth = _contentWidthFor(minWidth, maxWidth, widthBasis, layout),
+  _TextPainterLayoutCacheWithOffset(
+    this.layout,
+    this.textAlignment,
+    double minWidth,
+    double maxWidth,
+    TextWidthBasis widthBasis,
+  ) : contentWidth = _contentWidthFor(minWidth, maxWidth, widthBasis, layout),
       assert(textAlignment >= 0.0 && textAlignment <= 1.0);
 
   final _TextLayout layout;
@@ -359,7 +396,12 @@ class _TextPainterLayoutCacheWithOffset {
 
   ui.Paragraph get paragraph => layout._paragraph;
 
-  static double _contentWidthFor(double minWidth, double maxWidth, TextWidthBasis widthBasis, _TextLayout layout) {
+  static double _contentWidthFor(
+    double minWidth,
+    double maxWidth,
+    TextWidthBasis widthBasis,
+    _TextLayout layout,
+  ) {
     // TODO(LongCatIsLooong): remove the rounding when _applyFloatingPointHack
     // is removed.
     if (_TextLayout._shouldApplyFloatingPointHack) {
@@ -367,8 +409,10 @@ class _TextPainterLayoutCacheWithOffset {
       maxWidth = maxWidth.floorToDouble();
     }
     return switch (widthBasis) {
-      TextWidthBasis.longestLine => clampDouble(layout.longestLine, minWidth, maxWidth),
-      TextWidthBasis.parent => clampDouble(layout.maxIntrinsicLineExtent, minWidth, maxWidth),
+      TextWidthBasis.longestLine =>
+        clampDouble(layout.longestLine, minWidth, maxWidth),
+      TextWidthBasis.parent =>
+        clampDouble(layout.maxIntrinsicLineExtent, minWidth, maxWidth),
     };
   }
 
@@ -377,7 +421,11 @@ class _TextPainterLayoutCacheWithOffset {
   //
   // Returns false if the new constraints require re-computing the line breaks,
   // in which case no side effects will occur.
-  bool _resizeToFit(double minWidth, double maxWidth, TextWidthBasis widthBasis) {
+  bool _resizeToFit(
+    double minWidth,
+    double maxWidth,
+    TextWidthBasis widthBasis,
+  ) {
     assert(layout.maxIntrinsicLineExtent.isFinite);
     // The assumption here is that if a Paragraph's width is already >= its
     // maxIntrinsicWidth, further increasing the input width does not change its
@@ -390,19 +438,27 @@ class _TextPainterLayoutCacheWithOffset {
     // of double.infinity, and to make the text visible the paintOffset.dx is
     // bound to be double.negativeInfinity, which invalidates all arithmetic
     // operations.
-    final double newContentWidth = _contentWidthFor(minWidth, maxWidth, widthBasis, layout);
+    final double newContentWidth = _contentWidthFor(
+      minWidth,
+      maxWidth,
+      widthBasis,
+      layout,
+    );
     if (newContentWidth == contentWidth) {
       return true;
     }
     assert(minWidth <= maxWidth);
     // Always needsLayout when the current paintOffset and the paragraph width are not finite.
-    if (!paintOffset.dx.isFinite && !paragraph.width.isFinite && minWidth.isFinite) {
+    if (!paintOffset.dx.isFinite &&
+        !paragraph.width.isFinite &&
+        minWidth.isFinite) {
       assert(paintOffset.dx == double.infinity);
       assert(paragraph.width == double.infinity);
       return false;
     }
     final double maxIntrinsicWidth = paragraph.maxIntrinsicWidth;
-    if ((paragraph.width - maxIntrinsicWidth) > -precisionErrorTolerance && (maxWidth - maxIntrinsicWidth) > -precisionErrorTolerance) {
+    if ((paragraph.width - maxIntrinsicWidth) > -precisionErrorTolerance &&
+        (maxWidth - maxIntrinsicWidth) > -precisionErrorTolerance) {
       // Adjust the paintOffset and contentWidth to the new input constraints.
       contentWidth = newContentWidth;
       return true;
@@ -412,10 +468,12 @@ class _TextPainterLayoutCacheWithOffset {
 
   // ---- Cached Values ----
 
-  List<TextBox> get inlinePlaceholderBoxes => _cachedInlinePlaceholderBoxes ??= paragraph.getBoxesForPlaceholders();
+  List<TextBox> get inlinePlaceholderBoxes =>
+      _cachedInlinePlaceholderBoxes ??= paragraph.getBoxesForPlaceholders();
   List<TextBox>? _cachedInlinePlaceholderBoxes;
 
-  List<ui.LineMetrics> get lineMetrics => _cachedLineMetrics ??= paragraph.computeLineMetrics();
+  List<ui.LineMetrics> get lineMetrics =>
+      _cachedLineMetrics ??= paragraph.computeLineMetrics();
   List<ui.LineMetrics>? _cachedLineMetrics;
 
   // Holds the TextPosition the last caret metrics were computed with. When new
@@ -429,17 +487,24 @@ class _TextPainterLayoutCacheWithOffset {
 ///
 // A _CaretMetrics is either a _LineCaretMetrics or an _EmptyLineCaretMetrics.
 @immutable
-sealed class _CaretMetrics { }
+sealed class _CaretMetrics {}
 
 /// The _CaretMetrics for carets located in a non-empty line. Carets located in a
 /// non-empty line are associated with a glyph within the same line.
 final class _LineCaretMetrics implements _CaretMetrics {
-  const _LineCaretMetrics({required this.offset, required this.writingDirection, required this.fullHeight});
+  const _LineCaretMetrics({
+    required this.offset,
+    required this.writingDirection,
+    required this.fullHeight,
+  });
+
   /// The offset of the top left corner of the caret from the top left
   /// corner of the paragraph.
   final Offset offset;
+
   /// The writing direction of the glyph the _CaretMetrics is associated with.
   final TextDirection writingDirection;
+
   /// The full height of the glyph at the caret position.
   final double fullHeight;
 }
@@ -447,7 +512,7 @@ final class _LineCaretMetrics implements _CaretMetrics {
 /// The _CaretMetrics for carets located in an empty line (when the text is
 /// empty, or the caret is between two a newline characters).
 final class _EmptyLineCaretMetrics implements _CaretMetrics {
-  const _EmptyLineCaretMetrics({ required this.lineVerticalOffset });
+  const _EmptyLineCaretMetrics({required this.lineVerticalOffset});
 
   /// The y offset of the unoccupied line.
   final double lineVerticalOffset;
@@ -617,8 +682,13 @@ class TextPainter {
     if (_layoutCache == null) {
       throw FlutterError.fromParts(<DiagnosticsNode>[
         ErrorSummary('Text layout not available'),
-        if (_debugMarkNeedsLayoutCallStack != null) DiagnosticsStackTrace('The calls that first invalidated the text layout were', _debugMarkNeedsLayoutCallStack)
-        else ErrorDescription('The TextPainter has never been laid out.')
+        if (_debugMarkNeedsLayoutCallStack != null)
+          DiagnosticsStackTrace(
+            'The calls that first invalidated the text layout were',
+            _debugMarkNeedsLayoutCallStack,
+          )
+        else
+          ErrorDescription('The TextPainter has never been laid out.'),
       ]);
     }
     return true;
@@ -633,12 +703,14 @@ class TextPainter {
   /// layout changes in engine. In most cases, updating text painter properties
   /// in framework will automatically invoke this method.
   void markNeedsLayout() {
-    assert(() {
-      if (_layoutCache != null) {
-        _debugMarkNeedsLayoutCallStack ??= StackTrace.current;
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_layoutCache != null) {
+          _debugMarkNeedsLayoutCallStack ??= StackTrace.current;
+        }
+        return true;
+      }(),
+    );
     _layoutCache?.paragraph.dispose();
     _layoutCache = null;
   }
@@ -664,8 +736,8 @@ class TextPainter {
     }
 
     final RenderComparison comparison = value == null
-      ? RenderComparison.layout
-      : _text?.compareTo(value) ?? RenderComparison.layout;
+        ? RenderComparison.layout
+        : _text?.compareTo(value) ?? RenderComparison.layout;
 
     _text = value;
     _cachedPlainText = null;
@@ -687,6 +759,7 @@ class TextPainter {
     _cachedPlainText ??= _text?.toPlainText(includeSemanticsLabels: false);
     return _cachedPlainText ?? '';
   }
+
   String? _cachedPlainText;
 
   /// How the text should be aligned horizontally.
@@ -728,7 +801,8 @@ class TextPainter {
     _textDirection = value;
     markNeedsLayout();
     _layoutTemplate?.dispose();
-    _layoutTemplate = null; // Shouldn't really matter, but for strict correctness...
+    _layoutTemplate =
+        null; // Shouldn't really matter, but for strict correctness...
   }
 
   /// The number of font pixels for each logical pixel.
@@ -796,6 +870,7 @@ class TextPainter {
   /// After this is set, you must call [layout] before the next call to [paint].
   int? get maxLines => _maxLines;
   int? _maxLines;
+
   /// The value may be null. If it is not null, then it must be greater than zero.
   set maxLines(int? value) {
     assert(value == null || value > 0);
@@ -837,7 +912,11 @@ class TextPainter {
     if (_textWidthBasis == value) {
       return;
     }
-    assert(() { return _debugNeedsRelayout = true; }());
+    assert(
+      () {
+        return _debugNeedsRelayout = true;
+      }(),
+    );
     _textWidthBasis = value;
   }
 
@@ -870,7 +949,9 @@ class TextPainter {
     if (offset == Offset.zero) {
       return rawBoxes;
     }
-    return rawBoxes.map((TextBox box) => _shiftTextBox(box, offset)).toList(growable: false);
+    return rawBoxes.map((TextBox box) => _shiftTextBox(box, offset)).toList(
+      growable: false,
+    );
   }
 
   /// Sets the dimensions of each placeholder in [text].
@@ -883,49 +964,60 @@ class TextPainter {
   /// placeholders will be ignored in the text layout and no valid
   /// [inlinePlaceholderBoxes] will be returned.
   void setPlaceholderDimensions(List<PlaceholderDimensions>? value) {
-    if (value == null || value.isEmpty || listEquals(value, _placeholderDimensions)) {
+    if (value == null ||
+        value.isEmpty ||
+        listEquals(value, _placeholderDimensions)) {
       return;
     }
-    assert(() {
-      int placeholderCount = 0;
-      text!.visitChildren((InlineSpan span) {
-        if (span is PlaceholderSpan) {
-          placeholderCount += 1;
-        }
-        return value.length >= placeholderCount;
-      });
-      return placeholderCount == value.length;
-    }());
+    assert(
+      () {
+        int placeholderCount = 0;
+        text!.visitChildren((InlineSpan span) {
+          if (span is PlaceholderSpan) {
+            placeholderCount += 1;
+          }
+          return value.length >= placeholderCount;
+        });
+        return placeholderCount == value.length;
+      }(),
+    );
     _placeholderDimensions = value;
     markNeedsLayout();
   }
+
   List<PlaceholderDimensions>? _placeholderDimensions;
 
-  ui.ParagraphStyle _createParagraphStyle([ TextDirection? defaultTextDirection ]) {
+  ui.ParagraphStyle _createParagraphStyle([
+    TextDirection? defaultTextDirection,
+  ]) {
     // The defaultTextDirection argument is used for preferredLineHeight in case
     // textDirection hasn't yet been set.
-    assert(textDirection != null || defaultTextDirection != null, 'TextPainter.textDirection must be set to a non-null value before using the TextPainter.');
-    return _text!.style?.getParagraphStyle(
-      textAlign: textAlign,
-      textDirection: textDirection ?? defaultTextDirection,
-      textScaleFactor: textScaleFactor,
-      maxLines: _maxLines,
-      textHeightBehavior: _textHeightBehavior,
-      ellipsis: _ellipsis,
-      locale: _locale,
-      strutStyle: _strutStyle,
-    ) ?? ui.ParagraphStyle(
-      textAlign: textAlign,
-      textDirection: textDirection ?? defaultTextDirection,
-      // Use the default font size to multiply by as RichText does not
-      // perform inheriting [TextStyle]s and would otherwise
-      // fail to apply textScaleFactor.
-      fontSize: _kDefaultFontSize * textScaleFactor,
-      maxLines: maxLines,
-      textHeightBehavior: _textHeightBehavior,
-      ellipsis: ellipsis,
-      locale: locale,
+    assert(
+      textDirection != null || defaultTextDirection != null,
+      'TextPainter.textDirection must be set to a non-null value before using the TextPainter.',
     );
+    return _text!.style?.getParagraphStyle(
+          textAlign: textAlign,
+          textDirection: textDirection ?? defaultTextDirection,
+          textScaleFactor: textScaleFactor,
+          maxLines: _maxLines,
+          textHeightBehavior: _textHeightBehavior,
+          ellipsis: _ellipsis,
+          locale: _locale,
+          strutStyle: _strutStyle,
+        ) ??
+        ui.ParagraphStyle(
+          textAlign: textAlign,
+          textDirection: textDirection ?? defaultTextDirection,
+          // Use the default font size to multiply by as RichText does not
+          // perform inheriting [TextStyle]s and would otherwise
+          // fail to apply textScaleFactor.
+          fontSize: _kDefaultFontSize * textScaleFactor,
+          maxLines: maxLines,
+          textHeightBehavior: _textHeightBehavior,
+          ellipsis: ellipsis,
+          locale: locale,
+        );
   }
 
   ui.Paragraph? _layoutTemplate;
@@ -933,7 +1025,9 @@ class TextPainter {
     final ui.ParagraphBuilder builder = ui.ParagraphBuilder(
       _createParagraphStyle(TextDirection.rtl),
     ); // direction doesn't matter, text is just a space
-    final ui.TextStyle? textStyle = text?.style?.getTextStyle(textScaleFactor: textScaleFactor);
+    final ui.TextStyle? textStyle = text?.style?.getTextStyle(
+      textScaleFactor: textScaleFactor,
+    );
     if (textStyle != null) {
       builder.pushStyle(textStyle);
     }
@@ -954,7 +1048,8 @@ class TextPainter {
   /// that contribute to the [preferredLineHeight]. If [text] is null or if it
   /// specifies no styles, the default [TextStyle] values are used (a 10 pixel
   /// sans-serif font).
-  double get preferredLineHeight => (_layoutTemplate ??= _createLayoutTemplate()).height;
+  double get preferredLineHeight =>
+      (_layoutTemplate ??= _createLayoutTemplate()).height;
 
   /// The width at which decreasing the width of the text would prevent it from
   /// painting itself completely within its bounds.
@@ -1027,12 +1122,20 @@ class TextPainter {
   // Creates a ui.Paragraph using the current configurations in this class and
   // assign it to _paragraph.
   ui.Paragraph _createParagraph(InlineSpan text) {
-    final ui.ParagraphBuilder builder = ui.ParagraphBuilder(_createParagraphStyle());
-    text.build(builder, textScaleFactor: textScaleFactor, dimensions: _placeholderDimensions);
-    assert(() {
-      _debugMarkNeedsLayoutCallStack = null;
-      return true;
-    }());
+    final ui.ParagraphBuilder builder = ui.ParagraphBuilder(
+      _createParagraphStyle(),
+    );
+    text.build(
+      builder,
+      textScaleFactor: textScaleFactor,
+      dimensions: _placeholderDimensions,
+    );
+    assert(
+      () {
+        _debugMarkNeedsLayoutCallStack = null;
+        return true;
+      }(),
+    );
     _rebuildParagraphForPaint = false;
     return builder.build();
   }
@@ -1046,34 +1149,46 @@ class TextPainter {
   ///
   /// The [text] and [textDirection] properties must be non-null before this is
   /// called.
-  void layout({ double minWidth = 0.0, double maxWidth = double.infinity }) {
+  void layout({double minWidth = 0.0, double maxWidth = double.infinity}) {
     assert(!maxWidth.isNaN);
     assert(!minWidth.isNaN);
-    assert(() {
-      _debugNeedsRelayout = false;
-      return true;
-    }());
+    assert(
+      () {
+        _debugNeedsRelayout = false;
+        return true;
+      }(),
+    );
 
     final _TextPainterLayoutCacheWithOffset? cachedLayout = _layoutCache;
-    if (cachedLayout != null && cachedLayout._resizeToFit(minWidth, maxWidth, textWidthBasis)) {
+    if (cachedLayout != null &&
+        cachedLayout._resizeToFit(minWidth, maxWidth, textWidthBasis)) {
       return;
     }
 
     final InlineSpan? text = this.text;
     if (text == null) {
-      throw StateError('TextPainter.text must be set to a non-null value before using the TextPainter.');
+      throw StateError(
+        'TextPainter.text must be set to a non-null value before using the TextPainter.',
+      );
     }
     final TextDirection? textDirection = this.textDirection;
     if (textDirection == null) {
-      throw StateError('TextPainter.textDirection must be set to a non-null value before using the TextPainter.');
+      throw StateError(
+        'TextPainter.textDirection must be set to a non-null value before using the TextPainter.',
+      );
     }
 
-    final double paintOffsetAlignment = _computePaintOffsetFraction(textAlign, textDirection);
+    final double paintOffsetAlignment = _computePaintOffsetFraction(
+      textAlign,
+      textDirection,
+    );
     // Try to avoid laying out the paragraph with maxWidth=double.infinity
     // when the text is not left-aligned, so we don't have to deal with an
     // infinite paint offset.
     final bool adjustMaxWidth = !maxWidth.isFinite && paintOffsetAlignment != 0;
-    final double? adjustedMaxWidth = !adjustMaxWidth ? maxWidth : cachedLayout?.layout.maxIntrinsicLineExtent;
+    final double? adjustedMaxWidth = !adjustMaxWidth
+        ? maxWidth
+        : cachedLayout?.layout.maxIntrinsicLineExtent;
     _inputWidth = adjustedMaxWidth ?? maxWidth;
 
     // Only rebuild the paragraph when there're layout changes, even when
@@ -1083,11 +1198,17 @@ class TextPainter {
     //    the paragraph rebuilds is unnecessary)
     // 2. the user could be measuring the text layout so `paint` will never be
     //    called.
-    final ui.Paragraph paragraph = (cachedLayout?.paragraph ?? _createParagraph(text))
-      ..layout(ui.ParagraphConstraints(width: _inputWidth));
-    final _TextPainterLayoutCacheWithOffset newLayoutCache = _TextPainterLayoutCacheWithOffset(
-      _TextLayout._(paragraph), paintOffsetAlignment, minWidth, maxWidth, textWidthBasis,
-    );
+    final ui.Paragraph paragraph =
+        (cachedLayout?.paragraph ?? _createParagraph(text))
+          ..layout(ui.ParagraphConstraints(width: _inputWidth));
+    final _TextPainterLayoutCacheWithOffset newLayoutCache =
+        _TextPainterLayoutCacheWithOffset(
+          _TextLayout._(paragraph),
+          paintOffsetAlignment,
+          minWidth,
+          maxWidth,
+          textWidthBasis,
+        );
     // Call layout again if newLayoutCache had an infinite paint offset.
     // This is not as expensive as it seems, line breaking is relatively cheap
     // as compared to shaping.
@@ -1121,29 +1242,36 @@ class TextPainter {
       );
     }
 
-    if (!layoutCache.paintOffset.dx.isFinite || !layoutCache.paintOffset.dy.isFinite) {
+    if (!layoutCache.paintOffset.dx.isFinite ||
+        !layoutCache.paintOffset.dy.isFinite) {
       return;
     }
 
     if (_rebuildParagraphForPaint) {
       Size? debugSize;
-      assert(() {
-        debugSize = size;
-        return true;
-      }());
+      assert(
+        () {
+          debugSize = size;
+          return true;
+        }(),
+      );
 
       final ui.Paragraph paragraph = layoutCache.paragraph;
       // Unfortunately even if we know that there is only paint changes, there's
       // no API to only make those updates so the paragraph has to be recreated
       // and re-laid out.
       assert(!_inputWidth.isNaN);
-      layoutCache.layout._paragraph = _createParagraph(text!)..layout(ui.ParagraphConstraints(width: _inputWidth));
+      layoutCache.layout._paragraph = _createParagraph(text!)
+        ..layout(ui.ParagraphConstraints(width: _inputWidth));
       assert(paragraph.width == layoutCache.layout._paragraph.width);
       paragraph.dispose();
       assert(debugSize == size);
     }
     assert(!_rebuildParagraphForPaint);
-    canvas.drawParagraph(layoutCache.paragraph, offset + layoutCache.paintOffset);
+    canvas.drawParagraph(
+      layoutCache.paragraph,
+      offset + layoutCache.paintOffset,
+    );
   }
 
   // Returns true if value falls in the valid range of the UTF16 encoding.
@@ -1224,14 +1352,21 @@ class TextPainter {
     const int NEWLINE_CODE_UNIT = 10;
 
     // Check for multi-code-unit glyphs such as emojis or zero width joiner.
-    final bool needsSearch = isHighSurrogate(prevCodeUnit) || isLowSurrogate(prevCodeUnit) || _text!.codeUnitAt(offset) == _zwjUtf16 || _isUnicodeDirectionality(prevCodeUnit);
+    final bool needsSearch = isHighSurrogate(prevCodeUnit) ||
+        isLowSurrogate(prevCodeUnit) ||
+        _text!.codeUnitAt(offset) == _zwjUtf16 ||
+        _isUnicodeDirectionality(prevCodeUnit);
     int graphemeClusterLength = needsSearch ? 2 : 1;
     List<TextBox> boxes = <TextBox>[];
     while (boxes.isEmpty) {
       final int prevRuneOffset = offset - graphemeClusterLength;
       // Use BoxHeightStyle.strut to ensure that the caret's height fits within
       // the line's height and is consistent throughout the line.
-      boxes = _layoutCache!.paragraph.getBoxesForRange(max(0, prevRuneOffset), offset, boxHeightStyle: ui.BoxHeightStyle.strut);
+      boxes = _layoutCache!.paragraph.getBoxesForRange(
+        max(0, prevRuneOffset),
+        offset,
+        boxHeightStyle: ui.BoxHeightStyle.strut,
+      );
       // When the range does not include a full cluster, no boxes will be returned.
       if (boxes.isEmpty) {
         // When we are at the beginning of the line, a non-surrogate position will
@@ -1254,10 +1389,15 @@ class TextPainter {
       // there's just one box, and when all boxes have the same direction.
       // It may not work in bidi text: https://github.com/flutter/flutter/issues/123424
       final TextBox box = boxes.last.direction == TextDirection.ltr
-          ? boxes.last : boxes.first;
+          ? boxes.last
+          : boxes.first;
       return prevCodeUnit == NEWLINE_CODE_UNIT
-        ? _EmptyLineCaretMetrics(lineVerticalOffset: box.bottom)
-        : _LineCaretMetrics(offset: Offset(box.end, box.top), writingDirection: box.direction, fullHeight: box.bottom - box.top);
+          ? _EmptyLineCaretMetrics(lineVerticalOffset: box.bottom)
+          : _LineCaretMetrics(
+              offset: Offset(box.end, box.top),
+              writingDirection: box.direction,
+              fullHeight: box.bottom - box.top,
+            );
     }
     return null;
   }
@@ -1271,17 +1411,26 @@ class TextPainter {
       return null;
     }
     // We cap the offset at the final index of plain text.
-    final int nextCodeUnit = plainText.codeUnitAt(min(offset, plainTextLength - 1));
+    final int nextCodeUnit = plainText.codeUnitAt(
+      min(offset, plainTextLength - 1),
+    );
 
     // Check for multi-code-unit glyphs such as emojis or zero width joiner
-    final bool needsSearch = isHighSurrogate(nextCodeUnit) || isLowSurrogate(nextCodeUnit) || nextCodeUnit == _zwjUtf16 || _isUnicodeDirectionality(nextCodeUnit);
+    final bool needsSearch = isHighSurrogate(nextCodeUnit) ||
+        isLowSurrogate(nextCodeUnit) ||
+        nextCodeUnit == _zwjUtf16 ||
+        _isUnicodeDirectionality(nextCodeUnit);
     int graphemeClusterLength = needsSearch ? 2 : 1;
     List<TextBox> boxes = <TextBox>[];
     while (boxes.isEmpty) {
       final int nextRuneOffset = offset + graphemeClusterLength;
       // Use BoxHeightStyle.strut to ensure that the caret's height fits within
       // the line's height and is consistent throughout the line.
-      boxes = _layoutCache!.paragraph.getBoxesForRange(offset, nextRuneOffset, boxHeightStyle: ui.BoxHeightStyle.strut);
+      boxes = _layoutCache!.paragraph.getBoxesForRange(
+        offset,
+        nextRuneOffset,
+        boxHeightStyle: ui.BoxHeightStyle.strut,
+      );
       // When the range does not include a full cluster, no boxes will be returned.
       if (boxes.isEmpty) {
         // When we are at the end of the line, a non-surrogate position will
@@ -1304,13 +1453,21 @@ class TextPainter {
       // there's just one box, and when all boxes have the same direction.
       // It may not work in bidi text: https://github.com/flutter/flutter/issues/123424
       final TextBox box = boxes.first.direction == TextDirection.ltr
-        ? boxes.first : boxes.last;
-      return _LineCaretMetrics(offset: Offset(box.start, box.top), writingDirection: box.direction, fullHeight: box.bottom - box.top);
+          ? boxes.first
+          : boxes.last;
+      return _LineCaretMetrics(
+        offset: Offset(box.start, box.top),
+        writingDirection: box.direction,
+        fullHeight: box.bottom - box.top,
+      );
     }
     return null;
   }
 
-  static double _computePaintOffsetFraction(TextAlign textAlign, TextDirection textDirection) {
+  static double _computePaintOffsetFraction(
+    TextAlign textAlign,
+    TextDirection textDirection,
+  ) {
     return switch ((textAlign, textDirection)) {
       (TextAlign.left, _) => 0.0,
       (TextAlign.right, _) => 1.0,
@@ -1340,15 +1497,26 @@ class TextPainter {
     final Offset rawOffset;
     switch (caretMetrics) {
       case _EmptyLineCaretMetrics(:final double lineVerticalOffset):
-        final double paintOffsetAlignment = _computePaintOffsetFraction(textAlign, textDirection!);
+        final double paintOffsetAlignment = _computePaintOffsetFraction(
+          textAlign,
+          textDirection!,
+        );
         // The full width is not (width - caretPrototype.width)
         // because RenderEditable reserves cursor width on the right. Ideally this
         // should be handled by RenderEditable instead.
-        final double dx = paintOffsetAlignment == 0 ? 0 : paintOffsetAlignment * layoutCache.contentWidth;
+        final double dx = paintOffsetAlignment == 0
+            ? 0
+            : paintOffsetAlignment * layoutCache.contentWidth;
         return Offset(dx, lineVerticalOffset);
-      case _LineCaretMetrics(writingDirection: TextDirection.ltr, :final Offset offset):
+      case _LineCaretMetrics(
+          writingDirection: TextDirection.ltr,
+          :final Offset offset,
+        ):
         rawOffset = offset;
-      case _LineCaretMetrics(writingDirection: TextDirection.rtl, :final Offset offset):
+      case _LineCaretMetrics(
+          writingDirection: TextDirection.rtl,
+          :final Offset offset,
+        ):
         rawOffset = Offset(offset.dx - caretPrototype.width, offset.dy);
     }
     // If offset.dx is outside of the advertised content area, then the associated
@@ -1356,7 +1524,11 @@ class TextPainter {
     // should be handled by higher-level implementations (for instance,
     // RenderEditable reserves width for showing the caret, it's best to handle
     // the clamping there).
-    final double adjustedDx = clampDouble(rawOffset.dx + layoutCache.paintOffset.dx, 0, layoutCache.contentWidth);
+    final double adjustedDx = clampDouble(
+      rawOffset.dx + layoutCache.paintOffset.dx,
+      0,
+      layoutCache.contentWidth,
+    );
     return Offset(adjustedDx, rawOffset.dy + layoutCache.paintOffset.dy);
   }
 
@@ -1392,12 +1564,15 @@ class TextPainter {
     }
     final int offset = position.offset;
     final _CaretMetrics? metrics = switch (position.affinity) {
-      TextAffinity.upstream => _getMetricsFromUpstream(offset) ?? _getMetricsFromDownstream(offset),
-      TextAffinity.downstream => _getMetricsFromDownstream(offset) ?? _getMetricsFromUpstream(offset),
+      TextAffinity.upstream =>
+        _getMetricsFromUpstream(offset) ?? _getMetricsFromDownstream(offset),
+      TextAffinity.downstream =>
+        _getMetricsFromDownstream(offset) ?? _getMetricsFromUpstream(offset),
     };
     // Cache the input parameters to prevent repeat work later.
     cachedLayout._previousCaretPosition = position;
-    return _caretMetrics = metrics ?? const _EmptyLineCaretMetrics(lineVerticalOffset: 0);
+    return _caretMetrics =
+        metrics ?? const _EmptyLineCaretMetrics(lineVerticalOffset: 0);
   }
 
   /// Returns a list of rects that bound the given selection.
@@ -1438,8 +1613,10 @@ class TextPainter {
       boxWidthStyle: boxWidthStyle,
     );
     return offset == Offset.zero
-      ? boxes
-      : boxes.map((TextBox box) => _shiftTextBox(box, offset)).toList(growable: false);
+        ? boxes
+        : boxes.map((TextBox box) => _shiftTextBox(box, offset)).toList(
+            growable: false,
+          );
   }
 
   /// Returns the position within the text for the given pixel offset.
@@ -1447,7 +1624,9 @@ class TextPainter {
     assert(_debugAssertTextLayoutIsValid);
     assert(!_debugNeedsRelayout);
     final _TextPainterLayoutCacheWithOffset cachedLayout = _layoutCache!;
-    return cachedLayout.paragraph.getPositionForOffset(offset - cachedLayout.paintOffset);
+    return cachedLayout.paragraph.getPositionForOffset(
+      offset - cachedLayout.paintOffset,
+    );
   }
 
   /// {@template flutter.painting.TextPainter.getWordBoundary}
@@ -1474,7 +1653,10 @@ class TextPainter {
   ///
   /// Currently word boundary analysis can only be performed after [layout]
   /// has been called.
-  WordBoundary get wordBoundaries => WordBoundary._(text!, _layoutCache!.paragraph);
+  WordBoundary get wordBoundaries => WordBoundary._(
+    text!,
+    _layoutCache!.paragraph,
+  );
 
   /// Returns the text range of the line at the given offset.
   ///
@@ -1484,7 +1666,10 @@ class TextPainter {
     return _layoutCache!.paragraph.getLineBoundary(position);
   }
 
-  static ui.LineMetrics _shiftLineMetrics(ui.LineMetrics metrics, Offset offset) {
+  static ui.LineMetrics _shiftLineMetrics(
+    ui.LineMetrics metrics,
+    Offset offset,
+  ) {
     assert(offset.dx.isFinite);
     assert(offset.dy.isFinite);
     return ui.LineMetrics(
@@ -1533,8 +1718,12 @@ class TextPainter {
     }
     final List<ui.LineMetrics> rawMetrics = layout.lineMetrics;
     return offset == Offset.zero
-      ? rawMetrics
-      : rawMetrics.map((ui.LineMetrics metrics) => _shiftLineMetrics(metrics, offset)).toList(growable: false);
+        ? rawMetrics
+        : rawMetrics
+              .map(
+                (ui.LineMetrics metrics) => _shiftLineMetrics(metrics, offset),
+              )
+              .toList(growable: false);
   }
 
   bool _disposed = false;
@@ -1544,21 +1733,26 @@ class TextPainter {
   /// Only for use when asserts are enabled.
   bool get debugDisposed {
     bool? disposed;
-    assert(() {
-      disposed = _disposed;
-      return true;
-    }());
-    return disposed ?? (throw StateError('debugDisposed only available when asserts are on.'));
+    assert(
+      () {
+        disposed = _disposed;
+        return true;
+      }(),
+    );
+    return disposed ??
+        (throw StateError('debugDisposed only available when asserts are on.'));
   }
 
   /// Releases the resources associated with this painter.
   ///
   /// After disposal this painter is unusable.
   void dispose() {
-    assert(() {
-      _disposed = true;
-      return true;
-    }());
+    assert(
+      () {
+        _disposed = true;
+        return true;
+      }(),
+    );
     _layoutTemplate?.dispose();
     _layoutTemplate = null;
     _layoutCache?.paragraph.dispose();

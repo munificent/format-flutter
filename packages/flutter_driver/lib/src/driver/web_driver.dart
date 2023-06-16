@@ -32,14 +32,15 @@ class WebFlutterDriver extends FlutterDriver {
     this._connection, {
     bool printCommunication = false,
     bool logCommunicationToFile = true,
-  })  : _printCommunication = printCommunication,
-        _logCommunicationToFile = logCommunicationToFile,
-        _startTime = DateTime.now(),
-        _driverId = _nextDriverId++
-    {
-      _logFilePathName = path.join(testOutputsDirectory, 'flutter_driver_commands_$_driverId.log');
-    }
-
+  }) : _printCommunication = printCommunication,
+       _logCommunicationToFile = logCommunicationToFile,
+       _startTime = DateTime.now(),
+       _driverId = _nextDriverId++ {
+    _logFilePathName = path.join(
+      testOutputsDirectory,
+      'flutter_driver_commands_$_driverId.log',
+    );
+  }
 
   final FlutterWebConnection _connection;
   DateTime _startTime;
@@ -53,10 +54,12 @@ class WebFlutterDriver extends FlutterDriver {
   DateTime get startTime => _startTime;
 
   @override
-  vms.Isolate get appIsolate => throw UnsupportedError('WebFlutterDriver does not support appIsolate');
+  vms.Isolate get appIsolate =>
+      throw UnsupportedError('WebFlutterDriver does not support appIsolate');
 
   @override
-  vms.VmService get serviceClient => throw UnsupportedError('WebFlutterDriver does not support serviceClient');
+  vms.VmService get serviceClient =>
+      throw UnsupportedError('WebFlutterDriver does not support serviceClient');
 
   @override
   async_io.WebDriver get webDriver => _connection._driver;
@@ -89,15 +92,21 @@ class WebFlutterDriver extends FlutterDriver {
   }) async {
     hostUrl ??= Platform.environment['VM_SERVICE_URL'];
     final Map<String, dynamic> settings = <String, dynamic>{
-      'support-timeline-action': Platform.environment['SUPPORT_TIMELINE_ACTION'] == 'true',
+      'support-timeline-action':
+          Platform.environment['SUPPORT_TIMELINE_ACTION'] == 'true',
       'session-id': Platform.environment['DRIVER_SESSION_ID'],
       'session-uri': Platform.environment['DRIVER_SESSION_URI'],
       'session-spec': Platform.environment['DRIVER_SESSION_SPEC'],
-      'android-chrome-on-emulator': Platform.environment['ANDROID_CHROME_ON_EMULATOR'] == 'true',
-      'session-capabilities': Platform.environment['DRIVER_SESSION_CAPABILITIES'],
+      'android-chrome-on-emulator':
+          Platform.environment['ANDROID_CHROME_ON_EMULATOR'] == 'true',
+      'session-capabilities':
+          Platform.environment['DRIVER_SESSION_CAPABILITIES'],
     };
-    final FlutterWebConnection connection = await FlutterWebConnection.connect
-      (hostUrl!, settings, timeout: timeout);
+    final FlutterWebConnection connection = await FlutterWebConnection.connect(
+      hostUrl!,
+      settings,
+      timeout: timeout,
+    );
     return WebFlutterDriver.connectedTo(
       connection,
       printCommunication: printCommunication,
@@ -109,7 +118,7 @@ class WebFlutterDriver extends FlutterDriver {
     throw DriverError(
       'Received malformed response from the FlutterDriver extension.\n'
       'Expected a JSON map containing a "response" field and, optionally, an '
-      '"isError" field, but got ${data.runtimeType}: $data'
+      '"isError" field, but got ${data.runtimeType}: $data',
     );
   }
 
@@ -120,7 +129,10 @@ class WebFlutterDriver extends FlutterDriver {
     final Map<String, String> serialized = command.serialize();
     _logCommunication('>>> $serialized');
     try {
-      data = await _connection.sendCommand("window.\$flutterDriver('${jsonEncode(serialized)}')", command.timeout);
+      data = await _connection.sendCommand(
+        "window.\$flutterDriver('${jsonEncode(serialized)}')",
+        command.timeout,
+      );
 
       // The returned data is expected to be a string. If it's null or anything
       // other than a string, something's wrong.
@@ -143,7 +155,7 @@ class WebFlutterDriver extends FlutterDriver {
         'FlutterDriver command ${command.runtimeType} failed due to a remote error.\n'
         'Command sent: ${jsonEncode(serialized)}',
         error,
-        stackTrace
+        stackTrace,
       );
     }
 
@@ -176,7 +188,11 @@ class WebFlutterDriver extends FlutterDriver {
     if (_logCommunicationToFile) {
       final File file = fs.file(_logFilePathName);
       file.createSync(recursive: true); // no-op if file exists
-      file.writeAsStringSync('${DateTime.now()} $message\n', mode: FileMode.append, flush: true);
+      file.writeAsStringSync(
+        '${DateTime.now()} $message\n',
+        mode: FileMode.append,
+        flush: true,
+      );
     }
   }
 
@@ -196,17 +212,21 @@ class WebFlutterDriver extends FlutterDriver {
   }
 
   @override
-  Future<Timeline> stopTracingAndDownloadTimeline({Duration timeout = kUnusuallyLongTimeout}) async {
+  Future<Timeline> stopTracingAndDownloadTimeline({
+    Duration timeout = kUnusuallyLongTimeout,
+  }) async {
     _checkBrowserSupportsTimeline();
 
     final List<Map<String, dynamic>> events = <Map<String, dynamic>>[];
     for (final async_io.LogEntry entry in await _connection.logs.toList()) {
       if (_startTime.isBefore(entry.timestamp)) {
-        final Map<String, dynamic> data = (jsonDecode(entry.message!) as Map<String, dynamic>)['message'] as Map<String, dynamic>;
+        final Map<String, dynamic> data = (jsonDecode(entry.message!)
+            as Map<String, dynamic>)['message'] as Map<String, dynamic>;
         if (data['method'] == 'Tracing.dataCollected') {
           // 'ts' data collected from Chrome is in double format, conversion needed
           try {
-            final Map<String, dynamic> params = data['params'] as Map<String, dynamic>;
+            final Map<String, dynamic> params =
+                data['params'] as Map<String, dynamic>;
             params['ts'] = double.parse(params['ts'].toString()).toInt();
           } on FormatException catch (_) {
             // data is corrupted, skip
@@ -216,14 +236,13 @@ class WebFlutterDriver extends FlutterDriver {
         }
       }
     }
-    final Map<String, dynamic> json = <String, dynamic>{
-      'traceEvents': events,
-    };
+    final Map<String, dynamic> json = <String, dynamic>{'traceEvents': events};
     return Timeline.fromJson(json);
   }
 
   @override
-  Future<Timeline> traceAction(Future<dynamic> Function() action, {
+  Future<Timeline> traceAction(
+    Future<dynamic> Function() action, {
     List<TimelineStream> streams = const <TimelineStream>[TimelineStream.all],
     bool retainPriorEvents = false,
   }) async {
@@ -248,7 +267,9 @@ class WebFlutterDriver extends FlutterDriver {
   /// Checks whether browser supports Timeline related operations.
   void _checkBrowserSupportsTimeline() {
     if (!_connection.supportsTimelineAction) {
-      throw UnsupportedError('Timeline action is not supported by current testing browser');
+      throw UnsupportedError(
+        'Timeline action is not supported by current testing browser',
+      );
     }
   }
 }
@@ -267,15 +288,17 @@ class FlutterWebConnection {
   /// Starts WebDriver with the given [settings] and
   /// establishes the connection to Flutter Web application.
   static Future<FlutterWebConnection> connect(
-      String url,
-      Map<String, dynamic> settings,
-      {Duration? timeout}) async {
+    String url,
+    Map<String, dynamic> settings, {
+    Duration? timeout,
+  }) async {
     final String sessionId = settings['session-id'].toString();
     final Uri sessionUri = Uri.parse(settings['session-uri'].toString());
     final async_io.WebDriver driver = async_io.WebDriver(
       sessionUri,
       sessionId,
-      json.decode(settings['session-capabilities'] as String) as Map<String, dynamic>,
+      json.decode(settings['session-capabilities'] as String)
+          as Map<String, dynamic>,
       async_io.AsyncIoRequestClient(sessionUri.resolve('session/$sessionId/')),
       async_io.WebDriverSpec.W3c,
     );
@@ -284,12 +307,16 @@ class FlutterWebConnection {
       // Converts to Android Emulator Uri.
       // Hardcode the host to 10.0.2.2 based on
       // https://developer.android.com/studio/run/emulator-networking
-      url = Uri(scheme: localUri.scheme, host: '10.0.2.2', port:localUri.port).toString();
+      url = Uri(scheme: localUri.scheme, host: '10.0.2.2', port: localUri.port)
+          .toString();
     }
     await driver.get(url);
 
     await waitUntilExtensionInstalled(driver, timeout);
-    return FlutterWebConnection(driver, settings['support-timeline-action'] as bool);
+    return FlutterWebConnection(
+      driver,
+      settings['support-timeline-action'] as bool,
+    );
   }
 
   /// Sends command via WebDriver to Flutter web application.
@@ -344,10 +371,12 @@ class FlutterWebConnection {
   }
 
   /// Gets performance log from WebDriver.
-  Stream<async_io.LogEntry> get logs => _driver.logs.get(async_io.LogType.performance);
+  Stream<async_io.LogEntry> get logs => _driver.logs.get(
+    async_io.LogType.performance,
+  );
 
   /// Takes screenshot via WebDriver.
-  Future<List<int>> screenshot()  => _driver.captureScreenshotAsList();
+  Future<List<int>> screenshot() => _driver.captureScreenshotAsList();
 
   /// Closes the WebDriver.
   Future<void> close() async {
@@ -356,9 +385,13 @@ class FlutterWebConnection {
 }
 
 /// Waits until extension is installed.
-Future<void> waitUntilExtensionInstalled(async_io.WebDriver driver, Duration? timeout) async {
-  await waitFor<void>(() =>
-      driver.execute(r'return typeof(window.$flutterDriver)', <String>[]),
-      matcher: 'function',
-      timeout: timeout ?? const Duration(days: 365));
+Future<void> waitUntilExtensionInstalled(
+  async_io.WebDriver driver,
+  Duration? timeout,
+) async {
+  await waitFor<void>(
+    () => driver.execute(r'return typeof(window.$flutterDriver)', <String>[]),
+    matcher: 'function',
+    timeout: timeout ?? const Duration(days: 365),
+  );
 }

@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class SearchViewTemplate extends TokenTemplate {
-  const SearchViewTemplate(super.blockName, super.fileName, super.tokens, {
+  const SearchViewTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   @override
@@ -20,16 +23,22 @@ class _${blockName}DefaultsM3 extends ${blockName}ThemeData {
   late final ColorScheme _colors = Theme.of(context).colorScheme;
   late final TextTheme _textTheme = Theme.of(context).textTheme;
 
-  static double fullScreenBarHeight = ${getToken('md.comp.search-view.full-screen.header.container.height')};
+  static double fullScreenBarHeight = ${getToken(
+        'md.comp.search-view.full-screen.header.container.height',
+      )};
 
   @override
-  Color? get backgroundColor => ${componentColor('md.comp.search-view.container')};
+  Color? get backgroundColor => ${componentColor(
+        'md.comp.search-view.container',
+      )};
 
   @override
   double? get elevation => ${elevation('md.comp.search-view.container')};
 
   @override
-  Color? get surfaceTintColor => ${colorOrTransparent('md.comp.search-view.container.surface-tint-layer.color')};
+  Color? get surfaceTintColor => ${colorOrTransparent(
+        'md.comp.search-view.container.surface-tint-layer.color',
+      )};
 
   // No default side
 
@@ -39,10 +48,14 @@ class _${blockName}DefaultsM3 extends ${blockName}ThemeData {
     : ${shape('md.comp.search-view.docked.container')};
 
   @override
-  TextStyle? get headerTextStyle => ${textStyleWithColor('md.comp.search-view.header.input-text')};
+  TextStyle? get headerTextStyle => ${textStyleWithColor(
+        'md.comp.search-view.header.input-text',
+      )};
 
   @override
-  TextStyle? get headerHintStyle => ${textStyleWithColor('md.comp.search-view.header.supporting-text')};
+  TextStyle? get headerHintStyle => ${textStyleWithColor(
+        'md.comp.search-view.header.supporting-text',
+      )};
 
   @override
   BoxConstraints get constraints => const BoxConstraints(minWidth: 360.0, minHeight: 240.0);

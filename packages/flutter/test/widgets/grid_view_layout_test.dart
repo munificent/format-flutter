@@ -14,25 +14,27 @@ void main() {
       const DecoratedBox(decoration: BoxDecoration()),
     ];
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: SizedBox(
-            width: 200.0,
-            child: GridView.extent(
-              maxCrossAxisExtent: 100.0,
-              shrinkWrap: true,
-              children: children,
-            ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: SizedBox(
+          width: 200.0,
+          child: GridView.extent(
+            maxCrossAxisExtent: 100.0,
+            shrinkWrap: true,
+            children: children,
           ),
         ),
       ),
+    ));
+
+    expect(
+      tester.renderObjectList<RenderBox>(find.byType(DecoratedBox)),
+      hasLength(4),
     );
 
-    expect(tester.renderObjectList<RenderBox>(find.byType(DecoratedBox)), hasLength(4));
-
-    for (final RenderBox box in tester.renderObjectList<RenderBox>(find.byType(DecoratedBox))) {
+    for (final RenderBox box
+        in tester.renderObjectList<RenderBox>(find.byType(DecoratedBox))) {
       expect(box.size.width, equals(100.0), reason: 'child width');
       expect(box.size.height, equals(100.0), reason: 'child height');
     }
@@ -43,23 +45,22 @@ void main() {
 
     expect(grid.debugNeedsLayout, false);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: SizedBox(
-            width: 200.0,
-            child: GridView.extent(
-              maxCrossAxisExtent: 60.0,
-              shrinkWrap: true,
-              children: children,
-            ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: SizedBox(
+          width: 200.0,
+          child: GridView.extent(
+            maxCrossAxisExtent: 60.0,
+            shrinkWrap: true,
+            children: children,
           ),
         ),
       ),
-    );
+    ));
 
-    for (final RenderBox box in tester.renderObjectList<RenderBox>(find.byType(DecoratedBox))) {
+    for (final RenderBox box
+        in tester.renderObjectList<RenderBox>(find.byType(DecoratedBox))) {
       expect(box.size.width, equals(50.0), reason: 'child width');
       expect(box.size.height, equals(50.0), reason: 'child height');
     }

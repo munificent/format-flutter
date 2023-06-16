@@ -5,30 +5,32 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-
 void main() {
-  testWidgets('DisposableBuildContext asserts on disposed state', (WidgetTester tester) async {
-    final GlobalKey<TestWidgetState> key = GlobalKey<TestWidgetState>();
-    await tester.pumpWidget(TestWidget(key));
+  testWidgets(
+    'DisposableBuildContext asserts on disposed state',
+    (WidgetTester tester) async {
+      final GlobalKey<TestWidgetState> key = GlobalKey<TestWidgetState>();
+      await tester.pumpWidget(TestWidget(key));
 
-    final TestWidgetState state = key.currentState!;
-    expect(state.mounted, true);
+      final TestWidgetState state = key.currentState!;
+      expect(state.mounted, true);
 
-    final DisposableBuildContext context = DisposableBuildContext(state);
-    expect(context.context, state.context);
+      final DisposableBuildContext context = DisposableBuildContext(state);
+      expect(context.context, state.context);
 
-    await tester.pumpWidget(const TestWidget(null));
+      await tester.pumpWidget(const TestWidget(null));
 
-    expect(state.mounted, false);
+      expect(state.mounted, false);
 
-    expect(() => context.context, throwsAssertionError);
+      expect(() => context.context, throwsAssertionError);
 
-    context.dispose();
-    expect(context.context, null);
-    expect(() => state.context, throwsFlutterError);
+      context.dispose();
+      expect(context.context, null);
+      expect(() => state.context, throwsFlutterError);
 
-    expect(() => DisposableBuildContext(state), throwsAssertionError);
-  });
+      expect(() => DisposableBuildContext(state), throwsAssertionError);
+    },
+  );
 }
 
 class TestWidget extends StatefulWidget {

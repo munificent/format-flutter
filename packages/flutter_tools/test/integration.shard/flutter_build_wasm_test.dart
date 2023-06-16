@@ -18,11 +18,7 @@ void main() {
 
   setUp(() async {
     tempDir = createResolvedTempDirectorySync('flutter_web_wasm_test.');
-    flutterBin = fileSystem.path.join(
-      getFlutterRoot(),
-      'bin',
-      'flutter',
-    );
+    flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
     exampleAppDir = tempDir.childDirectory('test_app');
 
     processManager.runSync(<String>[
@@ -35,32 +31,25 @@ void main() {
 
   test('building web with --wasm produces expected files', () async {
     final ProcessResult result = processManager.runSync(
-      <String>[
-        flutterBin,
-        'build',
-        'web',
-        '--wasm',
-      ],
+      <String>[flutterBin, 'build', 'web', '--wasm'],
       workingDirectory: exampleAppDir.path,
       environment: <String, String>{
-        flutterWebWasm.environmentOverride!: 'true'
+        flutterWebWasm.environmentOverride!: 'true',
       },
     );
     expect(result, const ProcessResultMatcher());
 
-    final Directory appBuildDir = fileSystem.directory(fileSystem.path.join(
-      exampleAppDir.path,
-      'build',
-      'web_wasm',
-    ));
+    final Directory appBuildDir = fileSystem.directory(
+      fileSystem.path.join(exampleAppDir.path, 'build', 'web_wasm'),
+    );
     for (final String filename in const <String>[
-      'flutter.js',
-      'flutter_service_worker.js',
-      'index.html',
-      'main.dart.wasm',
-      'main.dart.mjs',
-      'main.dart.js',
-    ]) {
+          'flutter.js',
+          'flutter_service_worker.js',
+          'index.html',
+          'main.dart.wasm',
+          'main.dart.mjs',
+          'main.dart.js',
+        ]) {
       expect(appBuildDir.childFile(filename), exists);
     }
   });

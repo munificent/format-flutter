@@ -24,9 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -47,50 +45,44 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title ?? ''),
+      appBar: AppBar(title: Text(widget.title ?? '')),
+      body: Column(
+        children: <Widget>[
+          TextButton(
+            key: const ValueKey<String>('platform_view_button'),
+            child: const Text('show platform view'),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<MergeThreadTestPage>(
+                builder: (BuildContext context) => const MergeThreadTestPage(),
+              ));
+            },
+          ),
+          // Push this button to perform an animation, which ensure the threads are unmerged after the animation.
+          ElevatedButton(
+            key: const ValueKey<String>('unmerge_button'),
+            child: const Text('Tap to unmerge threads'),
+            onPressed: () {},
+          ),
+          TextButton(
+            key: const ValueKey<String>('platform_view_focus_test'),
+            child: const Text('platform view focus test'),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<FocusTestPage>(
+                builder: (BuildContext context) => const FocusTestPage(),
+              ));
+            },
+          ),
+          TextButton(
+            key: const ValueKey<String>('platform_view_z_order_test'),
+            child: const Text('platform view z order test'),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<ZOrderTestPage>(
+                builder: (BuildContext context) => const ZOrderTestPage(),
+              ));
+            },
+          ),
+        ],
       ),
-      body: Column(children: <Widget>[
-        TextButton(
-          key: const ValueKey<String>('platform_view_button'),
-          child: const Text('show platform view'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute<MergeThreadTestPage>(
-                  builder: (BuildContext context) => const MergeThreadTestPage()),
-            );
-          },
-        ),
-        // Push this button to perform an animation, which ensure the threads are unmerged after the animation.
-        ElevatedButton(
-          key: const ValueKey<String>('unmerge_button'),
-          child: const Text('Tap to unmerge threads'),
-          onPressed: () {},
-        ),
-        TextButton(
-          key: const ValueKey<String>('platform_view_focus_test'),
-          child: const Text('platform view focus test'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute<FocusTestPage>(
-                  builder: (BuildContext context) => const FocusTestPage()),
-            );
-          },
-        ),
-        TextButton(
-          key: const ValueKey<String>('platform_view_z_order_test'),
-          child: const Text('platform view z order test'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute<ZOrderTestPage>(
-                  builder: (BuildContext context) => const ZOrderTestPage()),
-            );
-          },
-        ),
-      ]),
     );
   }
 }
@@ -104,9 +96,7 @@ class MergeThreadTestPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Platform View Thread Merge Tests'),
-      ),
+      appBar: AppBar(title: const Text('Platform View Thread Merge Tests')),
       body: Column(
         children: <Widget>[
           const Expanded(
@@ -118,7 +108,7 @@ class MergeThreadTestPage extends StatelessWidget {
           ElevatedButton(
             key: button,
             child: const Text('button'),
-            onPressed: (){},
+            onPressed: () {},
           ),
         ],
       ),
@@ -135,7 +125,6 @@ class FocusTestPage extends StatefulWidget {
 }
 
 class _FocusTestPageState extends State<FocusTestPage> {
-
   late TextEditingController _controller;
 
   @override
@@ -148,9 +137,7 @@ class _FocusTestPageState extends State<FocusTestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Platform View Focus Tests'),
-      ),
+      appBar: AppBar(title: const Text('Platform View Focus Tests')),
       body: Column(
         children: <Widget>[
           const SizedBox(
@@ -158,9 +145,7 @@ class _FocusTestPageState extends State<FocusTestPage> {
             height: 50,
             child: UiKitView(viewType: 'platform_text_field'),
           ),
-          TextField(
-            controller: _controller,
-          ),
+          TextField(controller: _controller),
         ],
       ),
     );
@@ -182,49 +167,52 @@ class _ZOrderTestPageState extends State<ZOrderTestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Platform view z order test'),
-      ),
+      appBar: AppBar(title: const Text('Platform view z order test')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Visibility(
-                visible: _showBackground,
-                child: const SizedBox(
-                  width: 500,
-                  height: 500,
-                  child: UiKitView(
-                    viewType: 'platform_view',
-                    creationParamsCodec: StandardMessageCodec(),
-                  ),
-                )),
+              visible: _showBackground,
+              child: const SizedBox(
+                width: 500,
+                height: 500,
+                child: UiKitView(
+                  viewType: 'platform_view',
+                  creationParamsCodec: StandardMessageCodec(),
+                ),
+              ),
+            ),
             TextButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const SizedBox(
-                          width: 250,
-                          height: 250,
-                          child: UiKitView(
-                            viewType: 'platform_button',
-                            creationParamsCodec: StandardMessageCodec(),
-                          ),
-                        );
-                      });
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const SizedBox(
+                      width: 250,
+                      height: 250,
+                      child: UiKitView(
+                        viewType: 'platform_button',
+                        creationParamsCodec: StandardMessageCodec(),
+                      ),
+                    );
+                  },
+                );
 
-                  // XCUITest fails to query the background platform view,
-                  // Since it is covered by the dialog prompt, which removes
-                  // semantic nodes underneath.
-                  // As a workaround, we show the background with a delay.
-                  Future<void>.delayed(const Duration(seconds: 1)).then((void value) {
+                // XCUITest fails to query the background platform view,
+                // Since it is covered by the dialog prompt, which removes
+                // semantic nodes underneath.
+                // As a workaround, we show the background with a delay.
+                Future<void>.delayed(const Duration(seconds: 1)).then(
+                  (void value) {
                     setState(() {
                       _showBackground = true;
                     });
-                  });
-                },
-                child: const Text('Show Alert')),
+                  },
+                );
+              },
+              child: const Text('Show Alert'),
+            ),
           ],
         ),
       ),

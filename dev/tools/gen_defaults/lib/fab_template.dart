@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class FABTemplate extends TokenTemplate {
-  const FABTemplate(super.blockName, super.fileName, super.tokens, {
+  const FABTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
     super.textThemePrefix = '_textTheme.',
   });
@@ -18,7 +21,9 @@ class _${blockName}DefaultsM3 extends FloatingActionButtonThemeData {
         elevation: ${elevation("md.comp.fab.primary.container")},
         focusElevation: ${elevation("md.comp.fab.primary.focus.container")},
         hoverElevation: ${elevation("md.comp.fab.primary.hover.container")},
-        highlightElevation: ${elevation("md.comp.fab.primary.pressed.container")},
+        highlightElevation: ${elevation(
+        "md.comp.fab.primary.pressed.container",
+      )},
         enableFeedback: true,
         sizeConstraints: const BoxConstraints.tightFor(
           width: ${getToken("md.comp.fab.primary.container.width")},
@@ -46,11 +51,21 @@ class _${blockName}DefaultsM3 extends FloatingActionButtonThemeData {
 
   bool get _isExtended => type == _FloatingActionButtonType.extended;
 
-  @override Color? get foregroundColor => ${componentColor("md.comp.fab.primary.icon")};
-  @override Color? get backgroundColor => ${componentColor("md.comp.fab.primary.container")};
-  @override Color? get splashColor => ${componentColor("md.comp.fab.primary.pressed.state-layer")};
-  @override Color? get focusColor => ${componentColor("md.comp.fab.primary.focus.state-layer")};
-  @override Color? get hoverColor => ${componentColor("md.comp.fab.primary.hover.state-layer")};
+  @override Color? get foregroundColor => ${componentColor(
+        "md.comp.fab.primary.icon",
+      )};
+  @override Color? get backgroundColor => ${componentColor(
+        "md.comp.fab.primary.container",
+      )};
+  @override Color? get splashColor => ${componentColor(
+        "md.comp.fab.primary.pressed.state-layer",
+      )};
+  @override Color? get focusColor => ${componentColor(
+        "md.comp.fab.primary.focus.state-layer",
+      )};
+  @override Color? get hoverColor => ${componentColor(
+        "md.comp.fab.primary.hover.state-layer",
+      )};
 
   @override
   ShapeBorder? get shape {
@@ -69,15 +84,25 @@ class _${blockName}DefaultsM3 extends FloatingActionButtonThemeData {
   @override
   double? get iconSize {
     switch (type) {
-      case _FloatingActionButtonType.regular: return ${getToken("md.comp.fab.primary.icon.size")};
-      case _FloatingActionButtonType.small: return  ${getToken("md.comp.fab.primary.small.icon.size")};
-      case _FloatingActionButtonType.large: return ${getToken("md.comp.fab.primary.large.icon.size")};
-      case _FloatingActionButtonType.extended: return ${getToken("md.comp.extended-fab.primary.icon.size")};
+      case _FloatingActionButtonType.regular: return ${getToken(
+        "md.comp.fab.primary.icon.size",
+      )};
+      case _FloatingActionButtonType.small: return  ${getToken(
+        "md.comp.fab.primary.small.icon.size",
+      )};
+      case _FloatingActionButtonType.large: return ${getToken(
+        "md.comp.fab.primary.large.icon.size",
+      )};
+      case _FloatingActionButtonType.extended: return ${getToken(
+        "md.comp.extended-fab.primary.icon.size",
+      )};
     }
   }
 
   @override EdgeInsetsGeometry? get extendedPadding => EdgeInsetsDirectional.only(start: hasChild && _isExtended ? 16.0 : 20.0, end: 20.0);
-  @override TextStyle? get extendedTextStyle => ${textStyle("md.comp.extended-fab.primary.label-text")};
+  @override TextStyle? get extendedTextStyle => ${textStyle(
+        "md.comp.extended-fab.primary.label-text",
+      )};
 }
 ''';
 }

@@ -87,10 +87,7 @@ const Map<String, Set<String>> _materialActions = <String, Set<String>>{
 };
 
 class _ChipsTile extends StatelessWidget {
-  const _ChipsTile({
-    this.label,
-    this.children,
-  });
+  const _ChipsTile({this.label, this.children});
 
   final String? label;
   final List<Widget>? children;
@@ -111,10 +108,7 @@ class _ChipsTile extends StatelessWidget {
           if (children!.isNotEmpty)
             Wrap(
               children: children!.map<Widget>((Widget chip) {
-                return Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: chip,
-                );
+                return Padding(padding: const EdgeInsets.all(2.0), child: chip);
               }).toList(),
             )
           else
@@ -122,9 +116,15 @@ class _ChipsTile extends StatelessWidget {
               container: true,
               child: Container(
                 alignment: Alignment.center,
-                constraints: const BoxConstraints(minWidth: 48.0, minHeight: 48.0),
+                constraints:
+                    const BoxConstraints(minWidth: 48.0, minHeight: 48.0),
                 padding: const EdgeInsets.all(8.0),
-                child: Text('None', style: Theme.of(context).textTheme.bodySmall!.copyWith(fontStyle: FontStyle.italic)),
+                child: Text(
+                  'None',
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ),
             ),
         ],
@@ -203,16 +203,14 @@ class _ChipDemoState extends State<ChipDemo> {
     assert(name.length > 1);
     final int hash = name.hashCode & 0xffff;
     final double hue = (360.0 * hash / (1 << 15)) % 360.0;
-    final double themeValue = HSVColor.fromColor(theme.colorScheme.background).value;
+    final double themeValue =
+        HSVColor.fromColor(theme.colorScheme.background).value;
     return HSVColor.fromAHSV(1.0, hue, 0.4, themeValue).toColor();
   }
 
   AssetImage _nameToAvatar(String name) {
     assert(_avatars.containsKey(name));
-    return AssetImage(
-      _avatars[name]!,
-      package: 'flutter_gallery_assets',
-    );
+    return AssetImage(_avatars[name]!, package: 'flutter_gallery_assets');
   }
 
   String _createResult() {
@@ -241,16 +239,15 @@ class _ChipDemoState extends State<ChipDemo> {
 
     final List<Widget> inputChips = _toolsA.map<Widget>((String name) {
       return InputChip(
-          key: ValueKey<String>(name),
-          avatar: CircleAvatar(
-            backgroundImage: _nameToAvatar(name),
-          ),
-          label: Text(_capitalize(name)),
-          onDeleted: () {
-            setState(() {
-              _removeTool(name);
-            });
+        key: ValueKey<String>(name),
+        avatar: CircleAvatar(backgroundImage: _nameToAvatar(name)),
+        label: Text(_capitalize(name)),
+        onDeleted: () {
+          setState(() {
+            _removeTool(name);
           });
+        },
+      );
     }).toList();
 
     final List<Widget> choiceChips = _materialsB.map<Widget>((String name) {
@@ -291,7 +288,9 @@ class _ChipDemoState extends State<ChipDemo> {
       for (final String tool in _selectedTools) {
         allowedActions.addAll(_toolActions[tool]!);
       }
-      allowedActions = allowedActions.intersection(_materialActions[_selectedMaterial]!);
+      allowedActions = allowedActions.intersection(
+        _materialActions[_selectedMaterial]!,
+      );
     }
 
     final List<Widget> actionChips = allowedActions.map<Widget>((String name) {
@@ -309,17 +308,20 @@ class _ChipDemoState extends State<ChipDemo> {
       const SizedBox(height: 8.0, width: 0.0),
       _ChipsTile(label: 'Available Materials (Chip)', children: chips),
       _ChipsTile(label: 'Available Tools (InputChip)', children: inputChips),
-      _ChipsTile(label: 'Choose a Material (ChoiceChip)', children: choiceChips),
+      _ChipsTile(
+        label: 'Choose a Material (ChoiceChip)',
+        children: choiceChips,
+      ),
       _ChipsTile(label: 'Choose Tools (FilterChip)', children: filterChips),
-      _ChipsTile(label: 'Perform Allowed Action (ActionChip)', children: actionChips),
+      _ChipsTile(
+        label: 'Perform Allowed Action (ActionChip)',
+        children: actionChips,
+      ),
       const Divider(),
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
-          child: Text(
-            _createResult(),
-            style: theme.textTheme.titleLarge,
-          ),
+          child: Text(_createResult(), style: theme.textTheme.titleLarge),
         ),
       ),
     ];
@@ -335,7 +337,10 @@ class _ChipDemoState extends State<ChipDemo> {
                 _showShapeBorder = !_showShapeBorder;
               });
             },
-            icon: const Icon(Icons.vignette, semanticLabel: 'Update border shape'),
+            icon: const Icon(
+              Icons.vignette,
+              semanticLabel: 'Update border shape',
+            ),
           ),
         ],
       ),
@@ -343,16 +348,12 @@ class _ChipDemoState extends State<ChipDemo> {
         data: _showShapeBorder
             ? theme.chipTheme.copyWith(
                 shape: BeveledRectangleBorder(
-                side: const BorderSide(width: 0.66, color: Colors.grey),
-                borderRadius: BorderRadius.circular(10.0),
-              ))
+                  side: const BorderSide(width: 0.66, color: Colors.grey),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              )
             : theme.chipTheme,
-        child: Scrollbar(
-          child: ListView(
-            primary: true,
-            children: tiles,
-          )
-        ),
+        child: Scrollbar(child: ListView(primary: true, children: tiles)),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(_reset),

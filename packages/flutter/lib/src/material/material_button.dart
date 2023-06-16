@@ -393,7 +393,9 @@ class MaterialButton extends StatelessWidget {
       onHighlightChanged: onHighlightChanged,
       mouseCursor: mouseCursor,
       fillColor: buttonTheme.getFillColor(this),
-      textStyle: theme.textTheme.labelLarge!.copyWith(color: buttonTheme.getTextColor(this)),
+      textStyle: theme.textTheme.labelLarge!.copyWith(
+        color: buttonTheme.getTextColor(this),
+      ),
       focusColor: focusColor ?? buttonTheme.getFocusColor(this),
       hoverColor: hoverColor ?? buttonTheme.getHoverColor(this),
       highlightColor: highlightColor ?? theme.highlightColor,
@@ -413,7 +415,8 @@ class MaterialButton extends StatelessWidget {
       focusNode: focusNode,
       autofocus: autofocus,
       animationDuration: buttonTheme.getAnimationDuration(this),
-      materialTapTargetSize: materialTapTargetSize ?? theme.materialTapTargetSize,
+      materialTapTargetSize:
+          materialTapTargetSize ?? theme.materialTapTargetSize,
       disabledElevation: disabledElevation ?? 0.0,
       child: child,
     );
@@ -422,22 +425,58 @@ class MaterialButton extends StatelessWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(FlagProperty('enabled', value: enabled, ifFalse: 'disabled'));
-    properties.add(DiagnosticsProperty<ButtonTextTheme>('textTheme', textTheme, defaultValue: null));
+    properties.add(
+      FlagProperty('enabled', value: enabled, ifFalse: 'disabled'),
+    );
+    properties.add(DiagnosticsProperty<ButtonTextTheme>(
+      'textTheme',
+      textTheme,
+      defaultValue: null,
+    ));
     properties.add(ColorProperty('textColor', textColor, defaultValue: null));
-    properties.add(ColorProperty('disabledTextColor', disabledTextColor, defaultValue: null));
+    properties.add(
+      ColorProperty('disabledTextColor', disabledTextColor, defaultValue: null),
+    );
     properties.add(ColorProperty('color', color, defaultValue: null));
-    properties.add(ColorProperty('disabledColor', disabledColor, defaultValue: null));
+    properties.add(
+      ColorProperty('disabledColor', disabledColor, defaultValue: null),
+    );
     properties.add(ColorProperty('focusColor', focusColor, defaultValue: null));
     properties.add(ColorProperty('hoverColor', hoverColor, defaultValue: null));
-    properties.add(ColorProperty('highlightColor', highlightColor, defaultValue: null));
-    properties.add(ColorProperty('splashColor', splashColor, defaultValue: null));
-    properties.add(DiagnosticsProperty<Brightness>('colorBrightness', colorBrightness, defaultValue: null));
-    properties.add(DiagnosticsProperty<EdgeInsetsGeometry>('padding', padding, defaultValue: null));
-    properties.add(DiagnosticsProperty<VisualDensity>('visualDensity', visualDensity, defaultValue: null));
-    properties.add(DiagnosticsProperty<ShapeBorder>('shape', shape, defaultValue: null));
-    properties.add(DiagnosticsProperty<FocusNode>('focusNode', focusNode, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialTapTargetSize>('materialTapTargetSize', materialTapTargetSize, defaultValue: null));
+    properties.add(
+      ColorProperty('highlightColor', highlightColor, defaultValue: null),
+    );
+    properties.add(
+      ColorProperty('splashColor', splashColor, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty<Brightness>(
+      'colorBrightness',
+      colorBrightness,
+      defaultValue: null,
+    ));
+    properties.add(DiagnosticsProperty<EdgeInsetsGeometry>(
+      'padding',
+      padding,
+      defaultValue: null,
+    ));
+    properties.add(DiagnosticsProperty<VisualDensity>(
+      'visualDensity',
+      visualDensity,
+      defaultValue: null,
+    ));
+    properties.add(
+      DiagnosticsProperty<ShapeBorder>('shape', shape, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty<FocusNode>(
+      'focusNode',
+      focusNode,
+      defaultValue: null,
+    ));
+    properties.add(DiagnosticsProperty<MaterialTapTargetSize>(
+      'materialTapTargetSize',
+      materialTapTargetSize,
+      defaultValue: null,
+    ));
   }
 }
 
@@ -453,4 +492,4 @@ class MaterialButton extends StatelessWidget {
   'Use one of these button classes instead. '
   'This feature was deprecated after v2.11.0-0.0.pre.',
 )
-mixin MaterialButtonWithIconMixin { }
+mixin MaterialButtonWithIconMixin {}

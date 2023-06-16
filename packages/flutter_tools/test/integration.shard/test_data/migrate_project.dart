@@ -16,15 +16,21 @@ class MigrateProject extends Project {
   MigrateProject(this.version, {this.vanilla = true});
 
   @override
-  Future<void> setUpIn(Directory dir, {
+  Future<void> setUpIn(
+    Directory dir, {
     bool useDeferredLoading = false,
     bool useSyntheticPackage = false,
   }) async {
     this.dir = dir;
     _appPath = dir.path;
-    writeFile(fileSystem.path.join(dir.path, 'android', 'local.properties'), androidLocalProperties);
+    writeFile(
+      fileSystem.path.join(dir.path, 'android', 'local.properties'),
+      androidLocalProperties,
+    );
     final Directory tempDir = createResolvedTempDirectorySync('cipd_dest.');
-    final Directory depotToolsDir = createResolvedTempDirectorySync('depot_tools.');
+    final Directory depotToolsDir = createResolvedTempDirectorySync(
+      'depot_tools.',
+    );
 
     await processManager.run(<String>[
       'git',
@@ -33,7 +39,9 @@ class MigrateProject extends Project {
       depotToolsDir.path,
     ], workingDirectory: dir.path);
 
-    final File cipdFile = depotToolsDir.childFile(Platform.isWindows ? 'cipd.bat' : 'cipd');
+    final File cipdFile = depotToolsDir.childFile(
+      Platform.isWindows ? 'cipd.bat' : 'cipd',
+    );
     await processManager.run(<String>[
       cipdFile.path,
       'init',
@@ -51,14 +59,8 @@ class MigrateProject extends Project {
     ], workingDirectory: dir.path);
 
     if (Platform.isWindows) {
-      await processManager.run(<String>[
-        'robocopy',
-        tempDir.path,
-        dir.path,
-        '*',
-        '/E',
-        '/mov',
-      ]);
+      await processManager
+          .run(<String>['robocopy', tempDir.path, dir.path, '*', '/E', '/mov']);
       // Add full access permissions to Users
       await processManager.run(<String>[
         'icacls',
@@ -71,20 +73,11 @@ class MigrateProject extends Project {
       ]);
     } else {
       // This cp command changes the symlinks to real files so the tool can edit them.
-      await processManager.run(<String>[
-        'cp',
-        '-R',
-        '-L',
-        '-f',
-        '${tempDir.path}/.',
-        dir.path,
-      ]);
+      await processManager
+          .run(<String>['cp', '-R', '-L', '-f', '${tempDir.path}/.', dir.path]);
 
-      await processManager.run(<String>[
-        'rm',
-        '-rf',
-        '.cipd',
-      ], workingDirectory: dir.path);
+      await processManager
+          .run(<String>['rm', '-rf', '.cipd'], workingDirectory: dir.path);
 
       final List<FileSystemEntity> allFiles = dir.listSync(recursive: true);
       for (final FileSystemEntity file in allFiles) {
@@ -114,7 +107,9 @@ class MigrateProject extends Project {
 
   // Maintain the same pubspec as the configured app.
   @override
-  String get pubspec => fileSystem.file(fileSystem.path.join(_appPath, 'pubspec.yaml')).readAsStringSync();
+  String get pubspec => fileSystem.file(
+    fileSystem.path.join(_appPath, 'pubspec.yaml'),
+  ).readAsStringSync();
 
   String get androidLocalProperties => '''
   flutter.sdk=${getFlutterRoot()}

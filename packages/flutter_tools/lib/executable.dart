@@ -61,7 +61,8 @@ import 'src/web/web_runner.dart';
 /// This function is intended to be used from the `flutter` command line tool.
 Future<void> main(List<String> args) async {
   final bool veryVerbose = args.contains('-vv');
-  final bool verbose = args.contains('-v') || args.contains('--verbose') || veryVerbose;
+  final bool verbose =
+      args.contains('-v') || args.contains('--verbose') || veryVerbose;
   final bool prefixedErrors = args.contains('--prefixed-errors');
   // Support the -? Powershell help idiom.
   final int powershellHelpIndex = args.indexOf('-?');
@@ -71,13 +72,16 @@ Future<void> main(List<String> args) async {
 
   final bool doctor = (args.isNotEmpty && args.first == 'doctor') ||
       (args.length == 2 && verbose && args.last == 'doctor');
-  final bool help = args.contains('-h') || args.contains('--help') ||
-      (args.isNotEmpty && args.first == 'help') || (args.length == 1 && verbose);
+  final bool help = args.contains('-h') ||
+      args.contains('--help') ||
+      (args.isNotEmpty && args.first == 'help') ||
+      (args.length == 1 && verbose);
   final bool muteCommandLogging = (help || doctor) && !veryVerbose;
   final bool verboseHelp = help && verbose;
   final bool daemon = args.contains('daemon');
-  final bool runMachine = (args.contains('--machine') && args.contains('run')) ||
-                          (args.contains('--machine') && args.contains('attach'));
+  final bool runMachine =
+      (args.contains('--machine') && args.contains('run')) ||
+          (args.contains('--machine') && args.contains('attach'));
 
   // Cache.flutterRoot must be set early because other features use it (e.g.
   // enginePath's initializer uses it). This can only work with the real
@@ -90,10 +94,7 @@ Future<void> main(List<String> args) async {
 
   await runner.run(
     args,
-    () => generateCommands(
-      verboseHelp: verboseHelp,
-      verbose: verbose,
-    ),
+    () => generateCommands(verboseHelp: verboseHelp, verbose: verbose),
     verbose: verbose,
     muteCommandLogging: muteCommandLogging,
     verboseHelp: verboseHelp,
@@ -106,11 +107,12 @@ Future<void> main(List<String> args) async {
       // The devtools launcher is not supported in google3 because it depends on
       // devtools source code.
       DevtoolsLauncher: () => DevtoolsServerLauncher(
-        processManager: globals.processManager,
-        dartExecutable: globals.artifacts!.getArtifactPath(Artifact.engineDartBinary),
-        logger: globals.logger,
-        botDetector: globals.botDetector,
-      ),
+            processManager: globals.processManager,
+            dartExecutable:
+                globals.artifacts!.getArtifactPath(Artifact.engineDartBinary),
+            logger: globals.logger,
+            botDetector: globals.botDetector,
+          ),
       Logger: () {
         final LoggerFactory loggerFactory = LoggerFactory(
           outputPreferences: globals.outputPreferences,
@@ -185,7 +187,7 @@ List<FlutterCommand> generateCommands({
     featureFlags: featureFlags,
     processManager: globals.processManager,
     fileSystem: globals.fs,
-    logger: globals.logger
+    logger: globals.logger,
   ),
   CreateCommand(verboseHelp: verboseHelp),
   DaemonCommand(hidden: !verboseHelp),
@@ -193,7 +195,8 @@ List<FlutterCommand> generateCommands({
   DevicesCommand(verboseHelp: verboseHelp),
   DoctorCommand(verbose: verbose),
   DowngradeCommand(verboseHelp: verboseHelp, logger: globals.logger),
-  DriveCommand(verboseHelp: verboseHelp,
+  DriveCommand(
+    verboseHelp: verboseHelp,
     fileSystem: globals.fs,
     logger: globals.logger,
     platform: globals.platform,
@@ -208,9 +211,7 @@ List<FlutterCommand> generateCommands({
     artifacts: globals.artifacts!,
     processManager: globals.processManager,
   ),
-  InstallCommand(
-    verboseHelp: verboseHelp,
-  ),
+  InstallCommand(verboseHelp: verboseHelp),
   LogsCommand(),
   MakeHostAppEditableCommand(),
   PackagesCommand(),
@@ -226,10 +227,7 @@ List<FlutterCommand> generateCommands({
   ShellCompletionCommand(),
   TestCommand(verboseHelp: verboseHelp, verbose: verbose),
   UpgradeCommand(verboseHelp: verboseHelp),
-  SymbolizeCommand(
-    stdio: globals.stdio,
-    fileSystem: globals.fs,
-  ),
+  SymbolizeCommand(stdio: globals.stdio, fileSystem: globals.fs),
   // Development-only commands. These are always hidden,
   IdeConfigCommand(),
   UpdatePackagesCommand(),
@@ -275,7 +273,7 @@ class LoggerFactory {
         terminal: _terminal,
         stdio: _stdio,
         outputPreferences: _outputPreferences,
-        stopwatchFactory: _stopwatchFactory
+        stopwatchFactory: _stopwatchFactory,
       );
     }
     if (verbose) {

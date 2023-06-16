@@ -7,16 +7,22 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('TimeOfDay.format', () {
-    testWidgets('respects alwaysUse24HourFormat option', (WidgetTester tester) async {
+    testWidgets('respects alwaysUse24HourFormat option', (
+      WidgetTester tester,
+    ) async {
       Future<String> pumpTest(bool alwaysUse24HourFormat) async {
         late String formattedValue;
         await tester.pumpWidget(MaterialApp(
           home: MediaQuery(
             data: MediaQueryData(alwaysUse24HourFormat: alwaysUse24HourFormat),
-            child: Builder(builder: (BuildContext context) {
-              formattedValue = const TimeOfDay(hour: 7, minute: 0).format(context);
-              return Container();
-            }),
+            child: Builder(
+              builder: (BuildContext context) {
+                formattedValue = const TimeOfDay(hour: 7, minute: 0).format(
+                  context,
+                );
+                return Container();
+              },
+            ),
           ),
         ));
         return formattedValue;
@@ -27,63 +33,81 @@ void main() {
     });
   });
 
-  testWidgets('hourOfPeriod returns correct value', (WidgetTester tester) async {
-    // Regression test for https://github.com/flutter/flutter/issues/59158.
-    expect(const TimeOfDay(minute: 0, hour:  0).hourOfPeriod, 12);
-    expect(const TimeOfDay(minute: 0, hour:  1).hourOfPeriod,  1);
-    expect(const TimeOfDay(minute: 0, hour:  2).hourOfPeriod,  2);
-    expect(const TimeOfDay(minute: 0, hour:  3).hourOfPeriod,  3);
-    expect(const TimeOfDay(minute: 0, hour:  4).hourOfPeriod,  4);
-    expect(const TimeOfDay(minute: 0, hour:  5).hourOfPeriod,  5);
-    expect(const TimeOfDay(minute: 0, hour:  6).hourOfPeriod,  6);
-    expect(const TimeOfDay(minute: 0, hour:  7).hourOfPeriod,  7);
-    expect(const TimeOfDay(minute: 0, hour:  8).hourOfPeriod,  8);
-    expect(const TimeOfDay(minute: 0, hour:  9).hourOfPeriod,  9);
-    expect(const TimeOfDay(minute: 0, hour: 10).hourOfPeriod, 10);
-    expect(const TimeOfDay(minute: 0, hour: 11).hourOfPeriod, 11);
-    expect(const TimeOfDay(minute: 0, hour: 12).hourOfPeriod, 12);
-    expect(const TimeOfDay(minute: 0, hour: 13).hourOfPeriod,  1);
-    expect(const TimeOfDay(minute: 0, hour: 14).hourOfPeriod,  2);
-    expect(const TimeOfDay(minute: 0, hour: 15).hourOfPeriod,  3);
-    expect(const TimeOfDay(minute: 0, hour: 16).hourOfPeriod,  4);
-    expect(const TimeOfDay(minute: 0, hour: 17).hourOfPeriod,  5);
-    expect(const TimeOfDay(minute: 0, hour: 18).hourOfPeriod,  6);
-    expect(const TimeOfDay(minute: 0, hour: 19).hourOfPeriod,  7);
-    expect(const TimeOfDay(minute: 0, hour: 20).hourOfPeriod,  8);
-    expect(const TimeOfDay(minute: 0, hour: 21).hourOfPeriod,  9);
-    expect(const TimeOfDay(minute: 0, hour: 22).hourOfPeriod, 10);
-    expect(const TimeOfDay(minute: 0, hour: 23).hourOfPeriod, 11);
-  });
+  testWidgets(
+    'hourOfPeriod returns correct value',
+    (WidgetTester tester) async {
+      // Regression test for https://github.com/flutter/flutter/issues/59158.
+      expect(const TimeOfDay(minute: 0, hour: 0).hourOfPeriod, 12);
+      expect(const TimeOfDay(minute: 0, hour: 1).hourOfPeriod, 1);
+      expect(const TimeOfDay(minute: 0, hour: 2).hourOfPeriod, 2);
+      expect(const TimeOfDay(minute: 0, hour: 3).hourOfPeriod, 3);
+      expect(const TimeOfDay(minute: 0, hour: 4).hourOfPeriod, 4);
+      expect(const TimeOfDay(minute: 0, hour: 5).hourOfPeriod, 5);
+      expect(const TimeOfDay(minute: 0, hour: 6).hourOfPeriod, 6);
+      expect(const TimeOfDay(minute: 0, hour: 7).hourOfPeriod, 7);
+      expect(const TimeOfDay(minute: 0, hour: 8).hourOfPeriod, 8);
+      expect(const TimeOfDay(minute: 0, hour: 9).hourOfPeriod, 9);
+      expect(const TimeOfDay(minute: 0, hour: 10).hourOfPeriod, 10);
+      expect(const TimeOfDay(minute: 0, hour: 11).hourOfPeriod, 11);
+      expect(const TimeOfDay(minute: 0, hour: 12).hourOfPeriod, 12);
+      expect(const TimeOfDay(minute: 0, hour: 13).hourOfPeriod, 1);
+      expect(const TimeOfDay(minute: 0, hour: 14).hourOfPeriod, 2);
+      expect(const TimeOfDay(minute: 0, hour: 15).hourOfPeriod, 3);
+      expect(const TimeOfDay(minute: 0, hour: 16).hourOfPeriod, 4);
+      expect(const TimeOfDay(minute: 0, hour: 17).hourOfPeriod, 5);
+      expect(const TimeOfDay(minute: 0, hour: 18).hourOfPeriod, 6);
+      expect(const TimeOfDay(minute: 0, hour: 19).hourOfPeriod, 7);
+      expect(const TimeOfDay(minute: 0, hour: 20).hourOfPeriod, 8);
+      expect(const TimeOfDay(minute: 0, hour: 21).hourOfPeriod, 9);
+      expect(const TimeOfDay(minute: 0, hour: 22).hourOfPeriod, 10);
+      expect(const TimeOfDay(minute: 0, hour: 23).hourOfPeriod, 11);
+    },
+  );
 
   group('RestorableTimeOfDay tests', () {
-    testWidgets('value is not accessible when not registered', (WidgetTester tester) async {
-      expect(() => RestorableTimeOfDay(const TimeOfDay(hour: 20, minute: 4)).value, throwsAssertionError);
-    });
+    testWidgets(
+      'value is not accessible when not registered',
+      (WidgetTester tester) async {
+        expect(
+          () => RestorableTimeOfDay(const TimeOfDay(hour: 20, minute: 4)).value,
+          throwsAssertionError,
+        );
+      },
+    );
 
-    testWidgets('work when not in restoration scope', (WidgetTester tester) async {
-      await tester.pumpWidget(const _RestorableWidget());
+    testWidgets(
+      'work when not in restoration scope',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(const _RestorableWidget());
 
-      final _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
+        final _RestorableWidgetState state = tester.state(
+          find.byType(_RestorableWidget),
+        );
 
-      // Initialized to default values.
-      expect(state.timeOfDay.value, const TimeOfDay(hour: 10, minute: 5));
+        // Initialized to default values.
+        expect(state.timeOfDay.value, const TimeOfDay(hour: 10, minute: 5));
 
-      // Modify values.
-      state.setProperties(() {
-        state.timeOfDay.value = const TimeOfDay(hour: 2, minute: 2);
-      });
-      await tester.pump();
+        // Modify values.
+        state.setProperties(() {
+          state.timeOfDay.value = const TimeOfDay(hour: 2, minute: 2);
+        });
+        await tester.pump();
 
-      expect(state.timeOfDay.value, const TimeOfDay(hour: 2, minute: 2));
-    });
+        expect(state.timeOfDay.value, const TimeOfDay(hour: 2, minute: 2));
+      },
+    );
 
     testWidgets('restart and restore', (WidgetTester tester) async {
-      await tester.pumpWidget(const RootRestorationScope(
-        restorationId: 'root-child',
-        child: _RestorableWidget(),
-      ));
+      await tester.pumpWidget(
+        const RootRestorationScope(
+          restorationId: 'root-child',
+          child: _RestorableWidget(),
+        ),
+      );
 
-      _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
+      _RestorableWidgetState state = tester.state(
+        find.byType(_RestorableWidget),
+      );
 
       // Initialized to default values.
       expect(state.timeOfDay.value, const TimeOfDay(hour: 10, minute: 5));
@@ -106,12 +130,16 @@ void main() {
     });
 
     testWidgets('restore to older state', (WidgetTester tester) async {
-      await tester.pumpWidget(const RootRestorationScope(
-        restorationId: 'root-child',
-        child: _RestorableWidget(),
-      ));
+      await tester.pumpWidget(
+        const RootRestorationScope(
+          restorationId: 'root-child',
+          child: _RestorableWidget(),
+        ),
+      );
 
-      final _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
+      final _RestorableWidgetState state = tester.state(
+        find.byType(_RestorableWidget),
+      );
 
       // Modify values.
       state.setProperties(() {
@@ -119,7 +147,8 @@ void main() {
       });
       await tester.pump();
 
-      final TestRestorationData restorationData = await tester.getRestorationData();
+      final TestRestorationData restorationData =
+          await tester.getRestorationData();
 
       // Modify values.
       state.setProperties(() {
@@ -136,34 +165,41 @@ void main() {
       expect(state.timeOfDay.value, const TimeOfDay(hour: 10, minute: 5));
     });
 
-    testWidgets('call notifiers when value changes', (WidgetTester tester) async {
-      await tester.pumpWidget(const RootRestorationScope(
-        restorationId: 'root-child',
-        child: _RestorableWidget(),
-      ));
+    testWidgets(
+      'call notifiers when value changes',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          const RootRestorationScope(
+            restorationId: 'root-child',
+            child: _RestorableWidget(),
+          ),
+        );
 
-      final _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
+        final _RestorableWidgetState state = tester.state(
+          find.byType(_RestorableWidget),
+        );
 
-      final List<String> notifyLog = <String>[];
+        final List<String> notifyLog = <String>[];
 
-      state.timeOfDay.addListener(() {
-        notifyLog.add('hello world');
-      });
+        state.timeOfDay.addListener(() {
+          notifyLog.add('hello world');
+        });
 
-      state.setProperties(() {
-        state.timeOfDay.value = const TimeOfDay(hour: 2, minute: 2);
-      });
-      expect(notifyLog.single, 'hello world');
-      notifyLog.clear();
-      await tester.pump();
+        state.setProperties(() {
+          state.timeOfDay.value = const TimeOfDay(hour: 2, minute: 2);
+        });
+        expect(notifyLog.single, 'hello world');
+        notifyLog.clear();
+        await tester.pump();
 
-      // Does not notify when set to same value.
-      state.setProperties(() {
-        state.timeOfDay.value = const TimeOfDay(hour: 2, minute: 2);
-      });
+        // Does not notify when set to same value.
+        state.setProperties(() {
+          state.timeOfDay.value = const TimeOfDay(hour: 2, minute: 2);
+        });
 
-      expect(notifyLog, isEmpty);
-    });
+        expect(notifyLog, isEmpty);
+      },
+    );
   });
 }
 
@@ -174,8 +210,11 @@ class _RestorableWidget extends StatefulWidget {
   State<_RestorableWidget> createState() => _RestorableWidgetState();
 }
 
-class _RestorableWidgetState extends State<_RestorableWidget> with RestorationMixin {
-  final RestorableTimeOfDay timeOfDay = RestorableTimeOfDay(const TimeOfDay(hour: 10, minute: 5));
+class _RestorableWidgetState extends State<_RestorableWidget>
+    with RestorationMixin {
+  final RestorableTimeOfDay timeOfDay = RestorableTimeOfDay(
+    const TimeOfDay(hour: 10, minute: 5),
+  );
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {

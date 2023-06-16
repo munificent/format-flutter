@@ -15,9 +15,7 @@ import '../project.dart';
 import '../runner/flutter_command.dart';
 
 class CleanCommand extends FlutterCommand {
-  CleanCommand({
-    bool verbose = false,
-  }) : _verbose = verbose {
+  CleanCommand({bool verbose = false}) : _verbose = verbose {
     requiresPubspecYaml();
     argParser.addOption(
       'scheme',
@@ -37,7 +35,8 @@ class CleanCommand extends FlutterCommand {
   String get category => FlutterCommandCategory.project;
 
   @override
-  Future<Set<DevelopmentArtifact>> get requiredArtifacts async => const <DevelopmentArtifact>{};
+  Future<Set<DevelopmentArtifact>> get requiredArtifacts async =>
+      const <DevelopmentArtifact>{};
 
   @override
   Future<FlutterCommandResult> runCommand() async {
@@ -84,8 +83,10 @@ class CleanCommand extends FlutterCommand {
       'Cleaning Xcode workspace...',
     );
     try {
-      final XcodeProjectInterpreter xcodeProjectInterpreter = globals.xcodeProjectInterpreter!;
-      final XcodeProjectInfo projectInfo = (await xcodeProjectInterpreter.getInfo(xcodeWorkspace.parent.path))!;
+      final XcodeProjectInterpreter xcodeProjectInterpreter =
+          globals.xcodeProjectInterpreter!;
+      final XcodeProjectInfo projectInfo =
+          (await xcodeProjectInterpreter.getInfo(xcodeWorkspace.parent.path))!;
       if (argResults?.wasParsed('scheme') ?? false) {
         final String scheme = argResults!['scheme'] as String;
         if (scheme.isEmpty) {
@@ -94,10 +95,18 @@ class CleanCommand extends FlutterCommand {
         if (!projectInfo.schemes.contains(scheme)) {
           throwToolExit('Scheme "$scheme" not found in ${projectInfo.schemes}');
         }
-        await xcodeProjectInterpreter.cleanWorkspace(xcodeWorkspace.path, scheme, verbose: _verbose);
+        await xcodeProjectInterpreter.cleanWorkspace(
+          xcodeWorkspace.path,
+          scheme,
+          verbose: _verbose,
+        );
       } else {
         for (final String scheme in projectInfo.schemes) {
-          await xcodeProjectInterpreter.cleanWorkspace(xcodeWorkspace.path, scheme, verbose: _verbose);
+          await xcodeProjectInterpreter.cleanWorkspace(
+            xcodeWorkspace.path,
+            scheme,
+            verbose: _verbose,
+          );
         }
       }
     } on Exception catch (error) {
@@ -131,10 +140,12 @@ class CleanCommand extends FlutterCommand {
     } on FileSystemException catch (error) {
       final String path = file.path;
       if (globals.platform.isWindows) {
-        globals.printError('Failed to remove $path. '
-            'A program may still be using a file in the directory or the directory itself. '
-            'To find and stop such a program, see: '
-            'https://superuser.com/questions/1333118/cant-delete-empty-folder-because-it-is-used');
+        globals.printError(
+          'Failed to remove $path. '
+          'A program may still be using a file in the directory or the directory itself. '
+          'To find and stop such a program, see: '
+          'https://superuser.com/questions/1333118/cant-delete-empty-folder-because-it-is-used',
+        );
       } else {
         globals.printError('Failed to remove $path: $error');
       }

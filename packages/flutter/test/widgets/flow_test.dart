@@ -26,7 +26,8 @@ class TestFlowDelegate extends FlowDelegate {
   }
 
   @override
-  bool shouldRepaint(TestFlowDelegate oldDelegate) => startOffset == oldDelegate.startOffset;
+  bool shouldRepaint(TestFlowDelegate oldDelegate) =>
+      startOffset == oldDelegate.startOffset;
 }
 
 class OpacityFlowDelegate extends FlowDelegate {
@@ -42,7 +43,8 @@ class OpacityFlowDelegate extends FlowDelegate {
   }
 
   @override
-  bool shouldRepaint(OpacityFlowDelegate oldDelegate) => opacity != oldDelegate.opacity;
+  bool shouldRepaint(OpacityFlowDelegate oldDelegate) =>
+      opacity != oldDelegate.opacity;
 }
 
 // OpacityFlowDelegate that paints one of its children twice
@@ -81,20 +83,18 @@ void main() {
       );
     }
 
-    await tester.pumpWidget(
-      Flow(
-        delegate: TestFlowDelegate(startOffset: startOffset),
-        children: <Widget>[
-          buildBox(0),
-          buildBox(1),
-          buildBox(2),
-          buildBox(3),
-          buildBox(4),
-          buildBox(5),
-          buildBox(6),
-        ],
-      ),
-    );
+    await tester.pumpWidget(Flow(
+      delegate: TestFlowDelegate(startOffset: startOffset),
+      children: <Widget>[
+        buildBox(0),
+        buildBox(1),
+        buildBox(2),
+        buildBox(3),
+        buildBox(4),
+        buildBox(5),
+        buildBox(6),
+      ],
+    ));
 
     await tester.tap(find.text('0'));
     expect(log, equals(<int>[0]));
@@ -116,15 +116,13 @@ void main() {
   });
 
   testWidgets('paintChild gets called twice', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Flow(
-        delegate: DuplicatePainterOpacityFlowDelegate(1.0),
-        children: const <Widget>[
-          SizedBox(width: 100.0, height: 100.0),
-          SizedBox(width: 100.0, height: 100.0),
-        ],
-      ),
-    );
+    await tester.pumpWidget(Flow(
+      delegate: DuplicatePainterOpacityFlowDelegate(1.0),
+      children: const <Widget>[
+        SizedBox(width: 100.0, height: 100.0),
+        SizedBox(width: 100.0, height: 100.0),
+      ],
+    ));
     final dynamic exception = tester.takeException();
     expect(exception, isFlutterError);
     final FlutterError error = exception as FlutterError;
@@ -139,14 +137,10 @@ void main() {
 
   testWidgets('Flow opacity layer', (WidgetTester tester) async {
     const double opacity = 0.2;
-    await tester.pumpWidget(
-      Flow(
-        delegate: OpacityFlowDelegate(opacity),
-        children: const <Widget>[
-          SizedBox(width: 100.0, height: 100.0),
-        ],
-      ),
-    );
+    await tester.pumpWidget(Flow(
+      delegate: OpacityFlowDelegate(opacity),
+      children: const <Widget>[SizedBox(width: 100.0, height: 100.0)],
+    ));
     ContainerLayer? layer = RendererBinding.instance.renderView.debugLayer;
     while (layer != null && layer is! OpacityLayer) {
       layer = layer.firstChild as ContainerLayer?;
@@ -157,61 +151,51 @@ void main() {
     expect(layer!.firstChild, isA<TransformLayer>());
   });
 
-  testWidgets('Flow can set and update clipBehavior', (WidgetTester tester) async {
-    const double opacity = 0.2;
-    await tester.pumpWidget(
-      Flow(
+  testWidgets(
+    'Flow can set and update clipBehavior',
+    (WidgetTester tester) async {
+      const double opacity = 0.2;
+      await tester.pumpWidget(Flow(
         delegate: OpacityFlowDelegate(opacity),
-        children: const <Widget>[
-          SizedBox(width: 100.0, height: 100.0),
-        ],
-      ),
-    );
+        children: const <Widget>[SizedBox(width: 100.0, height: 100.0)],
+      ));
 
-    // By default, clipBehavior should be Clip.hardEdge
-    final RenderFlow renderObject = tester.renderObject(find.byType(Flow));
-    expect(renderObject.clipBehavior, equals(Clip.hardEdge));
+      // By default, clipBehavior should be Clip.hardEdge
+      final RenderFlow renderObject = tester.renderObject(find.byType(Flow));
+      expect(renderObject.clipBehavior, equals(Clip.hardEdge));
 
-    for (final Clip clip in Clip.values) {
-      await tester.pumpWidget(
-        Flow(
+      for (final Clip clip in Clip.values) {
+        await tester.pumpWidget(Flow(
           delegate: OpacityFlowDelegate(opacity),
           clipBehavior: clip,
-          children: const <Widget>[
-            SizedBox(width: 100.0, height: 100.0),
-          ],
-        ),
-      );
-      expect(renderObject.clipBehavior, clip);
-    }
-  });
+          children: const <Widget>[SizedBox(width: 100.0, height: 100.0)],
+        ));
+        expect(renderObject.clipBehavior, clip);
+      }
+    },
+  );
 
-  testWidgets('Flow.unwrapped can set and update clipBehavior', (WidgetTester tester) async {
-    const double opacity = 0.2;
-    await tester.pumpWidget(
-      Flow.unwrapped(
+  testWidgets(
+    'Flow.unwrapped can set and update clipBehavior',
+    (WidgetTester tester) async {
+      const double opacity = 0.2;
+      await tester.pumpWidget(Flow.unwrapped(
         delegate: OpacityFlowDelegate(opacity),
-        children: const <Widget>[
-          SizedBox(width: 100.0, height: 100.0),
-        ],
-      ),
-    );
+        children: const <Widget>[SizedBox(width: 100.0, height: 100.0)],
+      ));
 
-    // By default, clipBehavior should be Clip.hardEdge
-    final RenderFlow renderObject = tester.renderObject(find.byType(Flow));
-    expect(renderObject.clipBehavior, equals(Clip.hardEdge));
+      // By default, clipBehavior should be Clip.hardEdge
+      final RenderFlow renderObject = tester.renderObject(find.byType(Flow));
+      expect(renderObject.clipBehavior, equals(Clip.hardEdge));
 
-    for (final Clip clip in Clip.values) {
-      await tester.pumpWidget(
-        Flow.unwrapped(
+      for (final Clip clip in Clip.values) {
+        await tester.pumpWidget(Flow.unwrapped(
           delegate: OpacityFlowDelegate(opacity),
           clipBehavior: clip,
-          children: const <Widget>[
-            SizedBox(width: 100.0, height: 100.0),
-          ],
-        ),
-      );
-      expect(renderObject.clipBehavior, clip);
-    }
-  });
+          children: const <Widget>[SizedBox(width: 100.0, height: 100.0)],
+        ));
+        expect(renderObject.clipBehavior, clip);
+      }
+    },
+  );
 }

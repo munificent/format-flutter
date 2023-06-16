@@ -26,7 +26,8 @@ import 'media_query.dart';
 /// its identity from the [view] provided to this widget.
 class View extends StatelessWidget {
   /// Injects the provided [view] into the widget tree.
-  View({required this.view, required this.child}) : super(key: GlobalObjectKey(view));
+  View({required this.view, required this.child})
+    : super(key: GlobalObjectKey(view));
 
   /// The [FlutterView] to be injected into the tree.
   final FlutterView view;
@@ -38,10 +39,7 @@ class View extends StatelessWidget {
   Widget build(BuildContext context) {
     return _ViewScope(
       view: view,
-      child: MediaQuery.fromView(
-        view: view,
-        child: child,
-      ),
+      child: MediaQuery.fromView(view: view, child: child),
     );
   }
 
@@ -62,7 +60,9 @@ class View extends StatelessWidget {
   ///  * [View.of], which throws instead of returning null if no [FlutterView]
   ///    is found.
   static FlutterView? maybeOf(BuildContext context) {
-    return LookupBoundary.dependOnInheritedWidgetOfExactType<_ViewScope>(context)?.view;
+    return LookupBoundary.dependOnInheritedWidgetOfExactType<_ViewScope>(
+      context,
+    )?.view;
   }
 
   /// Returns the [FlutterView] that the provided `context` will render into.
@@ -83,27 +83,42 @@ class View extends StatelessWidget {
   ///    [FlutterView] is found.
   static FlutterView of(BuildContext context) {
     final FlutterView? result = maybeOf(context);
-    assert(() {
-      if (result == null) {
-        final bool hiddenByBoundary = LookupBoundary.debugIsHidingAncestorWidgetOfExactType<_ViewScope>(context);
-        final List<DiagnosticsNode> information = <DiagnosticsNode>[
-          if (hiddenByBoundary) ...<DiagnosticsNode>[
-            ErrorSummary('View.of() was called with a context that does not have access to a View widget.'),
-            ErrorDescription('The context provided to View.of() does have a View widget ancestor, but it is hidden by a LookupBoundary.'),
-          ] else ...<DiagnosticsNode>[
-            ErrorSummary('View.of() was called with a context that does not contain a View widget.'),
-            ErrorDescription('No View widget ancestor could be found starting from the context that was passed to View.of().'),
-          ],
-          ErrorDescription(
-            'The context used was:\n'
-            '  $context',
-          ),
-          ErrorHint('This usually means that the provided context is not associated with a View.'),
-        ];
-        throw FlutterError.fromParts(information);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (result == null) {
+          final bool hiddenByBoundary =
+              LookupBoundary.debugIsHidingAncestorWidgetOfExactType<_ViewScope>(
+            context,
+          );
+          final List<DiagnosticsNode> information = <DiagnosticsNode>[
+            if (hiddenByBoundary) ...<DiagnosticsNode>[
+              ErrorSummary(
+                'View.of() was called with a context that does not have access to a View widget.',
+              ),
+              ErrorDescription(
+                'The context provided to View.of() does have a View widget ancestor, but it is hidden by a LookupBoundary.',
+              ),
+            ] else ...<DiagnosticsNode>[
+              ErrorSummary(
+                'View.of() was called with a context that does not contain a View widget.',
+              ),
+              ErrorDescription(
+                'No View widget ancestor could be found starting from the context that was passed to View.of().',
+              ),
+            ],
+            ErrorDescription(
+              'The context used was:\n'
+              '  $context',
+            ),
+            ErrorHint(
+              'This usually means that the provided context is not associated with a View.',
+            ),
+          ];
+          throw FlutterError.fromParts(information);
+        }
+        return true;
+      }(),
+    );
     return result!;
   }
 }

@@ -3,14 +3,13 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_api_samples/material/menu_anchor/checkbox_menu_button.0.dart' as example;
+import 'package:flutter_api_samples/material/menu_anchor/checkbox_menu_button.0.dart'
+    as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Can open menu and show message', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.MenuApp(),
-    );
+    await tester.pumpWidget(const example.MenuApp());
 
     await tester.tap(find.byType(TextButton));
     await tester.pump();

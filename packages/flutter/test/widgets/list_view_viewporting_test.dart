@@ -10,55 +10,58 @@ import '../rendering/mock_canvas.dart';
 import 'test_widgets.dart';
 
 void main() {
-  testWidgets('ListView mount/dismount smoke test', (WidgetTester tester) async {
-    final List<int> callbackTracker = <int>[];
+  testWidgets(
+    'ListView mount/dismount smoke test',
+    (WidgetTester tester) async {
+      final List<int> callbackTracker = <int>[];
 
-    // the root view is 800x600 in the test environment
-    // so if our widget is 100 pixels tall, it should fit exactly 6 times.
+      // the root view is 800x600 in the test environment
+      // so if our widget is 100 pixels tall, it should fit exactly 6 times.
 
-    Widget builder() {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: FlipWidget(
-          left: ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              callbackTracker.add(index);
-              return SizedBox(
-                key: ValueKey<int>(index),
-                height: 100.0,
-                child: Text('$index'),
-              );
-            },
+      Widget builder() {
+        return Directionality(
+          textDirection: TextDirection.ltr,
+          child: FlipWidget(
+            left: ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                callbackTracker.add(index);
+                return SizedBox(
+                  key: ValueKey<int>(index),
+                  height: 100.0,
+                  child: Text('$index'),
+                );
+              },
+            ),
+            right: const Text('Not Today'),
           ),
-          right: const Text('Not Today'),
-        ),
-      );
-    }
+        );
+      }
 
-    await tester.pumpWidget(builder());
+      await tester.pumpWidget(builder());
 
-    final FlipWidgetState testWidget = tester.state(find.byType(FlipWidget));
+      final FlipWidgetState testWidget = tester.state(find.byType(FlipWidget));
 
-    expect(callbackTracker, equals(<int>[
-      0, 1, 2, 3, 4, 5, // visible
-      6, 7, 8, // in cached area
-    ]));
+      expect(callbackTracker, equals(<int>[
+        0, 1, 2, 3, 4, 5, // visible
+        6, 7, 8, // in cached area
+      ]));
 
-    callbackTracker.clear();
-    testWidget.flip();
-    await tester.pump();
+      callbackTracker.clear();
+      testWidget.flip();
+      await tester.pump();
 
-    expect(callbackTracker, equals(<int>[]));
+      expect(callbackTracker, equals(<int>[]));
 
-    callbackTracker.clear();
-    testWidget.flip();
-    await tester.pump();
+      callbackTracker.clear();
+      testWidget.flip();
+      await tester.pump();
 
-    expect(callbackTracker, equals(<int>[
-      0, 1, 2, 3, 4, 5, // visible
-      6, 7, 8, // in cached area
-    ]));
-  });
+      expect(callbackTracker, equals(<int>[
+        0, 1, 2, 3, 4, 5, // visible
+        6, 7, 8, // in cached area
+      ]));
+    },
+  );
 
   testWidgets('ListView vertical', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
@@ -200,9 +203,7 @@ void main() {
     Widget builder() {
       return Directionality(
         textDirection: TextDirection.ltr,
-        child: ListView.builder(
-          itemBuilder: itemBuilder,
-        ),
+        child: ListView.builder(itemBuilder: itemBuilder),
       );
     }
 
@@ -243,21 +244,17 @@ void main() {
       );
     }
 
-    final Widget viewport = ListView.builder(
-      itemBuilder: itemBuilder,
-    );
+    final Widget viewport = ListView.builder(itemBuilder: itemBuilder);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: StatefulBuilder(
-          builder: (BuildContext context, StateSetter setter) {
-            setState = setter;
-            return Theme(data: themeData, child: viewport);
-          },
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setter) {
+          setState = setter;
+          return Theme(data: themeData, child: viewport);
+        },
       ),
-    );
+    ));
 
     Container widget = tester.firstWidget(find.byType(Container));
     expect(widget.color, equals(Colors.blue));
@@ -283,15 +280,13 @@ void main() {
       );
     }
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView.builder(
-          padding: const EdgeInsets.fromLTRB(7.0, 3.0, 5.0, 11.0),
-          itemBuilder: itemBuilder,
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(7.0, 3.0, 5.0, 11.0),
+        itemBuilder: itemBuilder,
       ),
-    );
+    ));
 
     final RenderBox firstBox = tester.renderObject(find.text('0'));
     final Offset upperLeft = firstBox.localToGlobal(Offset.zero);
@@ -300,20 +295,18 @@ void main() {
   });
 
   testWidgets('ListView underflow extents', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          addAutomaticKeepAlives: false,
-          addSemanticIndexes: false,
-          children: <Widget>[
-            Container(height: 100.0),
-            Container(height: 100.0),
-            Container(height: 100.0),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        addAutomaticKeepAlives: false,
+        addSemanticIndexes: false,
+        children: <Widget>[
+          Container(height: 100.0),
+          Container(height: 100.0),
+          Container(height: 100.0),
+        ],
       ),
-    );
+    ));
 
     final RenderSliverList list = tester.renderObject(find.byType(SliverList));
 
@@ -428,96 +421,95 @@ void main() {
       ),
     );
 
-    final ScrollPosition position = tester.state<ScrollableState>(find.byType(Scrollable)).position;
+    final ScrollPosition position =
+        tester.state<ScrollableState>(find.byType(Scrollable)).position;
 
     expect(position.viewportDimension, equals(600.0));
     expect(position.minScrollExtent, equals(0.0));
   });
 
-  testWidgets('ListView should not paint hidden children', (WidgetTester tester) async {
+  testWidgets('ListView should not paint hidden children', (
+    WidgetTester tester,
+  ) async {
     const Text text = Text('test');
-    await tester.pumpWidget(
-        Directionality(
-            textDirection: TextDirection.ltr,
-            child: Center(
-              child: SizedBox(
-                  height: 200.0,
-                  child: ListView(
-                    cacheExtent: 500.0,
-                    controller: ScrollController(initialScrollOffset: 300.0),
-                    children: const <Widget>[
-                      SizedBox(height: 140.0, child: text),
-                      SizedBox(height: 160.0, child: text),
-                      SizedBox(height: 90.0, child: text),
-                      SizedBox(height: 110.0, child: text),
-                      SizedBox(height: 80.0, child: text),
-                      SizedBox(height: 70.0, child: text),
-                    ],
-                  ),
-              ),
-            ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: SizedBox(
+          height: 200.0,
+          child: ListView(
+            cacheExtent: 500.0,
+            controller: ScrollController(initialScrollOffset: 300.0),
+            children: const <Widget>[
+              SizedBox(height: 140.0, child: text),
+              SizedBox(height: 160.0, child: text),
+              SizedBox(height: 90.0, child: text),
+              SizedBox(height: 110.0, child: text),
+              SizedBox(height: 80.0, child: text),
+              SizedBox(height: 70.0, child: text),
+            ],
+          ),
         ),
-    );
+      ),
+    ));
 
     final RenderSliverList list = tester.renderObject(find.byType(SliverList));
     expect(list, paintsExactlyCountTimes(#drawParagraph, 2));
   });
 
   testWidgets('ListView should paint with offset', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: SizedBox(
-            height: 500.0,
-            child: CustomScrollView(
-              controller: ScrollController(initialScrollOffset: 120.0),
-              slivers: <Widget>[
-                const SliverAppBar(
-                  expandedHeight: 250.0,
-                ),
-                SliverList(
-                  delegate: ListView.builder(
-                    itemExtent: 100.0,
-                    itemCount: 100,
-                    itemBuilder: (_, __) => const SizedBox(
-                      height: 40.0,
-                      child: Text('hey'),
-                    ),
-                  ).childrenDelegate,
-                ),
-              ],
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: SizedBox(
+          height: 500.0,
+          child: CustomScrollView(
+            controller: ScrollController(initialScrollOffset: 120.0),
+            slivers: <Widget>[
+              const SliverAppBar(expandedHeight: 250.0),
+              SliverList(
+                delegate: ListView.builder(
+                  itemExtent: 100.0,
+                  itemCount: 100,
+                  itemBuilder: (_, __) => const SizedBox(
+                        height: 40.0,
+                        child: Text('hey'),
+                      ),
+                ).childrenDelegate,
+              ),
+            ],
           ),
         ),
       ),
-    );
+    ));
 
-    final RenderObject renderObject = tester.renderObject(find.byType(Scrollable));
+    final RenderObject renderObject = tester.renderObject(
+      find.byType(Scrollable),
+    );
     expect(renderObject, paintsExactlyCountTimes(#drawParagraph, 10));
   });
 
   testWidgets('ListView should paint with rtl', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.rtl,
-        child: SizedBox(
-          height: 200.0,
-          child: ListView.builder(
-            padding: EdgeInsets.zero,
-            scrollDirection: Axis.horizontal,
-            itemExtent: 200.0,
-            itemCount: 10,
-            itemBuilder: (_, int i) => Container(
-              height: 200.0,
-              width: 200.0,
-              color: i.isEven ? Colors.black : Colors.red,
-            ),
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.rtl,
+      child: SizedBox(
+        height: 200.0,
+        child: ListView.builder(
+          padding: EdgeInsets.zero,
+          scrollDirection: Axis.horizontal,
+          itemExtent: 200.0,
+          itemCount: 10,
+          itemBuilder: (_, int i) => Container(
+                height: 200.0,
+                width: 200.0,
+                color: i.isEven ? Colors.black : Colors.red,
+              ),
         ),
       ),
-    );
+    ));
 
-    final RenderObject renderObject = tester.renderObject(find.byType(Scrollable));
+    final RenderObject renderObject = tester.renderObject(
+      find.byType(Scrollable),
+    );
     expect(renderObject, paintsExactlyCountTimes(#drawRect, 4));
   });
 }

@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class InputChipTemplate extends TokenTemplate {
-  const InputChipTemplate(super.blockName, super.fileName, super.tokens, {
+  const InputChipTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   static const String tokenGroup = 'md.comp.input-chip';
@@ -33,13 +36,19 @@ class _${blockName}DefaultsM3 extends ChipThemeData {
   TextStyle? get labelStyle => ${textStyle("$tokenGroup.label-text")};
 
   @override
-  Color? get backgroundColor => ${componentColor("$tokenGroup$variant.container")};
+  Color? get backgroundColor => ${componentColor(
+        "$tokenGroup$variant.container",
+      )};
 
   @override
-  Color? get shadowColor => ${colorOrTransparent("$tokenGroup.container.shadow-color")};
+  Color? get shadowColor => ${colorOrTransparent(
+        "$tokenGroup.container.shadow-color",
+      )};
 
   @override
-  Color? get surfaceTintColor => ${colorOrTransparent("$tokenGroup.container.surface-tint-layer.color")};
+  Color? get surfaceTintColor => ${colorOrTransparent(
+        "$tokenGroup.container.surface-tint-layer.color",
+      )};
 
   @override
   Color? get selectedColor => isEnabled
@@ -47,13 +56,19 @@ class _${blockName}DefaultsM3 extends ChipThemeData {
     : ${componentColor("$tokenGroup$variant.disabled.selected.container")};
 
   @override
-  Color? get checkmarkColor => ${color("$tokenGroup.with-icon.selected.icon.color")};
+  Color? get checkmarkColor => ${color(
+        "$tokenGroup.with-icon.selected.icon.color",
+      )};
 
   @override
-  Color? get disabledColor => ${componentColor("$tokenGroup$variant.disabled.container")};
+  Color? get disabledColor => ${componentColor(
+        "$tokenGroup$variant.disabled.container",
+      )};
 
   @override
-  Color? get deleteIconColor => ${color("$tokenGroup.with-trailing-icon.selected.trailing-icon.color")};
+  Color? get deleteIconColor => ${color(
+        "$tokenGroup.with-trailing-icon.selected.trailing-icon.color",
+      )};
 
   @override
   BorderSide? get side => !isSelected

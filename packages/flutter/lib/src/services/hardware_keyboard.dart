@@ -36,7 +36,7 @@ bool _keyboardDebug(
     throw StateError(
       '_keyboardDebug was called in Release mode, which means they are called '
       'without being wrapped in an assert. Always call _keyboardDebug like so:\n'
-      r"  assert(_keyboardDebug(() => 'Blah $foo'));"
+      r"  assert(_keyboardDebug(() => 'Blah $foo'));",
     );
   }
   if (!debugPrintKeyboardEvents) {
@@ -91,7 +91,8 @@ enum KeyboardLockMode {
   /// The logical key that triggers this lock mode.
   final LogicalKeyboardKey logicalKey;
 
-  static final Map<int, KeyboardLockMode> _knownLockModes = <int, KeyboardLockMode>{
+  static final Map<int, KeyboardLockMode> _knownLockModes =
+      <int, KeyboardLockMode>{
     numLock.logicalKey.keyId: numLock,
     scrollLock.logicalKey.keyId: scrollLock,
     capsLock.logicalKey.keyId: capsLock,
@@ -99,7 +100,9 @@ enum KeyboardLockMode {
 
   /// Returns the [KeyboardLockMode] constant from the logical key, or
   /// null, if not found.
-  static KeyboardLockMode? findLockByLogicalKey(LogicalKeyboardKey logicalKey) => _knownLockModes[logicalKey.keyId];
+  static KeyboardLockMode? findLockByLogicalKey(
+    LogicalKeyboardKey logicalKey,
+  ) => _knownLockModes[logicalKey.keyId];
 }
 
 /// Defines the interface for keyboard key events.
@@ -228,11 +231,17 @@ abstract class KeyEvent with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<PhysicalKeyboardKey>('physicalKey', physicalKey));
-    properties.add(DiagnosticsProperty<LogicalKeyboardKey>('logicalKey', logicalKey));
+    properties.add(
+      DiagnosticsProperty<PhysicalKeyboardKey>('physicalKey', physicalKey),
+    );
+    properties.add(
+      DiagnosticsProperty<LogicalKeyboardKey>('logicalKey', logicalKey),
+    );
     properties.add(StringProperty('character', character));
     properties.add(DiagnosticsProperty<Duration>('timeStamp', timeStamp));
-    properties.add(FlagProperty('synthesized', value: synthesized, ifTrue: 'synthesized'));
+    properties.add(
+      FlagProperty('synthesized', value: synthesized, ifTrue: 'synthesized'),
+    );
   }
 }
 
@@ -419,7 +428,8 @@ class HardwareKeyboard {
   /// the [ServicesBinding] instance.
   static HardwareKeyboard get instance => ServicesBinding.instance.keyboard;
 
-  final Map<PhysicalKeyboardKey, LogicalKeyboardKey> _pressedKeys = <PhysicalKeyboardKey, LogicalKeyboardKey>{};
+  final Map<PhysicalKeyboardKey, LogicalKeyboardKey> _pressedKeys =
+      <PhysicalKeyboardKey, LogicalKeyboardKey>{};
 
   /// The set of [PhysicalKeyboardKey]s that are pressed.
   ///
@@ -444,9 +454,11 @@ class HardwareKeyboard {
   /// Returns the logical key that corresponds to the given pressed physical key.
   ///
   /// Returns null if the physical key is not currently pressed.
-  LogicalKeyboardKey? lookUpLayout(PhysicalKeyboardKey physicalKey) => _pressedKeys[physicalKey];
+  LogicalKeyboardKey? lookUpLayout(PhysicalKeyboardKey physicalKey) =>
+      _pressedKeys[physicalKey];
 
   final Set<KeyboardLockMode> _lockModes = <KeyboardLockMode>{};
+
   /// The set of [KeyboardLockMode] that are enabled.
   ///
   /// Lock keys, such as CapsLock, are logical keys that toggle their
@@ -458,28 +470,37 @@ class HardwareKeyboard {
   Set<KeyboardLockMode> get lockModesEnabled => _lockModes;
 
   void _assertEventIsRegular(KeyEvent event) {
-    assert(() {
-      const String common = 'If this occurs in real application, please report this '
-        'bug to Flutter. If this occurs in unit tests, please ensure that '
-        "simulated events follow Flutter's event model as documented in "
-        '`HardwareKeyboard`. This was the event: ';
-      if (event is KeyDownEvent) {
-        assert(!_pressedKeys.containsKey(event.physicalKey),
-          'A ${event.runtimeType} is dispatched, but the state shows that the physical '
-          'key is already pressed. $common$event');
-      } else if (event is KeyRepeatEvent || event is KeyUpEvent) {
-        assert(_pressedKeys.containsKey(event.physicalKey),
-          'A ${event.runtimeType} is dispatched, but the state shows that the physical '
-          'key is not pressed. $common$event');
-        assert(_pressedKeys[event.physicalKey] == event.logicalKey,
-          'A ${event.runtimeType} is dispatched, but the state shows that the physical '
-          'key is pressed on a different logical key. $common$event '
-          'and the recorded logical key ${_pressedKeys[event.physicalKey]}');
-      } else {
-        assert(false, 'Unexpected key event class ${event.runtimeType}');
-      }
-      return true;
-    }());
+    assert(
+      () {
+        const String common =
+            'If this occurs in real application, please report this '
+            'bug to Flutter. If this occurs in unit tests, please ensure that '
+            "simulated events follow Flutter's event model as documented in "
+            '`HardwareKeyboard`. This was the event: ';
+        if (event is KeyDownEvent) {
+          assert(
+            !_pressedKeys.containsKey(event.physicalKey),
+            'A ${event.runtimeType} is dispatched, but the state shows that the physical '
+            'key is already pressed. $common$event',
+          );
+        } else if (event is KeyRepeatEvent || event is KeyUpEvent) {
+          assert(
+            _pressedKeys.containsKey(event.physicalKey),
+            'A ${event.runtimeType} is dispatched, but the state shows that the physical '
+                'key is not pressed. $common$event',
+          );
+          assert(
+            _pressedKeys[event.physicalKey] == event.logicalKey,
+            'A ${event.runtimeType} is dispatched, but the state shows that the physical '
+            'key is pressed on a different logical key. $common$event '
+            'and the recorded logical key ${_pressedKeys[event.physicalKey]}',
+          );
+        } else {
+          assert(false, 'Unexpected key event class ${event.runtimeType}');
+        }
+        return true;
+      }(),
+    );
   }
 
   List<KeyEventCallback> _handlers = <KeyEventCallback>[];
@@ -533,13 +554,14 @@ class HardwareKeyboard {
 
   /// Query the engine and update _pressedKeys accordingly to the engine answer.
   Future<void> syncKeyboardState() async {
-    final Map<int, int>? keyboardState = await SystemChannels.keyboard.invokeMapMethod<int, int>(
-      'getKeyboardState',
-    );
+    final Map<int, int>? keyboardState = await SystemChannels.keyboard
+        .invokeMapMethod<int, int>('getKeyboardState');
     if (keyboardState != null) {
       for (final int key in keyboardState.keys) {
         final PhysicalKeyboardKey physicalKey = PhysicalKeyboardKey(key);
-        final LogicalKeyboardKey logicalKey = LogicalKeyboardKey(keyboardState[key]!);
+        final LogicalKeyboardKey logicalKey = LogicalKeyboardKey(
+          keyboardState[key]!,
+        );
         _pressedKeys[physicalKey] = logicalKey;
       }
     }
@@ -559,12 +581,14 @@ class HardwareKeyboard {
         handled = handled || thisResult;
       } catch (exception, stack) {
         InformationCollector? collector;
-        assert(() {
-          collector = () => <DiagnosticsNode>[
-            DiagnosticsProperty<KeyEvent>('Event', event),
-          ];
-          return true;
-        }());
+        assert(
+          () {
+            collector = () => <DiagnosticsNode>[
+                  DiagnosticsProperty<KeyEvent>('Event', event),
+                ];
+            return true;
+          }(),
+        );
         FlutterError.reportError(FlutterErrorDetails(
           exception: exception,
           stack: stack,
@@ -597,13 +621,18 @@ class HardwareKeyboard {
   /// to handlers.
   bool handleKeyEvent(KeyEvent event) {
     assert(_keyboardDebug(() => 'Key event received: $event'));
-    assert(_keyboardDebug(() => 'Pressed state before processing the event:', _debugPressedKeysDetails));
+    assert(_keyboardDebug(
+      () => 'Pressed state before processing the event:',
+      _debugPressedKeysDetails,
+    ));
     _assertEventIsRegular(event);
     final PhysicalKeyboardKey physicalKey = event.physicalKey;
     final LogicalKeyboardKey logicalKey = event.logicalKey;
     if (event is KeyDownEvent) {
       _pressedKeys[physicalKey] = logicalKey;
-      final KeyboardLockMode? lockMode = KeyboardLockMode.findLockByLogicalKey(event.logicalKey);
+      final KeyboardLockMode? lockMode = KeyboardLockMode.findLockByLogicalKey(
+        event.logicalKey,
+      );
       if (lockMode != null) {
         if (_lockModes.contains(lockMode)) {
           _lockModes.remove(lockMode);
@@ -617,7 +646,10 @@ class HardwareKeyboard {
       // Empty
     }
 
-    assert(_keyboardDebug(() => 'Pressed state after processing the event:', _debugPressedKeysDetails));
+    assert(_keyboardDebug(
+      () => 'Pressed state after processing the event:',
+      _debugPressedKeysDetails,
+    ));
     return _dispatchKeyEvent(event);
   }
 
@@ -916,7 +948,8 @@ class KeyEventManager {
   // When a RawKeyDownEvent is skipped ([RawKeyEventData.shouldDispatchEvent]
   // is false), its physical key will be recorded here, so that its up event
   // can also be properly skipped.
-  final Set<PhysicalKeyboardKey> _skippedRawKeysPressed = <PhysicalKeyboardKey>{};
+  final Set<PhysicalKeyboardKey> _skippedRawKeysPressed =
+      <PhysicalKeyboardKey>{};
 
   /// Dispatch a key data to global and leaf listeners.
   ///
@@ -925,7 +958,10 @@ class KeyEventManager {
     _transitMode ??= KeyDataTransitMode.keyDataThenRawKeyData;
     switch (_transitMode!) {
       case KeyDataTransitMode.rawKeyData:
-        assert(false, 'Should never encounter KeyData when transitMode is rawKeyData.');
+        assert(
+          false,
+          'Should never encounter KeyData when transitMode is rawKeyData.',
+        );
         return false;
       case KeyDataTransitMode.keyDataThenRawKeyData:
         // Having 0 as the physical and logical ID indicates an empty key data
@@ -964,12 +1000,14 @@ class KeyEventManager {
         return keyMessageHandler!(message);
       } catch (exception, stack) {
         InformationCollector? collector;
-        assert(() {
-          collector = () => <DiagnosticsNode>[
-            DiagnosticsProperty<KeyMessage>('KeyMessage', message),
-          ];
-          return true;
-        }());
+        assert(
+          () {
+            collector = () => <DiagnosticsNode>[
+                  DiagnosticsProperty<KeyMessage>('KeyMessage', message),
+                ];
+            return true;
+          }(),
+        );
         FlutterError.reportError(FlutterErrorDetails(
           exception: exception,
           stack: stack,
@@ -994,7 +1032,9 @@ class KeyEventManager {
       // the raw event should be dispatched.
       _rawKeyboard.addListener(_convertRawEventAndStore);
     }
-    final RawKeyEvent rawEvent = RawKeyEvent.fromMessage(message as Map<String, dynamic>);
+    final RawKeyEvent rawEvent = RawKeyEvent.fromMessage(
+      message as Map<String, dynamic>,
+    );
 
     bool shouldDispatch = true;
     if (rawEvent is RawKeyDownEvent) {
@@ -1021,16 +1061,19 @@ class KeyEventManager {
         handled = _hardwareKeyboard.handleKeyEvent(event) || handled;
       }
       if (_transitMode == KeyDataTransitMode.rawKeyData) {
-        assert(setEquals(_rawKeyboard.physicalKeysPressed, _hardwareKeyboard.physicalKeysPressed),
-          'RawKeyboard reported ${_rawKeyboard.physicalKeysPressed}, '
-          'while HardwareKeyboard reported ${_hardwareKeyboard.physicalKeysPressed}');
+        assert(setEquals(
+          _rawKeyboard.physicalKeysPressed,
+          _hardwareKeyboard.physicalKeysPressed,
+        ), 'RawKeyboard reported ${_rawKeyboard.physicalKeysPressed}, '
+            'while HardwareKeyboard reported ${_hardwareKeyboard.physicalKeysPressed}');
       }
 
-      handled = _dispatchKeyMessage(_keyEventsSinceLastMessage, rawEvent) || handled;
+      handled =
+          _dispatchKeyMessage(_keyEventsSinceLastMessage, rawEvent) || handled;
       _keyEventsSinceLastMessage.clear();
     }
 
-    return <String, dynamic>{ 'handled': handled };
+    return <String, dynamic>{'handled': handled};
   }
 
   // Convert the raw event to key events, including synthesizing events for
@@ -1041,12 +1084,17 @@ class KeyEventManager {
   void _convertRawEventAndStore(RawKeyEvent rawEvent) {
     final PhysicalKeyboardKey physicalKey = rawEvent.physicalKey;
     final LogicalKeyboardKey logicalKey = rawEvent.logicalKey;
-    final Set<PhysicalKeyboardKey> physicalKeysPressed = _hardwareKeyboard.physicalKeysPressed;
+    final Set<PhysicalKeyboardKey> physicalKeysPressed =
+        _hardwareKeyboard.physicalKeysPressed;
     final List<KeyEvent> eventAfterwards = <KeyEvent>[];
     final KeyEvent? mainEvent;
-    final LogicalKeyboardKey? recordedLogicalMain = _hardwareKeyboard.lookUpLayout(physicalKey);
-    final Duration timeStamp = ServicesBinding.instance.currentSystemFrameTimeStamp;
-    final String? character = rawEvent.character == '' ? null : rawEvent.character;
+    final LogicalKeyboardKey? recordedLogicalMain = _hardwareKeyboard
+        .lookUpLayout(physicalKey);
+    final Duration timeStamp =
+        ServicesBinding.instance.currentSystemFrameTimeStamp;
+    final String? character = rawEvent.character == ''
+        ? null
+        : rawEvent.character;
     if (rawEvent is RawKeyDownEvent) {
       if (recordedLogicalMain == null) {
         mainEvent = KeyDownEvent(
@@ -1066,7 +1114,10 @@ class KeyEventManager {
         );
       }
     } else {
-      assert(rawEvent is RawKeyUpEvent, 'Unexpected subclass of RawKeyEvent: ${rawEvent.runtimeType}');
+      assert(
+        rawEvent is RawKeyUpEvent,
+        'Unexpected subclass of RawKeyEvent: ${rawEvent.runtimeType}',
+      );
       if (recordedLogicalMain == null) {
         mainEvent = null;
       } else {
@@ -1078,7 +1129,8 @@ class KeyEventManager {
         physicalKeysPressed.remove(physicalKey);
       }
     }
-    for (final PhysicalKeyboardKey key in physicalKeysPressed.difference(_rawKeyboard.physicalKeysPressed)) {
+    for (final PhysicalKeyboardKey key
+        in physicalKeysPressed.difference(_rawKeyboard.physicalKeysPressed)) {
       if (key == physicalKey) {
         // Somehow, a down event is dispatched but the key is absent from
         // keysPressed. Synthesize a up event for the key, but this event must
@@ -1098,7 +1150,8 @@ class KeyEventManager {
         ));
       }
     }
-    for (final PhysicalKeyboardKey key in _rawKeyboard.physicalKeysPressed.difference(physicalKeysPressed)) {
+    for (final PhysicalKeyboardKey key
+        in _rawKeyboard.physicalKeysPressed.difference(physicalKeysPressed)) {
       _keyEventsSinceLastMessage.add(KeyDownEvent(
         physicalKey: key,
         logicalKey: _rawKeyboard.lookUpLayout(key)!,
@@ -1117,12 +1170,14 @@ class KeyEventManager {
   /// This method is only used in unit tests. In release mode, this is a no-op.
   @visibleForTesting
   void clearState() {
-    assert(() {
-      _transitMode = null;
-      _rawKeyboard.removeListener(_convertRawEventAndStore);
-      _keyEventsSinceLastMessage.clear();
-      return true;
-    }());
+    assert(
+      () {
+        _transitMode = null;
+        _rawKeyboard.removeListener(_convertRawEventAndStore);
+        _keyEventsSinceLastMessage.clear();
+        return true;
+      }(),
+    );
   }
 
   static KeyEvent _eventFromData(ui.KeyData keyData) {

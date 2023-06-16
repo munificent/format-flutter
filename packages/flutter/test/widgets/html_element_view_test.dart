@@ -18,7 +18,8 @@ void main() {
   group('HtmlElementView', () {
     testWidgets('Create HTML view', (WidgetTester tester) async {
       final int currentViewId = platformViewsRegistry.getNextPlatformViewId();
-      final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
+      final FakeHtmlPlatformViewsController viewsController =
+          FakeHtmlPlatformViewsController();
       viewsController.registerViewType('webview');
 
       await tester.pumpWidget(
@@ -31,26 +32,25 @@ void main() {
         ),
       );
 
-      expect(
-        viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
-          FakeHtmlPlatformView(currentViewId + 1, 'webview'),
-        ]),
-      );
+      expect(viewsController.views, unorderedEquals(<FakeHtmlPlatformView>[
+        FakeHtmlPlatformView(currentViewId + 1, 'webview'),
+      ]));
     });
 
-    testWidgets('Create HTML view with PlatformViewCreatedCallback', (WidgetTester tester) async {
-      final int currentViewId = platformViewsRegistry.getNextPlatformViewId();
-      final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
-      viewsController.registerViewType('webview');
+    testWidgets(
+      'Create HTML view with PlatformViewCreatedCallback',
+      (WidgetTester tester) async {
+        final int currentViewId = platformViewsRegistry.getNextPlatformViewId();
+        final FakeHtmlPlatformViewsController viewsController =
+            FakeHtmlPlatformViewsController();
+        viewsController.registerViewType('webview');
 
-      bool hasPlatformViewCreated = false;
-      void onPlatformViewCreatedCallBack(int id) {
-        hasPlatformViewCreated = true;
-      }
+        bool hasPlatformViewCreated = false;
+        void onPlatformViewCreatedCallBack(int id) {
+          hasPlatformViewCreated = true;
+        }
 
-      await tester.pumpWidget(
-        Center(
+        await tester.pumpWidget(Center(
           child: SizedBox(
             width: 200.0,
             height: 100.0,
@@ -59,23 +59,23 @@ void main() {
               onPlatformViewCreated: onPlatformViewCreatedCallBack,
             ),
           ),
-        ),
-      );
+        ));
 
-      // Check the onPlatformViewCreatedCallBack has been called.
-      expect(hasPlatformViewCreated, true);
+        // Check the onPlatformViewCreatedCallBack has been called.
+        expect(hasPlatformViewCreated, true);
 
-      expect(
-        viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
+        expect(viewsController.views, unorderedEquals(<FakeHtmlPlatformView>[
           FakeHtmlPlatformView(currentViewId + 1, 'webview'),
-        ]),
-      );
-    });
+        ]));
+      },
+    );
 
-    testWidgets('Create HTML view with creation params', (WidgetTester tester) async {
+    testWidgets('Create HTML view with creation params', (
+      WidgetTester tester,
+    ) async {
       final int currentViewId = platformViewsRegistry.getNextPlatformViewId();
-      final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
+      final FakeHtmlPlatformViewsController viewsController =
+          FakeHtmlPlatformViewsController();
       viewsController.registerViewType('webview');
       await tester.pumpWidget(
         const Column(
@@ -91,27 +91,22 @@ void main() {
             SizedBox(
               width: 200.0,
               height: 100.0,
-              child: HtmlElementView(
-                viewType: 'webview',
-                creationParams: 123,
-              ),
+              child: HtmlElementView(viewType: 'webview', creationParams: 123),
             ),
           ],
         ),
       );
 
-      expect(
-        viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
-          FakeHtmlPlatformView(currentViewId + 1, 'webview', 'foobar'),
-          FakeHtmlPlatformView(currentViewId + 2, 'webview', 123),
-        ]),
-      );
+      expect(viewsController.views, unorderedEquals(<FakeHtmlPlatformView>[
+        FakeHtmlPlatformView(currentViewId + 1, 'webview', 'foobar'),
+        FakeHtmlPlatformView(currentViewId + 2, 'webview', 123),
+      ]));
     });
 
     testWidgets('Resize HTML view', (WidgetTester tester) async {
       final int currentViewId = platformViewsRegistry.getNextPlatformViewId();
-      final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
+      final FakeHtmlPlatformViewsController viewsController =
+          FakeHtmlPlatformViewsController();
       viewsController.registerViewType('webview');
       await tester.pumpWidget(
         const Center(
@@ -138,17 +133,15 @@ void main() {
       viewsController.resizeCompleter.complete();
       await tester.pump();
 
-      expect(
-        viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
-          FakeHtmlPlatformView(currentViewId + 1, 'webview'),
-        ]),
-      );
+      expect(viewsController.views, unorderedEquals(<FakeHtmlPlatformView>[
+        FakeHtmlPlatformView(currentViewId + 1, 'webview'),
+      ]));
     });
 
     testWidgets('Change HTML view type', (WidgetTester tester) async {
       final int currentViewId = platformViewsRegistry.getNextPlatformViewId();
-      final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
+      final FakeHtmlPlatformViewsController viewsController =
+          FakeHtmlPlatformViewsController();
       viewsController.registerViewType('webview');
       viewsController.registerViewType('maps');
       await tester.pumpWidget(
@@ -171,16 +164,14 @@ void main() {
         ),
       );
 
-      expect(
-        viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
-          FakeHtmlPlatformView(currentViewId + 2, 'maps'),
-        ]),
-      );
+      expect(viewsController.views, unorderedEquals(<FakeHtmlPlatformView>[
+        FakeHtmlPlatformView(currentViewId + 2, 'maps'),
+      ]));
     });
 
     testWidgets('Dispose HTML view', (WidgetTester tester) async {
-      final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
+      final FakeHtmlPlatformViewsController viewsController =
+          FakeHtmlPlatformViewsController();
       viewsController.registerViewType('webview');
       await tester.pumpWidget(
         const Center(
@@ -193,89 +184,80 @@ void main() {
       );
 
       await tester.pumpWidget(
-        const Center(
-          child: SizedBox(
-            width: 200.0,
-            height: 100.0,
-          ),
-        ),
+        const Center(child: SizedBox(width: 200.0, height: 100.0)),
       );
 
-      expect(
-        viewsController.views,
-        isEmpty,
-      );
+      expect(viewsController.views, isEmpty);
     });
 
-    testWidgets('HTML view survives widget tree change', (WidgetTester tester) async {
-      final int currentViewId = platformViewsRegistry.getNextPlatformViewId();
-      final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
-      viewsController.registerViewType('webview');
-      final GlobalKey key = GlobalKey();
-      await tester.pumpWidget(
-        Center(
+    testWidgets(
+      'HTML view survives widget tree change',
+      (WidgetTester tester) async {
+        final int currentViewId = platformViewsRegistry.getNextPlatformViewId();
+        final FakeHtmlPlatformViewsController viewsController =
+            FakeHtmlPlatformViewsController();
+        viewsController.registerViewType('webview');
+        final GlobalKey key = GlobalKey();
+        await tester.pumpWidget(Center(
           child: SizedBox(
             width: 200.0,
             height: 100.0,
             child: HtmlElementView(viewType: 'webview', key: key),
           ),
-        ),
-      );
+        ));
 
-      await tester.pumpWidget(
-        Center(
+        await tester.pumpWidget(Center(
           child: SizedBox(
             width: 200.0,
             height: 100.0,
             child: HtmlElementView(viewType: 'webview', key: key),
           ),
-        ),
-      );
+        ));
 
-      expect(
-        viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
+        expect(viewsController.views, unorderedEquals(<FakeHtmlPlatformView>[
           FakeHtmlPlatformView(currentViewId + 1, 'webview'),
-        ]),
-      );
-    });
+        ]));
+      },
+    );
 
-    testWidgets('HtmlElementView has correct semantics', (WidgetTester tester) async {
-      final SemanticsHandle handle = tester.ensureSemantics();
-      final int currentViewId = platformViewsRegistry.getNextPlatformViewId();
-      expect(currentViewId, greaterThanOrEqualTo(0));
-      final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
-      viewsController.registerViewType('webview');
+    testWidgets(
+      'HtmlElementView has correct semantics',
+      (WidgetTester tester) async {
+        final SemanticsHandle handle = tester.ensureSemantics();
+        final int currentViewId = platformViewsRegistry.getNextPlatformViewId();
+        expect(currentViewId, greaterThanOrEqualTo(0));
+        final FakeHtmlPlatformViewsController viewsController =
+            FakeHtmlPlatformViewsController();
+        viewsController.registerViewType('webview');
 
-      await tester.pumpWidget(
-        Semantics(
+        await tester.pumpWidget(Semantics(
           container: true,
           child: const Align(
             alignment: Alignment.bottomRight,
             child: SizedBox(
               width: 200.0,
               height: 100.0,
-              child: HtmlElementView(
-                viewType: 'webview',
-              ),
+              child: HtmlElementView(viewType: 'webview'),
             ),
           ),
-        ),
-      );
-      // First frame is before the platform view was created so the render object
-      // is not yet in the tree.
-      await tester.pump();
+        ));
+        // First frame is before the platform view was created so the render object
+        // is not yet in the tree.
+        await tester.pump();
 
-      // The platform view ID is set on the child of the HtmlElementView render object.
-      final SemanticsNode semantics = tester.getSemantics(find.byType(PlatformViewSurface));
+        // The platform view ID is set on the child of the HtmlElementView render object.
+        final SemanticsNode semantics = tester.getSemantics(
+          find.byType(PlatformViewSurface),
+        );
 
-      expect(semantics.platformViewId, currentViewId + 1);
-      expect(semantics.rect, const Rect.fromLTWH(0, 0, 200, 100));
-      // A 200x100 rect positioned at bottom right of a 800x600 box.
-      expect(semantics.transform, Matrix4.translationValues(600, 500, 0));
-      expect(semantics.childrenCount, 0);
+        expect(semantics.platformViewId, currentViewId + 1);
+        expect(semantics.rect, const Rect.fromLTWH(0, 0, 200, 100));
+        // A 200x100 rect positioned at bottom right of a 800x600 box.
+        expect(semantics.transform, Matrix4.translationValues(600, 500, 0));
+        expect(semantics.childrenCount, 0);
 
-      handle.dispose();
-    });
+        handle.dispose();
+      },
+    );
   });
 }

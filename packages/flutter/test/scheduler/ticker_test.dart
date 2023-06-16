@@ -9,8 +9,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Future<void> setAppLifeCycleState(AppLifecycleState state) async {
-    final ByteData? message =
-        const StringCodec().encodeMessage(state.toString());
+    final ByteData? message = const StringCodec().encodeMessage(
+      state.toString(),
+    );
     await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .handlePlatformMessage('flutter/lifecycle', message, (_) {});
   }
@@ -41,17 +42,14 @@ void main() {
     expect(error, isNotNull);
     expect(error!.diagnostics.length, 3);
     expect(error.diagnostics.last, isA<DiagnosticsProperty<Ticker>>());
-    expect(
-      error.toStringDeep(),
-      startsWith(
-        'FlutterError\n'
-        '   A ticker was started twice.\n'
-        '   A ticker that is already active cannot be started again without\n'
-        '   first stopping it.\n'
-        '   The affected ticker was:\n'
-        '     Ticker()\n',
-      ),
-    );
+    expect(error.toStringDeep(), startsWith(
+      'FlutterError\n'
+      '   A ticker was started twice.\n'
+      '   A ticker that is already active cannot be started again without\n'
+      '   first stopping it.\n'
+      '   The affected ticker was:\n'
+      '     Ticker()\n',
+    ));
 
     await tester.pump(const Duration(milliseconds: 10));
 
@@ -101,7 +99,7 @@ void main() {
     late Ticker ticker;
 
     void testFunction() {
-      ticker = Ticker((Duration _) { });
+      ticker = Ticker((Duration _) {});
     }
 
     testFunction();
@@ -110,7 +108,9 @@ void main() {
     expect(ticker.toString(debugIncludeStack: true), contains('testFunction'));
   });
 
-  testWidgets('Ticker can be sped up with time dilation', (WidgetTester tester) async {
+  testWidgets('Ticker can be sped up with time dilation', (
+    WidgetTester tester,
+  ) async {
     timeDilation = 0.5; // Move twice as fast.
     late Duration lastDuration;
     void handleTick(Duration duration) {
@@ -128,7 +128,9 @@ void main() {
     timeDilation = 1.0; // restore time dilation, or it will affect other tests
   });
 
-  testWidgets('Ticker can be slowed down with time dilation', (WidgetTester tester) async {
+  testWidgets('Ticker can be slowed down with time dilation', (
+    WidgetTester tester,
+  ) async {
     timeDilation = 2.0; // Move half as fast.
     late Duration lastDuration;
     void handleTick(Duration duration) {
@@ -146,55 +148,61 @@ void main() {
     timeDilation = 1.0; // restore time dilation, or it will affect other tests
   });
 
-  testWidgets('Ticker stops ticking when application is paused', (WidgetTester tester) async {
-    int tickCount = 0;
-    void handleTick(Duration duration) {
-      tickCount += 1;
-    }
+  testWidgets(
+    'Ticker stops ticking when application is paused',
+    (WidgetTester tester) async {
+      int tickCount = 0;
+      void handleTick(Duration duration) {
+        tickCount += 1;
+      }
 
-    final Ticker ticker = Ticker(handleTick);
-    ticker.start();
+      final Ticker ticker = Ticker(handleTick);
+      ticker.start();
 
-    expect(ticker.isTicking, isTrue);
-    expect(ticker.isActive, isTrue);
-    expect(tickCount, equals(0));
+      expect(ticker.isTicking, isTrue);
+      expect(ticker.isActive, isTrue);
+      expect(tickCount, equals(0));
 
-    setAppLifeCycleState(AppLifecycleState.paused);
+      setAppLifeCycleState(AppLifecycleState.paused);
 
-    expect(ticker.isTicking, isFalse);
-    expect(ticker.isActive, isTrue);
+      expect(ticker.isTicking, isFalse);
+      expect(ticker.isActive, isTrue);
 
-    ticker.stop();
+      ticker.stop();
 
-    setAppLifeCycleState(AppLifecycleState.resumed);
-  });
+      setAppLifeCycleState(AppLifecycleState.resumed);
+    },
+  );
 
-  testWidgets('Ticker can be created before application unpauses', (WidgetTester tester) async {
-    setAppLifeCycleState(AppLifecycleState.paused);
+  testWidgets(
+    'Ticker can be created before application unpauses',
+    (WidgetTester tester) async {
+      setAppLifeCycleState(AppLifecycleState.paused);
 
-    int tickCount = 0;
-    void handleTick(Duration duration) {
-      tickCount += 1;
-    }
+      int tickCount = 0;
+      void handleTick(Duration duration) {
+        tickCount += 1;
+      }
 
-    final Ticker ticker = Ticker(handleTick);
-    ticker.start();
+      final Ticker ticker = Ticker(handleTick);
+      ticker.start();
 
-    expect(tickCount, equals(0));
-    expect(ticker.isTicking, isFalse);
+      expect(tickCount, equals(0));
+      expect(ticker.isTicking, isFalse);
 
-    await tester.pump(const Duration(milliseconds: 10));
+      await tester.pump(const Duration(milliseconds: 10));
 
-    expect(tickCount, equals(0));
-    expect(ticker.isTicking, isFalse);
+      expect(tickCount, equals(0));
+      expect(ticker.isTicking, isFalse);
 
-    setAppLifeCycleState(AppLifecycleState.resumed);
+      setAppLifeCycleState(AppLifecycleState.resumed);
 
-    await tester.pump(const Duration(milliseconds: 10));
+      await tester.pump(const Duration(milliseconds: 10));
 
-    expect(tickCount, equals(1));
-    expect(ticker.isTicking, isTrue);
+      expect(tickCount, equals(1));
+      expect(ticker.isTicking, isTrue);
 
-    ticker.stop();
-  });
+      ticker.stop();
+    },
+  );
 }

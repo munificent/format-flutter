@@ -18,7 +18,8 @@ void main() {
         allOf(<Matcher>[
           contains('-Ddart.vm.profile=false'),
           contains('-Ddart.vm.product=true'),
-        ]));
+        ]),
+      );
     });
 
     test('provide correct flags for profile mode', () {
@@ -43,10 +44,10 @@ void main() {
             treeShakeIcons: true,
             dartDefines: <String>['abc=efg'],
           ),
-          manifestPath: ''),
-          allOf(<Matcher>[
-            contains('-Dabc=efg'),
-          ]));
+          manifestPath: '',
+        ),
+        allOf(<Matcher>[contains('-Dabc=efg')]),
+      );
     });
   });
 }

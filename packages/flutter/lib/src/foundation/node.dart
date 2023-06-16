@@ -72,7 +72,7 @@ class AbstractNode {
   ///
   /// Override this method in subclasses with child nodes to call [redepthChild]
   /// for each child. Do not call this method directly.
-  void redepthChildren() { }
+  void redepthChildren() {}
 
   /// The owner for this node (null if unattached).
   ///
@@ -132,14 +132,16 @@ class AbstractNode {
   @mustCallSuper
   void adoptChild(covariant AbstractNode child) {
     assert(child._parent == null);
-    assert(() {
-      AbstractNode node = this;
-      while (node.parent != null) {
-        node = node.parent!;
-      }
-      assert(node != child); // indicates we are about to create a cycle
-      return true;
-    }());
+    assert(
+      () {
+        AbstractNode node = this;
+        while (node.parent != null) {
+          node = node.parent!;
+        }
+        assert(node != child); // indicates we are about to create a cycle
+        return true;
+      }(),
+    );
     child._parent = this;
     if (attached) {
       child.attach(_owner!);

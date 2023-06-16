@@ -18,10 +18,13 @@ enum LeaveBehindDemoAction {
 }
 
 class LeaveBehindItem implements Comparable<LeaveBehindItem> {
-  LeaveBehindItem({ this.index, this.name, this.subject, this.body });
+  LeaveBehindItem({this.index, this.name, this.subject, this.body});
 
   LeaveBehindItem.from(LeaveBehindItem item)
-    : index = item.index, name = item.name, subject = item.subject, body = item.body;
+    : index = item.index,
+      name = item.name,
+      subject = item.subject,
+      body = item.body;
 
   final int? index;
   final String? name;
@@ -33,7 +36,7 @@ class LeaveBehindItem implements Comparable<LeaveBehindItem> {
 }
 
 class LeaveBehindDemo extends StatefulWidget {
-  const LeaveBehindDemo({ super.key });
+  const LeaveBehindDemo({super.key});
 
   static const String routeName = '/material/leave-behind';
 
@@ -95,7 +98,9 @@ class LeaveBehindDemoState extends State<LeaveBehindDemo> {
       content: Text('You archived item ${item.index}'),
       action: SnackBarAction(
         label: 'UNDO',
-        onPressed: () { handleUndo(item); },
+        onPressed: () {
+          handleUndo(item);
+        },
       ),
     ));
   }
@@ -108,7 +113,9 @@ class LeaveBehindDemoState extends State<LeaveBehindDemo> {
       content: Text('You deleted item ${item.index}'),
       action: SnackBarAction(
         label: 'UNDO',
-        onPressed: () { handleUndo(item); },
+        onPressed: () {
+          handleUndo(item);
+        },
       ),
     ));
   }
@@ -136,7 +143,7 @@ class LeaveBehindDemoState extends State<LeaveBehindDemo> {
               dismissDirection: _dismissDirection,
             );
           }).toList(),
-          ),
+        ),
       );
     }
 
@@ -147,33 +154,35 @@ class LeaveBehindDemoState extends State<LeaveBehindDemo> {
           MaterialDemoDocumentationButton(LeaveBehindDemo.routeName),
           PopupMenuButton<LeaveBehindDemoAction>(
             onSelected: handleDemoAction,
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<LeaveBehindDemoAction>>[
-              const PopupMenuItem<LeaveBehindDemoAction>(
-                value: LeaveBehindDemoAction.reset,
-                child: Text('Reset the list'),
-              ),
-              const PopupMenuDivider(),
-              CheckedPopupMenuItem<LeaveBehindDemoAction>(
-                value: LeaveBehindDemoAction.horizontalSwipe,
-                checked: _dismissDirection == DismissDirection.horizontal,
-                child: const Text('Horizontal swipe'),
-              ),
-              CheckedPopupMenuItem<LeaveBehindDemoAction>(
-                value: LeaveBehindDemoAction.leftSwipe,
-                checked: _dismissDirection == DismissDirection.endToStart,
-                child: const Text('Only swipe left'),
-              ),
-              CheckedPopupMenuItem<LeaveBehindDemoAction>(
-                value: LeaveBehindDemoAction.rightSwipe,
-                checked: _dismissDirection == DismissDirection.startToEnd,
-                child: const Text('Only swipe right'),
-              ),
-              CheckedPopupMenuItem<LeaveBehindDemoAction>(
-                value: LeaveBehindDemoAction.confirmDismiss,
-                checked: _confirmDismiss,
-                child: const Text('Confirm dismiss'),
-              ),
-            ],
+            itemBuilder: (
+              BuildContext context,
+            ) => <PopupMenuEntry<LeaveBehindDemoAction>>[
+                  const PopupMenuItem<LeaveBehindDemoAction>(
+                    value: LeaveBehindDemoAction.reset,
+                    child: Text('Reset the list'),
+                  ),
+                  const PopupMenuDivider(),
+                  CheckedPopupMenuItem<LeaveBehindDemoAction>(
+                    value: LeaveBehindDemoAction.horizontalSwipe,
+                    checked: _dismissDirection == DismissDirection.horizontal,
+                    child: const Text('Horizontal swipe'),
+                  ),
+                  CheckedPopupMenuItem<LeaveBehindDemoAction>(
+                    value: LeaveBehindDemoAction.leftSwipe,
+                    checked: _dismissDirection == DismissDirection.endToStart,
+                    child: const Text('Only swipe left'),
+                  ),
+                  CheckedPopupMenuItem<LeaveBehindDemoAction>(
+                    value: LeaveBehindDemoAction.rightSwipe,
+                    checked: _dismissDirection == DismissDirection.startToEnd,
+                    child: const Text('Only swipe right'),
+                  ),
+                  CheckedPopupMenuItem<LeaveBehindDemoAction>(
+                    value: LeaveBehindDemoAction.confirmDismiss,
+                    checked: _confirmDismiss,
+                    child: const Text('Confirm dismiss'),
+                  ),
+                ],
           ),
         ],
       ),
@@ -223,21 +232,25 @@ class _LeaveBehindListItem extends StatelessWidget {
             _handleDelete();
           }
         },
-        confirmDismiss: !confirmDismiss ? null : (DismissDirection dismissDirection) async {
-          switch (dismissDirection) {
-            case DismissDirection.endToStart:
-              return await _showConfirmationDialog(context, 'archive') ?? false;
-            case DismissDirection.startToEnd:
-              return await _showConfirmationDialog(context, 'delete') ?? false;
-            case DismissDirection.horizontal:
-            case DismissDirection.vertical:
-            case DismissDirection.up:
-            case DismissDirection.down:
-            case DismissDirection.none:
-              assert(false);
-          }
-          return false;
-        },
+        confirmDismiss: !confirmDismiss
+            ? null
+            : (DismissDirection dismissDirection) async {
+                switch (dismissDirection) {
+                  case DismissDirection.endToStart:
+                    return await _showConfirmationDialog(context, 'archive') ??
+                        false;
+                  case DismissDirection.startToEnd:
+                    return await _showConfirmationDialog(context, 'delete') ??
+                        false;
+                  case DismissDirection.horizontal:
+                  case DismissDirection.vertical:
+                  case DismissDirection.up:
+                  case DismissDirection.down:
+                  case DismissDirection.none:
+                    assert(false);
+                }
+                return false;
+              },
         background: ColoredBox(
           color: theme.primaryColor,
           child: const Center(

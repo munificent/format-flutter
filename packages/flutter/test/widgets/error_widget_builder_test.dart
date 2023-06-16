@@ -13,15 +13,13 @@ void main() {
     ErrorWidget.builder = (FlutterErrorDetails details) {
       return const Text('oopsie!', textDirection: TextDirection.ltr);
     };
-    await tester.pumpWidget(
-      SizedBox(
-        child: Builder(
-          builder: (BuildContext context) {
-            throw 'test';
-          },
-        ),
+    await tester.pumpWidget(SizedBox(
+      child: Builder(
+        builder: (BuildContext context) {
+          throw 'test';
+        },
       ),
-    );
+    ));
     expect(tester.takeException().toString(), 'test');
     expect(find.text('oopsie!'), findsOneWidget);
     ErrorWidget.builder = oldBuilder;
@@ -32,15 +30,13 @@ void main() {
     ErrorWidget.builder = (FlutterErrorDetails details) {
       return ErrorWidget('');
     };
-    await tester.pumpWidget(
-      SizedBox(
-        child: Builder(
-          builder: (BuildContext context) {
-            throw 'test';
-          },
-        ),
+    await tester.pumpWidget(SizedBox(
+      child: Builder(
+        builder: (BuildContext context) {
+          throw 'test';
+        },
       ),
-    );
+    ));
     expect(tester.takeException().toString(), 'test');
     expect(find.byType(ErrorWidget), isNot(paints..paragraph()));
     ErrorWidget.builder = oldBuilder;

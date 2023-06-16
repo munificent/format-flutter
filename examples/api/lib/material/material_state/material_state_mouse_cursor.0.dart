@@ -16,9 +16,7 @@ class MaterialStateMouseCursorExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('MaterialStateMouseCursor Sample')),
-        body: const Center(
-          child: MaterialStateMouseCursorExample(),
-        ),
+        body: const Center(child: MaterialStateMouseCursorExample()),
       ),
     );
   }

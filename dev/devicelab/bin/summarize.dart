@@ -30,7 +30,9 @@ Future<void> main(List<String> rawArgs) async {
     return;
   }
 
-  final List<String> jsonFiles = args.rest.isNotEmpty ? args.rest : <String>[ 'ABresults.json' ];
+  final List<String> jsonFiles = args.rest.isNotEmpty
+      ? args.rest
+      : <String>['ABresults.json'];
 
   for (final String filename in jsonFiles) {
     final File file = File(filename);
@@ -42,7 +44,8 @@ Future<void> main(List<String> rawArgs) async {
     ABTest test;
     try {
       test = ABTest.fromJsonMap(
-          const JsonDecoder().convert(await file.readAsString()) as Map<String, dynamic>
+        const JsonDecoder().convert(await file.readAsString())
+            as Map<String, dynamic>,
       );
     } catch (error) {
       _usage('Could not parse json file "$filename"');

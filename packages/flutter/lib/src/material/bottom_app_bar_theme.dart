@@ -97,7 +97,11 @@ class BottomAppBarTheme with Diagnosticable {
   /// The argument `t` must not be null.
   ///
   /// {@macro dart.ui.shadow.lerp}
-  static BottomAppBarTheme lerp(BottomAppBarTheme? a, BottomAppBarTheme? b, double t) {
+  static BottomAppBarTheme lerp(
+    BottomAppBarTheme? a,
+    BottomAppBarTheme? b,
+    double t,
+  ) {
     if (identical(a, b) && a != null) {
       return a;
     }
@@ -131,25 +135,39 @@ class BottomAppBarTheme with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is BottomAppBarTheme
-        && other.color == color
-        && other.elevation == elevation
-        && other.shape == shape
-        && other.height == height
-        && other.surfaceTintColor == surfaceTintColor
-        && other.shadowColor == shadowColor
-        && other.padding == padding;
+    return other is BottomAppBarTheme &&
+        other.color == color &&
+        other.elevation == elevation &&
+        other.shape == shape &&
+        other.height == height &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.shadowColor == shadowColor &&
+        other.padding == padding;
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(ColorProperty('color', color, defaultValue: null));
-    properties.add(DiagnosticsProperty<double>('elevation', elevation, defaultValue: null));
-    properties.add(DiagnosticsProperty<NotchedShape>('shape', shape, defaultValue: null));
-    properties.add(DiagnosticsProperty<double>('height', height, defaultValue: null));
-    properties.add(ColorProperty('surfaceTintColor', surfaceTintColor, defaultValue: null));
-    properties.add(ColorProperty('shadowColor', shadowColor, defaultValue: null));
-    properties.add(DiagnosticsProperty<EdgeInsetsGeometry>('padding', padding, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<double>('elevation', elevation, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty<NotchedShape>('shape', shape, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty<double>('height', height, defaultValue: null),
+    );
+    properties.add(
+      ColorProperty('surfaceTintColor', surfaceTintColor, defaultValue: null),
+    );
+    properties.add(
+      ColorProperty('shadowColor', shadowColor, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty<EdgeInsetsGeometry>(
+      'padding',
+      padding,
+      defaultValue: null,
+    ));
   }
 }

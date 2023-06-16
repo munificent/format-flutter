@@ -54,15 +54,18 @@ void main() {
     expect(workflow.appliesToHostPlatform, false);
   });
 
-  testWithoutContext('WebWorkflow does not apply if feature flag is disabled', () {
-    final WebWorkflow workflow = WebWorkflow(
-      platform: FakePlatform(),
-      featureFlags: TestFeatureFlags(),
-    );
+  testWithoutContext(
+    'WebWorkflow does not apply if feature flag is disabled',
+    () {
+      final WebWorkflow workflow = WebWorkflow(
+        platform: FakePlatform(),
+        featureFlags: TestFeatureFlags(),
+      );
 
-    expect(workflow.appliesToHostPlatform, false);
-    expect(workflow.canLaunchDevices, false);
-    expect(workflow.canListDevices, false);
-    expect(workflow.canListEmulators, false);
-  });
+      expect(workflow.appliesToHostPlatform, false);
+      expect(workflow.canLaunchDevices, false);
+      expect(workflow.canListDevices, false);
+      expect(workflow.canListEmulators, false);
+    },
+  );
 }

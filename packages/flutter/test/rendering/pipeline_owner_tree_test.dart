@@ -64,35 +64,38 @@ void main() {
     expect(child1OnNeedVisualUpdateCallCount, 1);
   });
 
-  test("parent's render objects are laid out before child's render objects", () {
-    final TestPipelineManifold manifold = TestPipelineManifold();
-    final List<String> log = <String>[];
+  test(
+    "parent's render objects are laid out before child's render objects",
+    () {
+      final TestPipelineManifold manifold = TestPipelineManifold();
+      final List<String> log = <String>[];
 
-    final TestRenderObject rootRenderObject = TestRenderObject(
-      onLayout: () {
-        log.add('layout parent');
-      },
-    );
-    final PipelineOwner root = PipelineOwner();
-    root.rootNode = rootRenderObject;
-    rootRenderObject.scheduleInitialLayout();
+      final TestRenderObject rootRenderObject = TestRenderObject(
+        onLayout: () {
+          log.add('layout parent');
+        },
+      );
+      final PipelineOwner root = PipelineOwner();
+      root.rootNode = rootRenderObject;
+      rootRenderObject.scheduleInitialLayout();
 
-    final TestRenderObject childRenderObject = TestRenderObject(
-      onLayout: () {
-        log.add('layout child');
-      },
-    );
-    final PipelineOwner child = PipelineOwner();
-    child.rootNode = childRenderObject;
-    childRenderObject.scheduleInitialLayout();
+      final TestRenderObject childRenderObject = TestRenderObject(
+        onLayout: () {
+          log.add('layout child');
+        },
+      );
+      final PipelineOwner child = PipelineOwner();
+      child.rootNode = childRenderObject;
+      childRenderObject.scheduleInitialLayout();
 
-    root.adoptChild(child);
-    root.attach(manifold);
-    expect(log, isEmpty);
+      root.adoptChild(child);
+      root.attach(manifold);
+      expect(log, isEmpty);
 
-    root.flushLayout();
-    expect(log, <String>['layout parent', 'layout child']);
-  });
+      root.flushLayout();
+      expect(log, <String>['layout parent', 'layout child']);
+    },
+  );
 
   test("child cannot dirty parent's render object during flushLayout", () {
     final TestPipelineManifold manifold = TestPipelineManifold();
@@ -115,7 +118,6 @@ void main() {
 
     root.adoptChild(child);
     root.attach(manifold);
-
 
     root.flushLayout();
     expect(childLayoutExecuted, isTrue);
@@ -213,270 +215,285 @@ void main() {
     expect(childPaintExecuted, isTrue);
   });
 
-  test("parent's render objects do semantics before child's render objects", () {
-    final TestPipelineManifold manifold = TestPipelineManifold()
-      ..semanticsEnabled = true;
-    final List<String> log = <String>[];
+  test(
+    "parent's render objects do semantics before child's render objects",
+    () {
+      final TestPipelineManifold manifold = TestPipelineManifold()
+        ..semanticsEnabled = true;
+      final List<String> log = <String>[];
 
-    final TestRenderObject rootRenderObject = TestRenderObject(
-      onSemantics: () {
-        log.add('semantics parent');
-      },
-    );
-    final PipelineOwner root = PipelineOwner(
-      onSemanticsOwnerCreated: () {
-        rootRenderObject.scheduleInitialSemantics();
-      },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
-    );
-    root.rootNode = rootRenderObject;
+      final TestRenderObject rootRenderObject = TestRenderObject(
+        onSemantics: () {
+          log.add('semantics parent');
+        },
+      );
+      final PipelineOwner root = PipelineOwner(
+        onSemanticsOwnerCreated: () {
+          rootRenderObject.scheduleInitialSemantics();
+        },
+        onSemanticsUpdate: (SemanticsUpdate update) {},
+      );
+      root.rootNode = rootRenderObject;
 
-    final TestRenderObject childRenderObject = TestRenderObject(
-      onSemantics: () {
-        log.add('semantics child');
-      },
-    );
-    final PipelineOwner child = PipelineOwner(
-      onSemanticsOwnerCreated: () {
-        childRenderObject.scheduleInitialSemantics();
-      },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
-    );
-    child.rootNode = childRenderObject;
+      final TestRenderObject childRenderObject = TestRenderObject(
+        onSemantics: () {
+          log.add('semantics child');
+        },
+      );
+      final PipelineOwner child = PipelineOwner(
+        onSemanticsOwnerCreated: () {
+          childRenderObject.scheduleInitialSemantics();
+        },
+        onSemanticsUpdate: (SemanticsUpdate update) {},
+      );
+      child.rootNode = childRenderObject;
 
-    root.adoptChild(child);
-    root.attach(manifold);
-    log.clear();
+      root.adoptChild(child);
+      root.attach(manifold);
+      log.clear();
 
-    rootRenderObject.markNeedsSemanticsUpdate();
-    childRenderObject.markNeedsSemanticsUpdate();
-    root.flushSemantics();
-    expect(log, <String>['semantics parent', 'semantics child']);
-  });
+      rootRenderObject.markNeedsSemanticsUpdate();
+      childRenderObject.markNeedsSemanticsUpdate();
+      root.flushSemantics();
+      expect(log, <String>['semantics parent', 'semantics child']);
+    },
+  );
 
-  test("child cannot mark parent's render object dirty during flushSemantics", () {
-    final TestPipelineManifold manifold = TestPipelineManifold()
-      ..semanticsEnabled = true;
+  test(
+    "child cannot mark parent's render object dirty during flushSemantics",
+    () {
+      final TestPipelineManifold manifold = TestPipelineManifold()
+        ..semanticsEnabled = true;
 
-    final TestRenderObject rootRenderObject = TestRenderObject();
-    final PipelineOwner root = PipelineOwner(
-      onSemanticsOwnerCreated: () {
-        rootRenderObject.scheduleInitialSemantics();
-      },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
-    );
-    root.rootNode = rootRenderObject;
+      final TestRenderObject rootRenderObject = TestRenderObject();
+      final PipelineOwner root = PipelineOwner(
+        onSemanticsOwnerCreated: () {
+          rootRenderObject.scheduleInitialSemantics();
+        },
+        onSemanticsUpdate: (SemanticsUpdate update) {},
+      );
+      root.rootNode = rootRenderObject;
 
-    bool childSemanticsCalled = false;
-    final TestRenderObject childRenderObject = TestRenderObject(
-      onSemantics: () {
-        childSemanticsCalled = true;
-        rootRenderObject.markNeedsSemanticsUpdate();
-      },
-    );
-    final PipelineOwner child = PipelineOwner(
-      onSemanticsOwnerCreated: () {
-        childRenderObject.scheduleInitialSemantics();
-      },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
-    );
-    child.rootNode = childRenderObject;
+      bool childSemanticsCalled = false;
+      final TestRenderObject childRenderObject = TestRenderObject(
+        onSemantics: () {
+          childSemanticsCalled = true;
+          rootRenderObject.markNeedsSemanticsUpdate();
+        },
+      );
+      final PipelineOwner child = PipelineOwner(
+        onSemanticsOwnerCreated: () {
+          childRenderObject.scheduleInitialSemantics();
+        },
+        onSemanticsUpdate: (SemanticsUpdate update) {},
+      );
+      child.rootNode = childRenderObject;
 
-    root.adoptChild(child);
-    root.attach(manifold);
-    rootRenderObject.markNeedsSemanticsUpdate();
-    childRenderObject.markNeedsSemanticsUpdate();
-    root.flushSemantics();
+      root.adoptChild(child);
+      root.attach(manifold);
+      rootRenderObject.markNeedsSemanticsUpdate();
+      childRenderObject.markNeedsSemanticsUpdate();
+      root.flushSemantics();
 
-    expect(childSemanticsCalled, isTrue);
-  });
+      expect(childSemanticsCalled, isTrue);
+    },
+  );
 
-  test('when manifold enables semantics all PipelineOwners in tree create SemanticsOwner', () {
-    final TestPipelineManifold manifold = TestPipelineManifold();
+  test(
+    'when manifold enables semantics all PipelineOwners in tree create SemanticsOwner',
+    () {
+      final TestPipelineManifold manifold = TestPipelineManifold();
 
-    int rootOnSemanticsOwnerCreatedCount = 0;
-    int rootOnSemanticsOwnerDisposed = 0;
-    final PipelineOwner root = PipelineOwner(
-      onSemanticsOwnerCreated: () {
-        rootOnSemanticsOwnerCreatedCount++;
-      },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
-      onSemanticsOwnerDisposed: () {
-        rootOnSemanticsOwnerDisposed++;
-      },
-    );
+      int rootOnSemanticsOwnerCreatedCount = 0;
+      int rootOnSemanticsOwnerDisposed = 0;
+      final PipelineOwner root = PipelineOwner(
+        onSemanticsOwnerCreated: () {
+          rootOnSemanticsOwnerCreatedCount++;
+        },
+        onSemanticsUpdate: (SemanticsUpdate update) {},
+        onSemanticsOwnerDisposed: () {
+          rootOnSemanticsOwnerDisposed++;
+        },
+      );
 
-    int childOnSemanticsOwnerCreatedCount = 0;
-    int childOnSemanticsOwnerDisposed = 0;
-    final PipelineOwner child = PipelineOwner(
-      onSemanticsOwnerCreated: () {
-        childOnSemanticsOwnerCreatedCount++;
-      },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
-      onSemanticsOwnerDisposed: () {
-        childOnSemanticsOwnerDisposed++;
-      },
-    );
+      int childOnSemanticsOwnerCreatedCount = 0;
+      int childOnSemanticsOwnerDisposed = 0;
+      final PipelineOwner child = PipelineOwner(
+        onSemanticsOwnerCreated: () {
+          childOnSemanticsOwnerCreatedCount++;
+        },
+        onSemanticsUpdate: (SemanticsUpdate update) {},
+        onSemanticsOwnerDisposed: () {
+          childOnSemanticsOwnerDisposed++;
+        },
+      );
 
-    root.adoptChild(child);
-    root.attach(manifold);
-    expect(rootOnSemanticsOwnerCreatedCount, 0);
-    expect(childOnSemanticsOwnerCreatedCount, 0);
-    expect(rootOnSemanticsOwnerDisposed, 0);
-    expect(childOnSemanticsOwnerDisposed, 0);
-    expect(root.semanticsOwner, isNull);
-    expect(child.semanticsOwner, isNull);
+      root.adoptChild(child);
+      root.attach(manifold);
+      expect(rootOnSemanticsOwnerCreatedCount, 0);
+      expect(childOnSemanticsOwnerCreatedCount, 0);
+      expect(rootOnSemanticsOwnerDisposed, 0);
+      expect(childOnSemanticsOwnerDisposed, 0);
+      expect(root.semanticsOwner, isNull);
+      expect(child.semanticsOwner, isNull);
 
-    manifold.semanticsEnabled = true;
+      manifold.semanticsEnabled = true;
 
-    expect(rootOnSemanticsOwnerCreatedCount, 1);
-    expect(childOnSemanticsOwnerCreatedCount, 1);
-    expect(rootOnSemanticsOwnerDisposed, 0);
-    expect(childOnSemanticsOwnerDisposed, 0);
-    expect(root.semanticsOwner, isNotNull);
-    expect(child.semanticsOwner, isNotNull);
+      expect(rootOnSemanticsOwnerCreatedCount, 1);
+      expect(childOnSemanticsOwnerCreatedCount, 1);
+      expect(rootOnSemanticsOwnerDisposed, 0);
+      expect(childOnSemanticsOwnerDisposed, 0);
+      expect(root.semanticsOwner, isNotNull);
+      expect(child.semanticsOwner, isNotNull);
 
-    manifold.semanticsEnabled = false;
+      manifold.semanticsEnabled = false;
 
-    expect(rootOnSemanticsOwnerCreatedCount, 1);
-    expect(childOnSemanticsOwnerCreatedCount, 1);
-    expect(rootOnSemanticsOwnerDisposed, 1);
-    expect(childOnSemanticsOwnerDisposed, 1);
-    expect(root.semanticsOwner, isNull);
-    expect(child.semanticsOwner, isNull);
-  });
+      expect(rootOnSemanticsOwnerCreatedCount, 1);
+      expect(childOnSemanticsOwnerCreatedCount, 1);
+      expect(rootOnSemanticsOwnerDisposed, 1);
+      expect(childOnSemanticsOwnerDisposed, 1);
+      expect(root.semanticsOwner, isNull);
+      expect(child.semanticsOwner, isNull);
+    },
+  );
 
-  test('when manifold enables semantics all PipelineOwners in tree that did not have a SemanticsOwner create one', () {
-    final TestPipelineManifold manifold = TestPipelineManifold();
+  test(
+    'when manifold enables semantics all PipelineOwners in tree that did not have a SemanticsOwner create one',
+    () {
+      final TestPipelineManifold manifold = TestPipelineManifold();
 
-    int rootOnSemanticsOwnerCreatedCount = 0;
-    int rootOnSemanticsOwnerDisposed = 0;
-    final PipelineOwner root = PipelineOwner(
-      onSemanticsOwnerCreated: () {
-        rootOnSemanticsOwnerCreatedCount++;
-      },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
-      onSemanticsOwnerDisposed: () {
-        rootOnSemanticsOwnerDisposed++;
-      },
-    );
+      int rootOnSemanticsOwnerCreatedCount = 0;
+      int rootOnSemanticsOwnerDisposed = 0;
+      final PipelineOwner root = PipelineOwner(
+        onSemanticsOwnerCreated: () {
+          rootOnSemanticsOwnerCreatedCount++;
+        },
+        onSemanticsUpdate: (SemanticsUpdate update) {},
+        onSemanticsOwnerDisposed: () {
+          rootOnSemanticsOwnerDisposed++;
+        },
+      );
 
-    int childOnSemanticsOwnerCreatedCount = 0;
-    int childOnSemanticsOwnerDisposed = 0;
-    final PipelineOwner child = PipelineOwner(
-      onSemanticsOwnerCreated: () {
-        childOnSemanticsOwnerCreatedCount++;
-      },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
-      onSemanticsOwnerDisposed: () {
-        childOnSemanticsOwnerDisposed++;
-      },
-    );
+      int childOnSemanticsOwnerCreatedCount = 0;
+      int childOnSemanticsOwnerDisposed = 0;
+      final PipelineOwner child = PipelineOwner(
+        onSemanticsOwnerCreated: () {
+          childOnSemanticsOwnerCreatedCount++;
+        },
+        onSemanticsUpdate: (SemanticsUpdate update) {},
+        onSemanticsOwnerDisposed: () {
+          childOnSemanticsOwnerDisposed++;
+        },
+      );
 
-    root.adoptChild(child);
-    root.attach(manifold);
+      root.adoptChild(child);
+      root.attach(manifold);
 
-    final SemanticsHandle childSemantics = child.ensureSemantics();
-    expect(rootOnSemanticsOwnerCreatedCount, 0);
-    expect(childOnSemanticsOwnerCreatedCount, 1);
-    expect(rootOnSemanticsOwnerDisposed, 0);
-    expect(childOnSemanticsOwnerDisposed, 0);
-    expect(root.semanticsOwner, isNull);
-    expect(child.semanticsOwner, isNotNull);
+      final SemanticsHandle childSemantics = child.ensureSemantics();
+      expect(rootOnSemanticsOwnerCreatedCount, 0);
+      expect(childOnSemanticsOwnerCreatedCount, 1);
+      expect(rootOnSemanticsOwnerDisposed, 0);
+      expect(childOnSemanticsOwnerDisposed, 0);
+      expect(root.semanticsOwner, isNull);
+      expect(child.semanticsOwner, isNotNull);
 
-    manifold.semanticsEnabled = true;
+      manifold.semanticsEnabled = true;
 
-    expect(rootOnSemanticsOwnerCreatedCount, 1);
-    expect(childOnSemanticsOwnerCreatedCount, 1);
-    expect(rootOnSemanticsOwnerDisposed, 0);
-    expect(childOnSemanticsOwnerDisposed, 0);
-    expect(root.semanticsOwner, isNotNull);
-    expect(child.semanticsOwner, isNotNull);
+      expect(rootOnSemanticsOwnerCreatedCount, 1);
+      expect(childOnSemanticsOwnerCreatedCount, 1);
+      expect(rootOnSemanticsOwnerDisposed, 0);
+      expect(childOnSemanticsOwnerDisposed, 0);
+      expect(root.semanticsOwner, isNotNull);
+      expect(child.semanticsOwner, isNotNull);
 
-    manifold.semanticsEnabled = false;
+      manifold.semanticsEnabled = false;
 
-    expect(rootOnSemanticsOwnerCreatedCount, 1);
-    expect(childOnSemanticsOwnerCreatedCount, 1);
-    expect(rootOnSemanticsOwnerDisposed, 1);
-    expect(childOnSemanticsOwnerDisposed, 0);
-    expect(root.semanticsOwner, isNull);
-    expect(child.semanticsOwner, isNotNull);
+      expect(rootOnSemanticsOwnerCreatedCount, 1);
+      expect(childOnSemanticsOwnerCreatedCount, 1);
+      expect(rootOnSemanticsOwnerDisposed, 1);
+      expect(childOnSemanticsOwnerDisposed, 0);
+      expect(root.semanticsOwner, isNull);
+      expect(child.semanticsOwner, isNotNull);
 
-    childSemantics.dispose();
+      childSemantics.dispose();
 
-    expect(rootOnSemanticsOwnerCreatedCount, 1);
-    expect(childOnSemanticsOwnerCreatedCount, 1);
-    expect(rootOnSemanticsOwnerDisposed, 1);
-    expect(childOnSemanticsOwnerDisposed, 1);
-    expect(root.semanticsOwner, isNull);
-    expect(child.semanticsOwner, isNull);
-  });
+      expect(rootOnSemanticsOwnerCreatedCount, 1);
+      expect(childOnSemanticsOwnerCreatedCount, 1);
+      expect(rootOnSemanticsOwnerDisposed, 1);
+      expect(childOnSemanticsOwnerDisposed, 1);
+      expect(root.semanticsOwner, isNull);
+      expect(child.semanticsOwner, isNull);
+    },
+  );
 
-  test('PipelineOwner can dispose local handle even when manifold forces semantics to on', () {
-    final TestPipelineManifold manifold = TestPipelineManifold();
+  test(
+    'PipelineOwner can dispose local handle even when manifold forces semantics to on',
+    () {
+      final TestPipelineManifold manifold = TestPipelineManifold();
 
-    int rootOnSemanticsOwnerCreatedCount = 0;
-    int rootOnSemanticsOwnerDisposed = 0;
-    final PipelineOwner root = PipelineOwner(
-      onSemanticsOwnerCreated: () {
-        rootOnSemanticsOwnerCreatedCount++;
-      },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
-      onSemanticsOwnerDisposed: () {
-        rootOnSemanticsOwnerDisposed++;
-      },
-    );
+      int rootOnSemanticsOwnerCreatedCount = 0;
+      int rootOnSemanticsOwnerDisposed = 0;
+      final PipelineOwner root = PipelineOwner(
+        onSemanticsOwnerCreated: () {
+          rootOnSemanticsOwnerCreatedCount++;
+        },
+        onSemanticsUpdate: (SemanticsUpdate update) {},
+        onSemanticsOwnerDisposed: () {
+          rootOnSemanticsOwnerDisposed++;
+        },
+      );
 
-    int childOnSemanticsOwnerCreatedCount = 0;
-    int childOnSemanticsOwnerDisposed = 0;
-    final PipelineOwner child = PipelineOwner(
-      onSemanticsOwnerCreated: () {
-        childOnSemanticsOwnerCreatedCount++;
-      },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
-      onSemanticsOwnerDisposed: () {
-        childOnSemanticsOwnerDisposed++;
-      },
-    );
+      int childOnSemanticsOwnerCreatedCount = 0;
+      int childOnSemanticsOwnerDisposed = 0;
+      final PipelineOwner child = PipelineOwner(
+        onSemanticsOwnerCreated: () {
+          childOnSemanticsOwnerCreatedCount++;
+        },
+        onSemanticsUpdate: (SemanticsUpdate update) {},
+        onSemanticsOwnerDisposed: () {
+          childOnSemanticsOwnerDisposed++;
+        },
+      );
 
-    root.adoptChild(child);
-    root.attach(manifold);
+      root.adoptChild(child);
+      root.attach(manifold);
 
-    final SemanticsHandle childSemantics = child.ensureSemantics();
-    expect(rootOnSemanticsOwnerCreatedCount, 0);
-    expect(childOnSemanticsOwnerCreatedCount, 1);
-    expect(rootOnSemanticsOwnerDisposed, 0);
-    expect(childOnSemanticsOwnerDisposed, 0);
-    expect(root.semanticsOwner, isNull);
-    expect(child.semanticsOwner, isNotNull);
+      final SemanticsHandle childSemantics = child.ensureSemantics();
+      expect(rootOnSemanticsOwnerCreatedCount, 0);
+      expect(childOnSemanticsOwnerCreatedCount, 1);
+      expect(rootOnSemanticsOwnerDisposed, 0);
+      expect(childOnSemanticsOwnerDisposed, 0);
+      expect(root.semanticsOwner, isNull);
+      expect(child.semanticsOwner, isNotNull);
 
-    manifold.semanticsEnabled = true;
+      manifold.semanticsEnabled = true;
 
-    expect(rootOnSemanticsOwnerCreatedCount, 1);
-    expect(childOnSemanticsOwnerCreatedCount, 1);
-    expect(rootOnSemanticsOwnerDisposed, 0);
-    expect(childOnSemanticsOwnerDisposed, 0);
-    expect(root.semanticsOwner, isNotNull);
-    expect(child.semanticsOwner, isNotNull);
+      expect(rootOnSemanticsOwnerCreatedCount, 1);
+      expect(childOnSemanticsOwnerCreatedCount, 1);
+      expect(rootOnSemanticsOwnerDisposed, 0);
+      expect(childOnSemanticsOwnerDisposed, 0);
+      expect(root.semanticsOwner, isNotNull);
+      expect(child.semanticsOwner, isNotNull);
 
-    childSemantics.dispose();
+      childSemantics.dispose();
 
-    expect(rootOnSemanticsOwnerCreatedCount, 1);
-    expect(childOnSemanticsOwnerCreatedCount, 1);
-    expect(rootOnSemanticsOwnerDisposed, 0);
-    expect(childOnSemanticsOwnerDisposed, 0);
-    expect(root.semanticsOwner, isNotNull);
-    expect(child.semanticsOwner, isNotNull);
+      expect(rootOnSemanticsOwnerCreatedCount, 1);
+      expect(childOnSemanticsOwnerCreatedCount, 1);
+      expect(rootOnSemanticsOwnerDisposed, 0);
+      expect(childOnSemanticsOwnerDisposed, 0);
+      expect(root.semanticsOwner, isNotNull);
+      expect(child.semanticsOwner, isNotNull);
 
-    manifold.semanticsEnabled = false;
+      manifold.semanticsEnabled = false;
 
-    expect(rootOnSemanticsOwnerCreatedCount, 1);
-    expect(childOnSemanticsOwnerCreatedCount, 1);
-    expect(rootOnSemanticsOwnerDisposed, 1);
-    expect(childOnSemanticsOwnerDisposed, 1);
-    expect(root.semanticsOwner, isNull);
-    expect(child.semanticsOwner, isNull);
-  });
+      expect(rootOnSemanticsOwnerCreatedCount, 1);
+      expect(childOnSemanticsOwnerCreatedCount, 1);
+      expect(rootOnSemanticsOwnerDisposed, 1);
+      expect(childOnSemanticsOwnerDisposed, 1);
+      expect(root.semanticsOwner, isNull);
+      expect(child.semanticsOwner, isNull);
+    },
+  );
 
   test('can hold on to local handle when manifold turns off semantics', () {
     final TestPipelineManifold manifold = TestPipelineManifold();
@@ -487,7 +504,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         rootOnSemanticsOwnerCreatedCount++;
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
       onSemanticsOwnerDisposed: () {
         rootOnSemanticsOwnerDisposed++;
       },
@@ -499,7 +516,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         childOnSemanticsOwnerCreatedCount++;
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
       onSemanticsOwnerDisposed: () {
         childOnSemanticsOwnerDisposed++;
       },
@@ -563,9 +580,7 @@ void main() {
   test('attach update semanticsOwner', () {
     final TestPipelineManifold manifold = TestPipelineManifold()
       ..semanticsEnabled = true;
-    final PipelineOwner owner = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
+    final PipelineOwner owner = PipelineOwner(onSemanticsUpdate: (_) {});
 
     expect(owner.semanticsOwner, isNull);
     owner.attach(manifold);
@@ -606,15 +621,9 @@ void main() {
 
   test('adopting creates semantics owner if necessary', () {
     final TestPipelineManifold manifold = TestPipelineManifold();
-    final PipelineOwner root = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
-    final PipelineOwner child = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
-    final PipelineOwner childOfChild = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
+    final PipelineOwner root = PipelineOwner(onSemanticsUpdate: (_) {});
+    final PipelineOwner child = PipelineOwner(onSemanticsUpdate: (_) {});
+    final PipelineOwner childOfChild = PipelineOwner(onSemanticsUpdate: (_) {});
     root.attach(manifold);
 
     expect(root.semanticsOwner, isNull);
@@ -657,15 +666,9 @@ void main() {
   test('dropping destroys semantics owner if necessary', () {
     final TestPipelineManifold manifold = TestPipelineManifold()
       ..semanticsEnabled = true;
-    final PipelineOwner root = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
-    final PipelineOwner child = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
-    final PipelineOwner childOfChild = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
+    final PipelineOwner root = PipelineOwner(onSemanticsUpdate: (_) {});
+    final PipelineOwner child = PipelineOwner(onSemanticsUpdate: (_) {});
+    final PipelineOwner childOfChild = PipelineOwner(onSemanticsUpdate: (_) {});
     root.attach(manifold);
     root.adoptChild(child);
     child.adoptChild(childOfChild);
@@ -761,8 +764,16 @@ void main() {
 
     root.flushLayout();
 
-    expect(adoptingError, isAssertionError.having((AssertionError e) => e.message, 'message', contains('Cannot modify child list after layout.')));
-    expect(droppingError, isAssertionError.having((AssertionError e) => e.message, 'message', contains('Cannot modify child list after layout.')));
+    expect(adoptingError, isAssertionError.having(
+      (AssertionError e) => e.message,
+      'message',
+      contains('Cannot modify child list after layout.'),
+    ));
+    expect(droppingError, isAssertionError.having(
+      (AssertionError e) => e.message,
+      'message',
+      contains('Cannot modify child list after layout.'),
+    ));
   });
 
   test('visitChildren visits all children', () {
@@ -822,7 +833,7 @@ class TestRenderObject extends RenderObject {
   bool get isRepaintBoundary => true;
 
   @override
-  void debugAssertDoesMeetConstraints() { }
+  void debugAssertDoesMeetConstraints() {}
 
   @override
   Rect get paintBounds => Rect.zero;
@@ -843,7 +854,7 @@ class TestRenderObject extends RenderObject {
   }
 
   @override
-  void performResize() { }
+  void performResize() {}
 
   @override
   Rect get semanticBounds => Rect.zero;

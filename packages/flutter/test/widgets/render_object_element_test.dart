@@ -28,7 +28,7 @@ class Pair<T> {
 /// and the other child in the bottom half. It will swap which child is on top
 /// and which is on bottom every time the widget is rendered.
 abstract class Swapper extends RenderObjectWidget {
-  const Swapper({ super.key, this.stable, this.swapper });
+  const Swapper({super.key, this.stable, this.swapper});
 
   final Widget? stable;
   final Widget? swapper;
@@ -41,11 +41,7 @@ abstract class Swapper extends RenderObjectWidget {
 }
 
 class SwapperWithProperOverrides extends Swapper {
-  const SwapperWithProperOverrides({
-    super.key,
-    super.stable,
-    super.swapper,
-  });
+  const SwapperWithProperOverrides({super.key, super.stable, super.swapper});
 
   @override
   SwapperElement createElement() => SwapperElementWithProperOverrides(this);
@@ -96,13 +92,23 @@ abstract class SwapperElement extends RenderObjectElement {
   }
 
   @override
-  void insertRenderObjectChild(covariant RenderObject child, covariant Object? slot) { }
+  void insertRenderObjectChild(
+    covariant RenderObject child,
+    covariant Object? slot,
+  ) {}
 
   @override
-  void moveRenderObjectChild(covariant RenderObject child, covariant Object? oldSlot, covariant Object? newSlot) { }
+  void moveRenderObjectChild(
+    covariant RenderObject child,
+    covariant Object? oldSlot,
+    covariant Object? newSlot,
+  ) {}
 
   @override
-  void removeRenderObjectChild(covariant RenderObject child, covariant Object? slot) { }
+  void removeRenderObjectChild(
+    covariant RenderObject child,
+    covariant Object? slot,
+  ) {}
 }
 
 class SwapperElementWithProperOverrides extends SwapperElement {
@@ -119,7 +125,11 @@ class SwapperElementWithProperOverrides extends SwapperElement {
   }
 
   @override
-  void moveRenderObjectChild(RenderBox child, bool oldIsOnTop, bool newIsOnTop) {
+  void moveRenderObjectChild(
+    RenderBox child,
+    bool oldIsOnTop,
+    bool newIsOnTop,
+  ) {
     moveSlots.add(Pair<bool>(oldIsOnTop, newIsOnTop));
     assert(oldIsOnTop == !newIsOnTop);
     renderObject.setSwapper(child, newIsOnTop);
@@ -211,12 +221,14 @@ class RenderSwapper extends RenderBox {
       maxHeight: constraints.maxHeight / 2,
     );
     if (_stable != null) {
-      final BoxParentData stableParentData = _stable!.parentData! as BoxParentData;
+      final BoxParentData stableParentData =
+          _stable!.parentData! as BoxParentData;
       _stable!.layout(childConstraints);
       stableParentData.offset = _swapperIsOnTop! ? bottomOffset : topOffset;
     }
     if (_swapper != null) {
-      final BoxParentData swapperParentData = _swapper!.parentData! as BoxParentData;
+      final BoxParentData swapperParentData =
+          _swapper!.parentData! as BoxParentData;
       _swapper!.layout(childConstraints);
       swapperParentData.offset = _swapperIsOnTop! ? topOffset : bottomOffset;
     }
@@ -236,50 +248,54 @@ class RenderSwapper extends RenderBox {
   }
 }
 
-BoxParentData parentDataFor(RenderObject renderObject) => renderObject.parentData! as BoxParentData;
+BoxParentData parentDataFor(RenderObject renderObject) =>
+    renderObject.parentData! as BoxParentData;
 
 void main() {
-  testWidgets('RenderObjectElement *RenderObjectChild methods get called with correct arguments', (WidgetTester tester) async {
-    const Key redKey = ValueKey<String>('red');
-    const Key blueKey = ValueKey<String>('blue');
-    Widget widget() {
-      return SwapperWithProperOverrides(
-        stable: ColoredBox(
-          key: redKey,
-          color: Color(nonconst(0xffff0000)),
-        ),
-        swapper: ColoredBox(
-          key: blueKey,
-          color: Color(nonconst(0xff0000ff)),
-        ),
-      );
-    }
+  testWidgets(
+    'RenderObjectElement *RenderObjectChild methods get called with correct arguments',
+    (WidgetTester tester) async {
+      const Key redKey = ValueKey<String>('red');
+      const Key blueKey = ValueKey<String>('blue');
+      Widget widget() {
+        return SwapperWithProperOverrides(
+          stable: ColoredBox(key: redKey, color: Color(nonconst(0xffff0000))),
+          swapper: ColoredBox(key: blueKey, color: Color(nonconst(0xff0000ff))),
+        );
+      }
 
-    await tester.pumpWidget(widget());
-    final SwapperElement swapper = tester.element<SwapperElement>(find.byType(SwapperWithProperOverrides));
-    final RenderBox redBox = tester.renderObject<RenderBox>(find.byKey(redKey));
-    final RenderBox blueBox = tester.renderObject<RenderBox>(find.byKey(blueKey));
-    expect(swapper.insertSlots.length, 2);
-    expect(swapper.insertSlots, contains('stable'));
-    expect(swapper.insertSlots, contains(true));
-    expect(swapper.moveSlots, isEmpty);
-    expect(swapper.removeSlots, isEmpty);
-    expect(parentDataFor(redBox).offset, const Offset(0, 300));
-    expect(parentDataFor(blueBox).offset, Offset.zero);
-    await tester.pumpWidget(widget());
-    expect(swapper.insertSlots.length, 2);
-    expect(swapper.moveSlots.length, 1);
-    expect(swapper.moveSlots, contains(const Pair<bool>(true, false)));
-    expect(swapper.removeSlots, isEmpty);
-    expect(parentDataFor(redBox).offset, Offset.zero);
-    expect(parentDataFor(blueBox).offset, const Offset(0, 300));
-    await tester.pumpWidget(const SwapperWithProperOverrides());
-    expect(redBox.attached, false);
-    expect(blueBox.attached, false);
-    expect(swapper.insertSlots.length, 2);
-    expect(swapper.moveSlots.length, 1);
-    expect(swapper.removeSlots.length, 2);
-    expect(swapper.removeSlots, contains('stable'));
-    expect(swapper.removeSlots, contains(false));
-  });
+      await tester.pumpWidget(widget());
+      final SwapperElement swapper = tester.element<SwapperElement>(
+        find.byType(SwapperWithProperOverrides),
+      );
+      final RenderBox redBox = tester.renderObject<RenderBox>(
+        find.byKey(redKey),
+      );
+      final RenderBox blueBox = tester.renderObject<RenderBox>(
+        find.byKey(blueKey),
+      );
+      expect(swapper.insertSlots.length, 2);
+      expect(swapper.insertSlots, contains('stable'));
+      expect(swapper.insertSlots, contains(true));
+      expect(swapper.moveSlots, isEmpty);
+      expect(swapper.removeSlots, isEmpty);
+      expect(parentDataFor(redBox).offset, const Offset(0, 300));
+      expect(parentDataFor(blueBox).offset, Offset.zero);
+      await tester.pumpWidget(widget());
+      expect(swapper.insertSlots.length, 2);
+      expect(swapper.moveSlots.length, 1);
+      expect(swapper.moveSlots, contains(const Pair<bool>(true, false)));
+      expect(swapper.removeSlots, isEmpty);
+      expect(parentDataFor(redBox).offset, Offset.zero);
+      expect(parentDataFor(blueBox).offset, const Offset(0, 300));
+      await tester.pumpWidget(const SwapperWithProperOverrides());
+      expect(redBox.attached, false);
+      expect(blueBox.attached, false);
+      expect(swapper.insertSlots.length, 2);
+      expect(swapper.moveSlots.length, 1);
+      expect(swapper.removeSlots.length, 2);
+      expect(swapper.removeSlots, contains('stable'));
+      expect(swapper.removeSlots, contains(false));
+    },
+  );
 }

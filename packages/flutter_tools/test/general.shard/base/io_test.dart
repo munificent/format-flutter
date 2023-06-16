@@ -16,11 +16,19 @@ import '../../src/io.dart';
 void main() {
   testWithoutContext('IOOverrides can inject a memory file system', () async {
     final MemoryFileSystem memoryFileSystem = MemoryFileSystem.test();
-    final FlutterIOOverrides flutterIOOverrides = FlutterIOOverrides(fileSystem: memoryFileSystem);
+    final FlutterIOOverrides flutterIOOverrides = FlutterIOOverrides(
+      fileSystem: memoryFileSystem,
+    );
     await io.IOOverrides.runWithIOOverrides(() async {
       // statics delegate correctly.
-      expect(io.FileSystemEntity.isWatchSupported, memoryFileSystem.isWatchSupported);
-      expect(io.Directory.systemTemp.path, memoryFileSystem.systemTempDirectory.path);
+      expect(
+        io.FileSystemEntity.isWatchSupported,
+        memoryFileSystem.isWatchSupported,
+      );
+      expect(
+        io.Directory.systemTemp.path,
+        memoryFileSystem.systemTempDirectory.path,
+      );
 
       // can create and write to files/directories sync.
       final io.File file = io.File('abc');
@@ -50,8 +58,14 @@ void main() {
       await linkA.create('jjj');
       linkB.createSync('lll');
 
-      expect(await memoryFileSystem.link('hhh').resolveSymbolicLinks(), await linkA.resolveSymbolicLinks());
-      expect(memoryFileSystem.link('ggg').resolveSymbolicLinksSync(), linkB.resolveSymbolicLinksSync());
+      expect(
+        await memoryFileSystem.link('hhh').resolveSymbolicLinks(),
+        await linkA.resolveSymbolicLinks(),
+      );
+      expect(
+        memoryFileSystem.link('ggg').resolveSymbolicLinksSync(),
+        linkB.resolveSymbolicLinksSync(),
+      );
     }, flutterIOOverrides);
   });
 
@@ -68,9 +82,12 @@ void main() {
     expect(io.ProcessSignal.sigint.toString(), ProcessSignal.sigint.toString());
   });
 
-  testWithoutContext('exit throws a StateError if called without being overridden', () {
-    expect(() => exit(0), throwsAssertionError);
-  });
+  testWithoutContext(
+    'exit throws a StateError if called without being overridden',
+    () {
+      expect(() => exit(0), throwsAssertionError);
+    },
+  );
 
   testWithoutContext('exit does not throw a StateError if overridden', () {
     try {
@@ -100,21 +117,33 @@ void main() {
     resetNetworkInterfaceLister();
   });
 
-  testWithoutContext('Does not listen to Posix process signals on windows', () async {
-    final FakePlatform windows = FakePlatform(operatingSystem: 'windows');
-    final FakePlatform linux = FakePlatform();
-    final FakeProcessSignal fakeSignalA = FakeProcessSignal();
-    final FakeProcessSignal fakeSignalB = FakeProcessSignal();
-    fakeSignalA.controller.add(fakeSignalA);
-    fakeSignalB.controller.add(fakeSignalB);
+  testWithoutContext(
+    'Does not listen to Posix process signals on windows',
+    () async {
+      final FakePlatform windows = FakePlatform(operatingSystem: 'windows');
+      final FakePlatform linux = FakePlatform();
+      final FakeProcessSignal fakeSignalA = FakeProcessSignal();
+      final FakeProcessSignal fakeSignalB = FakeProcessSignal();
+      fakeSignalA.controller.add(fakeSignalA);
+      fakeSignalB.controller.add(fakeSignalB);
 
-    expect(await PosixProcessSignal(fakeSignalA, platform: windows).watch().isEmpty, true);
-    expect(await PosixProcessSignal(fakeSignalB, platform: linux).watch().first, isNotNull);
-  });
+      expect(
+        await PosixProcessSignal(fakeSignalA, platform: windows)
+            .watch()
+            .isEmpty,
+        true,
+      );
+      expect(
+        await PosixProcessSignal(fakeSignalB, platform: linux).watch().first,
+        isNotNull,
+      );
+    },
+  );
 }
 
 class FakeProcessSignal extends Fake implements io.ProcessSignal {
-  final StreamController<io.ProcessSignal> controller = StreamController<io.ProcessSignal>();
+  final StreamController<io.ProcessSignal> controller =
+      StreamController<io.ProcessSignal>();
 
   @override
   Stream<io.ProcessSignal> watch() => controller.stream;

@@ -22,7 +22,8 @@ class BenchCardInfiniteScroll extends WidgetRecorder {
       super(name: benchmarkNameBackward);
 
   static const String benchmarkName = 'bench_card_infinite_scroll';
-  static const String benchmarkNameBackward = 'bench_card_infinite_scroll_backward';
+  static const String benchmarkNameBackward =
+      'bench_card_infinite_scroll_backward';
 
   final double initialOffset;
   final double finalOffset;
@@ -56,9 +57,7 @@ class _InfiniteScrollCardsState extends State<_InfiniteScrollCards> {
 
     offset = widget.initialOffset;
 
-    scrollController = ScrollController(
-      initialScrollOffset: offset,
-    );
+    scrollController = ScrollController(initialScrollOffset: offset);
 
     // Without the timer the animation doesn't begin.
     Timer.run(() async {

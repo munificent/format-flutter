@@ -33,7 +33,7 @@ class FortnightlyDemo extends StatelessWidget {
 }
 
 class ShortAppBar extends StatelessWidget {
-  const ShortAppBar({ super.key, this.onBackPressed });
+  const ShortAppBar({super.key, this.onBackPressed});
 
   final VoidCallback? onBackPressed;
 
@@ -76,7 +76,8 @@ covered in a fuzz somewhere between peach skin and a spider web. And it's
 hard as soft lumber. You'd be forgiven for thinking it's veneered Larch-wood.
 But inhale the aroma and you'll instantly know you have something wonderful.
 Its scent can fill a room for days. And all this before you've even cooked it.
-'''.replaceAll('\n', ' ');
+'''
+      .replaceAll('\n', ' ');
 
   static final String paragraph2 = '''
 Pomegranates on the other hand have become
@@ -86,7 +87,8 @@ gas stations. But at what cost? The pomegranate juice craze of the aughts made
 of water to make that much pomegranate juice. Water the Resnicks get from their
 majority stake in the Kern Water Bank. How did one family come to hold control
 over water meant for the whole central valley of California? The story will shock you.
-'''.replaceAll('\n', ' ');
+'''
+      .replaceAll('\n', ' ');
 
   @override
   Widget build(BuildContext context) {
@@ -115,19 +117,15 @@ over water meant for the whole central valley of California? The story will shoc
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Text(
-                          'US',
-                          style: textTheme.labelSmall,
-                        ),
+                        Text('US', style: textTheme.labelSmall),
                         Text(
                           ' ¬ ',
                           // TODO(larche): Replace textTheme.headline2.color with a ColorScheme value when known.
-                          style: textTheme.labelSmall!.apply(color: textTheme.displayMedium!.color),
+                          style: textTheme.labelSmall!.apply(
+                            color: textTheme.displayMedium!.color,
+                          ),
                         ),
-                        Text(
-                          'CULTURE',
-                          style: textTheme.labelSmall,
-                        ),
+                        Text('CULTURE', style: textTheme.labelSmall),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -138,7 +136,7 @@ over water meant for the whole central valley of California? The story will shoc
                     const SizedBox(height: 10),
                     Text(
                       'How these crazy fruits sweetened our hearts, relationships, '
-                          'and puffed pastries',
+                      'and puffed pastries',
                       style: textTheme.bodyMedium,
                     ),
                     Padding(
@@ -153,10 +151,7 @@ over water meant for the whole central valley of California? The story will shoc
                             radius: 20,
                           ),
                           const SizedBox(width: 12),
-                          Text(
-                            'by',
-                            style: textTheme.displayMedium,
-                          ),
+                          Text('by', style: textTheme.displayMedium),
                           const SizedBox(width: 4),
                           const Text(
                             'Connor Eghan',

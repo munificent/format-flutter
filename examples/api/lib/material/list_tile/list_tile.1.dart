@@ -50,10 +50,8 @@ class LisTileExample extends StatelessWidget {
             ),
           ),
           Card(
-            child: ListTile(
-              title: Text('One-line dense ListTile'),
-              dense: true,
-            ),
+            child:
+                ListTile(title: Text('One-line dense ListTile'), dense: true),
           ),
           Card(
             child: ListTile(
@@ -67,7 +65,8 @@ class LisTileExample extends StatelessWidget {
             child: ListTile(
               leading: FlutterLogo(size: 72.0),
               title: Text('Three-line ListTile'),
-              subtitle: Text('A sufficiently long subtitle warrants three lines.'),
+              subtitle:
+                  Text('A sufficiently long subtitle warrants three lines.'),
               trailing: Icon(Icons.more_vert),
               isThreeLine: true,
             ),

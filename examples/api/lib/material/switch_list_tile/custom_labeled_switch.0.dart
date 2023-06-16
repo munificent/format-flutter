@@ -19,9 +19,7 @@ class LabeledSwitchApp extends StatelessWidget {
       theme: ThemeData(useMaterial3: true),
       home: Scaffold(
         appBar: AppBar(title: const Text('Custom Labeled Switch Sample')),
-        body: const Center(
-          child: LabeledSwitchExample(),
-        ),
+        body: const Center(child: LabeledSwitchExample()),
       ),
     );
   }

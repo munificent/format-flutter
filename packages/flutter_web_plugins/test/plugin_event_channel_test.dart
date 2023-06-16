@@ -14,7 +14,8 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 void main() {
   // Disabling tester emulation because this test relies on real message channel communication.
-  ui.debugEmulateFlutterTesterEnvironment = false; // ignore: undefined_prefixed_name
+  ui.debugEmulateFlutterTesterEnvironment =
+      false; // ignore: undefined_prefixed_name
 
   group('Plugin Event Channel', () {
     setUp(() {
@@ -30,8 +31,10 @@ void main() {
       final StreamController<String> controller = StreamController<String>();
       sendingChannel.setController(controller);
 
-      expect(listeningChannel.receiveBroadcastStream(),
-          emitsInOrder(<String>['hello', 'world']));
+      expect(
+        listeningChannel.receiveBroadcastStream(),
+        emitsInOrder(<String>['hello', 'world']),
+      );
 
       controller.add('hello');
       controller.add('world');
@@ -46,8 +49,10 @@ void main() {
       final StreamController<String> controller = StreamController<String>();
       sendingChannel.setController(controller);
 
-      expect(listeningChannel.receiveBroadcastStream(),
-          emitsInOrder(<String>['hello', 'world']));
+      expect(
+        listeningChannel.receiveBroadcastStream(),
+        emitsInOrder(<String>['hello', 'world']),
+      );
 
       controller.add('hello');
       controller.add('world');
@@ -62,10 +67,11 @@ void main() {
       final StreamController<String> controller = StreamController<String>();
       sendingChannel.setController(controller);
 
-      expect(
-          listeningChannel.receiveBroadcastStream(),
-          emitsError(predicate<dynamic>((dynamic e) =>
-              e is PlatformException && e.message == 'Test error')));
+      expect(listeningChannel.receiveBroadcastStream(), emitsError(
+        predicate<dynamic>(
+          (dynamic e) => e is PlatformException && e.message == 'Test error',
+        ),
+      ));
 
       controller.addError('Test error');
       await controller.close();
@@ -79,10 +85,11 @@ void main() {
       final StreamController<String> controller = StreamController<String>();
       sendingChannel.setController(controller);
 
-      expect(
-          listeningChannel.receiveBroadcastStream(),
-          emitsError(predicate<dynamic>((dynamic e) =>
-              e is PlatformException && e.message == 'Test error')));
+      expect(listeningChannel.receiveBroadcastStream(), emitsError(
+        predicate<dynamic>(
+          (dynamic e) => e is PlatformException && e.message == 'Test error',
+        ),
+      ));
 
       controller.addError('Test error');
       await controller.close();
@@ -94,11 +101,14 @@ void main() {
           PluginEventChannel<String>('test3');
 
       final StreamController<String> controller = StreamController<String>(
-          onListen: expectAsync0<void>(() {}));
+        onListen: expectAsync0<void>(() {}),
+      );
       sendingChannel.setController(controller);
 
-      expect(listeningChannel.receiveBroadcastStream(),
-          emitsInOrder(<String>['hello']));
+      expect(
+        listeningChannel.receiveBroadcastStream(),
+        emitsInOrder(<String>['hello']),
+      );
 
       controller.add('hello');
       await controller.close();
@@ -110,11 +120,14 @@ void main() {
           PluginEventChannel<String>('test3');
 
       final StreamController<String> controller = StreamController<String>(
-          onListen: expectAsync0<void>(() {}));
+        onListen: expectAsync0<void>(() {}),
+      );
       sendingChannel.setController(controller);
 
-      expect(listeningChannel.receiveBroadcastStream(),
-          emitsInOrder(<String>['hello']));
+      expect(
+        listeningChannel.receiveBroadcastStream(),
+        emitsInOrder(<String>['hello']),
+      );
 
       controller.add('hello');
       await controller.close();
@@ -125,18 +138,20 @@ void main() {
       const PluginEventChannel<String> sendingChannel =
           PluginEventChannel<String>('test4');
 
-      final StreamController<String> controller =
-          StreamController<String>(onCancel: expectAsync0<void>(() {}));
+      final StreamController<String> controller = StreamController<String>(
+        onCancel: expectAsync0<void>(() {}),
+      );
       sendingChannel.setController(controller);
 
       final Stream<dynamic> eventStream =
           listeningChannel.receiveBroadcastStream();
       late StreamSubscription<dynamic> subscription;
-      subscription =
-          eventStream.listen(expectAsync1<void, dynamic>((dynamic x) {
-        expect(x, equals('hello'));
-        subscription.cancel();
-      }));
+      subscription = eventStream.listen(
+        expectAsync1<void, dynamic>((dynamic x) {
+          expect(x, equals('hello'));
+          subscription.cancel();
+        }),
+      );
 
       controller.add('hello');
     });
@@ -146,18 +161,20 @@ void main() {
       const PluginEventChannel<String> sendingChannel =
           PluginEventChannel<String>('test4');
 
-      final StreamController<String> controller =
-          StreamController<String>(onCancel: expectAsync0<void>(() {}));
+      final StreamController<String> controller = StreamController<String>(
+        onCancel: expectAsync0<void>(() {}),
+      );
       sendingChannel.setController(controller);
 
       final Stream<dynamic> eventStream =
           listeningChannel.receiveBroadcastStream();
       late StreamSubscription<dynamic> subscription;
-      subscription =
-          eventStream.listen(expectAsync1<void, dynamic>((dynamic x) {
-        expect(x, equals('hello'));
-        subscription.cancel();
-      }));
+      subscription = eventStream.listen(
+        expectAsync1<void, dynamic>((dynamic x) {
+          expect(x, equals('hello'));
+          subscription.cancel();
+        }),
+      );
 
       controller.add('hello');
     });

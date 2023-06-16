@@ -18,17 +18,19 @@ class SelectableRegionToolbarBuilderExampleApp extends StatefulWidget {
   const SelectableRegionToolbarBuilderExampleApp({super.key});
 
   @override
-  State<SelectableRegionToolbarBuilderExampleApp> createState() => _SelectableRegionToolbarBuilderExampleAppState();
+  State<SelectableRegionToolbarBuilderExampleApp> createState() =>
+      _SelectableRegionToolbarBuilderExampleAppState();
 }
 
-class _SelectableRegionToolbarBuilderExampleAppState extends State<SelectableRegionToolbarBuilderExampleApp> {
+class _SelectableRegionToolbarBuilderExampleAppState
+    extends State<SelectableRegionToolbarBuilderExampleApp> {
   void _showDialog(BuildContext context) {
-    Navigator.of(context).push(
-      DialogRoute<void>(
-        context: context,
-        builder: (BuildContext context) => const AlertDialog(title: Text('You clicked print!')),
-      ),
-    );
+    Navigator.of(context).push(DialogRoute<void>(
+      context: context,
+      builder: (BuildContext context) => const AlertDialog(
+            title: Text('You clicked print!'),
+          ),
+    ));
   }
 
   @override
@@ -53,9 +55,7 @@ class _SelectableRegionToolbarBuilderExampleAppState extends State<SelectableReg
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Context menu anywhere'),
-        ),
+        appBar: AppBar(title: const Text('Context menu anywhere')),
         body: Center(
           child: SizedBox(
             width: 200.0,
@@ -79,10 +79,7 @@ class _SelectableRegionToolbarBuilderExampleAppState extends State<SelectableReg
                 );
               },
               child: ListView(
-                children: const <Widget>[
-                  SizedBox(height: 20.0),
-                  Text(text),
-                ],
+                children: const <Widget>[SizedBox(height: 20.0), Text(text)],
               ),
             ),
           ),

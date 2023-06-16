@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class ProgressIndicatorTemplate extends TokenTemplate {
-  const ProgressIndicatorTemplate(super.blockName, super.fileName, super.tokens, {
+  const ProgressIndicatorTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
   });
 
@@ -18,7 +21,9 @@ class _Circular${blockName}DefaultsM3 extends ProgressIndicatorThemeData {
   late final ColorScheme _colors = Theme.of(context).colorScheme;
 
   @override
-  Color get color => ${componentColor('md.comp.circular-progress-indicator.active-indicator')};
+  Color get color => ${componentColor(
+        'md.comp.circular-progress-indicator.active-indicator',
+      )};
 }
 
 class _Linear${blockName}DefaultsM3 extends ProgressIndicatorThemeData {
@@ -28,13 +33,19 @@ class _Linear${blockName}DefaultsM3 extends ProgressIndicatorThemeData {
   late final ColorScheme _colors = Theme.of(context).colorScheme;
 
   @override
-  Color get color => ${componentColor('md.comp.linear-progress-indicator.active-indicator')};
+  Color get color => ${componentColor(
+        'md.comp.linear-progress-indicator.active-indicator',
+      )};
 
   @override
-  Color get linearTrackColor => ${componentColor('md.comp.linear-progress-indicator.track')};
+  Color get linearTrackColor => ${componentColor(
+        'md.comp.linear-progress-indicator.track',
+      )};
 
   @override
-  double get linearMinHeight => ${getToken('md.comp.linear-progress-indicator.track.height')};
+  double get linearMinHeight => ${getToken(
+        'md.comp.linear-progress-indicator.track.height',
+      )};
 }
 ''';
 }

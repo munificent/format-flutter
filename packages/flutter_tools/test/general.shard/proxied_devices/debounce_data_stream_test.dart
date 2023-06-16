@@ -30,74 +30,86 @@ void main() {
       });
     });
 
-    testWithoutContext('does not listen if returned stream is not listened to', () {
-      expect(source.hasListener, false);
-      output.listen(dummy);
-      expect(source.hasListener, true);
-    });
+    testWithoutContext(
+      'does not listen if returned stream is not listened to',
+      () {
+        expect(source.hasListener, false);
+        output.listen(dummy);
+        expect(source.hasListener, true);
+      },
+    );
 
-    testWithoutContext('forwards data normally is all data if longer than duration apart', () {
-      fakeAsync.run((FakeAsync time) {
-        final List<Uint8List> outputItems = <Uint8List>[];
-        output.listen(outputItems.add);
+    testWithoutContext(
+      'forwards data normally is all data if longer than duration apart',
+      () {
+        fakeAsync.run((FakeAsync time) {
+          final List<Uint8List> outputItems = <Uint8List>[];
+          output.listen(outputItems.add);
 
-        addToSource(1);
-        time.elapse(debounceDuration + smallDuration);
-        addToSource(2);
-        time.elapse(debounceDuration + smallDuration);
-        addToSource(3);
-        time.elapse(debounceDuration + smallDuration);
+          addToSource(1);
+          time.elapse(debounceDuration + smallDuration);
+          addToSource(2);
+          time.elapse(debounceDuration + smallDuration);
+          addToSource(3);
+          time.elapse(debounceDuration + smallDuration);
 
-        expect(outputItems, <List<int>>[
-          <int>[1],
-          <int>[2],
-          <int>[3],
-        ]);
-      });
-    });
+          expect(outputItems, <List<int>>[
+            <int>[1],
+            <int>[2],
+            <int>[3],
+          ]);
+        });
+      },
+    );
 
-    testWithoutContext('merge data after the first if sent within duration', () {
-      fakeAsync.run((FakeAsync time) {
-        final List<Uint8List> outputItems = <Uint8List>[];
-        output.listen(outputItems.add);
+    testWithoutContext(
+      'merge data after the first if sent within duration',
+      () {
+        fakeAsync.run((FakeAsync time) {
+          final List<Uint8List> outputItems = <Uint8List>[];
+          output.listen(outputItems.add);
 
-        addToSource(1);
-        time.elapse(smallDuration);
-        addToSource(2);
-        time.elapse(smallDuration);
-        addToSource(3);
-        time.elapse(debounceDuration + smallDuration);
+          addToSource(1);
+          time.elapse(smallDuration);
+          addToSource(2);
+          time.elapse(smallDuration);
+          addToSource(3);
+          time.elapse(debounceDuration + smallDuration);
 
-        expect(outputItems, <List<int>>[
-          <int>[1],
-          <int>[2, 3],
-        ]);
-      });
-    });
+          expect(outputItems, <List<int>>[
+            <int>[1],
+            <int>[2, 3],
+          ]);
+        });
+      },
+    );
 
-    testWithoutContext('output data in separate chunks if time between them is longer than duration', () {
-      fakeAsync.run((FakeAsync time) {
-        final List<Uint8List> outputItems = <Uint8List>[];
-        output.listen(outputItems.add);
+    testWithoutContext(
+      'output data in separate chunks if time between them is longer than duration',
+      () {
+        fakeAsync.run((FakeAsync time) {
+          final List<Uint8List> outputItems = <Uint8List>[];
+          output.listen(outputItems.add);
 
-        addToSource(1);
-        time.elapse(smallDuration);
-        addToSource(2);
-        time.elapse(smallDuration);
-        addToSource(3);
-        time.elapse(debounceDuration + smallDuration);
-        addToSource(4);
-        time.elapse(smallDuration);
-        addToSource(5);
-        time.elapse(debounceDuration + smallDuration);
+          addToSource(1);
+          time.elapse(smallDuration);
+          addToSource(2);
+          time.elapse(smallDuration);
+          addToSource(3);
+          time.elapse(debounceDuration + smallDuration);
+          addToSource(4);
+          time.elapse(smallDuration);
+          addToSource(5);
+          time.elapse(debounceDuration + smallDuration);
 
-        expect(outputItems, <List<int>>[
-          <int>[1],
-          <int>[2, 3],
-          <int>[4, 5],
-        ]);
-      });
-    });
+          expect(outputItems, <List<int>>[
+            <int>[1],
+            <int>[2, 3],
+            <int>[4, 5],
+          ]);
+        });
+      },
+    );
 
     testWithoutContext('sends the last chunk after debounce duration', () {
       fakeAsync.run((FakeAsync time) {
@@ -106,13 +118,17 @@ void main() {
 
         addToSource(1);
         time.flushMicrotasks();
-        expect(outputItems, <List<int>>[<int>[1]]);
+        expect(outputItems, <List<int>>[
+          <int>[1],
+        ]);
 
         time.elapse(smallDuration);
         addToSource(2);
         time.elapse(smallDuration);
         addToSource(3);
-        expect(outputItems, <List<int>>[<int>[1]]);
+        expect(outputItems, <List<int>>[
+          <int>[1],
+        ]);
 
         time.elapse(debounceDuration + smallDuration);
         expect(outputItems, <List<int>>[
@@ -141,13 +157,17 @@ void main() {
 
         addToSource(1);
         time.flushMicrotasks();
-        expect(outputItems, <List<int>>[<int>[1]]);
+        expect(outputItems, <List<int>>[
+          <int>[1],
+        ]);
 
         addToSource(2);
         source.close();
         time.elapse(smallDuration);
         expect(isDone, false);
-        expect(outputItems, <List<int>>[<int>[1]]);
+        expect(outputItems, <List<int>>[
+          <int>[1],
+        ]);
 
         time.elapse(debounceDuration + smallDuration);
         expect(outputItems, <List<int>>[

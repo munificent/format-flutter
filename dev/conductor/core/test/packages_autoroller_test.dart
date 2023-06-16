@@ -50,10 +50,7 @@ void main() {
     );
     framework = FrameworkRepository(
       checkouts,
-      mirrorRemote: const Remote(
-        name: RemoteName.mirror,
-        url: mirrorUrl,
-      ),
+      mirrorRemote: const Remote(name: RemoteName.mirror, url: mirrorUrl),
     );
 
     autoroller = PackageAutoroller(
@@ -70,101 +67,98 @@ void main() {
     final StreamController<List<int>> controller =
         StreamController<List<int>>();
     processManager.addCommands(<FakeCommand>[
-      FakeCommand(command: const <String>[
-        'gh',
-        'auth',
-        'login',
-        '--hostname',
-        'github.com',
-        '--git-protocol',
-        'https',
-        '--with-token',
-      ], stdin: io.IOSink(controller.sink)),
-      const FakeCommand(command: <String>[
-        'git',
-        'clone',
-        '--origin',
-        'upstream',
-        '--',
-        FrameworkRepository.defaultUpstream,
-        '$checkoutsParentDirectory/flutter_conductor_checkouts/framework',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'remote',
-        'add',
-        'mirror',
-        mirrorUrl,
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'fetch',
-        'mirror',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'checkout',
-        FrameworkRepository.defaultBranch,
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'rev-parse',
-        'HEAD',
-      ], stdout: 'deadbeef'),
-      const FakeCommand(command: <String>[
-        'git',
-        'ls-remote',
-        '--heads',
-        'mirror',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'checkout',
-        '-b',
-        'packages-autoroller-branch-1',
-      ]),
-      const FakeCommand(command: <String>[
-        '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
-        'help',
-      ]),
-      const FakeCommand(command: <String>[
-        '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
-        '--verbose',
-        'update-packages',
-        '--force-upgrade',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'status',
-        '--porcelain',
-      ], stdout: '''
+      FakeCommand(
+        command: const <String>[
+          'gh',
+          'auth',
+          'login',
+          '--hostname',
+          'github.com',
+          '--git-protocol',
+          'https',
+          '--with-token',
+        ],
+        stdin: io.IOSink(controller.sink),
+      ),
+      const FakeCommand(
+        command: <String>[
+          'git',
+          'clone',
+          '--origin',
+          'upstream',
+          '--',
+          FrameworkRepository.defaultUpstream,
+          '$checkoutsParentDirectory/flutter_conductor_checkouts/framework',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>['git', 'remote', 'add', 'mirror', mirrorUrl],
+      ),
+      const FakeCommand(command: <String>['git', 'fetch', 'mirror']),
+      const FakeCommand(
+        command: <String>['git', 'checkout', FrameworkRepository.defaultBranch],
+      ),
+      const FakeCommand(
+        command: <String>['git', 'rev-parse', 'HEAD'],
+        stdout: 'deadbeef',
+      ),
+      const FakeCommand(
+        command: <String>['git', 'ls-remote', '--heads', 'mirror'],
+      ),
+      const FakeCommand(
+        command: <String>[
+          'git',
+          'checkout',
+          '-b',
+          'packages-autoroller-branch-1',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>[
+          '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
+          'help',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>[
+          '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
+          '--verbose',
+          'update-packages',
+          '--force-upgrade',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>['git', 'status', '--porcelain'],
+        stdout: '''
  M packages/foo/pubspec.yaml
  M packages/bar/pubspec.yaml
  M dev/integration_tests/test_foo/pubspec.yaml
-'''),
-      const FakeCommand(command: <String>[
-        'git',
-        'add',
-        '--all',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'commit',
-        '--message',
-        'roll packages',
-        '--author="fluttergithubbot <fluttergithubbot@google.com>"',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'rev-parse',
-        'HEAD',
-      ], stdout: '000deadbeef'),
-      const FakeCommand(command: <String>[
-        'git',
-        'push',
-        'https://$token@github.com/$orgName/flutter.git',
-        'packages-autoroller-branch-1:packages-autoroller-branch-1',
-      ], exitCode: 1, stderr: 'Authentication error!'),
+''',
+      ),
+      const FakeCommand(command: <String>['git', 'add', '--all']),
+      const FakeCommand(
+        command: <String>[
+          'git',
+          'commit',
+          '--message',
+          'roll packages',
+          '--author="fluttergithubbot <fluttergithubbot@google.com>"',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>['git', 'rev-parse', 'HEAD'],
+        stdout: '000deadbeef',
+      ),
+      const FakeCommand(
+        command: <String>[
+          'git',
+          'push',
+          'https://$token@github.com/$orgName/flutter.git',
+          'packages-autoroller-branch-1:packages-autoroller-branch-1',
+        ],
+        exitCode: 1,
+        stderr: 'Authentication error!',
+      ),
     ]);
     await expectLater(
       () async {
@@ -184,39 +178,48 @@ void main() {
     final StreamController<List<int>> controller =
         StreamController<List<int>>();
     processManager.addCommands(<FakeCommand>[
-      FakeCommand(command: const <String>[
-        'gh',
-        'auth',
-        'login',
-        '--hostname',
-        'github.com',
-        '--git-protocol',
-        'https',
-        '--with-token',
-      ], stdin: io.IOSink(controller.sink)),
-      const FakeCommand(command: <String>[
-        'gh',
-        'pr',
-        'list',
-        '--author',
-        'fluttergithubbot',
-        '--repo',
-        'flutter/flutter',
-        '--state',
-        'open',
-        '--search',
-        'Roll pub packages',
-        '--json',
-        'number',
-      // Non empty array means there are open PRs by the bot with the tool label
-      // We expect no further commands to be run
-      ], stdout: '[{"number": 123}]'),
+      FakeCommand(
+        command: const <String>[
+          'gh',
+          'auth',
+          'login',
+          '--hostname',
+          'github.com',
+          '--git-protocol',
+          'https',
+          '--with-token',
+        ],
+        stdin: io.IOSink(controller.sink),
+      ),
+      const FakeCommand(
+        command: <String>[
+          'gh',
+          'pr',
+          'list',
+          '--author',
+          'fluttergithubbot',
+          '--repo',
+          'flutter/flutter',
+          '--state',
+          'open',
+          '--search',
+          'Roll pub packages',
+          '--json',
+          'number',
+          // Non empty array means there are open PRs by the bot with the tool label
+          // We expect no further commands to be run
+        ],
+        stdout: '[{"number": 123}]',
+      ),
     ]);
     final Future<void> rollFuture = autoroller.roll();
     await controller.stream.drain();
     await rollFuture;
     expect(processManager, hasNoRemainingExpectations);
-    expect(stdio.stdout, contains('fluttergithubbot already has open tool PRs'));
+    expect(
+      stdio.stdout,
+      contains('fluttergithubbot already has open tool PRs'),
+    );
     expect(stdio.stdout, contains(r'[{number: 123}]'));
   });
 
@@ -224,91 +227,87 @@ void main() {
     final StreamController<List<int>> controller =
         StreamController<List<int>>();
     processManager.addCommands(<FakeCommand>[
-      FakeCommand(command: const <String>[
-        'gh',
-        'auth',
-        'login',
-        '--hostname',
-        'github.com',
-        '--git-protocol',
-        'https',
-        '--with-token',
-      ], stdin: io.IOSink(controller.sink)),
-      const FakeCommand(command: <String>[
-        'gh',
-        'pr',
-        'list',
-        '--author',
-        'fluttergithubbot',
-        '--repo',
-        'flutter/flutter',
-        '--state',
-        'open',
-        '--search',
-        'Roll pub packages',
-        '--json',
-        'number',
-      // Returns empty array, as there are no other open roll PRs from the bot
-      ], stdout: '[]'),
-      const FakeCommand(command: <String>[
-        'git',
-        'clone',
-        '--origin',
-        'upstream',
-        '--',
-        FrameworkRepository.defaultUpstream,
-        '$checkoutsParentDirectory/flutter_conductor_checkouts/framework',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'remote',
-        'add',
-        'mirror',
-        mirrorUrl,
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'fetch',
-        'mirror',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'checkout',
-        FrameworkRepository.defaultBranch,
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'rev-parse',
-        'HEAD',
-      ], stdout: 'deadbeef'),
-      const FakeCommand(command: <String>[
-        'git',
-        'ls-remote',
-        '--heads',
-        'mirror',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'checkout',
-        '-b',
-        'packages-autoroller-branch-1',
-      ]),
-      const FakeCommand(command: <String>[
-        '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
-        'help',
-      ]),
-      const FakeCommand(command: <String>[
-        '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
-        '--verbose',
-        'update-packages',
-        '--force-upgrade',
-      ]),
+      FakeCommand(
+        command: const <String>[
+          'gh',
+          'auth',
+          'login',
+          '--hostname',
+          'github.com',
+          '--git-protocol',
+          'https',
+          '--with-token',
+        ],
+        stdin: io.IOSink(controller.sink),
+      ),
+      const FakeCommand(
+        command: <String>[
+          'gh',
+          'pr',
+          'list',
+          '--author',
+          'fluttergithubbot',
+          '--repo',
+          'flutter/flutter',
+          '--state',
+          'open',
+          '--search',
+          'Roll pub packages',
+          '--json',
+          'number',
+          // Returns empty array, as there are no other open roll PRs from the bot
+        ],
+        stdout: '[]',
+      ),
+      const FakeCommand(
+        command: <String>[
+          'git',
+          'clone',
+          '--origin',
+          'upstream',
+          '--',
+          FrameworkRepository.defaultUpstream,
+          '$checkoutsParentDirectory/flutter_conductor_checkouts/framework',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>['git', 'remote', 'add', 'mirror', mirrorUrl],
+      ),
+      const FakeCommand(command: <String>['git', 'fetch', 'mirror']),
+      const FakeCommand(
+        command: <String>['git', 'checkout', FrameworkRepository.defaultBranch],
+      ),
+      const FakeCommand(
+        command: <String>['git', 'rev-parse', 'HEAD'],
+        stdout: 'deadbeef',
+      ),
+      const FakeCommand(
+        command: <String>['git', 'ls-remote', '--heads', 'mirror'],
+      ),
+      const FakeCommand(
+        command: <String>[
+          'git',
+          'checkout',
+          '-b',
+          'packages-autoroller-branch-1',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>[
+          '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
+          'help',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>[
+          '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
+          '--verbose',
+          'update-packages',
+          '--force-upgrade',
+        ],
+      ),
       // Because there is no stdout to git status, the script should exit cleanly here
-      const FakeCommand(command: <String>[
-        'git',
-        'status',
-        '--porcelain',
-      ]),
+      const FakeCommand(command: <String>['git', 'status', '--porcelain']),
     ]);
     final Future<void> rollFuture = autoroller.roll();
     await controller.stream.drain();
@@ -320,150 +319,145 @@ void main() {
     final StreamController<List<int>> controller =
         StreamController<List<int>>();
     processManager.addCommands(<FakeCommand>[
-      FakeCommand(command: const <String>[
-        'gh',
-        'auth',
-        'login',
-        '--hostname',
-        'github.com',
-        '--git-protocol',
-        'https',
-        '--with-token',
-      ], stdin: io.IOSink(controller.sink)),
-      const FakeCommand(command: <String>[
-        'gh',
-        'pr',
-        'list',
-        '--author',
-        'fluttergithubbot',
-        '--repo',
-        'flutter/flutter',
-        '--state',
-        'open',
-        '--search',
-        'Roll pub packages',
-        '--json',
-        'number',
-      // Returns empty array, as there are no other open roll PRs from the bot
-      ], stdout: '[]'),
-      const FakeCommand(command: <String>[
-        'git',
-        'clone',
-        '--origin',
-        'upstream',
-        '--',
-        FrameworkRepository.defaultUpstream,
-        '$checkoutsParentDirectory/flutter_conductor_checkouts/framework',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'remote',
-        'add',
-        'mirror',
-        mirrorUrl,
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'fetch',
-        'mirror',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'checkout',
-        FrameworkRepository.defaultBranch,
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'rev-parse',
-        'HEAD',
-      ], stdout: 'deadbeef'),
-      const FakeCommand(command: <String>[
-        'git',
-        'ls-remote',
-        '--heads',
-        'mirror',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'checkout',
-        '-b',
-        'packages-autoroller-branch-1',
-      ]),
-      const FakeCommand(command: <String>[
-        '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
-        'help',
-      ]),
-      const FakeCommand(command: <String>[
-        '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
-        '--verbose',
-        'update-packages',
-        '--force-upgrade',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'status',
-        '--porcelain',
-      ], stdout: '''
+      FakeCommand(
+        command: const <String>[
+          'gh',
+          'auth',
+          'login',
+          '--hostname',
+          'github.com',
+          '--git-protocol',
+          'https',
+          '--with-token',
+        ],
+        stdin: io.IOSink(controller.sink),
+      ),
+      const FakeCommand(
+        command: <String>[
+          'gh',
+          'pr',
+          'list',
+          '--author',
+          'fluttergithubbot',
+          '--repo',
+          'flutter/flutter',
+          '--state',
+          'open',
+          '--search',
+          'Roll pub packages',
+          '--json',
+          'number',
+          // Returns empty array, as there are no other open roll PRs from the bot
+        ],
+        stdout: '[]',
+      ),
+      const FakeCommand(
+        command: <String>[
+          'git',
+          'clone',
+          '--origin',
+          'upstream',
+          '--',
+          FrameworkRepository.defaultUpstream,
+          '$checkoutsParentDirectory/flutter_conductor_checkouts/framework',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>['git', 'remote', 'add', 'mirror', mirrorUrl],
+      ),
+      const FakeCommand(command: <String>['git', 'fetch', 'mirror']),
+      const FakeCommand(
+        command: <String>['git', 'checkout', FrameworkRepository.defaultBranch],
+      ),
+      const FakeCommand(
+        command: <String>['git', 'rev-parse', 'HEAD'],
+        stdout: 'deadbeef',
+      ),
+      const FakeCommand(
+        command: <String>['git', 'ls-remote', '--heads', 'mirror'],
+      ),
+      const FakeCommand(
+        command: <String>[
+          'git',
+          'checkout',
+          '-b',
+          'packages-autoroller-branch-1',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>[
+          '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
+          'help',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>[
+          '$checkoutsParentDirectory/flutter_conductor_checkouts/framework/bin/flutter',
+          '--verbose',
+          'update-packages',
+          '--force-upgrade',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>['git', 'status', '--porcelain'],
+        stdout: '''
  M packages/foo/pubspec.yaml
  M packages/bar/pubspec.yaml
  M dev/integration_tests/test_foo/pubspec.yaml
-'''),
-      const FakeCommand(command: <String>[
-        'git',
-        'status',
-        '--porcelain',
-      ], stdout: '''
+''',
+      ),
+      const FakeCommand(
+        command: <String>['git', 'status', '--porcelain'],
+        stdout: '''
  M packages/foo/pubspec.yaml
  M packages/bar/pubspec.yaml
  M dev/integration_tests/test_foo/pubspec.yaml
-'''),
-      const FakeCommand(command: <String>[
-        'git',
-        'add',
-        '--all',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'commit',
-        '--message',
-        'roll packages',
-        '--author="fluttergithubbot <fluttergithubbot@gmail.com>"',
-      ]),
-      const FakeCommand(command: <String>[
-        'git',
-        'rev-parse',
-        'HEAD',
-      ], stdout: '000deadbeef'),
-      const FakeCommand(command: <String>[
-        'git',
-        'push',
-        'https://$token@github.com/$orgName/flutter.git',
-        'packages-autoroller-branch-1:packages-autoroller-branch-1',
-      ]),
-      const FakeCommand(command: <String>[
-        'gh',
-        'pr',
-        'create',
-        '--title',
-        'Roll pub packages',
-        '--body',
-        'This PR was generated by `flutter update-packages --force-upgrade`.',
-        '--head',
-        'flutter-roller:packages-autoroller-branch-1',
-        '--base',
-        FrameworkRepository.defaultBranch,
-        '--label',
-        'tool',
-        '--label',
-        'autosubmit',
-      ]),
-      const FakeCommand(command: <String>[
-        'gh',
-        'auth',
-        'logout',
-        '--hostname',
-        'github.com',
-      ]),
+''',
+      ),
+      const FakeCommand(command: <String>['git', 'add', '--all']),
+      const FakeCommand(
+        command: <String>[
+          'git',
+          'commit',
+          '--message',
+          'roll packages',
+          '--author="fluttergithubbot <fluttergithubbot@gmail.com>"',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>['git', 'rev-parse', 'HEAD'],
+        stdout: '000deadbeef',
+      ),
+      const FakeCommand(
+        command: <String>[
+          'git',
+          'push',
+          'https://$token@github.com/$orgName/flutter.git',
+          'packages-autoroller-branch-1:packages-autoroller-branch-1',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>[
+          'gh',
+          'pr',
+          'create',
+          '--title',
+          'Roll pub packages',
+          '--body',
+          'This PR was generated by `flutter update-packages --force-upgrade`.',
+          '--head',
+          'flutter-roller:packages-autoroller-branch-1',
+          '--base',
+          FrameworkRepository.defaultBranch,
+          '--label',
+          'tool',
+          '--label',
+          'autosubmit',
+        ],
+      ),
+      const FakeCommand(
+        command: <String>['gh', 'auth', 'logout', '--hostname', 'github.com'],
+      ),
     ]);
     final Future<void> rollFuture = autoroller.roll();
     final String givenToken =
@@ -479,11 +473,12 @@ void main() {
 
     test('validates that file exists at --token option', () async {
       await expectLater(
-        () => run(
-          <String>['--token', tokenPath, '--mirror-remote', mirrorRemote],
-          fs: fileSystem,
-          processManager: processManager,
-        ),
+        () => run(<String>[
+          '--token',
+          tokenPath,
+          '--mirror-remote',
+          mirrorRemote,
+        ], fs: fileSystem, processManager: processManager),
         throwsA(isA<ArgumentError>().having(
           (ArgumentError err) => err.message,
           'message',
@@ -498,15 +493,18 @@ void main() {
         ..createSync(recursive: true)
         ..writeAsStringSync('');
       await expectLater(
-        () => run(
-          <String>['--token', tokenPath, '--mirror-remote', mirrorRemote],
-          fs: fileSystem,
-          processManager: processManager,
-        ),
+        () => run(<String>[
+          '--token',
+          tokenPath,
+          '--mirror-remote',
+          mirrorRemote,
+        ], fs: fileSystem, processManager: processManager),
         throwsA(isA<ArgumentError>().having(
           (ArgumentError err) => err.message,
           'message',
-          contains('Tried to read a GitHub access token from file $tokenPath but it was empty'),
+          contains(
+            'Tried to read a GitHub access token from file $tokenPath but it was empty',
+          ),
         )),
       );
       expect(processManager, hasNoRemainingExpectations);

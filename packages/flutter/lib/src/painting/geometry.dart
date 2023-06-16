@@ -46,9 +46,13 @@ Offset positionDependentBox({
   double margin = 10.0,
 }) {
   // VERTICAL DIRECTION
-  final bool fitsBelow = target.dy + verticalOffset + childSize.height <= size.height - margin;
-  final bool fitsAbove = target.dy - verticalOffset - childSize.height >= margin;
-  final bool tooltipBelow = preferBelow ? fitsBelow || !fitsAbove : !(fitsAbove || !fitsBelow);
+  final bool fitsBelow =
+      target.dy + verticalOffset + childSize.height <= size.height - margin;
+  final bool fitsAbove =
+      target.dy - verticalOffset - childSize.height >= margin;
+  final bool tooltipBelow = preferBelow
+      ? fitsBelow || !fitsAbove
+      : !(fitsAbove || !fitsBelow);
   final double y;
   if (tooltipBelow) {
     y = math.min(target.dy + verticalOffset, size.height - margin);
@@ -60,7 +64,11 @@ Offset positionDependentBox({
   if (size.width - margin * 2.0 < childSize.width) {
     x = (size.width - childSize.width) / 2.0;
   } else {
-    final double normalizedTargetX = clampDouble(target.dx, margin, size.width - margin);
+    final double normalizedTargetX = clampDouble(
+      target.dx,
+      margin,
+      size.width - margin,
+    );
     final double edge = margin + childSize.width / 2.0;
     if (normalizedTargetX < edge) {
       x = margin;

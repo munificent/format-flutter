@@ -44,12 +44,17 @@ class WebCallbackManager implements CallbackManager {
   ///
   /// See: https://www.w3.org/TR/webdriver/#screen-capture.
   @override
-  Future<Map<String, dynamic>> takeScreenshot(String screenshotName, [Map<String, Object?>? args]) async {
-    await _sendWebDriverCommand(WebDriverCommand.screenshot(screenshotName, args));
+  Future<Map<String, dynamic>> takeScreenshot(
+    String screenshotName, [
+    Map<String, Object?>? args,
+  ]) async {
+    await _sendWebDriverCommand(
+      WebDriverCommand.screenshot(screenshotName, args),
+    );
     return <String, dynamic>{
       'screenshotName': screenshotName,
       // Flutter Web doesn't provide the bytes.
-      'bytes': <int>[]
+      'bytes': <int>[],
     };
   }
 
@@ -64,11 +69,14 @@ class WebCallbackManager implements CallbackManager {
       final bool awaitCommand = await _driverCommandComplete.future;
       if (!awaitCommand) {
         throw Exception(
-            'Web Driver Command ${command.type} failed while waiting for '
-            'driver side');
+          'Web Driver Command ${command.type} failed while waiting for '
+          'driver side',
+        );
       }
     } catch (exception) {
-      throw Exception('Web Driver Command failed: ${command.type} with exception $exception');
+      throw Exception(
+        'Web Driver Command failed: ${command.type} with exception $exception',
+      );
     } finally {
       // Reset the completer.
       _driverCommandComplete = Completer<bool>();
@@ -81,7 +89,9 @@ class WebCallbackManager implements CallbackManager {
   /// driver side.
   @override
   Future<Map<String, dynamic>> callback(
-      Map<String, String> params, IntegrationTestResults testRunner) async {
+    Map<String, String> params,
+    IntegrationTestResults testRunner,
+  ) async {
     final String command = params['command']!;
     Map<String, String> response;
     switch (command) {
@@ -94,27 +104,30 @@ class WebCallbackManager implements CallbackManager {
       default:
         throw UnimplementedError('$command is not implemented');
     }
-    return <String, dynamic>{
-      'isError': false,
-      'response': response,
-    };
+    return <String, dynamic>{'isError': false, 'response': response};
   }
 
   Future<Map<String, dynamic>> _requestDataWithMessage(
-      String extraMessage, IntegrationTestResults testRunner) async {
+    String extraMessage,
+    IntegrationTestResults testRunner,
+  ) async {
     Map<String, String> response;
     // Driver side tests' status is added as an extra message.
-    final DriverTestMessage message =
-        DriverTestMessage.fromString(extraMessage);
+    final DriverTestMessage message = DriverTestMessage.fromString(
+      extraMessage,
+    );
     // If driver side tests are pending send the first command in the
     // `commandPipe` to the tests.
     if (message.isPending) {
       final WebDriverCommand command = await _webDriverCommandPipe.future;
       switch (command.type) {
         case WebDriverCommandType.screenshot:
-          final Map<String, dynamic> data = Map<String, dynamic>.from(command.values);
+          final Map<String, dynamic> data = Map<String, dynamic>.from(
+            command.values,
+          );
           data.addAll(
-              WebDriverCommand.typeToMap(WebDriverCommandType.screenshot));
+            WebDriverCommand.typeToMap(WebDriverCommandType.screenshot),
+          );
           response = <String, String>{
             'message': Response.webDriverCommand(data: data).toJson(),
           };
@@ -136,13 +149,12 @@ class WebCallbackManager implements CallbackManager {
       _driverCommandComplete.complete(message.isSuccess);
       _webDriverCommandPipe = Completer<WebDriverCommand>();
     }
-    return <String, dynamic>{
-      'isError': false,
-      'response': response,
-    };
+    return <String, dynamic>{'isError': false, 'response': response};
   }
 
-  Future<Map<String, dynamic>> _requestData(IntegrationTestResults testRunner) async {
+  Future<Map<String, dynamic>> _requestData(
+    IntegrationTestResults testRunner,
+  ) async {
     final bool allTestsPassed = await testRunner.allTestsPassed.future;
     final Map<String, String> response = <String, String>{
       'message': allTestsPassed
@@ -152,17 +164,15 @@ class WebCallbackManager implements CallbackManager {
               data: testRunner.reportData,
             ).toJson(),
     };
-    return <String, dynamic>{
-      'isError': false,
-      'response': response,
-    };
+    return <String, dynamic>{'isError': false, 'response': response};
   }
 
   @override
   void cleanup() {
     if (!_webDriverCommandPipe.isCompleted) {
-      _webDriverCommandPipe
-          .complete(Future<WebDriverCommand>.value(WebDriverCommand.noop()));
+      _webDriverCommandPipe.complete(
+        Future<WebDriverCommand>.value(WebDriverCommand.noop()),
+      );
     }
 
     if (!_driverCommandComplete.isCompleted) {

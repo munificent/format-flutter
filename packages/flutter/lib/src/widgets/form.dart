@@ -75,7 +75,8 @@ class Form extends StatefulWidget {
   /// * [Form.of], which is similar to this method, but asserts if no [Form]
   ///   ancestor is found.
   static FormState? maybeOf(BuildContext context) {
-    final _FormScope? scope = context.dependOnInheritedWidgetOfExactType<_FormScope>();
+    final _FormScope? scope =
+        context.dependOnInheritedWidgetOfExactType<_FormScope>();
     return scope?._formState;
   }
 
@@ -101,19 +102,21 @@ class Form extends StatefulWidget {
   ///   [Form] ancestor is found.
   static FormState of(BuildContext context) {
     final FormState? formState = maybeOf(context);
-    assert(() {
-      if (formState == null) {
-        throw FlutterError(
-          'Form.of() was called with a context that does not contain a Form widget.\n'
-          'No Form widget ancestor could be found starting from the context that '
-          'was passed to Form.of(). This can happen because you are using a widget '
-          'that looks for a Form ancestor, but no such ancestor exists.\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (formState == null) {
+          throw FlutterError(
+            'Form.of() was called with a context that does not contain a Form widget.\n'
+            'No Form widget ancestor could be found starting from the context that '
+            'was passed to Form.of(). This can happen because you are using a widget '
+            'that looks for a Form ancestor, but no such ancestor exists.\n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return formState!;
   }
 
@@ -168,8 +171,9 @@ class FormState extends State<Form> {
   void _fieldDidChange() {
     widget.onChanged?.call();
 
-    _hasInteractedByUser = _fields
-        .any((FormFieldState<dynamic> field) => field._hasInteractedByUser.value);
+    _hasInteractedByUser = _fields.any(
+      (FormFieldState<dynamic> field) => field._hasInteractedByUser.value,
+    );
     _forceRebuild();
   }
 
@@ -255,10 +259,18 @@ class FormState extends State<Form> {
       if (defaultTargetPlatform == TargetPlatform.iOS) {
         unawaited(Future<void>(() async {
           await Future<void>.delayed(_kIOSAnnouncementDelayDuration);
-          SemanticsService.announce(errorMessage, directionality, assertiveness: Assertiveness.assertive);
+          SemanticsService.announce(
+            errorMessage,
+            directionality,
+            assertiveness: Assertiveness.assertive,
+          );
         }));
       } else {
-        SemanticsService.announce(errorMessage, directionality, assertiveness: Assertiveness.assertive);
+        SemanticsService.announce(
+          errorMessage,
+          directionality,
+          assertiveness: Assertiveness.assertive,
+        );
       }
     }
     return !hasError;

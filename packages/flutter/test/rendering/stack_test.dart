@@ -16,23 +16,20 @@ void main() {
     );
 
     final RenderBox red = RenderDecoratedBox(
-      decoration: const BoxDecoration(
-        color: Color(0xFFFF0000),
-      ),
+      decoration: const BoxDecoration(color: Color(0xFFFF0000)),
       child: size,
     );
 
     final RenderBox green = RenderDecoratedBox(
-      decoration: const BoxDecoration(
-        color: Color(0xFFFF0000),
-      ),
+      decoration: const BoxDecoration(color: Color(0xFFFF0000)),
     );
 
     final RenderBox stack = RenderStack(
       textDirection: TextDirection.ltr,
       children: <RenderBox>[red, green],
     );
-    final StackParentData greenParentData = green.parentData! as StackParentData;
+    final StackParentData greenParentData =
+        green.parentData! as StackParentData;
     greenParentData
       ..top = 0.0
       ..right = 0.0
@@ -64,13 +61,16 @@ void main() {
   });
 
   test('Stack has correct clipBehavior', () {
-    const BoxConstraints viewport = BoxConstraints(maxHeight: 100.0, maxWidth: 100.0);
+    const BoxConstraints viewport = BoxConstraints(
+      maxHeight: 100.0,
+      maxWidth: 100.0,
+    );
 
     for (final Clip? clip in <Clip?>[null, ...Clip.values]) {
       final TestClipPaintingContext context = TestClipPaintingContext();
       final RenderBox child = box200x200;
       final RenderStack stack;
-      switch (clip){
+      switch (clip) {
         case Clip.none:
         case Clip.hardEdge:
         case Clip.antiAlias:
@@ -86,14 +86,24 @@ void main() {
             children: <RenderBox>[child],
           );
       }
-      { // Make sure that the child is positioned so the stack will consider it as overflowed.
+      {
+        // Make sure that the child is positioned so the stack will consider it as overflowed.
         final StackParentData parentData = child.parentData! as StackParentData;
         parentData.left = parentData.right = 0;
       }
-      layout(stack, constraints: viewport, phase: EnginePhase.composite, onErrors: expectNoFlutterErrors);
+      layout(
+        stack,
+        constraints: viewport,
+        phase: EnginePhase.composite,
+        onErrors: expectNoFlutterErrors,
+      );
       context.paintChild(stack, Offset.zero);
       // By default, clipBehavior should be Clip.hardEdge
-      expect(context.clipBehavior, equals(clip ?? Clip.hardEdge), reason: 'for $clip');
+      expect(
+        context.clipBehavior,
+        equals(clip ?? Clip.hardEdge),
+        reason: 'for $clip',
+      );
     }
   });
 
@@ -141,7 +151,8 @@ void main() {
         children: <RenderBox>[child1, child2, child3],
       );
 
-      final List<DiagnosticsNode> diagnosticNodes = stack.debugDescribeChildren();
+      final List<DiagnosticsNode> diagnosticNodes =
+          stack.debugDescribeChildren();
 
       expect(diagnosticNodes[0].name, 'child 1');
       expect(diagnosticNodes[0].style, DiagnosticsTreeStyle.offstage);
@@ -169,7 +180,8 @@ void main() {
         children: <RenderBox>[child1, child2, child3],
       );
 
-      final List<DiagnosticsNode> diagnosticNodes = stack.debugDescribeChildren();
+      final List<DiagnosticsNode> diagnosticNodes =
+          stack.debugDescribeChildren();
 
       expect(diagnosticNodes[0].name, 'child 1');
       expect(diagnosticNodes[0].style, DiagnosticsTreeStyle.offstage);
@@ -188,11 +200,8 @@ void main() {
       textDirection: TextDirection.ltr,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <RenderBox>[
-        RenderStack(
-          textDirection: TextDirection.ltr,
-          children: <RenderBox>[],
-        ),
-      ]
+        RenderStack(textDirection: TextDirection.ltr, children: <RenderBox>[]),
+      ],
     );
 
     bool stackFlutterErrorThrown = false;
@@ -201,7 +210,7 @@ void main() {
       constraints: BoxConstraints.tight(const Size(100.0, 100.0)),
       onErrors: () {
         stackFlutterErrorThrown = true;
-      }
+      },
     );
 
     expect(stackFlutterErrorThrown, false);

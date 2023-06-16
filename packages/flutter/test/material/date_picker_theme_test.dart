@@ -39,7 +39,8 @@ void main() {
     rangePickerHeaderHeadlineStyle: TextStyle(fontSize: 14),
     rangePickerHeaderHelpStyle: TextStyle(fontSize: 15),
     rangeSelectionBackgroundColor: Color(0xffffff2f),
-    rangeSelectionOverlayColor: MaterialStatePropertyAll<Color>(Color(0xffffff3f)),
+    rangeSelectionOverlayColor:
+        MaterialStatePropertyAll<Color>(Color(0xffffff3f)),
     dividerColor: Color(0xffffff3f),
   );
 
@@ -47,17 +48,14 @@ void main() {
     return tester.widget<Material>(
       find.descendant(
         of: find.byType(Dialog),
-        matching: find.byType(Material)
-      ).first
+        matching: find.byType(Material),
+      ).first,
     );
   }
 
   Material findHeaderMaterial(WidgetTester tester, String text) {
     return tester.widget<Material>(
-      find.ancestor(
-        of: find.text(text),
-        matching: find.byType(Material)
-      ).first,
+      find.ancestor(of: find.text(text), matching: find.byType(Material)).first,
     );
   }
 
@@ -65,7 +63,7 @@ void main() {
     final Container container = tester.widget<Container>(
       find.ancestor(
         of: find.text(date),
-        matching: find.byType(Container)
+        matching: find.byType(Container),
       ).first,
     );
     return container.decoration as BoxDecoration?;
@@ -76,7 +74,10 @@ void main() {
 
   test('DatePickerThemeData copyWith, ==, hashCode basics', () {
     expect(const DatePickerThemeData(), const DatePickerThemeData().copyWith());
-    expect(const DatePickerThemeData().hashCode, const DatePickerThemeData().copyWith().hashCode);
+    expect(
+      const DatePickerThemeData().hashCode,
+      const DatePickerThemeData().copyWith().hashCode,
+    );
   });
 
   test('DatePickerThemeData lerp special cases', () {
@@ -121,68 +122,175 @@ void main() {
     expect(theme.dividerColor, null);
   });
 
-  testWidgets('DatePickerTheme.defaults M3 defaults', (WidgetTester tester) async {
+  testWidgets('DatePickerTheme.defaults M3 defaults', (
+    WidgetTester tester,
+  ) async {
     late final DatePickerThemeData m3; // M3 Defaults
     late final ThemeData theme;
     late final ColorScheme colorScheme;
     late final TextTheme textTheme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.light(useMaterial3: true),
-        home: Builder(
-          builder: (BuildContext context) {
-            m3 = DatePickerTheme.defaults(context);
-            theme = Theme.of(context);
-            colorScheme = theme.colorScheme;
-            textTheme = theme.textTheme;
-            return Container();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData.light(useMaterial3: true),
+      home: Builder(
+        builder: (BuildContext context) {
+          m3 = DatePickerTheme.defaults(context);
+          theme = Theme.of(context);
+          colorScheme = theme.colorScheme;
+          textTheme = theme.textTheme;
+          return Container();
+        },
       ),
-    );
+    ));
 
     expect(m3.backgroundColor, colorScheme.surface);
     expect(m3.elevation, 6);
     expect(m3.shadowColor, const Color(0x00000000)); // Colors.transparent
     expect(m3.surfaceTintColor, colorScheme.surfaceTint);
-    expect(m3.shape, RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)));
-    expect(m3.headerBackgroundColor, const Color(0x00000000)); // Colors.transparent
+    expect(
+      m3.shape,
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+    );
+    expect(
+      m3.headerBackgroundColor,
+      const Color(0x00000000),
+    ); // Colors.transparent
     expect(m3.headerForegroundColor, colorScheme.onSurfaceVariant);
     expect(m3.headerHeadlineStyle, textTheme.headlineLarge);
     expect(m3.headerHelpStyle, textTheme.labelLarge);
-    expect(m3.weekdayStyle, textTheme.bodyLarge?.apply(color: colorScheme.onSurface));
+    expect(
+      m3.weekdayStyle,
+      textTheme.bodyLarge?.apply(color: colorScheme.onSurface),
+    );
     expect(m3.dayStyle, textTheme.bodyLarge);
-    expect(m3.dayForegroundColor?.resolve(<MaterialState>{}), colorScheme.onSurface);
-    expect(m3.dayForegroundColor?.resolve(<MaterialState>{MaterialState.selected}), colorScheme.onPrimary);
-    expect(m3.dayForegroundColor?.resolve(<MaterialState>{MaterialState.disabled}), colorScheme.onSurface.withOpacity(0.38));
+    expect(
+      m3.dayForegroundColor?.resolve(<MaterialState>{}),
+      colorScheme.onSurface,
+    );
+    expect(
+      m3.dayForegroundColor?.resolve(<MaterialState>{MaterialState.selected}),
+      colorScheme.onPrimary,
+    );
+    expect(
+      m3.dayForegroundColor?.resolve(<MaterialState>{MaterialState.disabled}),
+      colorScheme.onSurface.withOpacity(0.38),
+    );
     expect(m3.dayBackgroundColor?.resolve(<MaterialState>{}), null);
-    expect(m3.dayBackgroundColor?.resolve(<MaterialState>{MaterialState.selected}), colorScheme.primary);
+    expect(
+      m3.dayBackgroundColor?.resolve(<MaterialState>{MaterialState.selected}),
+      colorScheme.primary,
+    );
     expect(m3.dayOverlayColor?.resolve(<MaterialState>{}), null);
-    expect(m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.hovered}), colorScheme.onPrimary.withOpacity(0.08));
-    expect(m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.focused}), colorScheme.onPrimary.withOpacity(0.12));
-    expect(m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.hovered}), colorScheme.onSurfaceVariant.withOpacity(0.08));
-    expect(m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.focused}), colorScheme.onSurfaceVariant.withOpacity(0.12));
-    expect(m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.pressed}), colorScheme.onSurfaceVariant.withOpacity(0.12));
-    expect(m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.hovered, MaterialState.focused}), colorScheme.onPrimary.withOpacity(0.08));
-    expect(m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.hovered, MaterialState.pressed}), colorScheme.onPrimary.withOpacity(0.12));
-    expect(m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.hovered, MaterialState.focused}), colorScheme.onSurfaceVariant.withOpacity(0.08));
-    expect(m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.hovered, MaterialState.pressed}), colorScheme.onSurfaceVariant.withOpacity(0.12));
-    expect(m3.todayForegroundColor?.resolve(<MaterialState>{}), colorScheme.primary);
-    expect(m3.todayForegroundColor?.resolve(<MaterialState>{MaterialState.disabled}), colorScheme.primary.withOpacity(0.38));
+    expect(
+      m3.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.hovered,
+      }),
+      colorScheme.onPrimary.withOpacity(0.08),
+    );
+    expect(
+      m3.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.focused,
+      }),
+      colorScheme.onPrimary.withOpacity(0.12),
+    );
+    expect(
+      m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.hovered}),
+      colorScheme.onSurfaceVariant.withOpacity(0.08),
+    );
+    expect(
+      m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.focused}),
+      colorScheme.onSurfaceVariant.withOpacity(0.12),
+    );
+    expect(
+      m3.dayOverlayColor?.resolve(<MaterialState>{MaterialState.pressed}),
+      colorScheme.onSurfaceVariant.withOpacity(0.12),
+    );
+    expect(
+      m3.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.hovered,
+        MaterialState.focused,
+      }),
+      colorScheme.onPrimary.withOpacity(0.08),
+    );
+    expect(
+      m3.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.hovered,
+        MaterialState.pressed,
+      }),
+      colorScheme.onPrimary.withOpacity(0.12),
+    );
+    expect(
+      m3.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.hovered,
+        MaterialState.focused,
+      }),
+      colorScheme.onSurfaceVariant.withOpacity(0.08),
+    );
+    expect(
+      m3.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.hovered,
+        MaterialState.pressed,
+      }),
+      colorScheme.onSurfaceVariant.withOpacity(0.12),
+    );
+    expect(
+      m3.todayForegroundColor?.resolve(<MaterialState>{}),
+      colorScheme.primary,
+    );
+    expect(
+      m3.todayForegroundColor?.resolve(<MaterialState>{MaterialState.disabled}),
+      colorScheme.primary.withOpacity(0.38),
+    );
     expect(m3.todayBorder, BorderSide(color: colorScheme.primary));
     expect(m3.yearStyle, textTheme.bodyLarge);
-    expect(m3.yearForegroundColor?.resolve(<MaterialState>{}), colorScheme.onSurfaceVariant);
-    expect(m3.yearForegroundColor?.resolve(<MaterialState>{MaterialState.selected}), colorScheme.onPrimary);
-    expect(m3.yearForegroundColor?.resolve(<MaterialState>{MaterialState.disabled}), colorScheme.onSurfaceVariant.withOpacity(0.38));
+    expect(
+      m3.yearForegroundColor?.resolve(<MaterialState>{}),
+      colorScheme.onSurfaceVariant,
+    );
+    expect(
+      m3.yearForegroundColor?.resolve(<MaterialState>{MaterialState.selected}),
+      colorScheme.onPrimary,
+    );
+    expect(
+      m3.yearForegroundColor?.resolve(<MaterialState>{MaterialState.disabled}),
+      colorScheme.onSurfaceVariant.withOpacity(0.38),
+    );
     expect(m3.yearBackgroundColor?.resolve(<MaterialState>{}), null);
-    expect(m3.yearBackgroundColor?.resolve(<MaterialState>{MaterialState.selected}), colorScheme.primary);
+    expect(
+      m3.yearBackgroundColor?.resolve(<MaterialState>{MaterialState.selected}),
+      colorScheme.primary,
+    );
     expect(m3.yearOverlayColor?.resolve(<MaterialState>{}), null);
-    expect(m3.yearOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.hovered}), colorScheme.onPrimary.withOpacity(0.08));
-    expect(m3.yearOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.focused}), colorScheme.onPrimary.withOpacity(0.12));
-    expect(m3.yearOverlayColor?.resolve(<MaterialState>{MaterialState.hovered}), colorScheme.onSurfaceVariant.withOpacity(0.08));
-    expect(m3.yearOverlayColor?.resolve(<MaterialState>{MaterialState.focused}), colorScheme.onSurfaceVariant.withOpacity(0.12));
-    expect(m3.yearOverlayColor?.resolve(<MaterialState>{MaterialState.pressed}), colorScheme.onSurfaceVariant.withOpacity(0.12));
+    expect(
+      m3.yearOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.hovered,
+      }),
+      colorScheme.onPrimary.withOpacity(0.08),
+    );
+    expect(
+      m3.yearOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.focused,
+      }),
+      colorScheme.onPrimary.withOpacity(0.12),
+    );
+    expect(
+      m3.yearOverlayColor?.resolve(<MaterialState>{MaterialState.hovered}),
+      colorScheme.onSurfaceVariant.withOpacity(0.08),
+    );
+    expect(
+      m3.yearOverlayColor?.resolve(<MaterialState>{MaterialState.focused}),
+      colorScheme.onSurfaceVariant.withOpacity(0.12),
+    );
+    expect(
+      m3.yearOverlayColor?.resolve(<MaterialState>{MaterialState.pressed}),
+      colorScheme.onSurfaceVariant.withOpacity(0.12),
+    );
     expect(m3.rangePickerElevation, 0);
     expect(m3.rangePickerShape, const RoundedRectangleBorder());
     expect(m3.rangePickerShadowColor, Colors.transparent);
@@ -195,51 +303,117 @@ void main() {
     expect(m3.dividerColor, null);
   });
 
-  testWidgets('DatePickerTheme.defaults M2 defaults', (WidgetTester tester) async {
+  testWidgets('DatePickerTheme.defaults M2 defaults', (
+    WidgetTester tester,
+  ) async {
     late final DatePickerThemeData m2; // M2 defaults
     late final ThemeData theme;
     late final ColorScheme colorScheme;
     late final TextTheme textTheme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.light(useMaterial3: false),
-        home: Builder(
-          builder: (BuildContext context) {
-            m2 = DatePickerTheme.defaults(context);
-            theme = Theme.of(context);
-            colorScheme = theme.colorScheme;
-            textTheme = theme.textTheme;
-            return Container();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData.light(useMaterial3: false),
+      home: Builder(
+        builder: (BuildContext context) {
+          m2 = DatePickerTheme.defaults(context);
+          theme = Theme.of(context);
+          colorScheme = theme.colorScheme;
+          textTheme = theme.textTheme;
+          return Container();
+        },
       ),
-    );
+    ));
 
     expect(m2.elevation, 24);
-    expect(m2.shape, const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))));
+    expect(
+      m2.shape,
+      const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+    );
     expect(m2.headerBackgroundColor, colorScheme.primary);
     expect(m2.headerForegroundColor, colorScheme.onPrimary);
     expect(m2.headerHeadlineStyle, textTheme.headlineSmall);
     expect(m2.headerHelpStyle, textTheme.labelSmall);
-    expect(m2.weekdayStyle, textTheme.bodySmall?.apply(color: colorScheme.onSurface.withOpacity(0.60)));
+    expect(m2.weekdayStyle, textTheme.bodySmall?.apply(
+      color: colorScheme.onSurface.withOpacity(0.60),
+    ));
     expect(m2.dayStyle, textTheme.bodySmall);
-    expect(m2.dayForegroundColor?.resolve(<MaterialState>{}), colorScheme.onSurface);
-    expect(m2.dayForegroundColor?.resolve(<MaterialState>{MaterialState.selected}), colorScheme.onPrimary);
-    expect(m2.dayForegroundColor?.resolve(<MaterialState>{MaterialState.disabled}), colorScheme.onSurface.withOpacity(0.38));
+    expect(
+      m2.dayForegroundColor?.resolve(<MaterialState>{}),
+      colorScheme.onSurface,
+    );
+    expect(
+      m2.dayForegroundColor?.resolve(<MaterialState>{MaterialState.selected}),
+      colorScheme.onPrimary,
+    );
+    expect(
+      m2.dayForegroundColor?.resolve(<MaterialState>{MaterialState.disabled}),
+      colorScheme.onSurface.withOpacity(0.38),
+    );
     expect(m2.dayBackgroundColor?.resolve(<MaterialState>{}), null);
-    expect(m2.dayBackgroundColor?.resolve(<MaterialState>{MaterialState.selected}), colorScheme.primary);
+    expect(
+      m2.dayBackgroundColor?.resolve(<MaterialState>{MaterialState.selected}),
+      colorScheme.primary,
+    );
     expect(m2.dayOverlayColor?.resolve(<MaterialState>{}), null);
-    expect(m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.hovered}), colorScheme.onPrimary.withOpacity(0.08));
-    expect(m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.focused}), colorScheme.onPrimary.withOpacity(0.12));
-    expect(m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.pressed}), colorScheme.onPrimary.withOpacity(0.38));
-    expect(m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.hovered, MaterialState.focused}), colorScheme.onPrimary.withOpacity(0.08));
-    expect(m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.hovered, MaterialState.pressed}), colorScheme.onPrimary.withOpacity(0.38));
-    expect(m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.hovered}), colorScheme.onSurfaceVariant.withOpacity(0.08));
-    expect(m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.focused}), colorScheme.onSurfaceVariant.withOpacity(0.12));
-    expect(m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.pressed}), colorScheme.onSurfaceVariant.withOpacity(0.12));
-    expect(m2.todayForegroundColor?.resolve(<MaterialState>{}), colorScheme.primary);
-    expect(m2.todayForegroundColor?.resolve(<MaterialState>{MaterialState.disabled}), colorScheme.onSurface.withOpacity(0.38));
+    expect(
+      m2.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.hovered,
+      }),
+      colorScheme.onPrimary.withOpacity(0.08),
+    );
+    expect(
+      m2.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.focused,
+      }),
+      colorScheme.onPrimary.withOpacity(0.12),
+    );
+    expect(
+      m2.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.pressed,
+      }),
+      colorScheme.onPrimary.withOpacity(0.38),
+    );
+    expect(
+      m2.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.hovered,
+        MaterialState.focused,
+      }),
+      colorScheme.onPrimary.withOpacity(0.08),
+    );
+    expect(
+      m2.dayOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.hovered,
+        MaterialState.pressed,
+      }),
+      colorScheme.onPrimary.withOpacity(0.38),
+    );
+    expect(
+      m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.hovered}),
+      colorScheme.onSurfaceVariant.withOpacity(0.08),
+    );
+    expect(
+      m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.focused}),
+      colorScheme.onSurfaceVariant.withOpacity(0.12),
+    );
+    expect(
+      m2.dayOverlayColor?.resolve(<MaterialState>{MaterialState.pressed}),
+      colorScheme.onSurfaceVariant.withOpacity(0.12),
+    );
+    expect(
+      m2.todayForegroundColor?.resolve(<MaterialState>{}),
+      colorScheme.primary,
+    );
+    expect(
+      m2.todayForegroundColor?.resolve(<MaterialState>{MaterialState.disabled}),
+      colorScheme.onSurface.withOpacity(0.38),
+    );
     expect(m2.todayBorder, BorderSide(color: colorScheme.primary));
     expect(m2.yearStyle, textTheme.bodyLarge);
     expect(m2.rangePickerBackgroundColor, colorScheme.surface);
@@ -248,31 +422,65 @@ void main() {
     expect(m2.rangePickerShadowColor, Colors.transparent);
     expect(m2.rangePickerSurfaceTintColor, Colors.transparent);
     expect(m2.rangeSelectionOverlayColor?.resolve(<MaterialState>{}), null);
-    expect(m2.rangeSelectionOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.hovered}), colorScheme.onPrimary.withOpacity(0.08));
-    expect(m2.rangeSelectionOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.focused}), colorScheme.onPrimary.withOpacity(0.12));
-    expect(m2.rangeSelectionOverlayColor?.resolve(<MaterialState>{MaterialState.selected, MaterialState.pressed}), colorScheme.onPrimary.withOpacity(0.38));
-    expect(m2.rangeSelectionOverlayColor?.resolve(<MaterialState>{MaterialState.hovered}), colorScheme.onSurfaceVariant.withOpacity(0.08));
-    expect(m2.rangeSelectionOverlayColor?.resolve(<MaterialState>{MaterialState.focused}), colorScheme.onSurfaceVariant.withOpacity(0.12));
-    expect(m2.rangeSelectionOverlayColor?.resolve(<MaterialState>{MaterialState.pressed}), colorScheme.onSurfaceVariant.withOpacity(0.12));
+    expect(
+      m2.rangeSelectionOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.hovered,
+      }),
+      colorScheme.onPrimary.withOpacity(0.08),
+    );
+    expect(
+      m2.rangeSelectionOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.focused,
+      }),
+      colorScheme.onPrimary.withOpacity(0.12),
+    );
+    expect(
+      m2.rangeSelectionOverlayColor?.resolve(<MaterialState>{
+        MaterialState.selected,
+        MaterialState.pressed,
+      }),
+      colorScheme.onPrimary.withOpacity(0.38),
+    );
+    expect(
+      m2.rangeSelectionOverlayColor
+          ?.resolve(<MaterialState>{MaterialState.hovered}),
+      colorScheme.onSurfaceVariant.withOpacity(0.08),
+    );
+    expect(
+      m2.rangeSelectionOverlayColor
+          ?.resolve(<MaterialState>{MaterialState.focused}),
+      colorScheme.onSurfaceVariant.withOpacity(0.12),
+    );
+    expect(
+      m2.rangeSelectionOverlayColor
+          ?.resolve(<MaterialState>{MaterialState.pressed}),
+      colorScheme.onSurfaceVariant.withOpacity(0.12),
+    );
     expect(m2.rangePickerHeaderBackgroundColor, colorScheme.primary);
     expect(m2.rangePickerHeaderForegroundColor, colorScheme.onPrimary);
     expect(m2.rangePickerHeaderHeadlineStyle, textTheme.headlineSmall);
     expect(m2.rangePickerHeaderHelpStyle, textTheme.labelSmall);
   });
 
-  testWidgets('Default DatePickerThemeData debugFillProperties', (WidgetTester tester) async {
+  testWidgets('Default DatePickerThemeData debugFillProperties', (
+    WidgetTester tester,
+  ) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     const DatePickerThemeData().debugFillProperties(builder);
 
     final List<String> description = builder.properties
-      .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
-      .map((DiagnosticsNode node) => node.toString())
-      .toList();
+        .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
+        .map((DiagnosticsNode node) => node.toString())
+        .toList();
 
     expect(description, <String>[]);
   });
 
-  testWidgets('DatePickerThemeData implements debugFillProperties', (WidgetTester tester) async {
+  testWidgets('DatePickerThemeData implements debugFillProperties', (
+    WidgetTester tester,
+  ) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
 
     datePickerTheme.debugFillProperties(builder);
@@ -319,9 +527,10 @@ void main() {
     ]);
   });
 
-  testWidgets('DatePickerDialog uses ThemeData datePicker theme', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
+  testWidgets(
+    'DatePickerDialog uses ThemeData datePicker theme',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
         theme: ThemeData.light(useMaterial3: true).copyWith(
           datePickerTheme: datePickerTheme,
         ),
@@ -338,69 +547,124 @@ void main() {
             ),
           ),
         ),
-      ),
-    );
+      ));
 
-    final Material material = findDialogMaterial(tester);
-    expect(material.color, datePickerTheme.backgroundColor);
-    expect(material.elevation, datePickerTheme.elevation);
-    expect(material.shadowColor, datePickerTheme.shadowColor);
-    expect(material.surfaceTintColor, datePickerTheme.surfaceTintColor);
-    expect(material.shape, datePickerTheme.shape);
+      final Material material = findDialogMaterial(tester);
+      expect(material.color, datePickerTheme.backgroundColor);
+      expect(material.elevation, datePickerTheme.elevation);
+      expect(material.shadowColor, datePickerTheme.shadowColor);
+      expect(material.surfaceTintColor, datePickerTheme.surfaceTintColor);
+      expect(material.shape, datePickerTheme.shape);
 
-    final Text selectDate = tester.widget<Text>(find.text('Select date'));
-    final Material headerMaterial = findHeaderMaterial(tester, 'Select date');
-    expect(selectDate.style?.color, datePickerTheme.headerForegroundColor);
-    expect(selectDate.style?.fontSize, datePickerTheme.headerHelpStyle?.fontSize);
-    expect(headerMaterial.color, datePickerTheme.headerBackgroundColor);
+      final Text selectDate = tester.widget<Text>(find.text('Select date'));
+      final Material headerMaterial = findHeaderMaterial(tester, 'Select date');
+      expect(selectDate.style?.color, datePickerTheme.headerForegroundColor);
+      expect(
+        selectDate.style?.fontSize,
+        datePickerTheme.headerHelpStyle?.fontSize,
+      );
+      expect(headerMaterial.color, datePickerTheme.headerBackgroundColor);
 
-    final Text weekday = tester.widget<Text>(find.text('W'));
-    expect(weekday.style?.color, datePickerTheme.weekdayStyle?.color);
-    expect(weekday.style?.fontSize, datePickerTheme.weekdayStyle?.fontSize);
+      final Text weekday = tester.widget<Text>(find.text('W'));
+      expect(weekday.style?.color, datePickerTheme.weekdayStyle?.color);
+      expect(weekday.style?.fontSize, datePickerTheme.weekdayStyle?.fontSize);
 
-    final Text selectedDate = tester.widget<Text>(find.text('Wed, Jan 25'));
-    expect(selectedDate.style?.color, datePickerTheme.headerForegroundColor);
-    expect(selectedDate.style?.fontSize, datePickerTheme.headerHeadlineStyle?.fontSize);
+      final Text selectedDate = tester.widget<Text>(find.text('Wed, Jan 25'));
+      expect(selectedDate.style?.color, datePickerTheme.headerForegroundColor);
+      expect(
+        selectedDate.style?.fontSize,
+        datePickerTheme.headerHeadlineStyle?.fontSize,
+      );
 
-    final Text day31 = tester.widget<Text>(find.text('31'));
-    final BoxDecoration day31Decoration = findTextDecoration(tester, '31')!;
-    expect(day31.style?.color, datePickerTheme.dayForegroundColor?.resolve(<MaterialState>{}));
-    expect(day31.style?.fontSize, datePickerTheme.dayStyle?.fontSize);
-    expect(day31Decoration.color, datePickerTheme.dayBackgroundColor?.resolve(<MaterialState>{}));
+      final Text day31 = tester.widget<Text>(find.text('31'));
+      final BoxDecoration day31Decoration = findTextDecoration(tester, '31')!;
+      expect(
+        day31.style?.color,
+        datePickerTheme.dayForegroundColor?.resolve(<MaterialState>{}),
+      );
+      expect(day31.style?.fontSize, datePickerTheme.dayStyle?.fontSize);
+      expect(
+        day31Decoration.color,
+        datePickerTheme.dayBackgroundColor?.resolve(<MaterialState>{}),
+      );
 
-    final Text day24 = tester.widget<Text>(find.text('24')); // DatePickerDialog.currentDate
-    final BoxDecoration day24Decoration = findTextDecoration(tester, '24')!;
-    expect(day24.style?.fontSize, datePickerTheme.dayStyle?.fontSize);
-    expect(day24.style?.color, datePickerTheme.todayForegroundColor?.resolve(<MaterialState>{}));
-    expect(day24Decoration.color, datePickerTheme.todayBackgroundColor?.resolve(<MaterialState>{}));
-    expect(day24Decoration.border?.top.width, datePickerTheme.todayBorder?.width);
-    expect(day24Decoration.border?.bottom.width, datePickerTheme.todayBorder?.width);
+      final Text day24 = tester.widget<Text>(
+        find.text('24'),
+      ); // DatePickerDialog.currentDate
+      final BoxDecoration day24Decoration = findTextDecoration(tester, '24')!;
+      expect(day24.style?.fontSize, datePickerTheme.dayStyle?.fontSize);
+      expect(
+        day24.style?.color,
+        datePickerTheme.todayForegroundColor?.resolve(<MaterialState>{}),
+      );
+      expect(
+        day24Decoration.color,
+        datePickerTheme.todayBackgroundColor?.resolve(<MaterialState>{}),
+      );
+      expect(
+        day24Decoration.border?.top.width,
+        datePickerTheme.todayBorder?.width,
+      );
+      expect(
+        day24Decoration.border?.bottom.width,
+        datePickerTheme.todayBorder?.width,
+      );
 
-    // Show the year selector.
+      // Show the year selector.
 
-    await tester.tap(find.text('January 2023'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('January 2023'));
+      await tester.pumpAndSettle();
 
-    final Text year2022 = tester.widget<Text>(find.text('2022'));
-    final BoxDecoration year2022Decoration = findTextDecoration(tester, '2022')!;
-    expect(year2022.style?.fontSize, datePickerTheme.yearStyle?.fontSize);
-    expect(year2022.style?.color, datePickerTheme.yearForegroundColor?.resolve(<MaterialState>{}));
-    expect(year2022Decoration.color, datePickerTheme.yearBackgroundColor?.resolve(<MaterialState>{}));
+      final Text year2022 = tester.widget<Text>(find.text('2022'));
+      final BoxDecoration year2022Decoration =
+          findTextDecoration(tester, '2022')!;
+      expect(year2022.style?.fontSize, datePickerTheme.yearStyle?.fontSize);
+      expect(
+        year2022.style?.color,
+        datePickerTheme.yearForegroundColor?.resolve(<MaterialState>{}),
+      );
+      expect(
+        year2022Decoration.color,
+        datePickerTheme.yearBackgroundColor?.resolve(<MaterialState>{}),
+      );
 
-    final Text year2023 = tester.widget<Text>(find.text('2023')); // DatePickerDialog.currentDate
-    final BoxDecoration year2023Decoration = findTextDecoration(tester, '2023')!;
-    expect(year2023.style?.fontSize, datePickerTheme.yearStyle?.fontSize);
-    expect(year2023.style?.color, datePickerTheme.todayForegroundColor?.resolve(<MaterialState>{}));
-    expect(year2023Decoration.color, datePickerTheme.todayBackgroundColor?.resolve(<MaterialState>{}));
-    expect(year2023Decoration.border?.top.width, datePickerTheme.todayBorder?.width);
-    expect(year2023Decoration.border?.bottom.width, datePickerTheme.todayBorder?.width);
-    expect(year2023Decoration.border?.top.color, datePickerTheme.todayForegroundColor?.resolve(<MaterialState>{}));
-    expect(year2023Decoration.border?.bottom.color, datePickerTheme.todayForegroundColor?.resolve(<MaterialState>{}));
-  });
+      final Text year2023 = tester.widget<Text>(
+        find.text('2023'),
+      ); // DatePickerDialog.currentDate
+      final BoxDecoration year2023Decoration =
+          findTextDecoration(tester, '2023')!;
+      expect(year2023.style?.fontSize, datePickerTheme.yearStyle?.fontSize);
+      expect(
+        year2023.style?.color,
+        datePickerTheme.todayForegroundColor?.resolve(<MaterialState>{}),
+      );
+      expect(
+        year2023Decoration.color,
+        datePickerTheme.todayBackgroundColor?.resolve(<MaterialState>{}),
+      );
+      expect(
+        year2023Decoration.border?.top.width,
+        datePickerTheme.todayBorder?.width,
+      );
+      expect(
+        year2023Decoration.border?.bottom.width,
+        datePickerTheme.todayBorder?.width,
+      );
+      expect(
+        year2023Decoration.border?.top.color,
+        datePickerTheme.todayForegroundColor?.resolve(<MaterialState>{}),
+      );
+      expect(
+        year2023Decoration.border?.bottom.color,
+        datePickerTheme.todayForegroundColor?.resolve(<MaterialState>{}),
+      );
+    },
+  );
 
-  testWidgets('DateRangePickerDialog uses ThemeData datePicker theme', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
+  testWidgets(
+    'DateRangePickerDialog uses ThemeData datePicker theme',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
         theme: ThemeData.light(useMaterial3: true).copyWith(
           datePickerTheme: datePickerTheme,
         ),
@@ -420,36 +684,58 @@ void main() {
             ),
           ),
         ),
-      ),
-    );
+      ));
 
-    final Material material = findDialogMaterial(tester);
-    expect(material.color, datePickerTheme.backgroundColor); //!!
-    expect(tester.widget<Scaffold>(find.byType(Scaffold)).backgroundColor, datePickerTheme.rangePickerBackgroundColor);
-    expect(material.elevation, datePickerTheme.rangePickerElevation);
-    expect(material.shadowColor, datePickerTheme.rangePickerShadowColor);
-    expect(material.surfaceTintColor, datePickerTheme.rangePickerSurfaceTintColor);
-    expect(material.shape, datePickerTheme.rangePickerShape);
+      final Material material = findDialogMaterial(tester);
+      expect(material.color, datePickerTheme.backgroundColor); //!!
+      expect(
+        tester.widget<Scaffold>(find.byType(Scaffold)).backgroundColor,
+        datePickerTheme.rangePickerBackgroundColor,
+      );
+      expect(material.elevation, datePickerTheme.rangePickerElevation);
+      expect(material.shadowColor, datePickerTheme.rangePickerShadowColor);
+      expect(
+        material.surfaceTintColor,
+        datePickerTheme.rangePickerSurfaceTintColor,
+      );
+      expect(material.shape, datePickerTheme.rangePickerShape);
 
-    final AppBar appBar = tester.widget<AppBar>(find.byType(AppBar));
-    expect(appBar.backgroundColor, datePickerTheme.rangePickerHeaderBackgroundColor);
+      final AppBar appBar = tester.widget<AppBar>(find.byType(AppBar));
+      expect(
+        appBar.backgroundColor,
+        datePickerTheme.rangePickerHeaderBackgroundColor,
+      );
 
-    final Text selectRange = tester.widget<Text>(find.text('Select range'));
-    expect(selectRange.style?.color, datePickerTheme.rangePickerHeaderForegroundColor);
-    expect(selectRange.style?.fontSize, datePickerTheme.rangePickerHeaderHelpStyle?.fontSize);
+      final Text selectRange = tester.widget<Text>(find.text('Select range'));
+      expect(
+        selectRange.style?.color,
+        datePickerTheme.rangePickerHeaderForegroundColor,
+      );
+      expect(
+        selectRange.style?.fontSize,
+        datePickerTheme.rangePickerHeaderHelpStyle?.fontSize,
+      );
 
-    final Text selectedDate = tester.widget<Text>(find.text('Jan 17'));
-    expect(selectedDate.style?.color, datePickerTheme.rangePickerHeaderForegroundColor);
-    expect(selectedDate.style?.fontSize, datePickerTheme.rangePickerHeaderHeadlineStyle?.fontSize);
-  });
+      final Text selectedDate = tester.widget<Text>(find.text('Jan 17'));
+      expect(
+        selectedDate.style?.color,
+        datePickerTheme.rangePickerHeaderForegroundColor,
+      );
+      expect(
+        selectedDate.style?.fontSize,
+        datePickerTheme.rangePickerHeaderHeadlineStyle?.fontSize,
+      );
+    },
+  );
 
-  testWidgets('Dividers use DatePickerThemeData.dividerColor', (WidgetTester tester) async {
-    Future<void> showPicker(WidgetTester tester, Size size) async {
-      tester.view.physicalSize = size;
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.reset);
-      await tester.pumpWidget(
-        MaterialApp(
+  testWidgets(
+    'Dividers use DatePickerThemeData.dividerColor',
+    (WidgetTester tester) async {
+      Future<void> showPicker(WidgetTester tester, Size size) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.reset);
+        await tester.pumpWidget(MaterialApp(
           theme: ThemeData.light(useMaterial3: true).copyWith(
             datePickerTheme: datePickerTheme,
           ),
@@ -466,20 +752,23 @@ void main() {
               ),
             ),
           ),
-        ),
+        ));
+      }
+
+      await showPicker(tester, wideWindowSize);
+
+      // Test vertical divider.
+      final VerticalDivider verticalDivider = tester.widget(
+        find.byType(VerticalDivider),
       );
-    }
-    await showPicker(tester, wideWindowSize);
+      expect(verticalDivider.color, datePickerTheme.dividerColor);
 
-    // Test vertical divider.
-    final VerticalDivider verticalDivider = tester.widget(find.byType(VerticalDivider));
-    expect(verticalDivider.color, datePickerTheme.dividerColor);
+      // Test portrait layout.
+      await showPicker(tester, narrowWindowSize);
 
-    // Test portrait layout.
-    await showPicker(tester, narrowWindowSize);
-
-    // Test horizontal divider.
-    final Divider horizontalDivider = tester.widget(find.byType(Divider));
-    expect(horizontalDivider.color, datePickerTheme.dividerColor);
-  });
+      // Test horizontal divider.
+      final Divider horizontalDivider = tester.widget(find.byType(Divider));
+      expect(horizontalDivider.color, datePickerTheme.dividerColor);
+    },
+  );
 }

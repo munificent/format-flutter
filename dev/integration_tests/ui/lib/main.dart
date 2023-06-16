@@ -18,21 +18,18 @@ void main() {
               textDirection: TextDirection.ltr,
             ),
             onPressed: () {
-              Navigator.push<Object?>(
-                context,
-                MaterialPageRoute<Object?>(
-                  builder: (BuildContext context) {
-                    return const Material(
-                      child: Center(
-                        child: Text(
-                          'navigated here',
-                          textDirection: TextDirection.ltr,
-                        ),
+              Navigator.push<Object?>(context, MaterialPageRoute<Object?>(
+                builder: (BuildContext context) {
+                  return const Material(
+                    child: Center(
+                      child: Text(
+                        'navigated here',
+                        textDirection: TextDirection.ltr,
                       ),
-                    );
-                  },
-                ),
-              );
+                    ),
+                  );
+                },
+              ));
             },
           );
         },

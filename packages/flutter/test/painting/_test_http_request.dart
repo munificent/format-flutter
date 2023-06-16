@@ -14,9 +14,7 @@ void createGetter(JSAny mock, String key, JSAny? Function() get) {
   objectDefineProperty(
     mock,
     key.toJS,
-    <String, JSFunction>{
-      'get': (() => get()).toJS,
-    }.jsify()!,
+    <String, JSFunction>{'get': (() => get()).toJS}.jsify()!,
   );
 }
 
@@ -38,17 +36,16 @@ class DomXMLHttpRequestMock {
 class TestHttpRequest {
   TestHttpRequest() {
     _mock = DomXMLHttpRequestMock(
-        open: open.toJS,
-        send: send.toJS,
-        setRequestHeader: setRequestHeader.toJS,
-        addEventListener: addEventListener.toJS,
+      open: open.toJS,
+      send: send.toJS,
+      setRequestHeader: setRequestHeader.toJS,
+      addEventListener: addEventListener.toJS,
     );
     // TODO(srujzs): This is needed for when we reify JS types. Right now, JSAny
     // is a typedef for Object?, but when we reify, it'll be its own type.
     final JSAny mock = _mock as JSAny;
     createGetter(mock, 'headers', () => headers.jsify());
-    createGetter(mock,
-        'responseHeaders', () => responseHeaders.jsify());
+    createGetter(mock, 'responseHeaders', () => responseHeaders.jsify());
     createGetter(mock, 'status', () => status.toJS);
     createGetter(mock, 'response', () => response.jsify());
   }
@@ -69,7 +66,7 @@ class TestHttpRequest {
   JSVoid addEventListener(JSString type, DomEventListener listener) {
     if (type.toDart == mockEvent?.type) {
       final DartDomEventListener dartListener =
-        (listener as JSExportedDartFunction).toDart as DartDomEventListener;
+          (listener as JSExportedDartFunction).toDart as DartDomEventListener;
       dartListener(mockEvent!.event);
     }
   }

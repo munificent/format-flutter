@@ -39,7 +39,11 @@ class FontLoader {
     }
 
     _fontFutures.add(bytes.then(
-        (ByteData data) => Uint8List.view(data.buffer, data.offsetInBytes, data.lengthInBytes),
+      (ByteData data) => Uint8List.view(
+        data.buffer,
+        data.offsetInBytes,
+        data.lengthInBytes,
+      ),
     ));
   }
 
@@ -60,9 +64,9 @@ class FontLoader {
     _loaded = true;
 
     final Iterable<Future<void>> loadFutures = _fontFutures.map(
-        (Future<Uint8List> f) => f.then<void>(
-            (Uint8List list) => loadFont(list, family),
-        ),
+      (Future<Uint8List> f) => f.then<void>(
+        (Uint8List list) => loadFont(list, family),
+      ),
     );
     await Future.wait(loadFutures.toList());
   }

@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class FilterChipTemplate extends TokenTemplate {
-  const FilterChipTemplate(super.blockName, super.fileName, super.tokens, {
+  const FilterChipTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   static const String tokenGroup = 'md.comp.filter-chip';
@@ -37,24 +40,34 @@ class _${blockName}DefaultsM3 extends ChipThemeData {
   @override
   double? get elevation => _chipVariant == _ChipVariant.flat
     ? ${elevation("$tokenGroup$flatVariant.container")}
-    : isEnabled ? ${elevation("$tokenGroup$elevatedVariant.container")} : ${elevation("$tokenGroup$elevatedVariant.disabled.container")};
+    : isEnabled ? ${elevation(
+        "$tokenGroup$elevatedVariant.container",
+      )} : ${elevation("$tokenGroup$elevatedVariant.disabled.container")};
 
   @override
-  double? get pressElevation => ${elevation("$tokenGroup$elevatedVariant.pressed.container")};
+  double? get pressElevation => ${elevation(
+        "$tokenGroup$elevatedVariant.pressed.container",
+      )};
 
   @override
   TextStyle? get labelStyle => ${textStyle("$tokenGroup.label-text")};
 
   @override
-  Color? get backgroundColor => ${componentColor("$tokenGroup$flatVariant.container")};
+  Color? get backgroundColor => ${componentColor(
+        "$tokenGroup$flatVariant.container",
+      )};
 
   @override
   Color? get shadowColor => _chipVariant == _ChipVariant.flat
     ? ${colorOrTransparent("$tokenGroup$flatVariant.container.shadow-color")}
-    : ${colorOrTransparent("$tokenGroup$elevatedVariant.container.shadow-color")};
+    : ${colorOrTransparent(
+        "$tokenGroup$elevatedVariant.container.shadow-color",
+      )};
 
   @override
-  Color? get surfaceTintColor => ${colorOrTransparent("$tokenGroup.container.surface-tint-layer.color")};
+  Color? get surfaceTintColor => ${colorOrTransparent(
+        "$tokenGroup.container.surface-tint-layer.color",
+      )};
 
   @override
   Color? get selectedColor => _chipVariant == _ChipVariant.flat
@@ -66,17 +79,23 @@ class _${blockName}DefaultsM3 extends ChipThemeData {
       : ${componentColor("$tokenGroup$elevatedVariant.disabled.container")};
 
   @override
-  Color? get checkmarkColor => ${color("$tokenGroup.with-leading-icon.selected.leading-icon.color")};
+  Color? get checkmarkColor => ${color(
+        "$tokenGroup.with-leading-icon.selected.leading-icon.color",
+      )};
 
   @override
   Color? get disabledColor => _chipVariant == _ChipVariant.flat
     ? isSelected
       ? ${componentColor("$tokenGroup$flatVariant.disabled.selected.container")}
-      : ${componentColor("$tokenGroup$flatVariant.disabled.unselected.container")}
+      : ${componentColor(
+        "$tokenGroup$flatVariant.disabled.unselected.container",
+      )}
     : ${componentColor("$tokenGroup$elevatedVariant.disabled.container")};
 
   @override
-  Color? get deleteIconColor => ${color("$tokenGroup.with-trailing-icon.selected.trailing-icon.color")};
+  Color? get deleteIconColor => ${color(
+        "$tokenGroup.with-trailing-icon.selected.trailing-icon.color",
+      )};
 
   @override
   BorderSide? get side => _chipVariant == _ChipVariant.flat && !isSelected

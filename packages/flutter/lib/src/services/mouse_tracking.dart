@@ -8,7 +8,8 @@ import 'package:flutter/gestures.dart';
 import 'mouse_cursor.dart';
 
 export 'package:flutter/foundation.dart' show DiagnosticPropertiesBuilder;
-export 'package:flutter/gestures.dart' show PointerEnterEvent, PointerExitEvent, PointerHoverEvent;
+export 'package:flutter/gestures.dart'
+    show PointerEnterEvent, PointerExitEvent, PointerHoverEvent;
 
 export 'mouse_cursor.dart' show MouseCursor;
 
@@ -111,14 +112,14 @@ class MouseTrackerAnnotation with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(FlagsSummary<Function?>(
-      'callbacks',
-      <String, Function?> {
-        'enter': onEnter,
-        'exit': onExit,
-      },
-      ifEmpty: '<none>',
+    properties.add(FlagsSummary<Function?>('callbacks', <String, Function?>{
+      'enter': onEnter,
+      'exit': onExit,
+    }, ifEmpty: '<none>'));
+    properties.add(DiagnosticsProperty<MouseCursor>(
+      'cursor',
+      cursor,
+      defaultValue: MouseCursor.defer,
     ));
-    properties.add(DiagnosticsProperty<MouseCursor>('cursor', cursor, defaultValue: MouseCursor.defer));
   }
 }

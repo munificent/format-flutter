@@ -16,16 +16,13 @@ void main() {
       RenderSizedBox(const Size(400.0, 100.0)),
       RenderSizedBox(const Size(400.0, 100.0)),
     ];
-    final TestRenderSliverBoxChildManager childManager = TestRenderSliverBoxChildManager(
-      children: children,
-    );
+    final TestRenderSliverBoxChildManager childManager =
+        TestRenderSliverBoxChildManager(children: children);
     final RenderViewport root = RenderViewport(
       crossAxisDirection: AxisDirection.right,
       offset: ViewportOffset.zero(),
       cacheExtent: 0,
-      children: <RenderSliver>[
-        childManager.createRenderSliverFillViewport(),
-      ],
+      children: <RenderSliver>[childManager.createRenderSliverFillViewport()],
     );
     layout(root);
     expect(children[0].attached, true);
@@ -52,22 +49,34 @@ void main() {
 
     test('should be 0 when item extent is 0', () {
       const double offsetValueWhichDoesntCare = 1234;
-      final int actual = testGetMaxChildIndexForScrollOffset(offsetValueWhichDoesntCare, 0);
+      final int actual = testGetMaxChildIndexForScrollOffset(
+        offsetValueWhichDoesntCare,
+        0,
+      );
       expect(actual, 0);
     });
 
     test('should be 0 when offset is 0', () {
-      final int actual = testGetMaxChildIndexForScrollOffset(0, genericItemExtent);
+      final int actual = testGetMaxChildIndexForScrollOffset(
+        0,
+        genericItemExtent,
+      );
       expect(actual, 0);
     });
 
     test('should be 0 when offset is equal to item extent', () {
-      final int actual = testGetMaxChildIndexForScrollOffset(genericItemExtent, genericItemExtent);
+      final int actual = testGetMaxChildIndexForScrollOffset(
+        genericItemExtent,
+        genericItemExtent,
+      );
       expect(actual, 0);
     });
 
     test('should be 1 when offset is greater than item extent', () {
-      final int actual = testGetMaxChildIndexForScrollOffset(genericItemExtent + 1, genericItemExtent);
+      final int actual = testGetMaxChildIndexForScrollOffset(
+        genericItemExtent + 1,
+        genericItemExtent,
+      );
       expect(actual, 1);
     });
 
@@ -79,10 +88,16 @@ void main() {
       expect(actual, 1);
     });
 
-    test('should be 4 when offset is four times and a half greater than item extent', () {
-      final int actual = testGetMaxChildIndexForScrollOffset(genericItemExtent * 4.5, genericItemExtent);
-      expect(actual, 4);
-    });
+    test(
+      'should be 4 when offset is four times and a half greater than item extent',
+      () {
+        final int actual = testGetMaxChildIndexForScrollOffset(
+          genericItemExtent * 4.5,
+          genericItemExtent,
+        );
+        expect(actual, 4);
+      },
+    );
 
     test('should be 5 when offset is 6 times greater than item extent', () {
       const double anotherGenericItemExtent = 414.0;
@@ -93,14 +108,19 @@ void main() {
       expect(actual, 5);
     });
 
-    test('should be 5 when offset is 6 times greater than a specific item extent where the division will return more than 13 zero decimals', () {
-      const double itemExtentSpecificForAProblematicScreenSize = 411.42857142857144;
-      final int actual = testGetMaxChildIndexForScrollOffset(
-        itemExtentSpecificForAProblematicScreenSize * 6 + extraValueToHaveRoundingIssues,
-        itemExtentSpecificForAProblematicScreenSize,
-      );
-      expect(actual, 5);
-    });
+    test(
+      'should be 5 when offset is 6 times greater than a specific item extent where the division will return more than 13 zero decimals',
+      () {
+        const double itemExtentSpecificForAProblematicScreenSize =
+            411.42857142857144;
+        final int actual = testGetMaxChildIndexForScrollOffset(
+          itemExtentSpecificForAProblematicScreenSize * 6 +
+              extraValueToHaveRoundingIssues,
+          itemExtentSpecificForAProblematicScreenSize,
+        );
+        expect(actual, 5);
+      },
+    );
 
     test('should be 0 when offset is a bit greater than item extent', () {
       final int actual = testGetMaxChildIndexForScrollOffset(
@@ -117,21 +137,19 @@ void main() {
       RenderSizedBox(const Size(400.0, 100.0)),
       RenderSizedBox(const Size(400.0, 100.0)),
     ];
-    final TestRenderSliverBoxChildManager childManager = TestRenderSliverBoxChildManager(
-      children: children,
-    );
+    final TestRenderSliverBoxChildManager childManager =
+        TestRenderSliverBoxChildManager(children: children);
     final RenderViewport root = RenderViewport(
       crossAxisDirection: AxisDirection.right,
       offset: ViewportOffset.zero(),
       cacheExtent: 0,
-      children: <RenderSliver>[
-        childManager.createRenderSliverFillViewport(),
-      ],
+      children: <RenderSliver>[childManager.createRenderSliverFillViewport()],
     );
     layout(root);
     expect(children.first.parent, isA<RenderSliverMultiBoxAdaptor>());
 
-    final RenderSliverMultiBoxAdaptor parent = children.first.parent! as RenderSliverMultiBoxAdaptor;
+    final RenderSliverMultiBoxAdaptor parent =
+        children.first.parent! as RenderSliverMultiBoxAdaptor;
     expect(parent.paintsChild(children[0]), true);
     expect(parent.paintsChild(children[1]), false);
     expect(parent.paintsChild(children[2]), false);
@@ -150,31 +168,31 @@ void main() {
   });
 }
 
-int testGetMaxChildIndexForScrollOffset(double scrollOffset, double itemExtent) {
-  final TestRenderSliverFixedExtentBoxAdaptor renderSliver = TestRenderSliverFixedExtentBoxAdaptor();
+int testGetMaxChildIndexForScrollOffset(
+  double scrollOffset,
+  double itemExtent,
+) {
+  final TestRenderSliverFixedExtentBoxAdaptor renderSliver =
+      TestRenderSliverFixedExtentBoxAdaptor();
   return renderSliver.getMaxChildIndexForScrollOffset(scrollOffset, itemExtent);
 }
 
 class TestRenderSliverBoxChildManager extends RenderSliverBoxChildManager {
-  TestRenderSliverBoxChildManager({
-    required this.children,
-  });
+  TestRenderSliverBoxChildManager({required this.children});
 
   RenderSliverMultiBoxAdaptor? _renderObject;
   List<RenderBox> children;
 
   RenderSliverFillViewport createRenderSliverFillViewport() {
     assert(_renderObject == null);
-    _renderObject = RenderSliverFillViewport(
-      childManager: this,
-    );
+    _renderObject = RenderSliverFillViewport(childManager: this);
     return _renderObject! as RenderSliverFillViewport;
   }
 
   int? _currentlyUpdatingChildIndex;
 
   @override
-  void createChild(int index, { required RenderBox? after }) {
+  void createChild(int index, {required RenderBox? after}) {
     if (index < 0 || index >= children.length) {
       return;
     }
@@ -200,7 +218,9 @@ class TestRenderSliverBoxChildManager extends RenderSliverBoxChildManager {
     double? trailingScrollOffset,
   }) {
     assert(lastIndex! >= firstIndex!);
-    return children.length * (trailingScrollOffset! - leadingScrollOffset!) / (lastIndex! - firstIndex! + 1);
+    return children.length *
+        (trailingScrollOffset! - leadingScrollOffset!) /
+        (lastIndex! - firstIndex! + 1);
   }
 
   @override
@@ -209,17 +229,21 @@ class TestRenderSliverBoxChildManager extends RenderSliverBoxChildManager {
   @override
   void didAdoptChild(RenderBox child) {
     assert(_currentlyUpdatingChildIndex != null);
-    final SliverMultiBoxAdaptorParentData childParentData = child.parentData! as SliverMultiBoxAdaptorParentData;
+    final SliverMultiBoxAdaptorParentData childParentData =
+        child.parentData! as SliverMultiBoxAdaptorParentData;
     childParentData.index = _currentlyUpdatingChildIndex;
   }
 
   @override
-  void setDidUnderflow(bool value) { }
+  void setDidUnderflow(bool value) {}
 }
 
-class TestRenderSliverFixedExtentBoxAdaptor extends RenderSliverFixedExtentBoxAdaptor {
+class TestRenderSliverFixedExtentBoxAdaptor
+    extends RenderSliverFixedExtentBoxAdaptor {
   TestRenderSliverFixedExtentBoxAdaptor()
-    :super(childManager: TestRenderSliverBoxChildManager(children: <RenderBox>[]));
+    : super(
+        childManager: TestRenderSliverBoxChildManager(children: <RenderBox>[]),
+      );
 
   @override
   int getMaxChildIndexForScrollOffset(double scrollOffset, double itemExtent) {

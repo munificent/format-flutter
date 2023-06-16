@@ -35,8 +35,10 @@ class FlutterApplicationPackageFactory extends ApplicationPackageFactory {
        _logger = logger,
        _userMessages = userMessages,
        _fileSystem = fileSystem,
-       _processUtils = ProcessUtils(logger: logger, processManager: processManager);
-
+       _processUtils = ProcessUtils(
+         logger: logger,
+         processManager: processManager,
+       );
 
   final AndroidSdk? _androidSdk;
   final ProcessManager _processManager;
@@ -79,7 +81,10 @@ class FlutterApplicationPackageFactory extends ApplicationPackageFactory {
         );
       case TargetPlatform.ios:
         return applicationBinary == null
-            ? await IOSApp.fromIosProject(FlutterProject.current().ios, buildInfo)
+            ? await IOSApp.fromIosProject(
+                FlutterProject.current().ios,
+                buildInfo,
+              )
             : IOSApp.fromPrebuiltApp(applicationBinary);
       case TargetPlatform.tester:
         return FlutterTesterApp.fromCurrentDirectory(globals.fs);

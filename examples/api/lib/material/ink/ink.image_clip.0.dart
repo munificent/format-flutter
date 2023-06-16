@@ -7,18 +7,18 @@ import 'package:flutter/material.dart';
 /// Flutter code sample for [Image.frameBuilder].
 
 void main() {
-  runApp(
-    MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Image.frameBuilder Sample')),
-        body: const Center(
-          child: ImageClipExample(
-            image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/puffin.jpg'),
+  runApp(MaterialApp(
+    home: Scaffold(
+      appBar: AppBar(title: const Text('Image.frameBuilder Sample')),
+      body: const Center(
+        child: ImageClipExample(
+          image: NetworkImage(
+            'https://flutter.github.io/assets-for-api-docs/assets/widgets/puffin.jpg',
           ),
         ),
       ),
     ),
-  );
+  ));
 }
 
 class ImageClipExample extends StatelessWidget {
@@ -42,10 +42,8 @@ class ImageClipExample extends StatelessWidget {
               padding: EdgeInsets.all(10.0),
               child: Text(
                 'PUFFIN',
-                style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                ),
+                style:
+                    TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
               ),
             ),
           ),

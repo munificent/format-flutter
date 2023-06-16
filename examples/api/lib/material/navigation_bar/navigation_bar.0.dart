@@ -44,10 +44,7 @@ class _NavigationExampleState extends State<NavigationExample> {
             icon: Icon(Icons.home_outlined),
             label: 'Home',
           ),
-          NavigationDestination(
-            icon: Icon(Icons.business),
-            label: 'Business',
-          ),
+          NavigationDestination(icon: Icon(Icons.business), label: 'Business'),
           NavigationDestination(
             selectedIcon: Icon(Icons.school),
             icon: Icon(Icons.school_outlined),

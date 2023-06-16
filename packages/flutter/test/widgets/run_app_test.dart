@@ -6,21 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('runApp inside onPressed does not throw', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
+  testWidgets(
+    'runApp inside onPressed does not throw',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Material(
           child: ElevatedButton(
             onPressed: () {
-              runApp(const Center(child: Text('Done', textDirection: TextDirection.ltr)));
+              runApp(
+                const Center(
+                  child: Text('Done', textDirection: TextDirection.ltr),
+                ),
+              );
             },
             child: const Text('GO'),
           ),
         ),
-      ),
-    );
-    await tester.tap(find.text('GO'));
-    expect(find.text('Done'), findsOneWidget);
-  });
+      ));
+      await tester.tap(find.text('GO'));
+      expect(find.text('Done'), findsOneWidget);
+    },
+  );
 }

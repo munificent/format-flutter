@@ -3,18 +3,15 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_api_samples/material/dialog/adaptive_alert_dialog.0.dart' as example;
+import 'package:flutter_api_samples/material/dialog/adaptive_alert_dialog.0.dart'
+    as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Show Adaptive Alert dialog', (WidgetTester tester) async {
     const String dialogTitle = 'AlertDialog Title';
     await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
-          body: example.AdaptiveAlertDialogApp(),
-        ),
-      ),
+      const MaterialApp(home: Scaffold(body: example.AdaptiveAlertDialogApp())),
     );
 
     expect(find.text(dialogTitle), findsNothing);

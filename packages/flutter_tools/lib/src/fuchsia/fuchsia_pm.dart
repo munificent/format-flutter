@@ -22,13 +22,7 @@ class FuchsiaPM {
   /// NB: The [buildPath] should probably be e.g. `build/fuchsia/pkg`, and the
   /// [appName] should probably be the name of the app from the pubspec file.
   Future<bool> init(String buildPath, String appName) {
-    return _runPMCommand(<String>[
-      '-o',
-      buildPath,
-      '-n',
-      appName,
-      'init',
-    ]);
+    return _runPMCommand(<String>['-o', buildPath, '-n', appName, 'init']);
   }
 
   /// Updates, signs, and seals a Fuchsia package.
@@ -76,11 +70,7 @@ class FuchsiaPM {
   /// Initializes a new package repository at [repoPath] to be later served by
   /// the 'serve' command.
   Future<bool> newrepo(String repoPath) {
-    return _runPMCommand(<String>[
-      'newrepo',
-      '-repo',
-      repoPath,
-    ]);
+    return _runPMCommand(<String>['newrepo', '-repo', repoPath]);
   }
 
   /// Spawns an http server in a new process for serving Fuchsia packages.
@@ -168,7 +158,11 @@ class FuchsiaPM {
 /// }
 class FuchsiaPackageServer {
   factory FuchsiaPackageServer(
-      String repo, String name, String host, int port) {
+    String repo,
+    String name,
+    String host,
+    int port,
+  ) {
     return FuchsiaPackageServer._(repo, name, host, port);
   }
 
@@ -238,8 +232,9 @@ class FuchsiaPackageServer {
 
   @override
   String toString() {
-    final String p =
-        (_process == null) ? 'stopped' : 'running ${_process?.pid}';
+    final String p = (_process == null)
+        ? 'stopped'
+        : 'running ${_process?.pid}';
     return 'FuchsiaPackageServer at $_host:$_port ($p)';
   }
 }

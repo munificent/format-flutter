@@ -11,11 +11,7 @@ void main() {
     test('succeeded', () {
       final Map<String, dynamic> expectedJson = <String, dynamic>{
         'success': true,
-        'data': <String, dynamic>{
-          'i': 5,
-          'j': 10,
-          'not_a_metric': 'something',
-        },
+        'data': <String, dynamic>{'i': 5, 'j': 10, 'not_a_metric': 'something'},
         'benchmarkScoreKeys': <String>['i', 'j'],
         'detailFiles': <String>[],
       };

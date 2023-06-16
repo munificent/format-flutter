@@ -47,26 +47,28 @@ class _ListTileExampleState extends State<ListTileExample> {
           },
           // This sets text color and icon color to red when list tile is disabled and
           // green when list tile is selected, otherwise sets it to black.
-          iconColor: MaterialStateColor.resolveWith((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return Colors.red;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return Colors.green;
-            }
-            return Colors.black;
-          }),
+          iconColor:
+              MaterialStateColor.resolveWith((Set<MaterialState> states) {
+                if (states.contains(MaterialState.disabled)) {
+                  return Colors.red;
+                }
+                if (states.contains(MaterialState.selected)) {
+                  return Colors.green;
+                }
+                return Colors.black;
+              }),
           // This sets text color and icon color to red when list tile is disabled and
           // green when list tile is selected, otherwise sets it to black.
-          textColor: MaterialStateColor.resolveWith((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return Colors.red;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return Colors.green;
-            }
-            return Colors.black;
-          }),
+          textColor:
+              MaterialStateColor.resolveWith((Set<MaterialState> states) {
+                if (states.contains(MaterialState.disabled)) {
+                  return Colors.red;
+                }
+                if (states.contains(MaterialState.selected)) {
+                  return Colors.green;
+                }
+                return Colors.black;
+              }),
           leading: const Icon(Icons.person),
           title: const Text('Headline'),
           subtitle: Text('Enabled: $_enabled, Selected: $_selected'),

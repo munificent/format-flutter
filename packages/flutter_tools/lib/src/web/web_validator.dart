@@ -24,12 +24,13 @@ abstract class ChromiumValidator extends DoctorValidator {
           ValidationMessage.hint('$chromiumSearchLocation is not executable.')
         else
           ValidationMessage('$kChromeEnvironment = $chromiumSearchLocation')
+      else if (!canRunChromium)
+        ValidationMessage.hint(
+          'Cannot find $_name. Try setting '
+          '$kChromeEnvironment to a $_name executable.',
+        )
       else
-        if (!canRunChromium)
-          ValidationMessage.hint('Cannot find $_name. Try setting '
-            '$kChromeEnvironment to a $_name executable.')
-        else
-          ValidationMessage('$_name at $chromiumSearchLocation'),
+        ValidationMessage('$_name at $chromiumSearchLocation'),
     ];
     if (!canRunChromium) {
       return ValidationResult(
@@ -38,10 +39,7 @@ abstract class ChromiumValidator extends DoctorValidator {
         statusInfo: 'Cannot find $_name executable at $chromiumSearchLocation',
       );
     }
-    return ValidationResult(
-      ValidationType.success,
-      messages,
-    );
+    return ValidationResult(ValidationType.success, messages);
   }
 }
 

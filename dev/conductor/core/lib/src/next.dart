@@ -24,10 +24,10 @@ const String kYesFlag = 'yes';
 /// which phase of the release the user is currently in. This is implemented
 /// with a switch case statement.
 class NextCommand extends Command<void> {
-  NextCommand({
-    required this.checkouts,
-  }) {
-    final String defaultPath = state_import.defaultStateFilePath(checkouts.platform);
+  NextCommand({required this.checkouts}) {
+    final String defaultPath = state_import.defaultStateFilePath(
+      checkouts.platform,
+    );
     argParser.addOption(
       kStateOption,
       defaultsTo: defaultPath,
@@ -57,7 +57,7 @@ class NextCommand extends Command<void> {
     final File stateFile = checkouts.fileSystem.file(argResults![kStateOption]);
     if (!stateFile.existsSync()) {
       throw ConductorException(
-          'No persistent state file found at ${stateFile.path}.',
+        'No persistent state file found at ${stateFile.path}.',
       );
     }
     final pb.ConductorState state = state_import.readStateFromFile(stateFile);
@@ -94,18 +94,18 @@ class NextContext extends Context {
     switch (state.currentPhase) {
       case pb.ReleasePhase.APPLY_ENGINE_CHERRYPICKS:
         final Remote upstream = Remote(
-            name: RemoteName.upstream,
-            url: state.engine.upstream.url,
+          name: RemoteName.upstream,
+          url: state.engine.upstream.url,
         );
         final EngineRepository engine = EngineRepository(
-            checkouts,
-            initialRef: state.engine.workingBranch,
-            upstreamRemote: upstream,
-            previousCheckoutLocation: state.engine.checkoutPath,
+          checkouts,
+          initialRef: state.engine.workingBranch,
+          upstreamRemote: upstream,
+          previousCheckoutLocation: state.engine.checkoutPath,
         );
         if (!state_import.requiresEnginePR(state)) {
           stdio.printStatus(
-              'This release has no engine cherrypicks. No Engine PR is necessary.\n',
+            'This release has no engine cherrypicks. No Engine PR is necessary.\n',
           );
           break;
         }
@@ -118,15 +118,23 @@ class NextContext extends Context {
         }
 
         if (unappliedCherrypicks.isEmpty) {
-          stdio.printStatus('All engine cherrypicks have been auto-applied by the conductor.\n');
+          stdio.printStatus(
+            'All engine cherrypicks have been auto-applied by the conductor.\n',
+          );
         } else {
           if (unappliedCherrypicks.length == 1) {
-            stdio.printStatus('There was ${unappliedCherrypicks.length} cherrypick that was not auto-applied.');
+            stdio.printStatus(
+              'There was ${unappliedCherrypicks.length} cherrypick that was not auto-applied.',
+            );
           } else {
-            stdio.printStatus('There were ${unappliedCherrypicks.length} cherrypicks that were not auto-applied.');
+            stdio.printStatus(
+              'There were ${unappliedCherrypicks.length} cherrypicks that were not auto-applied.',
+            );
           }
-          stdio.printStatus('These must be applied manually in the directory '
-              '${state.engine.checkoutPath} before proceeding.\n');
+          stdio.printStatus(
+            'These must be applied manually in the directory '
+            '${state.engine.checkoutPath} before proceeding.\n',
+          );
         }
         if (!autoAccept) {
           final bool response = await prompt(
@@ -159,15 +167,16 @@ class NextContext extends Context {
         }
       case pb.ReleasePhase.APPLY_FRAMEWORK_CHERRYPICKS:
         final Remote engineUpstreamRemote = Remote(
-            name: RemoteName.upstream,
-            url: state.engine.upstream.url,
+          name: RemoteName.upstream,
+          url: state.engine.upstream.url,
         );
         final EngineRepository engine = EngineRepository(
-            checkouts,
-            // We explicitly want to check out the merged version from upstream
-            initialRef: '${engineUpstreamRemote.name}/${state.engine.candidateBranch}',
-            upstreamRemote: engineUpstreamRemote,
-            previousCheckoutLocation: state.engine.checkoutPath,
+          checkouts,
+          // We explicitly want to check out the merged version from upstream
+          initialRef:
+              '${engineUpstreamRemote.name}/${state.engine.candidateBranch}',
+          upstreamRemote: engineUpstreamRemote,
+          previousCheckoutLocation: state.engine.checkoutPath,
         );
 
         final String engineRevision = await engine.reverseParse('HEAD');
@@ -183,29 +192,33 @@ class NextContext extends Context {
           previousCheckoutLocation: state.framework.checkoutPath,
         );
         stdio.printStatus('Writing candidate branch...');
-        bool needsCommit = await framework.updateCandidateBranchVersion(state.framework.candidateBranch);
+        bool needsCommit = await framework.updateCandidateBranchVersion(
+          state.framework.candidateBranch,
+        );
         if (needsCommit) {
           final String revision = await framework.commit(
-              'Create candidate branch version ${state.framework.candidateBranch} for ${state.releaseChannel}',
-              addFirst: true,
+            'Create candidate branch version ${state.framework.candidateBranch} for ${state.releaseChannel}',
+            addFirst: true,
           );
           // append to list of cherrypicks so we know a PR is required
           state.framework.cherrypicks.add(pb.Cherrypick(
-                  appliedRevision: revision,
-                  state: pb.CherrypickState.COMPLETED,
+            appliedRevision: revision,
+            state: pb.CherrypickState.COMPLETED,
           ));
         }
-        stdio.printStatus('Rolling new engine hash $engineRevision to framework checkout...');
+        stdio.printStatus(
+          'Rolling new engine hash $engineRevision to framework checkout...',
+        );
         needsCommit = await framework.updateEngineRevision(engineRevision);
         if (needsCommit) {
           final String revision = await framework.commit(
-              'Update Engine revision to $engineRevision for ${state.releaseChannel} release ${state.releaseVersion}',
-              addFirst: true,
+            'Update Engine revision to $engineRevision for ${state.releaseChannel} release ${state.releaseVersion}',
+            addFirst: true,
           );
           // append to list of cherrypicks so we know a PR is required
           state.framework.cherrypicks.add(pb.Cherrypick(
-                  appliedRevision: revision,
-                  state: pb.CherrypickState.COMPLETED,
+            appliedRevision: revision,
+            state: pb.CherrypickState.COMPLETED,
           ));
         }
 
@@ -218,21 +231,26 @@ class NextContext extends Context {
 
         if (state.framework.cherrypicks.isEmpty) {
           stdio.printStatus(
-              'This release has no framework cherrypicks. However, a framework PR is still\n'
-              'required to roll engine cherrypicks.',
+            'This release has no framework cherrypicks. However, a framework PR is still\n'
+            'required to roll engine cherrypicks.',
           );
         } else if (unappliedCherrypicks.isEmpty) {
-          stdio.printStatus('All framework cherrypicks were auto-applied by the conductor.');
+          stdio.printStatus(
+            'All framework cherrypicks were auto-applied by the conductor.',
+          );
         } else {
           if (unappliedCherrypicks.length == 1) {
-            stdio.printStatus('There was ${unappliedCherrypicks.length} cherrypick that was not auto-applied.',);
-          }
-          else {
-            stdio.printStatus('There were ${unappliedCherrypicks.length} cherrypicks that were not auto-applied.',);
+            stdio.printStatus(
+              'There was ${unappliedCherrypicks.length} cherrypick that was not auto-applied.',
+            );
+          } else {
+            stdio.printStatus(
+              'There were ${unappliedCherrypicks.length} cherrypicks that were not auto-applied.',
+            );
           }
           stdio.printStatus(
-              'These must be applied manually in the directory '
-              '${state.framework.checkoutPath} before proceeding.\n',
+            'These must be applied manually in the directory '
+            '${state.framework.checkoutPath} before proceeding.\n',
           );
         }
 
@@ -250,30 +268,33 @@ class NextContext extends Context {
 
         await pushWorkingBranch(framework, state.framework);
       case pb.ReleasePhase.PUBLISH_VERSION:
-        stdio.printStatus('Please ensure that you have merged your framework PR and that');
+        stdio.printStatus(
+          'Please ensure that you have merged your framework PR and that',
+        );
         stdio.printStatus('post-submit CI has finished successfully.\n');
         final Remote frameworkUpstream = Remote(
-            name: RemoteName.upstream,
-            url: state.framework.upstream.url,
+          name: RemoteName.upstream,
+          url: state.framework.upstream.url,
         );
         final FrameworkRepository framework = FrameworkRepository(
-            checkouts,
-            // We explicitly want to check out the merged version from upstream
-            initialRef: '${frameworkUpstream.name}/${state.framework.candidateBranch}',
-            upstreamRemote: frameworkUpstream,
-            previousCheckoutLocation: state.framework.checkoutPath,
+          checkouts,
+          // We explicitly want to check out the merged version from upstream
+          initialRef:
+              '${frameworkUpstream.name}/${state.framework.candidateBranch}',
+          upstreamRemote: frameworkUpstream,
+          previousCheckoutLocation: state.framework.checkoutPath,
         );
         final String frameworkHead = await framework.reverseParse('HEAD');
         final Remote engineUpstream = Remote(
-            name: RemoteName.upstream,
-            url: state.engine.upstream.url,
+          name: RemoteName.upstream,
+          url: state.engine.upstream.url,
         );
         final EngineRepository engine = EngineRepository(
-            checkouts,
-            // We explicitly want to check out the merged version from upstream
-            initialRef: '${engineUpstream.name}/${state.engine.candidateBranch}',
-            upstreamRemote: engineUpstream,
-            previousCheckoutLocation: state.engine.checkoutPath,
+          checkouts,
+          // We explicitly want to check out the merged version from upstream
+          initialRef: '${engineUpstream.name}/${state.engine.candidateBranch}',
+          upstreamRemote: engineUpstream,
+          previousCheckoutLocation: state.engine.checkoutPath,
         );
         final String engineHead = await engine.reverseParse('HEAD');
         if (!autoAccept) {
@@ -287,29 +308,33 @@ class NextContext extends Context {
             return;
           }
         }
-        await framework.tag(frameworkHead, state.releaseVersion, frameworkUpstream.name);
+        await framework.tag(
+          frameworkHead,
+          state.releaseVersion,
+          frameworkUpstream.name,
+        );
         await engine.tag(engineHead, state.releaseVersion, engineUpstream.name);
       case pb.ReleasePhase.PUBLISH_CHANNEL:
         final Remote upstream = Remote(
-            name: RemoteName.upstream,
-            url: state.framework.upstream.url,
+          name: RemoteName.upstream,
+          url: state.framework.upstream.url,
         );
         final FrameworkRepository framework = FrameworkRepository(
-            checkouts,
-            // We explicitly want to check out the merged version from upstream
-            initialRef: '${upstream.name}/${state.framework.candidateBranch}',
-            upstreamRemote: upstream,
-            previousCheckoutLocation: state.framework.checkoutPath,
+          checkouts,
+          // We explicitly want to check out the merged version from upstream
+          initialRef: '${upstream.name}/${state.framework.candidateBranch}',
+          upstreamRemote: upstream,
+          previousCheckoutLocation: state.framework.checkoutPath,
         );
         final String headRevision = await framework.reverseParse('HEAD');
         if (!autoAccept) {
           // dryRun: true means print out git command
           await framework.pushRef(
-              fromRef: headRevision,
-              toRef: state.releaseChannel,
-              remote: state.framework.upstream.url,
-              force: force,
-              dryRun: true,
+            fromRef: headRevision,
+            toRef: state.releaseChannel,
+            remote: state.framework.upstream.url,
+            force: force,
+            dryRun: true,
           );
 
           final bool response = await prompt(
@@ -322,19 +347,20 @@ class NextContext extends Context {
           }
         }
         await framework.pushRef(
-            fromRef: headRevision,
-            toRef: state.releaseChannel,
-            remote: state.framework.upstream.url,
-            force: force,
+          fromRef: headRevision,
+          toRef: state.releaseChannel,
+          remote: state.framework.upstream.url,
+          force: force,
         );
       case pb.ReleasePhase.VERIFY_RELEASE:
         stdio.printStatus(
-            'The current status of packaging builds can be seen at:\n'
-            '\t$kLuciPackagingConsoleLink',
+          'The current status of packaging builds can be seen at:\n'
+          '\t$kLuciPackagingConsoleLink',
         );
         if (!autoAccept) {
           final bool response = await prompt(
-              'Have all packaging builds finished successfully and post release announcements been completed?');
+            'Have all packaging builds finished successfully and post release announcements been completed?',
+          );
           if (!response) {
             stdio.printError('Aborting command.');
             updateState(state, stdio.logs);
@@ -344,8 +370,12 @@ class NextContext extends Context {
       case pb.ReleasePhase.RELEASE_COMPLETED:
         throw ConductorException('This release is finished.');
     }
-    final ReleasePhase nextPhase = state_import.getNextPhase(state.currentPhase);
-    stdio.printStatus('\nUpdating phase from ${state.currentPhase} to $nextPhase...\n');
+    final ReleasePhase nextPhase = state_import.getNextPhase(
+      state.currentPhase,
+    );
+    stdio.printStatus(
+      '\nUpdating phase from ${state.currentPhase} to $nextPhase...\n',
+    );
     state.currentPhase = nextPhase;
     stdio.printStatus(state_import.phaseInstructions(state));
 
@@ -363,14 +393,17 @@ class NextContext extends Context {
   /// of the same name on their mirror, or a [GitException] for any other
   /// failures from the underlying git process call.
   @visibleForTesting
-  Future<void> pushWorkingBranch(Repository repository, pb.Repository pbRepository) async {
+  Future<void> pushWorkingBranch(
+    Repository repository,
+    pb.Repository pbRepository,
+  ) async {
     try {
       await repository.pushRef(
-          fromRef: 'HEAD',
-          // Explicitly create new branch
-          toRef: 'refs/heads/${pbRepository.workingBranch}',
-          remote: pbRepository.mirror.name,
-          force: force,
+        fromRef: 'HEAD',
+        // Explicitly create new branch
+        toRef: 'refs/heads/${pbRepository.workingBranch}',
+        remote: pbRepository.mirror.name,
+        force: force,
       );
     } on GitException catch (exception) {
       if (exception.type == GitExceptionType.PushRejected && !force) {

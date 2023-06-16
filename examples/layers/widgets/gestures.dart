@@ -31,27 +31,26 @@ class _GesturePainter extends CustomPainter {
     final double radius = size.width / 2.0 * zoom;
     final Gradient gradient = RadialGradient(
       colors: forward
-        ? <Color>[swatch.shade50, swatch.shade900]
-        : <Color>[swatch.shade900, swatch.shade50],
+          ? <Color>[swatch.shade50, swatch.shade900]
+          : <Color>[swatch.shade900, swatch.shade50],
     );
     final Paint paint = Paint()
-      ..shader = gradient.createShader(Rect.fromCircle(
-        center: center,
-        radius: radius,
-      ));
+      ..shader = gradient.createShader(
+        Rect.fromCircle(center: center, radius: radius),
+      );
     canvas.drawCircle(center, radius, paint);
   }
 
   @override
   bool shouldRepaint(_GesturePainter oldPainter) {
-    return oldPainter.zoom != zoom
-        || oldPainter.offset != offset
-        || oldPainter.swatch != swatch
-        || oldPainter.forward != forward
-        || oldPainter.scaleEnabled != scaleEnabled
-        || oldPainter.tapEnabled != tapEnabled
-        || oldPainter.doubleTapEnabled != doubleTapEnabled
-        || oldPainter.longPressEnabled != longPressEnabled;
+    return oldPainter.zoom != zoom ||
+        oldPainter.offset != offset ||
+        oldPainter.swatch != swatch ||
+        oldPainter.forward != forward ||
+        oldPainter.scaleEnabled != scaleEnabled ||
+        oldPainter.tapEnabled != tapEnabled ||
+        oldPainter.doubleTapEnabled != doubleTapEnabled ||
+        oldPainter.longPressEnabled != longPressEnabled;
   }
 }
 
@@ -63,7 +62,6 @@ class GestureDemo extends StatefulWidget {
 }
 
 class GestureDemoState extends State<GestureDemo> {
-
   late Offset _startingFocalPoint;
 
   late Offset _previousOffset;
@@ -115,7 +113,8 @@ class GestureDemoState extends State<GestureDemo> {
       _zoom = _previousZoom * details.scale;
 
       // Ensure that item under the focal point stays in the same place despite zooming
-      final Offset normalizedOffset = (_startingFocalPoint - _previousOffset) / _previousZoom;
+      final Offset normalizedOffset =
+          (_startingFocalPoint - _previousOffset) / _previousZoom;
       _offset = details.focalPoint - normalizedOffset * _zoom;
     });
   }
@@ -180,7 +179,11 @@ class GestureDemoState extends State<GestureDemo> {
                     children: <Widget>[
                       Checkbox(
                         value: _scaleEnabled,
-                        onChanged: (bool? value) { setState(() { _scaleEnabled = value!; }); },
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _scaleEnabled = value!;
+                          });
+                        },
                       ),
                       const Text('Scale'),
                     ],
@@ -189,7 +192,11 @@ class GestureDemoState extends State<GestureDemo> {
                     children: <Widget>[
                       Checkbox(
                         value: _tapEnabled,
-                        onChanged: (bool? value) { setState(() { _tapEnabled = value!; }); },
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _tapEnabled = value!;
+                          });
+                        },
                       ),
                       const Text('Tap'),
                     ],
@@ -198,7 +205,11 @@ class GestureDemoState extends State<GestureDemo> {
                     children: <Widget>[
                       Checkbox(
                         value: _doubleTapEnabled,
-                        onChanged: (bool? value) { setState(() { _doubleTapEnabled = value!; }); },
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _doubleTapEnabled = value!;
+                          });
+                        },
                       ),
                       const Text('Double Tap'),
                     ],
@@ -207,7 +218,11 @@ class GestureDemoState extends State<GestureDemo> {
                     children: <Widget>[
                       Checkbox(
                         value: _longPressEnabled,
-                        onChanged: (bool? value) { setState(() { _longPressEnabled = value!; }); },
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _longPressEnabled = value!;
+                          });
+                        },
                       ),
                       const Text('Long Press'),
                     ],

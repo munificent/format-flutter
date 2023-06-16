@@ -8,9 +8,10 @@ import 'package:flutter_test/flutter_test.dart';
 const Key blockKey = Key('test');
 
 void main() {
-  testWidgets('Cannot scroll a non-overflowing block', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
+  testWidgets(
+    'Cannot scroll a non-overflowing block',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: ListView(
           key: blockKey,
@@ -21,36 +22,34 @@ void main() {
             ),
           ],
         ),
-      ),
-    );
+      ));
 
-    final Offset middleOfContainer = tester.getCenter(find.text('Hello'));
-    final Offset target = tester.getCenter(find.byKey(blockKey));
-    final TestGesture gesture = await tester.startGesture(target);
-    await gesture.moveBy(const Offset(0.0, -10.0));
+      final Offset middleOfContainer = tester.getCenter(find.text('Hello'));
+      final Offset target = tester.getCenter(find.byKey(blockKey));
+      final TestGesture gesture = await tester.startGesture(target);
+      await gesture.moveBy(const Offset(0.0, -10.0));
 
-    await tester.pump(const Duration(milliseconds: 1));
+      await tester.pump(const Duration(milliseconds: 1));
 
-    expect(tester.getCenter(find.text('Hello')) == middleOfContainer, isTrue);
+      expect(tester.getCenter(find.text('Hello')) == middleOfContainer, isTrue);
 
-    await gesture.up();
-  });
+      await gesture.up();
+    },
+  );
 
   testWidgets('Can scroll an overflowing block', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          key: blockKey,
-          children: const <Widget>[
-            SizedBox(
-              height: 2000.0, // more than 600, the height of the test area
-              child: Text('Hello'),
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        key: blockKey,
+        children: const <Widget>[
+          SizedBox(
+            height: 2000.0, // more than 600, the height of the test area
+            child: Text('Hello'),
+          ),
+        ],
       ),
-    );
+    ));
 
     final Offset middleOfContainer = tester.getCenter(find.text('Hello'));
     expect(middleOfContainer.dx, equals(400.0));
@@ -62,7 +61,10 @@ void main() {
 
     await tester.pump(); // redo layout
 
-    expect(tester.getCenter(find.text('Hello')), isNot(equals(middleOfContainer)));
+    expect(
+      tester.getCenter(find.text('Hello')),
+      isNot(equals(middleOfContainer)),
+    );
 
     await gesture.up();
   });
@@ -71,7 +73,7 @@ void main() {
     int first = 0;
     int second = 0;
 
-    Widget buildBlock({ bool reverse = false }) {
+    Widget buildBlock({bool reverse = false}) {
       return Directionality(
         textDirection: TextDirection.ltr,
         child: ListView(
@@ -79,14 +81,18 @@ void main() {
           reverse: reverse,
           children: <Widget>[
             GestureDetector(
-              onTap: () { first += 1; },
+              onTap: () {
+                first += 1;
+              },
               child: Container(
                 height: 350.0, // more than half the height of the test area
                 color: const Color(0xFF00FF00),
               ),
             ),
             GestureDetector(
-              onTap: () { second += 1; },
+              onTap: () {
+                second += 1;
+              },
               child: Container(
                 height: 350.0, // more than half the height of the test area
                 color: const Color(0xFF0000FF),
@@ -123,45 +129,46 @@ void main() {
         ),
       );
     }
+
     await tester.pumpWidget(buildBlock());
     expect(controller.offset, equals(0.0));
   });
 
-  testWidgets('SliverBlockChildListDelegate.estimateMaxScrollOffset hits end', (WidgetTester tester) async {
-    final SliverChildListDelegate delegate = SliverChildListDelegate(<Widget>[
-      Container(),
-      Container(),
-      Container(),
-      Container(),
-      Container(),
-    ]);
+  testWidgets(
+    'SliverBlockChildListDelegate.estimateMaxScrollOffset hits end',
+    (WidgetTester tester) async {
+      final SliverChildListDelegate delegate = SliverChildListDelegate(<Widget>[
+        Container(),
+        Container(),
+        Container(),
+        Container(),
+        Container(),
+      ]);
 
-    await tester.pumpWidget(
-      Directionality(
+      await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverList(
-              delegate: delegate,
-            ),
-          ],
-        ),
-      ),
-    );
+        child:
+            CustomScrollView(slivers: <Widget>[SliverList(delegate: delegate)]),
+      ));
 
-    final SliverMultiBoxAdaptorElement element = tester.element(find.byType(SliverList, skipOffstage: false));
+      final SliverMultiBoxAdaptorElement element = tester.element(
+        find.byType(SliverList, skipOffstage: false),
+      );
 
-    final double maxScrollOffset = element.estimateMaxScrollOffset(
-      null,
-      firstIndex: 3,
-      lastIndex: 4,
-      leadingScrollOffset: 25.0,
-      trailingScrollOffset: 26.0,
-    );
-    expect(maxScrollOffset, equals(26.0));
-  });
+      final double maxScrollOffset = element.estimateMaxScrollOffset(
+        null,
+        firstIndex: 3,
+        lastIndex: 4,
+        leadingScrollOffset: 25.0,
+        trailingScrollOffset: 26.0,
+      );
+      expect(maxScrollOffset, equals(26.0));
+    },
+  );
 
-  testWidgets('Resizing a ListView child restores scroll offset', (WidgetTester tester) async {
+  testWidgets('Resizing a ListView child restores scroll offset', (
+    WidgetTester tester,
+  ) async {
     // Regression test for https://github.com/flutter/flutter/issues/9221
     final AnimationController controller = AnimationController(
       vsync: const TestVSync(),
@@ -178,34 +185,16 @@ void main() {
               // The overall height of the ListView's contents is 500
               child: ListView(
                 children: const <Widget>[
-                  SizedBox(
-                    height: 150.0,
-                    child: Center(
-                      child: Text('top'),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 200.0,
-                    child: Center(
-                      child: Text('middle'),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 150.0,
-                    child: Center(
-                      child: Text('bottom'),
-                    ),
-                  ),
+                  SizedBox(height: 150.0, child: Center(child: Text('top'))),
+                  SizedBox(height: 200.0, child: Center(child: Text('middle'))),
+                  SizedBox(height: 150.0, child: Center(child: Text('bottom'))),
                 ],
               ),
             ),
             // If this widget's height is > 100 the ListView can scroll.
             SizeTransition(
               sizeFactor: controller.view,
-              child: const SizedBox(
-                height: 300.0,
-                child: Text('keyboard'),
-              ),
+              child: const SizedBox(height: 300.0, child: Text('keyboard')),
             ),
           ],
         ),
@@ -215,7 +204,8 @@ void main() {
     await tester.pumpWidget(buildFrame());
     expect(find.text('top'), findsOneWidget);
 
-    final ScrollPosition position = Scrollable.of(tester.element(find.text('middle'))).position;
+    final ScrollPosition position =
+        Scrollable.of(tester.element(find.text('middle'))).position;
     expect(position.viewportDimension, 600.0);
     expect(position.pixels, 0.0);
 

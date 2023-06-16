@@ -43,13 +43,11 @@ const String kGithubUsernameOption = 'github-username';
 /// in which configuration is provided by editing a bash script that sets environment
 /// variables and then invokes the conductor tool.
 class StartCommand extends Command<void> {
-  StartCommand({
-    required this.checkouts,
-    required this.conductorVersion,
-  })  : platform = checkouts.platform,
-        processManager = checkouts.processManager,
-        fileSystem = checkouts.fileSystem,
-        stdio = checkouts.stdio {
+  StartCommand({required this.checkouts, required this.conductorVersion})
+    : platform = checkouts.platform,
+      processManager = checkouts.processManager,
+      fileSystem = checkouts.fileSystem,
+      stdio = checkouts.stdio {
     final String defaultPath = state_import.defaultStateFilePath(platform);
     argParser.addOption(
       kCandidateOption,
@@ -92,10 +90,7 @@ class StartCommand extends Command<void> {
       help: 'Explicitly set the desired version. This should only be used if '
           'the version computed by the tool is not correct.',
     );
-    argParser.addOption(
-      kGithubUsernameOption,
-      help: 'Github username',
-    );
+    argParser.addOption(kGithubUsernameOption, help: 'Github username');
   }
 
   final Checkouts checkouts;
@@ -131,8 +126,7 @@ class StartCommand extends Command<void> {
       argumentResults,
       platform.environment,
     )!;
-    final String frameworkMirror =
-        'git@github.com:$githubUsername/flutter.git';
+    final String frameworkMirror = 'git@github.com:$githubUsername/flutter.git';
     final String engineUpstream = getValueFromEnvOrArgs(
       kEngineUpstreamOption,
       argumentResults,
@@ -160,10 +154,11 @@ class StartCommand extends Command<void> {
       argumentResults,
       platform.environment,
     );
-    final File stateFile = checkouts.fileSystem.file(
-      getValueFromEnvOrArgs(
-          kStateOption, argumentResults, platform.environment),
-    );
+    final File stateFile = checkouts.fileSystem.file(getValueFromEnvOrArgs(
+      kStateOption,
+      argumentResults,
+      platform.environment,
+    ));
     final String? versionOverrideString = getValueFromEnvOrArgs(
       kVersionOverrideOption,
       argumentResults,
@@ -214,31 +209,20 @@ class StartContext extends Context {
     required super.stateFile,
     this.force = false,
     this.versionOverride,
-  })  : git = Git(processManager),
-        engine = EngineRepository(
-          checkouts,
-          initialRef: 'upstream/$candidateBranch',
-          upstreamRemote: Remote(
-            name: RemoteName.upstream,
-            url: engineUpstream,
-          ),
-          mirrorRemote: Remote(
-            name: RemoteName.mirror,
-            url: engineMirror,
-          ),
-        ),
-        framework = FrameworkRepository(
-          checkouts,
-          initialRef: 'upstream/$candidateBranch',
-          upstreamRemote: Remote(
-            name: RemoteName.upstream,
-            url: frameworkUpstream,
-          ),
-          mirrorRemote: Remote(
-            name: RemoteName.mirror,
-            url: frameworkMirror,
-          ),
-        );
+  }) : git = Git(processManager),
+       engine = EngineRepository(
+         checkouts,
+         initialRef: 'upstream/$candidateBranch',
+         upstreamRemote: Remote(name: RemoteName.upstream, url: engineUpstream),
+         mirrorRemote: Remote(name: RemoteName.mirror, url: engineMirror),
+       ),
+       framework = FrameworkRepository(
+         checkouts,
+         initialRef: 'upstream/$candidateBranch',
+         upstreamRemote:
+             Remote(name: RemoteName.upstream, url: frameworkUpstream),
+         mirrorRemote: Remote(name: RemoteName.mirror, url: frameworkMirror),
+       );
 
   final String candidateBranch;
   final String? dartRevision;
@@ -282,8 +266,9 @@ class StartContext extends Context {
   Future<void> run() async {
     if (stateFile.existsSync()) {
       throw ConductorException(
-          'Error! A persistent state file already found at ${stateFile.path}.\n\n'
-          'Run `conductor clean` to cancel a previous release.');
+        'Error! A persistent state file already found at ${stateFile.path}.\n\n'
+        'Run `conductor clean` to cancel a previous release.',
+      );
     }
     if (!releaseCandidateBranchRegex.hasMatch(candidateBranch)) {
       throw ConductorException(
@@ -324,11 +309,13 @@ class StartContext extends Context {
     await framework.newBranch(workingBranchName);
 
     // Get framework version
-    final Version lastVersion = Version.fromString(await framework.getFullTag(
-      framework.upstreamRemote.name,
-      candidateBranch,
-      exact: false,
-    ));
+    final Version lastVersion = Version.fromString(
+      await framework.getFullTag(
+        framework.upstreamRemote.name,
+        candidateBranch,
+        exact: false,
+      ),
+    );
 
     final String frameworkHead = await framework.reverseParse('HEAD');
     final String branchPoint = await framework.branchPoint(
@@ -337,8 +324,10 @@ class StartContext extends Context {
     );
     final bool atBranchPoint = branchPoint == frameworkHead;
 
-    final ReleaseType releaseType =
-        computeReleaseType(lastVersion, atBranchPoint);
+    final ReleaseType releaseType = computeReleaseType(
+      lastVersion,
+      atBranchPoint,
+    );
     state.releaseType = releaseType;
 
     try {
@@ -436,7 +425,8 @@ class StartContext extends Context {
     }
 
     stdio.printStatus(
-        'Applying the tag $requestedVersion at the branch point $branchPoint');
+      'Applying the tag $requestedVersion at the branch point $branchPoint',
+    );
 
     await framework.tag(
       branchPoint,

@@ -139,13 +139,7 @@ const String _displayP3Logo =
 
 void main() => run(Setup.drawnImage);
 
-enum Setup {
-  none,
-  image,
-  canvasSaveLayer,
-  blur,
-  drawnImage,
-}
+enum Setup { none, image, canvasSaveLayer, blur, drawnImage }
 
 void run(Setup setup) {
   runApp(MyApp(setup));
@@ -160,9 +154,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Wide Gamut Test',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: MyHomePage(_setup, title: 'Wide Gamut Test'),
     );
   }
@@ -177,19 +169,24 @@ class _SaveLayerDrawer extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (_image != null) {
       final Rect imageRect = Rect.fromCenter(
-          center: Offset.zero,
-          width: _image!.width.toDouble(),
-          height: _image!.height.toDouble());
+        center: Offset.zero,
+        width: _image!.width.toDouble(),
+        height: _image!.height.toDouble(),
+      );
       canvas.saveLayer(imageRect, Paint());
       canvas.drawRect(
-          imageRect.inflate(-_image!.width.toDouble() / 4.0),
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..color = const Color(0xffffffff)
-            ..strokeWidth = 3);
+        imageRect.inflate(-_image!.width.toDouble() / 4.0),
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..color = const Color(0xffffffff)
+          ..strokeWidth = 3,
+      );
       canvas.saveLayer(imageRect, Paint()..blendMode = BlendMode.dstOver);
-      canvas.drawImage(_image!,
-          Offset(-_image!.width / 2.0, -_image!.height / 2.0), Paint());
+      canvas.drawImage(
+        _image!,
+        Offset(-_image!.width / 2.0, -_image!.height / 2.0),
+        Paint(),
+      );
       canvas.restore();
       canvas.restore();
     }
@@ -219,19 +216,20 @@ Future<ui.Image> _drawImage() async {
   canvas.drawPath(ovalPath, ovalPaint);
 
   final ui.Picture picture = recorder.endRecording();
-  final ui.Image image = await picture.toImage(
-    canvasSize.toInt(),
-    (canvasSize + 0).toInt(),
-  );
+  final ui.Image image =
+      await picture.toImage(canvasSize.toInt(), (canvasSize + 0).toInt());
   final ByteData? byteData =
       await image.toByteData(format: ui.ImageByteFormat.rawExtendedRgba128);
   final Completer<ui.Image> completer = Completer<ui.Image>();
-  ui.decodeImageFromPixels(Uint8List.view(byteData!.buffer),
-      canvasSize.toInt(),
-      canvasSize.toInt(),
-      ui.PixelFormat.rgbaFloat32, (ui.Image image) {
-        completer.complete(image);
-      });
+  ui.decodeImageFromPixels(
+    Uint8List.view(byteData!.buffer),
+    canvasSize.toInt(),
+    canvasSize.toInt(),
+    ui.PixelFormat.rgbaFloat32,
+    (ui.Image image) {
+      completer.complete(image);
+    },
+  );
   return completer.future;
 }
 
@@ -292,28 +290,22 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             const ColoredBox(
               color: Color(0xff00ff00),
-              child: SizedBox(
-                width: 100,
-                height: 100,
-              ),
+              child: SizedBox(width: 100, height: 100),
             ),
             ImageFiltered(
-                imageFilter: ui.ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                child: Image.memory(base64Decode(_displayP3Logo))),
+              imageFilter: ui.ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+              child: Image.memory(base64Decode(_displayP3Logo)),
+            ),
           ],
         );
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: Text(widget.title)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            imageWidget,
-          ],
+          children: <Widget>[imageWidget],
         ),
       ),
     );

@@ -6,29 +6,35 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('StatefulWidget BuildContext.mounted', (WidgetTester tester) async {
-    late BuildContext capturedContext;
-    await tester.pumpWidget(TestStatefulWidget(
+  testWidgets(
+    'StatefulWidget BuildContext.mounted',
+    (WidgetTester tester) async {
+      late BuildContext capturedContext;
+      await tester.pumpWidget(TestStatefulWidget(
         onBuild: (BuildContext context) {
           capturedContext = context;
-        }
-    ));
-    expect(capturedContext.mounted, isTrue);
-    await tester.pumpWidget(Container());
-    expect(capturedContext.mounted, isFalse);
-  });
+        },
+      ));
+      expect(capturedContext.mounted, isTrue);
+      await tester.pumpWidget(Container());
+      expect(capturedContext.mounted, isFalse);
+    },
+  );
 
-  testWidgets('StatelessWidget BuildContext.mounted', (WidgetTester tester) async {
-    late BuildContext capturedContext;
-    await tester.pumpWidget(TestStatelessWidget(
-      onBuild: (BuildContext context) {
-        capturedContext = context;
-      }
-    ));
-    expect(capturedContext.mounted, isTrue);
-    await tester.pumpWidget(Container());
-    expect(capturedContext.mounted, isFalse);
-  });
+  testWidgets(
+    'StatelessWidget BuildContext.mounted',
+    (WidgetTester tester) async {
+      late BuildContext capturedContext;
+      await tester.pumpWidget(TestStatelessWidget(
+        onBuild: (BuildContext context) {
+          capturedContext = context;
+        },
+      ));
+      expect(capturedContext.mounted, isTrue);
+      await tester.pumpWidget(Container());
+      expect(capturedContext.mounted, isFalse);
+    },
+  );
 }
 
 typedef BuildCallback = void Function(BuildContext);

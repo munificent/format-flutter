@@ -18,10 +18,8 @@ import 'build.dart';
 
 /// A command to build a windows desktop target through a build shell script.
 class BuildWindowsCommand extends BuildSubCommand {
-  BuildWindowsCommand({
-    required super.logger,
-    bool verboseHelp = false,
-  }) : super(verboseHelp: verboseHelp) {
+  BuildWindowsCommand({required super.logger, bool verboseHelp = false})
+    : super(verboseHelp: verboseHelp) {
     addCommonDesktopBuildOptions(verboseHelp: verboseHelp);
   }
 
@@ -29,12 +27,13 @@ class BuildWindowsCommand extends BuildSubCommand {
   final String name = 'windows';
 
   @override
-  bool get hidden => !featureFlags.isWindowsEnabled || !globals.platform.isWindows;
+  bool get hidden =>
+      !featureFlags.isWindowsEnabled || !globals.platform.isWindows;
 
   @override
-  Future<Set<DevelopmentArtifact>> get requiredArtifacts async => <DevelopmentArtifact>{
-    DevelopmentArtifact.windows,
-  };
+  Future<Set<DevelopmentArtifact>> get requiredArtifacts async => <
+    DevelopmentArtifact
+  >{DevelopmentArtifact.windows};
 
   @override
   String get description => 'Build a Windows desktop application.';
@@ -47,7 +46,9 @@ class BuildWindowsCommand extends BuildSubCommand {
     final FlutterProject flutterProject = FlutterProject.current();
     final BuildInfo buildInfo = await getBuildInfo();
     if (!featureFlags.isWindowsEnabled) {
-      throwToolExit('"build windows" is not currently supported. To enable, run "flutter config --enable-windows-desktop".');
+      throwToolExit(
+        '"build windows" is not currently supported. To enable, run "flutter config --enable-windows-desktop".',
+      );
     }
     if (!globals.platform.isWindows) {
       throwToolExit('"build windows" only supported on Windows hosts.');

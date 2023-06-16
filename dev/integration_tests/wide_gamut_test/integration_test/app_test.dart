@@ -44,7 +44,11 @@ bool _isAlmost(double x, double y, double epsilon) {
 List<double> _deepRed = <double>[1.0931, -0.2268, -0.1501];
 
 bool _findRGBAF16Color(
-    Uint8List bytes, int width, int height, List<double> color) {
+  Uint8List bytes,
+  int width,
+  int height,
+  List<double> color,
+) {
   final ByteData byteData = ByteData.sublistView(bytes);
   expect(bytes.lengthInBytes, width * height * 8);
   expect(bytes.lengthInBytes, byteData.lengthInBytes);
@@ -64,7 +68,11 @@ bool _findRGBAF16Color(
 }
 
 bool _findBGRA10Color(
-    Uint8List bytes, int width, int height, List<double> color) {
+  Uint8List bytes,
+  int width,
+  int height,
+  List<double> color,
+) {
   final ByteData byteData = ByteData.sublistView(bytes);
   expect(bytes.lengthInBytes, width * height * 8);
   expect(bytes.lengthInBytes, byteData.lengthInBytes);
@@ -84,7 +92,11 @@ bool _findBGRA10Color(
 }
 
 bool _findBGR10Color(
-    Uint8List bytes, int width, int height, List<double> color) {
+  Uint8List bytes,
+  int width,
+  int height,
+  List<double> color,
+) {
   final ByteData byteData = ByteData.sublistView(bytes);
   expect(bytes.lengthInBytes, width * height * 4);
   expect(bytes.lengthInBytes, byteData.lengthInBytes);
@@ -162,14 +174,17 @@ void main() {
       expect(_findColor(result, _deepRed), isTrue);
       expect(_findColor(result, <double>[0.0, 1.0, 0.0]), isTrue);
     });
-    testWidgets('draw image with wide gamut works', (WidgetTester tester) async {
-      app.run(app.Setup.drawnImage);
-      await tester.pumpAndSettle(const Duration(seconds: 2));
+    testWidgets(
+      'draw image with wide gamut works',
+      (WidgetTester tester) async {
+        app.run(app.Setup.drawnImage);
+        await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      const MethodChannel channel = MethodChannel('flutter/screenshot');
-      final List<Object?> result =
-          await channel.invokeMethod('test') as List<Object?>;
-      expect(_findColor(result, <double>[0.0, 1.0, 0.0]), isTrue);
-    });
+        const MethodChannel channel = MethodChannel('flutter/screenshot');
+        final List<Object?> result =
+            await channel.invokeMethod('test') as List<Object?>;
+        expect(_findColor(result, <double>[0.0, 1.0, 0.0]), isTrue);
+      },
+    );
   });
 }

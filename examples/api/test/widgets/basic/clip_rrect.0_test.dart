@@ -7,22 +7,23 @@ import 'package:flutter_api_samples/widgets/basic/clip_rrect.0.dart' as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('ClipRRect adds rounded corners to containers', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.ClipRRectApp(),
-    );
+  testWidgets(
+    'ClipRRect adds rounded corners to containers',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const example.ClipRRectApp());
 
-    final Finder clipRRectFinder = find.byType(ClipRRect);
-    final Finder containerFinder = find.byType(Container);
-    expect(clipRRectFinder, findsNWidgets(2));
-    expect(containerFinder, findsNWidgets(3));
+      final Finder clipRRectFinder = find.byType(ClipRRect);
+      final Finder containerFinder = find.byType(Container);
+      expect(clipRRectFinder, findsNWidgets(2));
+      expect(containerFinder, findsNWidgets(3));
 
-    final Rect firstClipRect = tester.getRect(clipRRectFinder.first);
-    final Rect secondContainerRect = tester.getRect(containerFinder.at(1));
-    expect(firstClipRect, equals(secondContainerRect));
+      final Rect firstClipRect = tester.getRect(clipRRectFinder.first);
+      final Rect secondContainerRect = tester.getRect(containerFinder.at(1));
+      expect(firstClipRect, equals(secondContainerRect));
 
-    final Rect secondClipRect = tester.getRect(clipRRectFinder.at(1));
-    final Rect thirdContainerRect = tester.getRect(containerFinder.at(2));
-    expect(secondClipRect, equals(thirdContainerRect));
-  });
+      final Rect secondClipRect = tester.getRect(clipRRectFinder.at(1));
+      final Rect thirdContainerRect = tester.getRect(containerFinder.at(2));
+      expect(secondClipRect, equals(thirdContainerRect));
+    },
+  );
 }

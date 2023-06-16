@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class ExpansionTileTemplate extends TokenTemplate {
-  const ExpansionTileTemplate(super.blockName, super.fileName, super.tokens, {
+  const ExpansionTileTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
   });
 
@@ -19,16 +22,24 @@ class _${blockName}DefaultsM3 extends ExpansionTileThemeData {
   late final ColorScheme _colors = _theme.colorScheme;
 
   @override
-  Color? get textColor => ${componentColor('md.comp.list.list-item.label-text')};
+  Color? get textColor => ${componentColor(
+        'md.comp.list.list-item.label-text',
+      )};
 
   @override
-  Color? get iconColor => ${componentColor('md.comp.list.list-item.selected.trailing-icon')};
+  Color? get iconColor => ${componentColor(
+        'md.comp.list.list-item.selected.trailing-icon',
+      )};
 
   @override
-  Color? get collapsedTextColor => ${componentColor('md.comp.list.list-item.label-text')};
+  Color? get collapsedTextColor => ${componentColor(
+        'md.comp.list.list-item.label-text',
+      )};
 
   @override
-  Color? get collapsedIconColor => ${componentColor('md.comp.list.list-item.trailing-icon')};
+  Color? get collapsedIconColor => ${componentColor(
+        'md.comp.list.list-item.trailing-icon',
+      )};
 }
 ''';
 }

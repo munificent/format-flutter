@@ -16,9 +16,7 @@ class ActionsExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Actions Sample')),
-        body: const Center(
-          child: ActionsExample(),
-        ),
+        body: const Center(child: ActionsExample()),
       ),
     );
   }
@@ -147,13 +145,17 @@ class _ActionsExampleState extends State<ActionsExample> {
                     },
                   ),
                   AnimatedBuilder(
-                      animation: model.data,
-                      builder: (BuildContext context, Widget? child) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('${model.data.value}', style: Theme.of(context).textTheme.headlineMedium),
-                        );
-                      }),
+                    animation: model.data,
+                    builder: (BuildContext context, Widget? child) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          '${model.data.value}',
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                      );
+                    },
+                  ),
                   IconButton(
                     icon: const Icon(Icons.exposure_minus_1),
                     onPressed: () {

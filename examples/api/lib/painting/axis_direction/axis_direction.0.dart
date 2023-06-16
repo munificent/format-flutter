@@ -13,9 +13,7 @@ class ExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyWidget(),
-    );
+    return const MaterialApp(home: MyWidget());
   }
 }
 
@@ -28,8 +26,32 @@ class MyWidget extends StatefulWidget {
 
 class _MyWidgetState extends State<MyWidget> {
   final List<String> _alphabet = <String>[
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-    'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
   ];
   final Widget _spacer = const SizedBox.square(dimension: 10);
   AxisDirection _axisDirection = AxisDirection.down;
@@ -175,10 +197,7 @@ class _MyWidgetState extends State<MyWidget> {
                   child: Center(child: Text(_alphabet[index - 1])),
                 );
               }
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: child,
-              );
+              return Padding(padding: const EdgeInsets.all(8.0), child: child);
             },
           ),
         ],

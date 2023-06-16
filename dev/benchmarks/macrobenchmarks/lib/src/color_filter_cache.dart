@@ -19,13 +19,25 @@ class _ColorFilterCachePageState extends State<ColorFilterCachePage>
     super.initState();
     _controller.addListener(() {
       if (_controller.offset < 20) {
-        _controller.animateTo(150, duration: const Duration(milliseconds: 1000), curve: Curves.ease);
+        _controller.animateTo(
+          150,
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.ease,
+        );
       } else if (_controller.offset > 130) {
-        _controller.animateTo(0, duration: const Duration(milliseconds: 1000), curve: Curves.ease);
+        _controller.animateTo(
+          0,
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.ease,
+        );
       }
     });
     Timer(const Duration(milliseconds: 1000), () {
-      _controller.animateTo(150, duration: const Duration(milliseconds: 1000), curve: Curves.ease);
+      _controller.animateTo(
+        150,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.ease,
+      );
     });
   }
 
@@ -38,15 +50,17 @@ class _ColorFilterCachePageState extends State<ColorFilterCachePage>
         children: <Widget>[
           const SizedBox(height: 150),
           ColorFiltered(
-            colorFilter: ColorFilter.mode(Colors.green[300]!, BlendMode.luminosity),
+            colorFilter:
+                ColorFilter.mode(Colors.green[300]!, BlendMode.luminosity),
             child: Container(
               clipBehavior: Clip.antiAlias,
-              decoration: const BoxDecoration(boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.red,
-                  blurRadius: 5.0,
-                ),
-              ], color: Colors.blue, backgroundBlendMode: BlendMode.luminosity),
+              decoration: const BoxDecoration(
+                boxShadow: <BoxShadow>[
+                  BoxShadow(color: Colors.red, blurRadius: 5.0),
+                ],
+                color: Colors.blue,
+                backgroundBlendMode: BlendMode.luminosity,
+              ),
               child: Column(
                 children: <Widget>[
                   const Text('Color Filter Cache Pref Test'),

@@ -34,28 +34,32 @@ void main() {
 
     testWithoutContext('can validate flutter version', () async {
       await flutter.run(
-        withDebugger: true, chrome: true,
-        additionalCommandArgs: <String>['--verbose', '--web-renderer=html']);
+        withDebugger: true,
+        chrome: true,
+        additionalCommandArgs: <String>['--verbose', '--web-renderer=html'],
+      );
 
       expect(flutter.vmServiceWsUri, isNotNull);
 
       final VmService client =
-        await vmServiceConnectUri('${flutter.vmServiceWsUri}');
+          await vmServiceConnectUri('${flutter.vmServiceWsUri}');
       await validateFlutterVersion(client);
     });
 
     testWithoutContext('can validate flutter version in parallel', () async {
       await flutter.run(
-        withDebugger: true, chrome: true,
-        additionalCommandArgs: <String>['--verbose', '--web-renderer=html']);
+        withDebugger: true,
+        chrome: true,
+        additionalCommandArgs: <String>['--verbose', '--web-renderer=html'],
+      );
 
       expect(flutter.vmServiceWsUri, isNotNull);
 
       final VmService client1 =
-        await vmServiceConnectUri('${flutter.vmServiceWsUri}');
+          await vmServiceConnectUri('${flutter.vmServiceWsUri}');
 
       final VmService client2 =
-        await vmServiceConnectUri('${flutter.vmServiceWsUri}');
+          await vmServiceConnectUri('${flutter.vmServiceWsUri}');
 
       await Future.wait(<Future<void>>[
         validateFlutterVersion(client1),
@@ -78,13 +82,15 @@ void main() {
 
     testWithoutContext('can validate flutter version', () async {
       await flutter.run(
-        withDebugger: true, chrome: true,
-        additionalCommandArgs: <String>['--verbose', '--web-renderer=html']);
+        withDebugger: true,
+        chrome: true,
+        additionalCommandArgs: <String>['--verbose', '--web-renderer=html'],
+      );
 
       expect(flutter.vmServiceWsUri, isNotNull);
 
       final VmService client =
-        await vmServiceConnectUri('${flutter.vmServiceWsUri}');
+          await vmServiceConnectUri('${flutter.vmServiceWsUri}');
       await validateFlutterVersion(client);
     });
   });
@@ -95,15 +101,15 @@ Future<void> validateFlutterVersion(VmService client) async {
 
   final Future<dynamic> registration = expectLater(
     client.onEvent('Service'),
-      emitsThrough(predicate((Event e) {
-        if (e.kind == EventKind.kServiceRegistered &&
-            e.service == kFlutterVersionServiceName) {
-          method = e.method;
-          return true;
-        }
-        return false;
-      }))
-    );
+    emitsThrough(predicate((Event e) {
+      if (e.kind == EventKind.kServiceRegistered &&
+          e.service == kFlutterVersionServiceName) {
+        method = e.method;
+        return true;
+      }
+      return false;
+    })),
+  );
 
   await client.streamListen('Service');
   await registration;
@@ -111,8 +117,12 @@ Future<void> validateFlutterVersion(VmService client) async {
 
   final dynamic version1 = await client.callServiceExtension(method!);
   expect(version1, const TypeMatcher<Success>()
-    .having((Success r) => r.type, 'type', 'Success')
-    .having((Success r) => r.json!['frameworkVersion'], 'frameworkVersion', isNotNull));
+      .having((Success r) => r.type, 'type', 'Success')
+      .having(
+        (Success r) => r.json!['frameworkVersion'],
+        'frameworkVersion',
+        isNotNull,
+      ));
 
   await client.dispose();
 }

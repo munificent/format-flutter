@@ -38,10 +38,13 @@ class DeferredComponentsGenSnapshotValidatorTarget extends Target {
   /// The abis to validate.
   List<String> get _abis {
     final List<String> abis = <String>[];
-    for (final AndroidAotDeferredComponentsBundle target in deferredComponentsDependencies) {
+    for (final AndroidAotDeferredComponentsBundle target
+        in deferredComponentsDependencies) {
       if (deferredComponentsTargets.contains(target.name)) {
         abis.add(
-          getAndroidArchForName(getNameForTargetPlatform(target.dependency.targetPlatform)).archName
+          getAndroidArchForName(
+            getNameForTargetPlatform(target.dependency.targetPlatform),
+          ).archName,
         );
       }
     }
@@ -58,13 +61,13 @@ class DeferredComponentsGenSnapshotValidatorTarget extends Target {
   List<Source> get outputs => const <Source>[];
 
   @override
-  List<String> get depfiles => <String>[
-    'flutter_$name.d',
-  ];
+  List<String> get depfiles => <String>['flutter_$name.d'];
 
   @override
   List<Target> get dependencies {
-    final List<Target> deps = <Target>[CompositeTarget(deferredComponentsDependencies)];
+    final List<Target> deps = <Target>[
+      CompositeTarget(deferredComponentsDependencies),
+    ];
     deps.addAll(nonDeferredComponentsDependencies);
     return deps;
   }
@@ -80,16 +83,18 @@ class DeferredComponentsGenSnapshotValidatorTarget extends Target {
       exitOnFail: exitOnFail,
     );
 
-    final List<LoadingUnit> generatedLoadingUnits = LoadingUnit.parseGeneratedLoadingUnits(
-        environment.outputDir,
-        environment.logger,
-        abis: _abis
+    final List<LoadingUnit> generatedLoadingUnits =
+        LoadingUnit.parseGeneratedLoadingUnits(
+      environment.outputDir,
+      environment.logger,
+      abis: _abis,
     );
 
     validator!
       ..checkAppAndroidManifestComponentLoadingUnitMapping(
-          FlutterProject.current().manifest.deferredComponents ?? <DeferredComponent>[],
-          generatedLoadingUnits,
+        FlutterProject.current().manifest.deferredComponents ??
+            <DeferredComponent>[],
+        generatedLoadingUnits,
       )
       ..checkAgainstLoadingUnitsCache(generatedLoadingUnits)
       ..writeLoadingUnitsCache(generatedLoadingUnits);

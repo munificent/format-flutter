@@ -44,10 +44,11 @@ class MultiRootFileSystem extends ForwardingFileSystem {
     required FileSystem delegate,
     required String scheme,
     required List<String> roots,
-  })   : assert(roots.isNotEmpty),
-        _scheme = scheme,
-        _roots = roots.map((String root) => delegate.path.normalize(root)).toList(),
-        super(delegate);
+  }) : assert(roots.isNotEmpty),
+       _scheme = scheme,
+       _roots =
+           roots.map((String root) => delegate.path.normalize(root)).toList(),
+       super(delegate);
 
   @visibleForTesting
   FileSystem get fileSystem => delegate;
@@ -74,28 +75,38 @@ class MultiRootFileSystem extends ForwardingFileSystem {
   );
 
   @override
-  Future<io.FileStat> stat(String path) =>
-    delegate.stat(_resolve(path).toString());
+  Future<io.FileStat> stat(String path) => delegate.stat(
+    _resolve(path).toString(),
+  );
 
   @override
-  io.FileStat statSync(String path) =>
-    delegate.statSync(_resolve(path).toString());
+  io.FileStat statSync(String path) => delegate.statSync(
+    _resolve(path).toString(),
+  );
 
   @override
-  Future<bool> identical(String path1, String path2) =>
-    delegate.identical(_resolve(path1).toString(), _resolve(path2).toString());
+  Future<bool> identical(String path1, String path2) => delegate.identical(
+    _resolve(path1).toString(),
+    _resolve(path2).toString(),
+  );
 
   @override
-  bool identicalSync(String path1, String path2) =>
-    delegate.identicalSync(_resolve(path1).toString(), _resolve(path2).toString());
+  bool identicalSync(String path1, String path2) => delegate.identicalSync(
+    _resolve(path1).toString(),
+    _resolve(path2).toString(),
+  );
 
   @override
-  Future<io.FileSystemEntityType> type(String path, {bool followLinks = true}) =>
-    delegate.type(_resolve(path).toString(), followLinks: followLinks);
+  Future<io.FileSystemEntityType> type(
+    String path, {
+    bool followLinks = true,
+  }) => delegate.type(_resolve(path).toString(), followLinks: followLinks);
 
   @override
-  io.FileSystemEntityType typeSync(String path, {bool followLinks = true}) =>
-    delegate.typeSync(_resolve(path).toString(), followLinks: followLinks);
+  io.FileSystemEntityType typeSync(
+    String path, {
+    bool followLinks = true,
+  }) => delegate.typeSync(_resolve(path).toString(), followLinks: followLinks);
 
   // Caching the path context here and clearing when the currentDirectory setter
   // is updated works since the flutter tool restricts usage of dart:io directly
@@ -125,7 +136,9 @@ class MultiRootFileSystem extends ForwardingFileSystem {
     } else if (path is FileSystemEntity) {
       uri = path.uri;
     } else {
-      throw ArgumentError('Invalid type for "path": ${(path as Object?)?.runtimeType}');
+      throw ArgumentError(
+        'Invalid type for "path": ${(path as Object?)?.runtimeType}',
+      );
     }
 
     if (!uri.hasScheme || uri.scheme != _scheme) {
@@ -170,15 +183,14 @@ class MultiRootFileSystem extends ForwardingFileSystem {
 
   @override
   String toString() =>
-    'MultiRootFileSystem(scheme = $_scheme, roots = $_roots, delegate = $delegate)';
+      'MultiRootFileSystem(scheme = $_scheme, roots = $_roots, delegate = $delegate)';
 }
 
-abstract class MultiRootFileSystemEntity<T extends FileSystemEntity,
-    D extends io.FileSystemEntity> extends ForwardingFileSystemEntity<T, D> {
-  MultiRootFileSystemEntity({
-    required this.fileSystem,
-    required this.delegate,
-  });
+abstract class MultiRootFileSystemEntity<
+  T extends FileSystemEntity,
+  D extends io.FileSystemEntity
+> extends ForwardingFileSystemEntity<T, D> {
+  MultiRootFileSystemEntity({required this.fileSystem, required this.delegate});
 
   @override
   final D delegate;
@@ -210,55 +222,55 @@ abstract class MultiRootFileSystemEntity<T extends FileSystemEntity,
 
 class MultiRootFile extends MultiRootFileSystemEntity<File, io.File>
     // TODO(goderbauer): Fix this ignore when https://github.com/google/file.dart/issues/209 is resolved.
-    with ForwardingFile { // ignore: prefer_mixin
-  MultiRootFile({
-    required super.fileSystem,
-    required super.delegate,
-  });
+    with
+        ForwardingFile {
+  // ignore: prefer_mixin
+  MultiRootFile({required super.fileSystem, required super.delegate});
 
   @override
   String toString() =>
-    'MultiRootFile(fileSystem = $fileSystem, delegate = $delegate)';
+      'MultiRootFile(fileSystem = $fileSystem, delegate = $delegate)';
 }
 
 class MultiRootDirectory
     extends MultiRootFileSystemEntity<Directory, io.Directory>
     // TODO(goderbauer): Fix this ignore when https://github.com/google/file.dart/issues/209 is resolved.
-    with ForwardingDirectory<Directory> { // ignore: prefer_mixin
-  MultiRootDirectory({
-    required super.fileSystem,
-    required super.delegate,
-  });
+    with
+        ForwardingDirectory<Directory> {
+  // ignore: prefer_mixin
+  MultiRootDirectory({required super.fileSystem, required super.delegate});
 
   // For the childEntity methods, we first obtain an instance of the entity
   // from the underlying file system, then invoke childEntity() on it, then
   // wrap in the ErrorHandling version.
   @override
-  Directory childDirectory(String basename) =>
-    fileSystem.directory(fileSystem.path.join(delegate.path, basename));
+  Directory childDirectory(String basename) => fileSystem.directory(
+    fileSystem.path.join(delegate.path, basename),
+  );
 
   @override
-  File childFile(String basename) =>
-    fileSystem.file(fileSystem.path.join(delegate.path, basename));
+  File childFile(String basename) => fileSystem.file(
+    fileSystem.path.join(delegate.path, basename),
+  );
 
   @override
-  Link childLink(String basename) =>
-    fileSystem.link(fileSystem.path.join(delegate.path, basename));
+  Link childLink(String basename) => fileSystem.link(
+    fileSystem.path.join(delegate.path, basename),
+  );
 
   @override
   String toString() =>
-    'MultiRootDirectory(fileSystem = $fileSystem, delegate = $delegate)';
+      'MultiRootDirectory(fileSystem = $fileSystem, delegate = $delegate)';
 }
 
 class MultiRootLink extends MultiRootFileSystemEntity<Link, io.Link>
     // TODO(goderbauer): Fix this ignore when https://github.com/google/file.dart/issues/209 is resolved.
-    with ForwardingLink { // ignore: prefer_mixin
-  MultiRootLink({
-    required super.fileSystem,
-    required super.delegate,
-  });
+    with
+        ForwardingLink {
+  // ignore: prefer_mixin
+  MultiRootLink({required super.fileSystem, required super.delegate});
 
   @override
   String toString() =>
-    'MultiRootLink(fileSystem = $fileSystem, delegate = $delegate)';
+      'MultiRootLink(fileSystem = $fileSystem, delegate = $delegate)';
 }

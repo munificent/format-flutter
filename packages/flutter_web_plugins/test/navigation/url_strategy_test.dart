@@ -26,34 +26,19 @@ void main() {
     });
 
     test('validates base href', () {
-      expect(
-        () => PathUrlStrategy(location),
-        returnsNormally,
-      );
+      expect(() => PathUrlStrategy(location), returnsNormally);
 
       location.baseHref = '/foo/';
-      expect(
-        () => PathUrlStrategy(location),
-        returnsNormally,
-      );
+      expect(() => PathUrlStrategy(location), returnsNormally);
 
       location.baseHref = '';
-      expect(
-        () => PathUrlStrategy(location),
-        throwsException,
-      );
+      expect(() => PathUrlStrategy(location), throwsException);
 
       location.baseHref = 'foo';
-      expect(
-        () => PathUrlStrategy(location),
-        throwsException,
-      );
+      expect(() => PathUrlStrategy(location), throwsException);
 
       location.baseHref = '/foo';
-      expect(
-        () => PathUrlStrategy(location),
-        throwsException,
-      );
+      expect(() => PathUrlStrategy(location), throwsException);
     });
 
     test('leading slash is always prepended', () {
@@ -85,7 +70,6 @@ void main() {
       location.pathname = '/foo/bar';
       final PathUrlStrategy strategy = PathUrlStrategy(location);
 
-
       location.search = '?q=1';
       expect(strategy.getPath(), '/bar?q=1');
 
@@ -105,15 +89,30 @@ void main() {
 
       expect(() => strategy.prepareExternalUrl('foo'), throwsAssertionError);
       expect(() => strategy.prepareExternalUrl('foo/'), throwsAssertionError);
-      expect(() => strategy.prepareExternalUrl('foo/bar'), throwsAssertionError);
+      expect(
+        () => strategy.prepareExternalUrl('foo/bar'),
+        throwsAssertionError,
+      );
 
       expect(() => strategy.pushState(null, '', 'foo'), throwsAssertionError);
       expect(() => strategy.pushState(null, '', 'foo/'), throwsAssertionError);
-      expect(() => strategy.pushState(null, '', 'foo/bar'), throwsAssertionError);
+      expect(
+        () => strategy.pushState(null, '', 'foo/bar'),
+        throwsAssertionError,
+      );
 
-      expect(() => strategy.replaceState(null, '', 'foo'), throwsAssertionError);
-      expect(() => strategy.replaceState(null, '', 'foo/'), throwsAssertionError);
-      expect(() => strategy.replaceState(null, '', 'foo/bar'), throwsAssertionError);
+      expect(
+        () => strategy.replaceState(null, '', 'foo'),
+        throwsAssertionError,
+      );
+      expect(
+        () => strategy.replaceState(null, '', 'foo/'),
+        throwsAssertionError,
+      );
+      expect(
+        () => strategy.replaceState(null, '', 'foo/bar'),
+        throwsAssertionError,
+      );
     });
 
     test('generates external path correctly in the presence of basePath', () {

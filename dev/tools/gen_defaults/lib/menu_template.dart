@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class MenuTemplate extends TokenTemplate {
-  const MenuTemplate(super.blockName, super.fileName, super.tokens, {
+  const MenuTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
   });
 
@@ -14,7 +17,9 @@ class MenuTemplate extends TokenTemplate {
 class _MenuBarDefaultsM3 extends MenuStyle {
   _MenuBarDefaultsM3(this.context)
     : super(
-      elevation: const MaterialStatePropertyAll<double?>(${elevation('md.comp.menu.container')}),
+      elevation: const MaterialStatePropertyAll<double?>(${elevation(
+        'md.comp.menu.container',
+      )}),
       shape: const MaterialStatePropertyAll<OutlinedBorder>(_defaultMenuBorder),
       alignment: AlignmentDirectional.bottomStart,
     );
@@ -28,17 +33,23 @@ class _MenuBarDefaultsM3 extends MenuStyle {
 
   @override
   MaterialStateProperty<Color?> get backgroundColor {
-    return MaterialStatePropertyAll<Color?>(${componentColor('md.comp.menu.container')});
+    return MaterialStatePropertyAll<Color?>(${componentColor(
+        'md.comp.menu.container',
+      )});
   }
 
   @override
   MaterialStateProperty<Color?>? get shadowColor {
-    return MaterialStatePropertyAll<Color?>(${color('md.comp.menu.container.shadow-color')});
+    return MaterialStatePropertyAll<Color?>(${color(
+        'md.comp.menu.container.shadow-color',
+      )});
   }
 
   @override
   MaterialStateProperty<Color?>? get surfaceTintColor {
-    return MaterialStatePropertyAll<Color?>(${componentColor('md.comp.menu.container.surface-tint-layer')});
+    return MaterialStatePropertyAll<Color?>(${componentColor(
+        'md.comp.menu.container.surface-tint-layer',
+      )});
   }
 
   @override
@@ -103,16 +114,24 @@ class _MenuButtonDefaultsM3 extends ButtonStyle {
   MaterialStateProperty<Color?>? get iconColor {
     return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.disabled)) {
-        return ${componentColor('md.comp.list.list-item.disabled.leading-icon')};
+        return ${componentColor(
+        'md.comp.list.list-item.disabled.leading-icon',
+      )};
       }
       if (states.contains(MaterialState.pressed)) {
-        return ${componentColor('md.comp.list.list-item.pressed.leading-icon.icon')};
+        return ${componentColor(
+        'md.comp.list.list-item.pressed.leading-icon.icon',
+      )};
       }
       if (states.contains(MaterialState.hovered)) {
-        return ${componentColor('md.comp.list.list-item.hover.leading-icon.icon')};
+        return ${componentColor(
+        'md.comp.list.list-item.hover.leading-icon.icon',
+      )};
       }
       if (states.contains(MaterialState.focused)) {
-        return ${componentColor('md.comp.list.list-item.focus.leading-icon.icon')};
+        return ${componentColor(
+        'md.comp.list.list-item.focus.leading-icon.icon',
+      )};
       }
       return ${componentColor('md.comp.list.list-item.leading-icon')};
     });
@@ -147,7 +166,9 @@ class _MenuButtonDefaultsM3 extends ButtonStyle {
     return MaterialStateProperty.resolveWith(
       (Set<MaterialState> states) {
         if (states.contains(MaterialState.pressed)) {
-          return ${componentColor('md.comp.list.list-item.pressed.state-layer')};
+          return ${componentColor(
+        'md.comp.list.list-item.pressed.state-layer',
+      )};
         }
         if (states.contains(MaterialState.hovered)) {
           return ${componentColor('md.comp.list.list-item.hover.state-layer')};
@@ -180,7 +201,9 @@ class _MenuButtonDefaultsM3 extends ButtonStyle {
 
   @override
   MaterialStateProperty<TextStyle?> get textStyle {
-    return MaterialStatePropertyAll<TextStyle?>(${textStyle('md.comp.list.list-item.label-text')});
+    return MaterialStatePropertyAll<TextStyle?>(${textStyle(
+        'md.comp.list.list-item.label-text',
+      )});
   }
 
   @override
@@ -215,7 +238,9 @@ class _MenuButtonDefaultsM3 extends ButtonStyle {
 class _MenuDefaultsM3 extends MenuStyle {
   _MenuDefaultsM3(this.context)
     : super(
-      elevation: const MaterialStatePropertyAll<double?>(${elevation('md.comp.menu.container')}),
+      elevation: const MaterialStatePropertyAll<double?>(${elevation(
+        'md.comp.menu.container',
+      )}),
       shape: const MaterialStatePropertyAll<OutlinedBorder>(_defaultMenuBorder),
       alignment: AlignmentDirectional.topEnd,
     );
@@ -229,17 +254,23 @@ class _MenuDefaultsM3 extends MenuStyle {
 
   @override
   MaterialStateProperty<Color?> get backgroundColor {
-    return MaterialStatePropertyAll<Color?>(${componentColor('md.comp.menu.container')});
+    return MaterialStatePropertyAll<Color?>(${componentColor(
+        'md.comp.menu.container',
+      )});
   }
 
   @override
   MaterialStateProperty<Color?>? get surfaceTintColor {
-    return MaterialStatePropertyAll<Color?>(${componentColor('md.comp.menu.container.surface-tint-layer')});
+    return MaterialStatePropertyAll<Color?>(${componentColor(
+        'md.comp.menu.container.surface-tint-layer',
+      )});
   }
 
   @override
   MaterialStateProperty<Color?>? get shadowColor {
-    return MaterialStatePropertyAll<Color?>(${color('md.comp.menu.container.shadow-color')});
+    return MaterialStatePropertyAll<Color?>(${color(
+        'md.comp.menu.container.shadow-color',
+      )});
   }
 
   @override

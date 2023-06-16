@@ -50,8 +50,9 @@ class TweenSequence<T> extends Animatable<T> {
   /// There's a small cost associated with building a [TweenSequence] so it's
   /// best to reuse one, rather than rebuilding it on every frame, when that's
   /// possible.
-  TweenSequence(List<TweenSequenceItem<T>> items)
-      : assert(items.isNotEmpty) {
+  TweenSequence(
+    List<TweenSequenceItem<T>> items,
+  ) : assert(items.isNotEmpty) {
     _items.addAll(items);
 
     double totalWeight = 0.0;
@@ -62,7 +63,9 @@ class TweenSequence<T> extends Animatable<T> {
 
     double start = 0.0;
     for (int i = 0; i < _items.length; i += 1) {
-      final double end = i == _items.length - 1 ? 1.0 : start + _items[i].weight / totalWeight;
+      final double end = i == _items.length - 1
+          ? 1.0
+          : start + _items[i].weight / totalWeight;
       _intervals.add(_Interval(start, end));
       start = end;
     }
@@ -89,7 +92,9 @@ class TweenSequence<T> extends Animatable<T> {
       }
     }
     // Should be unreachable.
-    throw StateError('TweenSequence.evaluate() could not find an interval for $t');
+    throw StateError(
+      'TweenSequence.evaluate() could not find an interval for $t',
+    );
   }
 
   @override
@@ -153,7 +158,10 @@ class TweenSequenceItem<T> {
 }
 
 class _Interval {
-  const _Interval(this.start, this.end) : assert(end > start);
+  const _Interval(
+    this.start,
+    this.end,
+  ) : assert(end > start);
 
   final double start;
   final double end;

@@ -69,8 +69,7 @@ const String htmlSampleLegacyVar = '''
 String htmlSample2Replaced({
   required String baseHref,
   required String serviceWorkerVersion,
-}) =>
-    '''
+}) => '''
 <!DOCTYPE html>
 <html>
 <head>
@@ -123,7 +122,10 @@ void main() {
   test('throws on invalid baseHref', () {
     expect(() => IndexHtml('<base href>').getBaseHref(), throwsToolExit());
     expect(() => IndexHtml('<base href="">').getBaseHref(), throwsToolExit());
-    expect(() => IndexHtml('<base href="foo/111">').getBaseHref(), throwsToolExit());
+    expect(
+      () => IndexHtml('<base href="foo/111">').getBaseHref(),
+      throwsToolExit(),
+    );
     expect(
       () => IndexHtml('<base href="foo/111/">').getBaseHref(),
       throwsToolExit(),
@@ -140,13 +142,10 @@ void main() {
       baseHref: '/foo/333/',
       serviceWorkerVersion: 'v123xyz',
     );
-    expect(
-      indexHtml.content,
-      htmlSample2Replaced(
-        baseHref: '/foo/333/',
-        serviceWorkerVersion: 'v123xyz',
-      ),
-    );
+    expect(indexHtml.content, htmlSample2Replaced(
+      baseHref: '/foo/333/',
+      serviceWorkerVersion: 'v123xyz',
+    ));
   });
 
   test('applies substitutions with legacy var version syntax', () {
@@ -155,13 +154,10 @@ void main() {
       baseHref: '/foo/333/',
       serviceWorkerVersion: 'v123xyz',
     );
-    expect(
-      indexHtml.content,
-      htmlSample2Replaced(
-        baseHref: '/foo/333/',
-        serviceWorkerVersion: 'v123xyz',
-      ),
-    );
+    expect(indexHtml.content, htmlSample2Replaced(
+      baseHref: '/foo/333/',
+      serviceWorkerVersion: 'v123xyz',
+    ));
   });
 
   test('re-parses after substitutions', () {

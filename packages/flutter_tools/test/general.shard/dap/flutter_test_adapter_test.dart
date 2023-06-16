@@ -16,7 +16,9 @@ import 'mocks.dart';
 void main() {
   // Use the real platform as a base so that Windows bots test paths.
   final FakePlatform platform = FakePlatform.fromPlatform(globals.platform);
-  final FileSystemStyle fsStyle = platform.isWindows ? FileSystemStyle.windows : FileSystemStyle.posix;
+  final FileSystemStyle fsStyle = platform.isWindows
+      ? FileSystemStyle.windows
+      : FileSystemStyle.posix;
 
   group('flutter test adapter', () {
     final String expectedFlutterExecutable = platform.isWindows
@@ -61,9 +63,7 @@ void main() {
       final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
         cwd: '/project',
         program: 'foo.dart',
-        env: <String, String>{
-          'MY_TEST_ENV': 'MY_TEST_VALUE',
-        },
+        env: <String, String>{'MY_TEST_ENV': 'MY_TEST_VALUE'},
       );
 
       await adapter.configurationDoneRequest(request, null, () {});
@@ -81,7 +81,8 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
         final MockRequest request = MockRequest();
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(
           cwd: '/project',
           program: 'foo.dart',
           customTool: '/custom/flutter',
@@ -104,7 +105,8 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
         final MockRequest request = MockRequest();
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(
           cwd: '/project',
           program: 'foo.dart',
           customTool: '/custom/flutter',

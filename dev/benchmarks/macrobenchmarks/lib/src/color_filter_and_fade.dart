@@ -15,7 +15,8 @@ class ColorFilterAndFadePage extends StatefulWidget {
   State<ColorFilterAndFadePage> createState() => _ColorFilterAndFadePageState();
 }
 
-class _ColorFilterAndFadePageState extends State<ColorFilterAndFadePage> with TickerProviderStateMixin {
+class _ColorFilterAndFadePageState extends State<ColorFilterAndFadePage>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final Widget shadowWidget = _ShadowWidget(
@@ -45,17 +46,18 @@ class _ColorFilterAndFadePageState extends State<ColorFilterAndFadePage> with Ti
       ],
     );
 
-    final Widget column = Column(mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          row,
-          const SizedBox(height: 12),
-          row,
-          const SizedBox(height: 12),
-          row,
-          const SizedBox(height: 12),
-          row,
-          const SizedBox(height: 12),
-        ],
+    final Widget column = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        row,
+        const SizedBox(height: 12),
+        row,
+        const SizedBox(height: 12),
+        row,
+        const SizedBox(height: 12),
+        row,
+        const SizedBox(height: 12),
+      ],
     );
 
     final Widget fadeTransition = FadeTransition(
@@ -63,38 +65,41 @@ class _ColorFilterAndFadePageState extends State<ColorFilterAndFadePage> with Ti
       // This RepaintBoundary is necessary to not let the opacity change
       // invalidate the layer raster cache below. This is necessary with
       // or without the color filter.
-      child: RepaintBoundary(
-        child: column,
-      ),
+      child: RepaintBoundary(child: column),
     );
 
     return Scaffold(
-        backgroundColor: Colors.lightBlue,
-        body: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                fadeTransition,
-                Container(height: 20),
-                const Text('Use Color Filter:'),
-                Checkbox(
-                  value: _useColorFilter,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _useColorFilter = value ?? false;
-                    });
-                  },
-                ),
-              ],
+      backgroundColor: Colors.lightBlue,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            fadeTransition,
+            Container(height: 20),
+            const Text('Use Color Filter:'),
+            Checkbox(
+              value: _useColorFilter,
+              onChanged: (bool? value) {
+                setState(() {
+                  _useColorFilter = value ?? false;
+                });
+              },
             ),
+          ],
         ),
+      ),
     );
   }
 
   // Create a looping fade-in fade-out animation for opacity.
   void _initAnimation() {
-    _controller = AnimationController(duration: const Duration(seconds: 3), vsync: this);
-    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
+    _controller = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    );
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      _controller,
+    );
     _opacityAnimation.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
         _controller.reverse();
@@ -141,10 +146,7 @@ class _ShadowWidget extends StatelessWidget {
       width: width,
       height: height,
       child: CustomPaint(
-        painter: _ShadowPainter(
-          useColorFilter: useColorFilter,
-          shadow: shadow,
-        ),
+        painter: _ShadowPainter(useColorFilter: useColorFilter, shadow: shadow),
         size: Size(width, height),
         isComplex: true,
       ),
@@ -170,12 +172,19 @@ class _ShadowPainter extends CustomPainter {
     canvas.saveLayer(null, paint);
     canvas.translate(shadow.offset.dx, shadow.offset.dy);
     canvas.drawRect(rect, Paint());
-    canvas.drawRect(rect, Paint()..maskFilter = MaskFilter.blur(BlurStyle.normal, shadow.blurSigma));
+    canvas.drawRect(
+      rect,
+      Paint()..maskFilter = MaskFilter.blur(BlurStyle.normal, shadow.blurSigma),
+    );
     canvas.restore();
 
-    canvas.drawRect(rect, Paint()..color = useColorFilter ? Colors.white : Colors.black);
+    canvas.drawRect(
+      rect,
+      Paint()..color = useColorFilter ? Colors.white : Colors.black,
+    );
   }
 
   @override
-  bool shouldRepaint(_ShadowPainter oldDelegate) => oldDelegate.useColorFilter != useColorFilter;
+  bool shouldRepaint(_ShadowPainter oldDelegate) =>
+      oldDelegate.useColorFilter != useColorFilter;
 }

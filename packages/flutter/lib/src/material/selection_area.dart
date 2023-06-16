@@ -92,7 +92,10 @@ class SelectionArea extends StatefulWidget {
   /// {@macro flutter.widgets.ProxyWidget.child}
   final Widget child;
 
-  static Widget _defaultContextMenuBuilder(BuildContext context, SelectableRegionState selectableRegionState) {
+  static Widget _defaultContextMenuBuilder(
+    BuildContext context,
+    SelectableRegionState selectableRegionState,
+  ) {
     return AdaptiveTextSelectionToolbar.selectableRegion(
       selectableRegionState: selectableRegionState,
     );
@@ -110,6 +113,7 @@ class _SelectionAreaState extends State<SelectionArea> {
     _internalNode ??= FocusNode();
     return _internalNode!;
   }
+
   FocusNode? _internalNode;
 
   @override
@@ -139,7 +143,8 @@ class _SelectionAreaState extends State<SelectionArea> {
       selectionControls: controls,
       focusNode: _effectiveFocusNode,
       contextMenuBuilder: widget.contextMenuBuilder,
-      magnifierConfiguration: widget.magnifierConfiguration ?? TextMagnifier.adaptiveMagnifierConfiguration,
+      magnifierConfiguration: widget.magnifierConfiguration ??
+          TextMagnifier.adaptiveMagnifierConfiguration,
       onSelectionChanged: widget.onSelectionChanged,
       child: widget.child,
     );

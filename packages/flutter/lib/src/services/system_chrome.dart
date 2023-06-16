@@ -58,7 +58,7 @@ enum DeviceOrientation {
 @immutable
 class ApplicationSwitcherDescription {
   /// Creates an ApplicationSwitcherDescription.
-  const ApplicationSwitcherDescription({ this.label, this.primaryColor });
+  const ApplicationSwitcherDescription({this.label, this.primaryColor});
 
   /// A label and description of the current state of the application.
   final String? label;
@@ -292,13 +292,16 @@ class SystemUiOverlayStyle {
       'statusBarColor': statusBarColor?.value,
       'statusBarBrightness': statusBarBrightness?.toString(),
       'statusBarIconBrightness': statusBarIconBrightness?.toString(),
-      'systemNavigationBarIconBrightness': systemNavigationBarIconBrightness?.toString(),
-      'systemNavigationBarContrastEnforced': systemNavigationBarContrastEnforced,
+      'systemNavigationBarIconBrightness':
+          systemNavigationBarIconBrightness?.toString(),
+      'systemNavigationBarContrastEnforced':
+          systemNavigationBarContrastEnforced,
     };
   }
 
   @override
-  String toString() => '${objectRuntimeType(this, 'SystemUiOverlayStyle')}(${_toMap()})';
+  String toString() =>
+      '${objectRuntimeType(this, 'SystemUiOverlayStyle')}(${_toMap()})';
 
   /// Creates a copy of this theme with the given fields replaced with new values.
   SystemUiOverlayStyle copyWith({
@@ -312,14 +315,21 @@ class SystemUiOverlayStyle {
     Brightness? systemNavigationBarIconBrightness,
   }) {
     return SystemUiOverlayStyle(
-      systemNavigationBarColor: systemNavigationBarColor ?? this.systemNavigationBarColor,
-      systemNavigationBarDividerColor: systemNavigationBarDividerColor ?? this.systemNavigationBarDividerColor,
-      systemNavigationBarContrastEnforced: systemNavigationBarContrastEnforced ?? this.systemNavigationBarContrastEnforced,
+      systemNavigationBarColor:
+          systemNavigationBarColor ?? this.systemNavigationBarColor,
+      systemNavigationBarDividerColor: systemNavigationBarDividerColor ??
+          this.systemNavigationBarDividerColor,
+      systemNavigationBarContrastEnforced:
+          systemNavigationBarContrastEnforced ??
+              this.systemNavigationBarContrastEnforced,
       statusBarColor: statusBarColor ?? this.statusBarColor,
-      statusBarIconBrightness: statusBarIconBrightness ?? this.statusBarIconBrightness,
+      statusBarIconBrightness:
+          statusBarIconBrightness ?? this.statusBarIconBrightness,
       statusBarBrightness: statusBarBrightness ?? this.statusBarBrightness,
-      systemStatusBarContrastEnforced: systemStatusBarContrastEnforced ?? this.systemStatusBarContrastEnforced,
-      systemNavigationBarIconBrightness: systemNavigationBarIconBrightness ?? this.systemNavigationBarIconBrightness,
+      systemStatusBarContrastEnforced: systemStatusBarContrastEnforced ??
+          this.systemStatusBarContrastEnforced,
+      systemNavigationBarIconBrightness: systemNavigationBarIconBrightness ??
+          this.systemNavigationBarIconBrightness,
     );
   }
 
@@ -340,15 +350,19 @@ class SystemUiOverlayStyle {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is SystemUiOverlayStyle
-        && other.systemNavigationBarColor == systemNavigationBarColor
-        && other.systemNavigationBarDividerColor == systemNavigationBarDividerColor
-        && other.systemNavigationBarContrastEnforced == systemNavigationBarContrastEnforced
-        && other.statusBarColor == statusBarColor
-        && other.statusBarIconBrightness == statusBarIconBrightness
-        && other.statusBarBrightness == statusBarBrightness
-        && other.systemStatusBarContrastEnforced == systemStatusBarContrastEnforced
-        && other.systemNavigationBarIconBrightness == systemNavigationBarIconBrightness;
+    return other is SystemUiOverlayStyle &&
+        other.systemNavigationBarColor == systemNavigationBarColor &&
+        other.systemNavigationBarDividerColor ==
+            systemNavigationBarDividerColor &&
+        other.systemNavigationBarContrastEnforced ==
+            systemNavigationBarContrastEnforced &&
+        other.statusBarColor == statusBarColor &&
+        other.statusBarIconBrightness == statusBarIconBrightness &&
+        other.statusBarBrightness == statusBarBrightness &&
+        other.systemStatusBarContrastEnforced ==
+            systemStatusBarContrastEnforced &&
+        other.systemNavigationBarIconBrightness ==
+            systemNavigationBarIconBrightness;
   }
 }
 
@@ -376,7 +390,9 @@ abstract final class SystemChrome {
   ///
   /// Should you decide to opt out of multitasking you can do this by
   /// setting "Requires full screen" to true in the Xcode Deployment Info.
-  static Future<void> setPreferredOrientations(List<DeviceOrientation> orientations) async {
+  static Future<void> setPreferredOrientations(
+    List<DeviceOrientation> orientations,
+  ) async {
     await SystemChannels.platform.invokeMethod<void>(
       'SystemChrome.setPreferredOrientations',
       _stringify(orientations),
@@ -388,7 +404,9 @@ abstract final class SystemChrome {
   ///
   /// Any part of the description that is unsupported on the current platform
   /// will be ignored.
-  static Future<void> setApplicationSwitcherDescription(ApplicationSwitcherDescription description) async {
+  static Future<void> setApplicationSwitcherDescription(
+    ApplicationSwitcherDescription description,
+  ) async {
     await SystemChannels.platform.invokeMethod<void>(
       'SystemChrome.setApplicationSwitcherDescription',
       <String, dynamic>{
@@ -430,7 +448,10 @@ abstract final class SystemChrome {
   /// is true, the application is not fullscreen. See
   /// [SystemChrome.setSystemUIChangeCallback] to respond to these changes in a
   /// fullscreen application.
-  static Future<void> setEnabledSystemUIMode(SystemUiMode mode, { List<SystemUiOverlay>? overlays }) async {
+  static Future<void> setEnabledSystemUIMode(
+    SystemUiMode mode, {
+    List<SystemUiOverlay>? overlays,
+  }) async {
     if (mode != SystemUiMode.manual) {
       await SystemChannels.platform.invokeMethod<void>(
         'SystemChrome.setEnabledSystemUIMode',
@@ -465,7 +486,9 @@ abstract final class SystemChrome {
   /// overlays have been disabled. This results in the same behavior as
   /// [SystemUiMode.leanBack].
   ///
-  static Future<void> setSystemUIChangeCallback(SystemUiChangeCallback? callback) async {
+  static Future<void> setSystemUIChangeCallback(
+    SystemUiChangeCallback? callback,
+  ) async {
     ServicesBinding.instance.setSystemUiChangeCallback(callback);
     // Skip setting up the listener if there is no callback.
     if (callback != null) {

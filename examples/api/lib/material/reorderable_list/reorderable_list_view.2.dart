@@ -47,14 +47,16 @@ class _ReorderableExampleState extends State<ReorderableExample> {
           color: _items[index].isOdd ? oddItemColor : evenItemColor,
           child: SizedBox(
             height: 80,
-            child: Center(
-              child: Text('Card ${_items[index]}'),
-            ),
+            child: Center(child: Text('Card ${_items[index]}')),
           ),
         ),
     ];
 
-    Widget proxyDecorator(Widget child, int index, Animation<double> animation) {
+    Widget proxyDecorator(
+      Widget child,
+      int index,
+      Animation<double> animation,
+    ) {
       return AnimatedBuilder(
         animation: animation,
         builder: (BuildContext context, Widget? child) {

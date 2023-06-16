@@ -3,16 +3,15 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_api_samples/material/divider/vertical_divider.0.dart' as example;
+import 'package:flutter_api_samples/material/divider/vertical_divider.0.dart'
+    as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Vertical Divider', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(
-          body: example.VerticalDividerExampleApp(),
-        ),
+        home: Scaffold(body: example.VerticalDividerExampleApp()),
       ),
     );
 

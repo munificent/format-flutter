@@ -63,10 +63,7 @@ class FractionalOffset extends Alignment {
   /// The returned [FractionalOffset] describes the position of the
   /// [Offset] in the [Size], as a fraction of the [Size].
   factory FractionalOffset.fromOffsetAndSize(Offset offset, Size size) {
-    return FractionalOffset(
-      offset.dx / size.width,
-      offset.dy / size.height,
-    );
+    return FractionalOffset(offset.dx / size.width, offset.dy / size.height);
   }
 
   /// Creates a fractional offset from a specific offset and rectangle.
@@ -79,10 +76,7 @@ class FractionalOffset extends Alignment {
   /// The returned [FractionalOffset] describes the position of the
   /// [Offset] in the [Rect], as a fraction of the [Rect].
   factory FractionalOffset.fromOffsetAndRect(Offset offset, Rect rect) {
-    return FractionalOffset.fromOffsetAndSize(
-      offset - rect.topLeft,
-      rect.size,
-    );
+    return FractionalOffset.fromOffsetAndSize(offset - rect.topLeft, rect.size);
   }
 
   /// The distance fraction in the horizontal direction.
@@ -175,22 +169,35 @@ class FractionalOffset extends Alignment {
   /// If either is null, this function interpolates from [FractionalOffset.center].
   ///
   /// {@macro dart.ui.shadow.lerp}
-  static FractionalOffset? lerp(FractionalOffset? a, FractionalOffset? b, double t) {
+  static FractionalOffset? lerp(
+    FractionalOffset? a,
+    FractionalOffset? b,
+    double t,
+  ) {
     if (identical(a, b)) {
       return a;
     }
     if (a == null) {
-      return FractionalOffset(ui.lerpDouble(0.5, b!.dx, t)!, ui.lerpDouble(0.5, b.dy, t)!);
+      return FractionalOffset(
+        ui.lerpDouble(0.5, b!.dx, t)!,
+        ui.lerpDouble(0.5, b.dy, t)!,
+      );
     }
     if (b == null) {
-      return FractionalOffset(ui.lerpDouble(a.dx, 0.5, t)!, ui.lerpDouble(a.dy, 0.5, t)!);
+      return FractionalOffset(
+        ui.lerpDouble(a.dx, 0.5, t)!,
+        ui.lerpDouble(a.dy, 0.5, t)!,
+      );
     }
-    return FractionalOffset(ui.lerpDouble(a.dx, b.dx, t)!, ui.lerpDouble(a.dy, b.dy, t)!);
+    return FractionalOffset(
+      ui.lerpDouble(a.dx, b.dx, t)!,
+      ui.lerpDouble(a.dy, b.dy, t)!,
+    );
   }
 
   @override
   String toString() {
     return 'FractionalOffset(${dx.toStringAsFixed(1)}, '
-                            '${dy.toStringAsFixed(1)})';
+        '${dy.toStringAsFixed(1)})';
   }
 }

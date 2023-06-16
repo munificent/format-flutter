@@ -42,11 +42,11 @@ class PerformanceOverlay extends LeafRenderObjectWidget {
     this.rasterizerThreshold = 0,
     this.checkerboardRasterCacheImages = false,
     this.checkerboardOffscreenLayers = false,
-  }) : optionsMask =
-        1 << PerformanceOverlayOption.displayRasterizerStatistics.index |
-        1 << PerformanceOverlayOption.visualizeRasterizerStatistics.index |
-        1 << PerformanceOverlayOption.displayEngineStatistics.index |
-        1 << PerformanceOverlayOption.visualizeEngineStatistics.index;
+  }) : optionsMask = 1 <<
+               PerformanceOverlayOption.displayRasterizerStatistics.index |
+           1 << PerformanceOverlayOption.visualizeRasterizerStatistics.index |
+           1 << PerformanceOverlayOption.displayEngineStatistics.index |
+           1 << PerformanceOverlayOption.visualizeEngineStatistics.index;
 
   /// The mask is created by shifting 1 by the index of the specific
   /// [PerformanceOverlayOption] to enable.
@@ -104,7 +104,9 @@ class PerformanceOverlay extends LeafRenderObjectWidget {
   final bool checkerboardOffscreenLayers;
 
   @override
-  RenderPerformanceOverlay createRenderObject(BuildContext context) => RenderPerformanceOverlay(
+  RenderPerformanceOverlay createRenderObject(
+    BuildContext context,
+  ) => RenderPerformanceOverlay(
     optionsMask: optionsMask,
     rasterizerThreshold: rasterizerThreshold,
     checkerboardRasterCacheImages: checkerboardRasterCacheImages,
@@ -112,7 +114,10 @@ class PerformanceOverlay extends LeafRenderObjectWidget {
   );
 
   @override
-  void updateRenderObject(BuildContext context, RenderPerformanceOverlay renderObject) {
+  void updateRenderObject(
+    BuildContext context,
+    RenderPerformanceOverlay renderObject,
+  ) {
     renderObject
       ..optionsMask = optionsMask
       ..rasterizerThreshold = rasterizerThreshold

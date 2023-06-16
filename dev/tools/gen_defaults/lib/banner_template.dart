@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class BannerTemplate extends TokenTemplate {
-  const BannerTemplate(super.blockName, super.fileName, super.tokens, {
+  const BannerTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   @override
@@ -24,13 +27,17 @@ class _${blockName}DefaultsM3 extends MaterialBannerThemeData {
   Color? get backgroundColor => ${componentColor("md.comp.banner.container")};
 
   @override
-  Color? get surfaceTintColor => ${color("md.comp.banner.container.surface-tint-layer.color")};
+  Color? get surfaceTintColor => ${color(
+        "md.comp.banner.container.surface-tint-layer.color",
+      )};
 
   @override
   Color? get dividerColor => ${color("md.comp.divider.color")};
 
   @override
-  TextStyle? get contentTextStyle => ${textStyle("md.comp.banner.supporting-text")};
+  TextStyle? get contentTextStyle => ${textStyle(
+        "md.comp.banner.supporting-text",
+      )};
 }
 ''';
 }

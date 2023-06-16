@@ -25,16 +25,19 @@ void main() {
       );
     });
 
-    testWithoutContext('runAsync throwOnError: exceptions should be ProcessException objects', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'false',
-        ],
-        exitCode: 1,
-      ));
+    testWithoutContext(
+      'runAsync throwOnError: exceptions should be ProcessException objects',
+      () async {
+        fakeProcessManager.addCommand(
+          const FakeCommand(command: <String>['false'], exitCode: 1),
+        );
 
-      expect(() async => processUtils.run(<String>['false'], throwOnError: true), throwsProcessException());
-    });
+        expect(
+          () async => processUtils.run(<String>['false'], throwOnError: true),
+          throwsProcessException(),
+        );
+      },
+    );
   });
 
   group('shutdownHooks', () {
@@ -83,18 +86,23 @@ void main() {
     });
 
     testWithoutContext('Command output is filtered by mapFunction', () async {
-      processManager.addCommand(const FakeCommand(
-        command: <String>['command'],
-        stdout: 'match\nno match',
-        stderr: 'match\nno match',
-      ));
+      processManager.addCommand(
+        const FakeCommand(
+          command: <String>['command'],
+          stdout: 'match\nno match',
+          stderr: 'match\nno match',
+        ),
+      );
 
-      await processUtils.stream(<String>['command'], mapFunction: (String line) {
-        if (line == 'match') {
-          return line;
-        }
-        return null;
-      });
+      await processUtils.stream(
+        <String>['command'],
+        mapFunction: (String line) {
+          if (line == 'match') {
+            return line;
+          }
+          return null;
+        },
+      );
 
       expect(logger.statusText, equals('match\n'));
       expect(logger.errorText, equals('match\n'));
@@ -114,64 +122,50 @@ void main() {
     });
 
     testWithoutContext(' succeeds on success', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'whoohoo',
-        ],
-      ));
+      fakeProcessManager.addCommand(
+        const FakeCommand(command: <String>['whoohoo']),
+      );
       expect((await processUtils.run(<String>['whoohoo'])).exitCode, 0);
     });
 
     testWithoutContext(' fails on failure', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'boohoo',
-        ],
-        exitCode: 1,
-      ));
+      fakeProcessManager.addCommand(
+        const FakeCommand(command: <String>['boohoo'], exitCode: 1),
+      );
       expect((await processUtils.run(<String>['boohoo'])).exitCode, 1);
     });
 
     testWithoutContext(' throws on failure with throwOnError', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'kaboom',
-        ],
-        exitCode: 1,
-      ));
-      expect(() => processUtils.run(<String>['kaboom'], throwOnError: true), throwsProcessException());
+      fakeProcessManager.addCommand(
+        const FakeCommand(command: <String>['kaboom'], exitCode: 1),
+      );
+      expect(
+        () => processUtils.run(<String>['kaboom'], throwOnError: true),
+        throwsProcessException(),
+      );
     });
 
     testWithoutContext(' does not throw on allowed Failures', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'kaboom',
-        ],
-        exitCode: 1,
-      ));
+      fakeProcessManager.addCommand(
+        const FakeCommand(command: <String>['kaboom'], exitCode: 1),
+      );
       expect(
-        (await processUtils.run(
-          <String>['kaboom'],
-          throwOnError: true,
-          allowedFailures: (int c) => c == 1,
-        )).exitCode,
+        (await processUtils.run(<String>[
+              'kaboom',
+            ], throwOnError: true, allowedFailures: (int c) => c == 1))
+            .exitCode,
         1,
       );
     });
 
     testWithoutContext(' throws on disallowed failure', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'kaboom',
-        ],
-        exitCode: 2,
-      ));
+      fakeProcessManager.addCommand(
+        const FakeCommand(command: <String>['kaboom'], exitCode: 2),
+      );
       expect(
-        () => processUtils.run(
-          <String>['kaboom'],
-          throwOnError: true,
-          allowedFailures: (int c) => c == 1,
-        ),
+        () => processUtils.run(<String>[
+          'kaboom',
+        ], throwOnError: true, allowedFailures: (int c) => c == 1),
         throwsProcessException(),
       );
     });
@@ -185,10 +179,7 @@ void main() {
     setUp(() {
       fakeProcessManager = FakeProcessManager.empty();
       testLogger = BufferLogger(
-        terminal: AnsiTerminal(
-          stdio: FakeStdio(),
-          platform: FakePlatform(),
-        ),
+        terminal: AnsiTerminal(stdio: FakeStdio(), platform: FakePlatform()),
         outputPreferences: OutputPreferences(wrapText: true, wrapColumn: 40),
       );
       processUtils = ProcessUtils(
@@ -198,33 +189,28 @@ void main() {
     });
 
     testWithoutContext(' succeeds on success', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'whoohoo',
-        ],
-      ));
+      fakeProcessManager.addCommand(
+        const FakeCommand(command: <String>['whoohoo']),
+      );
       expect(processUtils.runSync(<String>['whoohoo']).exitCode, 0);
     });
 
     testWithoutContext(' fails on failure', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'boohoo',
-        ],
-        exitCode: 1,
-      ));
+      fakeProcessManager.addCommand(
+        const FakeCommand(command: <String>['boohoo'], exitCode: 1),
+      );
       expect(processUtils.runSync(<String>['boohoo']).exitCode, 1);
     });
 
     testWithoutContext('throws on failure with throwOnError', () async {
       const String stderr = 'Something went wrong.';
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'kaboom',
-        ],
-        exitCode: 1,
-        stderr: stderr,
-      ));
+      fakeProcessManager.addCommand(
+        const FakeCommand(
+          command: <String>['kaboom'],
+          exitCode: 1,
+          stderr: stderr,
+        ),
+      );
       expect(
         () => processUtils.runSync(<String>['kaboom'], throwOnError: true),
         throwsA(isA<ProcessException>().having(
@@ -235,94 +221,98 @@ void main() {
       );
     });
 
-    testWithoutContext('throws with stderr in exception on failure with verboseExceptions', () async {
-      const String stderr = 'Something went wrong.';
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'verybad',
-        ],
-        exitCode: 1,
-        stderr: stderr,
-      ));
+    testWithoutContext(
+      'throws with stderr in exception on failure with verboseExceptions',
+      () async {
+        const String stderr = 'Something went wrong.';
+        fakeProcessManager.addCommand(
+          const FakeCommand(
+            command: <String>['verybad'],
+            exitCode: 1,
+            stderr: stderr,
+          ),
+        );
+        expect(
+          () => processUtils.runSync(<String>[
+            'verybad',
+          ], throwOnError: true, verboseExceptions: true),
+          throwsProcessException(message: stderr),
+        );
+      },
+    );
+
+    testWithoutContext(' does not throw on allowed Failures', () async {
+      fakeProcessManager.addCommand(
+        const FakeCommand(command: <String>['kaboom'], exitCode: 1),
+      );
       expect(
-        () => processUtils.runSync(
-          <String>['verybad'],
-          throwOnError: true,
-          verboseExceptions: true,
-        ),
-        throwsProcessException(message: stderr),
+        processUtils.runSync(<String>[
+          'kaboom',
+        ], throwOnError: true, allowedFailures: (int c) => c == 1).exitCode,
+        1,
       );
     });
 
-    testWithoutContext(' does not throw on allowed Failures', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'kaboom',
-        ],
-        exitCode: 1,
-      ));
-      expect(
-        processUtils.runSync(
-          <String>['kaboom'],
-          throwOnError: true,
-          allowedFailures: (int c) => c == 1,
-        ).exitCode,
-        1);
-    });
-
     testWithoutContext(' throws on disallowed failure', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'kaboom',
-        ],
-        exitCode: 2,
-      ));
+      fakeProcessManager.addCommand(
+        const FakeCommand(command: <String>['kaboom'], exitCode: 2),
+      );
       expect(
-        () => processUtils.runSync(
-          <String>['kaboom'],
-          throwOnError: true,
-          allowedFailures: (int c) => c == 1,
-        ),
+        () => processUtils.runSync(<String>[
+          'kaboom',
+        ], throwOnError: true, allowedFailures: (int c) => c == 1),
         throwsProcessException(),
       );
     });
 
-    testWithoutContext(' prints stdout and stderr to trace on success', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'whoohoo',
-        ],
-        stdout: 'stdout',
-        stderr: 'stderr',
-      ));
-      expect(processUtils.runSync(<String>['whoohoo']).exitCode, 0);
-      expect(testLogger.traceText, contains('stdout'));
-      expect(testLogger.traceText, contains('stderr'));
-    });
+    testWithoutContext(
+      ' prints stdout and stderr to trace on success',
+      () async {
+        fakeProcessManager.addCommand(
+          const FakeCommand(
+            command: <String>['whoohoo'],
+            stdout: 'stdout',
+            stderr: 'stderr',
+          ),
+        );
+        expect(processUtils.runSync(<String>['whoohoo']).exitCode, 0);
+        expect(testLogger.traceText, contains('stdout'));
+        expect(testLogger.traceText, contains('stderr'));
+      },
+    );
 
-    testWithoutContext(' prints stdout to status and stderr to error on failure with throwOnError', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'kaboom',
-        ],
-        exitCode: 1,
-        stdout: 'stdout',
-        stderr: 'stderr',
-      ));
-      expect(() => processUtils.runSync(<String>['kaboom'], throwOnError: true), throwsProcessException());
-      expect(testLogger.statusText, contains('stdout'));
-      expect(testLogger.errorText, contains('stderr'));
-    });
+    testWithoutContext(
+      ' prints stdout to status and stderr to error on failure with throwOnError',
+      () async {
+        fakeProcessManager.addCommand(
+          const FakeCommand(
+            command: <String>['kaboom'],
+            exitCode: 1,
+            stdout: 'stdout',
+            stderr: 'stderr',
+          ),
+        );
+        expect(
+          () => processUtils.runSync(<String>['kaboom'], throwOnError: true),
+          throwsProcessException(),
+        );
+        expect(testLogger.statusText, contains('stdout'));
+        expect(testLogger.errorText, contains('stderr'));
+      },
+    );
 
     testWithoutContext(' does not print stdout with hideStdout', () async {
-      fakeProcessManager.addCommand(const FakeCommand(
-        command: <String>[
-          'whoohoo',
-        ],
-        stdout: 'stdout',
-        stderr: 'stderr',
-      ));
-      expect(processUtils.runSync(<String>['whoohoo'], hideStdout: true).exitCode, 0);
+      fakeProcessManager.addCommand(
+        const FakeCommand(
+          command: <String>['whoohoo'],
+          stdout: 'stdout',
+          stderr: 'stderr',
+        ),
+      );
+      expect(
+        processUtils.runSync(<String>['whoohoo'], hideStdout: true).exitCode,
+        0,
+      );
       expect(testLogger.traceText.contains('stdout'), isFalse);
       expect(testLogger.traceText, contains('stderr'));
     });
@@ -341,36 +331,40 @@ void main() {
     });
 
     testWithoutContext('succeeds on success', () async {
-      processManager.addCommand(const FakeCommand(
-        command: <String>['whoohoo'],
-      ));
+      processManager.addCommand(
+        const FakeCommand(command: <String>['whoohoo']),
+      );
 
       expect(processUtils.exitsHappySync(<String>['whoohoo']), isTrue);
     });
 
     testWithoutContext('fails on failure', () async {
-      processManager.addCommand(const FakeCommand(
-        command: <String>['boohoo'],
-        exitCode: 1,
-      ));
+      processManager.addCommand(
+        const FakeCommand(command: <String>['boohoo'], exitCode: 1),
+      );
 
       expect(processUtils.exitsHappySync(<String>['boohoo']), isFalse);
     });
 
     testWithoutContext('catches Exception and returns false', () {
-      processManager.addCommand(const FakeCommand(
-        command: <String>['boohoo'],
-        exception: ProcessException('Process failed', <String>[]),
-      ));
+      processManager.addCommand(
+        const FakeCommand(
+          command: <String>['boohoo'],
+          exception: ProcessException('Process failed', <String>[]),
+        ),
+      );
 
       expect(processUtils.exitsHappySync(<String>['boohoo']), isFalse);
     });
 
-    testWithoutContext('does not throw Exception and returns false if binary cannot run', () {
-      processManager.excludedExecutables.add('nonesuch');
+    testWithoutContext(
+      'does not throw Exception and returns false if binary cannot run',
+      () {
+        processManager.excludedExecutables.add('nonesuch');
 
-      expect(processUtils.exitsHappySync(<String>['nonesuch']), isFalse);
-    });
+        expect(processUtils.exitsHappySync(<String>['nonesuch']), isFalse);
+      },
+    );
 
     testWithoutContext('does not catch ArgumentError', () async {
       processManager.addCommand(FakeCommand(
@@ -398,41 +392,45 @@ void main() {
     });
 
     testWithoutContext('succeeds on success', () async {
-      processManager.addCommand(const FakeCommand(
-        command: <String>['whoohoo']
-      ));
+      processManager.addCommand(
+        const FakeCommand(command: <String>['whoohoo']),
+      );
 
       expect(await processUtils.exitsHappy(<String>['whoohoo']), isTrue);
     });
 
     testWithoutContext('fails on failure', () async {
-      processManager.addCommand(const FakeCommand(
-        command: <String>['boohoo'],
-        exitCode: 1,
-      ));
+      processManager.addCommand(
+        const FakeCommand(command: <String>['boohoo'], exitCode: 1),
+      );
 
       expect(await processUtils.exitsHappy(<String>['boohoo']), isFalse);
     });
 
     testWithoutContext('catches Exception and returns false', () async {
-      processManager.addCommand(const FakeCommand(
-        command: <String>['boohoo'],
-        exception: ProcessException('Process failed', <String>[])
-      ));
+      processManager.addCommand(
+        const FakeCommand(
+          command: <String>['boohoo'],
+          exception: ProcessException('Process failed', <String>[]),
+        ),
+      );
 
       expect(await processUtils.exitsHappy(<String>['boohoo']), isFalse);
     });
 
-    testWithoutContext('does not throw Exception and returns false if binary cannot run', () async {
-      processManager.excludedExecutables.add('nonesuch');
+    testWithoutContext(
+      'does not throw Exception and returns false if binary cannot run',
+      () async {
+        processManager.excludedExecutables.add('nonesuch');
 
-      expect(await processUtils.exitsHappy(<String>['nonesuch']), isFalse);
-    });
+        expect(await processUtils.exitsHappy(<String>['nonesuch']), isFalse);
+      },
+    );
 
     testWithoutContext('does not catch ArgumentError', () async {
       processManager.addCommand(FakeCommand(
         command: const <String>['invalid'],
-        exception: ArgumentError('Bad input')
+        exception: ArgumentError('Bad input'),
       ));
 
       expect(

@@ -14,7 +14,10 @@ class FloatingActionButtonExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(colorSchemeSeed: const Color(0xff6750a4), useMaterial3: true),
+      theme: ThemeData(
+        colorSchemeSeed: const Color(0xff6750a4),
+        useMaterial3: true,
+      ),
       home: const FabExample(),
     );
   }
@@ -26,9 +29,7 @@ class FabExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('FloatingActionButton Sample'),
-      ),
+      appBar: AppBar(title: const Text('FloatingActionButton Sample')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -18,28 +18,28 @@ void main() {
       final SemanticsTester semantics = SemanticsTester(tester);
       final ScrollController controller = ScrollController();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ListView.builder(
-            controller: controller,
-            itemCount: itemCount,
-            itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: itemHeight,
-                child: Text('Tile $index'),
-              );
-            },
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: ListView.builder(
+          controller: controller,
+          itemCount: itemCount,
+          itemBuilder: (BuildContext context, int index) {
+            return SizedBox(height: itemHeight, child: Text('Tile $index'));
+          },
         ),
-      );
+      ));
 
-      expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollUp]));
+      expect(
+        semantics,
+        includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollUp]),
+      );
 
       // Jump to the end.
       controller.jumpTo(itemCount * itemHeight);
       await tester.pumpAndSettle();
-      expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollDown]));
+      expect(semantics, includesNodeWith(
+        actions: <SemanticsAction>[SemanticsAction.scrollDown],
+      ));
 
       semantics.dispose();
     });
@@ -48,29 +48,29 @@ void main() {
       final SemanticsTester semantics = SemanticsTester(tester);
       final ScrollController controller = ScrollController();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ListView.builder(
-            reverse: true,
-            controller: controller,
-            itemCount: itemCount,
-            itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: itemHeight,
-                child: Text('Tile $index'),
-              );
-            },
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: ListView.builder(
+          reverse: true,
+          controller: controller,
+          itemCount: itemCount,
+          itemBuilder: (BuildContext context, int index) {
+            return SizedBox(height: itemHeight, child: Text('Tile $index'));
+          },
         ),
-      );
+      ));
 
-      expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollDown]));
+      expect(semantics, includesNodeWith(
+        actions: <SemanticsAction>[SemanticsAction.scrollDown],
+      ));
 
       // Jump to the end.
       controller.jumpTo(itemCount * itemHeight);
       await tester.pumpAndSettle();
-      expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollUp]));
+      expect(
+        semantics,
+        includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollUp]),
+      );
 
       semantics.dispose();
     });
@@ -79,29 +79,28 @@ void main() {
       final SemanticsTester semantics = SemanticsTester(tester);
       final ScrollController controller = ScrollController();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            controller: controller,
-            itemCount: itemCount,
-            itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: itemHeight,
-                child: Text('Tile $index'),
-              );
-            },
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          controller: controller,
+          itemCount: itemCount,
+          itemBuilder: (BuildContext context, int index) {
+            return SizedBox(height: itemHeight, child: Text('Tile $index'));
+          },
         ),
-      );
+      ));
 
-      expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollLeft]));
+      expect(semantics, includesNodeWith(
+        actions: <SemanticsAction>[SemanticsAction.scrollLeft],
+      ));
 
       // Jump to the end.
       controller.jumpTo(itemCount * itemHeight);
       await tester.pumpAndSettle();
-      expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollRight]));
+      expect(semantics, includesNodeWith(
+        actions: <SemanticsAction>[SemanticsAction.scrollRight],
+      ));
 
       semantics.dispose();
     });
@@ -110,30 +109,29 @@ void main() {
       final SemanticsTester semantics = SemanticsTester(tester);
       final ScrollController controller = ScrollController();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            reverse: true,
-            controller: controller,
-            itemCount: itemCount,
-            itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: itemHeight,
-                child: Text('Tile $index'),
-              );
-            },
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          reverse: true,
+          controller: controller,
+          itemCount: itemCount,
+          itemBuilder: (BuildContext context, int index) {
+            return SizedBox(height: itemHeight, child: Text('Tile $index'));
+          },
         ),
-      );
+      ));
 
-      expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollRight]));
+      expect(semantics, includesNodeWith(
+        actions: <SemanticsAction>[SemanticsAction.scrollRight],
+      ));
 
       // Jump to the end.
       controller.jumpTo(itemCount * itemHeight);
       await tester.pumpAndSettle();
-      expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollLeft]));
+      expect(semantics, includesNodeWith(
+        actions: <SemanticsAction>[SemanticsAction.scrollLeft],
+      ));
 
       semantics.dispose();
     });

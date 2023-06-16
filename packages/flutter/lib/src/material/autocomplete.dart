@@ -101,7 +101,12 @@ class Autocomplete<T extends Object> extends StatelessWidget {
   /// {@macro flutter.widgets.RawAutocomplete.initialValue}
   final TextEditingValue? initialValue;
 
-  static Widget _defaultFieldViewBuilder(BuildContext context, TextEditingController textEditingController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
+  static Widget _defaultFieldViewBuilder(
+    BuildContext context,
+    TextEditingController textEditingController,
+    FocusNode focusNode,
+    VoidCallback onFieldSubmitted,
+  ) {
     return _AutocompleteField(
       focusNode: focusNode,
       textEditingController: textEditingController,
@@ -116,14 +121,19 @@ class Autocomplete<T extends Object> extends StatelessWidget {
       fieldViewBuilder: fieldViewBuilder,
       initialValue: initialValue,
       optionsBuilder: optionsBuilder,
-      optionsViewBuilder: optionsViewBuilder ?? (BuildContext context, AutocompleteOnSelected<T> onSelected, Iterable<T> options) {
-        return _AutocompleteOptions<T>(
-          displayStringForOption: displayStringForOption,
-          onSelected: onSelected,
-          options: options,
-          maxOptionsHeight: optionsMaxHeight,
-        );
-      },
+      optionsViewBuilder: optionsViewBuilder ??
+          (
+            BuildContext context,
+            AutocompleteOnSelected<T> onSelected,
+            Iterable<T> options,
+          ) {
+            return _AutocompleteOptions<T>(
+              displayStringForOption: displayStringForOption,
+              onSelected: onSelected,
+              options: options,
+              maxOptionsHeight: optionsMaxHeight,
+            );
+          },
       onSelected: onSelected,
     );
   }
@@ -192,18 +202,21 @@ class _AutocompleteOptions<T extends Object> extends StatelessWidget {
                 },
                 child: Builder(
                   builder: (BuildContext context) {
-                    final bool highlight = AutocompleteHighlightedOption.of(context) == index;
+                    final bool highlight =
+                        AutocompleteHighlightedOption.of(context) == index;
                     if (highlight) {
-                      SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
-                        Scrollable.ensureVisible(context, alignment: 0.5);
-                      });
+                      SchedulerBinding.instance.addPostFrameCallback(
+                        (Duration timeStamp) {
+                          Scrollable.ensureVisible(context, alignment: 0.5);
+                        },
+                      );
                     }
                     return Container(
                       color: highlight ? Theme.of(context).focusColor : null,
                       padding: const EdgeInsets.all(16.0),
                       child: Text(displayStringForOption(option)),
                     );
-                  }
+                  },
                 ),
               );
             },

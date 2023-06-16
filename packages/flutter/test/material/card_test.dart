@@ -9,10 +9,11 @@ import 'package:flutter_test/flutter_test.dart';
 import '../widgets/semantics_tester.dart';
 
 void main() {
-  testWidgets('Card can take semantic text from multiple children', (WidgetTester tester) async {
-    final SemanticsTester semantics = SemanticsTester(tester);
-    await tester.pumpWidget(
-      Directionality(
+  testWidgets(
+    'Card can take semantic text from multiple children',
+    (WidgetTester tester) async {
+      final SemanticsTester semantics = SemanticsTester(tester);
+      await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Material(
           child: Center(
@@ -22,20 +23,15 @@ void main() {
                 children: <Widget>[
                   const Text('I am text!'),
                   const Text('Moar text!!1'),
-                  ElevatedButton(
-                    onPressed: () { },
-                    child: const Text('Button'),
-                  ),
+                  ElevatedButton(onPressed: () {}, child: const Text('Button')),
                 ],
               ),
             ),
           ),
         ),
-      ),
-    );
+      ));
 
-    expect(semantics, hasSemantics(
-      TestSemantics.root(
+      expect(semantics, hasSemantics(TestSemantics.root(
         children: <TestSemantics>[
           TestSemantics(
             id: 1,
@@ -56,9 +52,7 @@ void main() {
                 id: 4,
                 label: 'Button',
                 textDirection: TextDirection.ltr,
-                actions: <SemanticsAction>[
-                  SemanticsAction.tap,
-                ],
+                actions: <SemanticsAction>[SemanticsAction.tap],
                 flags: <SemanticsFlag>[
                   SemanticsFlag.hasEnabledState,
                   SemanticsFlag.isButton,
@@ -69,38 +63,34 @@ void main() {
             ],
           ),
         ],
-      ),
-      ignoreTransform: true,
-      ignoreRect: true,
-    ));
+      ), ignoreTransform: true, ignoreRect: true));
 
-    semantics.dispose();
-  });
+      semantics.dispose();
+    },
+  );
 
-  testWidgets('Card merges children when it is a semanticContainer', (WidgetTester tester) async {
-    final SemanticsTester semantics = SemanticsTester(tester);
-    debugResetSemanticsIdCounter();
+  testWidgets(
+    'Card merges children when it is a semanticContainer',
+    (WidgetTester tester) async {
+      final SemanticsTester semantics = SemanticsTester(tester);
+      debugResetSemanticsIdCounter();
 
-    await tester.pumpWidget(
-      const Directionality(
-        textDirection: TextDirection.ltr,
-        child: Material(
-          child: Center(
-            child: Card(
-              child: Column(
-                children: <Widget>[
-                  Text('First child'),
-                  Text('Second child'),
-                ],
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Material(
+            child: Center(
+              child: Card(
+                child: Column(
+                  children: <Widget>[Text('First child'), Text('Second child')],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
 
-    expect(semantics, hasSemantics(
-      TestSemantics.root(
+      expect(semantics, hasSemantics(TestSemantics.root(
         children: <TestSemantics>[
           TestSemantics(
             id: 1,
@@ -108,30 +98,26 @@ void main() {
             textDirection: TextDirection.ltr,
           ),
         ],
-      ),
-      ignoreTransform: true,
-      ignoreRect: true,
-    ));
+      ), ignoreTransform: true, ignoreRect: true));
 
-    semantics.dispose();
-  });
+      semantics.dispose();
+    },
+  );
 
   testWidgets('Card margin', (WidgetTester tester) async {
     const Key contentsKey = ValueKey<String>('contents');
 
-    await tester.pumpWidget(
-      Container(
-        alignment: Alignment.topLeft,
-        child: Card(
-          child: Container(
-            key: contentsKey,
-            color: const Color(0xFF00FF00),
-            width: 100.0,
-            height: 100.0,
-          ),
+    await tester.pumpWidget(Container(
+      alignment: Alignment.topLeft,
+      child: Card(
+        child: Container(
+          key: contentsKey,
+          color: const Color(0xFF00FF00),
+          width: 100.0,
+          height: 100.0,
         ),
       ),
-    );
+    ));
 
     // Default margin is 4
     expect(tester.getTopLeft(find.byType(Card)), Offset.zero);
@@ -140,20 +126,18 @@ void main() {
     expect(tester.getTopLeft(find.byKey(contentsKey)), const Offset(4.0, 4.0));
     expect(tester.getSize(find.byKey(contentsKey)), const Size(100.0, 100.0));
 
-    await tester.pumpWidget(
-      Container(
-        alignment: Alignment.topLeft,
-        child: Card(
-          margin: EdgeInsets.zero,
-          child: Container(
-            key: contentsKey,
-            color: const Color(0xFF00FF00),
-            width: 100.0,
-            height: 100.0,
-          ),
+    await tester.pumpWidget(Container(
+      alignment: Alignment.topLeft,
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: Container(
+          key: contentsKey,
+          color: const Color(0xFF00FF00),
+          width: 100.0,
+          height: 100.0,
         ),
       ),
-    );
+    ));
 
     // Specified margin is zero
     expect(tester.getTopLeft(find.byType(Card)), Offset.zero);
@@ -163,57 +147,63 @@ void main() {
     expect(tester.getSize(find.byKey(contentsKey)), const Size(100.0, 100.0));
   });
 
-  testWidgets('Card clipBehavior property passes through to the Material', (WidgetTester tester) async {
-    await tester.pumpWidget(const Card());
-    expect(tester.widget<Material>(find.byType(Material)).clipBehavior, Clip.none);
-
-    await tester.pumpWidget(const Card(clipBehavior: Clip.antiAlias));
-    expect(tester.widget<Material>(find.byType(Material)).clipBehavior, Clip.antiAlias);
-  });
-
-  testWidgets('Card clipBehavior property defers to theme when null', (WidgetTester tester) async {
-    await tester.pumpWidget(Builder(builder: (BuildContext context) {
-      final ThemeData themeData = Theme.of(context);
-      return Theme(
-        data: themeData.copyWith(
-          cardTheme: themeData.cardTheme.copyWith(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-          ),
-        ),
-        child: const Card(),
+  testWidgets(
+    'Card clipBehavior property passes through to the Material',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const Card());
+      expect(
+        tester.widget<Material>(find.byType(Material)).clipBehavior,
+        Clip.none,
       );
-    }));
-    expect(tester.widget<Material>(find.byType(Material)).clipBehavior, Clip.antiAliasWithSaveLayer);
-  });
+
+      await tester.pumpWidget(const Card(clipBehavior: Clip.antiAlias));
+      expect(
+        tester.widget<Material>(find.byType(Material)).clipBehavior,
+        Clip.antiAlias,
+      );
+    },
+  );
+
+  testWidgets(
+    'Card clipBehavior property defers to theme when null',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(Builder(
+        builder: (BuildContext context) {
+          final ThemeData themeData = Theme.of(context);
+          return Theme(
+            data: themeData.copyWith(
+              cardTheme: themeData.cardTheme.copyWith(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+              ),
+            ),
+            child: const Card(),
+          );
+        },
+      ));
+      expect(
+        tester.widget<Material>(find.byType(Material)).clipBehavior,
+        Clip.antiAliasWithSaveLayer,
+      );
+    },
+  );
 
   testWidgets('Card shadowColor', (WidgetTester tester) async {
     Material getCardMaterial(WidgetTester tester) {
       return tester.widget<Material>(
-        find.descendant(
-          of: find.byType(Card),
-          matching: find.byType(Material),
-        ),
+        find.descendant(of: find.byType(Card), matching: find.byType(Material)),
       );
     }
 
     Card getCard(WidgetTester tester) {
-      return tester.widget<Card>(
-        find.byType(Card),
-      );
+      return tester.widget<Card>(find.byType(Card));
     }
 
-    await tester.pumpWidget(
-      const Card(),
-    );
+    await tester.pumpWidget(const Card());
 
     expect(getCard(tester).shadowColor, null);
     expect(getCardMaterial(tester).shadowColor, const Color(0xFF000000));
 
-    await tester.pumpWidget(
-      const Card(
-        shadowColor: Colors.red,
-      ),
-    );
+    await tester.pumpWidget(const Card(shadowColor: Colors.red));
 
     expect(getCardMaterial(tester).shadowColor, getCard(tester).shadowColor);
     expect(getCardMaterial(tester).shadowColor, Colors.red);

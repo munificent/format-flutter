@@ -13,11 +13,12 @@ import 'globals.dart' as globals;
 
 String get defaultMainPath => globals.fs.path.join('lib', 'main.dart');
 const String defaultManifestPath = 'pubspec.yaml';
-String get defaultDepfilePath => globals.fs.path.join(getBuildDirectory(), 'snapshot_blob.bin.d');
+String get defaultDepfilePath => globals.fs.path.join(
+  getBuildDirectory(),
+  'snapshot_blob.bin.d',
+);
 
-String getDefaultApplicationKernelPath({
-  required bool trackWidgetCreation,
-}) {
+String getDefaultApplicationKernelPath({required bool trackWidgetCreation}) {
   return getKernelPathForTransformerOptions(
     globals.fs.path.join(getBuildDirectory(), 'app.dill'),
     trackWidgetCreation: trackWidgetCreation,
@@ -32,8 +33,12 @@ String getDefaultCachedKernelPath({
   Config? config,
 }) {
   final StringBuffer buffer = StringBuffer();
-   final List<String> cacheFrontEndOptions = extraFrontEndOptions.toList()
-     ..removeWhere((String arg) => arg.startsWith('--enable-experiment=') || arg == '--flutter-widget-cache');
+  final List<String> cacheFrontEndOptions = extraFrontEndOptions.toList()
+    ..removeWhere(
+      (String arg) =>
+          arg.startsWith('--enable-experiment=') ||
+          arg == '--flutter-widget-cache',
+    );
   buffer.writeAll(dartDefines);
   buffer.writeAll(cacheFrontEndOptions);
   String buildPrefix = '';
@@ -42,13 +47,12 @@ String getDefaultCachedKernelPath({
     final Digest digest = md5.convert(utf8.encode(output));
     buildPrefix = '${hex.encode(digest.bytes)}.';
   }
-  return getKernelPathForTransformerOptions(
-    (fileSystem ?? globals.fs).path.join(getBuildDirectory(
-      config ?? globals.config,
-     fileSystem ?? globals.fs
-    ), '${buildPrefix}cache.dill'),
-    trackWidgetCreation: trackWidgetCreation,
-  );
+  return getKernelPathForTransformerOptions((fileSystem ?? globals.fs)
+      .path
+      .join(
+        getBuildDirectory(config ?? globals.config, fileSystem ?? globals.fs),
+        '${buildPrefix}cache.dill',
+      ), trackWidgetCreation: trackWidgetCreation);
 }
 
 String getKernelPathForTransformerOptions(

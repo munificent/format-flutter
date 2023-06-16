@@ -16,9 +16,7 @@ class SnackBarExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('SnackBar Sample')),
-        body: const Center(
-          child: SnackBarExample(),
-        ),
+        body: const Center(child: SnackBarExample()),
       ),
     );
   }
@@ -32,17 +30,15 @@ class SnackBarExample extends StatelessWidget {
     return ElevatedButton(
       child: const Text('Show Snackbar'),
       onPressed: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Awesome Snackbar!'),
-            action: SnackBarAction(
-              label: 'Action',
-              onPressed: () {
-                // Code to execute.
-              },
-            ),
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('Awesome Snackbar!'),
+          action: SnackBarAction(
+            label: 'Action',
+            onPressed: () {
+              // Code to execute.
+            },
           ),
-        );
+        ));
       },
     );
   }

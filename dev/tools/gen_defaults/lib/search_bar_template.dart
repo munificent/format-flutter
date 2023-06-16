@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class SearchBarTemplate extends TokenTemplate {
-  const SearchBarTemplate(super.blockName, super.fileName, super.tokens, {
+  const SearchBarTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   @override
@@ -21,11 +24,15 @@ class _SearchBarDefaultsM3 extends SearchBarThemeData {
 
   @override
   MaterialStateProperty<Color?>? get backgroundColor =>
-    MaterialStatePropertyAll<Color>(${componentColor("md.comp.search-bar.container")});
+    MaterialStatePropertyAll<Color>(${componentColor(
+        "md.comp.search-bar.container",
+      )});
 
   @override
   MaterialStateProperty<double>? get elevation =>
-    const MaterialStatePropertyAll<double>(${elevation("md.comp.search-bar.container")});
+    const MaterialStatePropertyAll<double>(${elevation(
+        "md.comp.search-bar.container",
+      )});
 
   @override
   MaterialStateProperty<Color>? get shadowColor =>
@@ -33,7 +40,9 @@ class _SearchBarDefaultsM3 extends SearchBarThemeData {
 
   @override
   MaterialStateProperty<Color>? get surfaceTintColor =>
-    MaterialStatePropertyAll<Color>(${colorOrTransparent("md.comp.search-bar.container.surface-tint-layer.color")});
+    MaterialStatePropertyAll<Color>(${colorOrTransparent(
+        "md.comp.search-bar.container.surface-tint-layer.color",
+      )});
 
   @override
   MaterialStateProperty<Color?>? get overlayColor =>
@@ -54,7 +63,10 @@ class _SearchBarDefaultsM3 extends SearchBarThemeData {
 
   @override
   MaterialStateProperty<OutlinedBorder>? get shape =>
-    const MaterialStatePropertyAll<OutlinedBorder>(${shape('md.comp.search-bar.container', '')});
+    const MaterialStatePropertyAll<OutlinedBorder>(${shape(
+        'md.comp.search-bar.container',
+        '',
+      )});
 
   @override
   MaterialStateProperty<EdgeInsetsGeometry>? get padding =>
@@ -62,15 +74,21 @@ class _SearchBarDefaultsM3 extends SearchBarThemeData {
 
   @override
   MaterialStateProperty<TextStyle?> get textStyle =>
-    MaterialStatePropertyAll<TextStyle?>(${textStyleWithColor('md.comp.search-bar.input-text')});
+    MaterialStatePropertyAll<TextStyle?>(${textStyleWithColor(
+        'md.comp.search-bar.input-text',
+      )});
 
   @override
   MaterialStateProperty<TextStyle?> get hintStyle =>
-    MaterialStatePropertyAll<TextStyle?>(${textStyleWithColor('md.comp.search-bar.supporting-text')});
+    MaterialStatePropertyAll<TextStyle?>(${textStyleWithColor(
+        'md.comp.search-bar.supporting-text',
+      )});
 
   @override
   BoxConstraints get constraints =>
-    const BoxConstraints(minWidth: 360.0, maxWidth: 800.0, minHeight: ${getToken('md.comp.search-bar.container.height')});
+    const BoxConstraints(minWidth: 360.0, maxWidth: 800.0, minHeight: ${getToken(
+        'md.comp.search-bar.container.height',
+      )});
 }
 ''';
 }

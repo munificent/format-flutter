@@ -30,17 +30,16 @@ Future<String> evalTestAppInChrome({
   try {
     final Completer<String> resultCompleter = Completer<String>();
     server = await io.HttpServer.bind('localhost', serverPort);
-    final Cascade cascade = Cascade()
-      .add((Request request) async {
-        if (request.requestedUri.path.endsWith('/test-result')) {
-          resultCompleter.complete(await request.readAsString());
-          return Response.ok('Test results received');
-        }
-        return Response.notFound('');
-      })
-      .add(createStaticHandler(appDirectory));
+    final Cascade cascade = Cascade().add((Request request) async {
+      if (request.requestedUri.path.endsWith('/test-result')) {
+        resultCompleter.complete(await request.readAsString());
+        return Response.ok('Test results received');
+      }
+      return Response.notFound('');
+    }).add(createStaticHandler(appDirectory));
     shelf_io.serveRequests(server, cascade.handler);
-    final io.Directory userDataDirectory = io.Directory.systemTemp.createTempSync('flutter_chrome_user_data.');
+    final io.Directory userDataDirectory = io.Directory.systemTemp
+        .createTempSync('flutter_chrome_user_data.');
     chrome = await Chrome.launch(ChromeOptions(
       headless: true,
       debugPort: browserDebugPort,
@@ -73,7 +72,10 @@ class AppServer {
     io.HttpServer server;
     Chrome chrome;
     server = await io.HttpServer.bind('localhost', serverPort);
-    final Handler staticHandler = createStaticHandler(appDirectory, defaultDocument: 'index.html');
+    final Handler staticHandler = createStaticHandler(
+      appDirectory,
+      defaultDocument: 'index.html',
+    );
     Cascade cascade = Cascade();
     if (additionalRequestHandlers != null) {
       for (final Handler handler in additionalRequestHandlers) {
@@ -82,12 +84,13 @@ class AppServer {
     }
     cascade = cascade.add((Request request) async {
       final Response response = await staticHandler(request);
-      return response.change(headers: <String, Object>{
-        'cache-control': cacheControl,
-      });
+      return response.change(
+        headers: <String, Object>{'cache-control': cacheControl},
+      );
     });
     shelf_io.serveRequests(server, cascade.handler);
-    final io.Directory userDataDirectory = io.Directory.systemTemp.createTempSync('flutter_chrome_user_data.');
+    final io.Directory userDataDirectory = io.Directory.systemTemp
+        .createTempSync('flutter_chrome_user_data.');
     final Completer<String> chromeErrorCompleter = Completer<String>();
     chrome = await Chrome.launch(ChromeOptions(
       headless: headless,

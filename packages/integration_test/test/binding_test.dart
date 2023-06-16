@@ -20,32 +20,28 @@ Future<void> main() async {
   Future<Map<String, dynamic>>? request;
 
   group('Test Integration binding', () {
-    final IntegrationTestWidgetsFlutterBinding binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+    final IntegrationTestWidgetsFlutterBinding binding =
+        IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
     FakeVM? fakeVM;
 
     setUp(() {
-      request = binding.callback(<String, String>{
-        'command': 'request_data',
-      });
-      fakeVM = FakeVM(
-        timeline: _kTimelines,
-      );
+      request = binding.callback(<String, String>{'command': 'request_data'});
+      fakeVM = FakeVM(timeline: _kTimelines);
     });
 
     testWidgets('Run Integration app', (WidgetTester tester) async {
-      runApp(const MaterialApp(
-        home: Text('Test'),
-      ));
+      runApp(const MaterialApp(home: Text('Test')));
       expect(tester.binding, binding);
       binding.reportData = <String, dynamic>{'answer': 42};
       await tester.pump();
     });
 
-    testWidgets('hitTesting works when using setSurfaceSize', (WidgetTester tester) async {
-      int invocations = 0;
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'hitTesting works when using setSurfaceSize',
+      (WidgetTester tester) async {
+        int invocations = 0;
+        await tester.pumpWidget(MaterialApp(
           home: Center(
             child: GestureDetector(
               onTap: () {
@@ -54,32 +50,33 @@ Future<void> main() async {
               child: const Text('Test'),
             ),
           ),
-        ),
-      );
+        ));
 
-      await tester.tap(find.byType(Text));
-      await tester.pump();
-      expect(invocations, 1);
+        await tester.tap(find.byType(Text));
+        await tester.pump();
+        expect(invocations, 1);
 
-      await tester.binding.setSurfaceSize(const Size(200, 300));
-      await tester.pump();
-      await tester.tap(find.byType(Text));
-      await tester.pump();
-      expect(invocations, 2);
+        await tester.binding.setSurfaceSize(const Size(200, 300));
+        await tester.pump();
+        await tester.tap(find.byType(Text));
+        await tester.pump();
+        expect(invocations, 2);
 
-      await tester.binding.setSurfaceSize(null);
-      await tester.pump();
-      await tester.tap(find.byType(Text));
-      await tester.pump();
-      expect(invocations, 3);
-    });
+        await tester.binding.setSurfaceSize(null);
+        await tester.pump();
+        await tester.tap(find.byType(Text));
+        await tester.pump();
+        expect(invocations, 3);
+      },
+    );
 
     testWidgets('setSurfaceSize works', (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(home: Center(child: Text('Test'))));
+      await tester.pumpWidget(
+        const MaterialApp(home: Center(child: Text('Test'))),
+      );
 
-      final Size viewCenter = tester.view.physicalSize /
-          tester.view.devicePixelRatio /
-          2;
+      final Size viewCenter =
+          tester.view.physicalSize / tester.view.devicePixelRatio / 2;
       final double viewCenterX = viewCenter.width;
       final double viewCenterY = viewCenter.height;
 
@@ -125,11 +122,14 @@ Future<void> main() async {
     });
 
     // TODO(jiahaog): Remove when https://github.com/flutter/flutter/issues/66006 is fixed.
-    testWidgets('root widgets are wrapped with a RepaintBoundary', (WidgetTester tester) async {
-      await tester.pumpWidget(const Placeholder());
+    testWidgets(
+      'root widgets are wrapped with a RepaintBoundary',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(const Placeholder());
 
-      expect(find.byType(RepaintBoundary), findsOneWidget);
-    });
+        expect(find.byType(RepaintBoundary), findsOneWidget);
+      },
+    );
   });
 
   tearDownAll(() async {
@@ -150,7 +150,10 @@ class FakeVM extends Fake implements vm.VmService {
   vm.Timeline timeline;
 
   @override
-  Future<vm.Timeline> getVMTimeline({int? timeOriginMicros, int? timeExtentMicros}) async {
+  Future<vm.Timeline> getVMTimeline({
+    int? timeOriginMicros,
+    int? timeExtentMicros,
+  }) async {
     return timeline;
   }
 

@@ -8,7 +8,9 @@ import 'assertions.dart';
 import 'constants.dart';
 import 'diagnostics.dart';
 
-const bool _kMemoryAllocations = bool.fromEnvironment('flutter.memory_allocations');
+const bool _kMemoryAllocations = bool.fromEnvironment(
+  'flutter.memory_allocations',
+);
 
 /// If true, Flutter objects dispatch the memory allocation events.
 ///
@@ -27,11 +29,9 @@ class _FieldNames {
 }
 
 /// A lifecycle event of an object.
-abstract class ObjectEvent{
+abstract class ObjectEvent {
   /// Creates an instance of [ObjectEvent].
-  ObjectEvent({
-    required this.object,
-  });
+  ObjectEvent({required this.object});
 
   /// Reference to the object.
   ///
@@ -71,26 +71,26 @@ class ObjectCreated extends ObjectEvent {
 
   @override
   Map<Object, Map<String, Object>> toMap() {
-    return <Object, Map<String, Object>>{object: <String, Object>{
-      _FieldNames.libraryName: library,
-      _FieldNames.className: className,
-      _FieldNames.eventType: 'created',
-    }};
+    return <Object, Map<String, Object>>{
+      object: <String, Object>{
+        _FieldNames.libraryName: library,
+        _FieldNames.className: className,
+        _FieldNames.eventType: 'created',
+      },
+    };
   }
 }
 
 /// An event that describes disposal of an object.
 class ObjectDisposed extends ObjectEvent {
   /// Creates an instance of [ObjectDisposed].
-  ObjectDisposed({
-    required super.object,
-  });
+  ObjectDisposed({required super.object});
 
   @override
   Map<Object, Map<String, Object>> toMap() {
-    return <Object, Map<String, Object>>{object: <String, Object>{
-      _FieldNames.eventType: 'disposed',
-    }};
+    return <Object, Map<String, Object>>{
+      object: <String, Object>{_FieldNames.eventType: 'disposed'},
+    };
   }
 }
 
@@ -128,7 +128,7 @@ class MemoryAllocations {
   /// Listeners can be removed with [removeListener].
   ///
   /// Only call this when [kFlutterMemoryAllocationsEnabled] is true.
-  void addListener(ObjectEventListener listener){
+  void addListener(ObjectEventListener listener) {
     if (!kFlutterMemoryAllocationsEnabled) {
       return;
     }
@@ -154,7 +154,7 @@ class MemoryAllocations {
   /// Listeners can be added with [addListener].
   ///
   /// Only call this when [kFlutterMemoryAllocationsEnabled] is true.
-  void removeListener(ObjectEventListener listener){
+  void removeListener(ObjectEventListener listener) {
     if (!kFlutterMemoryAllocationsEnabled) {
       return;
     }
@@ -205,7 +205,8 @@ class MemoryAllocations {
       return false;
     }
     if (_listenersContainNulls) {
-      return _listeners?.firstWhere((ObjectEventListener? l) => l != null) != null;
+      return _listeners?.firstWhere((ObjectEventListener? l) => l != null) !=
+          null;
     }
     return _listeners?.isNotEmpty ?? false;
   }
@@ -242,15 +243,17 @@ class MemoryAllocations {
           exception: exception,
           stack: stack,
           library: 'foundation library',
-          context: ErrorDescription('MemoryAllocations while '
-          'dispatching notifications for $type'),
+          context: ErrorDescription(
+            'MemoryAllocations while '
+            'dispatching notifications for $type',
+          ),
           informationCollector: () => <DiagnosticsNode>[
-            DiagnosticsProperty<Object>(
-              'The $type sending notification was',
-              event.object,
-              style: DiagnosticsTreeStyle.errorProperty,
-            ),
-          ],
+                DiagnosticsProperty<Object>(
+                  'The $type sending notification was',
+                  event.object,
+                  style: DiagnosticsTreeStyle.errorProperty,
+                ),
+              ],
         ));
       }
     }
@@ -269,11 +272,9 @@ class MemoryAllocations {
     if (!hasListeners) {
       return;
     }
-    dispatchObjectEvent(ObjectCreated(
-      library: library,
-      className: className,
-      object: object,
-    ));
+    dispatchObjectEvent(
+      ObjectCreated(library: library, className: className, object: object),
+    );
   }
 
   /// Create [ObjectDisposed] and invoke [dispatchObjectEvent] if there are listeners.
@@ -325,14 +326,10 @@ class MemoryAllocations {
   }
 
   void _imageOnDispose(ui.Image image) {
-    dispatchObjectEvent(ObjectDisposed(
-      object: image,
-    ));
+    dispatchObjectEvent(ObjectDisposed(object: image));
   }
 
   void _pictureOnDispose(ui.Picture picture) {
-    dispatchObjectEvent(ObjectDisposed(
-      object: picture,
-    ));
+    dispatchObjectEvent(ObjectDisposed(object: picture));
   }
 }

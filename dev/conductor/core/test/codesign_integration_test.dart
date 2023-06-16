@@ -10,7 +10,8 @@ library;
 import 'package:args/command_runner.dart';
 import 'package:conductor_core/src/codesign.dart' show CodesignCommand;
 import 'package:conductor_core/src/globals.dart';
-import 'package:conductor_core/src/repository.dart' show Checkouts, FrameworkRepository;
+import 'package:conductor_core/src/repository.dart'
+    show Checkouts, FrameworkRepository;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:platform/platform.dart';
@@ -21,64 +22,72 @@ import './common.dart';
 /// Verify all binaries in the Flutter cache are expected by Conductor.
 void main() {
   test(
-      'validate the expected binaries from the conductor codesign command are present in the cache',
-      () async {
-    const Platform platform = LocalPlatform();
-    const FileSystem fileSystem = LocalFileSystem();
-    final Directory tempDir = fileSystem.systemTempDirectory.createTempSync('flutter_conductor_integration_test.');
-    const ProcessManager processManager = LocalProcessManager();
-    final TestStdio stdio = TestStdio(verbose: true);
-    final Checkouts checkouts = Checkouts(
-      fileSystem: fileSystem,
-      parentDirectory: tempDir,
-      platform: platform,
-      processManager: processManager,
-      stdio: stdio,
-    );
+    'validate the expected binaries from the conductor codesign command are present in the cache',
+    () async {
+      const Platform platform = LocalPlatform();
+      const FileSystem fileSystem = LocalFileSystem();
+      final Directory tempDir = fileSystem.systemTempDirectory.createTempSync(
+        'flutter_conductor_integration_test.',
+      );
+      const ProcessManager processManager = LocalProcessManager();
+      final TestStdio stdio = TestStdio(verbose: true);
+      final Checkouts checkouts = Checkouts(
+        fileSystem: fileSystem,
+        parentDirectory: tempDir,
+        platform: platform,
+        processManager: processManager,
+        stdio: stdio,
+      );
 
-    final Directory flutterRoot = _flutterRootFromDartBinary(
-      fileSystem.file(platform.executable),
-    );
+      final Directory flutterRoot = _flutterRootFromDartBinary(
+        fileSystem.file(platform.executable),
+      );
 
-    final String currentHead = (processManager.runSync(
-      <String>['git', 'rev-parse', 'HEAD'],
-      workingDirectory: flutterRoot.path,
-    ).stdout as String).trim();
+      final String currentHead = (processManager.runSync(<String>[
+            'git',
+            'rev-parse',
+            'HEAD',
+          ], workingDirectory: flutterRoot.path).stdout as String)
+          .trim();
 
-    final FrameworkRepository framework = FrameworkRepository.localRepoAsUpstream(
-      checkouts,
-      upstreamPath: flutterRoot.path,
-      initialRef: currentHead,
-    );
-    final CommandRunner<void> runner = CommandRunner<void>('codesign-test', '');
-    runner.addCommand(
-      CodesignCommand(
+      final FrameworkRepository framework =
+          FrameworkRepository.localRepoAsUpstream(
+        checkouts,
+        upstreamPath: flutterRoot.path,
+        initialRef: currentHead,
+      );
+      final CommandRunner<void> runner = CommandRunner<void>(
+        'codesign-test',
+        '',
+      );
+      runner.addCommand(CodesignCommand(
         checkouts: checkouts,
         framework: framework,
         flutterRoot: flutterRoot,
-      ),
-    );
+      ));
 
-    try {
-      await runner.run(<String>[
-        'codesign',
-        '--verify',
-        // Only verify if the correct binaries are in the cache
-        '--no-signatures',
-      ]);
-    } on ConductorException catch (e) {
-      print(stdio.error);
-      print(_fixItInstructions);
-      fail(e.message);
-    } on Exception {
-      print('stdout:\n${stdio.stdout}');
-      print('stderr:\n${stdio.error}');
-      rethrow;
-    }
-  }, onPlatform: <String, dynamic>{
-    'windows': const Skip('codesign command is only supported on macos'),
-    'linux': const Skip('codesign command is only supported on macos'),
-  });
+      try {
+        await runner.run(<String>[
+          'codesign',
+          '--verify',
+          // Only verify if the correct binaries are in the cache
+          '--no-signatures',
+        ]);
+      } on ConductorException catch (e) {
+        print(stdio.error);
+        print(_fixItInstructions);
+        fail(e.message);
+      } on Exception {
+        print('stdout:\n${stdio.stdout}');
+        print('stderr:\n${stdio.error}');
+        rethrow;
+      }
+    },
+    onPlatform: <String, dynamic>{
+      'windows': const Skip('codesign command is only supported on macos'),
+      'linux': const Skip('codesign command is only supported on macos'),
+    },
+  );
 }
 
 Directory _flutterRootFromDartBinary(File dartBinary) {

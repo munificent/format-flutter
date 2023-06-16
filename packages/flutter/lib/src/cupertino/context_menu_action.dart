@@ -43,15 +43,18 @@ class CupertinoContextMenuAction extends StatefulWidget {
   final IconData? trailingIcon;
 
   @override
-  State<CupertinoContextMenuAction> createState() => _CupertinoContextMenuActionState();
+  State<CupertinoContextMenuAction> createState() =>
+      _CupertinoContextMenuActionState();
 }
 
-class _CupertinoContextMenuActionState extends State<CupertinoContextMenuAction> {
+class _CupertinoContextMenuActionState
+    extends State<CupertinoContextMenuAction> {
   static const Color _kBackgroundColor = CupertinoDynamicColor.withBrightness(
     color: Color(0xFFF1F1F1),
     darkColor: Color(0xFF212122),
   );
-  static const Color _kBackgroundColorPressed = CupertinoDynamicColor.withBrightness(
+  static const Color _kBackgroundColorPressed =
+      CupertinoDynamicColor.withBrightness(
     color: Color(0xFFDDDDDD),
     darkColor: Color(0xFF3F3F40),
   );
@@ -88,9 +91,7 @@ class _CupertinoContextMenuActionState extends State<CupertinoContextMenuAction>
 
   TextStyle get _textStyle {
     if (widget.isDefaultAction) {
-      return _kActionSheetActionStyle.copyWith(
-        fontWeight: FontWeight.w600,
-      );
+      return _kActionSheetActionStyle.copyWith(fontWeight: FontWeight.w600);
     }
     if (widget.isDestructiveAction) {
       return _kActionSheetActionStyle.copyWith(
@@ -98,14 +99,16 @@ class _CupertinoContextMenuActionState extends State<CupertinoContextMenuAction>
       );
     }
     return _kActionSheetActionStyle.copyWith(
-      color: CupertinoDynamicColor.resolve(CupertinoColors.label, context)
+      color: CupertinoDynamicColor.resolve(CupertinoColors.label, context),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: widget.onPressed != null && kIsWeb ? SystemMouseCursors.click : MouseCursor.defer,
+      cursor: widget.onPressed != null && kIsWeb
+          ? SystemMouseCursors.click
+          : MouseCursor.defer,
       child: GestureDetector(
         key: _globalKey,
         onTapDown: onTapDown,
@@ -114,16 +117,17 @@ class _CupertinoContextMenuActionState extends State<CupertinoContextMenuAction>
         onTap: widget.onPressed,
         behavior: HitTestBehavior.opaque,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            minHeight: _kButtonHeight,
-          ),
+          constraints: const BoxConstraints(minHeight: _kButtonHeight),
           child: Semantics(
             button: true,
             child: Container(
               decoration: BoxDecoration(
                 color: _isPressed
-                  ? CupertinoDynamicColor.resolve(_kBackgroundColorPressed, context)
-                  : CupertinoDynamicColor.resolve(_kBackgroundColor, context),
+                    ? CupertinoDynamicColor.resolve(
+                        _kBackgroundColorPressed,
+                        context,
+                      )
+                    : CupertinoDynamicColor.resolve(_kBackgroundColor, context),
               ),
               padding: const EdgeInsets.only(
                 top: 8,
@@ -136,9 +140,7 @@ class _CupertinoContextMenuActionState extends State<CupertinoContextMenuAction>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Flexible(
-                      child: widget.child,
-                    ),
+                    Flexible(child: widget.child),
                     if (widget.trailingIcon != null)
                       Icon(
                         widget.trailingIcon,

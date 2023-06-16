@@ -72,12 +72,18 @@ extension DomEventTargetExtension on DomEventTarget {
 
   @JS('addEventListener')
   external JSVoid _addEventListener2(
-      JSString type, DomEventListener? listener, JSBoolean useCapture);
+    JSString type,
+    DomEventListener? listener,
+    JSBoolean useCapture,
+  );
 
   /// Adds an event listener to this event target.
   @JS('addEventListener')
-  void addEventListener(String type, DomEventListener? listener,
-      [bool? useCapture]) {
+  void addEventListener(
+    String type,
+    DomEventListener? listener, [
+    bool? useCapture,
+  ]) {
     if (listener != null) {
       if (useCapture == null) {
         _addEventListener1(type.toJS, listener);
@@ -129,15 +135,20 @@ extension DomXMLHttpRequestExtension on DomXMLHttpRequest {
   external void _setRequestHeader(JSString header, JSString value);
 
   /// Set the request header.
-  void setRequestHeader(String header, String value) =>
-      _setRequestHeader(header.toJS, value.toJS);
+  void setRequestHeader(String header, String value) => _setRequestHeader(
+    header.toJS,
+    value.toJS,
+  );
 
   @JS('open')
   external JSVoid _open(JSString method, JSString url, JSBoolean isAsync);
 
   /// Open the request.
-  void open(String method, String url, bool isAsync) =>
-      _open(method.toJS, url.toJS, isAsync.toJS);
+  void open(String method, String url, bool isAsync) => _open(
+    method.toJS,
+    url.toJS,
+    isAsync.toJS,
+  );
 
   /// Send the request.
   external JSVoid send();
@@ -170,7 +181,10 @@ extension DomEventExtension on DomEvent {
 
   /// Initialize an event.
   external JSVoid initEvent(
-      JSString type, JSBoolean bubbles, JSBoolean cancelable);
+    JSString type,
+    JSBoolean bubbles,
+    JSBoolean cancelable,
+  );
 }
 
 /// [DomProgressEvent] interop object.
@@ -359,7 +373,10 @@ extension DomCSSStyleDeclarationExtension on DomCSSStyleDeclaration {
 
   @JS('setProperty')
   external JSVoid _setProperty(
-      JSString propertyName, JSString value, JSString priority);
+    JSString propertyName,
+    JSString value,
+    JSString priority,
+  );
 
   /// Sets a CSS property by name.
   void setProperty(String propertyName, String value, [String? priority]) {

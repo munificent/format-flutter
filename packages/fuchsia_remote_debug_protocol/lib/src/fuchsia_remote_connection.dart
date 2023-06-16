@@ -84,7 +84,11 @@ enum DartVmEventType {
 /// Specifies the type of the event (whether the VM has started or has stopped),
 /// and contains the service port of the VM as well as a URL to connect to it.
 class DartVmEvent {
-  DartVmEvent._({required this.eventType, required this.servicePort, required this.uri});
+  DartVmEvent._({
+    required this.eventType,
+    required this.servicePort,
+    required this.uri,
+  });
 
   /// The URL used to connect to the Dart VM.
   final Uri uri;
@@ -132,9 +136,13 @@ class FuchsiaRemoteConnection {
 
   /// Same as [FuchsiaRemoteConnection.connect] albeit with a provided
   /// [SshCommandRunner] instance.
-  static Future<FuchsiaRemoteConnection> connectWithSshCommandRunner(SshCommandRunner commandRunner) async {
+  static Future<FuchsiaRemoteConnection> connectWithSshCommandRunner(
+    SshCommandRunner commandRunner,
+  ) async {
     final FuchsiaRemoteConnection connection = FuchsiaRemoteConnection._(
-        isIpV6Address(commandRunner.address), commandRunner);
+      isIpV6Address(commandRunner.address),
+      commandRunner,
+    );
     await connection._forwardOpenPortsToDeviceServicePorts();
 
     Stream<DartVmEvent> dartVmStream() {
@@ -197,23 +205,23 @@ class FuchsiaRemoteConnection {
     sshConfigPath ??= Platform.environment['FUCHSIA_SSH_CONFIG'];
     if (address == null) {
       throw FuchsiaRemoteConnectionError(
-          r'No address supplied, and $FUCHSIA_DEVICE_URL not found.');
+        r'No address supplied, and $FUCHSIA_DEVICE_URL not found.',
+      );
     }
     const String interfaceDelimiter = '%';
     if (address.contains(interfaceDelimiter)) {
-      final List<String> addressAndInterface =
-          address.split(interfaceDelimiter);
+      final List<String> addressAndInterface = address.split(
+        interfaceDelimiter,
+      );
       address = addressAndInterface[0];
       interface = addressAndInterface[1];
     }
 
-    return FuchsiaRemoteConnection.connectWithSshCommandRunner(
-      SshCommandRunner(
-        address: address,
-        interface: interface,
-        sshConfigPath: sshConfigPath,
-      ),
-    );
+    return FuchsiaRemoteConnection.connectWithSshCommandRunner(SshCommandRunner(
+      address: address,
+      interface: interface,
+      sshConfigPath: sshConfigPath,
+    ));
   }
 
   /// Closes all open connections.
@@ -259,25 +267,33 @@ class FuchsiaRemoteConnection {
     _onDartVmEvent.listen(
       (DartVmEvent event) async {
         if (event.eventType == DartVmEventType.started) {
-          _log.fine('New VM found on port: ${event.servicePort}. Searching '
-              'for Isolate: $pattern');
+          _log.fine(
+            'New VM found on port: ${event.servicePort}. Searching '
+            'for Isolate: $pattern',
+          );
           final DartVm? vmService = await _getDartVm(event.uri);
           // If the VM service is null, set the result to the empty list.
-          final List<IsolateRef> result = await vmService?.getMainIsolatesByPattern(pattern!) ?? <IsolateRef>[];
+          final List<IsolateRef> result =
+              await vmService?.getMainIsolatesByPattern(pattern!) ??
+                  <IsolateRef>[];
           if (result.isNotEmpty) {
             if (!completer.isCompleted) {
               completer.complete(result);
             } else {
-              _log.warning('Found more than one Dart VM containing Isolates '
-                  'that match the pattern "$pattern".');
+              _log.warning(
+                'Found more than one Dart VM containing Isolates '
+                'that match the pattern "$pattern".',
+              );
             }
           }
         }
       },
       onDone: () {
         if (!completer.isCompleted) {
-          _log.warning('Terminating isolate search for "$pattern"'
-              ' before timeout reached.');
+          _log.warning(
+            'Terminating isolate search for "$pattern"'
+            ' before timeout reached.',
+          );
         }
       },
     );
@@ -299,7 +315,10 @@ class FuchsiaRemoteConnection {
     if (_dartVmPortMap.isEmpty) {
       _log.fine('No live Dart VMs found. Awaiting new VM startup');
       return _waitForMainIsolatesByPattern(
-          pattern, timeout, vmConnectionTimeout);
+        pattern,
+        timeout,
+        vmConnectionTimeout,
+      );
     }
     // Accumulate a list of eventual IsolateRef lists so that they can be loaded
     // simultaneously via Future.wait.
@@ -307,28 +326,28 @@ class FuchsiaRemoteConnection {
         <Future<List<IsolateRef>>>[];
     for (final PortForwarder fp in _dartVmPortMap.values) {
       final DartVm? vmService =
-      await _getDartVm(_getDartVmUri(fp), timeout: vmConnectionTimeout);
+          await _getDartVm(_getDartVmUri(fp), timeout: vmConnectionTimeout);
       if (vmService == null) {
         continue;
       }
       isolates.add(vmService.getMainIsolatesByPattern(pattern));
     }
     final List<IsolateRef> result =
-      await Future.wait<List<IsolateRef>>(isolates)
-        .timeout(timeout)
-        .then<List<IsolateRef>>((List<List<IsolateRef>> listOfLists) {
-          final List<List<IsolateRef>> mutableListOfLists =
-            List<List<IsolateRef>>.from(listOfLists)
-              ..retainWhere((List<IsolateRef> list) => list.isNotEmpty);
-          // Folds the list of lists into one flat list.
-          return mutableListOfLists.fold<List<IsolateRef>>(
-            <IsolateRef>[],
-            (List<IsolateRef> accumulator, List<IsolateRef> element) {
-              accumulator.addAll(element);
-              return accumulator;
-            },
-          );
-        });
+        await Future.wait<List<IsolateRef>>(isolates)
+            .timeout(timeout)
+            .then<List<IsolateRef>>((List<List<IsolateRef>> listOfLists) {
+              final List<List<IsolateRef>> mutableListOfLists =
+                  List<List<IsolateRef>>.from(listOfLists)
+                    ..retainWhere((List<IsolateRef> list) => list.isNotEmpty);
+              // Folds the list of lists into one flat list.
+              return mutableListOfLists.fold<List<IsolateRef>>(
+                <IsolateRef>[],
+                (List<IsolateRef> accumulator, List<IsolateRef> element) {
+                  accumulator.addAll(element);
+                  return accumulator;
+                },
+              );
+            });
 
     // If no VM instance anywhere has this, it's possible it hasn't spun up
     // anywhere.
@@ -341,7 +360,10 @@ class FuchsiaRemoteConnection {
     if (result.isEmpty) {
       _log.fine('No instance of the Isolate found. Awaiting new VM startup');
       return _waitForMainIsolatesByPattern(
-          pattern, timeout, vmConnectionTimeout);
+        pattern,
+        timeout,
+        vmConnectionTimeout,
+      );
     }
     return result;
   }
@@ -356,13 +378,15 @@ class FuchsiaRemoteConnection {
     }
     final List<List<FlutterView>> flutterViewLists =
         await _invokeForAllVms<List<FlutterView>>((DartVm vmService) async {
-      return vmService.getAllFlutterViews();
-    });
+          return vmService.getAllFlutterViews();
+        });
     final List<FlutterView> results = flutterViewLists.fold<List<FlutterView>>(
-        <FlutterView>[], (List<FlutterView> acc, List<FlutterView> element) {
-      acc.addAll(element);
-      return acc;
-    });
+      <FlutterView>[],
+      (List<FlutterView> acc, List<FlutterView> element) {
+        acc.addAll(element);
+        return acc;
+      },
+    );
     return List<FlutterView>.unmodifiable(results);
   }
 
@@ -408,8 +432,8 @@ class FuchsiaRemoteConnection {
       addr = _useIpV6 ? '[$_ipv6Loopback]' : _ipv4Loopback;
     } else {
       addr = isIpV6Address(pf.openPortAddress!)
-        ? '[${pf.openPortAddress}]'
-        : pf.openPortAddress;
+          ? '[${pf.openPortAddress}]'
+          : pf.openPortAddress;
     }
     final Uri uri = Uri.http('$addr:${pf.port}', '/');
     return uri;
@@ -452,10 +476,11 @@ class FuchsiaRemoteConnection {
       if (!_stalePorts.contains(servicePort) &&
           !_dartVmPortMap.containsKey(servicePort)) {
         _dartVmPortMap[servicePort] = await fuchsiaPortForwardingFunction(
-            _sshCommandRunner.address,
-            servicePort,
-            _sshCommandRunner.interface,
-            _sshCommandRunner.sshConfigPath);
+          _sshCommandRunner.address,
+          servicePort,
+          _sshCommandRunner.interface,
+          _sshCommandRunner.sshConfigPath,
+        );
 
         _dartVmEventController.add(DartVmEvent._(
           eventType: DartVmEventType.started,
@@ -469,14 +494,11 @@ class FuchsiaRemoteConnection {
   /// Runs a dummy heartbeat command on all Dart VM instances.
   ///
   /// Removes any failing ports from the cache.
-  Future<void> _checkPorts([ bool queueEvents = true ]) async {
+  Future<void> _checkPorts([bool queueEvents = true]) async {
     // Filters out stale ports after connecting. Ignores results.
-    await _invokeForAllVms<void>(
-      (DartVm vmService) async {
-        await vmService.ping();
-      },
-      queueEvents,
-    );
+    await _invokeForAllVms<void>((DartVm vmService) async {
+      await vmService.ping();
+    }, queueEvents);
   }
 
   /// Forwards a series of open ports to the remote device.
@@ -487,14 +509,16 @@ class FuchsiaRemoteConnection {
     await stop();
     final List<int> servicePorts = await getDeviceServicePorts();
     final List<PortForwarder?> forwardedVmServicePorts =
-      await Future.wait<PortForwarder?>(
-        servicePorts.map<Future<PortForwarder?>>((int deviceServicePort) {
-          return fuchsiaPortForwardingFunction(
+        await Future.wait<PortForwarder?>(
+          servicePorts.map<Future<PortForwarder?>>((int deviceServicePort) {
+            return fuchsiaPortForwardingFunction(
               _sshCommandRunner.address,
               deviceServicePort,
               _sshCommandRunner.interface,
-              _sshCommandRunner.sshConfigPath);
-        }));
+              _sshCommandRunner.sshConfigPath,
+            );
+          }),
+        );
 
     for (final PortForwarder? pf in forwardedVmServicePorts) {
       // TODO(awdavies): Handle duplicates.
@@ -510,22 +534,25 @@ class FuchsiaRemoteConnection {
   /// Helper for getDeviceServicePorts() to extract the vm_service_port from
   /// json response.
   List<int> getVmServicePortFromInspectSnapshot(dynamic inspectSnapshot) {
-    final List<Map<String, dynamic>> snapshot =
-        List<Map<String, dynamic>>.from(inspectSnapshot as List<dynamic>);
+    final List<Map<String, dynamic>> snapshot = List<Map<String, dynamic>>.from(
+      inspectSnapshot as List<dynamic>,
+    );
     final List<int> ports = <int>[];
 
     for (final Map<String, dynamic> item in snapshot) {
       if (!item.containsKey('payload') || item['payload'] == null) {
         continue;
       }
-      final Map<String, dynamic> payload =
-          Map<String, dynamic>.from(item['payload'] as Map<String, dynamic>);
+      final Map<String, dynamic> payload = Map<String, dynamic>.from(
+        item['payload'] as Map<String, dynamic>,
+      );
 
       if (!payload.containsKey('root') || payload['root'] == null) {
         continue;
       }
-      final Map<String, dynamic> root =
-          Map<String, dynamic>.from(payload['root'] as Map<String, dynamic>);
+      final Map<String, dynamic> root = Map<String, dynamic>.from(
+        payload['root'] as Map<String, dynamic>,
+      );
 
       if (!root.containsKey('vm_service_port') ||
           root['vm_service_port'] == null) {
@@ -548,11 +575,13 @@ class FuchsiaRemoteConnection {
   /// found. An exception is thrown in the event of an actual error when
   /// attempting to acquire the ports.
   Future<List<int>> getDeviceServicePorts() async {
-    final List<String> inspectResult = await _sshCommandRunner
-        .run("iquery --format json show '**:root:vm_service_port'");
+    final List<String> inspectResult = await _sshCommandRunner.run(
+      "iquery --format json show '**:root:vm_service_port'",
+    );
     final dynamic inspectOutputJson = jsonDecode(inspectResult.join('\n'));
-    final List<int> ports =
-        getVmServicePortFromInspectSnapshot(inspectOutputJson);
+    final List<int> ports = getVmServicePortFromInspectSnapshot(
+      inspectOutputJson,
+    );
 
     if (ports.length > 1) {
       throw StateError('More than one Flutter observatory port found');
@@ -622,8 +651,10 @@ class _SshPortForwarder implements PortForwarder {
     final bool isIpV6 = isIpV6Address(address);
     final ServerSocket? localSocket = await _createLocalSocket();
     if (localSocket == null || localSocket.port == 0) {
-      _log.warning('_SshPortForwarder failed to find a local port for '
-          '$address:$remotePort');
+      _log.warning(
+        '_SshPortForwarder failed to find a local port for '
+        '$address:$remotePort',
+      );
       throw StateError('Unable to create a socket or no available ports.');
     }
     // TODO(awdavies): The square-bracket enclosure for using the IPv6 loopback
@@ -634,14 +665,14 @@ class _SshPortForwarder implements PortForwarder {
     // websocket, the IPV6 loopback should be used.
     final String formattedForwardingUrl =
         '${localSocket.port}:$_ipv4Loopback:$remotePort';
-    final String targetAddress =
-        isIpV6 && interface!.isNotEmpty ? '$address%$interface' : address;
+    final String targetAddress = isIpV6 && interface!.isNotEmpty
+        ? '$address%$interface'
+        : address;
     const String dummyRemoteCommand = 'true';
     final List<String> command = <String>[
       'ssh',
       if (isIpV6) '-6',
-      if (sshConfigPath != null)
-        ...<String>['-F', sshConfigPath],
+      if (sshConfigPath != null) ...<String>['-F', sshConfigPath],
       '-nNT',
       '-f',
       '-L',
@@ -654,15 +685,25 @@ class _SshPortForwarder implements PortForwarder {
     // forwarding must be completed before surfacing VM events (as the user may
     // want to connect immediately after an event is surfaced).
     final ProcessResult processResult = await _processManager.run(command);
-    _log.fine("'${command.join(' ')}' exited with exit code "
-        '${processResult.exitCode}');
+    _log.fine(
+      "'${command.join(' ')}' exited with exit code "
+      '${processResult.exitCode}',
+    );
     if (processResult.exitCode != 0) {
       throw StateError('Unable to start port forwarding');
     }
     final _SshPortForwarder result = _SshPortForwarder._(
-        address, remotePort, localSocket, interface, sshConfigPath, isIpV6);
-    _log.fine('Set up forwarding from ${localSocket.port} '
-        'to $address port $remotePort');
+      address,
+      remotePort,
+      localSocket,
+      interface,
+      sshConfigPath,
+      isIpV6,
+    );
+    _log.fine(
+      'Set up forwarding from ${localSocket.port} '
+      'to $address port $remotePort',
+    );
     return result;
   }
 
@@ -680,8 +721,7 @@ class _SshPortForwarder implements PortForwarder {
     final String? sshConfigPath = _sshConfigPath;
     final List<String> command = <String>[
       'ssh',
-      if (sshConfigPath != null)
-        ...<String>['-F', sshConfigPath],
+      if (sshConfigPath != null) ...<String>['-F', sshConfigPath],
       '-O',
       'cancel',
       '-L',
@@ -689,11 +729,14 @@ class _SshPortForwarder implements PortForwarder {
       targetAddress,
     ];
     _log.fine(
-        'Shutting down SSH forwarding with command: ${command.join(' ')}');
+      'Shutting down SSH forwarding with command: ${command.join(' ')}',
+    );
     final ProcessResult result = await _processManager.run(command);
     if (result.exitCode != 0) {
-      _log.warning('Command failed:\nstdout: ${result.stdout}'
-          '\nstderr: ${result.stderr}');
+      _log.warning(
+        'Command failed:\nstdout: ${result.stdout}'
+        '\nstderr: ${result.stderr}',
+      );
     }
     _localSocket.close();
   }

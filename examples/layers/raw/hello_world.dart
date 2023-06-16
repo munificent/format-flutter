@@ -16,12 +16,12 @@ void beginFrame(Duration timeStamp) {
 
   final ui.ParagraphBuilder paragraphBuilder = ui.ParagraphBuilder(
     ui.ParagraphStyle(textDirection: ui.TextDirection.ltr),
-  )
-    ..addText('Hello, world.');
+  )..addText('Hello, world.');
   final ui.Paragraph paragraph = paragraphBuilder.build()
     ..layout(ui.ParagraphConstraints(width: logicalSize.width));
 
-  final ui.Rect physicalBounds = ui.Offset.zero & (logicalSize * devicePixelRatio);
+  final ui.Rect physicalBounds =
+      ui.Offset.zero & (logicalSize * devicePixelRatio);
   final ui.PictureRecorder recorder = ui.PictureRecorder();
   final ui.Canvas canvas = ui.Canvas(recorder, physicalBounds);
   canvas.scale(devicePixelRatio, devicePixelRatio);

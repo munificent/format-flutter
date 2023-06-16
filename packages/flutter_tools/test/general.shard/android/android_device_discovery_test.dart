@@ -26,68 +26,74 @@ void main() {
     );
   });
 
-  testWithoutContext('AndroidDevices returns empty device list and diagnostics on null adb', () async {
-    final AndroidDevices androidDevices = AndroidDevices(
-      androidSdk: FakeAndroidSdk(null),
-      logger: BufferLogger.test(),
-      androidWorkflow: AndroidWorkflow(
+  testWithoutContext(
+    'AndroidDevices returns empty device list and diagnostics on null adb',
+    () async {
+      final AndroidDevices androidDevices = AndroidDevices(
         androidSdk: FakeAndroidSdk(null),
-        featureFlags: TestFeatureFlags(),
-      ),
-      processManager: FakeProcessManager.empty(),
-      fileSystem: MemoryFileSystem.test(),
-      platform: FakePlatform(),
-      userMessages: UserMessages(),
-    );
+        logger: BufferLogger.test(),
+        androidWorkflow: AndroidWorkflow(
+          androidSdk: FakeAndroidSdk(null),
+          featureFlags: TestFeatureFlags(),
+        ),
+        processManager: FakeProcessManager.empty(),
+        fileSystem: MemoryFileSystem.test(),
+        platform: FakePlatform(),
+        userMessages: UserMessages(),
+      );
 
-    expect(await androidDevices.pollingGetDevices(), isEmpty);
-    expect(await androidDevices.getDiagnostics(), isEmpty);
-  });
+      expect(await androidDevices.pollingGetDevices(), isEmpty);
+      expect(await androidDevices.getDiagnostics(), isEmpty);
+    },
+  );
 
-  testWithoutContext('AndroidDevices returns empty device list and diagnostics when adb cannot be run', () async {
-    final FakeProcessManager fakeProcessManager = FakeProcessManager.empty();
-    fakeProcessManager.excludedExecutables.add('adb');
-    final AndroidDevices androidDevices = AndroidDevices(
-      androidSdk: FakeAndroidSdk(),
-      logger: BufferLogger.test(),
-      androidWorkflow: AndroidWorkflow(
+  testWithoutContext(
+    'AndroidDevices returns empty device list and diagnostics when adb cannot be run',
+    () async {
+      final FakeProcessManager fakeProcessManager = FakeProcessManager.empty();
+      fakeProcessManager.excludedExecutables.add('adb');
+      final AndroidDevices androidDevices = AndroidDevices(
         androidSdk: FakeAndroidSdk(),
-        featureFlags: TestFeatureFlags(),
-      ),
-      processManager: fakeProcessManager,
-      fileSystem: MemoryFileSystem.test(),
-      platform: FakePlatform(),
-      userMessages: UserMessages(),
-    );
+        logger: BufferLogger.test(),
+        androidWorkflow: AndroidWorkflow(
+          androidSdk: FakeAndroidSdk(),
+          featureFlags: TestFeatureFlags(),
+        ),
+        processManager: fakeProcessManager,
+        fileSystem: MemoryFileSystem.test(),
+        platform: FakePlatform(),
+        userMessages: UserMessages(),
+      );
 
-    expect(await androidDevices.pollingGetDevices(), isEmpty);
-    expect(await androidDevices.getDiagnostics(), isEmpty);
-    expect(fakeProcessManager, hasNoRemainingExpectations);
-  });
+      expect(await androidDevices.pollingGetDevices(), isEmpty);
+      expect(await androidDevices.getDiagnostics(), isEmpty);
+      expect(fakeProcessManager, hasNoRemainingExpectations);
+    },
+  );
 
-  testWithoutContext('AndroidDevices returns empty device list and diagnostics on null Android SDK', () async {
-    final AndroidDevices androidDevices = AndroidDevices(
-      logger: BufferLogger.test(),
-      androidWorkflow: AndroidWorkflow(
-        androidSdk: FakeAndroidSdk(null),
-        featureFlags: TestFeatureFlags(),
-      ),
-      processManager: FakeProcessManager.empty(),
-      fileSystem: MemoryFileSystem.test(),
-      platform: FakePlatform(),
-      userMessages: UserMessages(),
-    );
+  testWithoutContext(
+    'AndroidDevices returns empty device list and diagnostics on null Android SDK',
+    () async {
+      final AndroidDevices androidDevices = AndroidDevices(
+        logger: BufferLogger.test(),
+        androidWorkflow: AndroidWorkflow(
+          androidSdk: FakeAndroidSdk(null),
+          featureFlags: TestFeatureFlags(),
+        ),
+        processManager: FakeProcessManager.empty(),
+        fileSystem: MemoryFileSystem.test(),
+        platform: FakePlatform(),
+        userMessages: UserMessages(),
+      );
 
-    expect(await androidDevices.pollingGetDevices(), isEmpty);
-    expect(await androidDevices.getDiagnostics(), isEmpty);
-  });
+      expect(await androidDevices.pollingGetDevices(), isEmpty);
+      expect(await androidDevices.getDiagnostics(), isEmpty);
+    },
+  );
 
   testWithoutContext('AndroidDevices throwsToolExit on failing adb', () {
     final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-      const FakeCommand(
-        command: <String>['adb', 'devices', '-l'],
-        exitCode: 1,
-      ),
+      const FakeCommand(command: <String>['adb', 'devices', '-l'], exitCode: 1),
     ]);
     final AndroidDevices androidDevices = AndroidDevices(
       androidSdk: FakeAndroidSdk(),
@@ -99,8 +105,10 @@ void main() {
       userMessages: UserMessages(),
     );
 
-    expect(androidDevices.pollingGetDevices(),
-      throwsToolExit(message: RegExp('Unable to run "adb"')));
+    expect(
+      androidDevices.pollingGetDevices(),
+      throwsToolExit(message: RegExp('Unable to run "adb"')),
+    );
   });
 
   testWithoutContext('AndroidDevices is disabled if feature is disabled', () {
@@ -109,9 +117,7 @@ void main() {
       logger: BufferLogger.test(),
       androidWorkflow: AndroidWorkflow(
         androidSdk: FakeAndroidSdk(),
-        featureFlags: TestFeatureFlags(
-          isAndroidEnabled: false,
-        ),
+        featureFlags: TestFeatureFlags(isAndroidEnabled: false),
       ),
       processManager: FakeProcessManager.any(),
       fileSystem: MemoryFileSystem.test(),
@@ -122,143 +128,164 @@ void main() {
     expect(androidDevices.supportsPlatform, false);
   });
 
-  testWithoutContext('AndroidDevices can parse output for physical attached devices', () async {
-    final AndroidDevices androidDevices = AndroidDevices(
-      userMessages: UserMessages(),
-      androidWorkflow: androidWorkflow,
-      androidSdk: FakeAndroidSdk(),
-      logger: BufferLogger.test(),
-      processManager: FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['adb', 'devices', '-l'],
-          stdout: '''
+  testWithoutContext(
+    'AndroidDevices can parse output for physical attached devices',
+    () async {
+      final AndroidDevices androidDevices = AndroidDevices(
+        userMessages: UserMessages(),
+        androidWorkflow: androidWorkflow,
+        androidSdk: FakeAndroidSdk(),
+        logger: BufferLogger.test(),
+        processManager: FakeProcessManager.list(<FakeCommand>[
+          const FakeCommand(
+            command: <String>['adb', 'devices', '-l'],
+            stdout: '''
 List of devices attached
 05a02bac               device usb:336592896X product:razor model:Nexus_7 device:flo
 
   ''',
-        ),
-      ]),
-      platform: FakePlatform(),
-      fileSystem: MemoryFileSystem.test(),
-    );
+          ),
+        ]),
+        platform: FakePlatform(),
+        fileSystem: MemoryFileSystem.test(),
+      );
 
-    final List<Device> devices = await androidDevices.pollingGetDevices();
+      final List<Device> devices = await androidDevices.pollingGetDevices();
 
-    expect(devices, hasLength(1));
-    expect(devices.first.name, 'Nexus 7');
-    expect(devices.first.category, Category.mobile);
-    expect(devices.first.connectionInterface, DeviceConnectionInterface.attached);
-  });
+      expect(devices, hasLength(1));
+      expect(devices.first.name, 'Nexus 7');
+      expect(devices.first.category, Category.mobile);
+      expect(
+        devices.first.connectionInterface,
+        DeviceConnectionInterface.attached,
+      );
+    },
+  );
 
-  testWithoutContext('AndroidDevices can parse output for physical wireless devices', () async {
-    final AndroidDevices androidDevices = AndroidDevices(
-      userMessages: UserMessages(),
-      androidWorkflow: androidWorkflow,
-      androidSdk: FakeAndroidSdk(),
-      logger: BufferLogger.test(),
-      processManager: FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['adb', 'devices', '-l'],
-          stdout: '''
+  testWithoutContext(
+    'AndroidDevices can parse output for physical wireless devices',
+    () async {
+      final AndroidDevices androidDevices = AndroidDevices(
+        userMessages: UserMessages(),
+        androidWorkflow: androidWorkflow,
+        androidSdk: FakeAndroidSdk(),
+        logger: BufferLogger.test(),
+        processManager: FakeProcessManager.list(<FakeCommand>[
+          const FakeCommand(
+            command: <String>['adb', 'devices', '-l'],
+            stdout: '''
 List of devices attached
 05a02bac._adb-tls-connect._tcp.               device product:razor model:Nexus_7 device:flo
 
   ''',
-        ),
-      ]),
-      platform: FakePlatform(),
-      fileSystem: MemoryFileSystem.test(),
-    );
+          ),
+        ]),
+        platform: FakePlatform(),
+        fileSystem: MemoryFileSystem.test(),
+      );
 
-    final List<Device> devices = await androidDevices.pollingGetDevices();
+      final List<Device> devices = await androidDevices.pollingGetDevices();
 
-    expect(devices, hasLength(1));
-    expect(devices.first.name, 'Nexus 7');
-    expect(devices.first.category, Category.mobile);
-    expect(devices.first.connectionInterface, DeviceConnectionInterface.wireless);
-  });
+      expect(devices, hasLength(1));
+      expect(devices.first.name, 'Nexus 7');
+      expect(devices.first.category, Category.mobile);
+      expect(
+        devices.first.connectionInterface,
+        DeviceConnectionInterface.wireless,
+      );
+    },
+  );
 
-  testWithoutContext('AndroidDevices can parse output for emulators and short listings', () async {
-    final AndroidDevices androidDevices = AndroidDevices(
-      userMessages: UserMessages(),
-      androidWorkflow: androidWorkflow,
-      androidSdk: FakeAndroidSdk(),
-      logger: BufferLogger.test(),
-      processManager: FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['adb', 'devices', '-l'],
-          stdout: '''
+  testWithoutContext(
+    'AndroidDevices can parse output for emulators and short listings',
+    () async {
+      final AndroidDevices androidDevices = AndroidDevices(
+        userMessages: UserMessages(),
+        androidWorkflow: androidWorkflow,
+        androidSdk: FakeAndroidSdk(),
+        logger: BufferLogger.test(),
+        processManager: FakeProcessManager.list(<FakeCommand>[
+          const FakeCommand(
+            command: <String>['adb', 'devices', '-l'],
+            stdout: '''
 List of devices attached
 localhost:36790        device
 0149947A0D01500C       device usb:340787200X
 emulator-5612          host features:shell_2
 
   ''',
-        ),
-      ]),
-      platform: FakePlatform(),
-      fileSystem: MemoryFileSystem.test(),
-    );
+          ),
+        ]),
+        platform: FakePlatform(),
+        fileSystem: MemoryFileSystem.test(),
+      );
 
-    final List<Device> devices = await androidDevices.pollingGetDevices();
+      final List<Device> devices = await androidDevices.pollingGetDevices();
 
-    expect(devices, hasLength(3));
-    expect(devices[0].name, 'localhost:36790');
-    expect(devices[1].name, '0149947A0D01500C');
-    expect(devices[2].name, 'emulator-5612');
-  });
+      expect(devices, hasLength(3));
+      expect(devices[0].name, 'localhost:36790');
+      expect(devices[1].name, '0149947A0D01500C');
+      expect(devices[2].name, 'emulator-5612');
+    },
+  );
 
-  testWithoutContext('AndroidDevices can parse output from android n', () async {
-    final AndroidDevices androidDevices = AndroidDevices(
-      userMessages: UserMessages(),
-      androidWorkflow: androidWorkflow,
-      androidSdk: FakeAndroidSdk(),
-      logger: BufferLogger.test(),
-      processManager: FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['adb', 'devices', '-l'],
-          stdout: '''
+  testWithoutContext(
+    'AndroidDevices can parse output from android n',
+    () async {
+      final AndroidDevices androidDevices = AndroidDevices(
+        userMessages: UserMessages(),
+        androidWorkflow: androidWorkflow,
+        androidSdk: FakeAndroidSdk(),
+        logger: BufferLogger.test(),
+        processManager: FakeProcessManager.list(<FakeCommand>[
+          const FakeCommand(
+            command: <String>['adb', 'devices', '-l'],
+            stdout: '''
 List of devices attached
 ZX1G22JJWR             device usb:3-3 product:shamu model:Nexus_6 device:shamu features:cmd,shell_v2
 
 ''',
-        ),
-      ]),
-      platform: FakePlatform(),
-      fileSystem: MemoryFileSystem.test(),
-    );
+          ),
+        ]),
+        platform: FakePlatform(),
+        fileSystem: MemoryFileSystem.test(),
+      );
 
-    final List<Device> devices = await androidDevices.pollingGetDevices();
+      final List<Device> devices = await androidDevices.pollingGetDevices();
 
-    expect(devices, hasLength(1));
-    expect(devices.first.name, 'Nexus 6');
-  });
+      expect(devices, hasLength(1));
+      expect(devices.first.name, 'Nexus 6');
+    },
+  );
 
-  testWithoutContext('AndroidDevices provides adb error message as diagnostics', () async {
-    final AndroidDevices androidDevices = AndroidDevices(
-      userMessages: UserMessages(),
-      androidWorkflow: androidWorkflow,
-      androidSdk: FakeAndroidSdk(),
-      logger: BufferLogger.test(),
-      processManager: FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['adb', 'devices', '-l'],
-          stdout: '''
+  testWithoutContext(
+    'AndroidDevices provides adb error message as diagnostics',
+    () async {
+      final AndroidDevices androidDevices = AndroidDevices(
+        userMessages: UserMessages(),
+        androidWorkflow: androidWorkflow,
+        androidSdk: FakeAndroidSdk(),
+        logger: BufferLogger.test(),
+        processManager: FakeProcessManager.list(<FakeCommand>[
+          const FakeCommand(
+            command: <String>['adb', 'devices', '-l'],
+            stdout: '''
 It appears you do not have 'Android SDK Platform-tools' installed.
 Use the 'android' tool to install them:
   android update sdk --no-ui --filter 'platform-tools'
 ''',
-        ),
-      ]),
-      platform: FakePlatform(),
-      fileSystem: MemoryFileSystem.test(),
-    );
+          ),
+        ]),
+        platform: FakePlatform(),
+        fileSystem: MemoryFileSystem.test(),
+      );
 
-    final List<String> diagnostics = await androidDevices.getDiagnostics();
+      final List<String> diagnostics = await androidDevices.getDiagnostics();
 
-    expect(diagnostics, hasLength(1));
-    expect(diagnostics.first, contains('you do not have'));
-  });
+      expect(diagnostics, hasLength(1));
+      expect(diagnostics.first, contains('you do not have'));
+    },
+  );
 }
 
 class FakeAndroidSdk extends Fake implements AndroidSdk {

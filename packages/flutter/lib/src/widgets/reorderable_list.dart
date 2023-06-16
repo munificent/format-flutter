@@ -77,7 +77,11 @@ typedef ReorderCallback = void Function(int oldIndex, int newIndex);
 /// like an elevation or border.
 ///
 /// The returned value will typically be the [child] wrapped in other widgets.
-typedef ReorderItemProxyDecorator = Widget Function(Widget child, int index, Animation<double> animation);
+typedef ReorderItemProxyDecorator = Widget Function(
+  Widget child,
+  int index,
+  Animation<double> animation,
+);
 
 /// A scrolling container that allows the user to interactively reorder the
 /// list items.
@@ -277,25 +281,30 @@ class ReorderableList extends StatefulWidget {
   ///  * [maybeOf], a similar function that will return null if no
   ///    [ReorderableList] ancestor is found.
   static ReorderableListState of(BuildContext context) {
-    final ReorderableListState? result = context.findAncestorStateOfType<ReorderableListState>();
-    assert(() {
-      if (result == null) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('ReorderableList.of() called with a context that does not contain a ReorderableList.'),
-          ErrorDescription(
-            'No ReorderableList ancestor could be found starting from the context that was passed to ReorderableList.of().',
-          ),
-          ErrorHint(
-            'This can happen when the context provided is from the same StatefulWidget that '
-            'built the ReorderableList. Please see the ReorderableList documentation for examples '
-            'of how to refer to an ReorderableListState object:\n'
-            '  https://api.flutter.dev/flutter/widgets/ReorderableListState-class.html',
-          ),
-          context.describeElement('The context used was'),
-        ]);
-      }
-      return true;
-    }());
+    final ReorderableListState? result =
+        context.findAncestorStateOfType<ReorderableListState>();
+    assert(
+      () {
+        if (result == null) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'ReorderableList.of() called with a context that does not contain a ReorderableList.',
+            ),
+            ErrorDescription(
+              'No ReorderableList ancestor could be found starting from the context that was passed to ReorderableList.of().',
+            ),
+            ErrorHint(
+              'This can happen when the context provided is from the same StatefulWidget that '
+              'built the ReorderableList. Please see the ReorderableList documentation for examples '
+              'of how to refer to an ReorderableListState object:\n'
+              '  https://api.flutter.dev/flutter/widgets/ReorderableListState-class.html',
+            ),
+            context.describeElement('The context used was'),
+          ]);
+        }
+        return true;
+      }(),
+    );
     return result!;
   }
 
@@ -345,7 +354,8 @@ class ReorderableList extends StatefulWidget {
 /// listKey.currentState!.cancelReorder();
 /// ```
 class ReorderableListState extends State<ReorderableList> {
-  final GlobalKey<SliverReorderableListState> _sliverReorderableListKey = GlobalKey();
+  final GlobalKey<SliverReorderableListState> _sliverReorderableListKey =
+      GlobalKey();
 
   /// Initiate the dragging of the item at [index] that was started with
   /// the pointer down [event].
@@ -364,7 +374,11 @@ class ReorderableListState extends State<ReorderableList> {
     required PointerDownEvent event,
     required MultiDragGestureRecognizer recognizer,
   }) {
-    _sliverReorderableListKey.currentState!.startItemDragReorder(index: index, event: event, recognizer: recognizer);
+    _sliverReorderableListKey.currentState!.startItemDragReorder(
+      index: index,
+      event: event,
+      recognizer: recognizer,
+    );
   }
 
   /// Cancel any item drag in progress.
@@ -453,7 +467,8 @@ class SliverReorderableList extends StatefulWidget {
     this.prototypeItem,
     this.proxyDecorator,
     double? autoScrollerVelocityScalar,
-  }) : autoScrollerVelocityScalar = autoScrollerVelocityScalar ?? _kDefaultAutoScrollVelocityScalar,
+  }) : autoScrollerVelocityScalar =
+           autoScrollerVelocityScalar ?? _kDefaultAutoScrollVelocityScalar,
        assert(itemCount >= 0),
        assert(
          itemExtent == null || prototypeItem == null,
@@ -516,27 +531,30 @@ class SliverReorderableList extends StatefulWidget {
   ///  * [maybeOf], a similar function that will return null if no
   ///    [SliverReorderableList] ancestor is found.
   static SliverReorderableListState of(BuildContext context) {
-    final SliverReorderableListState? result = context.findAncestorStateOfType<SliverReorderableListState>();
-    assert(() {
-      if (result == null) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-            'SliverReorderableList.of() called with a context that does not contain a SliverReorderableList.',
-          ),
-          ErrorDescription(
-            'No SliverReorderableList ancestor could be found starting from the context that was passed to SliverReorderableList.of().',
-          ),
-          ErrorHint(
-            'This can happen when the context provided is from the same StatefulWidget that '
-            'built the SliverReorderableList. Please see the SliverReorderableList documentation for examples '
-            'of how to refer to an SliverReorderableList object:\n'
-            '  https://api.flutter.dev/flutter/widgets/SliverReorderableListState-class.html',
-          ),
-          context.describeElement('The context used was'),
-        ]);
-      }
-      return true;
-    }());
+    final SliverReorderableListState? result =
+        context.findAncestorStateOfType<SliverReorderableListState>();
+    assert(
+      () {
+        if (result == null) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'SliverReorderableList.of() called with a context that does not contain a SliverReorderableList.',
+            ),
+            ErrorDescription(
+              'No SliverReorderableList ancestor could be found starting from the context that was passed to SliverReorderableList.of().',
+            ),
+            ErrorHint(
+              'This can happen when the context provided is from the same StatefulWidget that '
+              'built the SliverReorderableList. Please see the SliverReorderableList documentation for examples '
+              'of how to refer to an SliverReorderableList object:\n'
+              '  https://api.flutter.dev/flutter/widgets/SliverReorderableListState-class.html',
+            ),
+            context.describeElement('The context used was'),
+          ]);
+        }
+        return true;
+      }(),
+    );
     return result!;
   }
 
@@ -594,7 +612,8 @@ class SliverReorderableList extends StatefulWidget {
 /// [ReorderableDragStartListener] and [ReorderableDelayedDragStartListener]
 /// refer to their [SliverReorderableList] with the static
 /// [SliverReorderableList.of] method.
-class SliverReorderableListState extends State<SliverReorderableList> with TickerProviderStateMixin {
+class SliverReorderableListState extends State<SliverReorderableList>
+    with TickerProviderStateMixin {
   // Map of index -> child state used manage where the dragging item will need
   // to be inserted.
   final Map<int, _ReorderableItemState> _items = <int, _ReorderableItemState>{};
@@ -621,8 +640,8 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
   late ScrollableState _scrollable;
   Axis get _scrollDirection => axisDirectionToAxis(_scrollable.axisDirection);
   bool get _reverse =>
-    _scrollable.axisDirection == AxisDirection.up ||
-    _scrollable.axisDirection == AxisDirection.left;
+      _scrollable.axisDirection == AxisDirection.up ||
+      _scrollable.axisDirection == AxisDirection.left;
 
   @override
   void didChangeDependencies() {
@@ -645,7 +664,8 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
       cancelReorder();
     }
 
-    if (widget.autoScrollerVelocityScalar != oldWidget.autoScrollerVelocityScalar) {
+    if (widget.autoScrollerVelocityScalar !=
+        oldWidget.autoScrollerVelocityScalar) {
       _autoScroller?.stopAutoScroll();
       _autoScroller = EdgeDraggingAutoScroller(
         _scrollable,
@@ -765,7 +785,12 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
       if (childItem == item || !childItem.mounted) {
         continue;
       }
-      childItem.updateForGap(_insertIndex!, _dragInfo!.itemExtent, false, _reverse);
+      childItem.updateForGap(
+        _insertIndex!,
+        _dragInfo!.itemExtent,
+        false,
+        _reverse,
+      );
     }
     return _dragInfo;
   }
@@ -795,11 +820,15 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
         // Inserting into the last spot on the list. If it's the only spot, put
         // it back where it was. Otherwise, grab the second to last and move
         // down by the gap.
-        final int itemIndex = _items.length > 1 ? _insertIndex! - 1 : _insertIndex!;
+        final int itemIndex = _items.length > 1
+            ? _insertIndex! - 1
+            : _insertIndex!;
         if (_reverse) {
-          _finalDropPosition = _itemOffsetAt(itemIndex) - _extentOffset(item.itemExtent, _scrollDirection);
+          _finalDropPosition = _itemOffsetAt(itemIndex) -
+              _extentOffset(item.itemExtent, _scrollDirection);
         } else {
-          _finalDropPosition = _itemOffsetAt(itemIndex) + _extentOffset(item.itemExtent, _scrollDirection);
+          _finalDropPosition = _itemOffsetAt(itemIndex) +
+              _extentOffset(item.itemExtent, _scrollDirection);
         }
       }
     });
@@ -855,7 +884,10 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
   void _dragUpdateItems() {
     assert(_dragInfo != null);
     final double gapExtent = _dragInfo!.itemExtent;
-    final double proxyItemStart = _offsetExtent(_dragInfo!.dragPosition - _dragInfo!.dragOffset, _scrollDirection);
+    final double proxyItemStart = _offsetExtent(
+      _dragInfo!.dragPosition - _dragInfo!.dragOffset,
+      _scrollDirection,
+    );
     final double proxyItemEnd = proxyItemStart + gapExtent;
 
     // Find the new index for inserting the item being dragged.
@@ -870,11 +902,18 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
         // Transition is not complete, so each item after the dragged item is still
         // in its normal location and not moved up for the zero sized box that will
         // replace the dragged item.
-        final Offset transitionOffset = _extentOffset(_reverse ? -gapExtent : gapExtent, _scrollDirection);
+        final Offset transitionOffset = _extentOffset(
+          _reverse ? -gapExtent : gapExtent,
+          _scrollDirection,
+        );
         geometry = (geometry.topLeft - transitionOffset) & geometry.size;
       }
-      final double itemStart = _scrollDirection == Axis.vertical ? geometry.top : geometry.left;
-      final double itemExtent = _scrollDirection == Axis.vertical ? geometry.height : geometry.width;
+      final double itemStart = _scrollDirection == Axis.vertical
+          ? geometry.top
+          : geometry.left;
+      final double itemExtent = _scrollDirection == Axis.vertical
+          ? geometry.height
+          : geometry.width;
       final double itemEnd = itemStart + itemExtent;
       final double itemMiddle = itemStart + itemExtent / 2;
 
@@ -885,14 +924,13 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
           // the new index.
           newIndex = item.index;
           break;
-
-        } else if (itemMiddle >= proxyItemStart && proxyItemStart >= itemStart) {
+        } else if (itemMiddle >= proxyItemStart &&
+            proxyItemStart >= itemStart) {
           // The end of the proxy is in the ending half of the item, so
           // we should swap the item with the gap and we are done looking for
           // the new index.
           newIndex = item.index + 1;
           break;
-
         } else if (itemStart > proxyItemEnd && newIndex < (item.index + 1)) {
           newIndex = item.index + 1;
         } else if (proxyItemStart > itemEnd && newIndex > item.index) {
@@ -905,14 +943,12 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
           // the new index.
           newIndex = item.index;
           break;
-
         } else if (itemMiddle <= proxyItemEnd && proxyItemEnd <= itemEnd) {
           // The end of the proxy is in the ending half of the item, so
           // we should swap the item with the gap and we are done looking for
           // the new index.
           newIndex = item.index + 1;
           break;
-
         } else if (itemEnd < proxyItemStart && newIndex < (item.index + 1)) {
           newIndex = item.index + 1;
         } else if (proxyItemEnd < itemStart && newIndex > item.index) {
@@ -934,11 +970,17 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
 
   Rect get _dragTargetRect {
     final Offset origin = _dragInfo!.dragPosition - _dragInfo!.dragOffset;
-    return Rect.fromLTWH(origin.dx, origin.dy, _dragInfo!.itemSize.width, _dragInfo!.itemSize.height);
+    return Rect.fromLTWH(
+      origin.dx,
+      origin.dy,
+      _dragInfo!.itemSize.width,
+      _dragInfo!.itemSize.height,
+    );
   }
 
   Offset _itemOffsetAt(int index) {
-    final RenderBox itemRenderBox =  _items[index]!.context.findRenderObject()! as RenderBox;
+    final RenderBox itemRenderBox =
+        _items[index]!.context.findRenderObject()! as RenderBox;
     return itemRenderBox.localToGlobal(Offset.zero);
   }
 
@@ -957,7 +999,8 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
     return _ReorderableItem(
       key: _ReorderableItemGlobalKey(child.key!, index, this),
       index: index,
-      capturedThemes: InheritedTheme.capture(from: context, to: overlay.context),
+      capturedThemes:
+          InheritedTheme.capture(from: context, to: overlay.context),
       child: _wrapWithSemantics(child, index),
     );
   }
@@ -970,7 +1013,8 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
     }
 
     // First, determine which semantics actions apply.
-    final Map<CustomSemanticsAction, VoidCallback> semanticsActions = <CustomSemanticsAction, VoidCallback>{};
+    final Map<CustomSemanticsAction, VoidCallback> semanticsActions =
+        <CustomSemanticsAction, VoidCallback>{};
 
     // Create the appropriate semantics actions.
     void moveToStart() => reorder(index, 0);
@@ -984,14 +1028,17 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
     final bool isHorizontal = _scrollDirection == Axis.horizontal;
     // If the item can move to before its current position in the list.
     if (index > 0) {
-      semanticsActions[CustomSemanticsAction(label: localizations.reorderItemToStart)] = moveToStart;
+      semanticsActions[
+        CustomSemanticsAction(label: localizations.reorderItemToStart)
+      ] = moveToStart;
       String reorderItemBefore = localizations.reorderItemUp;
       if (isHorizontal) {
         reorderItemBefore = Directionality.of(context) == TextDirection.ltr
             ? localizations.reorderItemLeft
             : localizations.reorderItemRight;
       }
-      semanticsActions[CustomSemanticsAction(label: reorderItemBefore)] = moveBefore;
+      semanticsActions[CustomSemanticsAction(label: reorderItemBefore)] =
+          moveBefore;
     }
 
     // If the item can move to after its current position in the list.
@@ -1002,8 +1049,11 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
             ? localizations.reorderItemRight
             : localizations.reorderItemLeft;
       }
-      semanticsActions[CustomSemanticsAction(label: reorderItemAfter)] = moveAfter;
-      semanticsActions[CustomSemanticsAction(label: localizations.reorderItemToEnd)] = moveToEnd;
+      semanticsActions[CustomSemanticsAction(label: reorderItemAfter)] =
+          moveAfter;
+      semanticsActions[
+        CustomSemanticsAction(label: localizations.reorderItemToEnd)
+      ] = moveToEnd;
     }
 
     // Pass toWrap with a GlobalKey into the item so that when it
@@ -1022,7 +1072,8 @@ class SliverReorderableListState extends State<SliverReorderableList> with Ticke
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasOverlay(context));
-    final SliverChildBuilderDelegate childrenDelegate = SliverChildBuilderDelegate(
+    final SliverChildBuilderDelegate childrenDelegate =
+        SliverChildBuilderDelegate(
       _itemBuilder,
       // When dragging, the dragged item is still in the list but has been replaced
       // by a zero height SizedBox, so that the gap can move around. To make the
@@ -1079,6 +1130,7 @@ class _ReorderableItemState extends State<_ReorderableItem> {
       });
     }
   }
+
   bool _dragging = false;
 
   @override
@@ -1124,15 +1176,25 @@ class _ReorderableItemState extends State<_ReorderableItem> {
 
   Offset get offset {
     if (_offsetAnimation != null) {
-      final double animValue = Curves.easeInOut.transform(_offsetAnimation!.value);
+      final double animValue = Curves.easeInOut.transform(
+        _offsetAnimation!.value,
+      );
       return Offset.lerp(_startOffset, _targetOffset, animValue)!;
     }
     return _targetOffset;
   }
 
-  void updateForGap(int gapIndex, double gapExtent, bool animate, bool reverse) {
+  void updateForGap(
+    int gapIndex,
+    double gapExtent,
+    bool animate,
+    bool reverse,
+  ) {
     final Offset newTargetOffset = (gapIndex <= index)
-        ? _extentOffset(reverse ? -gapExtent : gapExtent, _listState._scrollDirection)
+        ? _extentOffset(
+            reverse ? -gapExtent : gapExtent,
+            _listState._scrollDirection,
+          )
         : Offset.zero;
     if (newTargetOffset != _targetOffset) {
       _targetOffset = newTargetOffset;
@@ -1178,7 +1240,8 @@ class _ReorderableItemState extends State<_ReorderableItem> {
 
   Rect targetGeometry() {
     final RenderBox itemRenderBox = context.findRenderObject()! as RenderBox;
-    final Offset itemPosition = itemRenderBox.localToGlobal(Offset.zero) + _targetOffset;
+    final Offset itemPosition =
+        itemRenderBox.localToGlobal(Offset.zero) + _targetOffset;
     return itemPosition & itemRenderBox.size;
   }
 
@@ -1232,7 +1295,9 @@ class ReorderableDragStartListener extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Listener(
-      onPointerDown: enabled ? (PointerDownEvent event) => _startDragging(context, event) : null,
+      onPointerDown: enabled
+          ? (PointerDownEvent event) => _startDragging(context, event)
+          : null,
       child: child,
     );
   }
@@ -1248,13 +1313,15 @@ class ReorderableDragStartListener extends StatelessWidget {
   }
 
   void _startDragging(BuildContext context, PointerDownEvent event) {
-    final DeviceGestureSettings? gestureSettings = MediaQuery.maybeGestureSettingsOf(context);
-    final SliverReorderableListState? list = SliverReorderableList.maybeOf(context);
+    final DeviceGestureSettings? gestureSettings =
+        MediaQuery.maybeGestureSettingsOf(context);
+    final SliverReorderableListState? list = SliverReorderableList.maybeOf(
+      context,
+    );
     list?.startItemDragReorder(
       index: index,
       event: event,
-      recognizer: createRecognizer()
-        ..gestureSettings = gestureSettings,
+      recognizer: createRecognizer()..gestureSettings = gestureSettings,
     );
   }
 }
@@ -1292,7 +1359,11 @@ class ReorderableDelayedDragStartListener extends ReorderableDragStartListener {
   }
 }
 
-typedef _DragItemUpdate = void Function(_DragInfo item, Offset position, Offset delta);
+typedef _DragItemUpdate = void Function(
+  _DragInfo item,
+  Offset position,
+  Offset delta,
+);
 typedef _DragItemCallback = void Function(_DragInfo item);
 
 class _DragInfo extends Drag {
@@ -1307,7 +1378,8 @@ class _DragInfo extends Drag {
     this.proxyDecorator,
     required this.tickerProvider,
   }) {
-    final RenderBox itemRenderBox = item.context.findRenderObject()! as RenderBox;
+    final RenderBox itemRenderBox =
+        item.context.findRenderObject()! as RenderBox;
     listState = item._listState;
     index = item.index;
     child = item.widget.child;
@@ -1347,12 +1419,12 @@ class _DragInfo extends Drag {
       vsync: tickerProvider,
       duration: const Duration(milliseconds: 250),
     )
-    ..addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.dismissed) {
-        _dropCompleted();
-      }
-    })
-    ..forward();
+      ..addStatusListener((AnimationStatus status) {
+        if (status == AnimationStatus.dismissed) {
+          _dropCompleted();
+        }
+      })
+      ..forward();
   }
 
   @override
@@ -1382,22 +1454,23 @@ class _DragInfo extends Drag {
   }
 
   Widget createProxy(BuildContext context) {
-    return capturedThemes.wrap(
-      _DragItemProxy(
-        listState: listState,
-        index: index,
-        size: itemSize,
-        animation: _proxyAnimation!,
-        position: dragPosition - dragOffset - _overlayOrigin(context),
-        proxyDecorator: proxyDecorator,
-        child: child,
-      ),
-    );
+    return capturedThemes.wrap(_DragItemProxy(
+      listState: listState,
+      index: index,
+      size: itemSize,
+      animation: _proxyAnimation!,
+      position: dragPosition - dragOffset - _overlayOrigin(context),
+      proxyDecorator: proxyDecorator,
+      child: child,
+    ));
   }
 }
 
 Offset _overlayOrigin(BuildContext context) {
-  final OverlayState overlay = Overlay.of(context, debugRequiredFor: context.widget);
+  final OverlayState overlay = Overlay.of(
+    context,
+    debugRequiredFor: context.widget,
+  );
   final RenderBox overlayBox = overlay.context.findRenderObject()! as RenderBox;
   return overlayBox.localToGlobal(Offset.zero);
 }
@@ -1423,7 +1496,8 @@ class _DragItemProxy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget proxyChild = proxyDecorator?.call(child, index, animation.view) ?? child;
+    final Widget proxyChild =
+        proxyDecorator?.call(child, index, animation.view) ?? child;
     final Offset overlayOrigin = _overlayOrigin(context);
 
     return MediaQuery(
@@ -1436,16 +1510,17 @@ class _DragItemProxy extends StatelessWidget {
           Offset effectivePosition = position;
           final Offset? dropPosition = listState._finalDropPosition;
           if (dropPosition != null) {
-            effectivePosition = Offset.lerp(dropPosition - overlayOrigin, effectivePosition, Curves.easeOut.transform(animation.value))!;
+            effectivePosition = Offset.lerp(
+              dropPosition - overlayOrigin,
+              effectivePosition,
+              Curves.easeOut.transform(animation.value),
+            )!;
           }
           return Positioned(
             left: effectivePosition.dx,
             top: effectivePosition.dy,
-            child: SizedBox(
-              width: size.width,
-              height: size.height,
-              child: child,
-            ),
+            child:
+                SizedBox(width: size.width, height: size.height, child: child),
           );
         },
         child: proxyChild,
@@ -1497,8 +1572,8 @@ Offset _restrictAxis(Offset offset, Axis scrollDirection) {
 // of the objects used to generate widgets.
 @optionalTypeArgs
 class _ReorderableItemGlobalKey extends GlobalObjectKey {
-
-  const _ReorderableItemGlobalKey(this.subKey, this.index, this.state) : super(subKey);
+  const _ReorderableItemGlobalKey(this.subKey, this.index, this.state)
+    : super(subKey);
 
   final Key subKey;
   final int index;
@@ -1509,10 +1584,10 @@ class _ReorderableItemGlobalKey extends GlobalObjectKey {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is _ReorderableItemGlobalKey
-        && other.subKey == subKey
-        && other.index == index
-        && other.state == state;
+    return other is _ReorderableItemGlobalKey &&
+        other.subKey == subKey &&
+        other.index == index &&
+        other.state == state;
   }
 
   @override

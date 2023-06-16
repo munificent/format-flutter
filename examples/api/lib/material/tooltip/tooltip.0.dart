@@ -16,9 +16,7 @@ class TooltipExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Tooltip Sample')),
-        body: const Center(
-          child: TooltipSample(),
-        ),
+        body: const Center(child: TooltipSample()),
       ),
     );
   }

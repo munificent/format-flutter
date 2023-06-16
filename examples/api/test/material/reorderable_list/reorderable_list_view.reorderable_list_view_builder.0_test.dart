@@ -9,7 +9,11 @@ import 'package:flutter_api_samples/material/reorderable_list/reorderable_list_v
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  Future<void> longPressDrag(WidgetTester tester, Offset start, Offset end) async {
+  Future<void> longPressDrag(
+    WidgetTester tester,
+    Offset start,
+    Offset end,
+  ) async {
     final TestGesture drag = await tester.startGesture(start);
     await tester.pump(kLongPressTimeout + kPressTimeout);
     await drag.moveTo(end);
@@ -18,11 +22,7 @@ void main() {
   }
 
   testWidgets('Reorder list item', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: example.ReorderableApp(),
-      ),
-    );
+    await tester.pumpWidget(const MaterialApp(home: example.ReorderableApp()));
 
     expect(tester.getCenter(find.text('Item 3')).dy, 252.0);
     await longPressDrag(

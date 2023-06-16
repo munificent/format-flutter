@@ -58,10 +58,7 @@ class CommandHelp {
     'WidgetsApp.showPerformanceOverlay',
   );
 
-  late final CommandHelpOption R = _makeOption(
-    'R',
-    'Hot restart.',
-  );
+  late final CommandHelpOption R = _makeOption('R', 'Hot restart.');
 
   late final CommandHelpOption S = _makeOption(
     'S',
@@ -87,10 +84,7 @@ class CommandHelp {
     'debugBrightnessOverride',
   );
 
-  late final CommandHelpOption c = _makeOption(
-    'c',
-    'Clear the screen',
-  );
+  late final CommandHelpOption c = _makeOption('c', 'Clear the screen');
 
   late final CommandHelpOption d = _makeOption(
     'd',
@@ -105,7 +99,7 @@ class CommandHelp {
 
   late final CommandHelpOption g = _makeOption(
     'g',
-    'Run source code generators.'
+    'Run source code generators.',
   );
 
   late final CommandHelpOption hWithDetails = _makeOption(
@@ -167,10 +161,7 @@ class CommandHelp {
     'debugDumpRenderTree',
   );
 
-  late final CommandHelpOption v = _makeOption(
-    'v',
-    'Open Flutter DevTools.',
-  );
+  late final CommandHelpOption v = _makeOption('v', 'Open Flutter DevTools.');
 
   late final CommandHelpOption w = _makeOption(
     'w',
@@ -181,7 +172,9 @@ class CommandHelp {
   // When updating the list above, see the notes above the list regarding order
   // and tests.
 
-  CommandHelpOption _makeOption(String key, String description, [
+  CommandHelpOption _makeOption(
+    String key,
+    String description, [
     String inParenthesis = '',
   ]) {
     return CommandHelpOption(
@@ -221,8 +214,10 @@ class CommandHelpOption {
 
   /// The key associated with this command.
   final String key;
+
   /// A description of what this command does.
   final String description;
+
   /// Text shown in parenthesis to give the context.
   final String inParenthesis;
 
@@ -239,13 +234,10 @@ class CommandHelpOption {
     }
 
     bool wrap = false;
-    final int maxWidth = math.max(
-      _outputPreferences.wrapColumn,
-      maxLineWidth,
-    );
+    final int maxWidth = math.max(_outputPreferences.wrapColumn, maxLineWidth);
     final int adjustedMessageLength = _platform.stdoutSupportsAnsi
-      ? _rawMessageLength + 1
-      : message.length;
+        ? _rawMessageLength + 1
+        : message.length;
     int width = maxWidth - adjustedMessageLength;
     final String parentheticalText = '($inParenthesis)';
     if (width < parentheticalText.length) {

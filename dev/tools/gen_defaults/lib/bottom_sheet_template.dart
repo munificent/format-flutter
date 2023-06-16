@@ -18,7 +18,9 @@ class _${blockName}DefaultsM3 extends BottomSheetThemeData {
   _${blockName}DefaultsM3(this.context)
     : super(
       elevation: ${elevation("md.comp.sheet.bottom.docked.standard.container")},
-      modalElevation: ${elevation("md.comp.sheet.bottom.docked.modal.container")},
+      modalElevation: ${elevation(
+        "md.comp.sheet.bottom.docked.modal.container",
+      )},
       shape: ${shape("md.comp.sheet.bottom.docked.container")},
       constraints: const BoxConstraints(maxWidth: 640),
     );
@@ -27,19 +29,27 @@ class _${blockName}DefaultsM3 extends BottomSheetThemeData {
   late final ColorScheme _colors = Theme.of(context).colorScheme;
 
   @override
-  Color? get backgroundColor => ${componentColor("md.comp.sheet.bottom.docked.container")};
+  Color? get backgroundColor => ${componentColor(
+        "md.comp.sheet.bottom.docked.container",
+      )};
 
   @override
-  Color? get surfaceTintColor => ${componentColor("md.comp.sheet.bottom.docked.container.surface-tint-layer")};
+  Color? get surfaceTintColor => ${componentColor(
+        "md.comp.sheet.bottom.docked.container.surface-tint-layer",
+      )};
 
   @override
   Color? get shadowColor => Colors.transparent;
 
   @override
-  Color? get dragHandleColor => ${componentColor("md.comp.sheet.bottom.docked.drag-handle")};
+  Color? get dragHandleColor => ${componentColor(
+        "md.comp.sheet.bottom.docked.drag-handle",
+      )};
 
   @override
-  Size? get dragHandleSize => ${size("md.comp.sheet.bottom.docked.drag-handle")};
+  Size? get dragHandleSize => ${size(
+        "md.comp.sheet.bottom.docked.drag-handle",
+      )};
 
   @override
   BoxConstraints? get constraints => const BoxConstraints(maxWidth: 640.0);

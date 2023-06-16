@@ -21,10 +21,12 @@ import 'mocks.dart';
 void main() {
   // Use the real platform as a base so that Windows bots test paths.
   final FakePlatform platform = FakePlatform.fromPlatform(globals.platform);
-  final FileSystemStyle fsStyle = platform.isWindows ? FileSystemStyle.windows : FileSystemStyle.posix;
+  final FileSystemStyle fsStyle = platform.isWindows
+      ? FileSystemStyle.windows
+      : FileSystemStyle.posix;
   final String flutterRoot = platform.isWindows
-                                ? r'C:\fake\flutter'
-                                : '/fake/flutter';
+      ? r'C:\fake\flutter'
+      : '/fake/flutter';
 
   group('flutter adapter', () {
     final String expectedFlutterExecutable = platform.isWindows
@@ -43,16 +45,21 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
-          cwd: '/project',
-          program: 'foo.dart',
-        );
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(cwd: '/project', program: 'foo.dart');
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
-        expect(adapter.processArgs, containsAllInOrder(<String>['run', '--machine']));
+        expect(
+          adapter.processArgs,
+          containsAllInOrder(<String>['run', '--machine']),
+        );
       });
 
       test('includes env variables', () async {
@@ -62,16 +69,19 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(
           cwd: '/project',
           program: 'foo.dart',
-          env: <String, String>{
-            'MY_TEST_ENV': 'MY_TEST_VALUE',
-          },
+          env: <String, String>{'MY_TEST_ENV': 'MY_TEST_VALUE'},
         );
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
         expect(adapter.env!['MY_TEST_ENV'], 'MY_TEST_VALUE');
@@ -84,13 +94,15 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
-          cwd: '/project',
-          program: 'foo.dart',
-        );
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(cwd: '/project', program: 'foo.dart');
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
         // Trigger a fake debuggerConnected with a pid that we expect the
@@ -101,38 +113,62 @@ void main() {
         expect(adapter.pidsToTerminate, isNot(contains(123)));
       });
 
-
       group('supportsRestartRequest', () {
         void testRestartSupport(bool supportsRestart) {
-          test('notifies client for supportsRestart: $supportsRestart', () async {
-            final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
-              fileSystem: MemoryFileSystem.test(style: fsStyle),
-              platform: platform,
-              supportsRestart: supportsRestart,
-            );
+          test(
+            'notifies client for supportsRestart: $supportsRestart',
+            () async {
+              final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
+                fileSystem: MemoryFileSystem.test(style: fsStyle),
+                platform: platform,
+                supportsRestart: supportsRestart,
+              );
 
-            final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
-              cwd: '/project',
-              program: 'foo.dart',
-            );
+              final FlutterLaunchRequestArguments args =
+                  FlutterLaunchRequestArguments(
+                cwd: '/project',
+                program: 'foo.dart',
+              );
 
-            // Listen for a Capabilities event that modifies 'supportsRestartRequest'.
-            final Future<CapabilitiesEventBody> capabilitiesUpdate = adapter
-                .dapToClientMessages
-                .where((Map<String, Object?> message) => message['event'] == 'capabilities')
-                .map((Map<String, Object?> message) => message['body'] as Map<String, Object?>?)
-                .where((Map<String, Object?>? body) => body != null).cast<Map<String, Object?>>()
-                .map(CapabilitiesEventBody.fromJson)
-                .firstWhere((CapabilitiesEventBody body) => body.capabilities.supportsRestartRequest != null);
+              // Listen for a Capabilities event that modifies 'supportsRestartRequest'.
+              final Future<CapabilitiesEventBody> capabilitiesUpdate =
+                  adapter.dapToClientMessages
+                      .where(
+                        (Map<String, Object?> message) =>
+                            message['event'] == 'capabilities',
+                      )
+                      .map(
+                        (Map<String, Object?> message) =>
+                            message['body'] as Map<String, Object?>?,
+                      )
+                      .where((Map<String, Object?>? body) => body != null)
+                      .cast<Map<String, Object?>>()
+                      .map(CapabilitiesEventBody.fromJson)
+                      .firstWhere(
+                        (CapabilitiesEventBody body) =>
+                            body.capabilities.supportsRestartRequest != null,
+                      );
 
-            await adapter.configurationDoneRequest(MockRequest(), null, () {});
-            final Completer<void> launchCompleter = Completer<void>();
-            await adapter.launchRequest(MockRequest(), args, launchCompleter.complete);
-            await launchCompleter.future;
+              await adapter.configurationDoneRequest(
+                MockRequest(),
+                null,
+                () {},
+              );
+              final Completer<void> launchCompleter = Completer<void>();
+              await adapter.launchRequest(
+                MockRequest(),
+                args,
+                launchCompleter.complete,
+              );
+              await launchCompleter.future;
 
-            // Ensure the Capabilities update has the expected value.
-            expect((await capabilitiesUpdate).capabilities.supportsRestartRequest, supportsRestart);
-          });
+              // Ensure the Capabilities update has the expected value.
+              expect(
+                (await capabilitiesUpdate).capabilities.supportsRestartRequest,
+                supportsRestart,
+              );
+            },
+          );
         }
 
         testRestartSupport(true);
@@ -145,46 +181,64 @@ void main() {
           platform: platform,
         );
 
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
-          cwd: '/project',
-          program: 'foo.dart',
-        );
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(cwd: '/project', program: 'foo.dart');
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
         final Completer<void> launchCompleter = Completer<void>();
-        await adapter.launchRequest(MockRequest(), args, launchCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          launchCompleter.complete,
+        );
         await launchCompleter.future;
 
         final Completer<void> terminateCompleter = Completer<void>();
-        await adapter.terminateRequest(MockRequest(), TerminateArguments(restart: false), terminateCompleter.complete);
+        await adapter.terminateRequest(
+          MockRequest(),
+          TerminateArguments(restart: false),
+          terminateCompleter.complete,
+        );
         await terminateCompleter.future;
 
         expect(adapter.dapToFlutterRequests, contains('app.stop'));
       });
 
-      test('does not call "app.stop" on terminateRequest if app was not started', () async {
-        final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
-          fileSystem: MemoryFileSystem.test(style: fsStyle),
-          platform: platform,
-          simulateAppStarted: false,
-        );
+      test(
+        'does not call "app.stop" on terminateRequest if app was not started',
+        () async {
+          final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
+            fileSystem: MemoryFileSystem.test(style: fsStyle),
+            platform: platform,
+            simulateAppStarted: false,
+          );
 
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
-          cwd: '/project',
-          program: 'foo.dart',
-        );
+          final FlutterLaunchRequestArguments args =
+              FlutterLaunchRequestArguments(
+            cwd: '/project',
+            program: 'foo.dart',
+          );
 
-        await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        final Completer<void> launchCompleter = Completer<void>();
-        await adapter.launchRequest(MockRequest(), args, launchCompleter.complete);
-        await launchCompleter.future;
+          await adapter.configurationDoneRequest(MockRequest(), null, () {});
+          final Completer<void> launchCompleter = Completer<void>();
+          await adapter.launchRequest(
+            MockRequest(),
+            args,
+            launchCompleter.complete,
+          );
+          await launchCompleter.future;
 
-        final Completer<void> terminateCompleter = Completer<void>();
-        await adapter.terminateRequest(MockRequest(), TerminateArguments(restart: false), terminateCompleter.complete);
-        await terminateCompleter.future;
+          final Completer<void> terminateCompleter = Completer<void>();
+          await adapter.terminateRequest(
+            MockRequest(),
+            TerminateArguments(restart: false),
+            terminateCompleter.complete,
+          );
+          await terminateCompleter.future;
 
-        expect(adapter.dapToFlutterRequests, isNot(contains('app.stop')));
-      });
+          expect(adapter.dapToFlutterRequests, isNot(contains('app.stop')));
+        },
+      );
 
       test('does not call "app.restart" before app has been started', () async {
         final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
@@ -194,17 +248,23 @@ void main() {
         );
 
         final Completer<void> launchCompleter = Completer<void>();
-         final FlutterLaunchRequestArguments launchArgs = FlutterLaunchRequestArguments(
-          cwd: '/project',
-          program: 'foo.dart',
-        );
+        final FlutterLaunchRequestArguments launchArgs =
+            FlutterLaunchRequestArguments(cwd: '/project', program: 'foo.dart');
         final Completer<void> restartCompleter = Completer<void>();
         final RestartArguments restartArgs = RestartArguments();
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.launchRequest(MockRequest(), launchArgs, launchCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          launchArgs,
+          launchCompleter.complete,
+        );
         await launchCompleter.future;
-        await adapter.restartRequest(MockRequest(), restartArgs, restartCompleter.complete);
+        await adapter.restartRequest(
+          MockRequest(),
+          restartArgs,
+          restartCompleter.complete,
+        );
         await restartCompleter.future;
 
         expect(adapter.dapToFlutterRequests, isNot(contains('app.restart')));
@@ -215,38 +275,56 @@ void main() {
           fileSystem: MemoryFileSystem.test(style: fsStyle),
           platform: platform,
           preAppStart: (MockFlutterDebugAdapter adapter) {
-            adapter.simulateRawStdout('Waiting for connection from Dart debug extension…');
-          }
+            adapter.simulateRawStdout(
+              'Waiting for connection from Dart debug extension…',
+            );
+          },
         );
         final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
-          cwd: '/project',
-          program: 'foo.dart',
-        );
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(cwd: '/project', program: 'foo.dart');
 
         // Begin listening for progress events up until `progressEnd` (but don't await yet).
-        final Future<List<List<Object?>>> progressEventsFuture =
-            adapter.dapToClientProgressEvents
-              .takeWhile((Map<String, Object?> message) => message['event'] != 'progressEnd')
-              .map((Map<String, Object?> message) => <Object?>[message['event'], (message['body']! as Map<String, Object?>)['message']])
-              .toList();
+        final Future<List<List<Object?>>> progressEventsFuture = adapter
+            .dapToClientProgressEvents
+            .takeWhile(
+              (Map<String, Object?> message) =>
+                  message['event'] != 'progressEnd',
+            )
+            .map(
+              (Map<String, Object?> message) => <Object?>[
+                message['event'],
+                (message['body']! as Map<String, Object?>)['message'],
+              ],
+            )
+            .toList();
 
         // Initialize with progress support.
         await adapter.initializeRequest(
           MockRequest(),
-          InitializeRequestArguments(adapterID: 'test', supportsProgressReporting: true, ),
+          InitializeRequestArguments(
+            adapterID: 'test',
+            supportsProgressReporting: true,
+          ),
           (_) {},
         );
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
         // Ensure we got the expected events prior to the
         final List<List<Object?>> progressEvents = await progressEventsFuture;
         expect(progressEvents, containsAllInOrder(<List<String>>[
           <String>['progressStart', 'Launching…'],
-          <String>['progressUpdate', 'Please click the Dart Debug extension button in the spawned browser window'],
+          <String>[
+            'progressUpdate',
+            'Please click the Dart Debug extension button in the spawned browser window',
+          ],
           // progressEnd isn't included because we used takeWhile to stop when it arrived above.
         ]));
       });
@@ -260,15 +338,21 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterAttachRequestArguments args = FlutterAttachRequestArguments(
-          cwd: '/project',
-        );
+        final FlutterAttachRequestArguments args =
+            FlutterAttachRequestArguments(cwd: '/project');
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.attachRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.attachRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
-        expect(adapter.processArgs, containsAllInOrder(<String>['attach', '--machine']));
+        expect(
+          adapter.processArgs,
+          containsAllInOrder(<String>['attach', '--machine']),
+        );
       });
 
       test('runs "flutter attach" with program if passed in', () async {
@@ -286,119 +370,137 @@ void main() {
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
         await adapter.attachRequest(
-            MockRequest(), args, responseCompleter.complete);
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
-        expect(
-            adapter.processArgs,
-            containsAllInOrder(<String>[
-              'attach',
-              '--machine',
-              '--target',
-              'program/main.dart'
-            ]));
+        expect(adapter.processArgs, containsAllInOrder(<String>[
+          'attach',
+          '--machine',
+          '--target',
+          'program/main.dart',
+        ]));
       });
 
-      test('runs "flutter attach" with --debug-uri if vmServiceUri is passed', () async {
-        final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
-          fileSystem: MemoryFileSystem.test(style: fsStyle),
-          platform: platform,
-        );
-        final Completer<void> responseCompleter = Completer<void>();
+      test(
+        'runs "flutter attach" with --debug-uri if vmServiceUri is passed',
+        () async {
+          final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
+            fileSystem: MemoryFileSystem.test(style: fsStyle),
+            platform: platform,
+          );
+          final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterAttachRequestArguments args =
-            FlutterAttachRequestArguments(
-          cwd: '/project',
-          program: 'program/main.dart',
-          vmServiceUri: 'ws://1.2.3.4/ws'
-        );
+          final FlutterAttachRequestArguments args =
+              FlutterAttachRequestArguments(
+            cwd: '/project',
+            program: 'program/main.dart',
+            vmServiceUri: 'ws://1.2.3.4/ws',
+          );
 
-        await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.attachRequest(
-            MockRequest(), args, responseCompleter.complete);
-        await responseCompleter.future;
+          await adapter.configurationDoneRequest(MockRequest(), null, () {});
+          await adapter.attachRequest(
+            MockRequest(),
+            args,
+            responseCompleter.complete,
+          );
+          await responseCompleter.future;
 
-        expect(
-            adapter.processArgs,
-            containsAllInOrder(<String>[
-              'attach',
-              '--machine',
-              '--debug-uri',
-              'ws://1.2.3.4/ws',
-              '--target',
-              'program/main.dart',
-            ]));
-      });
+          expect(adapter.processArgs, containsAllInOrder(<String>[
+            'attach',
+            '--machine',
+            '--debug-uri',
+            'ws://1.2.3.4/ws',
+            '--target',
+            'program/main.dart',
+          ]));
+        },
+      );
 
-      test('runs "flutter attach" with --debug-uri if vmServiceInfoFile exists', () async {
-        final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
-          fileSystem: MemoryFileSystem.test(style: fsStyle),
-          platform: platform,
-        );
-        final Completer<void> responseCompleter = Completer<void>();
-        final File serviceInfoFile = globals.fs.systemTempDirectory.createTempSync('dap_flutter_attach_vmServiceInfoFile').childFile('vmServiceInfo.json');
+      test(
+        'runs "flutter attach" with --debug-uri if vmServiceInfoFile exists',
+        () async {
+          final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
+            fileSystem: MemoryFileSystem.test(style: fsStyle),
+            platform: platform,
+          );
+          final Completer<void> responseCompleter = Completer<void>();
+          final File serviceInfoFile = globals.fs.systemTempDirectory
+              .createTempSync('dap_flutter_attach_vmServiceInfoFile')
+              .childFile('vmServiceInfo.json');
 
-        final FlutterAttachRequestArguments args =
-            FlutterAttachRequestArguments(
-          cwd: '/project',
-          program: 'program/main.dart',
-          vmServiceInfoFile: serviceInfoFile.path,
-        );
+          final FlutterAttachRequestArguments args =
+              FlutterAttachRequestArguments(
+            cwd: '/project',
+            program: 'program/main.dart',
+            vmServiceInfoFile: serviceInfoFile.path,
+          );
 
-        // Write the service info file before trying to attach:
-        serviceInfoFile.writeAsStringSync('{ "uri": "ws://1.2.3.4/ws" }');
+          // Write the service info file before trying to attach:
+          serviceInfoFile.writeAsStringSync('{ "uri": "ws://1.2.3.4/ws" }');
 
-        await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.attachRequest(MockRequest(), args, responseCompleter.complete);
-        await responseCompleter.future;
+          await adapter.configurationDoneRequest(MockRequest(), null, () {});
+          await adapter.attachRequest(
+            MockRequest(),
+            args,
+            responseCompleter.complete,
+          );
+          await responseCompleter.future;
 
-        expect(
-            adapter.processArgs,
-            containsAllInOrder(<String>[
-              'attach',
-              '--machine',
-              '--debug-uri',
-              'ws://1.2.3.4/ws',
-              '--target',
-              'program/main.dart',
-            ]));
-      });
+          expect(adapter.processArgs, containsAllInOrder(<String>[
+            'attach',
+            '--machine',
+            '--debug-uri',
+            'ws://1.2.3.4/ws',
+            '--target',
+            'program/main.dart',
+          ]));
+        },
+      );
 
-      test('runs "flutter attach" with --debug-uri if vmServiceInfoFile is created later', () async {
-        final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
-          fileSystem: MemoryFileSystem.test(style: fsStyle),
-          platform: platform,
-        );
-        final Completer<void> responseCompleter = Completer<void>();
-        final File serviceInfoFile = globals.fs.systemTempDirectory.createTempSync('dap_flutter_attach_vmServiceInfoFile').childFile('vmServiceInfo.json');
+      test(
+        'runs "flutter attach" with --debug-uri if vmServiceInfoFile is created later',
+        () async {
+          final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
+            fileSystem: MemoryFileSystem.test(style: fsStyle),
+            platform: platform,
+          );
+          final Completer<void> responseCompleter = Completer<void>();
+          final File serviceInfoFile = globals.fs.systemTempDirectory
+              .createTempSync('dap_flutter_attach_vmServiceInfoFile')
+              .childFile('vmServiceInfo.json');
 
-        final FlutterAttachRequestArguments args =
-            FlutterAttachRequestArguments(
-          cwd: '/project',
-          program: 'program/main.dart',
-          vmServiceInfoFile: serviceInfoFile.path,
-        );
+          final FlutterAttachRequestArguments args =
+              FlutterAttachRequestArguments(
+            cwd: '/project',
+            program: 'program/main.dart',
+            vmServiceInfoFile: serviceInfoFile.path,
+          );
 
+          await adapter.configurationDoneRequest(MockRequest(), null, () {});
+          final Future<void> attachResponseFuture = adapter.attachRequest(
+            MockRequest(),
+            args,
+            responseCompleter.complete,
+          );
+          // Write the service info file a little later to ensure we detect it:
+          await pumpEventQueue(times: 5000);
+          serviceInfoFile.writeAsStringSync('{ "uri": "ws://1.2.3.4/ws" }');
+          await attachResponseFuture;
+          await responseCompleter.future;
 
-        await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        final Future<void> attachResponseFuture = adapter.attachRequest(MockRequest(), args, responseCompleter.complete);
-        // Write the service info file a little later to ensure we detect it:
-        await pumpEventQueue(times:5000);
-        serviceInfoFile.writeAsStringSync('{ "uri": "ws://1.2.3.4/ws" }');
-        await attachResponseFuture;
-        await responseCompleter.future;
-
-        expect(
-            adapter.processArgs,
-            containsAllInOrder(<String>[
-              'attach',
-              '--machine',
-              '--debug-uri',
-              'ws://1.2.3.4/ws',
-              '--target',
-              'program/main.dart',
-            ]));
-      });
+          expect(adapter.processArgs, containsAllInOrder(<String>[
+            'attach',
+            '--machine',
+            '--debug-uri',
+            'ws://1.2.3.4/ws',
+            '--target',
+            'program/main.dart',
+          ]));
+        },
+      );
 
       test('does not record the VMs PID for terminating', () async {
         final MockFlutterDebugAdapter adapter = MockFlutterDebugAdapter(
@@ -407,12 +509,15 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterAttachRequestArguments args = FlutterAttachRequestArguments(
-          cwd: '/project',
-        );
+        final FlutterAttachRequestArguments args =
+            FlutterAttachRequestArguments(cwd: '/project');
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.attachRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.attachRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
         // Trigger a fake debuggerConnected with a pid that we expect the
@@ -429,17 +534,24 @@ void main() {
           platform: platform,
         );
 
-        final FlutterAttachRequestArguments args = FlutterAttachRequestArguments(
-          cwd: '/project',
-        );
+        final FlutterAttachRequestArguments args =
+            FlutterAttachRequestArguments(cwd: '/project');
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
         final Completer<void> attachCompleter = Completer<void>();
-        await adapter.attachRequest(MockRequest(), args, attachCompleter.complete);
+        await adapter.attachRequest(
+          MockRequest(),
+          args,
+          attachCompleter.complete,
+        );
         await attachCompleter.future;
 
         final Completer<void> terminateCompleter = Completer<void>();
-        await adapter.terminateRequest(MockRequest(), TerminateArguments(restart: false), terminateCompleter.complete);
+        await adapter.terminateRequest(
+          MockRequest(),
+          TerminateArguments(restart: false),
+          terminateCompleter.complete,
+        );
         await terminateCompleter.future;
 
         expect(adapter.dapToFlutterRequests, contains('app.detach'));
@@ -455,8 +567,12 @@ void main() {
 
         // Start listening for the forwarded event (don't await it yet, it won't
         // be triggered until the call below).
-        final Future<Map<String, Object?>> forwardedEvent = adapter.dapToClientMessages
-            .firstWhere((Map<String, Object?> data) => data['event'] == 'flutter.forwardedEvent');
+        final Future<Map<String, Object?>> forwardedEvent = adapter
+            .dapToClientMessages
+            .firstWhere(
+              (Map<String, Object?> data) =>
+                  data['event'] == 'flutter.forwardedEvent',
+            );
 
         // Simulate Flutter asking for a URL to be launched.
         adapter.simulateStdoutMessage(<String, Object?>{
@@ -464,7 +580,7 @@ void main() {
           'params': <String, Object?>{
             'url': 'http://localhost:123/',
             'launched': false,
-          }
+          },
         });
 
         // Wait for the forwarded event.
@@ -475,7 +591,7 @@ void main() {
           'params': <String, Object?>{
             'url': 'http://localhost:123/',
             'launched': false,
-          }
+          },
         });
       });
     });
@@ -489,22 +605,24 @@ void main() {
 
         // Pretend to be the client, handling any reverse-requests for exposeUrl
         // and mapping the host to 'mapped-host'.
-        adapter.exposeUrlHandler = (String url) => Uri.parse(url).replace(host: 'mapped-host').toString();
+        adapter.exposeUrlHandler = (String url) =>
+            Uri.parse(url).replace(host: 'mapped-host').toString();
 
         // Simulate Flutter asking for a URL to be exposed.
         const int requestId = 12345;
         adapter.simulateStdoutMessage(<String, Object?>{
           'id': requestId,
           'method': 'app.exposeUrl',
-          'params': <String, Object?>{
-            'url': 'http://localhost:123/',
-          }
+          'params': <String, Object?>{'url': 'http://localhost:123/'},
         });
 
         // Allow the handler to be processed.
         await pumpEventQueue(times: 5000);
 
-        final Map<String, Object?> message = adapter.dapToFlutterMessages.singleWhere((Map<String, Object?> data) => data['id'] == requestId);
+        final Map<String, Object?> message = adapter.dapToFlutterMessages
+            .singleWhere(
+              (Map<String, Object?> data) => data['id'] == requestId,
+            );
         expect(message['result'], 'http://mapped-host:123/');
       });
     });
@@ -517,13 +635,15 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
-          cwd: '/project',
-          program: 'foo.dart',
-        );
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(cwd: '/project', program: 'foo.dart');
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
         expect(adapter.processArgs, contains('--start-paused'));
@@ -536,14 +656,19 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(
           cwd: '/project',
           program: 'foo.dart',
           noDebug: true,
         );
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
         expect(adapter.processArgs, isNot(contains('--start-paused')));
@@ -556,14 +681,19 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(
           cwd: '/project',
           program: 'foo.dart',
           toolArgs: <String>['--profile'],
         );
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
         expect(adapter.processArgs, isNot(contains('--start-paused')));
@@ -576,14 +706,19 @@ void main() {
         );
         final Completer<void> responseCompleter = Completer<void>();
 
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(
           cwd: '/project',
           program: 'foo.dart',
           toolArgs: <String>['--release'],
         );
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
-        await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
         expect(adapter.processArgs, isNot(contains('--start-paused')));
@@ -605,7 +740,11 @@ void main() {
       );
 
       await adapter.configurationDoneRequest(MockRequest(), null, () {});
-      await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+      await adapter.launchRequest(
+        MockRequest(),
+        args,
+        responseCompleter.complete,
+      );
       await responseCompleter.future;
 
       expect(adapter.executable, equals(expectedFlutterExecutable));
@@ -617,37 +756,76 @@ void main() {
       late FlutterDebugAdapter adapter;
       setUp(() {
         fs = MemoryFileSystem.test(style: fsStyle);
-        adapter = MockFlutterDebugAdapter(
-          fileSystem: fs,
-          platform: platform,
-        );
+        adapter = MockFlutterDebugAdapter(fileSystem: fs, platform: platform);
       });
 
       test('dart:ui URI to file path', () async {
         expect(
-          adapter.convertOrgDartlangSdkToPath(Uri.parse('org-dartlang-sdk:///flutter/lib/ui/ui.dart')),
-          fs.path.join(flutterRoot, 'bin', 'cache', 'pkg', 'sky_engine', 'lib', 'ui', 'ui.dart'),
+          adapter.convertOrgDartlangSdkToPath(
+            Uri.parse('org-dartlang-sdk:///flutter/lib/ui/ui.dart'),
+          ),
+          fs.path.join(
+            flutterRoot,
+            'bin',
+            'cache',
+            'pkg',
+            'sky_engine',
+            'lib',
+            'ui',
+            'ui.dart',
+          ),
         );
       });
 
       test('dart:ui file path to URI', () async {
         expect(
-          adapter.convertPathToOrgDartlangSdk(fs.path.join(flutterRoot, 'bin', 'cache', 'pkg', 'sky_engine', 'lib', 'ui', 'ui.dart')),
+          adapter.convertPathToOrgDartlangSdk(fs.path.join(
+            flutterRoot,
+            'bin',
+            'cache',
+            'pkg',
+            'sky_engine',
+            'lib',
+            'ui',
+            'ui.dart',
+          )),
           Uri.parse('org-dartlang-sdk:///flutter/lib/ui/ui.dart'),
         );
       });
 
       test('dart:core URI to file path', () async {
         expect(
-          adapter.convertOrgDartlangSdkToPath(Uri.parse('org-dartlang-sdk:///third_party/dart/sdk/lib/core/core.dart')),
-          fs.path.join(flutterRoot, 'bin', 'cache', 'pkg', 'sky_engine', 'lib', 'core', 'core.dart'),
+          adapter.convertOrgDartlangSdkToPath(Uri.parse(
+            'org-dartlang-sdk:///third_party/dart/sdk/lib/core/core.dart',
+          )),
+          fs.path.join(
+            flutterRoot,
+            'bin',
+            'cache',
+            'pkg',
+            'sky_engine',
+            'lib',
+            'core',
+            'core.dart',
+          ),
         );
       });
 
       test('dart:core file path to URI', () async {
         expect(
-          adapter.convertPathToOrgDartlangSdk(fs.path.join(flutterRoot, 'bin', 'cache', 'pkg', 'sky_engine', 'lib', 'core', 'core.dart')),
-          Uri.parse('org-dartlang-sdk:///third_party/dart/sdk/lib/core/core.dart'),
+          adapter.convertPathToOrgDartlangSdk(fs.path.join(
+            flutterRoot,
+            'bin',
+            'cache',
+            'pkg',
+            'sky_engine',
+            'lib',
+            'core',
+            'core.dart',
+          )),
+          Uri.parse(
+            'org-dartlang-sdk:///third_party/dart/sdk/lib/core/core.dart',
+          ),
         );
       });
     });
@@ -658,7 +836,8 @@ void main() {
           fileSystem: MemoryFileSystem.test(style: fsStyle),
           platform: platform,
         );
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(
           cwd: '/project',
           program: 'foo.dart',
           customTool: '/custom/flutter',
@@ -667,7 +846,11 @@ void main() {
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
         final Completer<void> responseCompleter = Completer<void>();
-        await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
         expect(adapter.executable, equals('/custom/flutter'));
@@ -680,7 +863,8 @@ void main() {
           fileSystem: MemoryFileSystem.test(style: fsStyle),
           platform: platform,
         );
-        final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
+        final FlutterLaunchRequestArguments args =
+            FlutterLaunchRequestArguments(
           cwd: '/project',
           program: 'foo.dart',
           customTool: '/custom/flutter',
@@ -691,7 +875,11 @@ void main() {
 
         await adapter.configurationDoneRequest(MockRequest(), null, () {});
         final Completer<void> responseCompleter = Completer<void>();
-        await adapter.launchRequest(MockRequest(), args, responseCompleter.complete);
+        await adapter.launchRequest(
+          MockRequest(),
+          args,
+          responseCompleter.complete,
+        );
         await responseCompleter.future;
 
         expect(adapter.executable, equals('/custom/flutter'));

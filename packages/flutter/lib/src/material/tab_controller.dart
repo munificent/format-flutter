@@ -129,7 +129,6 @@ class TabController extends ChangeNotifier {
        _animationController = animationController,
        _animationDuration = animationDuration;
 
-
   /// Creates a new [TabController] with `index`, `previousIndex`, `length`, and
   /// `animationDuration` if they are non-null.
   ///
@@ -180,7 +179,7 @@ class TabController extends ChangeNotifier {
   /// [TabBarView.children]'s length.
   final int length;
 
-  void _changeIndex(int value, { Duration? duration, Curve? curve }) {
+  void _changeIndex(int value, {Duration? duration, Curve? curve}) {
     assert(value >= 0 && (value < length || length == 0));
     assert(duration != null || curve == null);
     assert(_indexIsChangingCount >= 0);
@@ -193,13 +192,14 @@ class TabController extends ChangeNotifier {
       _indexIsChangingCount += 1;
       notifyListeners(); // Because the value of indexIsChanging may have changed.
       _animationController!
-        .animateTo(_index.toDouble(), duration: duration, curve: curve!)
-        .whenCompleteOrCancel(() {
-          if (_animationController != null) { // don't notify if we've been disposed
-            _indexIsChangingCount -= 1;
-            notifyListeners();
-          }
-        });
+          .animateTo(_index.toDouble(), duration: duration, curve: curve!)
+          .whenCompleteOrCancel(() {
+            if (_animationController != null) {
+              // don't notify if we've been disposed
+              _indexIsChangingCount -= 1;
+              notifyListeners();
+            }
+          });
     } else {
       _indexIsChangingCount += 1;
       _animationController!.value = _index.toDouble();
@@ -243,7 +243,7 @@ class TabController extends ChangeNotifier {
   ///
   /// While the animation is running [indexIsChanging] is true. When the
   /// animation completes [offset] will be 0.0.
-  void animateTo(int value, { Duration? duration, Curve curve = Curves.ease }) {
+  void animateTo(int value, {Duration? duration, Curve curve = Curves.ease}) {
     _changeIndex(value, duration: duration ?? _animationDuration, curve: curve);
   }
 
@@ -394,7 +394,9 @@ class DefaultTabController extends StatefulWidget {
   /// * [DefaultTabController.of], which is similar to this method, but asserts
   ///   if no [DefaultTabController] ancestor is found.
   static TabController? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<_TabControllerScope>()?.controller;
+    return context
+        .dependOnInheritedWidgetOfExactType<_TabControllerScope>()
+        ?.controller;
   }
 
   /// The closest instance of [DefaultTabController] that encloses the given
@@ -419,21 +421,23 @@ class DefaultTabController extends StatefulWidget {
   ///   returns null if no [DefaultTabController] ancestor is found.
   static TabController of(BuildContext context) {
     final TabController? controller = maybeOf(context);
-    assert(() {
-      if (controller == null) {
-        throw FlutterError(
-          'DefaultTabController.of() was called with a context that does not '
-          'contain a DefaultTabController widget.\n'
-          'No DefaultTabController widget ancestor could be found starting from '
-          'the context that was passed to DefaultTabController.of(). This can '
-          'happen because you are using a widget that looks for a DefaultTabController '
-          'ancestor, but no such ancestor exists.\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (controller == null) {
+          throw FlutterError(
+            'DefaultTabController.of() was called with a context that does not '
+            'contain a DefaultTabController widget.\n'
+            'No DefaultTabController widget ancestor could be found starting from '
+            'the context that was passed to DefaultTabController.of(). This can '
+            'happen because you are using a widget that looks for a DefaultTabController '
+            'ancestor, but no such ancestor exists.\n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return controller!;
   }
 
@@ -441,7 +445,8 @@ class DefaultTabController extends StatefulWidget {
   State<DefaultTabController> createState() => _DefaultTabControllerState();
 }
 
-class _DefaultTabControllerState extends State<DefaultTabController> with SingleTickerProviderStateMixin {
+class _DefaultTabControllerState extends State<DefaultTabController>
+    with SingleTickerProviderStateMixin {
   late TabController _controller;
 
   @override

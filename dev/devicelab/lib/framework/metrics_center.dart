@@ -54,13 +54,19 @@ Future<FlutterDestination> connectFlutterDestination() async {
 ///     "host_type": "linux",
 ///     "host_version": "debian-10.11"
 ///   }
-List<MetricPoint> parse(Map<String, dynamic> resultsJson, Map<String, dynamic> benchmarkTags, String taskName) {
+List<MetricPoint> parse(
+  Map<String, dynamic> resultsJson,
+  Map<String, dynamic> benchmarkTags,
+  String taskName,
+) {
   print('Results to upload to skia perf: $resultsJson');
   print('Benchmark tags to upload to skia perf: $benchmarkTags');
   final List<String> scoreKeys =
-      (resultsJson['BenchmarkScoreKeys'] as List<dynamic>?)?.cast<String>() ?? const <String>[];
+      (resultsJson['BenchmarkScoreKeys'] as List<dynamic>?)?.cast<String>() ??
+          const <String>[];
   final Map<String, dynamic> resultData =
-      resultsJson['ResultData'] as Map<String, dynamic>? ?? const <String, dynamic>{};
+      resultsJson['ResultData'] as Map<String, dynamic>? ??
+          const <String, dynamic>{};
   final String gitBranch = (resultsJson['CommitBranch'] as String).trim();
   final String gitSha = (resultsJson['CommitSha'] as String).trim();
   final List<MetricPoint> metricPoints = <MetricPoint>[];
@@ -73,13 +79,14 @@ List<MetricPoint> parse(Map<String, dynamic> resultsJson, Map<String, dynamic> b
       kSubResultKey: scoreKey,
     };
     // Append additional benchmark tags, which will surface in Skia Perf dashboards.
-    tags = mergeMaps<String, String>(
-        tags, benchmarkTags.map((String key, dynamic value) => MapEntry<String, String>(key, value.toString())));
-    metricPoints.add(
-      MetricPoint(
-        (resultData[scoreKey] as num).toDouble(),
-        tags,
+    tags = mergeMaps<String, String>(tags, benchmarkTags.map(
+      (String key, dynamic value) => MapEntry<String, String>(
+        key,
+        value.toString(),
       ),
+    ));
+    metricPoints.add(
+      MetricPoint((resultData[scoreKey] as num).toDouble(), tags),
     );
   }
   return metricPoints;
@@ -102,10 +109,7 @@ Future<void> upload(
 ) async {
   await metricsDestination.update(
     metricPoints,
-    DateTime.fromMillisecondsSinceEpoch(
-      commitTimeSinceEpoch,
-      isUtc: true,
-    ),
+    DateTime.fromMillisecondsSinceEpoch(commitTimeSinceEpoch, isUtc: true),
     taskName,
   );
 }
@@ -116,7 +120,12 @@ Future<void> upload(
 /// 1. Run DeviceLab test, writing results to a known path
 /// 2. Request service account token from luci auth (valid for at least 3 minutes)
 /// 3. Upload results from (1) to skia perf.
-Future<void> uploadToSkiaPerf(String? resultsPath, String? commitTime, String? taskName, String? benchmarkTags) async {
+Future<void> uploadToSkiaPerf(
+  String? resultsPath,
+  String? commitTime,
+  String? taskName,
+  String? benchmarkTags,
+) async {
   int commitTimeSinceEpoch;
   if (resultsPath == null) {
     return;
@@ -127,12 +136,19 @@ Future<void> uploadToSkiaPerf(String? resultsPath, String? commitTime, String? t
     commitTimeSinceEpoch = DateTime.now().millisecondsSinceEpoch;
   }
   taskName = taskName ?? 'default';
-  final Map<String, dynamic> benchmarkTagsMap = jsonDecode(benchmarkTags ?? '{}') as Map<String, dynamic>;
+  final Map<String, dynamic> benchmarkTagsMap =
+      jsonDecode(benchmarkTags ?? '{}') as Map<String, dynamic>;
   final File resultFile = File(resultsPath);
   Map<String, dynamic> resultsJson = <String, dynamic>{};
-  resultsJson = json.decode(await resultFile.readAsString()) as Map<String, dynamic>;
-  final List<MetricPoint> metricPoints = parse(resultsJson, benchmarkTagsMap, taskName);
-  final FlutterDestination metricsDestination = await connectFlutterDestination();
+  resultsJson =
+      json.decode(await resultFile.readAsString()) as Map<String, dynamic>;
+  final List<MetricPoint> metricPoints = parse(
+    resultsJson,
+    benchmarkTagsMap,
+    taskName,
+  );
+  final FlutterDestination metricsDestination =
+      await connectFlutterDestination();
   await upload(
     metricsDestination,
     metricPoints,
@@ -152,10 +168,7 @@ Future<void> uploadToSkiaPerf(String? resultsPath, String? commitTime, String? t
 /// For example:
 ///   Old file name: `backdrop_filter_perf__timeline_summary`
 ///   New file name: `backdrop_filter_perf__timeline_summary_intel_linux_motoG4`
-String metricFileName(
-  String taskName,
-  Map<String, dynamic> benchmarkTagsMap,
-) {
+String metricFileName(String taskName, Map<String, dynamic> benchmarkTagsMap) {
   final StringBuffer fileName = StringBuffer(taskName);
   if (benchmarkTagsMap.containsKey('arch')) {
     fileName

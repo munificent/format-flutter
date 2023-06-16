@@ -10,13 +10,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Simple router basic functionality - synchronized', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+  testWidgets(
+    'Simple router basic functionality - synchronized',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
         routerDelegate: SimpleRouterDelegate(
@@ -24,264 +24,258 @@ void main() {
             return Text(Uri.decodeComponent(information!.uri.toString()));
           },
         ),
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
+      )));
+      expect(find.text('initial'), findsOneWidget);
 
-    provider.value = RouteInformation(
-      uri: Uri.parse('update'),
-    );
-    await tester.pump();
-    expect(find.text('initial'), findsNothing);
-    expect(find.text('update'), findsOneWidget);
-  });
+      provider.value = RouteInformation(uri: Uri.parse('update'));
+      await tester.pump();
+      expect(find.text('initial'), findsNothing);
+      expect(find.text('update'), findsOneWidget);
+    },
+  );
 
-  testWidgets('Simple router basic functionality - asynchronized', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final SimpleAsyncRouteInformationParser parser = SimpleAsyncRouteInformationParser();
-    final SimpleAsyncRouterDelegate delegate = SimpleAsyncRouterDelegate(
-      builder: (BuildContext context, RouteInformation? information) {
-        if (information == null) {
-          return const Text('waiting');
-        }
-        return Text(information.uri.toString());
-      },
-    );
-    await tester.runAsync(() async {
-      await tester.pumpWidget(buildBoilerPlate(
-        Router<RouteInformation>(
+  testWidgets(
+    'Simple router basic functionality - asynchronized',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final SimpleAsyncRouteInformationParser parser =
+          SimpleAsyncRouteInformationParser();
+      final SimpleAsyncRouterDelegate delegate = SimpleAsyncRouterDelegate(
+        builder: (BuildContext context, RouteInformation? information) {
+          if (information == null) {
+            return const Text('waiting');
+          }
+          return Text(information.uri.toString());
+        },
+      );
+      await tester.runAsync(() async {
+        await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
           routeInformationProvider: provider,
           routeInformationParser: parser,
           routerDelegate: delegate,
-        ),
-      ));
-      // Future has not yet completed.
-      expect(find.text('waiting'), findsOneWidget);
+        )));
+        // Future has not yet completed.
+        expect(find.text('waiting'), findsOneWidget);
 
-      await parser.parsingFuture;
-      await delegate.setNewRouteFuture;
-      await tester.pump();
-      expect(find.text('initial'), findsOneWidget);
+        await parser.parsingFuture;
+        await delegate.setNewRouteFuture;
+        await tester.pump();
+        expect(find.text('initial'), findsOneWidget);
 
-      provider.value = RouteInformation(
-        uri: Uri.parse('update'),
+        provider.value = RouteInformation(uri: Uri.parse('update'));
+        await tester.pump();
+        // Future has not yet completed.
+        expect(find.text('initial'), findsOneWidget);
+
+        await parser.parsingFuture;
+        await delegate.setNewRouteFuture;
+        await tester.pump();
+        expect(find.text('update'), findsOneWidget);
+      });
+    },
+  );
+
+  testWidgets(
+    'Interrupts route parsing should not crash',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final CompleterRouteInformationParser parser =
+          CompleterRouteInformationParser();
+      final SimpleAsyncRouterDelegate delegate = SimpleAsyncRouterDelegate(
+        builder: (BuildContext context, RouteInformation? information) {
+          if (information == null) {
+            return const Text('waiting');
+          }
+          return Text(information.uri.toString());
+        },
       );
-      await tester.pump();
-      // Future has not yet completed.
-      expect(find.text('initial'), findsOneWidget);
-
-      await parser.parsingFuture;
-      await delegate.setNewRouteFuture;
-      await tester.pump();
-      expect(find.text('update'), findsOneWidget);
-    });
-  });
-
-  testWidgets('Interrupts route parsing should not crash', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final CompleterRouteInformationParser parser = CompleterRouteInformationParser();
-    final SimpleAsyncRouterDelegate delegate = SimpleAsyncRouterDelegate(
-      builder: (BuildContext context, RouteInformation? information) {
-        if (information == null) {
-          return const Text('waiting');
-        }
-        return Text(information.uri.toString());
-      },
-    );
-    await tester.runAsync(() async {
-      await tester.pumpWidget(buildBoilerPlate(
-        Router<RouteInformation>(
+      await tester.runAsync(() async {
+        await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
           routeInformationProvider: provider,
           routeInformationParser: parser,
           routerDelegate: delegate,
-        ),
-      ));
-      // Future has not yet completed.
-      expect(find.text('waiting'), findsOneWidget);
+        )));
+        // Future has not yet completed.
+        expect(find.text('waiting'), findsOneWidget);
 
-      final Completer<void> firstTransactionCompleter = parser.completer;
+        final Completer<void> firstTransactionCompleter = parser.completer;
 
-      // Start a new parsing transaction before the previous one complete.
-      provider.value = RouteInformation(
-        uri: Uri.parse('update'),
-      );
-      await tester.pump();
-      expect(find.text('waiting'), findsOneWidget);
-      // Completing the previous transaction does not cause an update.
-      firstTransactionCompleter.complete();
-      await firstTransactionCompleter.future;
-      await tester.pump();
-      expect(find.text('waiting'), findsOneWidget);
-      expect(tester.takeException(), isNull);
+        // Start a new parsing transaction before the previous one complete.
+        provider.value = RouteInformation(uri: Uri.parse('update'));
+        await tester.pump();
+        expect(find.text('waiting'), findsOneWidget);
+        // Completing the previous transaction does not cause an update.
+        firstTransactionCompleter.complete();
+        await firstTransactionCompleter.future;
+        await tester.pump();
+        expect(find.text('waiting'), findsOneWidget);
+        expect(tester.takeException(), isNull);
 
-      // Make sure the new transaction can complete and update correctly.
-      parser.completer.complete();
-      await parser.completer.future;
-      await delegate.setNewRouteFuture;
-      await tester.pump();
-      expect(find.text('update'), findsOneWidget);
-    });
-  });
+        // Make sure the new transaction can complete and update correctly.
+        parser.completer.complete();
+        await parser.completer.future;
+        await delegate.setNewRouteFuture;
+        await tester.pump();
+        expect(find.text('update'), findsOneWidget);
+      });
+    },
+  );
 
   testWidgets('Router.maybeOf can be null', (WidgetTester tester) async {
     final GlobalKey key = GlobalKey();
-    await tester.pumpWidget(buildBoilerPlate(
-      Text('dummy', key: key),
-    ));
+    await tester.pumpWidget(buildBoilerPlate(Text('dummy', key: key)));
     final BuildContext textContext = key.currentContext!;
 
     // This should not throw error.
     final Router<dynamic>? router = Router.maybeOf(textContext);
     expect(router, isNull);
 
-    expect(
-      () => Router.of(textContext),
-      throwsA(isFlutterError.having((FlutterError e) => e.message, 'message', startsWith('Router')))
-    );
+    expect(() => Router.of(textContext), throwsA(isFlutterError.having(
+      (FlutterError e) => e.message,
+      'message',
+      startsWith('Router'),
+    )));
   });
 
-  testWidgets('Simple router can handle pop route', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
+  testWidgets('Simple router can handle pop route', (
+    WidgetTester tester,
+  ) async {
+    final SimpleRouteInformationProvider provider =
+        SimpleRouteInformationProvider();
+    provider.value = RouteInformation(uri: Uri.parse('initial'));
     final BackButtonDispatcher dispatcher = RootBackButtonDispatcher();
 
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
-        routeInformationProvider: provider,
-        routeInformationParser: SimpleRouteInformationParser(),
-        routerDelegate: SimpleRouterDelegate(
-          builder: (BuildContext context, RouteInformation? information) {
-            return Text(Uri.decodeComponent(information!.uri.toString()));
-          },
-          onPopRoute: () {
-            provider.value = RouteInformation(
-              uri: Uri.parse('popped'),
-            );
-            return SynchronousFuture<bool>(true);
-          },
-        ),
-        backButtonDispatcher: dispatcher,
+    await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
+      routeInformationProvider: provider,
+      routeInformationParser: SimpleRouteInformationParser(),
+      routerDelegate: SimpleRouterDelegate(
+        builder: (BuildContext context, RouteInformation? information) {
+          return Text(Uri.decodeComponent(information!.uri.toString()));
+        },
+        onPopRoute: () {
+          provider.value = RouteInformation(uri: Uri.parse('popped'));
+          return SynchronousFuture<bool>(true);
+        },
       ),
-    ));
+      backButtonDispatcher: dispatcher,
+    )));
     expect(find.text('initial'), findsOneWidget);
 
     bool result = false;
     // SynchronousFuture should complete immediately.
-    dispatcher.invokeCallback(SynchronousFuture<bool>(false))
-      .then((bool data) {
-        result = data;
-      });
+    dispatcher.invokeCallback(SynchronousFuture<bool>(false)).then((bool data) {
+      result = data;
+    });
     expect(result, isTrue);
 
     await tester.pump();
     expect(find.text('popped'), findsOneWidget);
   });
 
-  testWidgets('Router throw when passing routeInformationProvider without routeInformationParser', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    expect(
-      () {
-        Router<RouteInformation>(
-          routeInformationProvider: provider,
-          routerDelegate: SimpleRouterDelegate(
-            builder: (BuildContext context, RouteInformation? information) {
-              return Text(Uri.decodeComponent(information!.uri.toString()));
-            },
-          ),
-        );
-      },
-      throwsA(isAssertionError.having(
-        (AssertionError e) => e.message,
-        'message',
-        'A routeInformationParser must be provided when a routeInformationProvider is specified.',
-      )),
-    );
-  });
+  testWidgets(
+    'Router throw when passing routeInformationProvider without routeInformationParser',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      expect(
+        () {
+          Router<RouteInformation>(
+            routeInformationProvider: provider,
+            routerDelegate: SimpleRouterDelegate(
+              builder: (BuildContext context, RouteInformation? information) {
+                return Text(Uri.decodeComponent(information!.uri.toString()));
+              },
+            ),
+          );
+        },
+        throwsA(isAssertionError.having(
+          (AssertionError e) => e.message,
+          'message',
+          'A routeInformationParser must be provided when a routeInformationProvider is specified.',
+        )),
+      );
+    },
+  );
 
-  testWidgets('PopNavigatorRouterDelegateMixin works', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher dispatcher = RootBackButtonDispatcher();
-    final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
-      builder: (BuildContext context, RouteInformation? information) {
-        return Text(Uri.decodeComponent(information!.uri.toString()));
-      },
-      onPopPage: (Route<void> route, void result) {
-        provider.value = RouteInformation(
-          uri: Uri.parse('popped'),
-        );
-        return route.didPop(result);
-      },
-    );
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+  testWidgets(
+    'PopNavigatorRouterDelegateMixin works',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher dispatcher = RootBackButtonDispatcher();
+      final SimpleNavigatorRouterDelegate delegate =
+          SimpleNavigatorRouterDelegate(
+        builder: (BuildContext context, RouteInformation? information) {
+          return Text(Uri.decodeComponent(information!.uri.toString()));
+        },
+        onPopPage: (Route<void> route, void result) {
+          provider.value = RouteInformation(uri: Uri.parse('popped'));
+          return route.didPop(result);
+        },
+      );
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
         routerDelegate: delegate,
         backButtonDispatcher: dispatcher,
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
+      )));
+      expect(find.text('initial'), findsOneWidget);
 
-    // Pushes a nameless route.
-    showDialog<void>(
-      useRootNavigator: false,
-      context: delegate.navigatorKey.currentContext!,
-      builder: (BuildContext context) => const Text('dialog'),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('dialog'), findsOneWidget);
+      // Pushes a nameless route.
+      showDialog<void>(
+        useRootNavigator: false,
+        context: delegate.navigatorKey.currentContext!,
+        builder: (BuildContext context) => const Text('dialog'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('dialog'), findsOneWidget);
 
-    // Pops the nameless route and makes sure the initial page is shown.
-    bool result = false;
-    result = await dispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
+      // Pops the nameless route and makes sure the initial page is shown.
+      bool result = false;
+      result = await dispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
 
-    await tester.pumpAndSettle();
-    expect(find.text('initial'), findsOneWidget);
-    expect(find.text('dialog'), findsNothing);
+      await tester.pumpAndSettle();
+      expect(find.text('initial'), findsOneWidget);
+      expect(find.text('dialog'), findsNothing);
 
-    // Pops one more time.
-    result = false;
-    result = await dispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
-    await tester.pumpAndSettle();
-    expect(find.text('popped'), findsOneWidget);
-  });
+      // Pops one more time.
+      result = false;
+      result = await dispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
+      await tester.pumpAndSettle();
+      expect(find.text('popped'), findsOneWidget);
+    },
+  );
 
-  testWidgets('Nested routers back button dispatcher works', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+  testWidgets(
+    'Nested routers back button dispatcher works',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
         routerDelegate: SimpleRouterDelegate(
           builder: (BuildContext context, RouteInformation? information) {
-            final BackButtonDispatcher innerDispatcher = ChildBackButtonDispatcher(outerDispatcher);
+            final BackButtonDispatcher innerDispatcher =
+                ChildBackButtonDispatcher(outerDispatcher);
             innerDispatcher.takePriority();
             // Creates the sub-router.
             return Router<RouteInformation>(
               backButtonDispatcher: innerDispatcher,
               routerDelegate: SimpleRouterDelegate(
-                builder: (BuildContext context, RouteInformation? innerInformation) {
+                builder:
+                    (BuildContext context, RouteInformation? innerInformation) {
                   return Text(Uri.decodeComponent(information!.uri.toString()));
                 },
                 onPopRoute: () {
@@ -294,34 +288,37 @@ void main() {
             );
           },
           onPopRoute: () {
-            provider.value = RouteInformation(
-              uri: Uri.parse('popped outer'),
-            );
+            provider.value = RouteInformation(uri: Uri.parse('popped outer'));
             return SynchronousFuture<bool>(true);
           },
         ),
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
+      )));
+      expect(find.text('initial'), findsOneWidget);
 
-    // The outer dispatcher should trigger the pop on the inner router.
-    bool result = false;
-    result = await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
-    await tester.pump();
-    expect(find.text('popped inner'), findsOneWidget);
-  });
+      // The outer dispatcher should trigger the pop on the inner router.
+      bool result = false;
+      result =
+          await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
+      await tester.pump();
+      expect(find.text('popped inner'), findsOneWidget);
+    },
+  );
 
-  testWidgets('Nested router back button dispatcher works for multiple children', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-    final BackButtonDispatcher innerDispatcher1 = ChildBackButtonDispatcher(outerDispatcher);
-    final BackButtonDispatcher innerDispatcher2 = ChildBackButtonDispatcher(outerDispatcher);
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+  testWidgets(
+    'Nested router back button dispatcher works for multiple children',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+      final BackButtonDispatcher innerDispatcher1 = ChildBackButtonDispatcher(
+        outerDispatcher,
+      );
+      final BackButtonDispatcher innerDispatcher2 = ChildBackButtonDispatcher(
+        outerDispatcher,
+      );
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
@@ -334,7 +331,10 @@ void main() {
                 Router<RouteInformation>(
                   backButtonDispatcher: innerDispatcher1,
                   routerDelegate: SimpleRouterDelegate(
-                    builder: (BuildContext context, RouteInformation? innerInformation) {
+                    builder: (
+                      BuildContext context,
+                      RouteInformation? innerInformation,
+                    ) {
                       return Container();
                     },
                     onPopRoute: () {
@@ -348,7 +348,10 @@ void main() {
                 Router<RouteInformation>(
                   backButtonDispatcher: innerDispatcher2,
                   routerDelegate: SimpleRouterDelegate(
-                    builder: (BuildContext context, RouteInformation? innerInformation) {
+                    builder: (
+                      BuildContext context,
+                      RouteInformation? innerInformation,
+                    ) {
                       return Container();
                     },
                     onPopRoute: () {
@@ -363,46 +366,49 @@ void main() {
             );
           },
           onPopRoute: () {
-            provider.value = RouteInformation(
-              uri: Uri.parse('popped outer'),
-            );
+            provider.value = RouteInformation(uri: Uri.parse('popped outer'));
             return SynchronousFuture<bool>(true);
           },
         ),
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
+      )));
+      expect(find.text('initial'), findsOneWidget);
 
-    // If none of the children have taken the priority, the root router handles
-    // the pop.
-    bool result = false;
-    result = await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
-    await tester.pump();
-    expect(find.text('popped outer'), findsOneWidget);
+      // If none of the children have taken the priority, the root router handles
+      // the pop.
+      bool result = false;
+      result =
+          await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
+      await tester.pump();
+      expect(find.text('popped outer'), findsOneWidget);
 
-    innerDispatcher1.takePriority();
-    result = false;
-    result = await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
-    await tester.pump();
-    expect(find.text('popped inner1'), findsOneWidget);
+      innerDispatcher1.takePriority();
+      result = false;
+      result =
+          await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
+      await tester.pump();
+      expect(find.text('popped inner1'), findsOneWidget);
 
-    // The last child dispatcher that took priority handles the pop.
-    innerDispatcher2.takePriority();
-    result = false;
-    result = await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
-    await tester.pump();
-    expect(find.text('popped inner2'), findsOneWidget);
-  });
+      // The last child dispatcher that took priority handles the pop.
+      innerDispatcher2.takePriority();
+      result = false;
+      result =
+          await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
+      await tester.pump();
+      expect(find.text('popped inner2'), findsOneWidget);
+    },
+  );
 
-  testWidgets('ChildBackButtonDispatcher can be replaced without calling the takePriority', (WidgetTester tester) async {
-
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-    BackButtonDispatcher innerDispatcher = ChildBackButtonDispatcher(outerDispatcher);
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+  testWidgets(
+    'ChildBackButtonDispatcher can be replaced without calling the takePriority',
+    (WidgetTester tester) async {
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+      BackButtonDispatcher innerDispatcher = ChildBackButtonDispatcher(
+        outerDispatcher,
+      );
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routerDelegate: SimpleRouterDelegate(
           builder: (BuildContext context, RouteInformation? information) {
@@ -413,7 +419,10 @@ void main() {
                 Router<RouteInformation>(
                   backButtonDispatcher: innerDispatcher,
                   routerDelegate: SimpleRouterDelegate(
-                    builder: (BuildContext context, RouteInformation? innerInformation) {
+                    builder: (
+                      BuildContext context,
+                      RouteInformation? innerInformation,
+                    ) {
                       return Container();
                     },
                   ),
@@ -422,14 +431,12 @@ void main() {
             );
           },
         ),
-      ),
-    ));
+      )));
 
-    // Creates a new child back button dispatcher and rebuild, this will cause
-    // the old one to be replaced and discarded.
-    innerDispatcher = ChildBackButtonDispatcher(outerDispatcher);
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+      // Creates a new child back button dispatcher and rebuild, this will cause
+      // the old one to be replaced and discarded.
+      innerDispatcher = ChildBackButtonDispatcher(outerDispatcher);
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routerDelegate: SimpleRouterDelegate(
           builder: (BuildContext context, RouteInformation? information) {
@@ -440,7 +447,10 @@ void main() {
                 Router<RouteInformation>(
                   backButtonDispatcher: innerDispatcher,
                   routerDelegate: SimpleRouterDelegate(
-                    builder: (BuildContext context, RouteInformation? innerInformation) {
+                    builder: (
+                      BuildContext context,
+                      RouteInformation? innerInformation,
+                    ) {
                       return Container();
                     },
                   ),
@@ -449,21 +459,27 @@ void main() {
             );
           },
         ),
-      ),
-    ));
+      )));
 
-    expect(tester.takeException(), isNull);
-  });
+      expect(tester.takeException(), isNull);
+    },
+  );
 
-testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester tester) async {
-
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-    final BackButtonDispatcher innerDispatcher1 = ChildBackButtonDispatcher(outerDispatcher);
-    final BackButtonDispatcher innerDispatcher2 = ChildBackButtonDispatcher(innerDispatcher1);
-    final BackButtonDispatcher innerDispatcher3 = ChildBackButtonDispatcher(innerDispatcher2);
-    bool isPopped = false;
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+  testWidgets(
+    'ChildBackButtonDispatcher take priority recursively',
+    (WidgetTester tester) async {
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+      final BackButtonDispatcher innerDispatcher1 = ChildBackButtonDispatcher(
+        outerDispatcher,
+      );
+      final BackButtonDispatcher innerDispatcher2 = ChildBackButtonDispatcher(
+        innerDispatcher1,
+      );
+      final BackButtonDispatcher innerDispatcher3 = ChildBackButtonDispatcher(
+        innerDispatcher2,
+      );
+      bool isPopped = false;
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routerDelegate: SimpleRouterDelegate(
           builder: (BuildContext context, RouteInformation? information) {
@@ -471,11 +487,15 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
             return Router<RouteInformation>(
               backButtonDispatcher: innerDispatcher1,
               routerDelegate: SimpleRouterDelegate(
-                builder: (BuildContext context, RouteInformation? innerInformation) {
+                builder:
+                    (BuildContext context, RouteInformation? innerInformation) {
                   return Router<RouteInformation>(
                     backButtonDispatcher: innerDispatcher2,
                     routerDelegate: SimpleRouterDelegate(
-                      builder: (BuildContext context, RouteInformation? innerInformation) {
+                      builder: (
+                        BuildContext context,
+                        RouteInformation? innerInformation,
+                      ) {
                         return Router<RouteInformation>(
                           backButtonDispatcher: innerDispatcher3,
                           routerDelegate: SimpleRouterDelegate(
@@ -483,7 +503,10 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
                               isPopped = true;
                               return SynchronousFuture<bool>(true);
                             },
-                            builder: (BuildContext context, RouteInformation? innerInformation) {
+                            builder: (
+                              BuildContext context,
+                              RouteInformation? innerInformation,
+                            ) {
                               return Container();
                             },
                           ),
@@ -496,284 +519,290 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
             );
           },
         ),
-      ),
-    ));
-    // This should work without calling the takePriority on the innerDispatcher2
-    // and the innerDispatcher1.
-    innerDispatcher3.takePriority();
-    bool result = false;
-    result = await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
-    expect(isPopped, isTrue);
-  });
+      )));
+      // This should work without calling the takePriority on the innerDispatcher2
+      // and the innerDispatcher1.
+      innerDispatcher3.takePriority();
+      bool result = false;
+      result =
+          await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
+      expect(isPopped, isTrue);
+    },
+  );
 
-  testWidgets('router does report URL change correctly', (WidgetTester tester) async {
-    RouteInformation? reportedRouteInformation;
-    RouteInformationReportingType? reportedType;
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider(
-      onRouterReport: (RouteInformation information, RouteInformationReportingType type) {
-        // Makes sure we only report once after manually cleaning up.
-        expect(reportedRouteInformation, isNull);
-        expect(reportedType, isNull);
-        reportedRouteInformation = information;
-        reportedType = type;
-      },
-    );
-    final SimpleRouterDelegate delegate = SimpleRouterDelegate(
-      reportConfiguration: true,
-      builder: (BuildContext context, RouteInformation? information) {
-        return Text(Uri.decodeComponent(information!.uri.toString()));
-      },
-    );
-    delegate.onPopRoute = () {
-      delegate.routeInformation = RouteInformation(
-        uri: Uri.parse('popped'),
+  testWidgets(
+    'router does report URL change correctly',
+    (WidgetTester tester) async {
+      RouteInformation? reportedRouteInformation;
+      RouteInformationReportingType? reportedType;
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider(
+        onRouterReport:
+            (RouteInformation information, RouteInformationReportingType type) {
+          // Makes sure we only report once after manually cleaning up.
+          expect(reportedRouteInformation, isNull);
+          expect(reportedType, isNull);
+          reportedRouteInformation = information;
+          reportedType = type;
+        },
       );
-      return SynchronousFuture<bool>(true);
-    };
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+      final SimpleRouterDelegate delegate = SimpleRouterDelegate(
+        reportConfiguration: true,
+        builder: (BuildContext context, RouteInformation? information) {
+          return Text(Uri.decodeComponent(information!.uri.toString()));
+        },
+      );
+      delegate.onPopRoute = () {
+        delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
+        return SynchronousFuture<bool>(true);
+      };
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
 
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
 
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
         routerDelegate: delegate,
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
-    expect(reportedRouteInformation!.uri.toString(), 'initial');
-    expect(reportedType, RouteInformationReportingType.none);
-    reportedRouteInformation = null;
-    reportedType = null;
-    delegate.routeInformation = RouteInformation(
-      uri: Uri.parse('update'),
-    );
-    await tester.pump();
-    expect(find.text('initial'), findsNothing);
-    expect(find.text('update'), findsOneWidget);
-    expect(reportedRouteInformation!.uri.toString(), 'update');
-    expect(reportedType, RouteInformationReportingType.none);
+      )));
+      expect(find.text('initial'), findsOneWidget);
+      expect(reportedRouteInformation!.uri.toString(), 'initial');
+      expect(reportedType, RouteInformationReportingType.none);
+      reportedRouteInformation = null;
+      reportedType = null;
+      delegate.routeInformation = RouteInformation(uri: Uri.parse('update'));
+      await tester.pump();
+      expect(find.text('initial'), findsNothing);
+      expect(find.text('update'), findsOneWidget);
+      expect(reportedRouteInformation!.uri.toString(), 'update');
+      expect(reportedType, RouteInformationReportingType.none);
 
-    // The router should report as non navigation event if only state changes.
-    reportedRouteInformation = null;
-    reportedType = null;
-    delegate.routeInformation = RouteInformation(
-      uri: Uri.parse('update'),
-      state: 'another state',
-    );
-    await tester.pump();
-    expect(find.text('update'), findsOneWidget);
-    expect(reportedRouteInformation!.uri.toString(), 'update');
-    expect(reportedRouteInformation!.state, 'another state');
-    expect(reportedType, RouteInformationReportingType.none);
+      // The router should report as non navigation event if only state changes.
+      reportedRouteInformation = null;
+      reportedType = null;
+      delegate.routeInformation = RouteInformation(
+        uri: Uri.parse('update'),
+        state: 'another state',
+      );
+      await tester.pump();
+      expect(find.text('update'), findsOneWidget);
+      expect(reportedRouteInformation!.uri.toString(), 'update');
+      expect(reportedRouteInformation!.state, 'another state');
+      expect(reportedType, RouteInformationReportingType.none);
 
-    reportedRouteInformation = null;
-    reportedType = null;
-    bool result = false;
-    result = await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
-    await tester.pump();
-    expect(find.text('popped'), findsOneWidget);
-    expect(reportedRouteInformation!.uri.toString(), 'popped');
-    expect(reportedType, RouteInformationReportingType.none);
-  });
+      reportedRouteInformation = null;
+      reportedType = null;
+      bool result = false;
+      result =
+          await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
+      await tester.pump();
+      expect(find.text('popped'), findsOneWidget);
+      expect(reportedRouteInformation!.uri.toString(), 'popped');
+      expect(reportedType, RouteInformationReportingType.none);
+    },
+  );
 
-  testWidgets('router can be forced to recognize or ignore navigating events', (WidgetTester tester) async {
-    RouteInformation? reportedRouteInformation;
-    RouteInformationReportingType? reportedType;
-    bool isNavigating = false;
-    late RouteInformation nextRouteInformation;
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider(
-      onRouterReport: (RouteInformation information, RouteInformationReportingType type) {
-        // Makes sure we only report once after manually cleaning up.
-        expect(reportedRouteInformation, isNull);
-        expect(reportedType, isNull);
-        reportedRouteInformation = information;
-        reportedType = type;
-      },
-    );
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final SimpleRouterDelegate delegate = SimpleRouterDelegate(reportConfiguration: true);
-    delegate.builder = (BuildContext context, RouteInformation? information) {
-      return ElevatedButton(
-        child: Text(Uri.decodeComponent(information!.uri.toString())),
-        onPressed: () {
-          if (isNavigating) {
-            Router.navigate(context, () {
-              if (delegate.routeInformation != nextRouteInformation) {
-                delegate.routeInformation = nextRouteInformation;
-              }
-            });
-          } else {
+  testWidgets(
+    'router can be forced to recognize or ignore navigating events',
+    (WidgetTester tester) async {
+      RouteInformation? reportedRouteInformation;
+      RouteInformationReportingType? reportedType;
+      bool isNavigating = false;
+      late RouteInformation nextRouteInformation;
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider(
+        onRouterReport:
+            (RouteInformation information, RouteInformationReportingType type) {
+          // Makes sure we only report once after manually cleaning up.
+          expect(reportedRouteInformation, isNull);
+          expect(reportedType, isNull);
+          reportedRouteInformation = information;
+          reportedType = type;
+        },
+      );
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final SimpleRouterDelegate delegate = SimpleRouterDelegate(
+        reportConfiguration: true,
+      );
+      delegate.builder = (BuildContext context, RouteInformation? information) {
+        return ElevatedButton(
+          child: Text(Uri.decodeComponent(information!.uri.toString())),
+          onPressed: () {
+            if (isNavigating) {
+              Router.navigate(context, () {
+                if (delegate.routeInformation != nextRouteInformation) {
+                  delegate.routeInformation = nextRouteInformation;
+                }
+              });
+            } else {
+              Router.neglect(context, () {
+                if (delegate.routeInformation != nextRouteInformation) {
+                  delegate.routeInformation = nextRouteInformation;
+                }
+              });
+            }
+          },
+        );
+      };
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
+        backButtonDispatcher: outerDispatcher,
+        routeInformationProvider: provider,
+        routeInformationParser: SimpleRouteInformationParser(),
+        routerDelegate: delegate,
+      )));
+      expect(find.text('initial'), findsOneWidget);
+      expect(reportedRouteInformation!.uri.toString(), 'initial');
+      expect(reportedType, RouteInformationReportingType.none);
+      reportedType = null;
+      reportedRouteInformation = null;
+
+      nextRouteInformation = RouteInformation(uri: Uri.parse('update'));
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pump();
+      expect(find.text('initial'), findsNothing);
+      expect(find.text('update'), findsOneWidget);
+      expect(reportedType, RouteInformationReportingType.neglect);
+      expect(reportedRouteInformation!.uri.toString(), 'update');
+      reportedType = null;
+      reportedRouteInformation = null;
+
+      isNavigating = true;
+      // This should not trigger any real navigating event because the
+      // nextRouteInformation does not change. However, the router should still
+      // report a route information because isNavigating = true.
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pump();
+      expect(reportedType, RouteInformationReportingType.navigate);
+      expect(reportedRouteInformation!.uri.toString(), 'update');
+      reportedType = null;
+      reportedRouteInformation = null;
+    },
+  );
+
+  testWidgets(
+    'router ignore navigating events updates RouteInformationProvider',
+    (WidgetTester tester) async {
+      RouteInformation? updatedRouteInformation;
+      late RouteInformation nextRouteInformation;
+      RouteInformationReportingType? reportingType;
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider(
+        onRouterReport:
+            (RouteInformation information, RouteInformationReportingType type) {
+          expect(reportingType, isNull);
+          expect(updatedRouteInformation, isNull);
+          updatedRouteInformation = information;
+          reportingType = type;
+        },
+      );
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final SimpleRouterDelegate delegate = SimpleRouterDelegate(
+        reportConfiguration: true,
+      );
+      delegate.builder = (BuildContext context, RouteInformation? information) {
+        return ElevatedButton(
+          child: Text(Uri.decodeComponent(information!.uri.toString())),
+          onPressed: () {
             Router.neglect(context, () {
               if (delegate.routeInformation != nextRouteInformation) {
                 delegate.routeInformation = nextRouteInformation;
               }
             });
-          }
-        },
-      );
-    };
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+          },
+        );
+      };
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
 
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
         routerDelegate: delegate,
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
-    expect(reportedRouteInformation!.uri.toString(), 'initial');
-    expect(reportedType, RouteInformationReportingType.none);
-    reportedType = null;
-    reportedRouteInformation = null;
+      )));
+      expect(find.text('initial'), findsOneWidget);
+      expect(updatedRouteInformation!.uri.toString(), 'initial');
+      expect(reportingType, RouteInformationReportingType.none);
+      updatedRouteInformation = null;
+      reportingType = null;
 
-    nextRouteInformation = RouteInformation(
-      uri: Uri.parse('update'),
-    );
-    await tester.tap(find.byType(ElevatedButton));
-    await tester.pump();
-    expect(find.text('initial'), findsNothing);
-    expect(find.text('update'), findsOneWidget);
-    expect(reportedType, RouteInformationReportingType.neglect);
-    expect(reportedRouteInformation!.uri.toString(), 'update');
-    reportedType = null;
-    reportedRouteInformation = null;
+      nextRouteInformation = RouteInformation(uri: Uri.parse('update'));
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pump();
+      expect(find.text('initial'), findsNothing);
+      expect(find.text('update'), findsOneWidget);
+      expect(updatedRouteInformation!.uri.toString(), 'update');
+      expect(reportingType, RouteInformationReportingType.neglect);
+    },
+  );
 
-    isNavigating = true;
-    // This should not trigger any real navigating event because the
-    // nextRouteInformation does not change. However, the router should still
-    // report a route information because isNavigating = true.
-    await tester.tap(find.byType(ElevatedButton));
-    await tester.pump();
-    expect(reportedType, RouteInformationReportingType.navigate);
-    expect(reportedRouteInformation!.uri.toString(), 'update');
-    reportedType = null;
-    reportedRouteInformation = null;
-  });
-
-  testWidgets('router ignore navigating events updates RouteInformationProvider', (WidgetTester tester) async {
-    RouteInformation? updatedRouteInformation;
-    late RouteInformation nextRouteInformation;
-    RouteInformationReportingType? reportingType;
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider(
-      onRouterReport: (RouteInformation information, RouteInformationReportingType type) {
-        expect(reportingType, isNull);
-        expect(updatedRouteInformation, isNull);
-        updatedRouteInformation = information;
-        reportingType = type;
-      },
-    );
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final SimpleRouterDelegate delegate = SimpleRouterDelegate(reportConfiguration: true);
-    delegate.builder = (BuildContext context, RouteInformation? information) {
-      return ElevatedButton(
-        child: Text(Uri.decodeComponent(information!.uri.toString())),
-        onPressed: () {
-          Router.neglect(context, () {
-            if (delegate.routeInformation != nextRouteInformation) {
-              delegate.routeInformation = nextRouteInformation;
-            }
-          });
+  testWidgets(
+    'state change without location changes updates RouteInformationProvider',
+    (WidgetTester tester) async {
+      RouteInformation? updatedRouteInformation;
+      late RouteInformation nextRouteInformation;
+      RouteInformationReportingType? reportingType;
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider(
+        onRouterReport:
+            (RouteInformation information, RouteInformationReportingType type) {
+          // This should never be a navigation event.
+          expect(reportingType, isNull);
+          expect(updatedRouteInformation, isNull);
+          updatedRouteInformation = information;
+          reportingType = type;
         },
       );
-    };
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
-        backButtonDispatcher: outerDispatcher,
-        routeInformationProvider: provider,
-        routeInformationParser: SimpleRouteInformationParser(),
-        routerDelegate: delegate,
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
-    expect(updatedRouteInformation!.uri.toString(), 'initial');
-    expect(reportingType, RouteInformationReportingType.none);
-    updatedRouteInformation = null;
-    reportingType = null;
-
-    nextRouteInformation = RouteInformation(
-      uri: Uri.parse('update'),
-    );
-    await tester.tap(find.byType(ElevatedButton));
-    await tester.pump();
-    expect(find.text('initial'), findsNothing);
-    expect(find.text('update'), findsOneWidget);
-    expect(updatedRouteInformation!.uri.toString(), 'update');
-    expect(reportingType, RouteInformationReportingType.neglect);
-  });
-
-  testWidgets('state change without location changes updates RouteInformationProvider', (WidgetTester tester) async {
-    RouteInformation? updatedRouteInformation;
-    late RouteInformation nextRouteInformation;
-    RouteInformationReportingType? reportingType;
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider(
-      onRouterReport: (RouteInformation information, RouteInformationReportingType type) {
-        // This should never be a navigation event.
-        expect(reportingType, isNull);
-        expect(updatedRouteInformation, isNull);
-        updatedRouteInformation = information;
-        reportingType = type;
-      },
-    );
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-      state: 'state1',
-    );
-    final SimpleRouterDelegate delegate = SimpleRouterDelegate(reportConfiguration: true);
-    delegate.builder = (BuildContext context, RouteInformation? information) {
-      return ElevatedButton(
-        child: Text(Uri.decodeComponent(information!.uri.toString())),
-        onPressed: () {
-          delegate.routeInformation = nextRouteInformation;
-        },
-      );
-    };
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
-        backButtonDispatcher: outerDispatcher,
-        routeInformationProvider: provider,
-        routeInformationParser: SimpleRouteInformationParser(),
-        routerDelegate: delegate,
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
-    expect(updatedRouteInformation!.uri.toString(), 'initial');
-    expect(reportingType, RouteInformationReportingType.none);
-    updatedRouteInformation = null;
-    reportingType = null;
-
-    nextRouteInformation = RouteInformation(
-      uri: Uri.parse('initial'),
-      state: 'state2',
-    );
-    await tester.tap(find.byType(ElevatedButton));
-    await tester.pump();
-    expect(updatedRouteInformation!.uri.toString(), 'initial');
-    expect(updatedRouteInformation!.state, 'state2');
-    expect(reportingType, RouteInformationReportingType.none);
-  });
-
-  testWidgets('PlatformRouteInformationProvider works', (WidgetTester tester) async {
-    final RouteInformationProvider provider = PlatformRouteInformationProvider(
-      initialRouteInformation: RouteInformation(
+      provider.value = RouteInformation(
         uri: Uri.parse('initial'),
-      ),
+        state: 'state1',
+      );
+      final SimpleRouterDelegate delegate = SimpleRouterDelegate(
+        reportConfiguration: true,
+      );
+      delegate.builder = (BuildContext context, RouteInformation? information) {
+        return ElevatedButton(
+          child: Text(Uri.decodeComponent(information!.uri.toString())),
+          onPressed: () {
+            delegate.routeInformation = nextRouteInformation;
+          },
+        );
+      };
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
+        backButtonDispatcher: outerDispatcher,
+        routeInformationProvider: provider,
+        routeInformationParser: SimpleRouteInformationParser(),
+        routerDelegate: delegate,
+      )));
+      expect(find.text('initial'), findsOneWidget);
+      expect(updatedRouteInformation!.uri.toString(), 'initial');
+      expect(reportingType, RouteInformationReportingType.none);
+      updatedRouteInformation = null;
+      reportingType = null;
+
+      nextRouteInformation = RouteInformation(
+        uri: Uri.parse('initial'),
+        state: 'state2',
+      );
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pump();
+      expect(updatedRouteInformation!.uri.toString(), 'initial');
+      expect(updatedRouteInformation!.state, 'state2');
+      expect(reportingType, RouteInformationReportingType.none);
+    },
+  );
+
+  testWidgets('PlatformRouteInformationProvider works', (
+    WidgetTester tester,
+  ) async {
+    final RouteInformationProvider provider = PlatformRouteInformationProvider(
+      initialRouteInformation: RouteInformation(uri: Uri.parse('initial')),
     );
     final SimpleRouterDelegate delegate = SimpleRouterDelegate(
       builder: (BuildContext context, RouteInformation? information) {
@@ -784,16 +813,14 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
         if (information.state != null) {
           children.add(Text(information.state.toString()));
         }
-        return Column(
-          children: children,
-        );
+        return Column(children: children);
       },
     );
 
     await tester.pumpWidget(MaterialApp.router(
-        routeInformationProvider: provider,
-        routeInformationParser: SimpleRouteInformationParser(),
-        routerDelegate: delegate,
+      routeInformationProvider: provider,
+      routeInformationParser: SimpleRouteInformationParser(),
+      routerDelegate: delegate,
     ));
     expect(find.text('initial'), findsOneWidget);
 
@@ -805,7 +832,11 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
     final ByteData routerMessage = const JSONMethodCodec().encodeMethodCall(
       const MethodCall('pushRouteInformation', testRouteInformation),
     );
-    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', routerMessage, (_) { });
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      'flutter/navigation',
+      routerMessage,
+      (_) {},
+    );
     await tester.pump();
     expect(find.text('testRouteName'), findsOneWidget);
     expect(find.text('state'), findsOneWidget);
@@ -815,64 +846,103 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
     final ByteData message = const JSONMethodCodec().encodeMethodCall(
       const MethodCall('pushRoute', testRouteName),
     );
-    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) { });
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      'flutter/navigation',
+      message,
+      (_) {},
+    );
     await tester.pump();
     expect(find.text('newTestRouteName'), findsOneWidget);
   });
 
-  testWidgets('PlatformRouteInformationProvider updates route information', (WidgetTester tester) async {
+  testWidgets('PlatformRouteInformationProvider updates route information', (
+    WidgetTester tester,
+  ) async {
     final List<MethodCall> log = <MethodCall>[];
-    TestDefaultBinaryMessengerBinding
-      .instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(
-        SystemChannels.navigation,
-        (MethodCall methodCall) async {
-          log.add(methodCall);
-	  return null;
-        }
-      );
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          SystemChannels.navigation,
+          (MethodCall methodCall) async {
+            log.add(methodCall);
+            return null;
+          },
+        );
     final RouteInformationProvider provider = PlatformRouteInformationProvider(
-      initialRouteInformation: RouteInformation(
-        uri: Uri.parse('initial'),
-      ),
+      initialRouteInformation: RouteInformation(uri: Uri.parse('initial')),
     );
 
     log.clear();
-    provider.routerReportsNewRouteInformation(RouteInformation(uri: Uri.parse('a'), state: true));
+    provider.routerReportsNewRouteInformation(
+      RouteInformation(uri: Uri.parse('a'), state: true),
+    );
     // Implicit reporting pushes new history entry if the location changes.
     expect(log, <Object>[
       isMethodCall('selectMultiEntryHistory', arguments: null),
-      isMethodCall('routeInformationUpdated', arguments: <String, dynamic>{ 'uri': 'a', 'state': true, 'replace': false }),
+      isMethodCall(
+        'routeInformationUpdated',
+        arguments: <String, dynamic>{
+          'uri': 'a',
+          'state': true,
+          'replace': false,
+        },
+      ),
     ]);
     log.clear();
-    provider.routerReportsNewRouteInformation(RouteInformation(uri: Uri.parse('a'), state: false));
+    provider.routerReportsNewRouteInformation(
+      RouteInformation(uri: Uri.parse('a'), state: false),
+    );
     // Since the location is the same, the provider sends replaces message.
     expect(log, <Object>[
       isMethodCall('selectMultiEntryHistory', arguments: null),
-      isMethodCall('routeInformationUpdated', arguments: <String, dynamic>{ 'uri': 'a', 'state': false, 'replace': true }),
+      isMethodCall(
+        'routeInformationUpdated',
+        arguments: <String, dynamic>{
+          'uri': 'a',
+          'state': false,
+          'replace': true,
+        },
+      ),
     ]);
 
     log.clear();
-    provider.routerReportsNewRouteInformation(RouteInformation(uri: Uri.parse('b'), state: false), type: RouteInformationReportingType.neglect);
+    provider.routerReportsNewRouteInformation(
+      RouteInformation(uri: Uri.parse('b'), state: false),
+      type: RouteInformationReportingType.neglect,
+    );
     expect(log, <Object>[
       isMethodCall('selectMultiEntryHistory', arguments: null),
-      isMethodCall('routeInformationUpdated', arguments: <String, dynamic>{ 'uri': 'b', 'state': false, 'replace': true }),
+      isMethodCall(
+        'routeInformationUpdated',
+        arguments: <String, dynamic>{
+          'uri': 'b',
+          'state': false,
+          'replace': true,
+        },
+      ),
     ]);
 
     log.clear();
-    provider.routerReportsNewRouteInformation(RouteInformation(uri: Uri.parse('b'), state: false), type: RouteInformationReportingType.navigate);
+    provider.routerReportsNewRouteInformation(
+      RouteInformation(uri: Uri.parse('b'), state: false),
+      type: RouteInformationReportingType.navigate,
+    );
     expect(log, <Object>[
       isMethodCall('selectMultiEntryHistory', arguments: null),
-      isMethodCall('routeInformationUpdated', arguments: <String, dynamic>{ 'uri': 'b', 'state': false, 'replace': false }),
+      isMethodCall(
+        'routeInformationUpdated',
+        arguments: <String, dynamic>{
+          'uri': 'b',
+          'state': false,
+          'replace': false,
+        },
+      ),
     ]);
   });
 
   testWidgets('RootBackButtonDispatcher works', (WidgetTester tester) async {
     final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
     final RouteInformationProvider provider = PlatformRouteInformationProvider(
-      initialRouteInformation: RouteInformation(
-        uri: Uri.parse('initial'),
-      ),
+      initialRouteInformation: RouteInformation(uri: Uri.parse('initial')),
     );
     final SimpleRouterDelegate delegate = SimpleRouterDelegate(
       reportConfiguration: true,
@@ -881,9 +951,7 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
       },
     );
     delegate.onPopRoute = () {
-      delegate.routeInformation = RouteInformation(
-        uri: Uri.parse('popped'),
-      );
+      delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
       return SynchronousFuture<bool>(true);
     };
 
@@ -896,20 +964,26 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
     expect(find.text('initial'), findsOneWidget);
 
     // Pop route through the message channel.
-    final ByteData message = const JSONMethodCodec().encodeMethodCall(const MethodCall('popRoute'));
-    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) { });
+    final ByteData message = const JSONMethodCodec().encodeMethodCall(
+      const MethodCall('popRoute'),
+    );
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      'flutter/navigation',
+      message,
+      (_) {},
+    );
     await tester.pump();
     expect(find.text('popped'), findsOneWidget);
   });
 
-  testWidgets('BackButtonListener takes priority over root back dispatcher', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+  testWidgets(
+    'BackButtonListener takes priority over root back dispatcher',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
@@ -922,190 +996,177 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
                 BackButtonListener(
                   child: Container(),
                   onBackButtonPressed: () {
-                      provider.value = RouteInformation(
-                        uri: Uri.parse('popped inner1'),
-                      );
-                      return SynchronousFuture<bool>(true);
-                    },
+                    provider.value = RouteInformation(
+                      uri: Uri.parse('popped inner1'),
+                    );
+                    return SynchronousFuture<bool>(true);
+                  },
                 ),
               ],
             );
           },
           onPopRoute: () {
-            provider.value = RouteInformation(
-              uri: Uri.parse('popped outer'),
-            );
+            provider.value = RouteInformation(uri: Uri.parse('popped outer'));
             return SynchronousFuture<bool>(true);
           },
         ),
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
+      )));
+      expect(find.text('initial'), findsOneWidget);
 
-    bool result = false;
-    result = await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
-    await tester.pump();
-    expect(find.text('popped inner1'), findsOneWidget);
-  });
+      bool result = false;
+      result =
+          await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
+      await tester.pump();
+      expect(find.text('popped inner1'), findsOneWidget);
+    },
+  );
 
-  testWidgets('BackButtonListener updates callback if it has been changed', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-    final SimpleRouterDelegate routerDelegate = SimpleRouterDelegate()
-      ..builder = (BuildContext context, RouteInformation? information) {
-            // Creates the sub-router.
-            return Column(
-              children: <Widget>[
-                Text(Uri.decodeComponent(information!.uri.toString())),
-                BackButtonListener(
-                  child: Container(),
-                  onBackButtonPressed: () {
-                      provider.value = RouteInformation(
-                        uri: Uri.parse('first callback'),
-                      );
-                      return SynchronousFuture<bool>(true);
-                    },
-                ),
-              ],
-            );
-          }
+  testWidgets(
+    'BackButtonListener updates callback if it has been changed',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+      final SimpleRouterDelegate routerDelegate = SimpleRouterDelegate()
+        ..builder = (BuildContext context, RouteInformation? information) {
+          // Creates the sub-router.
+          return Column(
+            children: <Widget>[
+              Text(Uri.decodeComponent(information!.uri.toString())),
+              BackButtonListener(
+                child: Container(),
+                onBackButtonPressed: () {
+                  provider.value = RouteInformation(
+                    uri: Uri.parse('first callback'),
+                  );
+                  return SynchronousFuture<bool>(true);
+                },
+              ),
+            ],
+          );
+        }
         ..onPopRoute = () {
-            provider.value = RouteInformation(
-              uri: Uri.parse('popped outer'),
-            );
-            return SynchronousFuture<bool>(true);
-          };
+          provider.value = RouteInformation(uri: Uri.parse('popped outer'));
+          return SynchronousFuture<bool>(true);
+        };
 
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
         routerDelegate: routerDelegate,
-      ),
-    ));
+      )));
 
-    routerDelegate
-      ..builder = (BuildContext context, RouteInformation? information) {
-        // Creates the sub-router.
-        return Column(
-          children: <Widget>[
-            Text(Uri.decodeComponent(information!.uri.toString())),
-            BackButtonListener(
-              child: Container(),
-              onBackButtonPressed: () {
+      routerDelegate
+        ..builder = (BuildContext context, RouteInformation? information) {
+          // Creates the sub-router.
+          return Column(
+            children: <Widget>[
+              Text(Uri.decodeComponent(information!.uri.toString())),
+              BackButtonListener(
+                child: Container(),
+                onBackButtonPressed: () {
                   provider.value = RouteInformation(
                     uri: Uri.parse('second callback'),
                   );
                   return SynchronousFuture<bool>(true);
                 },
-            ),
-          ],
-        );
-      }
-      ..onPopRoute = () {
-        provider.value = RouteInformation(
-          uri: Uri.parse('popped outer'),
-        );
-        return SynchronousFuture<bool>(true);
-      };
-
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
-        backButtonDispatcher: outerDispatcher,
-        routeInformationProvider: provider,
-        routeInformationParser: SimpleRouteInformationParser(),
-        routerDelegate: routerDelegate,
-      ),
-    ));
-    await tester.pump();
-    await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    await tester.pump();
-    expect(find.text('second callback'), findsOneWidget);
-  });
-
-  testWidgets('BackButtonListener clears callback if it is disposed', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-    final SimpleRouterDelegate routerDelegate = SimpleRouterDelegate()
-      ..builder = (BuildContext context, RouteInformation? information) {
-            // Creates the sub-router.
-            return Column(
-              children: <Widget>[
-                Text(Uri.decodeComponent(information!.uri.toString())),
-                BackButtonListener(
-                  child: Container(),
-                  onBackButtonPressed: () {
-                      provider.value = RouteInformation(
-                        uri: Uri.parse('first callback'),
-                      );
-                      return SynchronousFuture<bool>(true);
-                    },
-                ),
-              ],
-            );
-          }
+              ),
+            ],
+          );
+        }
         ..onPopRoute = () {
-            provider.value = RouteInformation(
-              uri: Uri.parse('popped outer'),
-            );
-            return SynchronousFuture<bool>(true);
-          };
+          provider.value = RouteInformation(uri: Uri.parse('popped outer'));
+          return SynchronousFuture<bool>(true);
+        };
 
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
         routerDelegate: routerDelegate,
-      ),
-    ));
+      )));
+      await tester.pump();
+      await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      await tester.pump();
+      expect(find.text('second callback'), findsOneWidget);
+    },
+  );
 
-    routerDelegate
-      ..builder = (BuildContext context, RouteInformation? information) {
-        // Creates the sub-router.
-        return Column(
-          children: <Widget>[
-            Text(Uri.decodeComponent(information!.uri.toString())),
-          ],
-        );
-      }
-      ..onPopRoute = () {
-        provider.value = RouteInformation(
-          uri: Uri.parse('popped outer'),
-        );
-        return SynchronousFuture<bool>(true);
-      };
+  testWidgets(
+    'BackButtonListener clears callback if it is disposed',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+      final SimpleRouterDelegate routerDelegate = SimpleRouterDelegate()
+        ..builder = (BuildContext context, RouteInformation? information) {
+          // Creates the sub-router.
+          return Column(
+            children: <Widget>[
+              Text(Uri.decodeComponent(information!.uri.toString())),
+              BackButtonListener(
+                child: Container(),
+                onBackButtonPressed: () {
+                  provider.value = RouteInformation(
+                    uri: Uri.parse('first callback'),
+                  );
+                  return SynchronousFuture<bool>(true);
+                },
+              ),
+            ],
+          );
+        }
+        ..onPopRoute = () {
+          provider.value = RouteInformation(uri: Uri.parse('popped outer'));
+          return SynchronousFuture<bool>(true);
+        };
 
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
         routerDelegate: routerDelegate,
-      ),
-    ));
-    await tester.pump();
-    await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    await tester.pump();
-    expect(find.text('popped outer'), findsOneWidget);
-  });
+      )));
 
-  testWidgets('Nested backButtonListener should take priority', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+      routerDelegate
+        ..builder = (BuildContext context, RouteInformation? information) {
+          // Creates the sub-router.
+          return Column(
+            children: <Widget>[
+              Text(Uri.decodeComponent(information!.uri.toString())),
+            ],
+          );
+        }
+        ..onPopRoute = () {
+          provider.value = RouteInformation(uri: Uri.parse('popped outer'));
+          return SynchronousFuture<bool>(true);
+        };
+
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
+        backButtonDispatcher: outerDispatcher,
+        routeInformationProvider: provider,
+        routeInformationParser: SimpleRouteInformationParser(),
+        routerDelegate: routerDelegate,
+      )));
+      await tester.pump();
+      await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      await tester.pump();
+      expect(find.text('popped outer'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'Nested backButtonListener should take priority',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
@@ -1126,41 +1187,40 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
                     },
                   ),
                   onBackButtonPressed: () {
-                      provider.value = RouteInformation(
-                        uri: Uri.parse('popped inner1'),
-                      );
-                      return SynchronousFuture<bool>(true);
-                    },
+                    provider.value = RouteInformation(
+                      uri: Uri.parse('popped inner1'),
+                    );
+                    return SynchronousFuture<bool>(true);
+                  },
                 ),
               ],
             );
           },
           onPopRoute: () {
-            provider.value = RouteInformation(
-              uri: Uri.parse('popped outer'),
-            );
+            provider.value = RouteInformation(uri: Uri.parse('popped outer'));
             return SynchronousFuture<bool>(true);
           },
         ),
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
+      )));
+      expect(find.text('initial'), findsOneWidget);
 
-    bool result = false;
-    result = await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
-    await tester.pump();
-    expect(find.text('popped inner2'), findsOneWidget);
-  });
+      bool result = false;
+      result =
+          await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
+      await tester.pump();
+      expect(find.text('popped inner2'), findsOneWidget);
+    },
+  );
 
-  testWidgets('Nested backButtonListener that returns false should call next on the line', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+  testWidgets(
+    'Nested backButtonListener that returns false should call next on the line',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         backButtonDispatcher: outerDispatcher,
         routeInformationProvider: provider,
         routeInformationParser: SimpleRouteInformationParser(),
@@ -1181,38 +1241,36 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
                     },
                   ),
                   onBackButtonPressed: () {
-                      provider.value = RouteInformation(
-                        uri: Uri.parse('popped inner1'),
-                      );
-                      return SynchronousFuture<bool>(true);
-                    },
+                    provider.value = RouteInformation(
+                      uri: Uri.parse('popped inner1'),
+                    );
+                    return SynchronousFuture<bool>(true);
+                  },
                 ),
               ],
             );
           },
           onPopRoute: () {
-            provider.value = RouteInformation(
-              uri: Uri.parse('popped outer'),
-            );
+            provider.value = RouteInformation(uri: Uri.parse('popped outer'));
             return SynchronousFuture<bool>(true);
           },
         ),
-      ),
-    ));
-    expect(find.text('initial'), findsOneWidget);
+      )));
+      expect(find.text('initial'), findsOneWidget);
 
-    bool result = false;
-    result = await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
-    expect(result, isTrue);
-    await tester.pump();
-    expect(find.text('popped inner1'), findsOneWidget);
-  });
+      bool result = false;
+      result =
+          await outerDispatcher.invokeCallback(SynchronousFuture<bool>(false));
+      expect(result, isTrue);
+      await tester.pump();
+      expect(find.text('popped inner1'), findsOneWidget);
+    },
+  );
 
   testWidgets('`didUpdateWidget` test', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
+    final SimpleRouteInformationProvider provider =
+        SimpleRouteInformationProvider();
+    provider.value = RouteInformation(uri: Uri.parse('initial'));
     final BackButtonDispatcher outerDispatcher = RootBackButtonDispatcher();
     late StateSetter setState;
     String location = 'first callback';
@@ -1228,9 +1286,7 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
                 return BackButtonListener(
                   child: Container(),
                   onBackButtonPressed: () {
-                    provider.value = RouteInformation(
-                      uri: Uri.parse(location),
-                    );
+                    provider.value = RouteInformation(uri: Uri.parse(location));
                     return SynchronousFuture<bool>(true);
                   },
                 );
@@ -1240,20 +1296,16 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
         );
       }
       ..onPopRoute = () {
-        provider.value = RouteInformation(
-          uri: Uri.parse('popped outer'),
-        );
+        provider.value = RouteInformation(uri: Uri.parse('popped outer'));
         return SynchronousFuture<bool>(true);
       };
 
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
-        backButtonDispatcher: outerDispatcher,
-        routeInformationProvider: provider,
-        routeInformationParser: SimpleRouteInformationParser(),
-        routerDelegate: routerDelegate,
-      ),
-    ));
+    await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
+      backButtonDispatcher: outerDispatcher,
+      routeInformationProvider: provider,
+      routeInformationParser: SimpleRouteInformationParser(),
+      routerDelegate: routerDelegate,
+    )));
 
     // Only update BackButtonListener widget.
     setState(() {
@@ -1266,221 +1318,232 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
     expect(find.text('second callback'), findsOneWidget);
   });
 
-  testWidgets('Router reports location if it is different from location given by OS', (WidgetTester tester) async {
-    final List<RouteInformation> reportedRouteInformation = <RouteInformation>[];
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider(
-      onRouterReport: (RouteInformation info, RouteInformationReportingType type) => reportedRouteInformation.add(info),
-    )..value = RouteInformation(uri: Uri.parse('/home'));
+  testWidgets(
+    'Router reports location if it is different from location given by OS',
+    (WidgetTester tester) async {
+      final List<RouteInformation> reportedRouteInformation =
+          <RouteInformation>[];
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider(
+        onRouterReport: (
+          RouteInformation info,
+          RouteInformationReportingType type,
+        ) => reportedRouteInformation.add(info),
+      )..value = RouteInformation(uri: Uri.parse('/home'));
 
-    await tester.pumpWidget(buildBoilerPlate(
-      Router<RouteInformation>(
+      await tester.pumpWidget(buildBoilerPlate(Router<RouteInformation>(
         routeInformationProvider: provider,
-        routeInformationParser: RedirectingInformationParser(<String, RouteInformation>{
-          '/doesNotExist' : RouteInformation(uri: Uri.parse('/404')),
-        }),
+        routeInformationParser: RedirectingInformationParser(<
+          String,
+          RouteInformation
+        >{'/doesNotExist': RouteInformation(uri: Uri.parse('/404'))}),
         routerDelegate: SimpleRouterDelegate(
-          builder: (BuildContext _, RouteInformation? info) => Text('Current route: ${info?.uri}'),
+          builder: (BuildContext _, RouteInformation? info) => Text(
+                'Current route: ${info?.uri}',
+              ),
           reportConfiguration: true,
         ),
-      ),
-    ));
+      )));
 
-    expect(find.text('Current route: /home'), findsOneWidget);
-    expect(reportedRouteInformation.single.uri.toString(), '/home');
+      expect(find.text('Current route: /home'), findsOneWidget);
+      expect(reportedRouteInformation.single.uri.toString(), '/home');
 
-    provider.value = RouteInformation(uri: Uri.parse('/doesNotExist'));
-    await tester.pump();
+      provider.value = RouteInformation(uri: Uri.parse('/doesNotExist'));
+      await tester.pump();
 
-    expect(find.text('Current route: /404'), findsOneWidget);
-    expect(reportedRouteInformation[1].uri.toString(), '/404');
-  });
+      expect(find.text('Current route: /404'), findsOneWidget);
+      expect(reportedRouteInformation[1].uri.toString(), '/404');
+    },
+  );
 
-  testWidgets('RouterInformationParser can look up dependencies and reparse', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher dispatcher = RootBackButtonDispatcher();
-    int expectedMaxLines = 1;
-    bool parserCalled = false;
-    final Widget router = Router<RouteInformation>(
-      routeInformationProvider: provider,
-      routeInformationParser: CustomRouteInformationParser((RouteInformation information, BuildContext context) {
-        parserCalled = true;
-        final DefaultTextStyle style = DefaultTextStyle.of(context);
-        return RouteInformation(uri: Uri.parse('${style.maxLines}'));
-      }),
-      routerDelegate: SimpleRouterDelegate(
-        builder: (BuildContext context, RouteInformation? information) {
-          return Text(Uri.decodeComponent(information!.uri.toString()));
-        },
-        onPopRoute: () {
-          provider.value = RouteInformation(
-            uri: Uri.parse('popped'),
-          );
-          return SynchronousFuture<bool>(true);
-        },
-      ),
-      backButtonDispatcher: dispatcher,
-    );
-    await tester.pumpWidget(buildBoilerPlate(
-      DefaultTextStyle(
+  testWidgets(
+    'RouterInformationParser can look up dependencies and reparse',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher dispatcher = RootBackButtonDispatcher();
+      int expectedMaxLines = 1;
+      bool parserCalled = false;
+      final Widget router = Router<RouteInformation>(
+        routeInformationProvider: provider,
+        routeInformationParser: CustomRouteInformationParser(
+          (RouteInformation information, BuildContext context) {
+            parserCalled = true;
+            final DefaultTextStyle style = DefaultTextStyle.of(context);
+            return RouteInformation(uri: Uri.parse('${style.maxLines}'));
+          },
+        ),
+        routerDelegate: SimpleRouterDelegate(
+          builder: (BuildContext context, RouteInformation? information) {
+            return Text(Uri.decodeComponent(information!.uri.toString()));
+          },
+          onPopRoute: () {
+            provider.value = RouteInformation(uri: Uri.parse('popped'));
+            return SynchronousFuture<bool>(true);
+          },
+        ),
+        backButtonDispatcher: dispatcher,
+      );
+      await tester.pumpWidget(buildBoilerPlate(DefaultTextStyle(
         style: const TextStyle(),
         maxLines: expectedMaxLines,
         child: router,
-      ),
-    ));
+      )));
 
-    expect(find.text('$expectedMaxLines'), findsOneWidget);
-    expect(parserCalled, isTrue);
+      expect(find.text('$expectedMaxLines'), findsOneWidget);
+      expect(parserCalled, isTrue);
 
-    parserCalled = false;
-    expectedMaxLines = 2;
-    await tester.pumpWidget(buildBoilerPlate(
-      DefaultTextStyle(
+      parserCalled = false;
+      expectedMaxLines = 2;
+      await tester.pumpWidget(buildBoilerPlate(DefaultTextStyle(
         style: const TextStyle(),
         maxLines: expectedMaxLines,
         child: router,
-      ),
-    ));
-    await tester.pump();
-    expect(find.text('$expectedMaxLines'), findsOneWidget);
-    expect(parserCalled, isTrue);
-  });
+      )));
+      await tester.pump();
+      expect(find.text('$expectedMaxLines'), findsOneWidget);
+      expect(parserCalled, isTrue);
+    },
+  );
 
-  testWidgets('RouterInformationParser can look up dependencies without reparsing', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher dispatcher = RootBackButtonDispatcher();
-    const int expectedMaxLines = 1;
-    bool parserCalled = false;
-    final Widget router = Router<RouteInformation>(
-      routeInformationProvider: provider,
-      routeInformationParser: CustomRouteInformationParser((RouteInformation information, BuildContext context) {
-        parserCalled = true;
-        final DefaultTextStyle style = context.getInheritedWidgetOfExactType<DefaultTextStyle>()!;
-        return RouteInformation(uri: Uri.parse('${style.maxLines}'));
-      }),
-      routerDelegate: SimpleRouterDelegate(
-        builder: (BuildContext context, RouteInformation? information) {
-          return Text(Uri.decodeComponent(information!.uri.toString()));
-        },
-        onPopRoute: () {
-          provider.value = RouteInformation(
-              uri: Uri.parse('popped'),
-          );
-          return SynchronousFuture<bool>(true);
-        },
-      ),
-      backButtonDispatcher: dispatcher,
-    );
-    await tester.pumpWidget(buildBoilerPlate(
-      DefaultTextStyle(
+  testWidgets(
+    'RouterInformationParser can look up dependencies without reparsing',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher dispatcher = RootBackButtonDispatcher();
+      const int expectedMaxLines = 1;
+      bool parserCalled = false;
+      final Widget router = Router<RouteInformation>(
+        routeInformationProvider: provider,
+        routeInformationParser: CustomRouteInformationParser(
+          (RouteInformation information, BuildContext context) {
+            parserCalled = true;
+            final DefaultTextStyle style =
+                context.getInheritedWidgetOfExactType<DefaultTextStyle>()!;
+            return RouteInformation(uri: Uri.parse('${style.maxLines}'));
+          },
+        ),
+        routerDelegate: SimpleRouterDelegate(
+          builder: (BuildContext context, RouteInformation? information) {
+            return Text(Uri.decodeComponent(information!.uri.toString()));
+          },
+          onPopRoute: () {
+            provider.value = RouteInformation(uri: Uri.parse('popped'));
+            return SynchronousFuture<bool>(true);
+          },
+        ),
+        backButtonDispatcher: dispatcher,
+      );
+      await tester.pumpWidget(buildBoilerPlate(DefaultTextStyle(
         style: const TextStyle(),
         maxLines: expectedMaxLines,
         child: router,
-      ),
-    ));
+      )));
 
-    expect(find.text('$expectedMaxLines'), findsOneWidget);
-    expect(parserCalled, isTrue);
+      expect(find.text('$expectedMaxLines'), findsOneWidget);
+      expect(parserCalled, isTrue);
 
-    parserCalled = false;
-    const int newMaxLines = 2;
-    // This rebuild should not trigger re-parsing.
-    await tester.pumpWidget(buildBoilerPlate(
-      DefaultTextStyle(
+      parserCalled = false;
+      const int newMaxLines = 2;
+      // This rebuild should not trigger re-parsing.
+      await tester.pumpWidget(buildBoilerPlate(DefaultTextStyle(
         style: const TextStyle(),
         maxLines: newMaxLines,
         child: router,
-      ),
-    ));
-    await tester.pump();
-    expect(find.text('$newMaxLines'), findsNothing);
-    expect(find.text('$expectedMaxLines'), findsOneWidget);
-    expect(parserCalled, isFalse);
-  });
+      )));
+      await tester.pump();
+      expect(find.text('$newMaxLines'), findsNothing);
+      expect(find.text('$expectedMaxLines'), findsOneWidget);
+      expect(parserCalled, isFalse);
+    },
+  );
 
-  testWidgets('Looks up dependencies in RouterDelegate does not trigger re-parsing', (WidgetTester tester) async {
-    final SimpleRouteInformationProvider provider = SimpleRouteInformationProvider();
-    provider.value = RouteInformation(
-      uri: Uri.parse('initial'),
-    );
-    final BackButtonDispatcher dispatcher = RootBackButtonDispatcher();
-    int expectedMaxLines = 1;
-    bool parserCalled = false;
-    final Widget router = Router<RouteInformation>(
-      routeInformationProvider: provider,
-      routeInformationParser: CustomRouteInformationParser((RouteInformation information, BuildContext context) {
-        parserCalled = true;
-        return information;
-      }),
-      routerDelegate: SimpleRouterDelegate(
-        builder: (BuildContext context, RouteInformation? information) {
-          final DefaultTextStyle style = DefaultTextStyle.of(context);
-          return Text('${style.maxLines}');
-        },
-        onPopRoute: () {
-          provider.value = RouteInformation(
-            uri: Uri.parse('popped'),
-          );
-          return SynchronousFuture<bool>(true);
-        },
-      ),
-      backButtonDispatcher: dispatcher,
-    );
-    await tester.pumpWidget(buildBoilerPlate(
-      DefaultTextStyle(
+  testWidgets(
+    'Looks up dependencies in RouterDelegate does not trigger re-parsing',
+    (WidgetTester tester) async {
+      final SimpleRouteInformationProvider provider =
+          SimpleRouteInformationProvider();
+      provider.value = RouteInformation(uri: Uri.parse('initial'));
+      final BackButtonDispatcher dispatcher = RootBackButtonDispatcher();
+      int expectedMaxLines = 1;
+      bool parserCalled = false;
+      final Widget router = Router<RouteInformation>(
+        routeInformationProvider: provider,
+        routeInformationParser: CustomRouteInformationParser(
+          (RouteInformation information, BuildContext context) {
+            parserCalled = true;
+            return information;
+          },
+        ),
+        routerDelegate: SimpleRouterDelegate(
+          builder: (BuildContext context, RouteInformation? information) {
+            final DefaultTextStyle style = DefaultTextStyle.of(context);
+            return Text('${style.maxLines}');
+          },
+          onPopRoute: () {
+            provider.value = RouteInformation(uri: Uri.parse('popped'));
+            return SynchronousFuture<bool>(true);
+          },
+        ),
+        backButtonDispatcher: dispatcher,
+      );
+      await tester.pumpWidget(buildBoilerPlate(DefaultTextStyle(
         style: const TextStyle(),
         maxLines: expectedMaxLines,
         child: router,
-      ),
-    ));
+      )));
 
-    expect(find.text('$expectedMaxLines'), findsOneWidget);
-    // Initial route will be parsed regardless.
-    expect(parserCalled, isTrue);
+      expect(find.text('$expectedMaxLines'), findsOneWidget);
+      // Initial route will be parsed regardless.
+      expect(parserCalled, isTrue);
 
-    parserCalled = false;
-    expectedMaxLines = 2;
-    await tester.pumpWidget(buildBoilerPlate(
-      DefaultTextStyle(
+      parserCalled = false;
+      expectedMaxLines = 2;
+      await tester.pumpWidget(buildBoilerPlate(DefaultTextStyle(
         style: const TextStyle(),
         maxLines: expectedMaxLines,
         child: router,
-      ),
-    ));
-    await tester.pump();
-    expect(find.text('$expectedMaxLines'), findsOneWidget);
-    expect(parserCalled, isFalse);
-  });
+      )));
+      await tester.pump();
+      expect(find.text('$expectedMaxLines'), findsOneWidget);
+      expect(parserCalled, isFalse);
+    },
+  );
 
-  testWidgets('Router can initialize with RouterConfig', (WidgetTester tester) async {
-    const String expected = 'text';
-    final RouterConfig<RouteInformation> config = RouterConfig<RouteInformation>(
-      routeInformationProvider: SimpleRouteInformationProvider()..value = RouteInformation(uri: Uri.parse('/')),
-      routeInformationParser: SimpleRouteInformationParser(),
-      routerDelegate: SimpleRouterDelegate(
-        builder: (_, __) => const Text(expected),
-      ),
-      backButtonDispatcher: RootBackButtonDispatcher(),
-    );
-    final Router<RouteInformation> router = Router<RouteInformation>.withConfig(config: config);
-    expect(router.routerDelegate, config.routerDelegate);
-    expect(router.routeInformationParser, config.routeInformationParser);
-    expect(router.routeInformationProvider, config.routeInformationProvider);
-    expect(router.backButtonDispatcher, config.backButtonDispatcher);
+  testWidgets(
+    'Router can initialize with RouterConfig',
+    (WidgetTester tester) async {
+      const String expected = 'text';
+      final RouterConfig<RouteInformation> config =
+          RouterConfig<RouteInformation>(
+        routeInformationProvider: SimpleRouteInformationProvider()
+          ..value = RouteInformation(uri: Uri.parse('/')),
+        routeInformationParser: SimpleRouteInformationParser(),
+        routerDelegate:
+            SimpleRouterDelegate(builder: (_, __) => const Text(expected)),
+        backButtonDispatcher: RootBackButtonDispatcher(),
+      );
+      final Router<RouteInformation> router =
+          Router<RouteInformation>.withConfig(config: config);
+      expect(router.routerDelegate, config.routerDelegate);
+      expect(router.routeInformationParser, config.routeInformationParser);
+      expect(router.routeInformationProvider, config.routeInformationProvider);
+      expect(router.backButtonDispatcher, config.backButtonDispatcher);
 
-    await tester.pumpWidget(buildBoilerPlate(router));
+      await tester.pumpWidget(buildBoilerPlate(router));
 
-    expect(find.text(expected), findsOneWidget);
-  });
+      expect(find.text(expected), findsOneWidget);
+    },
+  );
 
   group('RouteInformation uri api', () {
     test('can produce correct uri from location', () async {
-      final RouteInformation info1 = RouteInformation(uri: Uri.parse('/a?abc=def&abc=jkl#mno'));
+      final RouteInformation info1 = RouteInformation(
+        uri: Uri.parse('/a?abc=def&abc=jkl#mno'),
+      );
       expect(info1.location, '/a?abc=def&abc=jkl#mno');
       final Uri uri1 = info1.uri;
       expect(uri1.scheme, '');
@@ -1503,32 +1566,48 @@ testWidgets('ChildBackButtonDispatcher take priority recursively', (WidgetTester
     });
 
     test('can produce correct location from uri', () async {
-      final RouteInformation info1 = RouteInformation(uri: Uri.parse('http://mydomain.com'));
+      final RouteInformation info1 = RouteInformation(
+        uri: Uri.parse('http://mydomain.com'),
+      );
       expect(info1.uri.toString(), 'http://mydomain.com');
       expect(info1.location, '/');
 
-      final RouteInformation info2 = RouteInformation(uri: Uri.parse('http://mydomain.com/abc?def=ghi&def=jkl#mno'));
-      expect(info2.uri.toString(), 'http://mydomain.com/abc?def=ghi&def=jkl#mno');
+      final RouteInformation info2 = RouteInformation(
+        uri: Uri.parse('http://mydomain.com/abc?def=ghi&def=jkl#mno'),
+      );
+      expect(
+        info2.uri.toString(),
+        'http://mydomain.com/abc?def=ghi&def=jkl#mno',
+      );
       expect(info2.location, '/abc?def=ghi&def=jkl#mno');
     });
   });
 }
 
 Widget buildBoilerPlate(Widget child) {
-  return MaterialApp(
-    home: Scaffold(
-      body: child,
-    ),
-  );
+  return MaterialApp(home: Scaffold(body: child));
 }
 
-typedef SimpleRouterDelegateBuilder = Widget Function(BuildContext, RouteInformation?);
+typedef SimpleRouterDelegateBuilder = Widget Function(
+  BuildContext,
+  RouteInformation?,
+);
 typedef SimpleRouterDelegatePopRoute = Future<bool> Function();
-typedef SimpleNavigatorRouterDelegatePopPage<T> = bool Function(Route<T> route, T result);
-typedef RouterReportRouterInformation = void Function(RouteInformation, RouteInformationReportingType);
-typedef CustomRouteInformationParserCallback = RouteInformation Function(RouteInformation, BuildContext);
+typedef SimpleNavigatorRouterDelegatePopPage<T> = bool Function(
+  Route<T> route,
+  T result,
+);
+typedef RouterReportRouterInformation = void Function(
+  RouteInformation,
+  RouteInformationReportingType,
+);
+typedef CustomRouteInformationParserCallback = RouteInformation Function(
+  RouteInformation,
+  BuildContext,
+);
 
-class SimpleRouteInformationParser extends RouteInformationParser<RouteInformation> {
+class SimpleRouteInformationParser
+    extends RouteInformationParser<RouteInformation> {
   SimpleRouteInformationParser();
 
   @override
@@ -1542,13 +1621,17 @@ class SimpleRouteInformationParser extends RouteInformationParser<RouteInformati
   }
 }
 
-class CustomRouteInformationParser extends RouteInformationParser<RouteInformation> {
+class CustomRouteInformationParser
+    extends RouteInformationParser<RouteInformation> {
   const CustomRouteInformationParser(this.callback);
 
   final CustomRouteInformationParserCallback callback;
 
   @override
-  Future<RouteInformation> parseRouteInformationWithDependencies(RouteInformation information, BuildContext context) {
+  Future<RouteInformation> parseRouteInformationWithDependencies(
+    RouteInformation information,
+    BuildContext context,
+  ) {
     return SynchronousFuture<RouteInformation>(callback(information, context));
   }
 
@@ -1558,7 +1641,8 @@ class CustomRouteInformationParser extends RouteInformationParser<RouteInformati
   }
 }
 
-class SimpleRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifier {
+class SimpleRouterDelegate extends RouterDelegate<RouteInformation>
+    with ChangeNotifier {
   SimpleRouterDelegate({
     this.builder,
     this.onPopRoute,
@@ -1599,7 +1683,8 @@ class SimpleRouterDelegate extends RouterDelegate<RouteInformation> with ChangeN
   Widget build(BuildContext context) => builder!(context, routeInformation);
 }
 
-class SimpleNavigatorRouterDelegate extends RouterDelegate<RouteInformation> with PopNavigatorRouterDelegateMixin<RouteInformation>, ChangeNotifier {
+class SimpleNavigatorRouterDelegate extends RouterDelegate<RouteInformation>
+    with PopNavigatorRouterDelegateMixin<RouteInformation>, ChangeNotifier {
   SimpleNavigatorRouterDelegate({
     required this.builder,
     required this.onPopPage,
@@ -1636,9 +1721,7 @@ class SimpleNavigatorRouterDelegate extends RouterDelegate<RouteInformation> wit
       pages: <Page<void>>[
         // We need at least two pages for the pop to propagate through.
         // Otherwise, the navigator will bubble the pop to the system navigator.
-        const MaterialPage<void>(
-          child: Text('base'),
-        ),
+        const MaterialPage<void>(child: Text('base')),
         MaterialPage<void>(
           key: ValueKey<String>(routeInformation.uri.toString()),
           child: builder(context, routeInformation),
@@ -1648,10 +1731,9 @@ class SimpleNavigatorRouterDelegate extends RouterDelegate<RouteInformation> wit
   }
 }
 
-class SimpleRouteInformationProvider extends RouteInformationProvider with ChangeNotifier {
-  SimpleRouteInformationProvider({
-    this.onRouterReport,
-  });
+class SimpleRouteInformationProvider extends RouteInformationProvider
+    with ChangeNotifier {
+  SimpleRouteInformationProvider({this.onRouterReport});
 
   RouterReportRouterInformation? onRouterReport;
 
@@ -1664,13 +1746,17 @@ class SimpleRouteInformationProvider extends RouteInformationProvider with Chang
   }
 
   @override
-  void routerReportsNewRouteInformation(RouteInformation routeInformation, {RouteInformationReportingType type = RouteInformationReportingType.none}) {
+  void routerReportsNewRouteInformation(
+    RouteInformation routeInformation, {
+    RouteInformationReportingType type = RouteInformationReportingType.none,
+  }) {
     _value = routeInformation;
     onRouterReport?.call(routeInformation, type);
   }
 }
 
-class SimpleAsyncRouteInformationParser extends RouteInformationParser<RouteInformation> {
+class SimpleAsyncRouteInformationParser
+    extends RouteInformationParser<RouteInformation> {
   SimpleAsyncRouteInformationParser();
 
   late Future<RouteInformation> parsingFuture;
@@ -1686,13 +1772,16 @@ class SimpleAsyncRouteInformationParser extends RouteInformationParser<RouteInfo
   }
 }
 
-class CompleterRouteInformationParser extends RouteInformationParser<RouteInformation> {
+class CompleterRouteInformationParser
+    extends RouteInformationParser<RouteInformation> {
   CompleterRouteInformationParser();
 
   late Completer<void> completer;
 
   @override
-  Future<RouteInformation> parseRouteInformation(RouteInformation information) async {
+  Future<RouteInformation> parseRouteInformation(
+    RouteInformation information,
+  ) async {
     completer = Completer<void>();
     await completer.future;
     return SynchronousFuture<RouteInformation>(information);
@@ -1704,10 +1793,9 @@ class CompleterRouteInformationParser extends RouteInformationParser<RouteInform
   }
 }
 
-class SimpleAsyncRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifier {
-  SimpleAsyncRouterDelegate({
-    required this.builder,
-  });
+class SimpleAsyncRouterDelegate extends RouterDelegate<RouteInformation>
+    with ChangeNotifier {
+  SimpleAsyncRouterDelegate({required this.builder});
 
   RouteInformation? get routeInformation => _routeInformation;
   RouteInformation? _routeInformation;
@@ -1734,15 +1822,17 @@ class SimpleAsyncRouterDelegate extends RouterDelegate<RouteInformation> with Ch
   Widget build(BuildContext context) => builder(context, routeInformation);
 }
 
-class RedirectingInformationParser extends RouteInformationParser<RouteInformation> {
-
+class RedirectingInformationParser
+    extends RouteInformationParser<RouteInformation> {
   RedirectingInformationParser(this.redirects);
 
   final Map<String, RouteInformation> redirects;
 
   @override
   Future<RouteInformation> parseRouteInformation(RouteInformation information) {
-    return SynchronousFuture<RouteInformation>(redirects[information.uri.toString()] ?? information);
+    return SynchronousFuture<RouteInformation>(
+      redirects[information.uri.toString()] ?? information,
+    );
   }
 
   @override

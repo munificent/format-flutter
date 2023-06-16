@@ -12,11 +12,7 @@ const double _kPeakVelocityTime = 0.248210;
 const double _kPeakVelocityProgress = 0.379146;
 
 class _TappableWhileStatusIs extends StatefulWidget {
-  const _TappableWhileStatusIs(
-      this.status, {
-        this.controller,
-        this.child,
-      });
+  const _TappableWhileStatusIs(this.status, {this.controller, this.child});
 
   final AnimationController? controller;
   final AnimationStatus status;
@@ -53,10 +49,7 @@ class _TappableWhileStatusIsState extends State<_TappableWhileStatusIs> {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = AbsorbPointer(
-      absorbing: !_active!,
-      child: widget.child,
-    );
+    Widget child = AbsorbPointer(absorbing: !_active!, child: widget.child);
 
     if (!_active!) {
       child = FocusScope(
@@ -70,10 +63,7 @@ class _TappableWhileStatusIsState extends State<_TappableWhileStatusIs> {
 }
 
 class _FrontLayer extends StatelessWidget {
-  const _FrontLayer({
-    this.onTap,
-    this.child,
-  });
+  const _FrontLayer({this.onTap, this.child});
 
   final VoidCallback? onTap;
   final Widget? child;
@@ -96,9 +86,7 @@ class _FrontLayer extends StatelessWidget {
               alignment: AlignmentDirectional.centerStart,
             ),
           ),
-          Expanded(
-            child: child!,
-          ),
+          Expanded(child: child!),
         ],
       ),
     );
@@ -128,61 +116,69 @@ class _BackdropTitle extends AnimatedWidget {
       style: Theme.of(context).primaryTextTheme.titleLarge!,
       softWrap: false,
       overflow: TextOverflow.ellipsis,
-      child: Row(children: <Widget>[
-        // branded icon
-        SizedBox(
-          width: 72.0,
-          child: IconButton(
-            padding: const EdgeInsets.only(right: 8.0),
-            onPressed: onPress,
-            icon: Stack(children: <Widget>[
-              Opacity(
-                opacity: animation.value,
-                child: const ImageIcon(AssetImage('packages/shrine_images/slanted_menu.png')),
+      child: Row(
+        children: <Widget>[
+          // branded icon
+          SizedBox(
+            width: 72.0,
+            child: IconButton(
+              padding: const EdgeInsets.only(right: 8.0),
+              onPressed: onPress,
+              icon: Stack(
+                children: <Widget>[
+                  Opacity(
+                    opacity: animation.value,
+                    child: const ImageIcon(
+                      AssetImage('packages/shrine_images/slanted_menu.png'),
+                    ),
+                  ),
+                  FractionalTranslation(
+                    translation: Tween<Offset>(
+                      begin: Offset.zero,
+                      end: const Offset(1.0, 0.0),
+                    ).evaluate(animation),
+                    child: const ImageIcon(
+                      AssetImage('packages/shrine_images/diamond.png'),
+                    ),
+                  ),
+                ],
               ),
-              FractionalTranslation(
-                translation: Tween<Offset>(
-                  begin: Offset.zero,
-                  end: const Offset(1.0, 0.0),
-                ).evaluate(animation),
-                child: const ImageIcon(AssetImage('packages/shrine_images/diamond.png')),
-              ),
-            ]),
+            ),
           ),
-        ),
-        // Here, we do a custom cross fade between backTitle and frontTitle.
-        // This makes a smooth animation between the two texts.
-        Stack(
-          children: <Widget>[
-            Opacity(
-              opacity: CurvedAnimation(
-                parent: ReverseAnimation(animation),
-                curve: const Interval(0.5, 1.0),
-              ).value,
-              child: FractionalTranslation(
-                translation: Tween<Offset>(
-                  begin: Offset.zero,
-                  end: const Offset(0.5, 0.0),
-                ).evaluate(animation),
-                child: backTitle,
+          // Here, we do a custom cross fade between backTitle and frontTitle.
+          // This makes a smooth animation between the two texts.
+          Stack(
+            children: <Widget>[
+              Opacity(
+                opacity: CurvedAnimation(
+                  parent: ReverseAnimation(animation),
+                  curve: const Interval(0.5, 1.0),
+                ).value,
+                child: FractionalTranslation(
+                  translation: Tween<Offset>(
+                    begin: Offset.zero,
+                    end: const Offset(0.5, 0.0),
+                  ).evaluate(animation),
+                  child: backTitle,
+                ),
               ),
-            ),
-            Opacity(
-              opacity: CurvedAnimation(
-                parent: animation,
-                curve: const Interval(0.5, 1.0),
-              ).value,
-              child: FractionalTranslation(
-                translation: Tween<Offset>(
-                  begin: const Offset(-0.25, 0.0),
-                  end: Offset.zero,
-                ).evaluate(animation),
-                child: frontTitle,
+              Opacity(
+                opacity: CurvedAnimation(
+                  parent: animation,
+                  curve: const Interval(0.5, 1.0),
+                ).value,
+                child: FractionalTranslation(
+                  translation: Tween<Offset>(
+                    begin: const Offset(-0.25, 0.0),
+                    end: Offset.zero,
+                  ).evaluate(animation),
+                  child: frontTitle,
+                ),
               ),
-            ),
-          ],
-        ),
-      ]),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -213,7 +209,8 @@ class Backdrop extends StatefulWidget {
   State<Backdrop> createState() => _BackdropState();
 }
 
-class _BackdropState extends State<Backdrop> with SingleTickerProviderStateMixin {
+class _BackdropState extends State<Backdrop>
+    with SingleTickerProviderStateMixin {
   final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
   AnimationController? _controller;
   late Animation<RelativeRect> _layerAnimation;
@@ -232,7 +229,8 @@ class _BackdropState extends State<Backdrop> with SingleTickerProviderStateMixin
 
   bool get _frontLayerVisible {
     final AnimationStatus status = _controller!.status;
-    return status == AnimationStatus.completed || status == AnimationStatus.forward;
+    return status == AnimationStatus.completed ||
+        status == AnimationStatus.forward;
   }
 
   void _toggleBackdropLayerVisibility() {
@@ -270,39 +268,37 @@ class _BackdropState extends State<Backdrop> with SingleTickerProviderStateMixin
       animation = _controller!.view;
     }
 
-    return TweenSequence<RelativeRect>(
-      <TweenSequenceItem<RelativeRect>>[
-        TweenSequenceItem<RelativeRect>(
-          tween: RelativeRectTween(
-            begin: RelativeRect.fromLTRB(
-              0.0,
-              layerTop,
-              0.0,
-              layerTop - layerSize.height,
-            ),
-            end: RelativeRect.fromLTRB(
-              0.0,
-              layerTop * _kPeakVelocityProgress,
-              0.0,
-              (layerTop - layerSize.height) * _kPeakVelocityProgress,
-            ),
-          ).chain(CurveTween(curve: firstCurve)),
-          weight: firstWeight,
-        ),
-        TweenSequenceItem<RelativeRect>(
-          tween: RelativeRectTween(
-            begin: RelativeRect.fromLTRB(
-              0.0,
-              layerTop * _kPeakVelocityProgress,
-              0.0,
-              (layerTop - layerSize.height) * _kPeakVelocityProgress,
-            ),
-            end: RelativeRect.fill,
-          ).chain(CurveTween(curve: secondCurve)),
-          weight: secondWeight,
-        ),
-      ],
-    ).animate(animation);
+    return TweenSequence<RelativeRect>(<TweenSequenceItem<RelativeRect>>[
+      TweenSequenceItem<RelativeRect>(
+        tween: RelativeRectTween(
+          begin: RelativeRect.fromLTRB(
+            0.0,
+            layerTop,
+            0.0,
+            layerTop - layerSize.height,
+          ),
+          end: RelativeRect.fromLTRB(
+            0.0,
+            layerTop * _kPeakVelocityProgress,
+            0.0,
+            (layerTop - layerSize.height) * _kPeakVelocityProgress,
+          ),
+        ).chain(CurveTween(curve: firstCurve)),
+        weight: firstWeight,
+      ),
+      TweenSequenceItem<RelativeRect>(
+        tween: RelativeRectTween(
+          begin: RelativeRect.fromLTRB(
+            0.0,
+            layerTop * _kPeakVelocityProgress,
+            0.0,
+            (layerTop - layerSize.height) * _kPeakVelocityProgress,
+          ),
+          end: RelativeRect.fill,
+        ).chain(CurveTween(curve: secondCurve)),
+        weight: secondWeight,
+      ),
+    ]).animate(animation);
   }
 
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
@@ -350,28 +346,21 @@ class _BackdropState extends State<Backdrop> with SingleTickerProviderStateMixin
         IconButton(
           icon: const Icon(Icons.search, semanticLabel: 'login'),
           onPressed: () {
-            Navigator.push<void>(
-              context,
-              MaterialPageRoute<void>(builder: (BuildContext context) => const LoginPage()),
-            );
+            Navigator.push<void>(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) => const LoginPage(),
+            ));
           },
         ),
         IconButton(
           icon: const Icon(Icons.tune, semanticLabel: 'login'),
           onPressed: () {
-            Navigator.push<void>(
-              context,
-              MaterialPageRoute<void>(builder: (BuildContext context) => const LoginPage()),
-            );
+            Navigator.push<void>(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) => const LoginPage(),
+            ));
           },
         ),
       ],
     );
-    return Scaffold(
-      appBar: appBar,
-      body: LayoutBuilder(
-        builder: _buildStack,
-      ),
-    );
+    return Scaffold(appBar: appBar, body: LayoutBuilder(builder: _buildStack));
   }
 }

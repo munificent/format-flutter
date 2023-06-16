@@ -36,7 +36,9 @@ class DevelopmentSceneImporter {
   /// Recompile the input ipscene and return a devfs content that should be
   /// synced to the attached device in its place.
   Future<DevFSContent?> reimportScene(DevFSContent inputScene) async {
-    final File output = _fileSystem.systemTempDirectory.childFile('${_random.nextDouble()}.temp');
+    final File output = _fileSystem.systemTempDirectory.childFile(
+      '${_random.nextDouble()}.temp',
+    );
     late File inputFile;
     bool cleanupInput = false;
     Uint8List result;
@@ -46,7 +48,9 @@ class DevelopmentSceneImporter {
       if (inputScene is DevFSFileContent) {
         inputFile = inputScene.file as File;
       } else {
-        inputFile = _fileSystem.systemTempDirectory.childFile('${_random.nextDouble()}.temp');
+        inputFile = _fileSystem.systemTempDirectory.childFile(
+          '${_random.nextDouble()}.temp',
+        );
         inputFile.writeAsBytesSync(await inputScene.contentsAsBytes());
         cleanupInput = true;
       }
@@ -77,10 +81,10 @@ class SceneImporter {
     required Logger logger,
     required FileSystem fileSystem,
     required Artifacts artifacts,
-  })  : _processManager = processManager,
-        _logger = logger,
-        _fs = fileSystem,
-        _artifacts = artifacts;
+  }) : _processManager = processManager,
+       _logger = logger,
+       _fs = fileSystem,
+       _artifacts = artifacts;
 
   final ProcessManager _processManager;
   final Logger _logger;
@@ -92,7 +96,8 @@ class SceneImporter {
   /// See [Target.inputs].
   static const List<Source> inputs = <Source>[
     Source.pattern(
-        '{FLUTTER_ROOT}/packages/flutter_tools/lib/src/build_system/targets/scene_importer.dart'),
+      '{FLUTTER_ROOT}/packages/flutter_tools/lib/src/build_system/targets/scene_importer.dart',
+    ),
     Source.hostArtifact(HostArtifact.scenec),
   ];
 

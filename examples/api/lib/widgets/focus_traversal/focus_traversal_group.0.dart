@@ -13,9 +13,7 @@ class FocusTraversalGroupExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: FocusTraversalGroupExample(),
-    );
+    return const MaterialApp(home: FocusTraversalGroupExample());
   }
 }
 
@@ -89,7 +87,8 @@ class _OrderedButtonState<T> extends State<OrderedButton<T>> {
     }
 
     Color? foregroundColor(Set<MaterialState> states) {
-      if (states.contains(MaterialState.focused) || states.contains(MaterialState.hovered)) {
+      if (states.contains(MaterialState.focused) ||
+          states.contains(MaterialState.hovered)) {
         return Colors.white;
       }
       return null; // defer to the default foregroundColor
@@ -103,8 +102,10 @@ class _OrderedButtonState<T> extends State<OrderedButton<T>> {
           focusNode: focusNode,
           autofocus: widget.autofocus,
           style: ButtonStyle(
-            overlayColor: MaterialStateProperty.resolveWith<Color?>(overlayColor),
-            foregroundColor: MaterialStateProperty.resolveWith<Color?>(foregroundColor),
+            overlayColor:
+                MaterialStateProperty.resolveWith<Color?>(overlayColor),
+            foregroundColor:
+                MaterialStateProperty.resolveWith<Color?>(foregroundColor),
           ),
           onPressed: () => _handleOnPressed(),
           child: Text(widget.name),
@@ -147,7 +148,9 @@ class FocusTraversalGroupExample extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List<Widget>.generate(3, (int index) {
                   // Order as "C" "B", "A".
-                  final String order = String.fromCharCode('A'.codeUnitAt(0) + (2 - index));
+                  final String order = String.fromCharCode(
+                    'A'.codeUnitAt(0) + (2 - index),
+                  );
                   return OrderedButton<String>(
                     name: 'String: $order',
                     order: order,

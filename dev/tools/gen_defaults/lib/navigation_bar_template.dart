@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class NavigationBarTemplate extends TokenTemplate {
-  const NavigationBarTemplate(super.blockName, super.fileName, super.tokens, {
+  const NavigationBarTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
     super.textThemePrefix = '_textTheme.',
   });
@@ -24,11 +27,17 @@ class _${blockName}DefaultsM3 extends NavigationBarThemeData {
   late final ColorScheme _colors = Theme.of(context).colorScheme;
   late final TextTheme _textTheme = Theme.of(context).textTheme;
 
-  @override Color? get backgroundColor => ${componentColor("md.comp.navigation-bar.container")};
+  @override Color? get backgroundColor => ${componentColor(
+        "md.comp.navigation-bar.container",
+      )};
 
-  @override Color? get shadowColor => ${colorOrTransparent("md.comp.navigation-bar.container.shadow-color")};
+  @override Color? get shadowColor => ${colorOrTransparent(
+        "md.comp.navigation-bar.container.shadow-color",
+      )};
 
-  @override Color? get surfaceTintColor => ${colorOrTransparent("md.comp.navigation-bar.container.surface-tint-layer.color")};
+  @override Color? get surfaceTintColor => ${colorOrTransparent(
+        "md.comp.navigation-bar.container.surface-tint-layer.color",
+      )};
 
   @override MaterialStateProperty<IconThemeData?>? get iconTheme {
     return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
@@ -41,8 +50,12 @@ class _${blockName}DefaultsM3 extends NavigationBarThemeData {
     });
   }
 
-  @override Color? get indicatorColor => ${componentColor("md.comp.navigation-bar.active-indicator")};
-  @override ShapeBorder? get indicatorShape => ${shape("md.comp.navigation-bar.active-indicator")};
+  @override Color? get indicatorColor => ${componentColor(
+        "md.comp.navigation-bar.active-indicator",
+      )};
+  @override ShapeBorder? get indicatorShape => ${shape(
+        "md.comp.navigation-bar.active-indicator",
+      )};
 
   @override MaterialStateProperty<TextStyle?>? get labelTextStyle {
     return MaterialStateProperty.resolveWith((Set<MaterialState> states) {

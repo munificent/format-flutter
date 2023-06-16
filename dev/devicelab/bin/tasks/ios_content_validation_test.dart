@@ -18,23 +18,22 @@ Future<void> main() async {
 
         await inDirectory(flutterProject.rootPath, () async {
           final File appIconFile = File(path.join(
-              flutterProject.rootPath,
-              'ios',
-              'Runner',
-              'Assets.xcassets',
-              'AppIcon.appiconset',
-              'Icon-App-20x20@1x.png',
+            flutterProject.rootPath,
+            'ios',
+            'Runner',
+            'Assets.xcassets',
+            'AppIcon.appiconset',
+            'Icon-App-20x20@1x.png',
           ));
           // Resizes app icon to 123x456 (it is supposed to be 20x20).
-          appIconFile.writeAsBytesSync(appIconFile.readAsBytesSync()
-            ..buffer.asByteData().setInt32(16, 123)
-            ..buffer.asByteData().setInt32(20, 456)
+          appIconFile.writeAsBytesSync(
+            appIconFile.readAsBytesSync()
+              ..buffer.asByteData().setInt32(16, 123)
+              ..buffer.asByteData().setInt32(20, 456),
           );
 
-          final String output = await evalFlutter('build', options: <String>[
-            'xcarchive',
-            '-v',
-          ]);
+          final String output =
+              await evalFlutter('build', options: <String>['xcarchive', '-v']);
 
           // Note this isBot so usage won't actually be sent,
           // this log line is printed whenever the app is archived.
@@ -57,8 +56,12 @@ Future<void> main() async {
             '    ! Launch image is set to the default placeholder icon. Replace with unique launch image.\n',
             'To update the settings, please refer to https://docs.flutter.dev/deployment/ios\n',
           ];
-          if (expectedValidationMessages.any((String message) => !output.contains(message))) {
-            throw TaskResult.failure('Must have the expected validation message');
+          if (expectedValidationMessages.any(
+            (String message) => !output.contains(message),
+          )) {
+            throw TaskResult.failure(
+              'Must have the expected validation message',
+            );
           }
         });
 
@@ -74,17 +77,19 @@ Future<void> main() async {
 
         checkDirectoryExists(products);
 
-        checkDirectoryExists(path.join(
-          archivePath,
-          'dSYMs',
-          'Runner.app.dSYM',
-        ));
-        final Directory applications = Directory(path.join(products, 'Applications'));
+        checkDirectoryExists(
+          path.join(archivePath, 'dSYMs', 'Runner.app.dSYM'),
+        );
+        final Directory applications = Directory(
+          path.join(products, 'Applications'),
+        );
 
         final Directory appBundle = applications
             .listSync()
             .whereType<Directory>()
-            .singleWhere((Directory directory) => path.extension(directory.path) == '.app');
+            .singleWhere(
+              (Directory directory) => path.extension(directory.path) == '.app',
+            );
 
         final String flutterFramework = path.join(
           appBundle.path,
@@ -93,8 +98,11 @@ Future<void> main() async {
           'Flutter',
         );
         // Exits 0 only if codesigned.
-        final Future<String> flutterCodesign =
-            eval('xcrun', <String>['codesign', '--verify', flutterFramework]);
+        final Future<String> flutterCodesign = eval('xcrun', <String>[
+          'codesign',
+          '--verify',
+          flutterFramework,
+        ]);
 
         final String appFramework = path.join(
           appBundle.path,
@@ -102,8 +110,11 @@ Future<void> main() async {
           'App.framework',
           'App',
         );
-        final Future<String> appCodesign =
-            eval('xcrun', <String>['codesign', '--verify', appFramework]);
+        final Future<String> appCodesign = eval('xcrun', <String>[
+          'codesign',
+          '--verify',
+          appFramework,
+        ]);
         await flutterCodesign;
         await appCodesign;
       });

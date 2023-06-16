@@ -22,10 +22,8 @@ import '../src/fake_vm_services.dart';
 
 final vm_service.Isolate isolate = vm_service.Isolate(
   id: '1',
-  pauseEvent: vm_service.Event(
-      kind: vm_service.EventKind.kResume,
-      timestamp: 0
-  ),
+  pauseEvent:
+      vm_service.Event(kind: vm_service.EventKind.kResume, timestamp: 0),
   breakpoints: <vm_service.Breakpoint>[],
   libraries: <vm_service.LibraryRef>[
     vm_service.LibraryRef(
@@ -45,17 +43,12 @@ final vm_service.Isolate isolate = vm_service.Isolate(
   extensionRPCs: <String>[kIntegrationTestMethod],
 );
 
-final FlutterView fakeFlutterView = FlutterView(
-  id: 'a',
-  uiIsolate: isolate,
-);
+final FlutterView fakeFlutterView = FlutterView(id: 'a', uiIsolate: isolate);
 
 final FakeVmServiceRequest listViewsRequest = FakeVmServiceRequest(
   method: kListViewsMethod,
   jsonResponse: <String, Object>{
-    'views': <Object>[
-      fakeFlutterView.toJson(),
-    ],
+    'views': <Object>[fakeFlutterView.toJson()],
   },
 );
 
@@ -74,177 +67,196 @@ void main() {
         type: PlatformType.android,
         launchResult: LaunchResult.succeeded(vmServiceUri: vmServiceUri),
       ),
-      debuggingOptions: DebuggingOptions.enabled(
-        BuildInfo.debug,
-      ),
+      debuggingOptions: DebuggingOptions.enabled(BuildInfo.debug),
       userIdentifier: '',
       compileExpression: null,
     );
 
-    fakeVmServiceHost = FakeVmServiceHost(requests: <VmServiceExpectation>[
-      const FakeVmServiceRequest(
-        method: 'streamListen',
-        args: <String, Object>{
-          'streamId': 'Isolate',
-        },
-      ),
-      listViewsRequest,
-      FakeVmServiceRequest(
-        method: 'getIsolate',
-        jsonResponse: isolate.toJson(),
-        args: <String, Object>{
-          'isolateId': '1',
-        },
-      ),
-      const FakeVmServiceRequest(
-        method: 'streamCancel',
-        args: <String, Object>{
-          'streamId': 'Isolate',
-        },
-      ),
-      const FakeVmServiceRequest(
-        method: 'streamListen',
-        args: <String, Object>{
-          'streamId': 'Extension',
-        },
-      ),
-    ]);
+    fakeVmServiceHost = FakeVmServiceHost(
+      requests: <VmServiceExpectation>[
+        const FakeVmServiceRequest(
+          method: 'streamListen',
+          args: <String, Object>{'streamId': 'Isolate'},
+        ),
+        listViewsRequest,
+        FakeVmServiceRequest(
+          method: 'getIsolate',
+          jsonResponse: isolate.toJson(),
+          args: <String, Object>{'isolateId': '1'},
+        ),
+        const FakeVmServiceRequest(
+          method: 'streamCancel',
+          args: <String, Object>{'streamId': 'Isolate'},
+        ),
+        const FakeVmServiceRequest(
+          method: 'streamListen',
+          args: <String, Object>{'streamId': 'Extension'},
+        ),
+      ],
+    );
   });
 
   testUsingContext('will not start when package missing', () async {
     await expectLater(
       testDevice.start('entrypointPath'),
-      throwsA(
-        isA<TestDeviceException>().having(
-          (Exception e) => e.toString(),
-          'description',
-          contains('No application found for TargetPlatform.android_arm'),
+      throwsA(isA<TestDeviceException>().having(
+        (Exception e) => e.toString(),
+        'description',
+        contains('No application found for TargetPlatform.android_arm'),
+      )),
+    );
+  });
+
+  testUsingContext(
+    'Can start the entrypoint',
+    () async {
+      await testDevice.start('entrypointPath');
+
+      expect(await testDevice.vmServiceUri, vmServiceUri);
+      expect(testDevice.finished, doesNotComplete);
+    },
+    overrides: <Type, Generator>{
+      ApplicationPackageFactory: () => FakeApplicationPackageFactory(),
+      VMServiceConnector: () => (
+            Uri httpUri, {
+            ReloadSources? reloadSources,
+            Restart? restart,
+            CompileExpression? compileExpression,
+            GetSkSLMethod? getSkSLMethod,
+            FlutterProject? flutterProject,
+            PrintStructuredErrorLogMethod? printStructuredErrorLogMethod,
+            io.CompressionOptions? compression,
+            Device? device,
+            Logger? logger,
+          }) async => fakeVmServiceHost.vmService,
+    },
+  );
+
+  testUsingContext(
+    'Can kill the started device',
+    () async {
+      await testDevice.start('entrypointPath');
+      await testDevice.kill();
+
+      expect(testDevice.finished, completes);
+    },
+    overrides: <Type, Generator>{
+      ApplicationPackageFactory: () => FakeApplicationPackageFactory(),
+      VMServiceConnector: () => (
+            Uri httpUri, {
+            ReloadSources? reloadSources,
+            Restart? restart,
+            CompileExpression? compileExpression,
+            GetSkSLMethod? getSkSLMethod,
+            FlutterProject? flutterProject,
+            PrintStructuredErrorLogMethod? printStructuredErrorLogMethod,
+            io.CompressionOptions? compression,
+            Device? device,
+            Logger? logger,
+          }) async => fakeVmServiceHost.vmService,
+    },
+  );
+
+  testUsingContext(
+    'when the device starts without providing an vmService URI',
+    () async {
+      final TestDevice testDevice = IntegrationTestTestDevice(
+        id: 1,
+        device: FakeDevice(
+          'ephemeral',
+          'ephemeral',
+          type: PlatformType.android,
+          launchResult: LaunchResult.succeeded(),
         ),
-      ),
-    );
-  });
+        debuggingOptions: DebuggingOptions.enabled(BuildInfo.debug),
+        userIdentifier: '',
+        compileExpression: null,
+      );
 
-  testUsingContext('Can start the entrypoint', () async {
-    await testDevice.start('entrypointPath');
+      expect(
+        () => testDevice.start('entrypointPath'),
+        throwsA(isA<TestDeviceException>()),
+      );
+    },
+    overrides: <Type, Generator>{
+      VMServiceConnector: () => (
+            Uri httpUri, {
+            ReloadSources? reloadSources,
+            Restart? restart,
+            CompileExpression? compileExpression,
+            GetSkSLMethod? getSkSLMethod,
+            FlutterProject? flutterProject,
+            PrintStructuredErrorLogMethod? printStructuredErrorLogMethod,
+            io.CompressionOptions? compression,
+            Device? device,
+          }) async => fakeVmServiceHost.vmService,
+    },
+  );
 
-    expect(await testDevice.vmServiceUri, vmServiceUri);
-    expect(testDevice.finished, doesNotComplete);
-  }, overrides: <Type, Generator>{
-    ApplicationPackageFactory: () => FakeApplicationPackageFactory(),
-    VMServiceConnector: () => (Uri httpUri, {
-      ReloadSources? reloadSources,
-      Restart? restart,
-      CompileExpression? compileExpression,
-      GetSkSLMethod? getSkSLMethod,
-      FlutterProject? flutterProject,
-      PrintStructuredErrorLogMethod? printStructuredErrorLogMethod,
-      io.CompressionOptions? compression,
-      Device? device,
-      Logger? logger,
-    }) async => fakeVmServiceHost.vmService,
-  });
+  testUsingContext(
+    'when the device fails to start',
+    () async {
+      final TestDevice testDevice = IntegrationTestTestDevice(
+        id: 1,
+        device: FakeDevice(
+          'ephemeral',
+          'ephemeral',
+          type: PlatformType.android,
+          launchResult: LaunchResult.failed(),
+        ),
+        debuggingOptions: DebuggingOptions.enabled(BuildInfo.debug),
+        userIdentifier: '',
+        compileExpression: null,
+      );
 
-  testUsingContext('Can kill the started device', () async {
-    await testDevice.start('entrypointPath');
-    await testDevice.kill();
+      expect(
+        () => testDevice.start('entrypointPath'),
+        throwsA(isA<TestDeviceException>()),
+      );
+    },
+    overrides: <Type, Generator>{
+      VMServiceConnector: () => (
+            Uri httpUri, {
+            ReloadSources? reloadSources,
+            Restart? restart,
+            CompileExpression? compileExpression,
+            GetSkSLMethod? getSkSLMethod,
+            FlutterProject? flutterProject,
+            PrintStructuredErrorLogMethod? printStructuredErrorLogMethod,
+            io.CompressionOptions? compression,
+            Device? device,
+          }) async => fakeVmServiceHost.vmService,
+    },
+  );
 
-    expect(testDevice.finished, completes);
-  }, overrides: <Type, Generator>{
-    ApplicationPackageFactory: () => FakeApplicationPackageFactory(),
-    VMServiceConnector: () => (Uri httpUri, {
-      ReloadSources? reloadSources,
-      Restart? restart,
-      CompileExpression? compileExpression,
-      GetSkSLMethod? getSkSLMethod,
-      FlutterProject? flutterProject,
-      PrintStructuredErrorLogMethod? printStructuredErrorLogMethod,
-      io.CompressionOptions? compression,
-      Device? device,
-      Logger? logger,
-    }) async => fakeVmServiceHost.vmService,
-  });
-
-  testUsingContext('when the device starts without providing an vmService URI', () async {
-    final TestDevice testDevice = IntegrationTestTestDevice(
-      id: 1,
-      device: FakeDevice(
-        'ephemeral',
-        'ephemeral',
-        type: PlatformType.android,
-        launchResult: LaunchResult.succeeded(),
-      ),
-      debuggingOptions: DebuggingOptions.enabled(
-        BuildInfo.debug,
-      ),
-      userIdentifier: '',
-      compileExpression: null,
-    );
-
-    expect(() => testDevice.start('entrypointPath'), throwsA(isA<TestDeviceException>()));
-  }, overrides: <Type, Generator>{
-    VMServiceConnector: () => (Uri httpUri, {
-      ReloadSources? reloadSources,
-      Restart? restart,
-      CompileExpression? compileExpression,
-      GetSkSLMethod? getSkSLMethod,
-      FlutterProject? flutterProject,
-      PrintStructuredErrorLogMethod? printStructuredErrorLogMethod,
-      io.CompressionOptions? compression,
-      Device? device,
-    }) async => fakeVmServiceHost.vmService,
-  });
-
-  testUsingContext('when the device fails to start', () async {
-    final TestDevice testDevice = IntegrationTestTestDevice(
-      id: 1,
-      device: FakeDevice(
-        'ephemeral',
-        'ephemeral',
-        type: PlatformType.android,
-        launchResult: LaunchResult.failed(),
-      ),
-      debuggingOptions: DebuggingOptions.enabled(
-        BuildInfo.debug,
-      ),
-      userIdentifier: '',
-      compileExpression: null,
-    );
-
-    expect(() => testDevice.start('entrypointPath'), throwsA(isA<TestDeviceException>()));
-  }, overrides: <Type, Generator>{
-    VMServiceConnector: () => (Uri httpUri, {
-      ReloadSources? reloadSources,
-      Restart? restart,
-      CompileExpression? compileExpression,
-      GetSkSLMethod? getSkSLMethod,
-      FlutterProject? flutterProject,
-      PrintStructuredErrorLogMethod? printStructuredErrorLogMethod,
-      io.CompressionOptions? compression,
-      Device? device,
-    }) async => fakeVmServiceHost.vmService,
-  });
-
-  testUsingContext('Can handle closing of the VM service', () async {
-    final StreamChannel<String> channel = await testDevice.start('entrypointPath');
-    await fakeVmServiceHost.vmService.dispose();
-    expect(await channel.stream.isEmpty, true);
-  }, overrides: <Type, Generator>{
-    ApplicationPackageFactory: () => FakeApplicationPackageFactory(),
-    VMServiceConnector: () => (Uri httpUri, {
-      ReloadSources? reloadSources,
-      Restart? restart,
-      CompileExpression? compileExpression,
-      GetSkSLMethod? getSkSLMethod,
-      FlutterProject? flutterProject,
-      PrintStructuredErrorLogMethod? printStructuredErrorLogMethod,
-      io.CompressionOptions? compression,
-      Device? device,
-      Logger? logger,
-    }) async => fakeVmServiceHost.vmService,
-  });
+  testUsingContext(
+    'Can handle closing of the VM service',
+    () async {
+      final StreamChannel<String> channel =
+          await testDevice.start('entrypointPath');
+      await fakeVmServiceHost.vmService.dispose();
+      expect(await channel.stream.isEmpty, true);
+    },
+    overrides: <Type, Generator>{
+      ApplicationPackageFactory: () => FakeApplicationPackageFactory(),
+      VMServiceConnector: () => (
+            Uri httpUri, {
+            ReloadSources? reloadSources,
+            Restart? restart,
+            CompileExpression? compileExpression,
+            GetSkSLMethod? getSkSLMethod,
+            FlutterProject? flutterProject,
+            PrintStructuredErrorLogMethod? printStructuredErrorLogMethod,
+            io.CompressionOptions? compression,
+            Device? device,
+            Logger? logger,
+          }) async => fakeVmServiceHost.vmService,
+    },
+  );
 }
 
-class FakeApplicationPackageFactory extends Fake implements ApplicationPackageFactory {
+class FakeApplicationPackageFactory extends Fake
+    implements ApplicationPackageFactory {
   @override
   Future<ApplicationPackage> getPackageForPlatform(
     TargetPlatform platform, {
@@ -253,4 +265,4 @@ class FakeApplicationPackageFactory extends Fake implements ApplicationPackageFa
   }) async => FakeApplicationPackage();
 }
 
-class FakeApplicationPackage extends Fake implements ApplicationPackage { }
+class FakeApplicationPackage extends Fake implements ApplicationPackage {}

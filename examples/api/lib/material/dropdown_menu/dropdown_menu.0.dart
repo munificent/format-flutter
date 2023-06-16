@@ -25,23 +25,26 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
 
   @override
   Widget build(BuildContext context) {
-    final List<DropdownMenuEntry<ColorLabel>> colorEntries = <DropdownMenuEntry<ColorLabel>>[];
+    final List<DropdownMenuEntry<ColorLabel>> colorEntries =
+        <DropdownMenuEntry<ColorLabel>>[];
     for (final ColorLabel color in ColorLabel.values) {
-      colorEntries.add(
-        DropdownMenuEntry<ColorLabel>(value: color, label: color.label, enabled: color.label != 'Grey'),
+      colorEntries.add(DropdownMenuEntry<ColorLabel>(
+        value: color,
+        label: color.label,
+        enabled: color.label != 'Grey',
+      ));
+    }
+
+    final List<DropdownMenuEntry<IconLabel>> iconEntries =
+        <DropdownMenuEntry<IconLabel>>[];
+    for (final IconLabel icon in IconLabel.values) {
+      iconEntries.add(
+        DropdownMenuEntry<IconLabel>(value: icon, label: icon.label),
       );
     }
 
-    final List<DropdownMenuEntry<IconLabel>> iconEntries = <DropdownMenuEntry<IconLabel>>[];
-    for (final IconLabel icon in IconLabel.values) {
-      iconEntries.add(DropdownMenuEntry<IconLabel>(value: icon, label: icon.label));
-    }
-
     return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.green,
-      ),
+      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.green),
       home: Scaffold(
         body: SafeArea(
           child: Column(
@@ -78,7 +81,7 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
                           selectedIcon = icon;
                         });
                       },
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -86,18 +89,18 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text('You selected a ${selectedColor?.label} ${selectedIcon?.label}'),
+                    Text(
+                      'You selected a ${selectedColor?.label} ${selectedIcon?.label}',
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Icon(
-                        selectedIcon?.icon,
-                        color: selectedColor?.color,
-                      ),
-                    )
+                      child:
+                          Icon(selectedIcon?.icon, color: selectedColor?.color),
+                    ),
                   ],
                 )
               else
-                const Text('Please select a color and an icon.')
+                const Text('Please select a color and an icon.'),
             ],
           ),
         ),
@@ -120,10 +123,7 @@ enum ColorLabel {
 
 enum IconLabel {
   smile('Smile', Icons.sentiment_satisfied_outlined),
-  cloud(
-    'Cloud',
-    Icons.cloud_outlined,
-  ),
+  cloud('Cloud', Icons.cloud_outlined),
   brush('Brush', Icons.brush_outlined),
   heart('Heart', Icons.favorite);
 

@@ -14,9 +14,7 @@ void main() {
     final SemanticsTester semantics = SemanticsTester(tester);
 
     await tester.pumpWidget(
-      const Center(
-          child: Text('Hello!', textDirection: TextDirection.ltr),
-      ),
+      const Center(child: Text('Hello!', textDirection: TextDirection.ltr)),
     );
 
     expect(semantics, hasSemantics(TestSemantics.root(
@@ -42,10 +40,7 @@ void main() {
       home: Center(
         child: Semantics(
           label: 'Hello!',
-          child: const SizedBox(
-            width: 10.0,
-            height: 10.0,
-          ),
+          child: const SizedBox(width: 10.0, height: 10.0),
         ),
       ),
     ));

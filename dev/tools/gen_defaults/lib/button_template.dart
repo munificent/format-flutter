@@ -5,7 +5,11 @@
 import 'template.dart';
 
 class ButtonTemplate extends TokenTemplate {
-  const ButtonTemplate(this.tokenGroup, super.blockName, super.fileName, super.tokens, {
+  const ButtonTemplate(
+    this.tokenGroup,
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
   });
 
@@ -75,7 +79,9 @@ class _${blockName}DefaultsM3 extends ButtonStyle {
 
   @override
   MaterialStateProperty<TextStyle?> get textStyle =>
-    MaterialStatePropertyAll<TextStyle?>(${textStyle("$tokenGroup.label-text")});
+    MaterialStatePropertyAll<TextStyle?>(${textStyle(
+        "$tokenGroup.label-text",
+      )});
 
   @override
   MaterialStateProperty<Color?>? get backgroundColor =>${_backgroundColor()};
@@ -121,7 +127,9 @@ class _${blockName}DefaultsM3 extends ButtonStyle {
 
   @override
   MaterialStateProperty<Size>? get minimumSize =>
-    const MaterialStatePropertyAll<Size>(Size(64.0, ${getToken("$tokenGroup.container.height")}));
+    const MaterialStatePropertyAll<Size>(Size(64.0, ${getToken(
+        "$tokenGroup.container.height",
+      )}));
 
   // No default fixedSize
 
@@ -142,7 +150,10 @@ ${tokenAvailable("$tokenGroup.outline.color") ? '''
 
   @override
   MaterialStateProperty<OutlinedBorder>? get shape =>
-    const MaterialStatePropertyAll<OutlinedBorder>(${shape("$tokenGroup.container", '')});
+    const MaterialStatePropertyAll<OutlinedBorder>(${shape(
+        "$tokenGroup.container",
+        '',
+      )});
 
   @override
   MaterialStateProperty<MouseCursor?>? get mouseCursor =>

@@ -25,7 +25,8 @@ TaskFunction createMicrobenchmarkTask({bool? enableImpeller}) {
       Future<Map<String, double>> run() async {
         print('Running $benchmarkPath');
         final Directory appDir = dir(
-            path.join(flutterDirectory.path, 'dev/benchmarks/microbenchmarks'));
+          path.join(flutterDirectory.path, 'dev/benchmarks/microbenchmarks'),
+        );
         final Process flutterProcess = await inDirectory(appDir, () async {
           final List<String> options = <String>[
             '-v',
@@ -33,15 +34,13 @@ TaskFunction createMicrobenchmarkTask({bool? enableImpeller}) {
             '--profile',
             '--no-publish-port',
             if (enableImpeller != null && enableImpeller) '--enable-impeller',
-            if (enableImpeller != null && !enableImpeller) '--no-enable-impeller',
+            if (enableImpeller != null && !enableImpeller)
+              '--no-enable-impeller',
             '-d',
             device.deviceId,
           ];
           options.add(benchmarkPath);
-          return startFlutter(
-            'run',
-            options: options,
-          );
+          return startFlutter('run', options: options);
         });
 
         return readJsonResults(flutterProcess);
@@ -55,10 +54,14 @@ TaskFunction createMicrobenchmarkTask({bool? enableImpeller}) {
       ...await runMicrobench('lib/foundation/change_notifier_bench.dart'),
       ...await runMicrobench('lib/foundation/clamp.dart'),
       ...await runMicrobench('lib/foundation/platform_asset_bundle.dart'),
-      ...await runMicrobench('lib/foundation/standard_message_codec_bench.dart'),
+      ...await runMicrobench(
+        'lib/foundation/standard_message_codec_bench.dart',
+      ),
       ...await runMicrobench('lib/foundation/standard_method_codec_bench.dart'),
       ...await runMicrobench('lib/foundation/timeline_bench.dart'),
-      ...await runMicrobench('lib/foundation/decode_and_parse_asset_manifest.dart'),
+      ...await runMicrobench(
+        'lib/foundation/decode_and_parse_asset_manifest.dart',
+      ),
       ...await runMicrobench('lib/geometry/matrix_utils_transform_bench.dart'),
       ...await runMicrobench('lib/geometry/rrect_contains_bench.dart'),
       ...await runMicrobench('lib/gestures/gesture_detector_bench.dart'),
@@ -73,7 +76,9 @@ TaskFunction createMicrobenchmarkTask({bool? enableImpeller}) {
       ...await runMicrobench('lib/ui/image_bench.dart'),
     };
 
-    return TaskResult.success(allResults,
-        benchmarkScoreKeys: allResults.keys.toList());
+    return TaskResult.success(
+      allResults,
+      benchmarkScoreKeys: allResults.keys.toList(),
+    );
   };
 }

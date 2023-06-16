@@ -8,10 +8,7 @@ import 'basic.dart';
 import 'framework.dart';
 
 class _PlaceholderPainter extends CustomPainter {
-  const _PlaceholderPainter({
-    required this.color,
-    required this.strokeWidth,
-  });
+  const _PlaceholderPainter({required this.color, required this.strokeWidth});
 
   final Color color;
   final double strokeWidth;
@@ -32,8 +29,7 @@ class _PlaceholderPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_PlaceholderPainter oldPainter) {
-    return oldPainter.color != color
-        || oldPainter.strokeWidth != strokeWidth;
+    return oldPainter.color != color || oldPainter.strokeWidth != strokeWidth;
   }
 
   @override
@@ -59,7 +55,7 @@ class Placeholder extends StatelessWidget {
     this.strokeWidth = 2.0,
     this.fallbackWidth = 400.0,
     this.fallbackHeight = 400.0,
-    this.child
+    this.child,
   });
 
   /// The color to draw the placeholder box.
@@ -95,10 +91,7 @@ class Placeholder extends StatelessWidget {
       maxHeight: fallbackHeight,
       child: CustomPaint(
         size: Size.infinite,
-        painter: _PlaceholderPainter(
-          color: color,
-          strokeWidth: strokeWidth,
-        ),
+        painter: _PlaceholderPainter(color: color, strokeWidth: strokeWidth),
         child: child,
       ),
     );
@@ -107,10 +100,20 @@ class Placeholder extends StatelessWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(ColorProperty('color', color, defaultValue: const Color(0xFF455A64)));
-    properties.add(DoubleProperty('strokeWidth', strokeWidth, defaultValue: 2.0));
-    properties.add(DoubleProperty('fallbackWidth', fallbackWidth, defaultValue: 400.0));
-    properties.add(DoubleProperty('fallbackHeight', fallbackHeight, defaultValue: 400.0));
-    properties.add(DiagnosticsProperty<Widget>('child', child, defaultValue: null));
+    properties.add(
+      ColorProperty('color', color, defaultValue: const Color(0xFF455A64)),
+    );
+    properties.add(
+      DoubleProperty('strokeWidth', strokeWidth, defaultValue: 2.0),
+    );
+    properties.add(
+      DoubleProperty('fallbackWidth', fallbackWidth, defaultValue: 400.0),
+    );
+    properties.add(
+      DoubleProperty('fallbackHeight', fallbackHeight, defaultValue: 400.0),
+    );
+    properties.add(
+      DiagnosticsProperty<Widget>('child', child, defaultValue: null),
+    );
   }
 }

@@ -20,7 +20,6 @@ import '../../src/context.dart';
 import '../../src/fakes.dart';
 
 void main() {
-
   late Config config;
   late Logger logger;
   late FileSystem fs;
@@ -31,98 +30,113 @@ void main() {
     config = Config.test();
     logger = BufferLogger.test();
     fs = MemoryFileSystem.test();
-    platform = FakePlatform(environment: <String, String>{
-      'PATH': '',
-    });
+    platform = FakePlatform(environment: <String, String>{'PATH': ''});
     processManager = FakeProcessManager.empty();
   });
 
   group(Java, () {
-
     group('find', () {
-      testWithoutContext('finds the JDK bundled with Android Studio, if it exists', () {
-        final AndroidStudio androidStudio = _FakeAndroidStudioWithJdk();
-        final String androidStudioBundledJdkHome = androidStudio.javaPath!;
-        final String expectedJavaBinaryPath = fs.path.join(androidStudioBundledJdkHome, 'bin', 'java');
+      testWithoutContext(
+        'finds the JDK bundled with Android Studio, if it exists',
+        () {
+          final AndroidStudio androidStudio = _FakeAndroidStudioWithJdk();
+          final String androidStudioBundledJdkHome = androidStudio.javaPath!;
+          final String expectedJavaBinaryPath = fs.path.join(
+            androidStudioBundledJdkHome,
+            'bin',
+            'java',
+          );
 
-        processManager.addCommand(FakeCommand(
-          command: <String>[
-            expectedJavaBinaryPath,
-            '--version',
-          ],
-          stdout: '''
+          processManager.addCommand(FakeCommand(
+            command: <String>[expectedJavaBinaryPath, '--version'],
+            stdout: '''
 openjdk 19.0.2 2023-01-17
 OpenJDK Runtime Environment Zulu19.32+15-CA (build 19.0.2+7)
 OpenJDK 64-Bit Server VM Zulu19.32+15-CA (build 19.0.2+7, mixed mode, sharing)
-'''
-        ));
-        final Java java = Java.find(
-          config: config,
-          androidStudio: androidStudio,
-          logger: logger,
-          fileSystem: fs,
-          platform: platform,
-          processManager: processManager,
-        )!;
+''',
+          ));
+          final Java java = Java.find(
+            config: config,
+            androidStudio: androidStudio,
+            logger: logger,
+            fileSystem: fs,
+            platform: platform,
+            processManager: processManager,
+          )!;
 
-        expect(java.javaHome, androidStudioBundledJdkHome);
-        expect(java.binaryPath, expectedJavaBinaryPath);
+          expect(java.javaHome, androidStudioBundledJdkHome);
+          expect(java.binaryPath, expectedJavaBinaryPath);
 
-        expect(java.version!.toString(), 'OpenJDK Runtime Environment Zulu19.32+15-CA (build 19.0.2+7)');
-        expect(java.version, equals(Version(19, 0, 2)));
-      });
+          expect(
+            java.version!.toString(),
+            'OpenJDK Runtime Environment Zulu19.32+15-CA (build 19.0.2+7)',
+          );
+          expect(java.version, equals(Version(19, 0, 2)));
+        },
+      );
 
-      testWithoutContext('finds JAVA_HOME if it is set and the JDK bundled with Android Studio could not be found', () {
-        final AndroidStudio androidStudio = _FakeAndroidStudioWithoutJdk();
-        const String javaHome = '/java/home';
-        final String expectedJavaBinaryPath = fs.path.join(javaHome, 'bin', 'java');
+      testWithoutContext(
+        'finds JAVA_HOME if it is set and the JDK bundled with Android Studio could not be found',
+        () {
+          final AndroidStudio androidStudio = _FakeAndroidStudioWithoutJdk();
+          const String javaHome = '/java/home';
+          final String expectedJavaBinaryPath = fs.path.join(
+            javaHome,
+            'bin',
+            'java',
+          );
 
-        final Java java = Java.find(
-          config: config,
-          androidStudio: androidStudio,
-          logger: logger,
-          fileSystem: fs,
-          platform: FakePlatform(environment: <String, String>{
-            Java.javaHomeEnvironmentVariable: javaHome,
-          }),
-          processManager: processManager,
-        )!;
+          final Java java = Java.find(
+            config: config,
+            androidStudio: androidStudio,
+            logger: logger,
+            fileSystem: fs,
+            platform: FakePlatform(
+              environment: <String, String>{
+                Java.javaHomeEnvironmentVariable: javaHome,
+              },
+            ),
+            processManager: processManager,
+          )!;
 
-        expect(java.javaHome, javaHome);
-        expect(java.binaryPath, expectedJavaBinaryPath);
-      });
+          expect(java.javaHome, javaHome);
+          expect(java.binaryPath, expectedJavaBinaryPath);
+        },
+      );
 
-      testWithoutContext('returns the java binary found on PATH if no other can be found', () {
-        final AndroidStudio androidStudio = _FakeAndroidStudioWithoutJdk();
-        final OperatingSystemUtils os = _FakeOperatingSystemUtilsWithJava(fileSystem);
+      testWithoutContext(
+        'returns the java binary found on PATH if no other can be found',
+        () {
+          final AndroidStudio androidStudio = _FakeAndroidStudioWithoutJdk();
+          final OperatingSystemUtils os = _FakeOperatingSystemUtilsWithJava(
+            fileSystem,
+          );
 
-        processManager.addCommand(
-          const FakeCommand(
-            command: <String>['which', 'java'],
-            stdout: '/fake/which/java/path',
-          ),
-        );
+          processManager.addCommand(
+            const FakeCommand(
+              command: <String>['which', 'java'],
+              stdout: '/fake/which/java/path',
+            ),
+          );
 
-        final Java java = Java.find(
-          config: config,
-          androidStudio: androidStudio,
-          logger: logger,
-          fileSystem: fs,
-          platform: platform,
-          processManager: processManager,
-        )!;
+          final Java java = Java.find(
+            config: config,
+            androidStudio: androidStudio,
+            logger: logger,
+            fileSystem: fs,
+            platform: platform,
+            processManager: processManager,
+          )!;
 
-        expect(java.javaHome, isNull);
-        expect(java.binaryPath, os.which('java')!.path);
-      });
+          expect(java.javaHome, isNull);
+          expect(java.binaryPath, os.which('java')!.path);
+        },
+      );
 
       testWithoutContext('returns null if no java could be found', () {
         final AndroidStudio androidStudio = _FakeAndroidStudioWithoutJdk();
         processManager.addCommand(
-          const FakeCommand(
-            command: <String>['which', 'java'],
-            exitCode: 1,
-          ),
+          const FakeCommand(command: <String>['which', 'java'], exitCode: 1),
         );
         final Java? java = Java.find(
           config: config,
@@ -135,52 +149,60 @@ OpenJDK 64-Bit Server VM Zulu19.32+15-CA (build 19.0.2+7, mixed mode, sharing)
         expect(java, isNull);
       });
 
-      testWithoutContext('finds and prefers JDK found at config item "jdk-dir" if it is set', () {
-        const String configuredJdkPath = '/jdk';
-        config.setValue('jdk-dir', configuredJdkPath);
+      testWithoutContext(
+        'finds and prefers JDK found at config item "jdk-dir" if it is set',
+        () {
+          const String configuredJdkPath = '/jdk';
+          config.setValue('jdk-dir', configuredJdkPath);
 
-        processManager.addCommand(
-          const FakeCommand(
-            command: <String>['which', 'java'],
-            stdout: '/fake/which/java/path',
-          ),
-        );
+          processManager.addCommand(
+            const FakeCommand(
+              command: <String>['which', 'java'],
+              stdout: '/fake/which/java/path',
+            ),
+          );
 
-        final _FakeAndroidStudioWithJdk androidStudio = _FakeAndroidStudioWithJdk();
-        final FakePlatform platformWithJavaHome = FakePlatform(
-          environment: <String, String>{
-            'JAVA_HOME': '/old/jdk'
-          },
-        );
-        Java? java = Java.find(
-          config: config,
-          androidStudio: androidStudio,
-          logger: logger,
-          fileSystem: fs,
-          platform: platformWithJavaHome,
-          processManager: processManager,
-        );
+          final _FakeAndroidStudioWithJdk androidStudio =
+              _FakeAndroidStudioWithJdk();
+          final FakePlatform platformWithJavaHome = FakePlatform(
+            environment: <String, String>{'JAVA_HOME': '/old/jdk'},
+          );
+          Java? java = Java.find(
+            config: config,
+            androidStudio: androidStudio,
+            logger: logger,
+            fileSystem: fs,
+            platform: platformWithJavaHome,
+            processManager: processManager,
+          );
 
-        expect(java, isNotNull);
-        expect(java!.javaHome, configuredJdkPath);
-        expect(java.binaryPath, fs.path.join(configuredJdkPath, 'bin', 'java'));
+          expect(java, isNotNull);
+          expect(java!.javaHome, configuredJdkPath);
+          expect(
+            java.binaryPath,
+            fs.path.join(configuredJdkPath, 'bin', 'java'),
+          );
 
-        config.removeValue('jdk-dir');
+          config.removeValue('jdk-dir');
 
-        java = Java.find(
-          config: config,
-          androidStudio: androidStudio,
-          logger: logger,
-          fileSystem: fs,
-          platform: platformWithJavaHome,
-          processManager: processManager,
-        );
+          java = Java.find(
+            config: config,
+            androidStudio: androidStudio,
+            logger: logger,
+            fileSystem: fs,
+            platform: platformWithJavaHome,
+            processManager: processManager,
+          );
 
-        expect(java, isNotNull);
-        assert(androidStudio.javaPath != configuredJdkPath);
-        expect(java!.javaHome, androidStudio.javaPath);
-        expect(java.binaryPath, fs.path.join(androidStudio.javaPath!, 'bin', 'java'));
-      });
+          expect(java, isNotNull);
+          assert(androidStudio.javaPath != configuredJdkPath);
+          expect(java!.javaHome, androidStudio.javaPath);
+          expect(
+            java.binaryPath,
+            fs.path.join(androidStudio.javaPath!, 'bin', 'java'),
+          );
+        },
+      );
     });
 
     group('getVersionString', () {
@@ -200,12 +222,10 @@ OpenJDK 64-Bit Server VM Zulu19.32+15-CA (build 19.0.2+7, mixed mode, sharing)
       });
 
       void addJavaVersionCommand(String output) {
-        processManager.addCommand(
-          FakeCommand(
-            command: <String>[java.binaryPath, '--version'],
-            stdout: output,
-          ),
-        );
+        processManager.addCommand(FakeCommand(
+          command: <String>[java.binaryPath, '--version'],
+          stdout: output,
+        ));
       }
 
       testWithoutContext('parses jdk 8', () {
@@ -215,7 +235,10 @@ Java(TM) SE Runtime Environment (build 1.8.0_202-b10)
 Java HotSpot(TM) 64-Bit Server VM (build 25.202-b10, mixed mode)
 ''');
         final Version version = java.version!;
-        expect(version.toString(), 'Java(TM) SE Runtime Environment (build 1.8.0_202-b10)');
+        expect(
+          version.toString(),
+          'Java(TM) SE Runtime Environment (build 1.8.0_202-b10)',
+        );
         expect(version, equals(Version(1, 8, 0)));
       });
       testWithoutContext('parses jdk 11 windows', () {
@@ -225,7 +248,10 @@ Java(TM) SE Runtime Environment (build 11.0.14+10-b13)
 Java HotSpot(TM) 64-Bit Server VM (build 11.0.14+10-b13, mixed mode)
 ''');
         final Version version = java.version!;
-        expect(version.toString(), 'Java(TM) SE Runtime Environment (build 11.0.14+10-b13)');
+        expect(
+          version.toString(),
+          'Java(TM) SE Runtime Environment (build 11.0.14+10-b13)',
+        );
         expect(version, equals(Version(11, 0, 14)));
       });
 
@@ -236,7 +262,10 @@ OpenJDK Runtime Environment Zulu11.62+17-CA (build 11.0.18+10-LTS)
 OpenJDK 64-Bit Server VM Zulu11.62+17-CA (build 11.0.18+10-LTS, mixed mode)
 ''');
         final Version version = java.version!;
-        expect(version.toString(), 'OpenJDK Runtime Environment Zulu11.62+17-CA (build 11.0.18+10-LTS)');
+        expect(
+          version.toString(),
+          'OpenJDK Runtime Environment Zulu11.62+17-CA (build 11.0.18+10-LTS)',
+        );
         expect(version, equals(Version(11, 0, 18)));
       });
 
@@ -247,7 +276,10 @@ OpenJDK Runtime Environment (build 17.0.6+0-17.0.6b802.4-9586694)
 OpenJDK 64-Bit Server VM (build 17.0.6+0-17.0.6b802.4-9586694, mixed mode)
 ''');
         final Version version = java.version!;
-        expect(version.toString(), 'OpenJDK Runtime Environment (build 17.0.6+0-17.0.6b802.4-9586694)');
+        expect(
+          version.toString(),
+          'OpenJDK Runtime Environment (build 17.0.6+0-17.0.6b802.4-9586694)',
+        );
         expect(version, equals(Version(17, 0, 6)));
       });
 
@@ -258,7 +290,10 @@ OpenJDK Runtime Environment Homebrew (build 19.0.2)
 OpenJDK 64-Bit Server VM Homebrew (build 19.0.2, mixed mode, sharing)
 ''');
         final Version version = java.version!;
-        expect(version.toString(), 'OpenJDK Runtime Environment Homebrew (build 19.0.2)');
+        expect(
+          version.toString(),
+          'OpenJDK Runtime Environment Homebrew (build 19.0.2)',
+        );
         expect(version, equals(Version(19, 0, 2)));
       });
 
@@ -270,7 +305,10 @@ OpenJDK Runtime Environment 18.9 (build 11.0.2+9)
 OpenJDK 64-Bit Server VM 18.9 (build 11.0.2+9, mixed mode)
 ''');
         final Version version = java.version!;
-        expect(version.toString(), 'OpenJDK Runtime Environment 18.9 (build 11.0.2+9)');
+        expect(
+          version.toString(),
+          'OpenJDK Runtime Environment 18.9 (build 11.0.2+9)',
+        );
         expect(version, equals(Version(11, 0, 2)));
       });
 

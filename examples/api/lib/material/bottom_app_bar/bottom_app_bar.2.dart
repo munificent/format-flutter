@@ -37,8 +37,9 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
   bool _isElevated = true;
   bool _isVisible = true;
 
-  FloatingActionButtonLocation get _fabLocation =>
-      _isVisible ? FloatingActionButtonLocation.endContained : FloatingActionButtonLocation.endFloat;
+  FloatingActionButtonLocation get _fabLocation => _isVisible
+      ? FloatingActionButtonLocation.endContained
+      : FloatingActionButtonLocation.endFloat;
 
   void _listen() {
     final ScrollDirection direction = _controller.position.userScrollDirection;
@@ -101,9 +102,7 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Bottom App Bar Demo'),
-        ),
+        appBar: AppBar(title: const Text('Bottom App Bar Demo')),
         body: Column(
           children: <Widget>[
             SwitchListTile(
@@ -117,10 +116,8 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
               onChanged: _onElevatedChanged,
             ),
             Expanded(
-              child: ListView(
-                controller: _controller,
-                children: items.toList(),
-              ),
+              child:
+                  ListView(controller: _controller, children: items.toList()),
             ),
           ],
         ),
@@ -133,17 +130,15 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
               )
             : null,
         floatingActionButtonLocation: _fabLocation,
-        bottomNavigationBar: _DemoBottomAppBar(isElevated: _isElevated, isVisible: _isVisible),
+        bottomNavigationBar:
+            _DemoBottomAppBar(isElevated: _isElevated, isVisible: _isVisible),
       ),
     );
   }
 }
 
 class _DemoBottomAppBar extends StatelessWidget {
-  const _DemoBottomAppBar({
-    required this.isElevated,
-    required this.isVisible,
-  });
+  const _DemoBottomAppBar({required this.isElevated, required this.isVisible});
 
   final bool isElevated;
   final bool isVisible;
@@ -163,10 +158,7 @@ class _DemoBottomAppBar extends StatelessWidget {
               onPressed: () {
                 final SnackBar snackBar = SnackBar(
                   content: const Text('Yay! A SnackBar!'),
-                  action: SnackBarAction(
-                    label: 'Undo',
-                    onPressed: () {},
-                  ),
+                  action: SnackBarAction(label: 'Undo', onPressed: () {}),
                 );
 
                 // Find the ScaffoldMessenger in the widget tree

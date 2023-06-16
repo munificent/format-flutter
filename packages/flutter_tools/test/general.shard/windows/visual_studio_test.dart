@@ -14,9 +14,12 @@ import '../../src/common.dart';
 import '../../src/fake_process_manager.dart';
 
 const String programFilesPath = r'C:\Program Files (x86)';
-const String visualStudioPath = programFilesPath + r'\Microsoft Visual Studio\2017\Community';
-const String cmakePath = visualStudioPath + r'\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe';
-const String vswherePath = programFilesPath + r'\Microsoft Visual Studio\Installer\vswhere.exe';
+const String visualStudioPath =
+    programFilesPath + r'\Microsoft Visual Studio\2017\Community';
+const String cmakePath = visualStudioPath +
+    r'\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe';
+const String vswherePath =
+    programFilesPath + r'\Microsoft Visual Studio\Installer\vswhere.exe';
 
 final Platform windowsPlatform = FakePlatform(
   operatingSystem: 'windows',
@@ -34,9 +37,7 @@ const Map<String, dynamic> _defaultResponse = <String, dynamic>{
   'isComplete': true,
   'isLaunchable': true,
   'isPrerelease': false,
-  'catalog': <String, dynamic>{
-    'productDisplayVersion': '16.2.5',
-  },
+  'catalog': <String, dynamic>{'productDisplayVersion': '16.2.5'},
 };
 
 // A minimum version of a response where a VS 2022 installation was found.
@@ -48,9 +49,7 @@ const Map<String, dynamic> _vs2022Response = <String, dynamic>{
   'isComplete': true,
   'isLaunchable': true,
   'isPrerelease': false,
-  'catalog': <String, dynamic>{
-    'productDisplayVersion': '17.0.0',
-  },
+  'catalog': <String, dynamic>{'productDisplayVersion': '17.0.0'},
 };
 
 // A minimum version of a response where a Build Tools installation was found.
@@ -62,9 +61,7 @@ const Map<String, dynamic> _defaultBuildToolsResponse = <String, dynamic>{
   'isComplete': true,
   'isLaunchable': true,
   'isPrerelease': false,
-  'catalog': <String, dynamic>{
-    'productDisplayVersion': '16.7.2',
-  },
+  'catalog': <String, dynamic>{'productDisplayVersion': '16.7.2'},
 };
 
 // A response for a VS installation that's too old.
@@ -76,9 +73,7 @@ const Map<String, dynamic> _tooOldResponse = <String, dynamic>{
   'isComplete': true,
   'isLaunchable': true,
   'isPrerelease': false,
-  'catalog': <String, dynamic>{
-    'productDisplayVersion': '15.9.12',
-  },
+  'catalog': <String, dynamic>{'productDisplayVersion': '15.9.12'},
 };
 
 // A version of a response that doesn't include certain installation status
@@ -87,9 +82,7 @@ const Map<String, dynamic> _missingStatusResponse = <String, dynamic>{
   'installationPath': visualStudioPath,
   'displayName': 'Visual Studio Community 2017',
   'installationVersion': '16.4.29609.76',
-  'catalog': <String, dynamic>{
-    'productDisplayVersion': '16.4.1',
-  },
+  'catalog': <String, dynamic>{'productDisplayVersion': '16.4.1'},
 };
 
 const String _malformedDescriptionResponse = r'''
@@ -140,11 +133,11 @@ void setMockVswhereResponse(
 ]) {
   fileSystem.file(vswherePath).createSync(recursive: true);
   fileSystem.file(cmakePath).createSync(recursive: true);
-  final String finalResponse = responseOverride
-    ?? (response != null ? json.encode(<Map<String, dynamic>>[response]) : '[]');
+  final String finalResponse = responseOverride ??
+      (response != null ? json.encode(<Map<String, dynamic>>[response]) : '[]');
   final List<String> requirementArguments = requiredComponents == null
-    ? <String>[]
-    : <String>['-requires', ...requiredComponents];
+      ? <String>[]
+      : <String>['-requires', ...requiredComponents];
 
   processManager.addCommand(FakeCommand(
     command: <String>[
@@ -173,16 +166,10 @@ void setMockCompatibleVisualStudioInstallation(
   int? exitCode,
   Exception? exception,
 ]) {
-  setMockVswhereResponse(
-    fileSystem,
-    processManager,
-    _requirements,
-    <String>['-version', '16'],
-    response,
-    null,
-    exitCode,
-    exception,
-  );
+  setMockVswhereResponse(fileSystem, processManager, _requirements, <String>[
+    '-version',
+    '16',
+  ], response, null, exitCode, exception);
 }
 
 // Sets whether or not a vswhere query with the required components will
@@ -194,16 +181,11 @@ void setMockPrereleaseVisualStudioInstallation(
   int? exitCode,
   Exception? exception,
 ]) {
-  setMockVswhereResponse(
-    fileSystem,
-    processManager,
-    _requirements,
-    <String>['-version', '16', '-prerelease'],
-    response,
-    null,
-    exitCode,
-    exception,
-  );
+  setMockVswhereResponse(fileSystem, processManager, _requirements, <String>[
+    '-version',
+    '16',
+    '-prerelease',
+  ], response, null, exitCode, exception);
 }
 
 // Sets whether or not a vswhere query with the required components will
@@ -257,16 +239,10 @@ void setMockAnyVisualStudioInstallation(
   int? exitCode,
   Exception? exception,
 ]) {
-  setMockVswhereResponse(
-    fileSystem,
-    processManager,
-    null,
-    <String>['-prerelease', '-all'],
-    response,
-    null,
-    exitCode,
-    exception,
-  );
+  setMockVswhereResponse(fileSystem, processManager, null, <String>[
+    '-prerelease',
+    '-all',
+  ], response, null, exitCode, exception);
 }
 
 // Set a pre-encoded query result.
@@ -275,14 +251,10 @@ void setMockEncodedAnyVisualStudioInstallation(
   FileSystem fileSystem,
   FakeProcessManager processManager,
 ) {
-  setMockVswhereResponse(
-    fileSystem,
-    processManager,
-    null,
-    <String>['-prerelease', '-all'],
-    null,
-    response,
-  );
+  setMockVswhereResponse(fileSystem, processManager, null, <String>[
+    '-prerelease',
+    '-all',
+  ], null, response);
 }
 
 // Sets up the mock environment for a Windows 10 SDK query.
@@ -296,21 +268,24 @@ void setMockSdkRegResponse(
   bool registryPresent = true,
   bool filesPresent = true,
 }) {
-  const String registryPath = r'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v10.0';
+  const String registryPath =
+      r'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v10.0';
   const String registryKey = r'InstallationFolder';
   const String installationPath = r'C:\Program Files (x86)\Windows Kits\10\';
   final String stdout = registryPresent
-    ? '''
+      ? '''
 $registryPath
     $registryKey    REG_SZ    $installationPath
 '''
-    : '''
+      : '''
 
 ERROR: The system was unable to find the specified registry key or value.
 ''';
 
   if (filesPresent) {
-    final Directory includeDirectory =  fileSystem.directory(installationPath).childDirectory('Include');
+    final Directory includeDirectory = fileSystem
+        .directory(installationPath)
+        .childDirectory('Include');
     includeDirectory.childDirectory('10.0.17763.0').createSync(recursive: true);
     includeDirectory.childDirectory('10.0.18362.0').createSync(recursive: true);
     // Not an actual version; added to ensure that version comparison is number, not string-based.
@@ -318,13 +293,7 @@ ERROR: The system was unable to find the specified registry key or value.
   }
 
   processManager.addCommand(FakeCommand(
-    command: const <String>[
-      'reg',
-      'query',
-      registryPath,
-      '/v',
-      registryKey,
-    ],
+    command: const <String>['reg', 'query', registryPath, '/v', registryKey],
     stdout: stdout,
   ));
 }
@@ -332,7 +301,9 @@ ERROR: The system was unable to find the specified registry key or value.
 // Create a visual studio instance with a FakeProcessManager.
 VisualStudioFixture setUpVisualStudio() {
   final FakeProcessManager processManager = FakeProcessManager.empty();
-  final FileSystem fileSystem = MemoryFileSystem.test(style: FileSystemStyle.windows);
+  final FileSystem fileSystem = MemoryFileSystem.test(
+    style: FileSystemStyle.windows,
+  );
   final BufferLogger logger = BufferLogger.test();
   final VisualStudio visualStudio = VisualStudio(
     fileSystem: fileSystem,
@@ -344,9 +315,7 @@ VisualStudioFixture setUpVisualStudio() {
 }
 
 // Set all vswhere query with the required components return null.
-void setNoViableToolchainInstallation(
-  VisualStudioFixture fixture,
-) {
+void setNoViableToolchainInstallation(VisualStudioFixture fixture) {
   setMockCompatibleVisualStudioInstallation(
     null,
     fixture.fileSystem,
@@ -371,526 +340,680 @@ void setNoViableToolchainInstallation(
 
 void main() {
   group('Visual Studio', () {
-    testWithoutContext('isInstalled throws when PROGRAMFILES(X86) env not set', () {
-      final VisualStudio visualStudio = VisualStudio(
-        logger: BufferLogger.test(),
-        fileSystem: MemoryFileSystem.test(style: FileSystemStyle.windows),
-        platform: FakePlatform(operatingSystem: 'windows'),
-        processManager: FakeProcessManager.any(),
-      );
+    testWithoutContext(
+      'isInstalled throws when PROGRAMFILES(X86) env not set',
+      () {
+        final VisualStudio visualStudio = VisualStudio(
+          logger: BufferLogger.test(),
+          fileSystem: MemoryFileSystem.test(style: FileSystemStyle.windows),
+          platform: FakePlatform(operatingSystem: 'windows'),
+          processManager: FakeProcessManager.any(),
+        );
 
-      expect(() => visualStudio.isInstalled,
-          throwsToolExit(message: '%PROGRAMFILES(X86)% environment variable not found'));
-    });
-
-    testWithoutContext('isInstalled and cmakePath correct when vswhere is missing', () {
-      final FileSystem fileSystem = MemoryFileSystem.test(style: FileSystemStyle.windows);
-      const Exception exception = ProcessException('vswhere', <String>[]);
-      final FakeProcessManager fakeProcessManager = FakeProcessManager.empty();
-
-      setMockCompatibleVisualStudioInstallation(null, fileSystem, fakeProcessManager, null, exception);
-      setMockCompatibleVisualStudioBuildToolsInstallation(null, fileSystem, fakeProcessManager, null, exception);
-      setMockPrereleaseVisualStudioInstallation(null, fileSystem, fakeProcessManager, null, exception);
-      setMockPrereleaseVisualStudioBuildToolsInstallation(null, fileSystem, fakeProcessManager, null, exception);
-      setMockAnyVisualStudioInstallation(null, fileSystem, fakeProcessManager, null, exception);
-
-      final VisualStudio visualStudio = VisualStudio(
-        logger: BufferLogger.test(),
-        fileSystem: fileSystem,
-        platform: windowsPlatform,
-        processManager: fakeProcessManager,
-      );
-
-      expect(visualStudio.isInstalled, false);
-      expect(visualStudio.cmakePath, isNull);
-    });
+        expect(() => visualStudio.isInstalled, throwsToolExit(
+          message: '%PROGRAMFILES(X86)% environment variable not found',
+        ));
+      },
+    );
 
     testWithoutContext(
-        'isInstalled returns false when vswhere returns non-zero', () {
-      final FileSystem fileSystem = MemoryFileSystem.test(style: FileSystemStyle.windows);
-      final FakeProcessManager fakeProcessManager = FakeProcessManager.empty();
+      'isInstalled and cmakePath correct when vswhere is missing',
+      () {
+        final FileSystem fileSystem = MemoryFileSystem.test(
+          style: FileSystemStyle.windows,
+        );
+        const Exception exception = ProcessException('vswhere', <String>[]);
+        final FakeProcessManager fakeProcessManager =
+            FakeProcessManager.empty();
 
-      setMockCompatibleVisualStudioInstallation(null, fileSystem, fakeProcessManager, 1);
-      setMockCompatibleVisualStudioBuildToolsInstallation(null, fileSystem, fakeProcessManager, 1);
-      setMockPrereleaseVisualStudioInstallation(null, fileSystem, fakeProcessManager, 1);
-      setMockPrereleaseVisualStudioBuildToolsInstallation(null, fileSystem, fakeProcessManager, 1);
-      setMockAnyVisualStudioInstallation(null, fileSystem, fakeProcessManager, 1);
+        setMockCompatibleVisualStudioInstallation(
+          null,
+          fileSystem,
+          fakeProcessManager,
+          null,
+          exception,
+        );
+        setMockCompatibleVisualStudioBuildToolsInstallation(
+          null,
+          fileSystem,
+          fakeProcessManager,
+          null,
+          exception,
+        );
+        setMockPrereleaseVisualStudioInstallation(
+          null,
+          fileSystem,
+          fakeProcessManager,
+          null,
+          exception,
+        );
+        setMockPrereleaseVisualStudioBuildToolsInstallation(
+          null,
+          fileSystem,
+          fakeProcessManager,
+          null,
+          exception,
+        );
+        setMockAnyVisualStudioInstallation(
+          null,
+          fileSystem,
+          fakeProcessManager,
+          null,
+          exception,
+        );
 
-      final VisualStudio visualStudio = VisualStudio(
-        logger: BufferLogger.test(),
-        fileSystem: fileSystem,
-        platform: windowsPlatform,
-        processManager: fakeProcessManager,
-      );
+        final VisualStudio visualStudio = VisualStudio(
+          logger: BufferLogger.test(),
+          fileSystem: fileSystem,
+          platform: windowsPlatform,
+          processManager: fakeProcessManager,
+        );
 
-      expect(visualStudio.isInstalled, false);
-      expect(visualStudio.cmakePath, isNull);
-    });
-
-    testWithoutContext('VisualStudio getters return the right values if no installation is found', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
-
-      setNoViableToolchainInstallation(fixture);
-
-      setMockAnyVisualStudioInstallation(
-        null,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-
-      expect(visualStudio.isInstalled, false);
-      expect(visualStudio.isAtLeastMinimumVersion, false);
-      expect(visualStudio.hasNecessaryComponents, false);
-      expect(visualStudio.isComplete, false);
-      expect(visualStudio.isRebootRequired, false);
-      expect(visualStudio.isLaunchable, false);
-      expect(visualStudio.displayName, null);
-      expect(visualStudio.displayVersion, null);
-      expect(visualStudio.installLocation, null);
-      expect(visualStudio.fullVersion, null);
-    });
-
-    testWithoutContext('necessaryComponentDescriptions suggest the right VS tools on major version 16', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
-
-      setMockCompatibleVisualStudioInstallation(
-        _defaultResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-
-      final String toolsString = visualStudio.necessaryComponentDescriptions()[0];
-
-      expect(toolsString.contains('v142'), true);
-    });
-
-    testWithoutContext('necessaryComponentDescriptions suggest the right VS tools on an old version', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
-
-      setNoViableToolchainInstallation(fixture);
-
-      setMockAnyVisualStudioInstallation(
-        _tooOldResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-
-      final String toolsString = visualStudio.necessaryComponentDescriptions()[0];
-
-      expect(toolsString.contains('v142'), true);
-    });
-
-    testWithoutContext('isInstalled returns true even with missing status information', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
-
-      setNoViableToolchainInstallation(fixture);
-
-      setMockAnyVisualStudioInstallation(
-        _missingStatusResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-
-      expect(visualStudio.isInstalled, true);
-    });
-
-    testWithoutContext('isInstalled returns true when VS is present but missing components', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
-
-      setNoViableToolchainInstallation(fixture);
-
-      setMockAnyVisualStudioInstallation(
-        _defaultResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-
-      expect(visualStudio.isInstalled, true);
-    });
-
-    testWithoutContext('isInstalled returns true when VS is present but too old', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
-
-      setNoViableToolchainInstallation(fixture);
-
-      setMockAnyVisualStudioInstallation(
-        _tooOldResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-
-      expect(visualStudio.isInstalled, true);
-    });
-
-    testWithoutContext('isInstalled returns true when a prerelease version of VS is present', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
-
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['isPrerelease'] = true;
-      setMockCompatibleVisualStudioInstallation(
-        null,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-      setMockCompatibleVisualStudioBuildToolsInstallation(
-        null,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-      setMockPrereleaseVisualStudioInstallation(
-        response,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isPrerelease, true);
-    });
-
-    testWithoutContext('isInstalled returns true when a prerelease version of Build Tools is present', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
-
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultBuildToolsResponse)
-        ..['isPrerelease'] = true;
-      setMockCompatibleVisualStudioInstallation(
-        null,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-      setMockCompatibleVisualStudioBuildToolsInstallation(
-        null,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-      setMockPrereleaseVisualStudioInstallation(
-        null,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-      setMockPrereleaseVisualStudioBuildToolsInstallation(
-        response,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isPrerelease, true);
-    });
-
-    testWithoutContext('isAtLeastMinimumVersion returns false when the version found is too old', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
-
-      setNoViableToolchainInstallation(fixture);
-
-      setMockAnyVisualStudioInstallation(
-        _tooOldResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isAtLeastMinimumVersion, false);
-    });
-
-    testWithoutContext('isComplete returns false when an incomplete installation is found', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
-
-      setNoViableToolchainInstallation(fixture);
-
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['isComplete'] = false;
-      setMockAnyVisualStudioInstallation(
-        response,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isComplete, false);
-    });
+        expect(visualStudio.isInstalled, false);
+        expect(visualStudio.cmakePath, isNull);
+      },
+    );
 
     testWithoutContext(
-        "isLaunchable returns false if the installation can't be launched", () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+      'isInstalled returns false when vswhere returns non-zero',
+      () {
+        final FileSystem fileSystem = MemoryFileSystem.test(
+          style: FileSystemStyle.windows,
+        );
+        final FakeProcessManager fakeProcessManager =
+            FakeProcessManager.empty();
 
-      setNoViableToolchainInstallation(fixture);
+        setMockCompatibleVisualStudioInstallation(
+          null,
+          fileSystem,
+          fakeProcessManager,
+          1,
+        );
+        setMockCompatibleVisualStudioBuildToolsInstallation(
+          null,
+          fileSystem,
+          fakeProcessManager,
+          1,
+        );
+        setMockPrereleaseVisualStudioInstallation(
+          null,
+          fileSystem,
+          fakeProcessManager,
+          1,
+        );
+        setMockPrereleaseVisualStudioBuildToolsInstallation(
+          null,
+          fileSystem,
+          fakeProcessManager,
+          1,
+        );
+        setMockAnyVisualStudioInstallation(
+          null,
+          fileSystem,
+          fakeProcessManager,
+          1,
+        );
 
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['isLaunchable'] = false;
-      setMockAnyVisualStudioInstallation(
-        response,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+        final VisualStudio visualStudio = VisualStudio(
+          logger: BufferLogger.test(),
+          fileSystem: fileSystem,
+          platform: windowsPlatform,
+          processManager: fakeProcessManager,
+        );
 
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isLaunchable, false);
-    });
+        expect(visualStudio.isInstalled, false);
+        expect(visualStudio.cmakePath, isNull);
+      },
+    );
 
-    testWithoutContext('isRebootRequired returns true if the installation needs a reboot', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+    testWithoutContext(
+      'VisualStudio getters return the right values if no installation is found',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-      setNoViableToolchainInstallation(fixture);
+        setNoViableToolchainInstallation(fixture);
 
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['isRebootRequired'] = true;
-      setMockAnyVisualStudioInstallation(
-        response,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+        setMockAnyVisualStudioInstallation(
+          null,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isRebootRequired, true);
-    });
+        expect(visualStudio.isInstalled, false);
+        expect(visualStudio.isAtLeastMinimumVersion, false);
+        expect(visualStudio.hasNecessaryComponents, false);
+        expect(visualStudio.isComplete, false);
+        expect(visualStudio.isRebootRequired, false);
+        expect(visualStudio.isLaunchable, false);
+        expect(visualStudio.displayName, null);
+        expect(visualStudio.displayVersion, null);
+        expect(visualStudio.installLocation, null);
+        expect(visualStudio.fullVersion, null);
+      },
+    );
 
-    testWithoutContext('hasNecessaryComponents returns false when VS is present but missing components', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+    testWithoutContext(
+      'necessaryComponentDescriptions suggest the right VS tools on major version 16',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-      setNoViableToolchainInstallation(fixture);
+        setMockCompatibleVisualStudioInstallation(
+          _defaultResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-      setMockAnyVisualStudioInstallation(
-        _defaultResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+        final String toolsString =
+            visualStudio.necessaryComponentDescriptions()[0];
 
-      expect(visualStudio.hasNecessaryComponents, false);
-    });
+        expect(toolsString.contains('v142'), true);
+      },
+    );
 
-    testWithoutContext('cmakePath returns null when VS is present but missing components', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+    testWithoutContext(
+      'necessaryComponentDescriptions suggest the right VS tools on an old version',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-      setNoViableToolchainInstallation(fixture);
+        setNoViableToolchainInstallation(fixture);
 
-      setMockAnyVisualStudioInstallation(
-        _defaultResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+        setMockAnyVisualStudioInstallation(
+          _tooOldResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-      expect(visualStudio.cmakePath, isNull);
-    });
+        final String toolsString =
+            visualStudio.necessaryComponentDescriptions()[0];
 
-    testWithoutContext('cmakePath returns null when VS is present but with require components but installation is faulty', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+        expect(toolsString.contains('v142'), true);
+      },
+    );
 
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['isRebootRequired'] = true;
-      setMockCompatibleVisualStudioInstallation(
-        response,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+    testWithoutContext(
+      'isInstalled returns true even with missing status information',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-      expect(visualStudio.cmakePath, isNull);
-    });
+        setNoViableToolchainInstallation(fixture);
 
-    testWithoutContext('hasNecessaryComponents returns false when VS is present with required components but installation is faulty', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+        setMockAnyVisualStudioInstallation(
+          _missingStatusResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['isRebootRequired'] = true;
-      setMockCompatibleVisualStudioInstallation(
-        response,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+        expect(visualStudio.isInstalled, true);
+      },
+    );
 
-      expect(visualStudio.hasNecessaryComponents, false);
-    });
+    testWithoutContext(
+      'isInstalled returns true when VS is present but missing components',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-    testWithoutContext('VS metadata is available when VS is present, even if missing components', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+        setNoViableToolchainInstallation(fixture);
 
-      setNoViableToolchainInstallation(fixture);
+        setMockAnyVisualStudioInstallation(
+          _defaultResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-      setMockAnyVisualStudioInstallation(
-        _defaultResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+        expect(visualStudio.isInstalled, true);
+      },
+    );
 
-      expect(visualStudio.displayName, equals('Visual Studio Community 2019'));
-      expect(visualStudio.displayVersion, equals('16.2.5'));
-      expect(visualStudio.installLocation, equals(visualStudioPath));
-      expect(visualStudio.fullVersion, equals('16.2.29306.81'));
-    });
+    testWithoutContext(
+      'isInstalled returns true when VS is present but too old',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-    testWithoutContext('Warns and returns no installation when VS is present but vswhere returns invalid JSON', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+        setNoViableToolchainInstallation(fixture);
 
-      setNoViableToolchainInstallation(fixture);
+        setMockAnyVisualStudioInstallation(
+          _tooOldResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-      setMockEncodedAnyVisualStudioInstallation(
-        '{',
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+        expect(visualStudio.isInstalled, true);
+      },
+    );
 
-      expect(visualStudio.isInstalled, isFalse);
-      expect(visualStudio.isComplete, isFalse);
-      expect(visualStudio.isLaunchable, isFalse);
-      expect(visualStudio.isPrerelease, isFalse);
-      expect(visualStudio.isRebootRequired, isFalse);
-      expect(visualStudio.hasNecessaryComponents, isFalse);
-      expect(visualStudio.displayName, isNull);
-      expect(visualStudio.displayVersion, isNull);
-      expect(visualStudio.installLocation, isNull);
-      expect(visualStudio.fullVersion, isNull);
-      expect(visualStudio.cmakePath, isNull);
+    testWithoutContext(
+      'isInstalled returns true when a prerelease version of VS is present',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-      expect(fixture.logger.warningText, contains('Warning: Unexpected vswhere.exe JSON output'));
-    });
+        final Map<String, dynamic> response =
+            Map<String, dynamic>.of(_defaultResponse)..['isPrerelease'] = true;
+        setMockCompatibleVisualStudioInstallation(
+          null,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+        setMockCompatibleVisualStudioBuildToolsInstallation(
+          null,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+        setMockPrereleaseVisualStudioInstallation(
+          response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-    testWithoutContext('Everything returns good values when VS is present with all components', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isPrerelease, true);
+      },
+    );
 
-      setMockCompatibleVisualStudioInstallation(
-        _defaultResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+    testWithoutContext(
+      'isInstalled returns true when a prerelease version of Build Tools is present',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isAtLeastMinimumVersion, true);
-      expect(visualStudio.hasNecessaryComponents, true);
-      expect(visualStudio.cmakePath, equals(cmakePath));
-      expect(visualStudio.cmakeGenerator, equals('Visual Studio 16 2019'));
-    });
+        final Map<String, dynamic> response = Map<String, dynamic>.of(
+          _defaultBuildToolsResponse,
+        )..['isPrerelease'] = true;
+        setMockCompatibleVisualStudioInstallation(
+          null,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+        setMockCompatibleVisualStudioBuildToolsInstallation(
+          null,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+        setMockPrereleaseVisualStudioInstallation(
+          null,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+        setMockPrereleaseVisualStudioBuildToolsInstallation(
+          response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-    testWithoutContext('Everything returns good values when Build Tools is present with all components', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isPrerelease, true);
+      },
+    );
 
-      setMockCompatibleVisualStudioInstallation(
-        null,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-      setMockCompatibleVisualStudioBuildToolsInstallation(
-        _defaultBuildToolsResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+    testWithoutContext(
+      'isAtLeastMinimumVersion returns false when the version found is too old',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isAtLeastMinimumVersion, true);
-      expect(visualStudio.hasNecessaryComponents, true);
-      expect(visualStudio.cmakePath, equals(cmakePath));
-    });
+        setNoViableToolchainInstallation(fixture);
 
-    testWithoutContext('properties return the right value for Visual Studio 2022', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+        setMockAnyVisualStudioInstallation(
+          _tooOldResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-      setMockCompatibleVisualStudioInstallation(
-        _vs2022Response,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isAtLeastMinimumVersion, false);
+      },
+    );
 
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isAtLeastMinimumVersion, true);
-      expect(visualStudio.hasNecessaryComponents, true);
-      expect(visualStudio.cmakePath, equals(cmakePath));
-      expect(visualStudio.cmakeGenerator, equals('Visual Studio 17 2022'));
-    });
+    testWithoutContext(
+      'isComplete returns false when an incomplete installation is found',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-    testWithoutContext('Metadata is for compatible version when latest is missing components', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+        setNoViableToolchainInstallation(fixture);
 
-      // Return a different version for queries without the required packages.
-      final Map<String, dynamic> olderButCompleteVersionResponse = <String, dynamic>{
-        'installationPath': visualStudioPath,
-        'displayName': 'Visual Studio Community 2017',
-        'installationVersion': '15.9.28307.665',
-        'catalog': <String, dynamic>{
-          'productDisplayVersion': '15.9.12',
-        },
-      };
+        final Map<String, dynamic> response =
+            Map<String, dynamic>.of(_defaultResponse)..['isComplete'] = false;
+        setMockAnyVisualStudioInstallation(
+          response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-      setMockCompatibleVisualStudioInstallation(
-        olderButCompleteVersionResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
-      // Return a different version for queries without the required packages.
-      final Map<String, dynamic> incompleteVersionResponse = <String, dynamic>{
-        'installationPath': visualStudioPath,
-        'displayName': 'Visual Studio Community 2019',
-        'installationVersion': '16.1.1.1',
-        'catalog': <String, String>{
-          'productDisplayVersion': '16.1',
-        },
-      };
-      setMockAnyVisualStudioInstallation(
-        incompleteVersionResponse,
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isComplete, false);
+      },
+    );
 
-      expect(visualStudio.displayName, equals('Visual Studio Community 2017'));
-      expect(visualStudio.displayVersion, equals('15.9.12'));
-    });
+    testWithoutContext(
+      "isLaunchable returns false if the installation can't be launched",
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-    testWithoutContext('SDK version returns the latest version when present', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+        setNoViableToolchainInstallation(fixture);
 
-      setMockSdkRegResponse(
-        fixture.fileSystem,
-        fixture.processManager,
-      );
+        final Map<String, dynamic> response =
+            Map<String, dynamic>.of(_defaultResponse)..['isLaunchable'] = false;
+        setMockAnyVisualStudioInstallation(
+          response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-      expect(visualStudio.getWindows10SDKVersion(), '10.0.18362.0');
-    });
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isLaunchable, false);
+      },
+    );
 
-    testWithoutContext('SDK version returns null when the registry key is not present', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+    testWithoutContext(
+      'isRebootRequired returns true if the installation needs a reboot',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-      setMockSdkRegResponse(
-        fixture.fileSystem,
-        fixture.processManager,
-        registryPresent: false,
-      );
+        setNoViableToolchainInstallation(fixture);
 
-      expect(visualStudio.getWindows10SDKVersion(), null);
-    });
+        final Map<String, dynamic> response = Map<String, dynamic>.of(
+          _defaultResponse,
+        )..['isRebootRequired'] = true;
+        setMockAnyVisualStudioInstallation(
+          response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-    testWithoutContext('SDK version returns null when there are no SDK files present', () {
-      final VisualStudioFixture fixture = setUpVisualStudio();
-      final VisualStudio visualStudio = fixture.visualStudio;
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isRebootRequired, true);
+      },
+    );
 
-      setMockSdkRegResponse(
-        fixture.fileSystem,
-        fixture.processManager,
-        filesPresent: false,
-      );
+    testWithoutContext(
+      'hasNecessaryComponents returns false when VS is present but missing components',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
 
-      expect(visualStudio.getWindows10SDKVersion(), null);
-    });
+        setNoViableToolchainInstallation(fixture);
+
+        setMockAnyVisualStudioInstallation(
+          _defaultResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(visualStudio.hasNecessaryComponents, false);
+      },
+    );
+
+    testWithoutContext(
+      'cmakePath returns null when VS is present but missing components',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        setNoViableToolchainInstallation(fixture);
+
+        setMockAnyVisualStudioInstallation(
+          _defaultResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(visualStudio.cmakePath, isNull);
+      },
+    );
+
+    testWithoutContext(
+      'cmakePath returns null when VS is present but with require components but installation is faulty',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        final Map<String, dynamic> response = Map<String, dynamic>.of(
+          _defaultResponse,
+        )..['isRebootRequired'] = true;
+        setMockCompatibleVisualStudioInstallation(
+          response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(visualStudio.cmakePath, isNull);
+      },
+    );
+
+    testWithoutContext(
+      'hasNecessaryComponents returns false when VS is present with required components but installation is faulty',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        final Map<String, dynamic> response = Map<String, dynamic>.of(
+          _defaultResponse,
+        )..['isRebootRequired'] = true;
+        setMockCompatibleVisualStudioInstallation(
+          response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(visualStudio.hasNecessaryComponents, false);
+      },
+    );
+
+    testWithoutContext(
+      'VS metadata is available when VS is present, even if missing components',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        setNoViableToolchainInstallation(fixture);
+
+        setMockAnyVisualStudioInstallation(
+          _defaultResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(
+          visualStudio.displayName,
+          equals('Visual Studio Community 2019'),
+        );
+        expect(visualStudio.displayVersion, equals('16.2.5'));
+        expect(visualStudio.installLocation, equals(visualStudioPath));
+        expect(visualStudio.fullVersion, equals('16.2.29306.81'));
+      },
+    );
+
+    testWithoutContext(
+      'Warns and returns no installation when VS is present but vswhere returns invalid JSON',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        setNoViableToolchainInstallation(fixture);
+
+        setMockEncodedAnyVisualStudioInstallation(
+          '{',
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(visualStudio.isInstalled, isFalse);
+        expect(visualStudio.isComplete, isFalse);
+        expect(visualStudio.isLaunchable, isFalse);
+        expect(visualStudio.isPrerelease, isFalse);
+        expect(visualStudio.isRebootRequired, isFalse);
+        expect(visualStudio.hasNecessaryComponents, isFalse);
+        expect(visualStudio.displayName, isNull);
+        expect(visualStudio.displayVersion, isNull);
+        expect(visualStudio.installLocation, isNull);
+        expect(visualStudio.fullVersion, isNull);
+        expect(visualStudio.cmakePath, isNull);
+
+        expect(
+          fixture.logger.warningText,
+          contains('Warning: Unexpected vswhere.exe JSON output'),
+        );
+      },
+    );
+
+    testWithoutContext(
+      'Everything returns good values when VS is present with all components',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        setMockCompatibleVisualStudioInstallation(
+          _defaultResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isAtLeastMinimumVersion, true);
+        expect(visualStudio.hasNecessaryComponents, true);
+        expect(visualStudio.cmakePath, equals(cmakePath));
+        expect(visualStudio.cmakeGenerator, equals('Visual Studio 16 2019'));
+      },
+    );
+
+    testWithoutContext(
+      'Everything returns good values when Build Tools is present with all components',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        setMockCompatibleVisualStudioInstallation(
+          null,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+        setMockCompatibleVisualStudioBuildToolsInstallation(
+          _defaultBuildToolsResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isAtLeastMinimumVersion, true);
+        expect(visualStudio.hasNecessaryComponents, true);
+        expect(visualStudio.cmakePath, equals(cmakePath));
+      },
+    );
+
+    testWithoutContext(
+      'properties return the right value for Visual Studio 2022',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        setMockCompatibleVisualStudioInstallation(
+          _vs2022Response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isAtLeastMinimumVersion, true);
+        expect(visualStudio.hasNecessaryComponents, true);
+        expect(visualStudio.cmakePath, equals(cmakePath));
+        expect(visualStudio.cmakeGenerator, equals('Visual Studio 17 2022'));
+      },
+    );
+
+    testWithoutContext(
+      'Metadata is for compatible version when latest is missing components',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        // Return a different version for queries without the required packages.
+        final Map<String, dynamic> olderButCompleteVersionResponse =
+            <String, dynamic>{
+          'installationPath': visualStudioPath,
+          'displayName': 'Visual Studio Community 2017',
+          'installationVersion': '15.9.28307.665',
+          'catalog': <String, dynamic>{'productDisplayVersion': '15.9.12'},
+        };
+
+        setMockCompatibleVisualStudioInstallation(
+          olderButCompleteVersionResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+        // Return a different version for queries without the required packages.
+        final Map<String, dynamic> incompleteVersionResponse =
+            <String, dynamic>{
+          'installationPath': visualStudioPath,
+          'displayName': 'Visual Studio Community 2019',
+          'installationVersion': '16.1.1.1',
+          'catalog': <String, String>{'productDisplayVersion': '16.1'},
+        };
+        setMockAnyVisualStudioInstallation(
+          incompleteVersionResponse,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(
+          visualStudio.displayName,
+          equals('Visual Studio Community 2017'),
+        );
+        expect(visualStudio.displayVersion, equals('15.9.12'));
+      },
+    );
+
+    testWithoutContext(
+      'SDK version returns the latest version when present',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        setMockSdkRegResponse(fixture.fileSystem, fixture.processManager);
+
+        expect(visualStudio.getWindows10SDKVersion(), '10.0.18362.0');
+      },
+    );
+
+    testWithoutContext(
+      'SDK version returns null when the registry key is not present',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        setMockSdkRegResponse(
+          fixture.fileSystem,
+          fixture.processManager,
+          registryPresent: false,
+        );
+
+        expect(visualStudio.getWindows10SDKVersion(), null);
+      },
+    );
+
+    testWithoutContext(
+      'SDK version returns null when there are no SDK files present',
+      () {
+        final VisualStudioFixture fixture = setUpVisualStudio();
+        final VisualStudio visualStudio = fixture.visualStudio;
+
+        setMockSdkRegResponse(
+          fixture.fileSystem,
+          fixture.processManager,
+          filesPresent: false,
+        );
+
+        expect(visualStudio.getWindows10SDKVersion(), null);
+      },
+    );
   });
 
   // The output of vswhere.exe is known to contain bad UTF8.
@@ -904,9 +1027,68 @@ void main() {
       visualStudio = fixture.visualStudio;
     });
 
-    testWithoutContext('Ignores unicode replacement char in unused properties', () {
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['unused'] = 'Bad UTF8 \u{FFFD}';
+    testWithoutContext(
+      'Ignores unicode replacement char in unused properties',
+      () {
+        final Map<String, dynamic> response = Map<String, dynamic>.of(
+          _defaultResponse,
+        )..['unused'] = 'Bad UTF8 \u{FFFD}';
+
+        setMockCompatibleVisualStudioInstallation(
+          response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isAtLeastMinimumVersion, true);
+        expect(visualStudio.hasNecessaryComponents, true);
+        expect(visualStudio.cmakePath, equals(cmakePath));
+        expect(visualStudio.cmakeGenerator, equals('Visual Studio 16 2019'));
+      },
+    );
+
+    testWithoutContext('Throws ToolExit on bad UTF-8 in installationPath', () {
+      final Map<String, dynamic> response = Map<String, dynamic>.of(
+        _defaultResponse,
+      )..['installationPath'] = '\u{FFFD}';
+
+      setMockCompatibleVisualStudioInstallation(
+        response,
+        fixture.fileSystem,
+        fixture.processManager,
+      );
+
+      expect(() => visualStudio.isInstalled, throwsToolExit(
+        message:
+            'Bad UTF-8 encoding (U+FFFD; REPLACEMENT CHARACTER) found in string',
+      ));
+    });
+
+    testWithoutContext(
+      'Throws ToolExit on bad UTF-8 in installationVersion',
+      () {
+        final Map<String, dynamic> response = Map<String, dynamic>.of(
+          _defaultResponse,
+        )..['installationVersion'] = '\u{FFFD}';
+
+        setMockCompatibleVisualStudioInstallation(
+          response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
+
+        expect(() => visualStudio.isInstalled, throwsToolExit(
+          message:
+              'Bad UTF-8 encoding (U+FFFD; REPLACEMENT CHARACTER) found in string',
+        ));
+      },
+    );
+
+    testWithoutContext('Ignores bad UTF-8 in displayName', () {
+      final Map<String, dynamic> response = Map<String, dynamic>.of(
+        _defaultResponse,
+      )..['displayName'] = '\u{FFFD}';
 
       setMockCompatibleVisualStudioInstallation(
         response,
@@ -919,57 +1101,32 @@ void main() {
       expect(visualStudio.hasNecessaryComponents, true);
       expect(visualStudio.cmakePath, equals(cmakePath));
       expect(visualStudio.cmakeGenerator, equals('Visual Studio 16 2019'));
-    });
-
-    testWithoutContext('Throws ToolExit on bad UTF-8 in installationPath', () {
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['installationPath'] = '\u{FFFD}';
-
-      setMockCompatibleVisualStudioInstallation(response, fixture.fileSystem, fixture.processManager);
-
-      expect(() => visualStudio.isInstalled,
-          throwsToolExit(message: 'Bad UTF-8 encoding (U+FFFD; REPLACEMENT CHARACTER) found in string'));
-    });
-
-    testWithoutContext('Throws ToolExit on bad UTF-8 in installationVersion', () {
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['installationVersion'] = '\u{FFFD}';
-
-      setMockCompatibleVisualStudioInstallation(response, fixture.fileSystem, fixture.processManager);
-
-      expect(() => visualStudio.isInstalled,
-          throwsToolExit(message: 'Bad UTF-8 encoding (U+FFFD; REPLACEMENT CHARACTER) found in string'));
-    });
-
-    testWithoutContext('Ignores bad UTF-8 in displayName', () {
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['displayName'] = '\u{FFFD}';
-
-      setMockCompatibleVisualStudioInstallation(response, fixture.fileSystem, fixture.processManager);
-
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isAtLeastMinimumVersion, true);
-      expect(visualStudio.hasNecessaryComponents, true);
-      expect(visualStudio.cmakePath, equals(cmakePath));
-      expect(visualStudio.cmakeGenerator, equals('Visual Studio 16 2019'));
       expect(visualStudio.displayName, equals('\u{FFFD}'));
     });
 
-    testWithoutContext("Ignores bad UTF-8 in catalog's productDisplayVersion", () {
-      final Map<String, dynamic> catalog = Map<String, dynamic>.of(_defaultResponse['catalog'] as Map<String, dynamic>)
-        ..['productDisplayVersion'] = '\u{FFFD}';
-      final Map<String, dynamic> response = Map<String, dynamic>.of(_defaultResponse)
-        ..['catalog'] = catalog;
+    testWithoutContext(
+      "Ignores bad UTF-8 in catalog's productDisplayVersion",
+      () {
+        final Map<String, dynamic> catalog = Map<String, dynamic>.of(
+          _defaultResponse['catalog'] as Map<String, dynamic>,
+        )..['productDisplayVersion'] = '\u{FFFD}';
+        final Map<String, dynamic> response =
+            Map<String, dynamic>.of(_defaultResponse)..['catalog'] = catalog;
 
-      setMockCompatibleVisualStudioInstallation(response, fixture.fileSystem, fixture.processManager);
+        setMockCompatibleVisualStudioInstallation(
+          response,
+          fixture.fileSystem,
+          fixture.processManager,
+        );
 
-      expect(visualStudio.isInstalled, true);
-      expect(visualStudio.isAtLeastMinimumVersion, true);
-      expect(visualStudio.hasNecessaryComponents, true);
-      expect(visualStudio.cmakePath, equals(cmakePath));
-      expect(visualStudio.cmakeGenerator, equals('Visual Studio 16 2019'));
-      expect(visualStudio.displayVersion, equals('\u{FFFD}'));
-    });
+        expect(visualStudio.isInstalled, true);
+        expect(visualStudio.isAtLeastMinimumVersion, true);
+        expect(visualStudio.hasNecessaryComponents, true);
+        expect(visualStudio.cmakePath, equals(cmakePath));
+        expect(visualStudio.cmakeGenerator, equals('Visual Studio 16 2019'));
+        expect(visualStudio.displayVersion, equals('\u{FFFD}'));
+      },
+    );
 
     testWithoutContext('Ignores malformed JSON in description property', () {
       setMockVswhereResponse(
@@ -993,100 +1150,125 @@ void main() {
   });
 
   group(VswhereDetails, () {
-      test('Accepts empty JSON', () {
-        const bool meetsRequirements = true;
-        final Map<String, dynamic> json = <String, dynamic>{};
+    test('Accepts empty JSON', () {
+      const bool meetsRequirements = true;
+      final Map<String, dynamic> json = <String, dynamic>{};
 
-        final VswhereDetails result = VswhereDetails.fromJson(meetsRequirements, json);
+      final VswhereDetails result = VswhereDetails.fromJson(
+        meetsRequirements,
+        json,
+      );
 
-        expect(result.installationPath, null);
-        expect(result.displayName, null);
-        expect(result.fullVersion, null);
-        expect(result.isComplete, null);
-        expect(result.isLaunchable, null);
-        expect(result.isRebootRequired, null);
-        expect(result.isPrerelease, null);
-        expect(result.catalogDisplayVersion, null);
-        expect(result.isUsable, isTrue);
-      });
+      expect(result.installationPath, null);
+      expect(result.displayName, null);
+      expect(result.fullVersion, null);
+      expect(result.isComplete, null);
+      expect(result.isLaunchable, null);
+      expect(result.isRebootRequired, null);
+      expect(result.isPrerelease, null);
+      expect(result.catalogDisplayVersion, null);
+      expect(result.isUsable, isTrue);
+    });
 
-      test('Ignores unknown JSON properties', () {
-        const bool meetsRequirements = true;
-        final Map<String, dynamic> json = <String, dynamic>{
-          'hello': 'world',
-        };
+    test('Ignores unknown JSON properties', () {
+      const bool meetsRequirements = true;
+      final Map<String, dynamic> json = <String, dynamic>{'hello': 'world'};
 
-        final VswhereDetails result = VswhereDetails.fromJson(meetsRequirements, json);
+      final VswhereDetails result = VswhereDetails.fromJson(
+        meetsRequirements,
+        json,
+      );
 
-        expect(result.installationPath, null);
-        expect(result.displayName, null);
-        expect(result.fullVersion, null);
-        expect(result.isComplete, null);
-        expect(result.isLaunchable, null);
-        expect(result.isRebootRequired, null);
-        expect(result.isPrerelease, null);
-        expect(result.catalogDisplayVersion, null);
-        expect(result.isUsable, isTrue);
-      });
+      expect(result.installationPath, null);
+      expect(result.displayName, null);
+      expect(result.fullVersion, null);
+      expect(result.isComplete, null);
+      expect(result.isLaunchable, null);
+      expect(result.isRebootRequired, null);
+      expect(result.isPrerelease, null);
+      expect(result.catalogDisplayVersion, null);
+      expect(result.isUsable, isTrue);
+    });
 
-      test('Accepts JSON', () {
-        const bool meetsRequirements = true;
+    test('Accepts JSON', () {
+      const bool meetsRequirements = true;
 
-        final VswhereDetails result = VswhereDetails.fromJson(meetsRequirements, _defaultResponse);
+      final VswhereDetails result = VswhereDetails.fromJson(
+        meetsRequirements,
+        _defaultResponse,
+      );
 
-        expect(result.installationPath, visualStudioPath);
-        expect(result.displayName, 'Visual Studio Community 2019');
-        expect(result.fullVersion, '16.2.29306.81');
-        expect(result.isComplete, true);
-        expect(result.isLaunchable, true);
-        expect(result.isRebootRequired, false);
-        expect(result.isPrerelease, false);
-        expect(result.catalogDisplayVersion, '16.2.5');
-        expect(result.isUsable, isTrue);
-      });
+      expect(result.installationPath, visualStudioPath);
+      expect(result.displayName, 'Visual Studio Community 2019');
+      expect(result.fullVersion, '16.2.29306.81');
+      expect(result.isComplete, true);
+      expect(result.isLaunchable, true);
+      expect(result.isRebootRequired, false);
+      expect(result.isPrerelease, false);
+      expect(result.catalogDisplayVersion, '16.2.5');
+      expect(result.isUsable, isTrue);
+    });
 
-      test('Installation that does not satisfy requirements is not usable', () {
-        const bool meetsRequirements = false;
+    test('Installation that does not satisfy requirements is not usable', () {
+      const bool meetsRequirements = false;
 
-        final VswhereDetails result = VswhereDetails.fromJson(meetsRequirements, _defaultResponse);
+      final VswhereDetails result = VswhereDetails.fromJson(
+        meetsRequirements,
+        _defaultResponse,
+      );
 
-        expect(result.isUsable, isFalse);
-      });
+      expect(result.isUsable, isFalse);
+    });
 
-      test('Incomplete installation is not usable', () {
-        const bool meetsRequirements = true;
-        final Map<String, dynamic> json = Map<String, dynamic>.of(_defaultResponse)
-          ..['isComplete'] = false;
+    test('Incomplete installation is not usable', () {
+      const bool meetsRequirements = true;
+      final Map<String, dynamic> json =
+          Map<String, dynamic>.of(_defaultResponse)..['isComplete'] = false;
 
-        final VswhereDetails result = VswhereDetails.fromJson(meetsRequirements, json);
+      final VswhereDetails result = VswhereDetails.fromJson(
+        meetsRequirements,
+        json,
+      );
 
-        expect(result.isUsable, isFalse);
-      });
+      expect(result.isUsable, isFalse);
+    });
 
-      test('Unlaunchable installation is not usable', () {
-        const bool meetsRequirements = true;
-        final Map<String, dynamic> json = Map<String, dynamic>.of(_defaultResponse)
-          ..['isLaunchable'] = false;
+    test('Unlaunchable installation is not usable', () {
+      const bool meetsRequirements = true;
+      final Map<String, dynamic> json =
+          Map<String, dynamic>.of(_defaultResponse)..['isLaunchable'] = false;
 
-        final VswhereDetails result = VswhereDetails.fromJson(meetsRequirements, json);
+      final VswhereDetails result = VswhereDetails.fromJson(
+        meetsRequirements,
+        json,
+      );
 
-        expect(result.isUsable, isFalse);
-      });
+      expect(result.isUsable, isFalse);
+    });
 
-      test('Installation that requires reboot is not usable', () {
-        const bool meetsRequirements = true;
-        final Map<String, dynamic> json = Map<String, dynamic>.of(_defaultResponse)
-          ..['isRebootRequired'] = true;
+    test('Installation that requires reboot is not usable', () {
+      const bool meetsRequirements = true;
+      final Map<String, dynamic> json = Map<String, dynamic>.of(
+        _defaultResponse,
+      )..['isRebootRequired'] = true;
 
-        final VswhereDetails result = VswhereDetails.fromJson(meetsRequirements, json);
+      final VswhereDetails result = VswhereDetails.fromJson(
+        meetsRequirements,
+        json,
+      );
 
-        expect(result.isUsable, isFalse);
-      });
+      expect(result.isUsable, isFalse);
+    });
   });
 }
 
 class VisualStudioFixture {
-  VisualStudioFixture(this.visualStudio, this.fileSystem, this.processManager, this.logger);
+  VisualStudioFixture(
+    this.visualStudio,
+    this.fileSystem,
+    this.processManager,
+    this.logger,
+  );
 
   final VisualStudio visualStudio;
   final FileSystem fileSystem;

@@ -19,11 +19,10 @@ final RegExp _lifecycleSentinelRegExp = RegExp(r'==== lifecycle\: (.+) ====');
 
 /// Tests the following Android lifecycles: Activity#onStop(), Activity#onResume(), Activity#onPause(),
 /// and Activity#onDestroy() from Dart perspective in debug, profile, and release modes.
-TaskFunction androidLifecyclesTest({
-  Map<String, String>? environment,
-}) {
-  final Directory tempDir = Directory.systemTemp
-      .createTempSync('flutter_devicelab_activity_destroy.');
+TaskFunction androidLifecyclesTest({Map<String, String>? environment}) {
+  final Directory tempDir = Directory.systemTemp.createTempSync(
+    'flutter_devicelab_activity_destroy.',
+  );
   return () async {
     try {
       section('Create app');
@@ -41,12 +40,9 @@ TaskFunction androidLifecyclesTest({
         );
       });
 
-      final File mainDart = File(path.join(
-        tempDir.absolute.path,
-        'app',
-        'lib',
-        'main.dart',
-      ));
+      final File mainDart = File(
+        path.join(tempDir.absolute.path, 'app', 'lib', 'main.dart'),
+      );
       if (!mainDart.existsSync()) {
         return TaskResult.failure('${mainDart.path} does not exist');
       }
@@ -70,27 +66,31 @@ void main() {
 ''', flush: true);
 
       Future<TaskResult> runTestFor(String mode) async {
-        final AndroidDevice device = await devices.workingDevice as AndroidDevice;
+        final AndroidDevice device =
+            await devices.workingDevice as AndroidDevice;
         await device.unlock();
 
-        section('Flutter run on device running API level ${device.apiLevel} (mode: $mode)');
+        section(
+          'Flutter run on device running API level ${device.apiLevel} (mode: $mode)',
+        );
 
         late Process run;
         await inDirectory(path.join(tempDir.path, 'app'), () async {
-          run = await startFlutter(
-            'run',
-            options: <String>['--$mode'],
-          );
+          run = await startFlutter('run', options: <String>['--$mode']);
         });
 
         final StreamController<String> lifecyles = StreamController<String>();
-        final StreamIterator<String> lifecycleItr = StreamIterator<String>(lifecyles.stream);
+        final StreamIterator<String> lifecycleItr = StreamIterator<String>(
+          lifecyles.stream,
+        );
 
         final StreamSubscription<void> stdout = run.stdout
-          .transform<String>(utf8.decoder)
-          .transform<String>(const LineSplitter())
-          .listen((String log) {
-            final RegExpMatch? match = _lifecycleSentinelRegExp.firstMatch(log);
+            .transform<String>(utf8.decoder)
+            .transform<String>(const LineSplitter())
+            .listen((String log) {
+              final RegExpMatch? match = _lifecycleSentinelRegExp.firstMatch(
+                log,
+              );
               print('stdout: $log');
               if (match == null) {
                 return;
@@ -98,51 +98,68 @@ void main() {
               final String lifecycle = match[1]!;
               print('stdout: Found app lifecycle: $lifecycle');
               lifecyles.add(lifecycle);
-          });
+            });
 
         final StreamSubscription<void> stderr = run.stderr
-          .transform<String>(utf8.decoder)
-          .transform<String>(const LineSplitter())
-          .listen((String log) {
-            print('stderr: $log');
-          });
+            .transform<String>(utf8.decoder)
+            .transform<String>(const LineSplitter())
+            .listen((String log) {
+              print('stderr: $log');
+            });
 
         Future<void> expectedLifecycle(String expected) async {
           section('Wait for lifecycle: $expected (mode: $mode)');
           await lifecycleItr.moveNext();
           final String got = lifecycleItr.current;
           if (expected != got) {
-            throw TaskResult.failure('expected lifecycles: `$expected`, but got` $got`');
+            throw TaskResult.failure(
+              'expected lifecycles: `$expected`, but got` $got`',
+            );
           }
         }
 
         await expectedLifecycle('AppLifecycleState.resumed');
 
         section('Toggling app switch (mode: $mode)');
-        await device.shellExec('input', <String>['keyevent', 'KEYCODE_APP_SWITCH']);
+        await device
+            .shellExec('input', <String>['keyevent', 'KEYCODE_APP_SWITCH']);
 
         await expectedLifecycle('AppLifecycleState.inactive');
-        if (device.apiLevel == 28) { // Device lab currently runs 28.
+        if (device.apiLevel == 28) {
+          // Device lab currently runs 28.
           await expectedLifecycle('AppLifecycleState.paused');
           await expectedLifecycle('AppLifecycleState.detached');
         }
 
         section('Bring activity to foreground (mode: $mode)');
-        await device.shellExec('am', <String>['start', '-n', '$_kOrgName.app/.MainActivity']);
+        await device.shellExec('am', <String>[
+          'start',
+          '-n',
+          '$_kOrgName.app/.MainActivity',
+        ]);
 
         await expectedLifecycle('AppLifecycleState.resumed');
 
         section('Launch Settings app (mode: $mode)');
-        await device.shellExec('am', <String>['start', '-a', 'android.settings.SETTINGS']);
+        await device.shellExec('am', <String>[
+          'start',
+          '-a',
+          'android.settings.SETTINGS',
+        ]);
 
         await expectedLifecycle('AppLifecycleState.inactive');
-        if (device.apiLevel == 28) { // Device lab currently runs 28.
+        if (device.apiLevel == 28) {
+          // Device lab currently runs 28.
           await expectedLifecycle('AppLifecycleState.paused');
           await expectedLifecycle('AppLifecycleState.detached');
         }
 
         section('Bring activity to foreground (mode: $mode)');
-        await device.shellExec('am', <String>['start', '-n', '$_kOrgName.app/.MainActivity']);
+        await device.shellExec('am', <String>[
+          'start',
+          '-n',
+          '$_kOrgName.app/.MainActivity',
+        ]);
 
         await expectedLifecycle('AppLifecycleState.resumed');
 
@@ -168,7 +185,7 @@ void main() {
       }
 
       final TaskResult releaseResult = await runTestFor('release');
-       if (releaseResult.failed) {
+      if (releaseResult.failed) {
         return releaseResult;
       }
 

@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class DatePickerTemplate extends TokenTemplate {
-  const DatePickerTemplate(super.blockName, super.fileName, super.tokens, {
+  const DatePickerTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   String _layerOpacity(String layerToken) {
@@ -26,14 +29,16 @@ class DatePickerTemplate extends TokenTemplate {
   String _stateColor(String componentToken, String? type, String state) {
     final String baseColor = color(
       type != null
-        ? '$componentToken.$type.$state.state-layer.color'
-        : '$componentToken.$state.state-layer.color',
-      ''
+          ? '$componentToken.$type.$state.state-layer.color'
+          : '$componentToken.$state.state-layer.color',
+      '',
     );
     if (baseColor.isEmpty) {
       return 'null';
     }
-    final String opacity = _layerOpacity('$componentToken.$state.state-layer.opacity');
+    final String opacity = _layerOpacity(
+      '$componentToken.$state.state-layer.opacity',
+    );
     return '$baseColor$opacity';
   }
 
@@ -44,8 +49,12 @@ class _${blockName}DefaultsM3 extends DatePickerThemeData {
     : super(
         elevation: ${elevation("md.comp.date-picker.modal.container")},
         shape: ${shape("md.comp.date-picker.modal.container")},
-        rangePickerElevation: ${elevation("md.comp.date-picker.modal.range-selection.container")},
-        rangePickerShape: ${shape("md.comp.date-picker.modal.range-selection.container")},
+        rangePickerElevation: ${elevation(
+        "md.comp.date-picker.modal.range-selection.container",
+      )},
+        rangePickerShape: ${shape(
+        "md.comp.date-picker.modal.range-selection.container",
+      )},
       );
 
   final BuildContext context;
@@ -54,52 +63,80 @@ class _${blockName}DefaultsM3 extends DatePickerThemeData {
   late final TextTheme _textTheme = _theme.textTheme;
 
   @override
-  Color? get backgroundColor => ${componentColor("md.comp.date-picker.modal.container")};
+  Color? get backgroundColor => ${componentColor(
+        "md.comp.date-picker.modal.container",
+      )};
 
   @override
-  Color? get shadowColor => ${colorOrTransparent("md.comp.date-picker.modal.container.shadow-color")};
+  Color? get shadowColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.container.shadow-color",
+      )};
 
   @override
-  Color? get surfaceTintColor => ${colorOrTransparent("md.comp.date-picker.modal.container.surface-tint-layer.color")};
+  Color? get surfaceTintColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.container.surface-tint-layer.color",
+      )};
 
   @override
-  Color? get headerBackgroundColor => ${colorOrTransparent("md.comp.date-picker.modal.header.container.color")};
+  Color? get headerBackgroundColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.header.container.color",
+      )};
 
   @override
-  Color? get headerForegroundColor => ${colorOrTransparent("md.comp.date-picker.modal.header.headline.color")};
+  Color? get headerForegroundColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.header.headline.color",
+      )};
 
   @override
-  TextStyle? get headerHeadlineStyle => ${textStyle("md.comp.date-picker.modal.header.headline")};
+  TextStyle? get headerHeadlineStyle => ${textStyle(
+        "md.comp.date-picker.modal.header.headline",
+      )};
 
   @override
-  TextStyle? get headerHelpStyle => ${textStyle("md.comp.date-picker.modal.header.supporting-text")};
+  TextStyle? get headerHelpStyle => ${textStyle(
+        "md.comp.date-picker.modal.header.supporting-text",
+      )};
 
   @override
-  TextStyle? get weekdayStyle => ${textStyle("md.comp.date-picker.modal.weekdays.label-text")}?.apply(
+  TextStyle? get weekdayStyle => ${textStyle(
+        "md.comp.date-picker.modal.weekdays.label-text",
+      )}?.apply(
     color: ${componentColor("md.comp.date-picker.modal.weekdays.label-text")},
   );
 
   @override
-  TextStyle? get dayStyle => ${textStyle("md.comp.date-picker.modal.date.label-text")};
+  TextStyle? get dayStyle => ${textStyle(
+        "md.comp.date-picker.modal.date.label-text",
+      )};
 
   @override
   MaterialStateProperty<Color?>? get dayForegroundColor =>
     MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
-        return ${componentColor('md.comp.date-picker.modal.date.selected.label-text')};
+        return ${componentColor(
+        'md.comp.date-picker.modal.date.selected.label-text',
+      )};
       } else if (states.contains(MaterialState.disabled)) {
-        return ${componentColor('md.comp.date-picker.modal.date.unselected.label-text')}.withOpacity(0.38);
+        return ${componentColor(
+        'md.comp.date-picker.modal.date.unselected.label-text',
+      )}.withOpacity(0.38);
       }
-      return ${componentColor('md.comp.date-picker.modal.date.unselected.label-text')};
+      return ${componentColor(
+        'md.comp.date-picker.modal.date.unselected.label-text',
+      )};
     });
 
   @override
   MaterialStateProperty<Color?>? get dayBackgroundColor =>
     MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
-        return ${componentColor('md.comp.date-picker.modal.date.selected.container')};
+        return ${componentColor(
+        'md.comp.date-picker.modal.date.selected.container',
+      )};
       }
-      return ${componentColor('md.comp.date-picker.modal.date.unselected.container')};
+      return ${componentColor(
+        'md.comp.date-picker.modal.date.unselected.container',
+      )};
     });
 
   @override
@@ -107,23 +144,47 @@ class _${blockName}DefaultsM3 extends DatePickerThemeData {
     MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
         if (states.contains(MaterialState.pressed)) {
-          return ${_stateColor('md.comp.date-picker.modal.date', 'selected', 'pressed')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.date',
+        'selected',
+        'pressed',
+      )};
         }
         if (states.contains(MaterialState.hovered)) {
-          return ${_stateColor('md.comp.date-picker.modal.date', 'selected', 'hover')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.date',
+        'selected',
+        'hover',
+      )};
         }
         if (states.contains(MaterialState.focused)) {
-          return ${_stateColor('md.comp.date-picker.modal.date', 'selected', 'focus')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.date',
+        'selected',
+        'focus',
+      )};
         }
       } else {
         if (states.contains(MaterialState.pressed)) {
-          return ${_stateColor('md.comp.date-picker.modal.date', 'unselected', 'pressed')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.date',
+        'unselected',
+        'pressed',
+      )};
         }
         if (states.contains(MaterialState.hovered)) {
-          return ${_stateColor('md.comp.date-picker.modal.date', 'unselected', 'hover')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.date',
+        'unselected',
+        'hover',
+      )};
         }
         if (states.contains(MaterialState.focused)) {
-          return ${_stateColor('md.comp.date-picker.modal.date', 'unselected', 'focus')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.date',
+        'unselected',
+        'focus',
+      )};
         }
       }
       return null;
@@ -133,40 +194,60 @@ class _${blockName}DefaultsM3 extends DatePickerThemeData {
   MaterialStateProperty<Color?>? get todayForegroundColor =>
     MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
-        return ${componentColor('md.comp.date-picker.modal.date.selected.label-text')};
+        return ${componentColor(
+        'md.comp.date-picker.modal.date.selected.label-text',
+      )};
       } else if (states.contains(MaterialState.disabled)) {
-        return ${componentColor('md.comp.date-picker.modal.date.today.label-text')}.withOpacity(0.38);
+        return ${componentColor(
+        'md.comp.date-picker.modal.date.today.label-text',
+      )}.withOpacity(0.38);
       }
-      return ${componentColor('md.comp.date-picker.modal.date.today.label-text')};
+      return ${componentColor(
+        'md.comp.date-picker.modal.date.today.label-text',
+      )};
     });
 
   @override
   MaterialStateProperty<Color?>? get todayBackgroundColor => dayBackgroundColor;
 
   @override
-  BorderSide? get todayBorder => ${border('md.comp.date-picker.modal.date.today.container.outline')};
+  BorderSide? get todayBorder => ${border(
+        'md.comp.date-picker.modal.date.today.container.outline',
+      )};
 
   @override
-  TextStyle? get yearStyle => ${textStyle("md.comp.date-picker.modal.year-selection.year.label-text")};
+  TextStyle? get yearStyle => ${textStyle(
+        "md.comp.date-picker.modal.year-selection.year.label-text",
+      )};
 
   @override
   MaterialStateProperty<Color?>? get yearForegroundColor =>
     MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
-        return ${componentColor('md.comp.date-picker.modal.year-selection.year.selected.label-text')};
+        return ${componentColor(
+        'md.comp.date-picker.modal.year-selection.year.selected.label-text',
+      )};
       } else if (states.contains(MaterialState.disabled)) {
-        return ${componentColor('md.comp.date-picker.modal.year-selection.year.unselected.label-text')}.withOpacity(0.38);
+        return ${componentColor(
+        'md.comp.date-picker.modal.year-selection.year.unselected.label-text',
+      )}.withOpacity(0.38);
       }
-      return ${componentColor('md.comp.date-picker.modal.year-selection.year.unselected.label-text')};
+      return ${componentColor(
+        'md.comp.date-picker.modal.year-selection.year.unselected.label-text',
+      )};
     });
 
   @override
   MaterialStateProperty<Color?>? get yearBackgroundColor =>
     MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
-        return ${componentColor('md.comp.date-picker.modal.year-selection.year.selected.container')};
+        return ${componentColor(
+        'md.comp.date-picker.modal.year-selection.year.selected.container',
+      )};
       }
-      return ${componentColor('md.comp.date-picker.modal.year-selection.year.unselected.container')};
+      return ${componentColor(
+        'md.comp.date-picker.modal.year-selection.year.unselected.container',
+      )};
     });
 
   @override
@@ -174,63 +255,113 @@ class _${blockName}DefaultsM3 extends DatePickerThemeData {
     MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
         if (states.contains(MaterialState.pressed)) {
-          return ${_stateColor('md.comp.date-picker.modal.year-selection.year', 'selected', 'pressed')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.year-selection.year',
+        'selected',
+        'pressed',
+      )};
         }
         if (states.contains(MaterialState.hovered)) {
-          return ${_stateColor('md.comp.date-picker.modal.year-selection.year', 'selected', 'hover')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.year-selection.year',
+        'selected',
+        'hover',
+      )};
         }
         if (states.contains(MaterialState.focused)) {
-          return ${_stateColor('md.comp.date-picker.modal.year-selection.year', 'selected', 'focus')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.year-selection.year',
+        'selected',
+        'focus',
+      )};
         }
       } else {
         if (states.contains(MaterialState.pressed)) {
-          return ${_stateColor('md.comp.date-picker.modal.year-selection.year', 'unselected', 'pressed')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.year-selection.year',
+        'unselected',
+        'pressed',
+      )};
         }
         if (states.contains(MaterialState.hovered)) {
-          return ${_stateColor('md.comp.date-picker.modal.year-selection.year', 'unselected', 'hover')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.year-selection.year',
+        'unselected',
+        'hover',
+      )};
         }
         if (states.contains(MaterialState.focused)) {
-          return ${_stateColor('md.comp.date-picker.modal.year-selection.year', 'unselected', 'focus')};
+          return ${_stateColor(
+        'md.comp.date-picker.modal.year-selection.year',
+        'unselected',
+        'focus',
+      )};
         }
       }
       return null;
     });
 
     @override
-    Color? get rangePickerShadowColor => ${colorOrTransparent("md.comp.date-picker.modal.range-selection.container.shadow-color")};
+    Color? get rangePickerShadowColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.range-selection.container.shadow-color",
+      )};
 
     @override
-    Color? get rangePickerSurfaceTintColor => ${colorOrTransparent("md.comp.date-picker.modal.range-selection.container.surface-tint-layer.color")};
+    Color? get rangePickerSurfaceTintColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.range-selection.container.surface-tint-layer.color",
+      )};
 
     @override
-    Color? get rangeSelectionBackgroundColor => ${colorOrTransparent("md.comp.date-picker.modal.range-selection.active-indicator.container.color")};
+    Color? get rangeSelectionBackgroundColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.range-selection.active-indicator.container.color",
+      )};
 
   @override
   MaterialStateProperty<Color?>? get rangeSelectionOverlayColor =>
     MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.pressed)) {
-        return ${_stateColor('md.comp.date-picker.modal.range-selection.date.in-range', null, 'pressed')};
+        return ${_stateColor(
+        'md.comp.date-picker.modal.range-selection.date.in-range',
+        null,
+        'pressed',
+      )};
       }
       if (states.contains(MaterialState.hovered)) {
-        return ${_stateColor('md.comp.date-picker.modal.range-selection.date.in-range', null, 'hover')};
+        return ${_stateColor(
+        'md.comp.date-picker.modal.range-selection.date.in-range',
+        null,
+        'hover',
+      )};
       }
       if (states.contains(MaterialState.focused)) {
-        return ${_stateColor('md.comp.date-picker.modal.range-selection.date.in-range', null, 'focus')};
+        return ${_stateColor(
+        'md.comp.date-picker.modal.range-selection.date.in-range',
+        null,
+        'focus',
+      )};
       }
       return null;
     });
 
   @override
-  Color? get rangePickerHeaderBackgroundColor => ${colorOrTransparent("md.comp.date-picker.modal.header.container.color")};
+  Color? get rangePickerHeaderBackgroundColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.header.container.color",
+      )};
 
   @override
-  Color? get rangePickerHeaderForegroundColor => ${colorOrTransparent("md.comp.date-picker.modal.header.headline.color")};
+  Color? get rangePickerHeaderForegroundColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.header.headline.color",
+      )};
 
   @override
-  TextStyle? get rangePickerHeaderHeadlineStyle => ${textStyle("md.comp.date-picker.modal.range-selection.header.headline")};
+  TextStyle? get rangePickerHeaderHeadlineStyle => ${textStyle(
+        "md.comp.date-picker.modal.range-selection.header.headline",
+      )};
 
   @override
-  TextStyle? get rangePickerHeaderHelpStyle => ${textStyle("md.comp.date-picker.modal.range-selection.month.subhead")};
+  TextStyle? get rangePickerHeaderHelpStyle => ${textStyle(
+        "md.comp.date-picker.modal.range-selection.month.subhead",
+      )};
 
 
 }

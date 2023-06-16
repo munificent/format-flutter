@@ -61,8 +61,9 @@ class WebMemoryFS {
         codeStart,
         codeEnd - codeStart,
       );
-      final String fileName =
-          filePath.startsWith('/') ? filePath.substring(1) : filePath;
+      final String fileName = filePath.startsWith('/')
+          ? filePath.substring(1)
+          : filePath;
       files[fileName] = byteView;
 
       final int sourcemapStart = sourcemapOffsets[0];
@@ -95,8 +96,8 @@ class WebMemoryFS {
     }
 
     _mergedMetadata = metadataFiles.values
-      .map((Uint8List encoded) => utf8.decode(encoded))
-      .join('\n');
+        .map((Uint8List encoded) => utf8.decode(encoded))
+        .join('\n');
 
     return modules;
   }

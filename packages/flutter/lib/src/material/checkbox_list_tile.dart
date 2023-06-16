@@ -342,7 +342,6 @@ class CheckboxListTile extends StatelessWidget {
   /// {@macro flutter.material.themedata.visualDensity}
   final VisualDensity? visualDensity;
 
-
   /// {@macro flutter.widgets.Focus.focusNode}
   final FocusNode? focusNode;
 
@@ -487,7 +486,8 @@ class CheckboxListTile extends StatelessWidget {
           hoverColor: hoverColor,
           overlayColor: overlayColor,
           splashRadius: splashRadius,
-          materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap,
+          materialTapTargetSize:
+              materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap,
           autofocus: autofocus,
           tristate: tristate,
           shape: checkboxShape,
@@ -506,7 +506,8 @@ class CheckboxListTile extends StatelessWidget {
           hoverColor: hoverColor,
           overlayColor: overlayColor,
           splashRadius: splashRadius,
-          materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap,
+          materialTapTargetSize:
+              materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap,
           autofocus: autofocus,
           tristate: tristate,
           shape: checkboxShape,
@@ -531,9 +532,9 @@ class CheckboxListTile extends StatelessWidget {
     final Set<MaterialState> states = <MaterialState>{
       if (selected) MaterialState.selected,
     };
-    final Color effectiveActiveColor = activeColor
-      ?? checkboxTheme.fillColor?.resolve(states)
-      ?? theme.colorScheme.secondary;
+    final Color effectiveActiveColor = activeColor ??
+        checkboxTheme.fillColor?.resolve(states) ??
+        theme.colorScheme.secondary;
     return MergeSemantics(
       child: ListTile(
         selectedColor: effectiveActiveColor,

@@ -33,43 +33,52 @@ void main() {
     await flutter.hotReload();
   });
 
-  testWithoutContext('multiple overlapping hot reload are debounced and queued', () async {
-    await flutter.run();
-    // Capture how many *real* hot reloads occur.
-    int numReloads = 0;
-    final StreamSubscription<void> subscription = flutter.stdout
-        .map(parseFlutterResponse)
-        .where(_isHotReloadCompletionEvent)
-        .listen((_) => numReloads++);
+  testWithoutContext(
+    'multiple overlapping hot reload are debounced and queued',
+    () async {
+      await flutter.run();
+      // Capture how many *real* hot reloads occur.
+      int numReloads = 0;
+      final StreamSubscription<void> subscription = flutter.stdout
+          .map(parseFlutterResponse)
+          .where(_isHotReloadCompletionEvent)
+          .listen((_) => numReloads++);
 
-    // To reduce tests flaking, override the debounce timer to something higher than
-    // the default to ensure the hot reloads that are supposed to arrive within the
-    // debounce period will even on slower CI machines.
-    const int hotReloadDebounceOverrideMs = 250;
-    const Duration delay = Duration(milliseconds: hotReloadDebounceOverrideMs * 2);
+      // To reduce tests flaking, override the debounce timer to something higher than
+      // the default to ensure the hot reloads that are supposed to arrive within the
+      // debounce period will even on slower CI machines.
+      const int hotReloadDebounceOverrideMs = 250;
+      const Duration delay = Duration(
+        milliseconds: hotReloadDebounceOverrideMs * 2,
+      );
 
-    Future<void> doReload([void _]) =>
-        flutter.hotReload(debounce: true, debounceDurationOverrideMs: hotReloadDebounceOverrideMs);
+      Future<void> doReload([void _]) => flutter.hotReload(
+        debounce: true,
+        debounceDurationOverrideMs: hotReloadDebounceOverrideMs,
+      );
 
-    try {
-      await Future.wait<void>(<Future<void>>[
-        doReload(),
-        doReload(),
-        Future<void>.delayed(delay).then(doReload),
-        Future<void>.delayed(delay).then(doReload),
-      ]);
+      try {
+        await Future.wait<void>(<Future<void>>[
+          doReload(),
+          doReload(),
+          Future<void>.delayed(delay).then(doReload),
+          Future<void>.delayed(delay).then(doReload),
+        ]);
 
-      // We should only get two reloads, as the first two will have been
-      // merged together by the debounce, and the second two also.
-      expect(numReloads, equals(2));
-    } finally {
-      await subscription.cancel();
-    }
-  });
+        // We should only get two reloads, as the first two will have been
+        // merged together by the debounce, and the second two also.
+        expect(numReloads, equals(2));
+      } finally {
+        await subscription.cancel();
+      }
+    },
+  );
 
   testWithoutContext('newly added code executes during hot reload', () async {
     final StringBuffer stdout = StringBuffer();
-    final StreamSubscription<String> subscription = flutter.stdout.listen(stdout.writeln);
+    final StreamSubscription<String> subscription = flutter.stdout.listen(
+      stdout.writeln,
+    );
     await flutter.run();
     project.uncommentHotReloadPrint();
     try {
@@ -95,21 +104,26 @@ void main() {
           expect(sawTick1.isCompleted, isFalse);
           sawTick1.complete();
         }
-        if (line.contains('The application is paused in the debugger on a breakpoint.')) {
+        if (line.contains(
+          'The application is paused in the debugger on a breakpoint.',
+        )) {
           expect(sawDebuggerPausedMessage.isCompleted, isFalse);
           sawDebuggerPausedMessage.complete();
         }
       },
     );
     await flutter.run(withDebugger: true, startPaused: true);
-    await flutter.resume(); // we start paused so we can set up our TICK 1 listener before the app starts
+    await flutter
+        .resume(); // we start paused so we can set up our TICK 1 listener before the app starts
     unawaited(sawTick1.future.timeout(
       const Duration(seconds: 5),
       onTimeout: () {
         // This print is useful for people debugging this test. Normally we would avoid printing in
         // a test but this is an exception because it's useful ambient information.
         // ignore: avoid_print
-        print('The test app is taking longer than expected to print its synchronization line...');
+        print(
+          'The test app is taking longer than expected to print its synchronization line...',
+        );
       },
     ));
     printOnFailure('waiting for synchronization line...');
@@ -119,7 +133,8 @@ void main() {
       project.scheduledBreakpointLine,
     );
     await Future<void>.delayed(const Duration(seconds: 2));
-    await flutter.hotReload(); // reload triggers code which eventually hits the breakpoint
+    await flutter
+        .hotReload(); // reload triggers code which eventually hits the breakpoint
     isolate = await flutter.waitForPause();
     expect(isolate.pauseEvent?.kind, equals(EventKind.kPauseBreakpoint));
     await flutter.resume();
@@ -128,7 +143,9 @@ void main() {
       project.buildBreakpointLine,
     );
     bool reloaded = false;
-    final Future<void> reloadFuture = flutter.hotReload().then((void value) { reloaded = true; });
+    final Future<void> reloadFuture = flutter.hotReload().then((void value) {
+      reloaded = true;
+    });
     printOnFailure('waiting for pause...');
     isolate = await flutter.waitForPause();
     expect(isolate.pauseEvent?.kind, equals(EventKind.kPauseBreakpoint));
@@ -156,11 +173,15 @@ void main() {
           expect(sawTick1.isCompleted, isFalse);
           sawTick1.complete();
         }
-        if (line.contains('The application is paused in the debugger on a breakpoint.')) {
+        if (line.contains(
+          'The application is paused in the debugger on a breakpoint.',
+        )) {
           expect(sawDebuggerPausedMessage1.isCompleted, isFalse);
           sawDebuggerPausedMessage1.complete();
         }
-        if (line.contains('The application is paused in the debugger on a breakpoint; interface might not update.')) {
+        if (line.contains(
+          'The application is paused in the debugger on a breakpoint; interface might not update.',
+        )) {
           expect(sawDebuggerPausedMessage2.isCompleted, isFalse);
           sawDebuggerPausedMessage2.complete();
         }
@@ -175,15 +196,19 @@ void main() {
     );
     bool reloaded = false;
     await Future<void>.delayed(const Duration(seconds: 1));
-    final Future<void> reloadFuture = flutter.hotReload().then((void value) { reloaded = true; });
+    final Future<void> reloadFuture = flutter.hotReload().then((void value) {
+      reloaded = true;
+    });
     final Isolate isolate = await flutter.waitForPause();
     expect(isolate.pauseEvent?.kind, equals(EventKind.kPauseBreakpoint));
     expect(reloaded, isFalse);
-    await sawDebuggerPausedMessage1.future; // this is the one where it say "uh, you broke into the debugger while reloading"
+    await sawDebuggerPausedMessage1
+        .future; // this is the one where it say "uh, you broke into the debugger while reloading"
     await reloadFuture; // this is the one where it times out because you're in the debugger
     expect(reloaded, isTrue);
     await flutter.hotReload(); // now we're already paused
-    await sawDebuggerPausedMessage2.future; // so we just get told that nothing is going to happen
+    await sawDebuggerPausedMessage2
+        .future; // so we just get told that nothing is going to happen
     await flutter.resume();
     await subscription.cancel();
   });
@@ -193,6 +218,7 @@ bool _isHotReloadCompletionEvent(Map<String, Object?>? event) {
   return event != null &&
       event['event'] == 'app.progress' &&
       event['params'] != null &&
-      (event['params']! as Map<String, Object?>)['progressId'] == 'hot.reload' &&
+      (event['params']! as Map<String, Object?>)['progressId'] ==
+          'hot.reload' &&
       (event['params']! as Map<String, Object?>)['finished'] == true;
 }

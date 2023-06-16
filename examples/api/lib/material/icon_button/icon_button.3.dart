@@ -21,9 +21,7 @@ class IconButtonToggleApp extends StatelessWidget {
         useMaterial3: true,
       ),
       title: 'Icon Button Types',
-      home: const Scaffold(
-        body: DemoIconToggleButtons(),
-      ),
+      home: const Scaffold(body: DemoIconToggleButtons()),
     );
   }
 }

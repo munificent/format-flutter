@@ -24,43 +24,63 @@ void main() {
       fakeProcessManager = FakeProcessManager.empty();
     });
 
-    testUsingContext('serve - IPv4 address', () async {
-      fakeProcessManager.addCommand(const FakeCommand(command: <String>[
-        'pm',
-        'serve',
-        '-repo',
-        '<repo>',
-        '-l',
-        '127.0.0.1:43819',
-        '-c',
-        '2',
-      ]));
+    testUsingContext(
+      'serve - IPv4 address',
+      () async {
+        fakeProcessManager.addCommand(
+          const FakeCommand(
+            command: <String>[
+              'pm',
+              'serve',
+              '-repo',
+              '<repo>',
+              '-l',
+              '127.0.0.1:43819',
+              '-c',
+              '2',
+            ],
+          ),
+        );
 
-      await FuchsiaPM().serve('<repo>', '127.0.0.1', 43819);
-      expect(fakeProcessManager, hasNoRemainingExpectations);
-    }, overrides: <Type, Generator>{
-      FuchsiaArtifacts: () => fakeFuchsiaArtifacts,
-      ProcessManager: () => fakeProcessManager,
-    });
+        await FuchsiaPM().serve('<repo>', '127.0.0.1', 43819);
+        expect(fakeProcessManager, hasNoRemainingExpectations);
+      },
+      overrides: <Type, Generator>{
+        FuchsiaArtifacts: () => fakeFuchsiaArtifacts,
+        ProcessManager: () => fakeProcessManager,
+      },
+    );
 
-    testUsingContext('serve - IPv6 address', () async {
-      fakeProcessManager.addCommand(const FakeCommand(command: <String>[
-        'pm',
-        'serve',
-        '-repo',
-        '<repo>',
-        '-l',
-        '[fe80::ec4:7aff:fecc:ea8f%eno2]:43819',
-        '-c',
-        '2',
-      ]));
+    testUsingContext(
+      'serve - IPv6 address',
+      () async {
+        fakeProcessManager.addCommand(
+          const FakeCommand(
+            command: <String>[
+              'pm',
+              'serve',
+              '-repo',
+              '<repo>',
+              '-l',
+              '[fe80::ec4:7aff:fecc:ea8f%eno2]:43819',
+              '-c',
+              '2',
+            ],
+          ),
+        );
 
-      await FuchsiaPM().serve('<repo>', 'fe80::ec4:7aff:fecc:ea8f%eno2', 43819);
-      expect(fakeProcessManager, hasNoRemainingExpectations);
-    }, overrides: <Type, Generator>{
-      FuchsiaArtifacts: () => fakeFuchsiaArtifacts,
-      ProcessManager: () => fakeProcessManager,
-    });
+        await FuchsiaPM().serve(
+          '<repo>',
+          'fe80::ec4:7aff:fecc:ea8f%eno2',
+          43819,
+        );
+        expect(fakeProcessManager, hasNoRemainingExpectations);
+      },
+      overrides: <Type, Generator>{
+        FuchsiaArtifacts: () => fakeFuchsiaArtifacts,
+        ProcessManager: () => fakeProcessManager,
+      },
+    );
   });
 }
 

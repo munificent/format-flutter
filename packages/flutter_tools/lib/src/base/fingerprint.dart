@@ -47,7 +47,9 @@ class Fingerprinter {
         return false;
       }
 
-      final Fingerprint oldFingerprint = Fingerprint.fromJson(fingerprintFile.readAsStringSync());
+      final Fingerprint oldFingerprint = Fingerprint.fromJson(
+        fingerprintFile.readAsStringSync(),
+      );
       final Fingerprint newFingerprint = buildFingerprint();
       return oldFingerprint == newFingerprint;
     } on Exception catch (e) {
@@ -78,13 +80,17 @@ class Fingerprinter {
 /// See [Fingerprinter].
 @immutable
 class Fingerprint {
-  const Fingerprint._({
-    Map<String, String>? checksums,
-  })  : _checksums = checksums ?? const <String, String>{};
+  const Fingerprint._({Map<String, String>? checksums})
+    : _checksums = checksums ?? const <String, String>{};
 
-  factory Fingerprint.fromBuildInputs(Iterable<String> inputPaths, FileSystem fileSystem) {
+  factory Fingerprint.fromBuildInputs(
+    Iterable<String> inputPaths,
+    FileSystem fileSystem,
+  ) {
     final Iterable<File> files = inputPaths.map<File>(fileSystem.file);
-    final Iterable<File> missingInputs = files.where((File file) => !file.existsSync());
+    final Iterable<File> missingInputs = files.where(
+      (File file) => !file.existsSync(),
+    );
     if (missingInputs.isNotEmpty) {
       throw Exception('Missing input files:\n${missingInputs.join('\n')}');
     }
@@ -101,34 +107,34 @@ class Fingerprint {
   /// Throws [Exception], if there is a version mismatch between the
   /// serializing framework and this framework.
   factory Fingerprint.fromJson(String jsonData) {
-    final Map<String, dynamic>? content = castStringKeyedMap(json.decode(jsonData));
+    final Map<String, dynamic>? content = castStringKeyedMap(
+      json.decode(jsonData),
+    );
     final Map<String, String>? files = content == null
         ? null
         : castStringKeyedMap(content['files'])?.cast<String, String>();
-    return Fingerprint._(
-      checksums: files ?? <String, String>{},
-    );
+    return Fingerprint._(checksums: files ?? <String, String>{});
   }
 
   final Map<String, String> _checksums;
 
-  String toJson() => json.encode(<String, dynamic>{
-    'files': _checksums,
-  });
+  String toJson() => json.encode(<String, dynamic>{'files': _checksums});
 
   @override
-  bool operator==(Object other) {
-    return other is Fingerprint
-        && _equalMaps(other._checksums, _checksums);
+  bool operator ==(Object other) {
+    return other is Fingerprint && _equalMaps(other._checksums, _checksums);
   }
 
   bool _equalMaps(Map<String, String> a, Map<String, String> b) {
-    return a.length == b.length
-        && a.keys.every((String key) => a[key] == b[key]);
+    return a.length == b.length &&
+        a.keys.every((String key) => a[key] == b[key]);
   }
 
   @override
-  int get hashCode => Object.hash(Object.hashAllUnordered(_checksums.keys), Object.hashAllUnordered(_checksums.values));
+  int get hashCode => Object.hash(
+    Object.hashAllUnordered(_checksums.keys),
+    Object.hashAllUnordered(_checksums.values),
+  );
 
   @override
   String toString() => '{checksums: $_checksums}';

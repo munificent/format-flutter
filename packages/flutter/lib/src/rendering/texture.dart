@@ -41,8 +41,8 @@ class TextureBox extends RenderBox {
     bool freeze = false,
     FilterQuality filterQuality = FilterQuality.low,
   }) : _textureId = textureId,
-      _freeze = freeze,
-      _filterQuality = filterQuality;
+       _freeze = freeze,
+       _filterQuality = filterQuality;
 
   /// The identity of the backend texture.
   int get textureId => _textureId;

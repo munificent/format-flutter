@@ -223,7 +223,11 @@ class SingleChildScrollView extends StatelessWidget {
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
   AxisDirection _getDirection(BuildContext context) {
-    return getAxisDirectionFromAxisReverseAndDirectionality(context, scrollDirection, reverse);
+    return getAxisDirectionFromAxisReverseAndDirectionality(
+      context,
+      scrollDirection,
+      reverse,
+    );
   }
 
   @override
@@ -233,8 +237,9 @@ class SingleChildScrollView extends StatelessWidget {
     if (padding != null) {
       contents = Padding(padding: padding!, child: contents);
     }
-    final bool effectivePrimary = primary
-        ?? controller == null && PrimaryScrollController.shouldInherit(context, scrollDirection);
+    final bool effectivePrimary = primary ??
+        controller == null &&
+            PrimaryScrollController.shouldInherit(context, scrollDirection);
 
     final ScrollController? scrollController = effectivePrimary
         ? PrimaryScrollController.maybeOf(context)
@@ -270,10 +275,10 @@ class SingleChildScrollView extends StatelessWidget {
     }
 
     return effectivePrimary && scrollController != null
-      // Further descendant ScrollViews will not inherit the same
-      // PrimaryScrollController
-      ? PrimaryScrollController.none(child: scrollable)
-      : scrollable;
+        // Further descendant ScrollViews will not inherit the same
+          // PrimaryScrollController
+          ? PrimaryScrollController.none(child: scrollable)
+        : scrollable;
   }
 }
 
@@ -299,7 +304,10 @@ class _SingleChildViewport extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, _RenderSingleChildViewport renderObject) {
+  void updateRenderObject(
+    BuildContext context,
+    _RenderSingleChildViewport renderObject,
+  ) {
     // Order dependency: The offset setter reads the axis direction.
     renderObject
       ..axisDirection = axisDirection
@@ -313,11 +321,14 @@ class _SingleChildViewport extends SingleChildRenderObjectWidget {
   }
 }
 
-class _SingleChildViewportElement extends SingleChildRenderObjectElement with NotifiableElementMixin, ViewportElementMixin {
+class _SingleChildViewportElement extends SingleChildRenderObjectElement
+    with NotifiableElementMixin, ViewportElementMixin {
   _SingleChildViewportElement(_SingleChildViewport super.widget);
 }
 
-class _RenderSingleChildViewport extends RenderBox with RenderObjectWithChildMixin<RenderBox> implements RenderAbstractViewport {
+class _RenderSingleChildViewport extends RenderBox
+    with RenderObjectWithChildMixin<RenderBox>
+    implements RenderAbstractViewport {
   _RenderSingleChildViewport({
     AxisDirection axisDirection = AxisDirection.down,
     required ViewportOffset offset,
@@ -478,7 +489,9 @@ class _RenderSingleChildViewport extends RenderBox with RenderObjectWithChildMix
     if (child == null) {
       return constraints.smallest;
     }
-    final Size childSize = child!.getDryLayout(_getInnerConstraints(constraints));
+    final Size childSize = child!.getDryLayout(
+      _getInnerConstraints(constraints),
+    );
     return constraints.constrain(childSize);
   }
 
@@ -520,9 +533,9 @@ class _RenderSingleChildViewport extends RenderBox with RenderObjectWithChildMix
       case Clip.antiAlias:
       case Clip.antiAliasWithSaveLayer:
         return paintOffset.dx < 0 ||
-               paintOffset.dy < 0 ||
-               paintOffset.dx + child!.size.width > size.width ||
-               paintOffset.dy + child!.size.height > size.height;
+            paintOffset.dy < 0 ||
+            paintOffset.dx + child!.size.width > size.width ||
+            paintOffset.dy + child!.size.height > size.height;
     }
   }
 
@@ -551,7 +564,8 @@ class _RenderSingleChildViewport extends RenderBox with RenderObjectWithChildMix
     }
   }
 
-  final LayerHandle<ClipRectLayer> _clipRectLayer = LayerHandle<ClipRectLayer>();
+  final LayerHandle<ClipRectLayer> _clipRectLayer =
+      LayerHandle<ClipRectLayer>();
 
   @override
   void dispose() {
@@ -574,7 +588,7 @@ class _RenderSingleChildViewport extends RenderBox with RenderObjectWithChildMix
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, { required Offset position }) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     if (child != null) {
       return result.addWithPaintOffset(
         offset: _paintOffset,
@@ -589,7 +603,11 @@ class _RenderSingleChildViewport extends RenderBox with RenderObjectWithChildMix
   }
 
   @override
-  RevealedOffset getOffsetToReveal(RenderObject target, double alignment, { Rect? rect }) {
+  RevealedOffset getOffsetToReveal(
+    RenderObject target,
+    double alignment, {
+    Rect? rect,
+  }) {
     rect ??= target.paintBounds;
     if (target is! RenderBox) {
       return RevealedOffset(offset: offset.pixels, rect: rect);
@@ -623,7 +641,8 @@ class _RenderSingleChildViewport extends RenderBox with RenderObjectWithChildMix
         targetMainAxisExtent = bounds.width;
     }
 
-    final double targetOffset = leadingScrollOffset - (mainAxisExtent - targetMainAxisExtent) * alignment;
+    final double targetOffset = leadingScrollOffset -
+        (mainAxisExtent - targetMainAxisExtent) * alignment;
     final Rect targetRect = bounds.shift(_paintOffsetForPosition(targetOffset));
     return RevealedOffset(offset: targetOffset, rect: targetRect);
   }
@@ -652,11 +671,7 @@ class _RenderSingleChildViewport extends RenderBox with RenderObjectWithChildMix
       duration: duration,
       curve: curve,
     );
-    super.showOnScreen(
-      rect: newRect,
-      duration: duration,
-      curve: curve,
-    );
+    super.showOnScreen(rect: newRect, duration: duration, curve: curve);
   }
 
   @override

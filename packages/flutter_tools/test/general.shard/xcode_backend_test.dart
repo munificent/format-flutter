@@ -61,10 +61,7 @@ void main() {
         fileSystem: fileSystem,
         scriptOutputStreamFile: pipe,
       );
-      expect(
-          () => context.run(),
-          throwsException,
-      );
+      expect(() => context.run(), throwsException);
       expect(
         context.stderr,
         contains('ERROR: Unknown FLUTTER_BUILD_MODE: null.\n'),
@@ -117,10 +114,7 @@ void main() {
       // Ensure after line splitting, the exact string 'done' appears
       expect(streamedLines, contains('done'));
       expect(streamedLines, contains(' └─Compiling, linking and signing...'));
-      expect(
-        context.stdout,
-        contains('built and packaged successfully.'),
-      );
+      expect(context.stdout, contains('built and packaged successfully.'));
       expect(context.stderr, isEmpty);
     });
 
@@ -133,7 +127,8 @@ void main() {
       const String buildMode = 'Release';
       const String dartObfuscation = 'false';
       const String dartDefines = 'flutter.inspector.structuredErrors%3Dtrue';
-      const String expandedCodeSignIdentity = 'F1326572E0B71C3C8442805230CB4B33B708A2E2';
+      const String expandedCodeSignIdentity =
+          'F1326572E0B71C3C8442805230CB4B33B708A2E2';
       const String extraFrontEndOptions = '--some-option';
       const String extraGenSnapshotOptions = '--obfuscate';
       const String sdkRoot = '/path/to/sdk';
@@ -187,10 +182,7 @@ void main() {
         ],
         fileSystem: fileSystem,
       )..run();
-      expect(
-        context.stdout,
-        contains('built and packaged successfully.'),
-      );
+      expect(context.stdout, contains('built and packaged successfully.'));
       expect(context.stderr, isEmpty);
     });
   });
@@ -209,11 +201,9 @@ void main() {
         commands: <FakeCommand>[],
         fileSystem: fileSystem,
       )..run();
-      expect(
-        context.stdout,
-        contains(
-            'Info.plist does not exist. Skipping _dartVmService._tcp NSBonjourServices insertion.'),
-      );
+      expect(context.stdout, contains(
+        'Info.plist does not exist. Skipping _dartVmService._tcp NSBonjourServices insertion.',
+      ));
     });
   });
 }
@@ -225,8 +215,12 @@ class TestContext extends Context {
     required this.fileSystem,
     required List<FakeCommand> commands,
     File? scriptOutputStreamFile,
-  })  : processManager = FakeProcessManager.list(commands),
-        super(arguments: arguments, environment: environment, scriptOutputStreamFile: scriptOutputStreamFile);
+  }) : processManager = FakeProcessManager.list(commands),
+       super(
+         arguments: arguments,
+         environment: environment,
+         scriptOutputStreamFile: scriptOutputStreamFile,
+       );
 
   final FileSystem fileSystem;
   final FakeProcessManager processManager;
@@ -252,11 +246,10 @@ class TestContext extends Context {
     bool allowFail = false,
     String? workingDirectory,
   }) {
-    return processManager.runSync(
-      <dynamic>[bin, ...args],
-      workingDirectory: workingDirectory,
-      environment: environment,
-    );
+    return processManager.runSync(<dynamic>[
+      bin,
+      ...args,
+    ], workingDirectory: workingDirectory, environment: environment);
   }
 
   @override

@@ -16,9 +16,5 @@ void main() {
     output = '--- TEST SUCCEEDED ---';
   }
   print(output);
-  html.HttpRequest.request(
-    '/test-result',
-    method: 'POST',
-    sendData: output,
-  );
+  html.HttpRequest.request('/test-result', method: 'POST', sendData: output);
 }

@@ -15,9 +15,7 @@ class ListTileApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        listTileTheme: const ListTileThemeData(
-          textColor: Colors.white,
-        ),
+        listTileTheme: const ListTileThemeData(textColor: Colors.white),
         useMaterial3: true,
       ),
       home: const LisTileExample(),
@@ -32,7 +30,8 @@ class LisTileExample extends StatefulWidget {
   State<LisTileExample> createState() => _LisTileExampleState();
 }
 
-class _LisTileExampleState extends State<LisTileExample> with TickerProviderStateMixin {
+class _LisTileExampleState extends State<LisTileExample>
+    with TickerProviderStateMixin {
   late final AnimationController _fadeController;
   late final AnimationController _sizeController;
   late final Animation<double> _fadeAnimation;
@@ -86,9 +85,8 @@ class _LisTileExampleState extends State<LisTileExample> with TickerProviderStat
                 subtitle: const Text('Tap here for Hero transition'),
                 tileColor: Colors.cyan,
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<Widget>(builder: (BuildContext context) {
+                  Navigator.push(context, MaterialPageRoute<Widget>(
+                    builder: (BuildContext context) {
                       return Scaffold(
                         appBar: AppBar(title: const Text('ListTile Hero')),
                         body: Center(
@@ -107,8 +105,8 @@ class _LisTileExampleState extends State<LisTileExample> with TickerProviderStat
                           ),
                         ),
                       );
-                    }),
-                  );
+                    },
+                  ));
                 },
               ),
             ),

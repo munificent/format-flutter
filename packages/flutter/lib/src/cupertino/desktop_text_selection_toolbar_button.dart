@@ -37,8 +37,8 @@ class CupertinoDesktopTextSelectionToolbarButton extends StatefulWidget {
     super.key,
     required this.onPressed,
     required Widget this.child,
-  })  : buttonItem = null,
-        text = null;
+  }) : buttonItem = null,
+       text = null;
 
   /// Create an instance of [CupertinoDesktopTextSelectionToolbarButton] whose child is
   /// a [Text] widget styled like the default Mac context menu button.
@@ -46,8 +46,8 @@ class CupertinoDesktopTextSelectionToolbarButton extends StatefulWidget {
     super.key,
     required this.onPressed,
     required this.text,
-  })  : buttonItem = null,
-        child = null;
+  }) : buttonItem = null,
+       child = null;
 
   /// Create an instance of [CupertinoDesktopTextSelectionToolbarButton] from
   /// the given [ContextMenuButtonItem].
@@ -56,9 +56,9 @@ class CupertinoDesktopTextSelectionToolbarButton extends StatefulWidget {
   CupertinoDesktopTextSelectionToolbarButton.buttonItem({
     super.key,
     required ContextMenuButtonItem this.buttonItem,
-  })  : onPressed = buttonItem.onPressed,
-        text = null,
-        child = null;
+  }) : onPressed = buttonItem.onPressed,
+       text = null,
+       child = null;
 
   /// {@macro flutter.cupertino.CupertinoTextSelectionToolbarButton.onPressed}
   final VoidCallback? onPressed;

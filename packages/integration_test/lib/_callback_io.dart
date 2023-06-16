@@ -27,7 +27,9 @@ final IOCallbackManager _singletonCallbackManager = IOCallbackManager();
 class IOCallbackManager implements CallbackManager {
   @override
   Future<Map<String, dynamic>> callback(
-      Map<String, String> params, IntegrationTestResults testRunner) async {
+    Map<String, String> params,
+    IntegrationTestResults testRunner,
+  ) async {
     final String command = params['command']!;
     Map<String, String> response;
     switch (command) {
@@ -46,10 +48,7 @@ class IOCallbackManager implements CallbackManager {
       default:
         throw UnimplementedError('$command is not implemented');
     }
-    return <String, dynamic>{
-      'isError': false,
-      'response': response,
-    };
+    return <String, dynamic>{'isError': false, 'response': response};
   }
 
   @override
@@ -76,31 +75,35 @@ class IOCallbackManager implements CallbackManager {
 
     addTearDown(() async {
       assert(_isSurfaceRendered, 'Surface is not an image');
-      await integrationTestChannel.invokeMethod<void>(
-        'revertFlutterImage',
-      );
+      await integrationTestChannel.invokeMethod<void>('revertFlutterImage');
       _isSurfaceRendered = false;
     });
   }
 
   @override
-  Future<Map<String, dynamic>> takeScreenshot(String screenshot, [Map<String, Object?>? args]) async {
-    assert(args == null, '[args] handling has not been implemented for this platform');
+  Future<Map<String, dynamic>> takeScreenshot(
+    String screenshot, [
+    Map<String, Object?>? args,
+  ]) async {
+    assert(
+      args == null,
+      '[args] handling has not been implemented for this platform',
+    );
     if (Platform.isAndroid && !_isSurfaceRendered) {
-      throw StateError('Call convertFlutterSurfaceToImage() before taking a screenshot');
+      throw StateError(
+        'Call convertFlutterSurfaceToImage() before taking a screenshot',
+      );
     }
     integrationTestChannel.setMethodCallHandler(_onMethodChannelCall);
-    final List<int>? rawBytes = await integrationTestChannel.invokeMethod<List<int>>(
-      'captureScreenshot',
-      <String, dynamic>{'name': screenshot},
-    );
+    final List<int>? rawBytes = await integrationTestChannel.invokeMethod<
+      List<int>
+    >('captureScreenshot', <String, dynamic>{'name': screenshot});
     if (rawBytes == null) {
-      throw StateError('Expected a list of bytes, but instead captureScreenshot returned null');
+      throw StateError(
+        'Expected a list of bytes, but instead captureScreenshot returned null',
+      );
     }
-    return <String, dynamic>{
-      'screenshotName': screenshot,
-      'bytes': rawBytes,
-    };
+    return <String, dynamic>{'screenshotName': screenshot, 'bytes': rawBytes};
   }
 
   Future<dynamic> _onMethodChannelCall(MethodCall call) async {

@@ -16,7 +16,10 @@ class CardExamplesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(colorSchemeSeed: const Color(0xff6750a4), useMaterial3: true),
+      theme: ThemeData(
+        colorSchemeSeed: const Color(0xff6750a4),
+        useMaterial3: true,
+      ),
       home: Scaffold(
         appBar: AppBar(title: const Text('Card Examples')),
         body: const Column(
@@ -96,9 +99,7 @@ class OutlinedCardExample extends StatelessWidget {
       child: Card(
         elevation: 0,
         shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Theme.of(context).colorScheme.outline,
-          ),
+          side: BorderSide(color: Theme.of(context).colorScheme.outline),
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
         child: const SizedBox(

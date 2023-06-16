@@ -33,11 +33,7 @@ void main() {
         ),
       ),
     );
-    writeStateToFile(
-      stateFile,
-      state,
-      <String>['[status] hello world'],
-    );
+    writeStateToFile(stateFile, state, <String>['[status] hello world']);
     final String serializedState = stateFile.readAsStringSync();
     const String expectedString = '''
 {

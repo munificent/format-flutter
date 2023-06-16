@@ -8,19 +8,23 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   for (final String language in kWidgetsSupportedLanguages) {
-    testWidgets('translations exist for $language', (WidgetTester tester) async {
-      final Locale locale = Locale(language);
+    testWidgets(
+      'translations exist for $language',
+      (WidgetTester tester) async {
+        final Locale locale = Locale(language);
 
-      expect(GlobalWidgetsLocalizations.delegate.isSupported(locale), isTrue);
+        expect(GlobalWidgetsLocalizations.delegate.isSupported(locale), isTrue);
 
-      final WidgetsLocalizations localizations = await GlobalWidgetsLocalizations.delegate.load(locale);
+        final WidgetsLocalizations localizations =
+            await GlobalWidgetsLocalizations.delegate.load(locale);
 
-      expect(localizations.reorderItemDown, isNotNull);
-      expect(localizations.reorderItemLeft, isNotNull);
-      expect(localizations.reorderItemRight, isNotNull);
-      expect(localizations.reorderItemToEnd, isNotNull);
-      expect(localizations.reorderItemToStart, isNotNull);
-      expect(localizations.reorderItemUp, isNotNull);
-    });
+        expect(localizations.reorderItemDown, isNotNull);
+        expect(localizations.reorderItemLeft, isNotNull);
+        expect(localizations.reorderItemRight, isNotNull);
+        expect(localizations.reorderItemToEnd, isNotNull);
+        expect(localizations.reorderItemToStart, isNotNull);
+        expect(localizations.reorderItemUp, isNotNull);
+      },
+    );
   }
 }

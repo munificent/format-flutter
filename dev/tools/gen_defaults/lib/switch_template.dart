@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class SwitchTemplate extends TokenTemplate {
-  const SwitchTemplate(super.blockName, super.fileName, super.tokens, {
+  const SwitchTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
   });
 
@@ -56,9 +59,13 @@ class _${blockName}DefaultsM3 extends SwitchThemeData {
     return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.disabled)) {
         if (states.contains(MaterialState.selected)) {
-          return ${componentColor('md.comp.switch.disabled.selected.track')}.withOpacity(${opacity('md.comp.switch.disabled.track.opacity')});
+          return ${componentColor(
+        'md.comp.switch.disabled.selected.track',
+      )}.withOpacity(${opacity('md.comp.switch.disabled.track.opacity')});
         }
-        return ${componentColor('md.comp.switch.disabled.unselected.track')}.withOpacity(${opacity('md.comp.switch.disabled.track.opacity')});
+        return ${componentColor(
+        'md.comp.switch.disabled.unselected.track',
+      )}.withOpacity(${opacity('md.comp.switch.disabled.track.opacity')});
       }
       if (states.contains(MaterialState.selected)) {
         if (states.contains(MaterialState.pressed)) {
@@ -92,7 +99,9 @@ class _${blockName}DefaultsM3 extends SwitchThemeData {
         return Colors.transparent;
       }
       if (states.contains(MaterialState.disabled)) {
-        return ${componentColor('md.comp.switch.disabled.unselected.track.outline')}.withOpacity(${opacity('md.comp.switch.disabled.track.opacity')});
+        return ${componentColor(
+        'md.comp.switch.disabled.unselected.track.outline',
+      )}.withOpacity(${opacity('md.comp.switch.disabled.track.opacity')});
       }
       return ${componentColor('md.comp.switch.unselected.track.outline')};
     });
@@ -103,7 +112,9 @@ class _${blockName}DefaultsM3 extends SwitchThemeData {
     return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.selected)) {
         if (states.contains(MaterialState.pressed)) {
-          return ${componentColor('md.comp.switch.selected.pressed.state-layer')};
+          return ${componentColor(
+        'md.comp.switch.selected.pressed.state-layer',
+      )};
         }
         if (states.contains(MaterialState.hovered)) {
           return ${componentColor('md.comp.switch.selected.hover.state-layer')};
@@ -114,7 +125,9 @@ class _${blockName}DefaultsM3 extends SwitchThemeData {
         return null;
       }
       if (states.contains(MaterialState.pressed)) {
-        return ${componentColor('md.comp.switch.unselected.pressed.state-layer')};
+        return ${componentColor(
+        'md.comp.switch.unselected.pressed.state-layer',
+      )};
       }
       if (states.contains(MaterialState.hovered)) {
         return ${componentColor('md.comp.switch.unselected.hover.state-layer')};
@@ -127,7 +140,9 @@ class _${blockName}DefaultsM3 extends SwitchThemeData {
   }
 
   @override
-  MaterialStatePropertyAll<double> get trackOutlineWidth => const MaterialStatePropertyAll<double>(${getToken('md.comp.switch.track.outline.width')});
+  MaterialStatePropertyAll<double> get trackOutlineWidth => const MaterialStatePropertyAll<double>(${getToken(
+        'md.comp.switch.track.outline.width',
+      )});
 
   @override
   double get splashRadius => ${getToken('md.comp.switch.state-layer.size')} / 2;
@@ -140,10 +155,14 @@ class _SwitchConfigM3 with _SwitchConfig {
   BuildContext context;
   final ColorScheme _colors;
 
-  static const double iconSize = ${getToken('md.comp.switch.unselected.icon.size')};
+  static const double iconSize = ${getToken(
+        'md.comp.switch.unselected.icon.size',
+      )};
 
   @override
-  double get activeThumbRadius => ${getToken('md.comp.switch.selected.handle.width')} / 2;
+  double get activeThumbRadius => ${getToken(
+        'md.comp.switch.selected.handle.width',
+      )} / 2;
 
   @override
   MaterialStateProperty<Color> get iconColor {
@@ -180,10 +199,14 @@ class _SwitchConfigM3 with _SwitchConfig {
   }
 
   @override
-  double get inactiveThumbRadius => ${getToken('md.comp.switch.unselected.handle.width')} / 2;
+  double get inactiveThumbRadius => ${getToken(
+        'md.comp.switch.unselected.handle.width',
+      )} / 2;
 
   @override
-  double get pressedThumbRadius => ${getToken('md.comp.switch.pressed.handle.width')} / 2;
+  double get pressedThumbRadius => ${getToken(
+        'md.comp.switch.pressed.handle.width',
+      )} / 2;
 
   @override
   double get switchHeight => _kSwitchMinSize + 8.0;
@@ -195,7 +218,9 @@ class _SwitchConfigM3 with _SwitchConfig {
   double get switchWidth => trackWidth - 2 * (trackHeight / 2.0) + _kSwitchMinSize;
 
   @override
-  double get thumbRadiusWithIcon => ${getToken('md.comp.switch.with-icon.handle.width')} / 2;
+  double get thumbRadiusWithIcon => ${getToken(
+        'md.comp.switch.with-icon.handle.width',
+      )} / 2;
 
   @override
   List<BoxShadow>? get thumbShadow => kElevationToShadow[0];
@@ -219,5 +244,4 @@ class _SwitchConfigM3 with _SwitchConfig {
   double? get thumbOffset => null;
 }
 ''';
-
 }

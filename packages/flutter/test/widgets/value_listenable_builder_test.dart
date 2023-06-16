@@ -10,9 +10,7 @@ void main() {
   late SpyStringValueNotifier valueListenable;
   late Widget textBuilderUnderTest;
 
-  Widget builderForValueListenable(
-    ValueListenable<String?> valueListenable,
-  ) {
+  Widget builderForValueListenable(ValueListenable<String?> valueListenable) {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: ValueListenableBuilder<String?>(
@@ -66,8 +64,9 @@ void main() {
     await tester.pump();
     expect(find.text('Gilfoyle'), findsOneWidget);
 
-    final ValueListenable<String?> differentListenable =
-        SpyStringValueNotifier('Hendricks');
+    final ValueListenable<String?> differentListenable = SpyStringValueNotifier(
+      'Hendricks',
+    );
 
     await tester.pumpWidget(builderForValueListenable(differentListenable));
 
@@ -75,28 +74,31 @@ void main() {
     expect(find.text('Hendricks'), findsOneWidget);
   });
 
-  testWidgets('Stops listening to old listenable after changing listenable', (WidgetTester tester) async {
-    await tester.pumpWidget(textBuilderUnderTest);
+  testWidgets(
+    'Stops listening to old listenable after changing listenable',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(textBuilderUnderTest);
 
-    valueListenable.value = 'Gilfoyle';
-    await tester.pump();
-    expect(find.text('Gilfoyle'), findsOneWidget);
+      valueListenable.value = 'Gilfoyle';
+      await tester.pump();
+      expect(find.text('Gilfoyle'), findsOneWidget);
 
-    final ValueListenable<String?> differentListenable =
-       SpyStringValueNotifier('Hendricks');
+      final ValueListenable<String?> differentListenable =
+          SpyStringValueNotifier('Hendricks');
 
-    await tester.pumpWidget(builderForValueListenable(differentListenable));
+      await tester.pumpWidget(builderForValueListenable(differentListenable));
 
-    expect(find.text('Gilfoyle'), findsNothing);
-    expect(find.text('Hendricks'), findsOneWidget);
+      expect(find.text('Gilfoyle'), findsNothing);
+      expect(find.text('Hendricks'), findsOneWidget);
 
-    // Change value of the (now) disconnected listenable.
-    valueListenable.value = 'Big Head';
+      // Change value of the (now) disconnected listenable.
+      valueListenable.value = 'Big Head';
 
-    expect(find.text('Gilfoyle'), findsNothing);
-    expect(find.text('Big Head'), findsNothing);
-    expect(find.text('Hendricks'), findsOneWidget);
-  });
+      expect(find.text('Gilfoyle'), findsNothing);
+      expect(find.text('Big Head'), findsNothing);
+      expect(find.text('Hendricks'), findsOneWidget);
+    },
+  );
 
   testWidgets('Self-cleans when removed', (WidgetTester tester) async {
     await tester.pumpWidget(textBuilderUnderTest);

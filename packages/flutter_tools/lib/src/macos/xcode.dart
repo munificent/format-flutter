@@ -44,11 +44,13 @@ class Xcode {
     required Logger logger,
     required FileSystem fileSystem,
     required XcodeProjectInterpreter xcodeProjectInterpreter,
-  })  : _platform = platform,
-        _fileSystem = fileSystem,
-        _xcodeProjectInterpreter = xcodeProjectInterpreter,
-        _processUtils =
-            ProcessUtils(logger: logger, processManager: processManager);
+  }) : _platform = platform,
+       _fileSystem = fileSystem,
+       _xcodeProjectInterpreter = xcodeProjectInterpreter,
+       _processUtils = ProcessUtils(
+         logger: logger,
+         processManager: processManager,
+       );
 
   /// Create an [Xcode] for testing.
   ///
@@ -70,7 +72,8 @@ class Xcode {
       processManager: processManager,
       fileSystem: fileSystem ?? MemoryFileSystem.test(),
       logger: BufferLogger.test(),
-      xcodeProjectInterpreter: xcodeProjectInterpreter ?? XcodeProjectInterpreter.test(processManager: processManager),
+      xcodeProjectInterpreter: xcodeProjectInterpreter ??
+          XcodeProjectInterpreter.test(processManager: processManager),
     );
   }
 
@@ -79,15 +82,17 @@ class Xcode {
   final FileSystem _fileSystem;
   final XcodeProjectInterpreter _xcodeProjectInterpreter;
 
-  bool get isInstalledAndMeetsVersionCheck => _platform.isMacOS && isInstalled && isRequiredVersionSatisfactory;
+  bool get isInstalledAndMeetsVersionCheck =>
+      _platform.isMacOS && isInstalled && isRequiredVersionSatisfactory;
 
   String? _xcodeSelectPath;
   String? get xcodeSelectPath {
     if (_xcodeSelectPath == null) {
       try {
-        _xcodeSelectPath = _processUtils.runSync(
-          <String>['/usr/bin/xcode-select', '--print-path'],
-        ).stdout.trim();
+        _xcodeSelectPath = _processUtils.runSync(<String>[
+          '/usr/bin/xcode-select',
+          '--print-path',
+        ]).stdout.trim();
       } on ProcessException {
         // Ignored, return null below.
       } on ArgumentError {
@@ -106,13 +111,13 @@ class Xcode {
   String? get versionText => _xcodeProjectInterpreter.versionText;
 
   bool? _eulaSigned;
+
   /// Has the EULA been signed?
   bool get eulaSigned {
     if (_eulaSigned == null) {
       try {
-        final RunResult result = _processUtils.runSync(
-          <String>[...xcrunCommand(), 'clang'],
-        );
+        final RunResult result = _processUtils
+            .runSync(<String>[...xcrunCommand(), 'clang']);
         if (result.stdout.contains('license')) {
           _eulaSigned = false;
         } else if (result.stderr.contains('license')) {
@@ -135,9 +140,13 @@ class Xcode {
       try {
         // This command will error if additional components need to be installed in
         // xcode 9.2 and above.
-        final RunResult result = _processUtils.runSync(
-          <String>[...xcrunCommand(), 'simctl', 'list', 'devices', 'booted'],
-        );
+        final RunResult result = _processUtils.runSync(<String>[
+          ...xcrunCommand(),
+          'simctl',
+          'list',
+          'devices',
+          'booted',
+        ]);
         _isSimctlInstalled = result.exitCode == 0;
       } on ProcessException {
         _isSimctlInstalled = false;
@@ -174,16 +183,17 @@ class Xcode {
   Future<RunResult> strip(List<String> args) => _run('strip', args);
 
   Future<RunResult> _run(String command, List<String> args) {
-    return _processUtils.run(
-      <String>[...xcrunCommand(), command, ...args],
-      throwOnError: true,
-    );
+    return _processUtils
+        .run(<String>[...xcrunCommand(), command, ...args], throwOnError: true);
   }
 
   Future<String> sdkLocation(EnvironmentType environmentType) async {
-    final RunResult runResult = await _processUtils.run(
-      <String>[...xcrunCommand(), '--sdk', getSDKNameForIOSEnvironmentType(environmentType), '--show-sdk-path'],
-    );
+    final RunResult runResult = await _processUtils.run(<String>[
+      ...xcrunCommand(),
+      '--sdk',
+      getSDKNameForIOSEnvironmentType(environmentType),
+      '--show-sdk-path',
+    ]);
     if (runResult.exitCode != 0) {
       throwToolExit('Could not find SDK location: ${runResult.stderr}');
     }
@@ -195,16 +205,25 @@ class Xcode {
     if (selectPath == null) {
       return null;
     }
-    final String appPath = _fileSystem.path.join(selectPath, 'Applications', 'Simulator.app');
+    final String appPath = _fileSystem.path.join(
+      selectPath,
+      'Applications',
+      'Simulator.app',
+    );
     return _fileSystem.directory(appPath).existsSync() ? appPath : null;
   }
 }
 
-EnvironmentType? environmentTypeFromSdkroot(String sdkroot, FileSystem fileSystem) {
+EnvironmentType? environmentTypeFromSdkroot(
+  String sdkroot,
+  FileSystem fileSystem,
+) {
   // iPhoneSimulator.sdk or iPhoneOS.sdk
   final String sdkName = fileSystem.path.basename(sdkroot).toLowerCase();
   if (sdkName.contains('iphone')) {
-    return sdkName.contains('simulator') ? EnvironmentType.simulator : EnvironmentType.physical;
+    return sdkName.contains('simulator')
+        ? EnvironmentType.simulator
+        : EnvironmentType.physical;
   }
   assert(false);
   return null;

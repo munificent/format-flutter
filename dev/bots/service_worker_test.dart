@@ -14,14 +14,27 @@ import 'test/common.dart';
 import 'utils.dart';
 
 final String _bat = Platform.isWindows ? '.bat' : '';
-final String _flutterRoot = path.dirname(path.dirname(path.dirname(path.fromUri(Platform.script))));
+final String _flutterRoot = path.dirname(
+  path.dirname(path.dirname(path.fromUri(Platform.script))),
+);
 final String _flutter = path.join(_flutterRoot, 'bin', 'flutter$_bat');
-final String _testAppDirectory = path.join(_flutterRoot, 'dev', 'integration_tests', 'web');
+final String _testAppDirectory = path.join(
+  _flutterRoot,
+  'dev',
+  'integration_tests',
+  'web',
+);
 final String _testAppWebDirectory = path.join(_testAppDirectory, 'web');
 final String _appBuildDirectory = path.join(_testAppDirectory, 'build', 'web');
 final String _target = path.join('lib', 'service_worker_test.dart');
-final String _targetWithCachedResources = path.join('lib', 'service_worker_test_cached_resources.dart');
-final String _targetWithBlockedServiceWorkers = path.join('lib', 'service_worker_test_blocked_service_workers.dart');
+final String _targetWithCachedResources = path.join(
+  'lib',
+  'service_worker_test_cached_resources.dart',
+);
+final String _targetWithBlockedServiceWorkers = path.join(
+  'lib',
+  'service_worker_test_blocked_service_workers.dart',
+);
 final String _targetPath = path.join(_testAppDirectory, _target);
 
 enum ServiceWorkerTestType {
@@ -46,16 +59,46 @@ Future<void> main() async {
   // When updating this list, also update `dev/bots/test.dart`. This `main()`
   // function is only here for convenience. Adding tests here will not add them
   // to LUCI.
-  await runWebServiceWorkerTest(headless: false, testType: ServiceWorkerTestType.withoutFlutterJs);
-  await runWebServiceWorkerTest(headless: false, testType: ServiceWorkerTestType.withFlutterJs);
-  await runWebServiceWorkerTest(headless: false, testType: ServiceWorkerTestType.withFlutterJsShort);
-  await runWebServiceWorkerTest(headless: false, testType: ServiceWorkerTestType.withFlutterJsEntrypointLoadedEvent);
-  await runWebServiceWorkerTest(headless: false, testType: ServiceWorkerTestType.withFlutterJsTrustedTypesOn);
-  await runWebServiceWorkerTestWithCachingResources(headless: false, testType: ServiceWorkerTestType.withoutFlutterJs);
-  await runWebServiceWorkerTestWithCachingResources(headless: false, testType: ServiceWorkerTestType.withFlutterJs);
-  await runWebServiceWorkerTestWithCachingResources(headless: false, testType: ServiceWorkerTestType.withFlutterJsShort);
-  await runWebServiceWorkerTestWithCachingResources(headless: false, testType: ServiceWorkerTestType.withFlutterJsEntrypointLoadedEvent);
-  await runWebServiceWorkerTestWithCachingResources(headless: false, testType: ServiceWorkerTestType.withFlutterJsTrustedTypesOn);
+  await runWebServiceWorkerTest(
+    headless: false,
+    testType: ServiceWorkerTestType.withoutFlutterJs,
+  );
+  await runWebServiceWorkerTest(
+    headless: false,
+    testType: ServiceWorkerTestType.withFlutterJs,
+  );
+  await runWebServiceWorkerTest(
+    headless: false,
+    testType: ServiceWorkerTestType.withFlutterJsShort,
+  );
+  await runWebServiceWorkerTest(
+    headless: false,
+    testType: ServiceWorkerTestType.withFlutterJsEntrypointLoadedEvent,
+  );
+  await runWebServiceWorkerTest(
+    headless: false,
+    testType: ServiceWorkerTestType.withFlutterJsTrustedTypesOn,
+  );
+  await runWebServiceWorkerTestWithCachingResources(
+    headless: false,
+    testType: ServiceWorkerTestType.withoutFlutterJs,
+  );
+  await runWebServiceWorkerTestWithCachingResources(
+    headless: false,
+    testType: ServiceWorkerTestType.withFlutterJs,
+  );
+  await runWebServiceWorkerTestWithCachingResources(
+    headless: false,
+    testType: ServiceWorkerTestType.withFlutterJsShort,
+  );
+  await runWebServiceWorkerTestWithCachingResources(
+    headless: false,
+    testType: ServiceWorkerTestType.withFlutterJsEntrypointLoadedEvent,
+  );
+  await runWebServiceWorkerTestWithCachingResources(
+    headless: false,
+    testType: ServiceWorkerTestType.withFlutterJsTrustedTypesOn,
+  );
   await runWebServiceWorkerTestWithGeneratedEntrypoint(headless: false);
   await runWebServiceWorkerTestWithBlockedServiceWorkers(headless: false);
 
@@ -72,17 +115,26 @@ Future<void> runWebServiceWorkerTestWithGeneratedEntrypoint({
   required bool headless,
 }) async {
   await _generateEntrypoint();
-  await runWebServiceWorkerTestWithCachingResources(headless: headless, testType: ServiceWorkerTestType.generatedEntrypoint);
+  await runWebServiceWorkerTestWithCachingResources(
+    headless: headless,
+    testType: ServiceWorkerTestType.generatedEntrypoint,
+  );
 }
 
 Future<void> _generateEntrypoint() async {
-  final Directory tempDirectory = Directory.systemTemp.createTempSync('flutter_web_generated_entrypoint.');
-  await runCommand(
-    _flutter,
-    <String>[ 'create', 'generated_entrypoint_test' ],
-    workingDirectory: tempDirectory.path,
+  final Directory tempDirectory = Directory.systemTemp.createTempSync(
+    'flutter_web_generated_entrypoint.',
   );
-  final File generatedEntrypoint = File(path.join(tempDirectory.path, 'generated_entrypoint_test', 'web', 'index.html'));
+  await runCommand(_flutter, <String>[
+    'create',
+    'generated_entrypoint_test',
+  ], workingDirectory: tempDirectory.path);
+  final File generatedEntrypoint = File(path.join(
+    tempDirectory.path,
+    'generated_entrypoint_test',
+    'web',
+    'index.html',
+  ));
   final String generatedEntrypointCode = generatedEntrypoint.readAsStringSync();
   final File testEntrypoint = File(path.join(
     _testAppWebDirectory,
@@ -94,12 +146,10 @@ Future<void> _generateEntrypoint() async {
 
 Future<void> _setAppVersion(int version) async {
   final File targetFile = File(_targetPath);
-  await targetFile.writeAsString(
-    (await targetFile.readAsString()).replaceFirst(
-      RegExp(r'CLOSE\?version=\d+'),
-      'CLOSE?version=$version',
-    )
-  );
+  await targetFile.writeAsString((await targetFile.readAsString()).replaceFirst(
+    RegExp(r'CLOSE\?version=\d+'),
+    'CLOSE?version=$version',
+  ));
 }
 
 String _testTypeToIndexFile(ServiceWorkerTestType type) {
@@ -123,48 +173,47 @@ String _testTypeToIndexFile(ServiceWorkerTestType type) {
   return indexFile;
 }
 
-Future<void> _rebuildApp({ required int version, required ServiceWorkerTestType testType, required String target }) async {
+Future<void> _rebuildApp({
+  required int version,
+  required ServiceWorkerTestType testType,
+  required String target,
+}) async {
   await _setAppVersion(version);
-  await runCommand(
-    _flutter,
-    <String>[ 'clean' ],
-    workingDirectory: _testAppDirectory,
-  );
-  await runCommand(
-    'cp',
-    <String>[
-      _testTypeToIndexFile(testType),
-      'index.html',
-    ],
-    workingDirectory: _testAppWebDirectory,
-  );
+  await runCommand(_flutter, <String>[
+    'clean',
+  ], workingDirectory: _testAppDirectory);
+  await runCommand('cp', <String>[
+    _testTypeToIndexFile(testType),
+    'index.html',
+  ], workingDirectory: _testAppWebDirectory);
   await runCommand(
     _flutter,
     <String>['build', 'web', '--web-resources-cdn', '--profile', '-t', target],
     workingDirectory: _testAppDirectory,
-    environment: <String, String>{
-      'FLUTTER_WEB': 'true',
-    },
+    environment: <String, String>{'FLUTTER_WEB': 'true'},
   );
 }
 
 void _expectRequestCounts(
-    Map<String, int> expectedCounts,
-    Map<String, int> requestedPathCounts,
+  Map<String, int> expectedCounts,
+  Map<String, int> requestedPathCounts,
 ) {
   expect(requestedPathCounts, expectedCounts);
   requestedPathCounts.clear();
 }
 
 Future<void> _waitForAppToLoad(
-    Map<String, int> waitForCounts,
-    Map<String, int> requestedPathCounts,
-    AppServer? server
+  Map<String, int> waitForCounts,
+  Map<String, int> requestedPathCounts,
+  AppServer? server,
 ) async {
   print('Waiting for app to load $waitForCounts');
   await Future.any(<Future<Object?>>[
     () async {
-      while (!waitForCounts.entries.every((MapEntry<String, int> entry) => (requestedPathCounts[entry.key] ?? 0) >= entry.value)) {
+      while (!waitForCounts.entries.every(
+        (MapEntry<String, int> entry) =>
+            (requestedPathCounts[entry.key] ?? 0) >= entry.value,
+      )) {
         await Future<void>.delayed(const Duration(milliseconds: 100));
       }
     }(),
@@ -193,20 +242,21 @@ Future<void> runWebServiceWorkerTest({
   required ServiceWorkerTestType testType,
 }) async {
   final Map<String, int> requestedPathCounts = <String, int>{};
-  void expectRequestCounts(Map<String, int> expectedCounts) =>
-      _expectRequestCounts(expectedCounts, requestedPathCounts);
+  void expectRequestCounts(
+    Map<String, int> expectedCounts,
+  ) => _expectRequestCounts(expectedCounts, requestedPathCounts);
 
   AppServer? server;
-  Future<void> waitForAppToLoad(Map<String, int> waitForCounts) async =>
-      _waitForAppToLoad(waitForCounts, requestedPathCounts, server);
+  Future<void> waitForAppToLoad(
+    Map<String, int> waitForCounts,
+  ) async => _waitForAppToLoad(waitForCounts, requestedPathCounts, server);
 
   String? reportedVersion;
 
-  Future<void> startAppServer({
-    required String cacheControl,
-  }) async {
+  Future<void> startAppServer({required String cacheControl}) async {
     final int serverPort = await findAvailablePortAndPossiblyCauseFlakyTests();
-    final int browserDebugPort = await findAvailablePortAndPossiblyCauseFlakyTests();
+    final int browserDebugPort =
+        await findAvailablePortAndPossiblyCauseFlakyTests();
     server = await AppServer.start(
       headless: headless,
       cacheControl: cacheControl,
@@ -220,7 +270,8 @@ Future<void> runWebServiceWorkerTest({
         (Request request) {
           final String requestedPath = request.url.path;
           requestedPathCounts.putIfAbsent(requestedPath, () => 0);
-          requestedPathCounts[requestedPath] = requestedPathCounts[requestedPath]! + 1;
+          requestedPathCounts[requestedPath] =
+              requestedPathCounts[requestedPath]! + 1;
           if (requestedPath == 'CLOSE') {
             reportedVersion = request.url.queryParameters['version'];
             return Response.ok('OK');
@@ -232,18 +283,17 @@ Future<void> runWebServiceWorkerTest({
   }
 
   // Preserve old index.html as index_og.html so we can restore it later for other tests
-  await runCommand(
-    'mv',
-    <String>[
-      'index.html',
-      'index_og.html',
-    ],
-    workingDirectory: _testAppWebDirectory,
+  await runCommand('mv', <String>[
+    'index.html',
+    'index_og.html',
+  ], workingDirectory: _testAppWebDirectory);
+
+  final bool shouldExpectFlutterJs =
+      testType != ServiceWorkerTestType.withoutFlutterJs;
+
+  print(
+    'BEGIN runWebServiceWorkerTest(headless: $headless, testType: $testType)',
   );
-
-  final bool shouldExpectFlutterJs = testType != ServiceWorkerTestType.withoutFlutterJs;
-
-  print('BEGIN runWebServiceWorkerTest(headless: $headless, testType: $testType)');
 
   try {
     /////
@@ -253,18 +303,16 @@ Future<void> runWebServiceWorkerTest({
 
     print('Call update() on the current web worker');
     await startAppServer(cacheControl: 'max-age=0');
-    await waitForAppToLoad(<String, int> {
-      if (shouldExpectFlutterJs)
-        'flutter.js': 1,
+    await waitForAppToLoad(<String, int>{
+      if (shouldExpectFlutterJs) 'flutter.js': 1,
       'CLOSE': 1,
     });
     expect(reportedVersion, '1');
     reportedVersion = null;
 
     await server!.chrome.reloadPage(ignoreCache: true);
-    await waitForAppToLoad(<String, int> {
-      if (shouldExpectFlutterJs)
-        'flutter.js': 2,
+    await waitForAppToLoad(<String, int>{
+      if (shouldExpectFlutterJs) 'flutter.js': 2,
       'CLOSE': 2,
     });
     expect(reportedVersion, '1');
@@ -274,8 +322,7 @@ Future<void> runWebServiceWorkerTest({
 
     await server!.chrome.reloadPage(ignoreCache: true);
     await waitForAppToLoad(<String, int>{
-      if (shouldExpectFlutterJs)
-        'flutter.js': 3,
+      if (shouldExpectFlutterJs) 'flutter.js': 3,
       'CLOSE': 3,
     });
     expect(reportedVersion, '2');
@@ -301,8 +348,7 @@ Future<void> runWebServiceWorkerTest({
       // once by the initial page load, and once by the service worker.
       // Other resources are loaded once only by the service worker.
       'index.html': 2,
-      if (shouldExpectFlutterJs)
-        'flutter.js': 1,
+      if (shouldExpectFlutterJs) 'flutter.js': 1,
       'main.dart.js': 1,
       'flutter_service_worker.js': 1,
       'assets/FontManifest.json': 1,
@@ -310,11 +356,7 @@ Future<void> runWebServiceWorkerTest({
       'assets/fonts/MaterialIcons-Regular.otf': 1,
       'CLOSE': 1,
       // In headless mode Chrome does not load 'manifest.json' and 'favicon.ico'.
-      if (!headless)
-        ...<String, int>{
-          'manifest.json': 1,
-          'favicon.ico': 1,
-        },
+      if (!headless) ...<String, int>{'manifest.json': 1, 'favicon.ico': 1},
     });
     expect(reportedVersion, '1');
     reportedVersion = null;
@@ -344,21 +386,18 @@ Future<void> runWebServiceWorkerTest({
     });
     expectRequestCounts(<String, int>{
       'index.html': 2,
-      if (shouldExpectFlutterJs)
-        'flutter.js': 1,
+      if (shouldExpectFlutterJs) 'flutter.js': 1,
       'flutter_service_worker.js': 2,
       'main.dart.js': 1,
       'assets/AssetManifest.json': 1,
       'assets/FontManifest.json': 1,
       'CLOSE': 1,
-      if (!headless)
-        'favicon.ico': 1,
+      if (!headless) 'favicon.ico': 1,
     });
 
     expect(reportedVersion, '2');
     reportedVersion = null;
     await server!.stop();
-
 
     //////////////////////////////////////////////////////
     // Non-caching server
@@ -373,8 +412,7 @@ Future<void> runWebServiceWorkerTest({
 
     expectRequestCounts(<String, int>{
       'index.html': 2,
-      if (shouldExpectFlutterJs)
-        'flutter.js': 1,
+      if (shouldExpectFlutterJs) 'flutter.js': 1,
       'main.dart.js': 1,
       'assets/FontManifest.json': 1,
       'flutter_service_worker.js': 1,
@@ -382,11 +420,7 @@ Future<void> runWebServiceWorkerTest({
       'assets/fonts/MaterialIcons-Regular.otf': 1,
       'CLOSE': 1,
       // In headless mode Chrome does not load 'manifest.json' and 'favicon.ico'.
-      if (!headless)
-        ...<String, int>{
-          'manifest.json': 1,
-          'favicon.ico': 1,
-        },
+      if (!headless) ...<String, int>{'manifest.json': 1, 'favicon.ico': 1},
     });
 
     expect(reportedVersion, '3');
@@ -396,18 +430,15 @@ Future<void> runWebServiceWorkerTest({
     await server!.chrome.reloadPage();
     await waitForAppToLoad(<String, int>{
       'CLOSE': 1,
-      if (shouldExpectFlutterJs)
-        'flutter.js': 1,
+      if (shouldExpectFlutterJs) 'flutter.js': 1,
       'flutter_service_worker.js': 1,
     });
 
     expectRequestCounts(<String, int>{
-      if (shouldExpectFlutterJs)
-        'flutter.js': 1,
+      if (shouldExpectFlutterJs) 'flutter.js': 1,
       'flutter_service_worker.js': 1,
       'CLOSE': 1,
-      if (!headless)
-        'manifest.json': 1,
+      if (!headless) 'manifest.json': 1,
     });
     expect(reportedVersion, '3');
     reportedVersion = null;
@@ -427,55 +458,49 @@ Future<void> runWebServiceWorkerTest({
     });
     expectRequestCounts(<String, int>{
       'index.html': 2,
-      if (shouldExpectFlutterJs)
-        'flutter.js': 1,
+      if (shouldExpectFlutterJs) 'flutter.js': 1,
       'flutter_service_worker.js': 2,
       'main.dart.js': 1,
       'assets/AssetManifest.json': 1,
       'assets/FontManifest.json': 1,
       'CLOSE': 1,
-      if (!headless)
-        ...<String, int>{
-          'manifest.json': 1,
-          'favicon.ico': 1,
-        },
+      if (!headless) ...<String, int>{'manifest.json': 1, 'favicon.ico': 1},
     });
 
     expect(reportedVersion, '4');
     reportedVersion = null;
   } finally {
-    await runCommand(
-      'mv',
-      <String>[
-        'index_og.html',
-        'index.html',
-      ],
-      workingDirectory: _testAppWebDirectory,
-    );
+    await runCommand('mv', <String>[
+      'index_og.html',
+      'index.html',
+    ], workingDirectory: _testAppWebDirectory);
     await _setAppVersion(1);
     await server?.stop();
   }
 
-  print('END runWebServiceWorkerTest(headless: $headless, testType: $testType)');
+  print(
+    'END runWebServiceWorkerTest(headless: $headless, testType: $testType)',
+  );
 }
 
 Future<void> runWebServiceWorkerTestWithCachingResources({
   required bool headless,
-  required ServiceWorkerTestType testType
+  required ServiceWorkerTestType testType,
 }) async {
   final Map<String, int> requestedPathCounts = <String, int>{};
-  void expectRequestCounts(Map<String, int> expectedCounts) =>
-      _expectRequestCounts(expectedCounts, requestedPathCounts);
+  void expectRequestCounts(
+    Map<String, int> expectedCounts,
+  ) => _expectRequestCounts(expectedCounts, requestedPathCounts);
 
   AppServer? server;
-  Future<void> waitForAppToLoad(Map<String, int> waitForCounts) async =>
-      _waitForAppToLoad(waitForCounts, requestedPathCounts, server);
+  Future<void> waitForAppToLoad(
+    Map<String, int> waitForCounts,
+  ) async => _waitForAppToLoad(waitForCounts, requestedPathCounts, server);
 
-  Future<void> startAppServer({
-    required String cacheControl,
-  }) async {
+  Future<void> startAppServer({required String cacheControl}) async {
     final int serverPort = await findAvailablePortAndPossiblyCauseFlakyTests();
-    final int browserDebugPort = await findAvailablePortAndPossiblyCauseFlakyTests();
+    final int browserDebugPort =
+        await findAvailablePortAndPossiblyCauseFlakyTests();
     server = await AppServer.start(
       headless: headless,
       cacheControl: cacheControl,
@@ -486,10 +511,11 @@ Future<void> runWebServiceWorkerTestWithCachingResources({
       browserDebugPort: browserDebugPort,
       appDirectory: _appBuildDirectory,
       additionalRequestHandlers: <Handler>[
-            (Request request) {
+        (Request request) {
           final String requestedPath = request.url.path;
           requestedPathCounts.putIfAbsent(requestedPath, () => 0);
-          requestedPathCounts[requestedPath] = requestedPathCounts[requestedPath]! + 1;
+          requestedPathCounts[requestedPath] =
+              requestedPathCounts[requestedPath]! + 1;
           if (requestedPath == 'assets/fonts/MaterialIcons-Regular.otf') {
             return Response.internalServerError();
           }
@@ -500,24 +526,27 @@ Future<void> runWebServiceWorkerTestWithCachingResources({
   }
 
   // Preserve old index.html as index_og.html so we can restore it later for other tests
-  await runCommand(
-    'mv',
-    <String>[
-      'index.html',
-      'index_og.html',
-    ],
-    workingDirectory: _testAppWebDirectory,
+  await runCommand('mv', <String>[
+    'index.html',
+    'index_og.html',
+  ], workingDirectory: _testAppWebDirectory);
+
+  final bool shouldExpectFlutterJs =
+      testType != ServiceWorkerTestType.withoutFlutterJs;
+
+  print(
+    'BEGIN runWebServiceWorkerTestWithCachingResources(headless: $headless, testType: $testType)',
   );
-
-  final bool shouldExpectFlutterJs = testType != ServiceWorkerTestType.withoutFlutterJs;
-
-  print('BEGIN runWebServiceWorkerTestWithCachingResources(headless: $headless, testType: $testType)');
 
   try {
     //////////////////////////////////////////////////////
     // Caching server
     //////////////////////////////////////////////////////
-    await _rebuildApp(version: 1, testType: testType, target: _targetWithCachedResources);
+    await _rebuildApp(
+      version: 1,
+      testType: testType,
+      target: _targetWithCachedResources,
+    );
 
     print('With cache: test first page load');
     await startAppServer(cacheControl: 'max-age=3600');
@@ -531,19 +560,14 @@ Future<void> runWebServiceWorkerTestWithCachingResources({
       // once by the initial page load, and once by the service worker.
       // Other resources are loaded once only by the service worker.
       'index.html': 2,
-      if (shouldExpectFlutterJs)
-        'flutter.js': 1,
+      if (shouldExpectFlutterJs) 'flutter.js': 1,
       'main.dart.js': 1,
       'flutter_service_worker.js': 1,
       'assets/FontManifest.json': 1,
       'assets/AssetManifest.json': 1,
       'assets/fonts/MaterialIcons-Regular.otf': 1,
       // In headless mode Chrome does not load 'manifest.json' and 'favicon.ico'.
-      if (!headless)
-        ...<String, int>{
-          'manifest.json': 1,
-          'favicon.ico': 1,
-        },
+      if (!headless) ...<String, int>{'manifest.json': 1, 'favicon.ico': 1},
     });
 
     print('With cache: test first page reload');
@@ -580,7 +604,11 @@ Future<void> runWebServiceWorkerTestWithCachingResources({
     });
 
     print('With cache: test page reload after rebuild');
-    await _rebuildApp(version: 1, testType: testType, target: _targetWithCachedResources);
+    await _rebuildApp(
+      version: 1,
+      testType: testType,
+      target: _targetWithCachedResources,
+    );
 
     // Since we're caching, we need to ignore cache when reloading the page.
     await server!.chrome.reloadPage(ignoreCache: true);
@@ -590,50 +618,45 @@ Future<void> runWebServiceWorkerTestWithCachingResources({
     });
     expectRequestCounts(<String, int>{
       'index.html': 2,
-      if (shouldExpectFlutterJs)
-        'flutter.js': 1,
+      if (shouldExpectFlutterJs) 'flutter.js': 1,
       'main.dart.js': 1,
       'flutter_service_worker.js': 2,
       'assets/FontManifest.json': 1,
       'assets/AssetManifest.json': 1,
       'assets/fonts/MaterialIcons-Regular.otf': 1,
       // In headless mode Chrome does not load 'manifest.json' and 'favicon.ico'.
-      if (!headless)
-        ...<String, int>{
-          'favicon.ico': 1,
-        },
+      if (!headless) ...<String, int>{'favicon.ico': 1},
     });
   } finally {
-    await runCommand(
-      'mv',
-      <String>[
-        'index_og.html',
-        'index.html',
-      ],
-      workingDirectory: _testAppWebDirectory,
-    );
+    await runCommand('mv', <String>[
+      'index_og.html',
+      'index.html',
+    ], workingDirectory: _testAppWebDirectory);
     await server?.stop();
   }
 
-  print('END runWebServiceWorkerTestWithCachingResources(headless: $headless, testType: $testType)');
+  print(
+    'END runWebServiceWorkerTestWithCachingResources(headless: $headless, testType: $testType)',
+  );
 }
 
 Future<void> runWebServiceWorkerTestWithBlockedServiceWorkers({
-  required bool headless
+  required bool headless,
 }) async {
   final Map<String, int> requestedPathCounts = <String, int>{};
-  void expectRequestCounts(Map<String, int> expectedCounts) =>
-      _expectRequestCounts(expectedCounts, requestedPathCounts);
+  void expectRequestCounts(
+    Map<String, int> expectedCounts,
+  ) => _expectRequestCounts(expectedCounts, requestedPathCounts);
 
   AppServer? server;
-  Future<void> waitForAppToLoad(Map<String, int> waitForCounts) async =>
-      _waitForAppToLoad(waitForCounts, requestedPathCounts, server);
+  Future<void> waitForAppToLoad(
+    Map<String, int> waitForCounts,
+  ) async => _waitForAppToLoad(waitForCounts, requestedPathCounts, server);
 
-  Future<void> startAppServer({
-    required String cacheControl,
-  }) async {
+  Future<void> startAppServer({required String cacheControl}) async {
     final int serverPort = await findAvailablePortAndPossiblyCauseFlakyTests();
-    final int browserDebugPort = await findAvailablePortAndPossiblyCauseFlakyTests();
+    final int browserDebugPort =
+        await findAvailablePortAndPossiblyCauseFlakyTests();
     server = await AppServer.start(
       headless: headless,
       cacheControl: cacheControl,
@@ -647,7 +670,8 @@ Future<void> runWebServiceWorkerTestWithBlockedServiceWorkers({
         (Request request) {
           final String requestedPath = request.url.path;
           requestedPathCounts.putIfAbsent(requestedPath, () => 0);
-          requestedPathCounts[requestedPath] = requestedPathCounts[requestedPath]! + 1;
+          requestedPathCounts[requestedPath] =
+              requestedPathCounts[requestedPath]! + 1;
           if (requestedPath == 'CLOSE') {
             return Response.ok('OK');
           }
@@ -658,24 +682,24 @@ Future<void> runWebServiceWorkerTestWithBlockedServiceWorkers({
   }
 
   // Preserve old index.html as index_og.html so we can restore it later for other tests
-  await runCommand(
-    'mv',
-    <String>[
-      'index.html',
-      'index_og.html',
-    ],
-    workingDirectory: _testAppWebDirectory,
-  );
+  await runCommand('mv', <String>[
+    'index.html',
+    'index_og.html',
+  ], workingDirectory: _testAppWebDirectory);
 
-  print('BEGIN runWebServiceWorkerTestWithBlockedServiceWorkers(headless: $headless)');
+  print(
+    'BEGIN runWebServiceWorkerTestWithBlockedServiceWorkers(headless: $headless)',
+  );
   try {
-    await _rebuildApp(version: 1, testType: ServiceWorkerTestType.blockedServiceWorkers, target: _targetWithBlockedServiceWorkers);
+    await _rebuildApp(
+      version: 1,
+      testType: ServiceWorkerTestType.blockedServiceWorkers,
+      target: _targetWithBlockedServiceWorkers,
+    );
 
     print('Ensure app starts (when service workers are blocked)');
     await startAppServer(cacheControl: 'max-age=3600');
-    await waitForAppToLoad(<String, int>{
-      'CLOSE': 1,
-    });
+    await waitForAppToLoad(<String, int>{'CLOSE': 1});
     expectRequestCounts(<String, int>{
       'index.html': 1,
       'flutter.js': 1,
@@ -684,22 +708,16 @@ Future<void> runWebServiceWorkerTestWithBlockedServiceWorkers({
       'assets/fonts/MaterialIcons-Regular.otf': 1,
       'CLOSE': 1,
       // In headless mode Chrome does not load 'manifest.json' and 'favicon.ico'.
-      if (!headless)
-        ...<String, int>{
-          'manifest.json': 1,
-          'favicon.ico': 1,
-        },
+      if (!headless) ...<String, int>{'manifest.json': 1, 'favicon.ico': 1},
     });
   } finally {
-    await runCommand(
-      'mv',
-      <String>[
-        'index_og.html',
-        'index.html',
-      ],
-      workingDirectory: _testAppWebDirectory,
-    );
+    await runCommand('mv', <String>[
+      'index_og.html',
+      'index.html',
+    ], workingDirectory: _testAppWebDirectory);
     await server?.stop();
   }
-  print('END runWebServiceWorkerTestWithBlockedServiceWorkers(headless: $headless)');
+  print(
+    'END runWebServiceWorkerTestWithBlockedServiceWorkers(headless: $headless)',
+  );
 }

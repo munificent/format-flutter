@@ -61,11 +61,9 @@ class SelectionContainer extends StatefulWidget {
   /// {@end-tool}
   ///
   /// The [child] must not be null.
-  const SelectionContainer.disabled({
-    super.key,
-    required this.child,
-  }) : registrar = null,
-       delegate = null;
+  const SelectionContainer.disabled({super.key, required this.child})
+    : registrar = null,
+      delegate = null;
 
   /// The [SelectionRegistrar] this container is registered to.
   ///
@@ -91,7 +89,8 @@ class SelectionContainer extends StatefulWidget {
   /// the [BuildContext] or the immediate [SelectionContainer] is not
   /// enabled.
   static SelectionRegistrar? maybeOf(BuildContext context) {
-    final SelectionRegistrarScope? scope = context.dependOnInheritedWidgetOfExactType<SelectionRegistrarScope>();
+    final SelectionRegistrarScope? scope =
+        context.dependOnInheritedWidgetOfExactType<SelectionRegistrarScope>();
     return scope?.registrar;
   }
 
@@ -101,7 +100,8 @@ class SelectionContainer extends StatefulWidget {
   State<SelectionContainer> createState() => _SelectionContainerState();
 }
 
-class _SelectionContainerState extends State<SelectionContainer> with Selectable, SelectionRegistrant {
+class _SelectionContainerState extends State<SelectionContainer>
+    with Selectable, SelectionRegistrant {
   final Set<VoidCallback> _listeners = <VoidCallback>{};
 
   static const SelectionGeometry _disabledGeometry = SelectionGeometry(
@@ -134,7 +134,8 @@ class _SelectionContainerState extends State<SelectionContainer> with Selectable
       }
       if (oldWidget.delegate?.value != widget.delegate?.value) {
         // Avoid concurrent modification.
-        for (final VoidCallback listener in _listeners.toList(growable: false)) {
+        for (final VoidCallback listener
+            in _listeners.toList(growable: false)) {
           listener();
         }
       }
@@ -244,9 +245,8 @@ class SelectionRegistrarScope extends InheritedWidget {
 
   /// Creates a selection registrar scope that disables selection for the
   /// subtree.
-  const SelectionRegistrarScope._disabled({
-    required super.child,
-  }) : registrar = null;
+  const SelectionRegistrarScope._disabled({required super.child})
+    : registrar = null;
 
   /// The [SelectionRegistrar] hosted by this widget.
   final SelectionRegistrar? registrar;
@@ -261,7 +261,8 @@ class SelectionRegistrarScope extends InheritedWidget {
 ///
 /// This delegate needs to implement [SelectionRegistrar] to register
 /// [Selectable]s in the [SelectionContainer] subtree.
-abstract class SelectionContainerDelegate implements SelectionHandler, SelectionRegistrar {
+abstract class SelectionContainerDelegate
+    implements SelectionHandler, SelectionRegistrar {
   BuildContext? _selectionContainerContext;
 
   /// Gets the paint transform from the [Selectable] child to
@@ -276,7 +277,9 @@ abstract class SelectionContainerDelegate implements SelectionHandler, Selection
       _selectionContainerContext?.findRenderObject() != null,
       'getTransformFrom cannot be called before SelectionContainer is laid out.',
     );
-    return child.getTransformTo(_selectionContainerContext!.findRenderObject()! as RenderBox);
+    return child.getTransformTo(
+      _selectionContainerContext!.findRenderObject()! as RenderBox,
+    );
   }
 
   /// Gets the paint transform from the [SelectionContainer] of this delegate to
@@ -295,7 +298,8 @@ abstract class SelectionContainerDelegate implements SelectionHandler, Selection
       _selectionContainerContext?.findRenderObject() != null,
       'getTransformTo cannot be called before SelectionContainer is laid out.',
     );
-    final RenderBox box = _selectionContainerContext!.findRenderObject()! as RenderBox;
+    final RenderBox box =
+        _selectionContainerContext!.findRenderObject()! as RenderBox;
     return box.getTransformTo(ancestor);
   }
 
@@ -306,10 +310,11 @@ abstract class SelectionContainerDelegate implements SelectionHandler, Selection
   ///  * [RenderBox.hasSize], which is used internally by this method.
   bool get hasSize {
     assert(
-    _selectionContainerContext?.findRenderObject() != null,
-    'The _selectionContainerContext must have a renderObject, such as after the first build has completed.',
+      _selectionContainerContext?.findRenderObject() != null,
+      'The _selectionContainerContext must have a renderObject, such as after the first build has completed.',
     );
-    final RenderBox box = _selectionContainerContext!.findRenderObject()! as RenderBox;
+    final RenderBox box =
+        _selectionContainerContext!.findRenderObject()! as RenderBox;
     return box.hasSize;
   }
 
@@ -321,7 +326,8 @@ abstract class SelectionContainerDelegate implements SelectionHandler, Selection
       hasSize,
       'containerSize cannot be called before SelectionContainer is laid out.',
     );
-    final RenderBox box = _selectionContainerContext!.findRenderObject()! as RenderBox;
+    final RenderBox box =
+        _selectionContainerContext!.findRenderObject()! as RenderBox;
     return box.size;
   }
 }

@@ -11,10 +11,7 @@ import 'package:flutter/services.dart';
 class AndroidPlatformView extends StatelessWidget {
   /// Creates a platform view for Android, which is rendered as a
   /// native view.
-  const AndroidPlatformView({
-    super.key,
-    required this.viewType,
-  });
+  const AndroidPlatformView({super.key, required this.viewType});
 
   /// The unique identifier for the view type to be embedded by this widget.
   ///

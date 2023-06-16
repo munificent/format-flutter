@@ -67,7 +67,12 @@ void _runBasicStandardParallelRecurse(
   } else if (counter.count < count) {
     basicStandard.send(payload).then((Object? result) {
       _runBasicStandardParallelRecurse(
-          basicStandard, counter, count, completer, payload);
+        basicStandard,
+        counter,
+        count,
+        completer,
+        payload,
+      );
     });
   }
 }
@@ -85,7 +90,12 @@ Future<double> _runBasicStandardParallel(
   for (int i = 0; i < parallel; ++i) {
     basicStandard.send(payload).then((Object? result) {
       _runBasicStandardParallelRecurse(
-          basicStandard, counter, count, completer, payload);
+        basicStandard,
+        counter,
+        count,
+        completer,
+        payload,
+      );
     });
   }
   await completer.future;
@@ -168,21 +178,15 @@ Future<void> _runTests() async {
     );
   }
 
-  const BasicMessageChannel<Object?> resetChannel =
-      BasicMessageChannel<Object?>(
-    'dev.flutter.echo.reset',
-    StandardMessageCodec(),
-  );
-  const BasicMessageChannel<Object?> basicStandard =
-      BasicMessageChannel<Object?>(
-    'dev.flutter.echo.basic.standard',
-    StandardMessageCodec(),
-  );
-  const BasicMessageChannel<ByteData> basicBinary =
-      BasicMessageChannel<ByteData>(
-    'dev.flutter.echo.basic.binary',
-    BinaryCodec(),
-  );
+  const BasicMessageChannel<Object?> resetChannel = BasicMessageChannel<
+    Object?
+  >('dev.flutter.echo.reset', StandardMessageCodec());
+  const BasicMessageChannel<Object?> basicStandard = BasicMessageChannel<
+    Object?
+  >('dev.flutter.echo.basic.standard', StandardMessageCodec());
+  const BasicMessageChannel<ByteData> basicBinary = BasicMessageChannel<
+    ByteData
+  >('dev.flutter.echo.basic.binary', BinaryCodec());
 
   /// WARNING: Don't change the following line of code, it will invalidate
   /// `Large` tests. Instead make a different test. The size of largeBuffer
@@ -237,11 +241,9 @@ Future<void> _runTests() async {
     numMessages: numMessages,
   );
   // Background platform channels aren't yet implemented for iOS.
-  const BasicMessageChannel<Object?> backgroundStandard =
-      BasicMessageChannel<Object?>(
-    'dev.flutter.echo.background.standard',
-    StandardMessageCodec(),
-  );
+  const BasicMessageChannel<Object?> backgroundStandard = BasicMessageChannel<
+    Object?
+  >('dev.flutter.echo.background.standard', StandardMessageCodec());
   await _runTest(
     test: (int x) => _runBasicStandardSmall(backgroundStandard, x),
     resetChannel: resetChannel,

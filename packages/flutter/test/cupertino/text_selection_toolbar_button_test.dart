@@ -10,18 +10,16 @@ void main() {
 
   testWidgets('can press', (WidgetTester tester) async {
     bool pressed = false;
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextSelectionToolbarButton(
-            child: const Text('Tap me'),
-            onPressed: () {
-              pressed = true;
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextSelectionToolbarButton(
+          child: const Text('Tap me'),
+          onPressed: () {
+            pressed = true;
+          },
         ),
       ),
-    );
+    ));
 
     expect(pressed, false);
 
@@ -30,16 +28,14 @@ void main() {
   });
 
   testWidgets('pressedOpacity defaults to 0.1', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextSelectionToolbarButton(
-            child: const Text('Tap me'),
-            onPressed: () { },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextSelectionToolbarButton(
+          child: const Text('Tap me'),
+          onPressed: () {},
         ),
       ),
-    );
+    ));
 
     // Original at full opacity.
     FadeTransition opacity = tester.widget(find.descendant(
@@ -49,7 +45,9 @@ void main() {
     expect(opacity.opacity.value, 1.0);
 
     // Make a "down" gesture on the button.
-    final Offset center = tester.getCenter(find.byType(CupertinoTextSelectionToolbarButton));
+    final Offset center = tester.getCenter(
+      find.byType(CupertinoTextSelectionToolbarButton),
+    );
     final TestGesture gesture = await tester.startGesture(center);
     await tester.pumpAndSettle();
 
@@ -72,13 +70,13 @@ void main() {
     expect(opacity.opacity.value, 1.0);
   });
 
-  testWidgets('passing null to onPressed disables the button', (WidgetTester tester) async {
+  testWidgets('passing null to onPressed disables the button', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       const CupertinoApp(
         home: Center(
-          child: CupertinoTextSelectionToolbarButton(
-            child: Text('Tap me'),
-          ),
+          child: CupertinoTextSelectionToolbarButton(child: Text('Tap me')),
         ),
       ),
     );

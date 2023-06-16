@@ -31,17 +31,17 @@ class BuildCommand extends FlutterCommand {
     required Logger logger,
     required AndroidSdk? androidSdk,
     bool verboseHelp = false,
-  }){
-    _addSubcommand(
-        BuildAarCommand(
-          fileSystem: fileSystem,
-          androidSdk: androidSdk,
-          logger: logger,
-          verboseHelp: verboseHelp,
-        )
-    );
+  }) {
+    _addSubcommand(BuildAarCommand(
+      fileSystem: fileSystem,
+      androidSdk: androidSdk,
+      logger: logger,
+      verboseHelp: verboseHelp,
+    ));
     _addSubcommand(BuildApkCommand(logger: logger, verboseHelp: verboseHelp));
-    _addSubcommand(BuildAppBundleCommand(logger: logger, verboseHelp: verboseHelp));
+    _addSubcommand(
+      BuildAppBundleCommand(logger: logger, verboseHelp: verboseHelp),
+    );
     _addSubcommand(BuildIOSCommand(logger: logger, verboseHelp: verboseHelp));
     _addSubcommand(BuildIOSFrameworkCommand(
       logger: logger,
@@ -53,8 +53,12 @@ class BuildCommand extends FlutterCommand {
       buildSystem: buildSystem,
       verboseHelp: verboseHelp,
     ));
-    _addSubcommand(BuildIOSArchiveCommand(logger: logger, verboseHelp: verboseHelp));
-    _addSubcommand(BuildBundleCommand(logger: logger, verboseHelp: verboseHelp));
+    _addSubcommand(
+      BuildIOSArchiveCommand(logger: logger, verboseHelp: verboseHelp),
+    );
+    _addSubcommand(
+      BuildBundleCommand(logger: logger, verboseHelp: verboseHelp),
+    );
     _addSubcommand(BuildWebCommand(
       fileSystem: fileSystem,
       logger: logger,
@@ -64,9 +68,11 @@ class BuildCommand extends FlutterCommand {
     _addSubcommand(BuildLinuxCommand(
       logger: logger,
       operatingSystemUtils: osUtils,
-      verboseHelp: verboseHelp
+      verboseHelp: verboseHelp,
     ));
-    _addSubcommand(BuildWindowsCommand(logger: logger, verboseHelp: verboseHelp));
+    _addSubcommand(
+      BuildWindowsCommand(logger: logger, verboseHelp: verboseHelp),
+    );
   }
 
   void _addSubcommand(BuildSubCommand command) {
@@ -85,14 +91,13 @@ class BuildCommand extends FlutterCommand {
   String get category => FlutterCommandCategory.project;
 
   @override
-  Future<FlutterCommandResult> runCommand() async => FlutterCommandResult.fail();
+  Future<FlutterCommandResult> runCommand() async =>
+      FlutterCommandResult.fail();
 }
 
 abstract class BuildSubCommand extends FlutterCommand {
-  BuildSubCommand({
-    required Logger logger,
-    required bool verboseHelp
-  }): _logger = logger {
+  BuildSubCommand({required Logger logger, required bool verboseHelp})
+    : _logger = logger {
     requiresPubspecYaml();
     usesFatalWarningsOption(verboseHelp: verboseHelp);
   }

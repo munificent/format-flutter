@@ -48,26 +48,34 @@ void main() {
   group('PlatformMenuBar', () {
     group('basic menu structure is transmitted to platform', () {
       testWidgets('using onSelected', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Material(
-              child: PlatformMenuBar(
-                menus: createTestMenus(
-                  onSelected: onSelected,
-                  onOpen: onOpen,
-                  onClose: onClose,
-                  shortcuts: <String, MenuSerializableShortcut>{
-                    subSubMenu10[0]: const SingleActivator(LogicalKeyboardKey.keyA, control: true),
-                    subSubMenu10[1]: const SingleActivator(LogicalKeyboardKey.keyB, shift: true),
-                    subSubMenu10[2]: const SingleActivator(LogicalKeyboardKey.keyC, alt: true),
-                    subSubMenu10[3]: const SingleActivator(LogicalKeyboardKey.keyD, meta: true),
-                  },
-                ),
-                child: const Center(child: Text('Body')),
+        await tester.pumpWidget(MaterialApp(
+          home: Material(
+            child: PlatformMenuBar(
+              menus: createTestMenus(
+                onSelected: onSelected,
+                onOpen: onOpen,
+                onClose: onClose,
+                shortcuts: <String, MenuSerializableShortcut>{
+                  subSubMenu10[0]: const SingleActivator(
+                    LogicalKeyboardKey.keyA,
+                    control: true,
+                  ),
+                  subSubMenu10[1]: const SingleActivator(
+                    LogicalKeyboardKey.keyB,
+                    shift: true,
+                  ),
+                  subSubMenu10[2]:
+                      const SingleActivator(LogicalKeyboardKey.keyC, alt: true),
+                  subSubMenu10[3]: const SingleActivator(
+                    LogicalKeyboardKey.keyD,
+                    meta: true,
+                  ),
+                },
               ),
+              child: const Center(child: Text('Body')),
             ),
           ),
-        );
+        ));
 
         expect(
           fakeMenuChannel.outgoingCalls.last.method,
@@ -79,26 +87,34 @@ void main() {
         );
       });
       testWidgets('using onSelectedIntent', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Material(
-              child: PlatformMenuBar(
-                menus: createTestMenus(
-                  onSelectedIntent: const DoNothingIntent(),
-                  onOpen: onOpen,
-                  onClose: onClose,
-                  shortcuts: <String, MenuSerializableShortcut>{
-                    subSubMenu10[0]: const SingleActivator(LogicalKeyboardKey.keyA, control: true),
-                    subSubMenu10[1]: const SingleActivator(LogicalKeyboardKey.keyB, shift: true),
-                    subSubMenu10[2]: const SingleActivator(LogicalKeyboardKey.keyC, alt: true),
-                    subSubMenu10[3]: const SingleActivator(LogicalKeyboardKey.keyD, meta: true),
-                  },
-                ),
-                child: const Center(child: Text('Body')),
+        await tester.pumpWidget(MaterialApp(
+          home: Material(
+            child: PlatformMenuBar(
+              menus: createTestMenus(
+                onSelectedIntent: const DoNothingIntent(),
+                onOpen: onOpen,
+                onClose: onClose,
+                shortcuts: <String, MenuSerializableShortcut>{
+                  subSubMenu10[0]: const SingleActivator(
+                    LogicalKeyboardKey.keyA,
+                    control: true,
+                  ),
+                  subSubMenu10[1]: const SingleActivator(
+                    LogicalKeyboardKey.keyB,
+                    shift: true,
+                  ),
+                  subSubMenu10[2]:
+                      const SingleActivator(LogicalKeyboardKey.keyC, alt: true),
+                  subSubMenu10[3]: const SingleActivator(
+                    LogicalKeyboardKey.keyD,
+                    meta: true,
+                  ),
+                },
               ),
+              child: const Center(child: Text('Body')),
             ),
           ),
-        );
+        ));
 
         expect(
           fakeMenuChannel.outgoingCalls.last.method,
@@ -110,22 +126,25 @@ void main() {
         );
       });
     });
-    testWidgets('asserts when more than one has locked the delegate', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Material(
-            child: PlatformMenuBar(
-              menus: <PlatformMenuItem>[],
+    testWidgets(
+      'asserts when more than one has locked the delegate',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Material(
               child: PlatformMenuBar(
                 menus: <PlatformMenuItem>[],
-                child: SizedBox(),
+                child: PlatformMenuBar(
+                  menus: <PlatformMenuItem>[],
+                  child: SizedBox(),
+                ),
               ),
             ),
           ),
-        ),
-      );
-      expect(tester.takeException(), isA<AssertionError>());
-    });
+        );
+        expect(tester.takeException(), isA<AssertionError>());
+      },
+    );
     testWidgets('diagnostics', (WidgetTester tester) async {
       const PlatformMenuItem item = PlatformMenuItem(
         label: 'label2',
@@ -137,31 +156,22 @@ void main() {
       );
 
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Material(
-            child: menuBar,
-          ),
-        ),
+        const MaterialApp(home: Material(child: menuBar)),
       );
       await tester.pump();
 
-      expect(
-        menuBar.toStringDeep(),
-        equalsIgnoringHashCodes(
-          'PlatformMenuBar#00000\n'
-          ' └─PlatformMenuItem#00000(label2)\n'
-          '     label: "label2"\n'
-          '     shortcut: SingleActivator#00000(keys: Key A)\n'
-          '     DISABLED\n',
-        ),
-      );
+      expect(menuBar.toStringDeep(), equalsIgnoringHashCodes(
+        'PlatformMenuBar#00000\n'
+        ' └─PlatformMenuItem#00000(label2)\n'
+        '     label: "label2"\n'
+        '     shortcut: SingleActivator#00000(keys: Key A)\n'
+        '     DISABLED\n',
+      ));
     });
   });
   group('MenuBarItem', () {
     testWidgets('diagnostics', (WidgetTester tester) async {
-      const PlatformMenuItem childItem = PlatformMenuItem(
-        label: 'label',
-      );
+      const PlatformMenuItem childItem = PlatformMenuItem(label: 'label');
       const PlatformMenu item = PlatformMenu(
         label: 'label',
         menus: <PlatformMenuItem>[childItem],
@@ -171,55 +181,64 @@ void main() {
       item.debugFillProperties(builder);
 
       final List<String> description = builder.properties
-          .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
+          .where(
+            (DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info),
+          )
           .map((DiagnosticsNode node) => node.toString())
           .toList();
 
-      expect(description, <String>[
-        'label: "label"',
-      ]);
+      expect(description, <String>['label: "label"']);
     });
   });
 
   group('ShortcutSerialization', () {
     testWidgets('character constructor', (WidgetTester tester) async {
-      final ShortcutSerialization serialization = ShortcutSerialization.character('?');
+      final ShortcutSerialization serialization =
+          ShortcutSerialization.character('?');
       expect(serialization.toChannelRepresentation(), equals(<String, Object?>{
         'shortcutCharacter': '?',
         'shortcutModifiers': 0,
       }));
-      final ShortcutSerialization serializationWithModifiers = ShortcutSerialization.character('?', alt: true, control: true, meta: true);
-      expect(serializationWithModifiers.toChannelRepresentation(), equals(<String, Object?>{
-        'shortcutCharacter': '?',
-        'shortcutModifiers': 13,
-      }));
+      final ShortcutSerialization serializationWithModifiers =
+          ShortcutSerialization.character(
+        '?',
+        alt: true,
+        control: true,
+        meta: true,
+      );
+      expect(serializationWithModifiers.toChannelRepresentation(), equals(
+        <String, Object?>{'shortcutCharacter': '?', 'shortcutModifiers': 13},
+      ));
     });
 
     testWidgets('modifier constructor', (WidgetTester tester) async {
-      final ShortcutSerialization serialization = ShortcutSerialization.modifier(LogicalKeyboardKey.home);
+      final ShortcutSerialization serialization =
+          ShortcutSerialization.modifier(LogicalKeyboardKey.home);
       expect(serialization.toChannelRepresentation(), equals(<String, Object?>{
         'shortcutTrigger': LogicalKeyboardKey.home.keyId,
         'shortcutModifiers': 0,
       }));
-      final ShortcutSerialization serializationWithModifiers = ShortcutSerialization.modifier(LogicalKeyboardKey.home, alt: true, control: true, meta: true, shift: true);
-      expect(serializationWithModifiers.toChannelRepresentation(), equals(<String, Object?>{
-        'shortcutTrigger': LogicalKeyboardKey.home.keyId,
-        'shortcutModifiers': 15,
-      }));
+      final ShortcutSerialization serializationWithModifiers =
+          ShortcutSerialization.modifier(
+        LogicalKeyboardKey.home,
+        alt: true,
+        control: true,
+        meta: true,
+        shift: true,
+      );
+      expect(serializationWithModifiers.toChannelRepresentation(), equals(
+        <String, Object?>{
+          'shortcutTrigger': LogicalKeyboardKey.home.keyId,
+          'shortcutModifiers': 15,
+        },
+      ));
     });
   });
 }
 
-const List<String> mainMenu = <String>[
-  'Menu 0',
-  'Menu 1',
-  'Menu 2',
-  'Menu 3',
-];
+const List<String> mainMenu = <String>['Menu 0', 'Menu 1', 'Menu 2', 'Menu 3'];
 
-const List<String> subMenu0 = <String>[
-  'Sub Menu 00',
-];
+const List<String> subMenu0 = <String>['Sub Menu 00'];
 
 const List<String> subMenu1 = <String>[
   'Sub Menu 10',
@@ -234,16 +253,15 @@ const List<String> subSubMenu10 = <String>[
   'Sub Sub Menu 113',
 ];
 
-const List<String> subMenu2 = <String>[
-  'Sub Menu 20',
-];
+const List<String> subMenu2 = <String>['Sub Menu 20'];
 
 List<PlatformMenuItem> createTestMenus({
   void Function(String)? onSelected,
   Intent? onSelectedIntent,
   void Function(String)? onOpen,
   void Function(String)? onClose,
-  Map<String, MenuSerializableShortcut> shortcuts = const <String, MenuSerializableShortcut>{},
+  Map<String, MenuSerializableShortcut> shortcuts =
+      const <String, MenuSerializableShortcut>{},
   bool includeStandard = false,
 }) {
   final List<PlatformMenuItem> result = <PlatformMenuItem>[
@@ -269,7 +287,9 @@ List<PlatformMenuItem> createTestMenus({
           members: <PlatformMenuItem>[
             PlatformMenuItem(
               label: subMenu1[0],
-              onSelected: onSelected != null ? () => onSelected(subMenu0[0]) : null,
+              onSelected: onSelected != null
+                  ? () => onSelected(subMenu0[0])
+                  : null,
               onSelectedIntent: onSelectedIntent,
               shortcut: shortcuts[subMenu1[0]],
             ),
@@ -284,7 +304,9 @@ List<PlatformMenuItem> createTestMenus({
               members: <PlatformMenuItem>[
                 PlatformMenuItem(
                   label: subSubMenu10[0],
-                  onSelected: onSelected != null ? () => onSelected(subSubMenu10[0]) : null,
+                  onSelected: onSelected != null
+                      ? () => onSelected(subSubMenu10[0])
+                      : null,
                   onSelectedIntent: onSelectedIntent,
                   shortcut: shortcuts[subSubMenu10[0]],
                 ),
@@ -294,7 +316,9 @@ List<PlatformMenuItem> createTestMenus({
               members: <PlatformMenuItem>[
                 PlatformMenuItem(
                   label: subSubMenu10[1],
-                  onSelected: onSelected != null ? () => onSelected(subSubMenu10[1]) : null,
+                  onSelected: onSelected != null
+                      ? () => onSelected(subSubMenu10[1])
+                      : null,
                   onSelectedIntent: onSelectedIntent,
                   shortcut: shortcuts[subSubMenu10[1]],
                 ),
@@ -302,7 +326,9 @@ List<PlatformMenuItem> createTestMenus({
             ),
             PlatformMenuItem(
               label: subSubMenu10[2],
-              onSelected: onSelected != null ? () => onSelected(subSubMenu10[2]) : null,
+              onSelected: onSelected != null
+                  ? () => onSelected(subSubMenu10[2])
+                  : null,
               onSelectedIntent: onSelectedIntent,
               shortcut: shortcuts[subSubMenu10[2]],
             ),
@@ -310,7 +336,9 @@ List<PlatformMenuItem> createTestMenus({
               members: <PlatformMenuItem>[
                 PlatformMenuItem(
                   label: subSubMenu10[3],
-                  onSelected: onSelected != null ? () => onSelected(subSubMenu10[3]) : null,
+                  onSelected: onSelected != null
+                      ? () => onSelected(subSubMenu10[3])
+                      : null,
                   onSelectedIntent: onSelectedIntent,
                   shortcut: shortcuts[subSubMenu10[3]],
                 ),
@@ -356,11 +384,7 @@ const Map<String, Object?> expectedStructure = <String, Object?>{
       'label': 'Menu 0',
       'enabled': true,
       'children': <Map<String, Object?>>[
-        <String, Object?>{
-          'id': 1,
-          'label': 'Sub Menu 00',
-          'enabled': true,
-        },
+        <String, Object?>{'id': 1, 'label': 'Sub Menu 00', 'enabled': true},
       ],
     },
     <String, Object?>{
@@ -368,11 +392,7 @@ const Map<String, Object?> expectedStructure = <String, Object?>{
       'label': 'Menu 1',
       'enabled': true,
       'children': <Map<String, Object?>>[
-        <String, Object?>{
-          'id': 4,
-          'label': 'Sub Menu 10',
-          'enabled': true,
-        },
+        <String, Object?>{'id': 4, 'label': 'Sub Menu 10', 'enabled': true},
         <String, Object?>{'id': 5, 'isDivider': true},
         <String, Object?>{
           'id': 16,
@@ -412,11 +432,7 @@ const Map<String, Object?> expectedStructure = <String, Object?>{
             },
           ],
         },
-        <String, Object?>{
-          'id': 17,
-          'label': 'Sub Menu 12',
-          'enabled': true,
-        },
+        <String, Object?>{'id': 17, 'label': 'Sub Menu 12', 'enabled': true},
       ],
     },
     <String, Object?>{
@@ -424,14 +440,15 @@ const Map<String, Object?> expectedStructure = <String, Object?>{
       'label': 'Menu 2',
       'enabled': true,
       'children': <Map<String, Object?>>[
-        <String, Object?>{
-          'id': 19,
-          'label': 'Sub Menu 20',
-          'enabled': false,
-        },
+        <String, Object?>{'id': 19, 'label': 'Sub Menu 20', 'enabled': false},
       ],
     },
-    <String, Object?>{'id': 21, 'label': 'Menu 3', 'enabled': false, 'children': <Map<String, Object?>>[]},
+    <String, Object?>{
+      'id': 21,
+      'label': 'Menu 3',
+      'enabled': false,
+      'children': <Map<String, Object?>>[],
+    },
   ],
 };
 
@@ -450,10 +467,12 @@ class FakeMenuChannel implements MethodChannel {
   MethodCodec get codec => const StandardMethodCodec();
 
   @override
-  Future<List<T>> invokeListMethod<T>(String method, [dynamic arguments]) => throw UnimplementedError();
+  Future<List<T>> invokeListMethod<T>(String method, [dynamic arguments]) =>
+      throw UnimplementedError();
 
   @override
-  Future<Map<K, V>> invokeMapMethod<K, V>(String method, [dynamic arguments]) => throw UnimplementedError();
+  Future<Map<K, V>> invokeMapMethod<K, V>(String method, [dynamic arguments]) =>
+      throw UnimplementedError();
 
   @override
   Future<T> invokeMethod<T>(String method, [dynamic arguments]) async {
@@ -466,5 +485,6 @@ class FakeMenuChannel implements MethodChannel {
   String get name => 'flutter/menu';
 
   @override
-  void setMethodCallHandler(Future<void> Function(MethodCall call)? handler) => incoming = handler;
+  void setMethodCallHandler(Future<void> Function(MethodCall call)? handler) =>
+      incoming = handler;
 }

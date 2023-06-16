@@ -32,9 +32,17 @@ class CircleBorder extends OutlinedBorder {
   /// Create a circle border.
   ///
   /// The [side] argument must not be null.
-  const CircleBorder({ super.side, this.eccentricity = 0.0 })
-      : assert(eccentricity >= 0.0, 'The eccentricity argument $eccentricity is not greater than or equal to zero.'),
-        assert(eccentricity <= 1.0, 'The eccentricity argument $eccentricity is not less than or equal to one.');
+  const CircleBorder({
+    super.side,
+    this.eccentricity = 0.0,
+  }) : assert(
+         eccentricity >= 0.0,
+         'The eccentricity argument $eccentricity is not greater than or equal to zero.',
+       ),
+       assert(
+         eccentricity <= 1.0,
+         'The eccentricity argument $eccentricity is not less than or equal to one.',
+       );
 
   /// Defines the ratio (0.0-1.0) from which the border will deform
   /// to fit a rectangle.
@@ -43,14 +51,21 @@ class CircleBorder extends OutlinedBorder {
   final double eccentricity;
 
   @override
-  ShapeBorder scale(double t) => CircleBorder(side: side.scale(t), eccentricity: eccentricity);
+  ShapeBorder scale(double t) => CircleBorder(
+    side: side.scale(t),
+    eccentricity: eccentricity,
+  );
 
   @override
   ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
     if (a is CircleBorder) {
       return CircleBorder(
         side: BorderSide.lerp(a.side, side, t),
-        eccentricity: clampDouble(ui.lerpDouble(a.eccentricity, eccentricity, t)!, 0.0, 1.0),
+        eccentricity: clampDouble(
+          ui.lerpDouble(a.eccentricity, eccentricity, t)!,
+          0.0,
+          1.0,
+        ),
       );
     }
     return super.lerpFrom(a, t);
@@ -61,24 +76,33 @@ class CircleBorder extends OutlinedBorder {
     if (b is CircleBorder) {
       return CircleBorder(
         side: BorderSide.lerp(side, b.side, t),
-        eccentricity: clampDouble(ui.lerpDouble(eccentricity, b.eccentricity, t)!, 0.0, 1.0),
+        eccentricity: clampDouble(
+          ui.lerpDouble(eccentricity, b.eccentricity, t)!,
+          0.0,
+          1.0,
+        ),
       );
     }
     return super.lerpTo(b, t);
   }
 
   @override
-  Path getInnerPath(Rect rect, { TextDirection? textDirection }) {
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
     return Path()..addOval(_adjustRect(rect).deflate(side.strokeInset));
   }
 
   @override
-  Path getOuterPath(Rect rect, { TextDirection? textDirection }) {
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
     return Path()..addOval(_adjustRect(rect));
   }
 
   @override
-  void paintInterior(Canvas canvas, Rect rect, Paint paint, { TextDirection? textDirection }) {
+  void paintInterior(
+    Canvas canvas,
+    Rect rect,
+    Paint paint, {
+    TextDirection? textDirection,
+  }) {
     if (eccentricity == 0.0) {
       canvas.drawCircle(rect.center, rect.shortestSide / 2.0, paint);
     } else {
@@ -90,31 +114,45 @@ class CircleBorder extends OutlinedBorder {
   bool get preferPaintInterior => true;
 
   @override
-  CircleBorder copyWith({ BorderSide? side, double? eccentricity }) {
-    return CircleBorder(side: side ?? this.side, eccentricity: eccentricity ?? this.eccentricity);
+  CircleBorder copyWith({BorderSide? side, double? eccentricity}) {
+    return CircleBorder(
+      side: side ?? this.side,
+      eccentricity: eccentricity ?? this.eccentricity,
+    );
   }
 
   @override
-  void paint(Canvas canvas, Rect rect, { TextDirection? textDirection }) {
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
     switch (side.style) {
       case BorderStyle.none:
         break;
       case BorderStyle.solid:
         if (eccentricity == 0.0) {
-          canvas.drawCircle(rect.center, (rect.shortestSide + side.strokeOffset) / 2, side.toPaint());
+          canvas.drawCircle(
+            rect.center,
+            (rect.shortestSide + side.strokeOffset) / 2,
+            side.toPaint(),
+          );
         } else {
           final Rect borderRect = _adjustRect(rect);
-          canvas.drawOval(borderRect.inflate(side.strokeOffset / 2), side.toPaint());
+          canvas.drawOval(
+            borderRect.inflate(side.strokeOffset / 2),
+            side.toPaint(),
+          );
         }
     }
   }
 
   Rect _adjustRect(Rect rect) {
     if (eccentricity == 0.0 || rect.width == rect.height) {
-      return Rect.fromCircle(center: rect.center, radius: rect.shortestSide / 2.0);
+      return Rect.fromCircle(
+        center: rect.center,
+        radius: rect.shortestSide / 2.0,
+      );
     }
     if (rect.width < rect.height) {
-      final double delta = (1.0 - eccentricity) * (rect.height - rect.width) / 2.0;
+      final double delta =
+          (1.0 - eccentricity) * (rect.height - rect.width) / 2.0;
       return Rect.fromLTRB(
         rect.left,
         rect.top + delta,
@@ -122,7 +160,8 @@ class CircleBorder extends OutlinedBorder {
         rect.bottom - delta,
       );
     } else {
-      final double delta = (1.0 - eccentricity) * (rect.width - rect.height) / 2.0;
+      final double delta =
+          (1.0 - eccentricity) * (rect.width - rect.height) / 2.0;
       return Rect.fromLTRB(
         rect.left + delta,
         rect.top,
@@ -137,9 +176,9 @@ class CircleBorder extends OutlinedBorder {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is CircleBorder
-        && other.side == side
-        && other.eccentricity == eccentricity;
+    return other is CircleBorder &&
+        other.side == side &&
+        other.eccentricity == eccentricity;
   }
 
   @override
@@ -148,7 +187,10 @@ class CircleBorder extends OutlinedBorder {
   @override
   String toString() {
     if (eccentricity != 0.0) {
-      return '${objectRuntimeType(this, 'CircleBorder')}($side, eccentricity: $eccentricity)';
+      return '${objectRuntimeType(
+        this,
+        'CircleBorder',
+      )}($side, eccentricity: $eccentricity)';
     }
     return '${objectRuntimeType(this, 'CircleBorder')}($side)';
   }

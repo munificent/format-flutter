@@ -31,29 +31,41 @@ void main() {
 
     setUp(() {
       fs = MemoryFileSystem.test();
-      fsUtils = FileSystemUtils(
-        fileSystem: fs,
-        platform: FakePlatform(),
-      );
+      fsUtils = FileSystemUtils(fileSystem: fs, platform: FakePlatform());
     });
 
     testWithoutContext('getUniqueFile creates a unique file name', () async {
-      final File fileA = fsUtils.getUniqueFile(fs.currentDirectory, 'foo', 'json')
-        ..createSync();
-      final File fileB = fsUtils.getUniqueFile(fs.currentDirectory, 'foo', 'json');
+      final File fileA = fsUtils.getUniqueFile(
+        fs.currentDirectory,
+        'foo',
+        'json',
+      )..createSync();
+      final File fileB = fsUtils.getUniqueFile(
+        fs.currentDirectory,
+        'foo',
+        'json',
+      );
 
       expect(fileA.path, '/foo_01.json');
       expect(fileB.path, '/foo_02.json');
     });
 
-    testWithoutContext('getUniqueDirectory creates a unique directory name', () async {
-      final Directory directoryA = fsUtils.getUniqueDirectory(fs.currentDirectory, 'foo')
-        ..createSync();
-      final Directory directoryB = fsUtils.getUniqueDirectory(fs.currentDirectory, 'foo');
+    testWithoutContext(
+      'getUniqueDirectory creates a unique directory name',
+      () async {
+        final Directory directoryA = fsUtils.getUniqueDirectory(
+          fs.currentDirectory,
+          'foo',
+        )..createSync();
+        final Directory directoryB = fsUtils.getUniqueDirectory(
+          fs.currentDirectory,
+          'foo',
+        );
 
-      expect(directoryA.path, '/foo_01');
-      expect(directoryB.path, '/foo_02');
-    });
+        expect(directoryA.path, '/foo_01');
+        expect(directoryB.path, '/foo_02');
+      },
+    );
   });
 
   group('copyDirectorySync', () {
@@ -62,11 +74,15 @@ void main() {
     testWithoutContext('test directory copy', () async {
       final MemoryFileSystem sourceMemoryFs = MemoryFileSystem.test();
       const String sourcePath = '/some/origin';
-      final Directory sourceDirectory = await sourceMemoryFs.directory(sourcePath).create(recursive: true);
+      final Directory sourceDirectory =
+          await sourceMemoryFs.directory(sourcePath).create(recursive: true);
       sourceMemoryFs.currentDirectory = sourcePath;
-      final File sourceFile1 = sourceMemoryFs.file('some_file.txt')..writeAsStringSync('bleh');
+      final File sourceFile1 = sourceMemoryFs.file('some_file.txt')
+        ..writeAsStringSync('bleh');
       final DateTime writeTime = sourceFile1.lastModifiedSync();
-      sourceMemoryFs.file('sub_dir/another_file.txt').createSync(recursive: true);
+      sourceMemoryFs.file('sub_dir/another_file.txt').createSync(
+        recursive: true,
+      );
       sourceMemoryFs.directory('empty_directory').createSync();
 
       // Copy to another memory file system instance.
@@ -79,11 +95,17 @@ void main() {
       expect(targetDirectory.existsSync(), true);
       targetMemoryFs.currentDirectory = targetPath;
       expect(targetMemoryFs.directory('empty_directory').existsSync(), true);
-      expect(targetMemoryFs.file('sub_dir/another_file.txt').existsSync(), true);
+      expect(
+        targetMemoryFs.file('sub_dir/another_file.txt').existsSync(),
+        true,
+      );
       expect(targetMemoryFs.file('some_file.txt').readAsStringSync(), 'bleh');
 
       // Assert that the copy operation hasn't modified the original file in some way.
-      expect(sourceMemoryFs.file('some_file.txt').lastModifiedSync(), writeTime);
+      expect(
+        sourceMemoryFs.file('some_file.txt').lastModifiedSync(),
+        writeTime,
+      );
       // There's still 3 things in the original directory as there were initially.
       expect(sourceMemoryFs.directory(sourcePath).listSync().length, 3);
     });
@@ -92,42 +114,74 @@ void main() {
       final MemoryFileSystem fileSystem = MemoryFileSystem.test();
       final Directory origin = fileSystem.directory('/origin');
       origin.createSync();
-      fileSystem.file(fileSystem.path.join('origin', 'a.txt')).writeAsStringSync('irrelevant');
+      fileSystem.file(
+        fileSystem.path.join('origin', 'a.txt'),
+      ).writeAsStringSync('irrelevant');
       fileSystem.directory('/origin/nested').createSync();
-      fileSystem.file(fileSystem.path.join('origin', 'nested', 'a.txt')).writeAsStringSync('irrelevant');
-      fileSystem.file(fileSystem.path.join('origin', 'nested', 'b.txt')).writeAsStringSync('irrelevant');
+      fileSystem.file(
+        fileSystem.path.join('origin', 'nested', 'a.txt'),
+      ).writeAsStringSync('irrelevant');
+      fileSystem.file(
+        fileSystem.path.join('origin', 'nested', 'b.txt'),
+      ).writeAsStringSync('irrelevant');
 
       final Directory destination = fileSystem.directory('/destination');
-      copyDirectory(origin, destination, shouldCopyFile: (File origin, File dest) {
-        return origin.basename == 'b.txt';
-      });
+      copyDirectory(
+        origin,
+        destination,
+        shouldCopyFile: (File origin, File dest) {
+          return origin.basename == 'b.txt';
+        },
+      );
 
       expect(destination.existsSync(), isTrue);
       expect(destination.childDirectory('nested').existsSync(), isTrue);
-      expect(destination.childDirectory('nested').childFile('b.txt').existsSync(), isTrue);
+      expect(
+        destination.childDirectory('nested').childFile('b.txt').existsSync(),
+        isTrue,
+      );
 
       expect(destination.childFile('a.txt').existsSync(), isFalse);
-      expect(destination.childDirectory('nested').childFile('a.txt').existsSync(), isFalse);
+      expect(
+        destination.childDirectory('nested').childFile('a.txt').existsSync(),
+        isFalse,
+      );
     });
 
-    testWithoutContext('Skip directories if shouldCopyDirectory returns false', () {
-      final MemoryFileSystem fileSystem = MemoryFileSystem.test();
-      final Directory origin = fileSystem.directory('/origin');
-      origin.createSync();
-      fileSystem.file(fileSystem.path.join('origin', 'a.txt')).writeAsStringSync('irrelevant');
-      fileSystem.directory('/origin/nested').createSync();
-      fileSystem.file(fileSystem.path.join('origin', 'nested', 'a.txt')).writeAsStringSync('irrelevant');
-      fileSystem.file(fileSystem.path.join('origin', 'nested', 'b.txt')).writeAsStringSync('irrelevant');
+    testWithoutContext(
+      'Skip directories if shouldCopyDirectory returns false',
+      () {
+        final MemoryFileSystem fileSystem = MemoryFileSystem.test();
+        final Directory origin = fileSystem.directory('/origin');
+        origin.createSync();
+        fileSystem.file(
+          fileSystem.path.join('origin', 'a.txt'),
+        ).writeAsStringSync('irrelevant');
+        fileSystem.directory('/origin/nested').createSync();
+        fileSystem.file(
+          fileSystem.path.join('origin', 'nested', 'a.txt'),
+        ).writeAsStringSync('irrelevant');
+        fileSystem.file(
+          fileSystem.path.join('origin', 'nested', 'b.txt'),
+        ).writeAsStringSync('irrelevant');
 
-      final Directory destination = fileSystem.directory('/destination');
-      copyDirectory(origin, destination, shouldCopyDirectory: (Directory directory) {
-        return !directory.path.endsWith('nested');
-      });
+        final Directory destination = fileSystem.directory('/destination');
+        copyDirectory(
+          origin,
+          destination,
+          shouldCopyDirectory: (Directory directory) {
+            return !directory.path.endsWith('nested');
+          },
+        );
 
-      expect(destination, exists);
-      expect(destination.childDirectory('nested'), isNot(exists));
-      expect(destination.childDirectory('nested').childFile('b.txt'),isNot(exists));
-    });
+        expect(destination, exists);
+        expect(destination.childDirectory('nested'), isNot(exists));
+        expect(
+          destination.childDirectory('nested').childFile('b.txt'),
+          isNot(exists),
+        );
+      },
+    );
   });
 
   group('escapePath', () {
@@ -137,9 +191,15 @@ void main() {
         fileSystem: fileSystem,
         platform: FakePlatform(operatingSystem: 'windows'),
       );
-      expect(fsUtils.escapePath(r'C:\foo\bar\cool.dart'), r'C:\\foo\\bar\\cool.dart');
+      expect(
+        fsUtils.escapePath(r'C:\foo\bar\cool.dart'),
+        r'C:\\foo\\bar\\cool.dart',
+      );
       expect(fsUtils.escapePath(r'foo\bar\cool.dart'), r'foo\\bar\\cool.dart');
-      expect(fsUtils.escapePath('C:/foo/bar/cool.dart'), 'C:/foo/bar/cool.dart');
+      expect(
+        fsUtils.escapePath('C:/foo/bar/cool.dart'),
+        'C:/foo/bar/cool.dart',
+      );
     });
 
     testWithoutContext('on Linux', () {
@@ -209,9 +269,11 @@ void main() {
         localFileSystem.systemTempDirectory;
         fail('expected tool exit');
       } on ToolExit catch (e) {
-        expect(e.message, 'Your system temp directory (/does_not_exist) does not exist. '
-            'Did you set an invalid override in your environment? '
-            'See issue https://github.com/flutter/flutter/issues/74042 for more context.'
+        expect(
+          e.message,
+          'Your system temp directory (/does_not_exist) does not exist. '
+          'Did you set an invalid override in your environment? '
+          'See issue https://github.com/flutter/flutter/issues/74042 for more context.',
         );
       }
     });
@@ -219,7 +281,8 @@ void main() {
 }
 
 class FakeProcessSignal extends Fake implements io.ProcessSignal {
-  final StreamController<io.ProcessSignal> controller = StreamController<io.ProcessSignal>();
+  final StreamController<io.ProcessSignal> controller =
+      StreamController<io.ProcessSignal>();
 
   @override
   Stream<io.ProcessSignal> watch() => controller.stream;

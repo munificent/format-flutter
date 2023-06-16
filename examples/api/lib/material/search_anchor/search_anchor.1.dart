@@ -21,7 +21,10 @@ class _PinnedSearchBarAppState extends State<PinnedSearchBarApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(useMaterial3: true, colorSchemeSeed: const Color(0xff6750a4)),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: const Color(0xff6750a4),
+      ),
       home: Scaffold(
         body: SafeArea(
           child: CustomScrollView(
@@ -32,18 +35,17 @@ class _PinnedSearchBarAppState extends State<PinnedSearchBarApp> {
                 scrolledUnderElevation: 0.0,
                 titleSpacing: 0.0,
                 backgroundColor: Colors.transparent,
-                floating: true, // We can also uncomment this line and set `pinned` to true to see a pinned search bar.
+                floating:
+                    true, // We can also uncomment this line and set `pinned` to true to see a pinned search bar.
                 title: SearchAnchor.bar(
-                  suggestionsBuilder: (BuildContext context, SearchController controller) {
-                    return List<Widget>.generate(
-                      5,
-                      (int index) {
-                        return ListTile(
-                          titleAlignment: ListTileTitleAlignment.center,
-                          title: Text('Initial list item $index'),
-                        );
-                      },
-                    );
+                  suggestionsBuilder:
+                      (BuildContext context, SearchController controller) {
+                    return List<Widget>.generate(5, (int index) {
+                      return ListTile(
+                        titleAlignment: ListTileTitleAlignment.center,
+                        title: Text('Initial list item $index'),
+                      );
+                    });
                   },
                 ),
               ),
@@ -60,9 +62,8 @@ class _PinnedSearchBarAppState extends State<PinnedSearchBarApp> {
                       itemBuilder: (BuildContext context, int index) {
                         return SizedBox(
                           width: 100.0,
-                          child: Card(
-                            child: Center(child: Text('Card $index')),
-                          ),
+                          child:
+                              Card(child: Center(child: Text('Card $index'))),
                         );
                       },
                     ),

@@ -8,13 +8,16 @@ import 'package:meta/meta.dart';
 import 'package:platform/platform.dart';
 
 /// The current host machine running the tests.
-HostAgent get hostAgent => HostAgent(platform: const LocalPlatform(), fileSystem: const LocalFileSystem());
+HostAgent get hostAgent => HostAgent(
+  platform: const LocalPlatform(),
+  fileSystem: const LocalFileSystem(),
+);
 
 /// Host machine running the tests.
 class HostAgent {
   HostAgent({required Platform platform, required FileSystem fileSystem})
-      : _platform = platform,
-        _fileSystem = fileSystem;
+    : _platform = platform,
+      _fileSystem = fileSystem;
 
   final Platform _platform;
   final FileSystem _fileSystem;
@@ -25,7 +28,8 @@ class HostAgent {
       // Set in LUCI recipe.
       final String? directoryPath = _platform.environment['FLUTTER_LOGS_DIR'];
       if (directoryPath != null) {
-        _dumpDirectory = _fileSystem.directory(directoryPath)..createSync(recursive: true);
+        _dumpDirectory = _fileSystem.directory(directoryPath)
+          ..createSync(recursive: true);
         print('Found FLUTTER_LOGS_DIR dump directory ${_dumpDirectory?.path}');
       }
     }

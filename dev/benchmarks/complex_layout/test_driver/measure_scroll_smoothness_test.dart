@@ -12,5 +12,5 @@ Future<void> main() => driver.integrationDriver(
       data,
       testOutputFilename: 'scroll_smoothness_test',
     );
-  }
+  },
 );

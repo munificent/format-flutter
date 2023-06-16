@@ -17,11 +17,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('enterText works', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
-        home: Material(
-          child: TextField(),
-        ),
-      ),
+      const MaterialApp(home: Material(child: TextField())),
     );
 
     final EditableTextState state = tester.state(find.byType(EditableText));
@@ -33,33 +29,33 @@ void main() {
     expect(state.textEditingValue.selection.baseOffset, 17);
   });
 
-  testWidgets('receiveAction() forwards exception when exception occurs during action processing', (WidgetTester tester) async {
-    // Setup a widget that can receive focus so that we can open the keyboard.
-    const Widget widget = MaterialApp(
-      home: Material(
-        child: TextField(),
-      ),
-    );
-    await tester.pumpWidget(widget);
+  testWidgets(
+    'receiveAction() forwards exception when exception occurs during action processing',
+    (WidgetTester tester) async {
+      // Setup a widget that can receive focus so that we can open the keyboard.
+      const Widget widget = MaterialApp(home: Material(child: TextField()));
+      await tester.pumpWidget(widget);
 
-    // Keyboard must be shown for receiveAction() to function.
-    await tester.showKeyboard(find.byType(TextField));
+      // Keyboard must be shown for receiveAction() to function.
+      await tester.showKeyboard(find.byType(TextField));
 
-    // Register a handler for the text input channel that throws an error. This
-    // error should be reported within a PlatformException by TestTextInput.
-    SystemChannels.textInput.setMethodCallHandler((MethodCall call) {
-      throw FlutterError('A fake error occurred during action processing.');
-    });
+      // Register a handler for the text input channel that throws an error. This
+      // error should be reported within a PlatformException by TestTextInput.
+      SystemChannels.textInput.setMethodCallHandler((MethodCall call) {
+        throw FlutterError('A fake error occurred during action processing.');
+      });
 
-    await expectLater(
-      () => tester.testTextInput.receiveAction(TextInputAction.done),
-      throwsA(isA<PlatformException>()),
-    );
-  });
+      await expectLater(
+        () => tester.testTextInput.receiveAction(TextInputAction.done),
+        throwsA(isA<PlatformException>()),
+      );
+    },
+  );
 
   testWidgets('selectors are called on macOS', (WidgetTester tester) async {
     List<dynamic>? selectorNames;
-    await SystemChannels.textInput.invokeMethod('TextInput.setClient', <dynamic>[1, <String, dynamic>{}]);
+    await SystemChannels.textInput
+        .invokeMethod('TextInput.setClient', <dynamic>[1, <String, dynamic>{}]);
     await SystemChannels.textInput.invokeMethod('TextInput.show');
     SystemChannels.textInput.setMethodCallHandler((MethodCall call) async {
       if (call.method == 'TextInputClient.performSelectors') {
@@ -71,7 +67,10 @@ void main() {
     await SystemChannels.textInput.invokeMethod('TextInput.clearClient');
 
     if (defaultTargetPlatform == TargetPlatform.macOS) {
-      expect(selectorNames, <dynamic>['moveBackward:', 'moveToBeginningOfParagraph:']);
+      expect(selectorNames, <dynamic>[
+        'moveBackward:',
+        'moveToBeginningOfParagraph:',
+      ]);
     } else {
       expect(selectorNames, isNull);
     }

@@ -181,11 +181,7 @@ class _DualTransitionBuilderState extends State<DualTransitionBuilder> {
     return widget.forwardBuilder(
       context,
       _forwardAnimation,
-      widget.reverseBuilder(
-        context,
-        _reverseAnimation,
-        widget.child,
-      ),
+      widget.reverseBuilder(context, _reverseAnimation, widget.child),
     );
   }
 }

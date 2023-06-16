@@ -51,11 +51,13 @@ class _MenuAnchorExampleState extends State<MenuAnchorExample> {
               },
               icon: const Icon(Icons.more_horiz),
               tooltip: 'Show menu',
-            );},
+            );
+          },
           menuChildren: List<MenuItemButton>.generate(
             3,
             (int index) => MenuItemButton(
-              onPressed: () => setState(() => selectedMenu = SampleItem.values[index]),
+              onPressed:
+                  () => setState(() => selectedMenu = SampleItem.values[index]),
               child: Text('Item ${index + 1}'),
             ),
           ),

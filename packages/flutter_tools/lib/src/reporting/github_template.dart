@@ -26,15 +26,17 @@ class GitHubTemplateCreator {
     required Logger logger,
     required FlutterProjectFactory flutterProjectFactory,
   }) : _fileSystem = fileSystem,
-      _logger = logger,
-      _flutterProjectFactory = flutterProjectFactory;
+       _logger = logger,
+       _flutterProjectFactory = flutterProjectFactory;
 
   final FileSystem _fileSystem;
   final Logger _logger;
   final FlutterProjectFactory _flutterProjectFactory;
 
   static String toolCrashSimilarIssuesURL(String errorString) {
-    return 'https://github.com/flutter/flutter/issues?q=is%3Aissue+${Uri.encodeQueryComponent(errorString)}';
+    return 'https://github.com/flutter/flutter/issues?q=is%3Aissue+${Uri.encodeQueryComponent(
+      errorString,
+    )}';
   }
 
   /// Restricts exception object strings to contain only information about tool internals.
@@ -51,22 +53,26 @@ class GitHubTemplateCreator {
     } else if (error is DevFSException) {
       // Suppress underlying error.
       return 'DevFSException: ${error.message}';
-    } else if (error is NoSuchMethodError
-      || error is ArgumentError
-      || error is VersionCheckError
-      || error is MissingDefineException
-      || error is UnsupportedError
-      || error is UnimplementedError
-      || error is StateError
-      || error is ProcessExit
-      || error is OSError) {
+    } else if (error is NoSuchMethodError ||
+        error is ArgumentError ||
+        error is VersionCheckError ||
+        error is MissingDefineException ||
+        error is UnsupportedError ||
+        error is UnimplementedError ||
+        error is StateError ||
+        error is ProcessExit ||
+        error is OSError) {
       // These exception objects only reference tool internals, print the whole error.
       return '${error.runtimeType}: $error';
     } else if (error is Error) {
-      return '${error.runtimeType}: ${LineSplitter.split(error.stackTrace.toString()).take(1)}';
+      return '${error.runtimeType}: ${LineSplitter.split(
+        error.stackTrace.toString(),
+      ).take(1)}';
     } else if (error is String) {
       // Force comma separator to standardize.
-      return 'String: <${NumberFormat(null, 'en_US').format(error.length)} characters>';
+      return 'String: <${NumberFormat(null, 'en_US').format(
+        error.length,
+      )} characters>';
     }
     // Exception, other.
     return error.runtimeType.toString();
@@ -76,11 +82,11 @@ class GitHubTemplateCreator {
   ///
   /// Shorten the URL, if possible.
   Future<String> toolCrashIssueTemplateGitHubURL(
-      String command,
-      Object error,
-      StackTrace stackTrace,
-      String doctorText
-    ) async {
+    String command,
+    Object error,
+    StackTrace stackTrace,
+    String doctorText,
+  ) async {
     final String errorString = sanitizedCrashException(error);
     final String title = '[tool_crash] $errorString';
     final String body = '''
@@ -108,17 +114,19 @@ ${_projectMetadataInformation()}
 ''';
 
     return 'https://github.com/flutter/flutter/issues'
-      '/new' // We split this here to appease our lint that looks for bad "new bug" links.
-      '?title=${Uri.encodeQueryComponent(title)}'
-      '&body=${Uri.encodeQueryComponent(body)}'
-      '&labels=${Uri.encodeQueryComponent('tool,severe: crash')}';
+        '/new' // We split this here to appease our lint that looks for bad "new bug" links.
+        '?title=${Uri.encodeQueryComponent(title)}'
+        '&body=${Uri.encodeQueryComponent(body)}'
+        '&labels=${Uri.encodeQueryComponent('tool,severe: crash')}';
   }
 
   /// Provide information about the Flutter project in the working directory, if present.
   String _projectMetadataInformation() {
     FlutterProject project;
     try {
-      project = _flutterProjectFactory.fromDirectory(_fileSystem.currentDirectory);
+      project = _flutterProjectFactory.fromDirectory(
+        _fileSystem.currentDirectory,
+      );
     } on Exception catch (exception) {
       // pubspec may be malformed.
       return exception.toString();
@@ -128,10 +136,15 @@ ${_projectMetadataInformation()}
       if (manifest.isEmpty) {
         return 'No pubspec in working directory.';
       }
-      final FlutterProjectMetadata metadata = FlutterProjectMetadata(project.metadataFile, _logger);
+      final FlutterProjectMetadata metadata = FlutterProjectMetadata(
+        project.metadataFile,
+        _logger,
+      );
       final FlutterProjectType? projectType = metadata.projectType;
       final StringBuffer description = StringBuffer()
-        ..writeln('**Type**: ${projectType == null ? 'malformed' : projectType.cliName}')
+        ..writeln(
+          '**Type**: ${projectType == null ? 'malformed' : projectType.cliName}',
+        )
         ..writeln('**Version**: ${manifest.appVersion}')
         ..writeln('**Material**: ${manifest.usesMaterialDesign}')
         ..writeln('**Android X**: ${manifest.usesAndroidX}')
@@ -140,14 +153,17 @@ ${_projectMetadataInformation()}
         ..writeln('**Android package**: ${manifest.androidPackage}')
         ..writeln('**iOS bundle identifier**: ${manifest.iosBundleIdentifier}')
         ..writeln('**Creation channel**: ${metadata.versionChannel}')
-        ..writeln('**Creation framework version**: ${metadata.versionRevision}');
+        ..writeln(
+          '**Creation framework version**: ${metadata.versionRevision}',
+        );
 
       final File file = project.flutterPluginsFile;
       if (file.existsSync()) {
         description.writeln('### Plugins');
         // Format is:
         // camera=/path/to/.pub-cache/hosted/pub.dartlang.org/camera-0.5.7+2/
-        for (final String plugin in project.flutterPluginsFile.readAsLinesSync()) {
+        for (final String plugin
+            in project.flutterPluginsFile.readAsLinesSync()) {
           final List<String> pluginParts = plugin.split('=');
           if (pluginParts.length != 2) {
             continue;
@@ -155,7 +171,9 @@ ${_projectMetadataInformation()}
           // Write the last part of the path, which includes the plugin name and version.
           // Example: camera-0.5.7+2
           final List<String> pathParts = _fileSystem.path.split(pluginParts[1]);
-          description.writeln(pathParts.isEmpty ? pluginParts.first : pathParts.last);
+          description.writeln(
+            pathParts.isEmpty ? pluginParts.first : pathParts.last,
+          );
         }
       }
 

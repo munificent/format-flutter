@@ -6,14 +6,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('positions itself at anchorAbove if it fits', (WidgetTester tester) async {
-    late StateSetter setState;
-    const double height = 43.0;
-    const double anchorBelowY = 500.0;
-    double anchorAboveY = 0.0;
+  testWidgets(
+    'positions itself at anchorAbove if it fits',
+    (WidgetTester tester) async {
+      late StateSetter setState;
+      const double height = 43.0;
+      const double anchorBelowY = 500.0;
+      double anchorAboveY = 0.0;
 
-    await tester.pumpWidget(
-      MediaQuery(
+      await tester.pumpWidget(MediaQuery(
         data: const MediaQueryData(),
         child: Directionality(
           textDirection: TextDirection.ltr,
@@ -34,28 +35,28 @@ void main() {
             },
           ),
         ),
-      ),
-    );
+      ));
 
-    // When the toolbar doesn't fit above aboveAnchor, it positions itself below
-    // belowAnchor.
-    double toolbarY = tester.getTopLeft(find.byType(Container)).dy;
-    expect(toolbarY, equals(anchorBelowY));
+      // When the toolbar doesn't fit above aboveAnchor, it positions itself below
+      // belowAnchor.
+      double toolbarY = tester.getTopLeft(find.byType(Container)).dy;
+      expect(toolbarY, equals(anchorBelowY));
 
-    // Even when it barely doesn't fit.
-    setState(() {
-      anchorAboveY = height - 1.0;
-    });
-    await tester.pump();
-    toolbarY = tester.getTopLeft(find.byType(Container)).dy;
-    expect(toolbarY, equals(anchorBelowY));
+      // Even when it barely doesn't fit.
+      setState(() {
+        anchorAboveY = height - 1.0;
+      });
+      await tester.pump();
+      toolbarY = tester.getTopLeft(find.byType(Container)).dy;
+      expect(toolbarY, equals(anchorBelowY));
 
-    // When it does fit above aboveAnchor, it positions itself there.
-    setState(() {
-      anchorAboveY = height;
-    });
-    await tester.pump();
-    toolbarY = tester.getTopLeft(find.byType(Container)).dy;
-    expect(toolbarY, equals(anchorAboveY - height));
-  });
+      // When it does fit above aboveAnchor, it positions itself there.
+      setState(() {
+        anchorAboveY = height;
+      });
+      await tester.pump();
+      toolbarY = tester.getTopLeft(find.byType(Container)).dy;
+      expect(toolbarY, equals(anchorAboveY - height));
+    },
+  );
 }

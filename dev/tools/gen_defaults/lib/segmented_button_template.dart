@@ -5,7 +5,11 @@
 import 'template.dart';
 
 class SegmentedButtonTemplate extends TokenTemplate {
-  const SegmentedButtonTemplate(this.tokenGroup, super.blockName, super.fileName, super.tokens, {
+  const SegmentedButtonTemplate(
+    this.tokenGroup,
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
   });
 
@@ -25,11 +29,16 @@ class SegmentedButtonTemplate extends TokenTemplate {
   }
 
   String _stateColor(String componentToken, String type, String state) {
-    final String baseColor = color('$componentToken.$type.$state.state-layer.color', '');
+    final String baseColor = color(
+      '$componentToken.$type.$state.state-layer.color',
+      '',
+    );
     if (baseColor.isEmpty) {
       return 'null';
     }
-    final String opacity = _layerOpacity('$componentToken.$state.state-layer.opacity');
+    final String opacity = _layerOpacity(
+      '$componentToken.$state.state-layer.opacity',
+    );
     return '$baseColor$opacity';
   }
 
@@ -42,7 +51,9 @@ class _${blockName}DefaultsM3 extends SegmentedButtonThemeData {
   late final ColorScheme _colors = _theme.colorScheme;
   @override ButtonStyle? get style {
     return ButtonStyle(
-      textStyle: MaterialStatePropertyAll<TextStyle?>(${textStyle('$tokenGroup.label-text')}),
+      textStyle: MaterialStatePropertyAll<TextStyle?>(${textStyle(
+        '$tokenGroup.label-text',
+      )}),
       backgroundColor: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return ${componentColor('$tokenGroup.disabled')};
@@ -69,7 +80,9 @@ class _${blockName}DefaultsM3 extends SegmentedButtonThemeData {
           return ${componentColor('$tokenGroup.selected.label-text')};
         } else {
           if (states.contains(MaterialState.pressed)) {
-            return ${componentColor('$tokenGroup.unselected.pressed.label-text')};
+            return ${componentColor(
+        '$tokenGroup.unselected.pressed.label-text',
+      )};
           }
           if (states.contains(MaterialState.hovered)) {
             return ${componentColor('$tokenGroup.unselected.hover.label-text')};
@@ -106,15 +119,22 @@ class _${blockName}DefaultsM3 extends SegmentedButtonThemeData {
       }),
       surfaceTintColor: const MaterialStatePropertyAll<Color>(Colors.transparent),
       elevation: const MaterialStatePropertyAll<double>(0),
-      iconSize: const MaterialStatePropertyAll<double?>(${getToken('$tokenGroup.with-icon.icon.size')}),
+      iconSize: const MaterialStatePropertyAll<double?>(${getToken(
+        '$tokenGroup.with-icon.icon.size',
+      )}),
       side: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return ${border("$tokenGroup.disabled.outline")};
         }
         return ${border("$tokenGroup.outline")};
       }),
-      shape: const MaterialStatePropertyAll<OutlinedBorder>(${shape(tokenGroup, '')}),
-      minimumSize: const MaterialStatePropertyAll<Size?>(Size.fromHeight(${getToken('$tokenGroup.container.height')})),
+      shape: const MaterialStatePropertyAll<OutlinedBorder>(${shape(
+        tokenGroup,
+        '',
+      )}),
+      minimumSize: const MaterialStatePropertyAll<Size?>(Size.fromHeight(${getToken(
+        '$tokenGroup.container.height',
+      )})),
     );
   }
   @override

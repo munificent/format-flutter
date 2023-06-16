@@ -11,10 +11,9 @@ import '../device.dart';
 import '../globals.dart' as globals;
 import '../runner/flutter_command.dart';
 
-class InstallCommand extends FlutterCommand with DeviceBasedDevelopmentArtifacts {
-  InstallCommand({
-    required bool verboseHelp,
-  }) {
+class InstallCommand extends FlutterCommand
+    with DeviceBasedDevelopmentArtifacts {
+  InstallCommand({required bool verboseHelp}) {
     addBuildModeFlags(verboseHelp: verboseHelp);
     requiresPubspecYaml();
     usesApplicationBinaryOption();
@@ -22,7 +21,8 @@ class InstallCommand extends FlutterCommand with DeviceBasedDevelopmentArtifacts
     usesDeviceConnectionOption();
     usesDeviceUserOption();
     usesFlavorOption();
-    argParser.addFlag('uninstall-only',
+    argParser.addFlag(
+      'uninstall-only',
       help: 'Uninstall the app if already on the device. Skip install.',
     );
   }
@@ -44,8 +44,12 @@ class InstallCommand extends FlutterCommand with DeviceBasedDevelopmentArtifacts
   bool get uninstallOnly => boolArg('uninstall-only');
   String? get userIdentifier => stringArg(FlutterOptions.kDeviceUser);
 
-  String? get _applicationBinaryPath => stringArg(FlutterOptions.kUseApplicationBinary);
-  File? get _applicationBinary => _applicationBinaryPath == null ? null : globals.fs.file(_applicationBinaryPath);
+  String? get _applicationBinaryPath => stringArg(
+    FlutterOptions.kUseApplicationBinary,
+  );
+  File? get _applicationBinary => _applicationBinaryPath == null
+      ? null
+      : globals.fs.file(_applicationBinaryPath);
 
   @override
   Future<void> validateCommand() async {
@@ -55,9 +59,12 @@ class InstallCommand extends FlutterCommand with DeviceBasedDevelopmentArtifacts
       throwToolExit('No target device found');
     }
     if (userIdentifier != null && device is! AndroidDevice) {
-      throwToolExit('--${FlutterOptions.kDeviceUser} is only supported for Android');
+      throwToolExit(
+        '--${FlutterOptions.kDeviceUser} is only supported for Android',
+      );
     }
-    if (_applicationBinaryPath != null && !(_applicationBinary?.existsSync() ?? true)) {
+    if (_applicationBinaryPath != null &&
+        !(_applicationBinary?.existsSync() ?? true)) {
       throwToolExit('Prebuilt binary $_applicationBinaryPath does not exist');
     }
   }
@@ -65,11 +72,12 @@ class InstallCommand extends FlutterCommand with DeviceBasedDevelopmentArtifacts
   @override
   Future<FlutterCommandResult> runCommand() async {
     final Device targetDevice = device!;
-    final ApplicationPackage? package = await applicationPackages?.getPackageForPlatform(
-      await targetDevice.targetPlatform,
-      applicationBinary: _applicationBinary,
-      buildInfo: await getBuildInfo(),
-    );
+    final ApplicationPackage? package = await applicationPackages
+        ?.getPackageForPlatform(
+          await targetDevice.targetPlatform,
+          applicationBinary: _applicationBinary,
+          buildInfo: await getBuildInfo(),
+        );
     if (package == null) {
       throwToolExit('Could not find or build package');
     }
@@ -106,10 +114,11 @@ Future<bool> installApp(
   Device device,
   ApplicationPackage package, {
   String? userIdentifier,
-  bool uninstall = true
+  bool uninstall = true,
 }) async {
   try {
-    if (uninstall && await device.isAppInstalled(package, userIdentifier: userIdentifier)) {
+    if (uninstall &&
+        await device.isAppInstalled(package, userIdentifier: userIdentifier)) {
       globals.printStatus('Uninstalling old version...');
       if (!await device.uninstallApp(package, userIdentifier: userIdentifier)) {
         globals.printWarning('Warning: uninstalling old version failed');

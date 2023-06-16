@@ -14,7 +14,8 @@ const double _kToolbarContentDistance = 8.0;
 const double _kToolbarHeight = 43.0;
 
 // A custom text selection menu that just displays a single custom button.
-class _CustomCupertinoTextSelectionControls extends CupertinoTextSelectionControls {
+class _CustomCupertinoTextSelectionControls
+    extends CupertinoTextSelectionControls {
   @override
   Widget buildToolbar(
     BuildContext context,
@@ -27,10 +28,13 @@ class _CustomCupertinoTextSelectionControls extends CupertinoTextSelectionContro
     Offset? lastSecondaryTapDownPosition,
   ) {
     final EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
-    final double anchorX = (selectionMidpoint.dx + globalEditableRegion.left).clamp(
-      _kArrowScreenPadding + mediaQueryPadding.left,
-      MediaQuery.sizeOf(context).width - mediaQueryPadding.right - _kArrowScreenPadding,
-    );
+    final double anchorX = (selectionMidpoint.dx + globalEditableRegion.left)
+        .clamp(
+          _kArrowScreenPadding + mediaQueryPadding.left,
+          MediaQuery.sizeOf(context).width -
+              mediaQueryPadding.right -
+              _kArrowScreenPadding,
+        );
     final Offset anchorAbove = Offset(
       anchorX,
       endpoints.first.point.dy - textLineHeight + globalEditableRegion.top,
@@ -60,7 +64,8 @@ class TestBox extends SizedBox {
   static const double itemWidth = 100.0;
 }
 
-const CupertinoDynamicColor _kToolbarBackgroundColor = CupertinoDynamicColor.withBrightness(
+const CupertinoDynamicColor _kToolbarBackgroundColor =
+    CupertinoDynamicColor.withBrightness(
   color: Color(0xEBF7F7F7),
   darkColor: Color(0xEB202020),
 );
@@ -72,7 +77,8 @@ void main() {
   Finder findPrivate(String type) {
     return find.descendant(
       of: find.byType(CupertinoApp),
-      matching: find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == type),
+      matching:
+          find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == type),
     );
   }
 
@@ -84,11 +90,15 @@ void main() {
   Finder findOverflowNextButton() => find.text('▶');
   Finder findOverflowBackButton() => find.text('◀');
 
-  testWidgets('paginates children if they overflow', (WidgetTester tester) async {
-    late StateSetter setState;
-    final List<Widget> children = List<Widget>.generate(7, (int i) => const TestBox());
-    await tester.pumpWidget(
-      CupertinoApp(
+  testWidgets(
+    'paginates children if they overflow',
+    (WidgetTester tester) async {
+      late StateSetter setState;
+      final List<Widget> children = List<Widget>.generate(
+        7,
+        (int i) => const TestBox(),
+      );
+      await tester.pumpWidget(CupertinoApp(
         home: Center(
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setter) {
@@ -101,99 +111,104 @@ void main() {
             },
           ),
         ),
-      ),
-    );
+      ));
 
-    // All children fit on the screen, so they are all rendered.
-    expect(find.byType(TestBox), findsNWidgets(children.length));
-    expect(findOverflowNextButton(), findsNothing);
-    expect(findOverflowBackButton(), findsNothing);
+      // All children fit on the screen, so they are all rendered.
+      expect(find.byType(TestBox), findsNWidgets(children.length));
+      expect(findOverflowNextButton(), findsNothing);
+      expect(findOverflowBackButton(), findsNothing);
 
-    // Adding one more child makes the children overflow.
-    setState(() {
-      children.add(
-        const TestBox(),
+      // Adding one more child makes the children overflow.
+      setState(() {
+        children.add(const TestBox());
+      });
+      await tester.pumpAndSettle();
+      expect(find.byType(TestBox), findsNWidgets(children.length - 1));
+      expect(findOverflowNextButton(), findsOneWidget);
+      expect(findOverflowBackButton(), findsNothing);
+
+      // Tap the overflow next button to show the next page of children.
+      await tester.tap(findOverflowNextButton());
+      await tester.pumpAndSettle();
+      expect(find.byType(TestBox), findsNWidgets(1));
+      expect(findOverflowNextButton(), findsOneWidget);
+      expect(findOverflowBackButton(), findsOneWidget);
+
+      // Tapping the overflow next button again does nothing because it is
+      // disabled and there are no more children to display.
+      await tester.tap(findOverflowNextButton());
+      await tester.pumpAndSettle();
+      expect(find.byType(TestBox), findsNWidgets(1));
+      expect(findOverflowNextButton(), findsOneWidget);
+      expect(findOverflowBackButton(), findsOneWidget);
+
+      // Tap the overflow back button to go back to the first page.
+      await tester.tap(findOverflowBackButton());
+      await tester.pumpAndSettle();
+      expect(find.byType(TestBox), findsNWidgets(7));
+      expect(findOverflowNextButton(), findsOneWidget);
+      expect(findOverflowBackButton(), findsNothing);
+
+      // Adding 7 more children overflows onto a third page.
+      setState(() {
+        children.add(const TestBox());
+        children.add(const TestBox());
+        children.add(const TestBox());
+        children.add(const TestBox());
+        children.add(const TestBox());
+        children.add(const TestBox());
+      });
+      await tester.pumpAndSettle();
+      expect(find.byType(TestBox), findsNWidgets(7));
+      expect(findOverflowNextButton(), findsOneWidget);
+      expect(findOverflowBackButton(), findsNothing);
+
+      // Tap the overflow next button to show the second page of children.
+      await tester.tap(findOverflowNextButton());
+      await tester.pumpAndSettle();
+      // With the back button, only six children fit on this page.
+      expect(find.byType(TestBox), findsNWidgets(6));
+      expect(findOverflowNextButton(), findsOneWidget);
+      expect(findOverflowBackButton(), findsOneWidget);
+
+      // Tap the overflow next button again to show the third page of children.
+      await tester.tap(findOverflowNextButton());
+      await tester.pumpAndSettle();
+      expect(find.byType(TestBox), findsNWidgets(1));
+      expect(findOverflowNextButton(), findsOneWidget);
+      expect(findOverflowBackButton(), findsOneWidget);
+
+      // Tap the overflow back button to go back to the second page.
+      await tester.tap(findOverflowBackButton());
+      await tester.pumpAndSettle();
+      expect(find.byType(TestBox), findsNWidgets(6));
+      expect(findOverflowNextButton(), findsOneWidget);
+      expect(findOverflowBackButton(), findsOneWidget);
+
+      // Tap the overflow back button to go back to the first page.
+      await tester.tap(findOverflowBackButton());
+      await tester.pumpAndSettle();
+      expect(find.byType(TestBox), findsNWidgets(7));
+      expect(findOverflowNextButton(), findsOneWidget);
+      expect(findOverflowBackButton(), findsNothing);
+    },
+    skip: kIsWeb,
+  ); // [intended] We do not use Flutter-rendered context menu on the Web.
+
+  testWidgets(
+    'does not paginate if children fit with zero margin',
+    (WidgetTester tester) async {
+      final List<Widget> children = List<Widget>.generate(
+        7,
+        (int i) => const TestBox(),
       );
-    });
-    await tester.pumpAndSettle();
-    expect(find.byType(TestBox), findsNWidgets(children.length - 1));
-    expect(findOverflowNextButton(), findsOneWidget);
-    expect(findOverflowBackButton(), findsNothing);
-
-    // Tap the overflow next button to show the next page of children.
-    await tester.tap(findOverflowNextButton());
-    await tester.pumpAndSettle();
-    expect(find.byType(TestBox), findsNWidgets(1));
-    expect(findOverflowNextButton(), findsOneWidget);
-    expect(findOverflowBackButton(), findsOneWidget);
-
-    // Tapping the overflow next button again does nothing because it is
-    // disabled and there are no more children to display.
-    await tester.tap(findOverflowNextButton());
-    await tester.pumpAndSettle();
-    expect(find.byType(TestBox), findsNWidgets(1));
-    expect(findOverflowNextButton(), findsOneWidget);
-    expect(findOverflowBackButton(), findsOneWidget);
-
-    // Tap the overflow back button to go back to the first page.
-    await tester.tap(findOverflowBackButton());
-    await tester.pumpAndSettle();
-    expect(find.byType(TestBox), findsNWidgets(7));
-    expect(findOverflowNextButton(), findsOneWidget);
-    expect(findOverflowBackButton(), findsNothing);
-
-    // Adding 7 more children overflows onto a third page.
-    setState(() {
-      children.add(const TestBox());
-      children.add(const TestBox());
-      children.add(const TestBox());
-      children.add(const TestBox());
-      children.add(const TestBox());
-      children.add(const TestBox());
-    });
-    await tester.pumpAndSettle();
-    expect(find.byType(TestBox), findsNWidgets(7));
-    expect(findOverflowNextButton(), findsOneWidget);
-    expect(findOverflowBackButton(), findsNothing);
-
-    // Tap the overflow next button to show the second page of children.
-    await tester.tap(findOverflowNextButton());
-    await tester.pumpAndSettle();
-    // With the back button, only six children fit on this page.
-    expect(find.byType(TestBox), findsNWidgets(6));
-    expect(findOverflowNextButton(), findsOneWidget);
-    expect(findOverflowBackButton(), findsOneWidget);
-
-    // Tap the overflow next button again to show the third page of children.
-    await tester.tap(findOverflowNextButton());
-    await tester.pumpAndSettle();
-    expect(find.byType(TestBox), findsNWidgets(1));
-    expect(findOverflowNextButton(), findsOneWidget);
-    expect(findOverflowBackButton(), findsOneWidget);
-
-    // Tap the overflow back button to go back to the second page.
-    await tester.tap(findOverflowBackButton());
-    await tester.pumpAndSettle();
-    expect(find.byType(TestBox), findsNWidgets(6));
-    expect(findOverflowNextButton(), findsOneWidget);
-    expect(findOverflowBackButton(), findsOneWidget);
-
-    // Tap the overflow back button to go back to the first page.
-    await tester.tap(findOverflowBackButton());
-    await tester.pumpAndSettle();
-    expect(find.byType(TestBox), findsNWidgets(7));
-    expect(findOverflowNextButton(), findsOneWidget);
-    expect(findOverflowBackButton(), findsNothing);
-  }, skip: kIsWeb); // [intended] We do not use Flutter-rendered context menu on the Web.
-
-  testWidgets('does not paginate if children fit with zero margin', (WidgetTester tester) async {
-    final List<Widget> children = List<Widget>.generate(7, (int i) => const TestBox());
-    final double spacerWidth = 1.0 / tester.view.devicePixelRatio;
-    final double dividerWidth = 1.0 / tester.view.devicePixelRatio;
-    const double borderRadius = 8.0; // Should match _kToolbarBorderRadius
-    final double width = 7 * TestBox.itemWidth + 6 * (dividerWidth + 2 * spacerWidth) + 2 * borderRadius;
-    await tester.pumpWidget(
-      CupertinoApp(
+      final double spacerWidth = 1.0 / tester.view.devicePixelRatio;
+      final double dividerWidth = 1.0 / tester.view.devicePixelRatio;
+      const double borderRadius = 8.0; // Should match _kToolbarBorderRadius
+      final double width = 7 * TestBox.itemWidth +
+          6 * (dividerWidth + 2 * spacerWidth) +
+          2 * borderRadius;
+      await tester.pumpWidget(CupertinoApp(
         home: Center(
           child: SizedBox(
             width: width,
@@ -204,24 +219,26 @@ void main() {
             ),
           ),
         ),
-      ),
-    );
+      ));
 
-    // All children fit on the screen, so they are all rendered.
-    expect(find.byType(TestBox), findsNWidgets(children.length));
-    expect(findOverflowNextButton(), findsNothing);
-    expect(findOverflowBackButton(), findsNothing);
-  }, skip: kIsWeb); // [intended] We do not use Flutter-rendered context menu on the Web.
+      // All children fit on the screen, so they are all rendered.
+      expect(find.byType(TestBox), findsNWidgets(children.length));
+      expect(findOverflowNextButton(), findsNothing);
+      expect(findOverflowBackButton(), findsNothing);
+    },
+    skip: kIsWeb,
+  ); // [intended] We do not use Flutter-rendered context menu on the Web.
 
-  testWidgets('positions itself at anchorAbove if it fits', (WidgetTester tester) async {
-    late StateSetter setState;
-    const double height = _kToolbarHeight;
-    const double anchorBelowY = 500.0;
-    double anchorAboveY = 0.0;
-    const double paddingAbove = 12.0;
+  testWidgets(
+    'positions itself at anchorAbove if it fits',
+    (WidgetTester tester) async {
+      late StateSetter setState;
+      const double height = _kToolbarHeight;
+      const double anchorBelowY = 500.0;
+      double anchorAboveY = 0.0;
+      const double paddingAbove = 12.0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
+      await tester.pumpWidget(CupertinoApp(
         home: Center(
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setter) {
@@ -233,98 +250,125 @@ void main() {
               // each other out.
               return MediaQuery(
                 data: data.copyWith(
-                  padding: data.viewPadding.copyWith(
-                    top: paddingAbove,
-                  ),
+                  padding: data.viewPadding.copyWith(top: paddingAbove),
                 ),
                 child: CupertinoTextSelectionToolbar(
                   anchorAbove: Offset(50.0, anchorAboveY),
                   anchorBelow: const Offset(50.0, anchorBelowY),
                   children: <Widget>[
-                    Container(color: const Color(0xffff0000), width: 50.0, height: height),
-                    Container(color: const Color(0xff00ff00), width: 50.0, height: height),
-                    Container(color: const Color(0xff0000ff), width: 50.0, height: height),
+                    Container(
+                      color: const Color(0xffff0000),
+                      width: 50.0,
+                      height: height,
+                    ),
+                    Container(
+                      color: const Color(0xff00ff00),
+                      width: 50.0,
+                      height: height,
+                    ),
+                    Container(
+                      color: const Color(0xff0000ff),
+                      width: 50.0,
+                      height: height,
+                    ),
                   ],
                 ),
               );
             },
           ),
         ),
-      ),
-    );
+      ));
 
-    // When the toolbar doesn't fit above aboveAnchor, it positions itself below
-    // belowAnchor.
-    double toolbarY = tester.getTopLeft(findToolbar()).dy;
-    expect(toolbarY, equals(anchorBelowY + _kToolbarContentDistance));
-    expect(find.byType(CustomSingleChildLayout), findsOneWidget);
-    final CustomSingleChildLayout layout = tester.widget(find.byType(CustomSingleChildLayout));
-    final TextSelectionToolbarLayoutDelegate delegate = layout.delegate as TextSelectionToolbarLayoutDelegate;
-    expect(delegate.anchorBelow.dy, anchorBelowY - paddingAbove);
+      // When the toolbar doesn't fit above aboveAnchor, it positions itself below
+      // belowAnchor.
+      double toolbarY = tester.getTopLeft(findToolbar()).dy;
+      expect(toolbarY, equals(anchorBelowY + _kToolbarContentDistance));
+      expect(find.byType(CustomSingleChildLayout), findsOneWidget);
+      final CustomSingleChildLayout layout = tester.widget(
+        find.byType(CustomSingleChildLayout),
+      );
+      final TextSelectionToolbarLayoutDelegate delegate =
+          layout.delegate as TextSelectionToolbarLayoutDelegate;
+      expect(delegate.anchorBelow.dy, anchorBelowY - paddingAbove);
 
-    // Even when it barely doesn't fit.
-    setState(() {
-      anchorAboveY = 70.0;
-    });
-    await tester.pump();
-    toolbarY = tester.getTopLeft(findToolbar()).dy;
-    expect(toolbarY, equals(anchorBelowY + _kToolbarContentDistance));
+      // Even when it barely doesn't fit.
+      setState(() {
+        anchorAboveY = 70.0;
+      });
+      await tester.pump();
+      toolbarY = tester.getTopLeft(findToolbar()).dy;
+      expect(toolbarY, equals(anchorBelowY + _kToolbarContentDistance));
 
-    // When it does fit above aboveAnchor, it positions itself there.
-    setState(() {
-      anchorAboveY = 80.0;
-    });
-    await tester.pump();
-    toolbarY = tester.getTopLeft(findToolbar()).dy;
-    expect(toolbarY, equals(anchorAboveY - height - _kToolbarContentDistance));
-  }, skip: kIsWeb); // [intended] We do not use Flutter-rendered context menu on the Web.
+      // When it does fit above aboveAnchor, it positions itself there.
+      setState(() {
+        anchorAboveY = 80.0;
+      });
+      await tester.pump();
+      toolbarY = tester.getTopLeft(findToolbar()).dy;
+      expect(
+        toolbarY,
+        equals(anchorAboveY - height - _kToolbarContentDistance),
+      );
+    },
+    skip: kIsWeb,
+  ); // [intended] We do not use Flutter-rendered context menu on the Web.
 
-  testWidgets('can create and use a custom toolbar', (WidgetTester tester) async {
-    final TextEditingController controller = TextEditingController(
-      text: 'Select me custom menu',
-    );
-    await tester.pumpWidget(
-      CupertinoApp(
+  testWidgets(
+    'can create and use a custom toolbar',
+    (WidgetTester tester) async {
+      final TextEditingController controller = TextEditingController(
+        text: 'Select me custom menu',
+      );
+      await tester.pumpWidget(CupertinoApp(
         home: Center(
           child: CupertinoTextField(
             controller: controller,
             selectionControls: _CustomCupertinoTextSelectionControls(),
           ),
         ),
-      ),
-    );
+      ));
 
-    // The selection menu is not initially shown.
-    expect(find.text('Custom button'), findsNothing);
+      // The selection menu is not initially shown.
+      expect(find.text('Custom button'), findsNothing);
 
-    // Long press on "custom" to select it.
-    final Offset customPos = textOffsetToPosition(tester, 11);
-    final TestGesture gesture = await tester.startGesture(customPos, pointer: 7);
-    await tester.pump(const Duration(seconds: 2));
-    await gesture.up();
-    await tester.pump();
+      // Long press on "custom" to select it.
+      final Offset customPos = textOffsetToPosition(tester, 11);
+      final TestGesture gesture =
+          await tester.startGesture(customPos, pointer: 7);
+      await tester.pump(const Duration(seconds: 2));
+      await gesture.up();
+      await tester.pump();
 
-    // The custom selection menu is shown.
-    expect(find.text('Custom button'), findsOneWidget);
-    expect(find.text('Cut'), findsNothing);
-    expect(find.text('Copy'), findsNothing);
-    expect(find.text('Paste'), findsNothing);
-    expect(find.text('Select all'), findsNothing);
-  }, skip: kIsWeb); // [intended] We do not use Flutter-rendered context menu on the Web.
+      // The custom selection menu is shown.
+      expect(find.text('Custom button'), findsOneWidget);
+      expect(find.text('Cut'), findsNothing);
+      expect(find.text('Copy'), findsNothing);
+      expect(find.text('Paste'), findsNothing);
+      expect(find.text('Select all'), findsNothing);
+    },
+    skip: kIsWeb,
+  ); // [intended] We do not use Flutter-rendered context menu on the Web.
 
-  for (final Brightness? themeBrightness in <Brightness?>[...Brightness.values, null]) {
-    for (final Brightness? mediaBrightness in <Brightness?>[...Brightness.values, null]) {
-      testWidgets('draws dark buttons in dark mode and light button in light mode when theme is $themeBrightness and MediaQuery is $mediaBrightness', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          CupertinoApp(
-            theme: CupertinoThemeData(
-              brightness: themeBrightness,
-            ),
+  for (final Brightness? themeBrightness in <Brightness?>[
+        ...Brightness.values,
+        null,
+      ]) {
+    for (final Brightness? mediaBrightness in <Brightness?>[
+          ...Brightness.values,
+          null,
+        ]) {
+      testWidgets(
+        'draws dark buttons in dark mode and light button in light mode when theme is $themeBrightness and MediaQuery is $mediaBrightness',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(CupertinoApp(
+            theme: CupertinoThemeData(brightness: themeBrightness),
             home: Center(
               child: Builder(
                 builder: (BuildContext context) {
                   return MediaQuery(
-                    data: MediaQuery.of(context).copyWith(platformBrightness: mediaBrightness),
+                    data: MediaQuery.of(context).copyWith(
+                      platformBrightness: mediaBrightness,
+                    ),
                     child: CupertinoTextSelectionToolbar(
                       anchorAbove: const Offset(100.0, 0.0),
                       anchorBelow: const Offset(100.0, 0.0),
@@ -339,49 +383,50 @@ void main() {
                 },
               ),
             ),
-          ),
-        );
+          ));
 
-        final Finder buttonFinder = find.byType(CupertinoButton);
-        expect(buttonFinder, findsOneWidget);
+          final Finder buttonFinder = find.byType(CupertinoButton);
+          expect(buttonFinder, findsOneWidget);
 
-        final Finder decorationFinder = find.descendant(
-          of: find.byType(CupertinoButton),
-          matching: find.byType(DecoratedBox)
-        );
-        expect(decorationFinder, findsOneWidget);
-        final DecoratedBox decoratedBox = tester.widget(decorationFinder);
-        final BoxDecoration boxDecoration = decoratedBox.decoration as BoxDecoration;
+          final Finder decorationFinder = find.descendant(
+            of: find.byType(CupertinoButton),
+            matching: find.byType(DecoratedBox),
+          );
+          expect(decorationFinder, findsOneWidget);
+          final DecoratedBox decoratedBox = tester.widget(decorationFinder);
+          final BoxDecoration boxDecoration =
+              decoratedBox.decoration as BoxDecoration;
 
-        // Theme brightness is preferred, otherwise MediaQuery brightness is
-        // used. If both are null, defaults to light.
-        late final Brightness effectiveBrightness;
-        if (themeBrightness != null) {
-          effectiveBrightness = themeBrightness;
-        } else {
-          effectiveBrightness = mediaBrightness ?? Brightness.light;
-        }
+          // Theme brightness is preferred, otherwise MediaQuery brightness is
+          // used. If both are null, defaults to light.
+          late final Brightness effectiveBrightness;
+          if (themeBrightness != null) {
+            effectiveBrightness = themeBrightness;
+          } else {
+            effectiveBrightness = mediaBrightness ?? Brightness.light;
+          }
 
-        expect(
-          boxDecoration.color!.value,
-          effectiveBrightness == Brightness.dark
-              ? _kToolbarBackgroundColor.darkColor.value
-              : _kToolbarBackgroundColor.color.value,
-        );
-      }, skip: kIsWeb); // [intended] We do not use Flutter-rendered context menu on the Web.
+          expect(
+            boxDecoration.color!.value,
+            effectiveBrightness == Brightness.dark
+                ? _kToolbarBackgroundColor.darkColor.value
+                : _kToolbarBackgroundColor.color.value,
+          );
+        },
+        skip: kIsWeb,
+      ); // [intended] We do not use Flutter-rendered context menu on the Web.
     }
   }
 
-  testWidgets('draws a shadow below the toolbar in light mode', (WidgetTester tester) async {
-    late StateSetter setState;
-    const double height = _kToolbarHeight;
-    double anchorAboveY = 0.0;
+  testWidgets(
+    'draws a shadow below the toolbar in light mode',
+    (WidgetTester tester) async {
+      late StateSetter setState;
+      const double height = _kToolbarHeight;
+      double anchorAboveY = 0.0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        theme: const CupertinoThemeData(
-          brightness: Brightness.light,
-        ),
+      await tester.pumpWidget(CupertinoApp(
+        theme: const CupertinoThemeData(brightness: Brightness.light),
         home: Center(
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setter) {
@@ -393,53 +438,64 @@ void main() {
               // each other out.
               return MediaQuery(
                 data: data.copyWith(
-                  padding: data.viewPadding.copyWith(
-                    top: 12.0,
-                  ),
+                  padding: data.viewPadding.copyWith(top: 12.0),
                 ),
                 child: CupertinoTextSelectionToolbar(
                   anchorAbove: Offset(50.0, anchorAboveY),
                   anchorBelow: const Offset(50.0, 500.0),
                   children: <Widget>[
-                    Container(color: const Color(0xffff0000), width: 50.0, height: height),
-                    Container(color: const Color(0xff00ff00), width: 50.0, height: height),
-                    Container(color: const Color(0xff0000ff), width: 50.0, height: height),
+                    Container(
+                      color: const Color(0xffff0000),
+                      width: 50.0,
+                      height: height,
+                    ),
+                    Container(
+                      color: const Color(0xff00ff00),
+                      width: 50.0,
+                      height: height,
+                    ),
+                    Container(
+                      color: const Color(0xff0000ff),
+                      width: 50.0,
+                      height: height,
+                    ),
                   ],
                 ),
               );
             },
           ),
         ),
-      ),
-    );
+      ));
 
-    // When the toolbar is below the content, the shadow hangs below the entire
-    // toolbar.
-    final Finder finder = find.descendant(
-      of: find.byType(CupertinoTextSelectionToolbar),
-      matching: find.byType(DecoratedBox),
-    );
-    expect(finder, findsNWidgets(2));
-    DecoratedBox decoratedBox = tester.widget(finder.first);
-    BoxDecoration boxDecoration = decoratedBox.decoration as BoxDecoration;
-    List<BoxShadow>? shadows = boxDecoration.boxShadow;
-    expect(shadows, isNotNull);
-    expect(shadows, hasLength(1));
-    BoxShadow shadow = boxDecoration.boxShadow!.first;
-    expect(shadow.offset.dy, equals(7.0));
+      // When the toolbar is below the content, the shadow hangs below the entire
+      // toolbar.
+      final Finder finder = find.descendant(
+        of: find.byType(CupertinoTextSelectionToolbar),
+        matching: find.byType(DecoratedBox),
+      );
+      expect(finder, findsNWidgets(2));
+      DecoratedBox decoratedBox = tester.widget(finder.first);
+      BoxDecoration boxDecoration = decoratedBox.decoration as BoxDecoration;
+      List<BoxShadow>? shadows = boxDecoration.boxShadow;
+      expect(shadows, isNotNull);
+      expect(shadows, hasLength(1));
+      BoxShadow shadow = boxDecoration.boxShadow!.first;
+      expect(shadow.offset.dy, equals(7.0));
 
-    // When the toolbar is above the content, the shadow sits around the arrow
-    // with no offset.
-    setState(() {
-      anchorAboveY = 80.0;
-    });
-    await tester.pump();
-    decoratedBox = tester.widget(finder.first);
-    boxDecoration = decoratedBox.decoration as BoxDecoration;
-    shadows = boxDecoration.boxShadow;
-    expect(shadows, isNotNull);
-    expect(shadows, hasLength(1));
-    shadow = boxDecoration.boxShadow!.first;
-    expect(shadow.offset.dy, equals(0.0));
-  }, skip: kIsWeb); // [intended] We do not use Flutter-rendered context menu on the Web.
+      // When the toolbar is above the content, the shadow sits around the arrow
+      // with no offset.
+      setState(() {
+        anchorAboveY = 80.0;
+      });
+      await tester.pump();
+      decoratedBox = tester.widget(finder.first);
+      boxDecoration = decoratedBox.decoration as BoxDecoration;
+      shadows = boxDecoration.boxShadow;
+      expect(shadows, isNotNull);
+      expect(shadows, hasLength(1));
+      shadow = boxDecoration.boxShadow!.first;
+      expect(shadow.offset.dy, equals(0.0));
+    },
+    skip: kIsWeb,
+  ); // [intended] We do not use Flutter-rendered context menu on the Web.
 }

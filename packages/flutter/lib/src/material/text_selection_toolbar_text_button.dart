@@ -79,7 +79,10 @@ class TextSelectionToolbarTextButton extends StatelessWidget {
   /// padding depending on their position in the toolbar.
   static EdgeInsets getPadding(int index, int total) {
     assert(total > 0 && index >= 0 && index < total);
-    final _TextSelectionToolbarItemPosition position = _getPosition(index, total);
+    final _TextSelectionToolbarItemPosition position = _getPosition(
+      index,
+      total,
+    );
     return EdgeInsets.only(
       left: _getLeftPadding(position),
       right: _getRightPadding(position),
@@ -87,16 +90,16 @@ class TextSelectionToolbarTextButton extends StatelessWidget {
   }
 
   static double _getLeftPadding(_TextSelectionToolbarItemPosition position) {
-    if (position == _TextSelectionToolbarItemPosition.first
-        || position == _TextSelectionToolbarItemPosition.only) {
+    if (position == _TextSelectionToolbarItemPosition.first ||
+        position == _TextSelectionToolbarItemPosition.only) {
       return _kEndPadding;
     }
     return _kMiddlePadding;
   }
 
   static double _getRightPadding(_TextSelectionToolbarItemPosition position) {
-    if (position == _TextSelectionToolbarItemPosition.last
-        || position == _TextSelectionToolbarItemPosition.only) {
+    if (position == _TextSelectionToolbarItemPosition.last ||
+        position == _TextSelectionToolbarItemPosition.only) {
       return _kEndPadding;
     }
     return _kMiddlePadding;
@@ -141,7 +144,8 @@ class TextSelectionToolbarTextButton extends StatelessWidget {
       style: TextButton.styleFrom(
         foregroundColor: foregroundColor,
         shape: const RoundedRectangleBorder(),
-        minimumSize: const Size(kMinInteractiveDimension, kMinInteractiveDimension),
+        minimumSize:
+            const Size(kMinInteractiveDimension, kMinInteractiveDimension),
         padding: padding,
         alignment: alignment,
       ),

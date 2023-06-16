@@ -14,10 +14,10 @@ Future<void> generateLocalizationsSyntheticPackage({
   required Environment environment,
   required BuildSystem buildSystem,
 }) async {
-
   final FileSystem fileSystem = environment.fileSystem;
   final File l10nYamlFile = fileSystem.file(
-    fileSystem.path.join(environment.projectDir.path, 'l10n.yaml'));
+    fileSystem.path.join(environment.projectDir.path, 'l10n.yaml'),
+  );
 
   // If pubspec.yaml has generate:true and if l10n.yaml exists in the
   // root project directory, check to see if a synthetic package should
@@ -29,7 +29,7 @@ Future<void> generateLocalizationsSyntheticPackage({
   final YamlNode yamlNode = loadYamlNode(l10nYamlFile.readAsStringSync());
   if (yamlNode.value != null && yamlNode is! YamlMap) {
     throwToolExit(
-      'Expected ${l10nYamlFile.path} to contain a map, instead was $yamlNode'
+      'Expected ${l10nYamlFile.path} to contain a map, instead was $yamlNode',
     );
   }
 
@@ -41,7 +41,7 @@ Future<void> generateLocalizationsSyntheticPackage({
     if (value is! bool && value != null) {
       throwToolExit(
         'Expected "synthetic-package" to have a bool value, '
-        'instead was "$value"'
+        'instead was "$value"',
       );
     }
 
@@ -53,16 +53,19 @@ Future<void> generateLocalizationsSyntheticPackage({
     }
   }
 
-  final BuildResult result = await buildSystem.build(
-    const GenerateLocalizationsTarget(),
-    environment,
-  );
+  final BuildResult result =
+      await buildSystem.build(const GenerateLocalizationsTarget(), environment);
 
   if (result.hasException) {
     throwToolExit(
-      'Generating synthetic localizations package failed with ${result.exceptions.length} ${pluralize('error', result.exceptions.length)}:'
+      'Generating synthetic localizations package failed with ${result.exceptions.length} ${pluralize(
+        'error',
+        result.exceptions.length,
+      )}:'
       '\n\n'
-      '${result.exceptions.values.map<Object?>((ExceptionMeasurement e) => e.exception).join('\n\n')}',
+      '${result.exceptions.values.map<Object?>(
+        (ExceptionMeasurement e) => e.exception,
+      ).join('\n\n')}',
     );
   }
 }

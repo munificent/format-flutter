@@ -215,7 +215,9 @@ String generateTestEntrypoint({
   import 'dart:ui' as ui;
   import 'dart:html';
   import 'dart:js';
-  ${testConfigPath != null ? "import '${Uri.file(testConfigPath)}' as test_config;" : ""}
+  ${testConfigPath != null ? "import '${Uri.file(
+              testConfigPath,
+            )}' as test_config;" : ""}
   import 'package:stream_channel/stream_channel.dart';
   import 'package:flutter_test/flutter_test.dart';
   import 'package:test_api/backend.dart';
@@ -223,7 +225,9 @@ String generateTestEntrypoint({
   Future<void> main() async {
     ui.debugEmulateFlutterTesterEnvironment = true;
     await ui.webOnlyInitializePlatform();
-    webGoldenComparator = DefaultWebGoldenComparator(Uri.parse('${Uri.file(absolutePath)}'));
+    webGoldenComparator = DefaultWebGoldenComparator(Uri.parse('${Uri.file(
+    absolutePath,
+  )}'));
     (ui.window as dynamic).debugOverrideDevicePixelRatio(3.0);
     (ui.window as dynamic).webOnlyDebugPhysicalSizeOverride = const ui.Size(2400, 1800);
 
@@ -266,7 +270,10 @@ String generateTestEntrypoint({
 
 /// Generate the unit test bootstrap file.
 String generateTestBootstrapFileContents(
-    String mainUri, String requireUrl, String mapperUrl) {
+  String mainUri,
+  String requireUrl,
+  String mapperUrl,
+) {
   return '''
 (function() {
   if (typeof document != 'undefined') {

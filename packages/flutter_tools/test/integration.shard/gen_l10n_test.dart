@@ -34,14 +34,16 @@ void main() {
     // send '#l10n END' to its stdout.
     final Completer<void> l10nEnd = Completer<void>();
     final StringBuffer stdout = StringBuffer();
-    final StreamSubscription<String> subscription = flutter.stdout.listen((String line) {
-      if (line.contains('#l10n')) {
-        stdout.writeln(line.substring(line.indexOf('#l10n')));
-      }
-      if (line.contains('#l10n END')) {
-        l10nEnd.complete();
-      }
-    });
+    final StreamSubscription<String> subscription = flutter.stdout.listen(
+      (String line) {
+        if (line.contains('#l10n')) {
+          stdout.writeln(line.substring(line.indexOf('#l10n')));
+        }
+        if (line.contains('#l10n END')) {
+          l10nEnd.complete();
+        }
+      },
+    );
     await flutter.run();
     await l10nEnd.future;
     await subscription.cancel();
@@ -49,7 +51,8 @@ void main() {
   }
 
   void expectOutput(StringBuffer stdout) {
-    expect(stdout.toString(),
+    expect(
+      stdout.toString(),
       '#l10n 0 (--- supportedLocales tests ---)\n'
       '#l10n 1 (supportedLocales[0]: languageCode: en, countryCode: null, scriptCode: null)\n'
       '#l10n 2 (supportedLocales[1]: languageCode: en, countryCode: CA, scriptCode: null)\n'
@@ -165,16 +168,19 @@ void main() {
       '#l10n 112 (ES 419 - Hello)\n'
       '#l10n 113 (ES 419 - Hello World)\n'
       '#l10n 114 (ES 419 - Hello two worlds)\n'
-      '#l10n END\n'
+      '#l10n END\n',
     );
   }
 
   // TODO(jsimmons): need a localization test that uses deferred loading
   // (see https://github.com/flutter/flutter/issues/61911)
-  testWithoutContext('generated l10n classes produce expected localized strings', () async {
-    await project.setUpIn(tempDir);
-    flutter = FlutterRunTestDriver(tempDir);
-    final StringBuffer stdout = await runApp();
-    expectOutput(stdout);
-  });
+  testWithoutContext(
+    'generated l10n classes produce expected localized strings',
+    () async {
+      await project.setUpIn(tempDir);
+      flutter = FlutterRunTestDriver(tempDir);
+      final StringBuffer stdout = await runApp();
+      expectOutput(stdout);
+    },
+  );
 }

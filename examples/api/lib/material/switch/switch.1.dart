@@ -17,9 +17,7 @@ class SwitchApp extends StatelessWidget {
       theme: ThemeData(useMaterial3: true),
       home: Scaffold(
         appBar: AppBar(title: const Text('Switch Sample')),
-        body: const Center(
-          child: SwitchExample(),
-        ),
+        body: const Center(child: SwitchExample()),
       ),
     );
   }
@@ -37,34 +35,32 @@ class _SwitchExampleState extends State<SwitchExample> {
 
   @override
   Widget build(BuildContext context) {
-    final MaterialStateProperty<Color?> trackColor = MaterialStateProperty.resolveWith<Color?>(
-      (Set<MaterialState> states) {
-        // Track color when the switch is selected.
-        if (states.contains(MaterialState.selected)) {
-          return Colors.amber;
-        }
-        // Otherwise return null to set default track color
-        // for remaining states such as when the switch is
-        // hovered, focused, or disabled.
-        return null;
-      },
-    );
-    final MaterialStateProperty<Color?> overlayColor = MaterialStateProperty.resolveWith<Color?>(
-      (Set<MaterialState> states) {
-        // Material color when switch is selected.
-        if (states.contains(MaterialState.selected)) {
-          return Colors.amber.withOpacity(0.54);
-        }
-        // Material color when switch is disabled.
-        if (states.contains(MaterialState.disabled)) {
-          return Colors.grey.shade400;
-        }
-        // Otherwise return null to set default material color
-        // for remaining states such as when the switch is
-        // hovered, or focused.
-        return null;
-      },
-    );
+    final MaterialStateProperty<Color?> trackColor =
+        MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          // Track color when the switch is selected.
+          if (states.contains(MaterialState.selected)) {
+            return Colors.amber;
+          }
+          // Otherwise return null to set default track color
+          // for remaining states such as when the switch is
+          // hovered, focused, or disabled.
+          return null;
+        });
+    final MaterialStateProperty<Color?> overlayColor =
+        MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          // Material color when switch is selected.
+          if (states.contains(MaterialState.selected)) {
+            return Colors.amber.withOpacity(0.54);
+          }
+          // Material color when switch is disabled.
+          if (states.contains(MaterialState.disabled)) {
+            return Colors.grey.shade400;
+          }
+          // Otherwise return null to set default material color
+          // for remaining states such as when the switch is
+          // hovered, or focused.
+          return null;
+        });
 
     return Switch(
       // This bool value toggles the switch.

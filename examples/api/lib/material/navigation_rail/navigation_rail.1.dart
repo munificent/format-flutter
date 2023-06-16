@@ -14,7 +14,10 @@ class NavigationRailExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(colorSchemeSeed: const Color(0xff6750a4), useMaterial3: true),
+      theme: ThemeData(
+        colorSchemeSeed: const Color(0xff6750a4),
+        useMaterial3: true,
+      ),
       home: const NavRailExample(),
     );
   }
@@ -165,7 +168,8 @@ class _NavRailExampleState extends State<NavRailExample> {
                             showLeading = !showLeading;
                           });
                         },
-                        child: Text(showLeading ? 'Hide Leading' : 'Show Leading'),
+                        child:
+                            Text(showLeading ? 'Hide Leading' : 'Show Leading'),
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -173,7 +177,9 @@ class _NavRailExampleState extends State<NavRailExample> {
                             showTrailing = !showTrailing;
                           });
                         },
-                        child: Text(showTrailing ? 'Hide Trailing' : 'Show Trailing'),
+                        child: Text(
+                          showTrailing ? 'Hide Trailing' : 'Show Trailing',
+                        ),
                       ),
                     ],
                   ),

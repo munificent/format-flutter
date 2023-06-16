@@ -15,7 +15,8 @@ import 'selection_container.dart';
 const String _viewType = 'Browser__WebContextMenuViewType__';
 const String _kClassName = 'web-electable-region-context-menu';
 // These css rules hides the dom element with the class name.
-const String _kClassSelectionRule = '.$_kClassName::selection { background: transparent; }';
+const String _kClassSelectionRule =
+    '.$_kClassName::selection { background: transparent; }';
 const String _kClassRule = '''
 .$_kClassName {
   color: transparent;
@@ -31,16 +32,17 @@ typedef _WebSelectionCallBack = void Function(DomHTMLElement, DomMouseEvent);
 
 /// Function signature for `ui_web.platformViewRegistry.registerViewFactory`.
 @visibleForTesting
-typedef RegisterViewFactory = void Function(String, Object Function(int viewId), {bool isVisible});
+typedef RegisterViewFactory = void Function(
+  String,
+  Object Function(int viewId), {
+  bool isVisible,
+});
 
 /// See `_platform_selectable_region_context_menu_io.dart` for full
 /// documentation.
 class PlatformSelectableRegionContextMenu extends StatelessWidget {
   /// See `_platform_selectable_region_context_menu_io.dart`.
-  PlatformSelectableRegionContextMenu({
-    required this.child,
-    super.key,
-  }) {
+  PlatformSelectableRegionContextMenu({required this.child, super.key}) {
     if (_registeredViewType == null) {
       _register();
     }
@@ -68,7 +70,8 @@ class PlatformSelectableRegionContextMenu extends StatelessWidget {
   static String? _registeredViewType;
 
   static RegisterViewFactory get _registerViewFactory =>
-      debugOverrideRegisterViewFactory ?? ui_web.platformViewRegistry.registerViewFactory;
+      debugOverrideRegisterViewFactory ??
+      ui_web.platformViewRegistry.registerViewFactory;
 
   /// Override this to provide a custom implementation of [ui_web.platformViewRegistry.registerViewFactory].
   ///
@@ -80,28 +83,38 @@ class PlatformSelectableRegionContextMenu extends StatelessWidget {
   // Registers the view factories for the interceptor widgets.
   static void _register() {
     assert(_registeredViewType == null);
-    _registeredViewType = _registerWebSelectionCallback((DomHTMLElement element, DomMouseEvent event) {
-      final SelectionContainerDelegate? client = _activeClient;
-      if (client != null) {
-        // Converts the html right click event to flutter coordinate.
-        final Offset localOffset = Offset(event.offsetX.toDouble(), event.offsetY.toDouble());
-        final Matrix4 transform = client.getTransformTo(null);
-        final Offset globalOffset = MatrixUtils.transformPoint(transform, localOffset);
-        client.dispatchSelectionEvent(SelectWordSelectionEvent(globalPosition: globalOffset));
-        // The innerText must contain the text in order to be selected by
-        // the browser.
-        element.innerText = client.getSelectedContent()?.plainText ?? '';
+    _registeredViewType = _registerWebSelectionCallback(
+      (DomHTMLElement element, DomMouseEvent event) {
+        final SelectionContainerDelegate? client = _activeClient;
+        if (client != null) {
+          // Converts the html right click event to flutter coordinate.
+          final Offset localOffset = Offset(
+            event.offsetX.toDouble(),
+            event.offsetY.toDouble(),
+          );
+          final Matrix4 transform = client.getTransformTo(null);
+          final Offset globalOffset = MatrixUtils.transformPoint(
+            transform,
+            localOffset,
+          );
+          client.dispatchSelectionEvent(
+            SelectWordSelectionEvent(globalPosition: globalOffset),
+          );
+          // The innerText must contain the text in order to be selected by
+          // the browser.
+          element.innerText = client.getSelectedContent()?.plainText ?? '';
 
-        // Programmatically select the dom element in browser.
-        final DomRange range = domDocument.createRange();
-        range.selectNode(element);
-        final DomSelection? selection = domWindow.getSelection();
-        if (selection != null) {
-          selection.removeAllRanges();
-          selection.addRange(range);
+          // Programmatically select the dom element in browser.
+          final DomRange range = domDocument.createRange();
+          range.selectNode(element);
+          final DomSelection? selection = domWindow.getSelection();
+          if (selection != null) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
         }
-      }
-    });
+      },
+    );
   }
 
   static String _registerWebSelectionCallback(_WebSelectionCallBack callback) {
@@ -119,13 +132,16 @@ class PlatformSelectableRegionContextMenu extends StatelessWidget {
       sheet.insertRule(_kClassRule, 0);
       sheet.insertRule(_kClassSelectionRule, 1);
 
-      htmlElement.addEventListener('mousedown', createDomEventListener((DomEvent event) {
-        final DomMouseEvent mouseEvent = event as DomMouseEvent;
-        if (mouseEvent.button != _kRightClickButton) {
-          return;
-        }
-        callback(htmlElement, mouseEvent);
-      }));
+      htmlElement.addEventListener(
+        'mousedown',
+        createDomEventListener((DomEvent event) {
+          final DomMouseEvent mouseEvent = event as DomMouseEvent;
+          if (mouseEvent.button != _kRightClickButton) {
+            return;
+          }
+          callback(htmlElement, mouseEvent);
+        }),
+      );
       return htmlElement;
     }, isVisible: false);
     return _viewType;
@@ -136,11 +152,7 @@ class PlatformSelectableRegionContextMenu extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        const Positioned.fill(
-          child: HtmlElementView(
-            viewType: _viewType,
-          ),
-        ),
+        const Positioned.fill(child: HtmlElementView(viewType: _viewType)),
         child,
       ],
     );

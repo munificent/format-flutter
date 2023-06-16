@@ -13,16 +13,17 @@ void main() {
     HttpOverrides.global = null;
   });
 
-  testWidgets('FittedBox scales the image to fill the parent container', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.FittedBoxApp(),
-    );
+  testWidgets(
+    'FittedBox scales the image to fill the parent container',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const example.FittedBoxApp());
 
-    final Size containerSize = tester.getSize(find.byType(Container));
-    expect(containerSize, const Size(300, 400));
+      final Size containerSize = tester.getSize(find.byType(Container));
+      expect(containerSize, const Size(300, 400));
 
-    // FittedBox should scale the image to fill the parent container.
-    final FittedBox fittedBox = tester.widget(find.byType(FittedBox));
-    expect(fittedBox.fit, BoxFit.fill);
-  });
+      // FittedBox should scale the image to fill the parent container.
+      final FittedBox fittedBox = tester.widget(find.byType(FittedBox));
+      expect(fittedBox.fit, BoxFit.fill);
+    },
+  );
 }

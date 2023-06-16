@@ -9,9 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'rendering_tester.dart';
 
 class TestRenderSliverBoxChildManager extends RenderSliverBoxChildManager {
-  TestRenderSliverBoxChildManager({
-    required this.children,
-  });
+  TestRenderSliverBoxChildManager({required this.children});
 
   late RenderSliverList _renderObject;
   List<RenderBox> children;
@@ -24,7 +22,7 @@ class TestRenderSliverBoxChildManager extends RenderSliverBoxChildManager {
   int? _currentlyUpdatingChildIndex;
 
   @override
-  void createChild(int index, { required RenderBox? after }) {
+  void createChild(int index, {required RenderBox? after}) {
     if (index < 0 || index >= children.length) {
       return;
     }
@@ -50,7 +48,9 @@ class TestRenderSliverBoxChildManager extends RenderSliverBoxChildManager {
     double? trailingScrollOffset,
   }) {
     assert(lastIndex! >= firstIndex!);
-    return children.length * (trailingScrollOffset! - leadingScrollOffset!) / (lastIndex! - firstIndex! + 1);
+    return children.length *
+        (trailingScrollOffset! - leadingScrollOffset!) /
+        (lastIndex! - firstIndex! + 1);
   }
 
   @override
@@ -59,12 +59,13 @@ class TestRenderSliverBoxChildManager extends RenderSliverBoxChildManager {
   @override
   void didAdoptChild(RenderBox child) {
     assert(_currentlyUpdatingChildIndex != null);
-    final SliverMultiBoxAdaptorParentData childParentData = child.parentData! as SliverMultiBoxAdaptorParentData;
+    final SliverMultiBoxAdaptorParentData childParentData =
+        child.parentData! as SliverMultiBoxAdaptorParentData;
     childParentData.index = _currentlyUpdatingChildIndex;
   }
 
   @override
-  void setDidUnderflow(bool value) { }
+  void setDidUnderflow(bool value) {}
 }
 
 class ViewportOffsetSpy extends ViewportOffset {
@@ -84,7 +85,8 @@ class ViewportOffsetSpy extends ViewportOffset {
   bool applyViewportDimension(double viewportDimension) => true;
 
   @override
-  bool applyContentDimensions(double minScrollExtent, double maxScrollExtent) => true;
+  bool applyContentDimensions(double minScrollExtent, double maxScrollExtent) =>
+      true;
 
   @override
   void correctBy(double correction) {
@@ -119,7 +121,8 @@ void main() {
   test('RenderSliverList basic test - down', () {
     RenderObject inner;
     RenderBox a, b, c, d, e;
-    final TestRenderSliverBoxChildManager childManager = TestRenderSliverBoxChildManager(
+    final TestRenderSliverBoxChildManager childManager =
+        TestRenderSliverBoxChildManager(
       children: <RenderBox>[
         a = RenderSizedBox(const Size(100.0, 400.0)),
         b = RenderSizedBox(const Size(100.0, 400.0)),
@@ -132,9 +135,7 @@ void main() {
       crossAxisDirection: AxisDirection.right,
       offset: ViewportOffset.zero(),
       cacheExtent: 0.0,
-      children: <RenderSliver>[
-        inner = childManager.createRenderObject(),
-      ],
+      children: <RenderSliver>[inner = childManager.createRenderObject()],
     );
     layout(root);
 
@@ -194,7 +195,8 @@ void main() {
   test('RenderSliverList basic test - up', () {
     RenderObject inner;
     RenderBox a, b, c, d, e;
-    final TestRenderSliverBoxChildManager childManager = TestRenderSliverBoxChildManager(
+    final TestRenderSliverBoxChildManager childManager =
+        TestRenderSliverBoxChildManager(
       children: <RenderBox>[
         a = RenderSizedBox(const Size(100.0, 400.0)),
         b = RenderSizedBox(const Size(100.0, 400.0)),
@@ -207,9 +209,7 @@ void main() {
       axisDirection: AxisDirection.up,
       crossAxisDirection: AxisDirection.right,
       offset: ViewportOffset.zero(),
-      children: <RenderSliver>[
-        inner = childManager.createRenderObject(),
-      ],
+      children: <RenderSliver>[inner = childManager.createRenderObject()],
       cacheExtent: 0.0,
     );
     layout(root);
@@ -270,7 +270,8 @@ void main() {
   test('SliverList - no zero scroll offset correction', () {
     RenderSliverList inner;
     RenderBox a;
-    final TestRenderSliverBoxChildManager childManager = TestRenderSliverBoxChildManager(
+    final TestRenderSliverBoxChildManager childManager =
+        TestRenderSliverBoxChildManager(
       children: <RenderBox>[
         a = RenderSizedBox(const Size(100.0, 400.0)),
         RenderSizedBox(const Size(100.0, 400.0)),
@@ -282,13 +283,12 @@ void main() {
     final RenderViewport root = RenderViewport(
       crossAxisDirection: AxisDirection.right,
       offset: ViewportOffset.zero(),
-      children: <RenderSliver>[
-        inner = childManager.createRenderObject(),
-      ],
+      children: <RenderSliver>[inner = childManager.createRenderObject()],
     );
     layout(root);
 
-    final SliverMultiBoxAdaptorParentData parentData = a.parentData! as SliverMultiBoxAdaptorParentData;
+    final SliverMultiBoxAdaptorParentData parentData =
+        a.parentData! as SliverMultiBoxAdaptorParentData;
     parentData.layoutOffset = 0.001;
 
     root.offset = ViewportOffset.fixed(900.0);
@@ -303,7 +303,8 @@ void main() {
   test('SliverList - no correction when tiny double precision error', () {
     RenderSliverList inner;
     RenderBox a;
-    final TestRenderSliverBoxChildManager childManager = TestRenderSliverBoxChildManager(
+    final TestRenderSliverBoxChildManager childManager =
+        TestRenderSliverBoxChildManager(
       children: <RenderBox>[
         a = RenderSizedBox(const Size(100.0, 400.0)),
         RenderSizedBox(const Size(100.0, 400.0)),
@@ -316,13 +317,12 @@ void main() {
     final RenderViewport root = RenderViewport(
       crossAxisDirection: AxisDirection.right,
       offset: ViewportOffset.zero(),
-      children: <RenderSliver>[
-        inner,
-      ],
+      children: <RenderSliver>[inner],
     );
     layout(root);
 
-    final SliverMultiBoxAdaptorParentData parentData = a.parentData! as SliverMultiBoxAdaptorParentData;
+    final SliverMultiBoxAdaptorParentData parentData =
+        a.parentData! as SliverMultiBoxAdaptorParentData;
     // Simulate double precision error.
     parentData.layoutOffset = -0.0000000000001;
 
@@ -337,7 +337,8 @@ void main() {
   });
 
   test('SliverMultiBoxAdaptorParentData.toString', () {
-    final SliverMultiBoxAdaptorParentData candidate = SliverMultiBoxAdaptorParentData();
+    final SliverMultiBoxAdaptorParentData candidate =
+        SliverMultiBoxAdaptorParentData();
     expect(candidate.keepAlive, isFalse);
     expect(candidate.index, isNull);
     expect(candidate.toString(), 'index=null; layoutOffset=None');

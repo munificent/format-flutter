@@ -9,8 +9,10 @@ import '../common.dart';
 const int _kNumIterations = 100000;
 
 void main() {
-  assert(false,
-      "Don't run benchmarks in debug mode! Use 'flutter run --release'.");
+  assert(
+    false,
+    "Don't run benchmarks in debug mode! Use 'flutter run --release'.",
+  );
   final BenchmarkResultPrinter printer = BenchmarkResultPrinter();
 
   const StandardMessageCodec codec = StandardMessageCodec();
@@ -60,7 +62,12 @@ void main() {
   watch.reset();
   watch.start();
   for (int i = 0; i < _kNumIterations; i += 1) {
-    codec.encodeMessage(<Object>[1234, 'This is a performance test.', 1.25, true]);
+    codec.encodeMessage(<Object>[
+      1234,
+      'This is a performance test.',
+      1.25,
+      true,
+    ]);
   }
   watch.stop();
 

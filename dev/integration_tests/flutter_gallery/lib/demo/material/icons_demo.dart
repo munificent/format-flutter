@@ -65,9 +65,15 @@ class IconsDemoState extends State<IconsDemo> {
               primary: true,
               padding: const EdgeInsets.all(24.0),
               children: <Widget>[
-                _IconsDemoCard(handleIconButtonPress, Icons.face), // direction-agnostic icon
+                _IconsDemoCard(
+                  handleIconButtonPress,
+                  Icons.face,
+                ), // direction-agnostic icon
                 const SizedBox(height: 24.0),
-                _IconsDemoCard(handleIconButtonPress, Icons.battery_unknown), // direction-aware icon
+                _IconsDemoCard(
+                  handleIconButtonPress,
+                  Icons.battery_unknown,
+                ), // direction-aware icon
               ],
             ),
           ),
@@ -92,16 +98,15 @@ class _IconsDemoCard extends StatelessWidget {
     );
   }
 
-  Widget _centeredText(String label) =>
-    Padding(
-      // Match the default padding of IconButton.
-      padding: const EdgeInsets.all(8.0),
-      child: Text(label, textAlign: TextAlign.center),
-    );
+  Widget _centeredText(String label) => Padding(
+    // Match the default padding of IconButton.
+    padding: const EdgeInsets.all(8.0),
+    child: Text(label, textAlign: TextAlign.center),
+  );
 
   TableRow _buildIconRow(double size) {
     return TableRow(
-      children: <Widget> [
+      children: <Widget>[
         _centeredText('${size.floor()} $icon'),
         _buildIconButton(size, icon, true),
         _buildIconButton(size, icon, false),
@@ -112,7 +117,9 @@ class _IconsDemoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final TextStyle textStyle = theme.textTheme.titleMedium!.copyWith(color: theme.textTheme.bodySmall!.color);
+    final TextStyle textStyle = theme.textTheme.titleMedium!.copyWith(
+      color: theme.textTheme.bodySmall!.color,
+    );
     return Card(
       child: DefaultTextStyle(
         style: textStyle,
@@ -120,13 +127,13 @@ class _IconsDemoCard extends StatelessWidget {
           explicitChildNodes: true,
           child: Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: <TableRow> [
+            children: <TableRow>[
               TableRow(
-                children: <Widget> [
+                children: <Widget>[
                   _centeredText('Size $icon'),
                   _centeredText('Enabled $icon'),
                   _centeredText('Disabled $icon'),
-                ]
+                ],
               ),
               _buildIconRow(18.0),
               _buildIconRow(24.0),

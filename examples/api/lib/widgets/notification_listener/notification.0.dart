@@ -13,9 +13,7 @@ class NotificationExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: NotificationExample(),
-    );
+    return const MaterialApp(home: NotificationExample());
   }
 }
 
@@ -23,16 +21,8 @@ class NotificationExample extends StatelessWidget {
   const NotificationExample({super.key});
 
   static const List<String> _tabs = <String>['Months', 'Days'];
-  static const List<String> _months = <String>[
-    'January',
-    'February',
-    'March',
-  ];
-  static const List<String> _days = <String>[
-    'Sunday',
-    'Monday',
-    'Tuesday',
-  ];
+  static const List<String> _months = <String>['January', 'February', 'March'];
+  static const List<String> _days = <String>['Sunday', 'Monday', 'Tuesday'];
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +41,8 @@ class NotificationExample extends StatelessWidget {
             return true;
           },
           child: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
                   title: const Text('Notification Sample'),

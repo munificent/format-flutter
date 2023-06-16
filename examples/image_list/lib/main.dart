@@ -82,7 +82,8 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(
-        (context ?? SecurityContext())..setTrustedCertificatesBytes(certificate.codeUnits),
+      (context ?? SecurityContext())
+        ..setTrustedCertificatesBytes(certificate.codeUnits),
     );
   }
 }
@@ -131,9 +132,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: MyHomePage(title: 'Flutter Demo Home Page', port: port),
     );
   }
@@ -159,18 +158,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   Widget createImage(final int index, final Completer<bool> completer) {
     return Image.network(
-        'https://localhost:${widget.port}/${_counter * images + index}',
-        frameBuilder: (
-          BuildContext context,
-          Widget child,
-          int? frame,
-          bool wasSynchronouslyLoaded,
-        ) {
-          if (frame == 0 && !completer.isCompleted) {
-            completer.complete(true);
-          }
-          return child;
-        },
+      'https://localhost:${widget.port}/${_counter * images + index}',
+      frameBuilder: (
+        BuildContext context,
+        Widget child,
+        int? frame,
+        bool wasSynchronouslyLoaded,
+      ) {
+        if (frame == 0 && !completer.isCompleted) {
+          completer.complete(true);
+        }
+        return child;
+      },
     );
   }
 
@@ -184,8 +183,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         )..repeat(),
     ];
     final List<Completer<bool>> completers = <Completer<bool>>[
-      for (int i = 0; i < images; i++)
-        Completer<bool>(),
+      for (int i = 0; i < images; i++) Completer<bool>(),
     ];
     final List<Future<bool>> futures = completers.map(
       (Completer<bool> completer) => completer.future,
@@ -193,21 +191,19 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     final DateTime started = DateTime.now();
     Future.wait(futures).then((_) {
       debugPrint(
-        '===image_list=== all loaded in ${DateTime.now().difference(started).inMilliseconds}ms.',
+        '===image_list=== all loaded in ${DateTime.now().difference(
+          started,
+        ).inMilliseconds}ms.',
       );
     });
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: Text(widget.title)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Row(children: createImageList(images, completers, controllers)),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+            const Text('You have pushed the button this many times:'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,

@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class PopupMenuTemplate extends TokenTemplate {
-  const PopupMenuTemplate(super.blockName, super.fileName, super.tokens, {
+  const PopupMenuTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
     super.textThemePrefix = '_textTheme.',
   });
@@ -25,9 +28,13 @@ class _${blockName}DefaultsM3 extends PopupMenuThemeData {
     return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
     final TextStyle style = _textTheme.labelLarge!;
       if (states.contains(MaterialState.disabled)) {
-        return style.apply(color: ${componentColor('md.comp.list.list-item.disabled.label-text')});
+        return style.apply(color: ${componentColor(
+        'md.comp.list.list-item.disabled.label-text',
+      )});
       }
-      return style.apply(color: ${componentColor('md.comp.list.list-item.label-text')});
+      return style.apply(color: ${componentColor(
+        'md.comp.list.list-item.label-text',
+      )});
     });
   }
 
@@ -38,7 +45,9 @@ class _${blockName}DefaultsM3 extends PopupMenuThemeData {
   Color? get shadowColor => ${color("md.comp.menu.container.shadow-color")};
 
   @override
-  Color? get surfaceTintColor => ${color("md.comp.menu.container.surface-tint-layer.color")};
+  Color? get surfaceTintColor => ${color(
+        "md.comp.menu.container.surface-tint-layer.color",
+      )};
 
   @override
   ShapeBorder? get shape => ${shape("md.comp.menu.container")};

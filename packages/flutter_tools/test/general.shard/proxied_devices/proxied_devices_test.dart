@@ -57,7 +57,8 @@ void main() {
       final FakeSocket fakeSocket = FakeSocket();
       fakeServerSocket.controller.add(fakeSocket);
 
-      final Stream<DaemonMessage> broadcastOutput = serverDaemonConnection.incomingCommands.asBroadcastStream();
+      final Stream<DaemonMessage> broadcastOutput =
+          serverDaemonConnection.incomingCommands.asBroadcastStream();
 
       DaemonMessage message = await broadcastOutput.first;
 
@@ -75,7 +76,9 @@ void main() {
       expect(message.data['params'], <String, Object?>{'id': id});
       expect(message.binary, isNotNull);
       final List<List<int>> binary = await message.binary!.toList();
-      expect(binary, <List<int>>[<int>[1, 2, 3]]);
+      expect(binary, <List<int>>[
+        <int>[1, 2, 3],
+      ]);
 
       // Forwards data received as event to socket.
       expect(fakeSocket.addedData.isEmpty, true);
@@ -113,54 +116,65 @@ void main() {
       await pumpEventQueue();
     });
 
-    testWithoutContext('forwards the port from the remote end with device id', () async {
-      final FakeServerSocket fakeServerSocket = FakeServerSocket(400);
-      final ProxiedPortForwarder portForwarder = ProxiedPortForwarder(
-        clientDaemonConnection,
-        deviceId: 'device_id',
-        logger: bufferLogger,
-        createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async =>
-            fakeServerSocket,
-      );
+    testWithoutContext(
+      'forwards the port from the remote end with device id',
+      () async {
+        final FakeServerSocket fakeServerSocket = FakeServerSocket(400);
+        final ProxiedPortForwarder portForwarder = ProxiedPortForwarder(
+          clientDaemonConnection,
+          deviceId: 'device_id',
+          logger: bufferLogger,
+          createSocketServer:
+              (Logger logger, int? hostPort, bool? ipv6) async =>
+                  fakeServerSocket,
+        );
 
-      final Stream<DaemonMessage> broadcastOutput = serverDaemonConnection.incomingCommands.asBroadcastStream();
+        final Stream<DaemonMessage> broadcastOutput =
+            serverDaemonConnection.incomingCommands.asBroadcastStream();
 
-      final Future<int> result = portForwarder.forward(300);
+        final Future<int> result = portForwarder.forward(300);
 
-      DaemonMessage message = await broadcastOutput.first;
-      expect(message.data['id'], isNotNull);
-      expect(message.data['method'], 'device.forward');
-      expect(message.data['params'], <String, Object?>{'deviceId': 'device_id', 'devicePort': 300});
+        DaemonMessage message = await broadcastOutput.first;
+        expect(message.data['id'], isNotNull);
+        expect(message.data['method'], 'device.forward');
+        expect(message.data['params'], <String, Object?>{
+          'deviceId': 'device_id',
+          'devicePort': 300,
+        });
 
-      serverDaemonConnection.sendResponse(message.data['id']!, <String, Object?>{'hostPort': 350});
+        serverDaemonConnection.sendResponse(
+          message.data['id']!,
+          <String, Object?>{'hostPort': 350},
+        );
 
-      expect(await result, 400);
+        expect(await result, 400);
 
-      final FakeSocket fakeSocket = FakeSocket();
-      fakeServerSocket.controller.add(fakeSocket);
-      message = await broadcastOutput.first;
+        final FakeSocket fakeSocket = FakeSocket();
+        fakeServerSocket.controller.add(fakeSocket);
+        message = await broadcastOutput.first;
 
-      expect(message.data['id'], isNotNull);
-      expect(message.data['method'], 'proxy.connect');
-      expect(message.data['params'], <String, Object?>{'port': 350});
+        expect(message.data['id'], isNotNull);
+        expect(message.data['method'], 'proxy.connect');
+        expect(message.data['params'], <String, Object?>{'port': 350});
 
-      const String id = 'random_id';
-      serverDaemonConnection.sendResponse(message.data['id']!, id);
+        const String id = 'random_id';
+        serverDaemonConnection.sendResponse(message.data['id']!, id);
 
-      // Unforward will try to disconnect the remote port.
-      portForwarder.forwardedPorts.single.dispose();
-      expect(fakeServerSocket.closeCalled, true);
+        // Unforward will try to disconnect the remote port.
+        portForwarder.forwardedPorts.single.dispose();
+        expect(fakeServerSocket.closeCalled, true);
 
-      message = await broadcastOutput.first;
+        message = await broadcastOutput.first;
 
-      expect(message.data['id'], isNotNull);
-      expect(message.data['method'], 'device.unforward');
-      expect(message.data['params'], <String, Object?>{
-        'deviceId': 'device_id',
-        'devicePort': 300,
-        'hostPort': 350,
-      });
-    });
+        expect(message.data['id'], isNotNull);
+        expect(message.data['method'], 'device.unforward');
+        expect(message.data['params'], <String, Object?>{
+          'deviceId': 'device_id',
+          'devicePort': 300,
+          'hostPort': 350,
+        });
+      },
+    );
 
     group('socket done', () {
       late Stream<DaemonMessage> broadcastOutput;
@@ -173,17 +187,22 @@ void main() {
           clientDaemonConnection,
           deviceId: 'device_id',
           logger: bufferLogger,
-          createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async =>
-              fakeServerSocket,
+          createSocketServer:
+              (Logger logger, int? hostPort, bool? ipv6) async =>
+                  fakeServerSocket,
         );
 
-        broadcastOutput = serverDaemonConnection.incomingCommands.asBroadcastStream();
+        broadcastOutput =
+            serverDaemonConnection.incomingCommands.asBroadcastStream();
 
         unawaited(portForwarder.forward(300));
 
         // Consumes the message.
         DaemonMessage message = await broadcastOutput.first;
-        serverDaemonConnection.sendResponse(message.data['id']!, <String, Object?>{'hostPort': 350});
+        serverDaemonConnection.sendResponse(
+          message.data['id']!,
+          <String, Object?>{'hostPort': 350},
+        );
 
         fakeSocket = FakeSocket();
         fakeServerSocket.controller.add(fakeSocket);
@@ -196,35 +215,40 @@ void main() {
         await pumpEventQueue();
       });
 
-      testWithoutContext('without error, should calls proxy.disconnect', () async {
-        // It will try to disconnect the remote port when socket is done.
-        fakeSocket.doneCompleter.complete(true);
-        final DaemonMessage message = await broadcastOutput.first;
+      testWithoutContext(
+        'without error, should calls proxy.disconnect',
+        () async {
+          // It will try to disconnect the remote port when socket is done.
+          fakeSocket.doneCompleter.complete(true);
+          final DaemonMessage message = await broadcastOutput.first;
 
-        expect(message.data['id'], isNotNull);
-        expect(message.data['method'], 'proxy.disconnect');
-        expect(message.data['params'], <String, Object?>{
-          'id': 'random_id',
-        });
-      });
+          expect(message.data['id'], isNotNull);
+          expect(message.data['method'], 'proxy.disconnect');
+          expect(message.data['params'], <String, Object?>{'id': 'random_id'});
+        },
+      );
 
-      testWithoutContext('with error, should also calls proxy.disconnect', () async {
+      testWithoutContext(
+        'with error, should also calls proxy.disconnect',
+        () async {
+          fakeSocket.doneCompleter.complete(true);
+          final DaemonMessage message = await broadcastOutput.first;
 
-        fakeSocket.doneCompleter.complete(true);
-        final DaemonMessage message = await broadcastOutput.first;
+          expect(message.data['id'], isNotNull);
+          expect(message.data['method'], 'proxy.disconnect');
+          expect(message.data['params'], <String, Object?>{'id': 'random_id'});
 
-        expect(message.data['id'], isNotNull);
-        expect(message.data['method'], 'proxy.disconnect');
-        expect(message.data['params'], <String, Object?>{
-          'id': 'random_id',
-        });
+          // Send an error response and make sure that it won't crash the client.
+          serverDaemonConnection.sendErrorResponse(
+            message.data['id']!,
+            'some error',
+            StackTrace.current,
+          );
 
-        // Send an error response and make sure that it won't crash the client.
-        serverDaemonConnection.sendErrorResponse(message.data['id']!, 'some error', StackTrace.current);
-
-        // Wait the event queue and make sure that it doesn't crash.
-        await pumpEventQueue();
-      });
+          // Wait the event queue and make sure that it doesn't crash.
+          await pumpEventQueue();
+        },
+      );
     });
 
     testWithoutContext('disposes multiple sockets correctly', () async {
@@ -243,7 +267,8 @@ void main() {
       fakeServerSocket.controller.add(fakeSocket1);
       fakeServerSocket.controller.add(fakeSocket2);
 
-      final Stream<DaemonMessage> broadcastOutput = serverDaemonConnection.incomingCommands.asBroadcastStream();
+      final Stream<DaemonMessage> broadcastOutput =
+          serverDaemonConnection.incomingCommands.asBroadcastStream();
 
       final DaemonMessage message1 = await broadcastOutput.first;
 
@@ -314,19 +339,28 @@ void main() {
     },
   };
   group('ProxiedDevice', () {
-    testWithoutContext('calls stopApp without application package if not passed', () async {
-      bufferLogger = BufferLogger.test();
-      final ProxiedDevices proxiedDevices = ProxiedDevices(
-        clientDaemonConnection,
-        logger: bufferLogger,
-      );
-      final ProxiedDevice device = proxiedDevices.deviceFromDaemonResult(fakeDevice);
-      unawaited(device.stopApp(null, userIdentifier: 'user-id'));
-      final DaemonMessage message = await serverDaemonConnection.incomingCommands.first;
-      expect(message.data['id'], isNotNull);
-      expect(message.data['method'], 'device.stopApp');
-      expect(message.data['params'], <String, Object?>{'deviceId': 'device-id', 'userIdentifier': 'user-id'});
-    });
+    testWithoutContext(
+      'calls stopApp without application package if not passed',
+      () async {
+        bufferLogger = BufferLogger.test();
+        final ProxiedDevices proxiedDevices = ProxiedDevices(
+          clientDaemonConnection,
+          logger: bufferLogger,
+        );
+        final ProxiedDevice device = proxiedDevices.deviceFromDaemonResult(
+          fakeDevice,
+        );
+        unawaited(device.stopApp(null, userIdentifier: 'user-id'));
+        final DaemonMessage message =
+            await serverDaemonConnection.incomingCommands.first;
+        expect(message.data['id'], isNotNull);
+        expect(message.data['method'], 'device.stopApp');
+        expect(message.data['params'], <String, Object?>{
+          'deviceId': 'device-id',
+          'userIdentifier': 'user-id',
+        });
+      },
+    );
   });
 
   group('ProxiedDevices', () {
@@ -340,20 +374,21 @@ void main() {
       final FakeDeviceDiscoveryFilter fakeFilter = FakeDeviceDiscoveryFilter();
 
       final FakeDevice supportedDevice = FakeDevice('Device', 'supported');
-      fakeFilter.filteredDevices = <Device>[
-        supportedDevice,
-      ];
+      fakeFilter.filteredDevices = <Device>[supportedDevice];
 
-      final Future<List<Device>> resultFuture = proxiedDevices.devices(filter: fakeFilter);
+      final Future<List<Device>> resultFuture = proxiedDevices.devices(
+        filter: fakeFilter,
+      );
 
-      final DaemonMessage message = await serverDaemonConnection.incomingCommands.first;
+      final DaemonMessage message =
+          await serverDaemonConnection.incomingCommands.first;
       expect(message.data['id'], isNotNull);
       expect(message.data['method'], 'device.discoverDevices');
 
-      serverDaemonConnection.sendResponse(message.data['id']!, <Map<String, Object?>>[
-        fakeDevice,
-        fakeDevice2,
-      ]);
+      serverDaemonConnection.sendResponse(
+        message.data['id']!,
+        <Map<String, Object?>>[fakeDevice, fakeDevice2],
+      );
 
       final List<Device> result = await resultFuture;
       expect(result.length, 1);
@@ -377,7 +412,8 @@ void main() {
         proxiedPortForwarder: portForwarder,
       );
 
-      final Stream<DaemonMessage> broadcastOutput = serverDaemonConnection.incomingCommands.asBroadcastStream();
+      final Stream<DaemonMessage> broadcastOutput =
+          serverDaemonConnection.incomingCommands.asBroadcastStream();
 
       final Future<void> startFuture = dds.startDartDevelopmentService(
         Uri.parse('http://127.0.0.1:100/fake'),
@@ -396,7 +432,10 @@ void main() {
         'disableServiceAuthCodes': true,
       });
 
-      serverDaemonConnection.sendResponse(startMessage.data['id']!, 'http://127.0.0.1:300/remote');
+      serverDaemonConnection.sendResponse(
+        startMessage.data['id']!,
+        'http://127.0.0.1:300/remote',
+      );
 
       await startFuture;
       expect(portForwarder.receivedLocalForwardedPort, 100);
@@ -410,96 +449,119 @@ void main() {
 
       final DaemonMessage shutdownMessage = await broadcastOutput.first;
       expect(shutdownMessage.data['id'], isNotNull);
-      expect(shutdownMessage.data['method'], 'device.shutdownDartDevelopmentService');
+      expect(
+        shutdownMessage.data['method'],
+        'device.shutdownDartDevelopmentService',
+      );
     });
 
-    testWithoutContext('starts a local dds if the VM service port is not a forwarded port', () async {
-      final FakeProxiedPortForwarder portForwarder = FakeProxiedPortForwarder();
-      final FakeDartDevelopmentService localDds = FakeDartDevelopmentService();
-      localDds.uri = Uri.parse('http://127.0.0.1:450/local');
-      final ProxiedDartDevelopmentService dds = ProxiedDartDevelopmentService(
-        clientDaemonConnection,
-        'test_id',
-        logger: bufferLogger,
-        proxiedPortForwarder: portForwarder,
-        localDds: localDds,
-      );
+    testWithoutContext(
+      'starts a local dds if the VM service port is not a forwarded port',
+      () async {
+        final FakeProxiedPortForwarder portForwarder =
+            FakeProxiedPortForwarder();
+        final FakeDartDevelopmentService localDds =
+            FakeDartDevelopmentService();
+        localDds.uri = Uri.parse('http://127.0.0.1:450/local');
+        final ProxiedDartDevelopmentService dds = ProxiedDartDevelopmentService(
+          clientDaemonConnection,
+          'test_id',
+          logger: bufferLogger,
+          proxiedPortForwarder: portForwarder,
+          localDds: localDds,
+        );
 
-      expect(localDds.startCalled, false);
-      await dds.startDartDevelopmentService(
-        Uri.parse('http://127.0.0.1:100/fake'),
-        disableServiceAuthCodes: true,
-        hostPort: 150,
-        ipv6: false,
-        logger: bufferLogger,
-      );
+        expect(localDds.startCalled, false);
+        await dds.startDartDevelopmentService(
+          Uri.parse('http://127.0.0.1:100/fake'),
+          disableServiceAuthCodes: true,
+          hostPort: 150,
+          ipv6: false,
+          logger: bufferLogger,
+        );
 
-      expect(localDds.startCalled, true);
-      expect(portForwarder.receivedLocalForwardedPort, 100);
-      expect(portForwarder.forwardedDevicePort, null);
+        expect(localDds.startCalled, true);
+        expect(portForwarder.receivedLocalForwardedPort, 100);
+        expect(portForwarder.forwardedDevicePort, null);
 
-      expect(dds.uri, Uri.parse('http://127.0.0.1:450/local'));
+        expect(dds.uri, Uri.parse('http://127.0.0.1:450/local'));
 
-      expect(localDds.shutdownCalled, false);
-      await dds.shutdown();
-      expect(localDds.shutdownCalled, true);
+        expect(localDds.shutdownCalled, false);
+        await dds.shutdown();
+        expect(localDds.shutdownCalled, true);
 
-      await serverDaemonConnection.dispose();
-      expect(await serverDaemonConnection.incomingCommands.isEmpty, true);
-    });
+        await serverDaemonConnection.dispose();
+        expect(await serverDaemonConnection.incomingCommands.isEmpty, true);
+      },
+    );
 
-    testWithoutContext('starts a local dds if the remote VM does not support starting DDS', () async {
-      final FakeProxiedPortForwarder portForwarder = FakeProxiedPortForwarder();
-      portForwarder.originalRemotePortReturnValue = 200;
-      final FakeDartDevelopmentService localDds = FakeDartDevelopmentService();
-      localDds.uri = Uri.parse('http://127.0.0.1:450/local');
-      final ProxiedDartDevelopmentService dds = ProxiedDartDevelopmentService(
-        clientDaemonConnection,
-        'test_id',
-        logger: bufferLogger,
-        proxiedPortForwarder: portForwarder,
-        localDds: localDds,
-      );
+    testWithoutContext(
+      'starts a local dds if the remote VM does not support starting DDS',
+      () async {
+        final FakeProxiedPortForwarder portForwarder =
+            FakeProxiedPortForwarder();
+        portForwarder.originalRemotePortReturnValue = 200;
+        final FakeDartDevelopmentService localDds =
+            FakeDartDevelopmentService();
+        localDds.uri = Uri.parse('http://127.0.0.1:450/local');
+        final ProxiedDartDevelopmentService dds = ProxiedDartDevelopmentService(
+          clientDaemonConnection,
+          'test_id',
+          logger: bufferLogger,
+          proxiedPortForwarder: portForwarder,
+          localDds: localDds,
+        );
 
-      final Stream<DaemonMessage> broadcastOutput = serverDaemonConnection.incomingCommands.asBroadcastStream();
+        final Stream<DaemonMessage> broadcastOutput =
+            serverDaemonConnection.incomingCommands.asBroadcastStream();
 
-      final Future<void> startFuture = dds.startDartDevelopmentService(
-        Uri.parse('http://127.0.0.1:100/fake'),
-        disableServiceAuthCodes: true,
-        hostPort: 150,
-        ipv6: false,
-        logger: bufferLogger,
-      );
+        final Future<void> startFuture = dds.startDartDevelopmentService(
+          Uri.parse('http://127.0.0.1:100/fake'),
+          disableServiceAuthCodes: true,
+          hostPort: 150,
+          ipv6: false,
+          logger: bufferLogger,
+        );
 
-      expect(localDds.startCalled, false);
-      final DaemonMessage startMessage = await broadcastOutput.first;
-      expect(startMessage.data['id'], isNotNull);
-      expect(startMessage.data['method'], 'device.startDartDevelopmentService');
-      expect(startMessage.data['params'], <String, Object?>{
-        'deviceId': 'test_id',
-        'vmServiceUri': 'http://127.0.0.1:200/fake',
-        'disableServiceAuthCodes': true,
-      });
+        expect(localDds.startCalled, false);
+        final DaemonMessage startMessage = await broadcastOutput.first;
+        expect(startMessage.data['id'], isNotNull);
+        expect(
+          startMessage.data['method'],
+          'device.startDartDevelopmentService',
+        );
+        expect(startMessage.data['params'], <String, Object?>{
+          'deviceId': 'test_id',
+          'vmServiceUri': 'http://127.0.0.1:200/fake',
+          'disableServiceAuthCodes': true,
+        });
 
-      serverDaemonConnection.sendErrorResponse(startMessage.data['id']!, 'command not understood: device.startDartDevelopmentService', StackTrace.current);
+        serverDaemonConnection.sendErrorResponse(
+          startMessage.data['id']!,
+          'command not understood: device.startDartDevelopmentService',
+          StackTrace.current,
+        );
 
-      await startFuture;
-      expect(localDds.startCalled, true);
-      expect(portForwarder.receivedLocalForwardedPort, 100);
-      expect(portForwarder.forwardedDevicePort, null);
+        await startFuture;
+        expect(localDds.startCalled, true);
+        expect(portForwarder.receivedLocalForwardedPort, 100);
+        expect(portForwarder.forwardedDevicePort, null);
 
-      expect(dds.uri, Uri.parse('http://127.0.0.1:450/local'));
+        expect(dds.uri, Uri.parse('http://127.0.0.1:450/local'));
 
-      expect(localDds.shutdownCalled, false);
-      await dds.shutdown();
-      expect(localDds.shutdownCalled, true);
-    });
+        expect(localDds.shutdownCalled, false);
+        await dds.shutdown();
+        expect(localDds.shutdownCalled, true);
+      },
+    );
   });
 }
 
 class FakeDaemonStreams implements DaemonStreams {
-  final StreamController<DaemonMessage> inputs = StreamController<DaemonMessage>();
-  final StreamController<DaemonMessage> outputs = StreamController<DaemonMessage>();
+  final StreamController<DaemonMessage> inputs =
+      StreamController<DaemonMessage>();
+  final StreamController<DaemonMessage> outputs =
+      StreamController<DaemonMessage>();
 
   @override
   Stream<DaemonMessage> get inputStream {
@@ -508,7 +570,10 @@ class FakeDaemonStreams implements DaemonStreams {
 
   @override
   void send(Map<String, dynamic> message, [List<int>? binary]) {
-    outputs.add(DaemonMessage(message, binary != null ? Stream<List<int>>.value(binary) : null));
+    outputs.add(DaemonMessage(
+      message,
+      binary != null ? Stream<List<int>>.value(binary) : null,
+    ));
   }
 
   @override
@@ -535,8 +600,12 @@ class FakeServerSocket extends Fake implements ServerSocket {
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    return controller.stream.listen(onData,
-        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+    return controller.stream.listen(
+      onData,
+      onError: onError,
+      onDone: onDone,
+      cancelOnError: cancelOnError,
+    );
   }
 
   @override
@@ -559,8 +628,12 @@ class FakeSocket extends Fake implements Socket {
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    return controller.stream.listen(onData,
-        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+    return controller.stream.listen(
+      onData,
+      onError: onError,
+      onDone: onDone,
+      cancelOnError: cancelOnError,
+    );
   }
 
   @override
@@ -602,7 +675,11 @@ class FakeDaemonConnection extends Fake implements DaemonConnection {
   }
 
   @override
-  Future<Object?> sendRequest(String method, [Object? params, List<int>? binary]) async {
+  Future<Object?> sendRequest(
+    String method, [
+    Object? params,
+    List<int>? binary,
+  ]) async {
     final Object? response = handledRequests[method];
     if (response != null) {
       return response;
@@ -646,7 +723,8 @@ class FakeProxiedPortForwarder extends Fake implements ProxiedPortForwarder {
   }
 }
 
-class FakeDartDevelopmentService extends Fake implements DartDevelopmentService {
+class FakeDartDevelopmentService extends Fake
+    implements DartDevelopmentService {
   bool startCalled = false;
   Uri? startUri;
 

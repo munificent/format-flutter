@@ -22,14 +22,16 @@ platform.TargetPlatform get defaultTargetPlatform {
 
 final platform.TargetPlatform? _testPlatform = () {
   platform.TargetPlatform? result;
-  assert(() {
-    // This member is only available in the web's dart:ui implementation.
-    // ignore: undefined_prefixed_name
-    if (ui.debugEmulateFlutterTesterEnvironment as bool) {
-      result = platform.TargetPlatform.android;
-    }
-    return true;
-  }());
+  assert(
+    () {
+      // This member is only available in the web's dart:ui implementation.
+      // ignore: undefined_prefixed_name
+      if (ui.debugEmulateFlutterTesterEnvironment as bool) {
+        result = platform.TargetPlatform.android;
+      }
+      return true;
+    }(),
+  );
   return result;
 }();
 
@@ -40,7 +42,8 @@ final platform.TargetPlatform? _testPlatform = () {
 // 0.20ms. As `defaultTargetPlatform` is routinely called dozens of times per
 // frame this value should be cached.
 final platform.TargetPlatform _browserPlatform = () {
-  final String navigatorPlatform = domWindow.navigator.platform?.toLowerCase() ?? '';
+  final String navigatorPlatform =
+      domWindow.navigator.platform?.toLowerCase() ?? '';
   if (navigatorPlatform.startsWith('mac')) {
     return platform.TargetPlatform.macOS;
   }

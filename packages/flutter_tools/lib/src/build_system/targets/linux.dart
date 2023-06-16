@@ -18,9 +18,7 @@ import 'icon_tree_shaker.dart';
 import 'shader_compiler.dart';
 
 /// The only files/subdirectories we care out.
-const List<String> _kLinuxArtifacts = <String>[
-  'libflutter_linux_gtk.so',
-];
+const List<String> _kLinuxArtifacts = <String>['libflutter_linux_gtk.so'];
 
 const String _kLinuxDepfile = 'linux_engine_sources.d';
 
@@ -35,7 +33,9 @@ class UnpackLinux extends Target {
 
   @override
   List<Source> get inputs => const <Source>[
-    Source.pattern('{FLUTTER_ROOT}/packages/flutter_tools/lib/src/build_system/targets/linux.dart'),
+    Source.pattern(
+      '{FLUTTER_ROOT}/packages/flutter_tools/lib/src/build_system/targets/linux.dart',
+    ),
   ];
 
   @override
@@ -54,25 +54,24 @@ class UnpackLinux extends Target {
       throw MissingDefineException(kBuildMode, name);
     }
     final BuildMode buildMode = BuildMode.fromCliName(buildModeEnvironment);
-    final String engineSourcePath = environment.artifacts
-      .getArtifactPath(
-        Artifact.linuxDesktopPath,
-        mode: buildMode,
-        platform: targetPlatform,
-      );
-    final String headersPath = environment.artifacts
-      .getArtifactPath(
-        Artifact.linuxHeaders,
-        mode: buildMode,
-        platform: targetPlatform,
-      );
+    final String engineSourcePath = environment.artifacts.getArtifactPath(
+      Artifact.linuxDesktopPath,
+      mode: buildMode,
+      platform: targetPlatform,
+    );
+    final String headersPath = environment.artifacts.getArtifactPath(
+      Artifact.linuxHeaders,
+      mode: buildMode,
+      platform: targetPlatform,
+    );
     final Directory outputDirectory = environment.fileSystem.directory(
       environment.fileSystem.path.join(
-      environment.projectDir.path,
-      'linux',
-      'flutter',
-      'ephemeral',
-    ));
+        environment.projectDir.path,
+        'linux',
+        'flutter',
+        'ephemeral',
+      ),
+    );
     final Depfile depfile = unpackDesktopArtifacts(
       fileSystem: environment.fileSystem,
       engineSourcePath: engineSourcePath,
@@ -82,7 +81,7 @@ class UnpackLinux extends Target {
       icuDataPath: environment.artifacts.getArtifactPath(
         Artifact.icuData,
         platform: targetPlatform,
-      )
+      ),
     );
     environment.depFileService.writeToFile(
       depfile,
@@ -105,15 +104,15 @@ abstract class BundleLinuxAssets extends Target {
 
   @override
   List<Source> get inputs => const <Source>[
-    Source.pattern('{FLUTTER_ROOT}/packages/flutter_tools/lib/src/build_system/targets/linux.dart'),
+    Source.pattern(
+      '{FLUTTER_ROOT}/packages/flutter_tools/lib/src/build_system/targets/linux.dart',
+    ),
     Source.pattern('{PROJECT_DIR}/pubspec.yaml'),
     ...IconTreeShaker.inputs,
   ];
 
   @override
-  List<String> get depfiles => const <String>[
-    'flutter_assets.d',
-  ];
+  List<String> get depfiles => const <String>['flutter_assets.d'];
 
   @override
   Future<void> build(Environment environment) async {
@@ -122,16 +121,18 @@ abstract class BundleLinuxAssets extends Target {
       throw MissingDefineException(kBuildMode, 'bundle_linux_assets');
     }
     final BuildMode buildMode = BuildMode.fromCliName(buildModeEnvironment);
-    final Directory outputDirectory = environment.outputDir
-      .childDirectory('flutter_assets');
+    final Directory outputDirectory = environment.outputDir.childDirectory(
+      'flutter_assets',
+    );
     if (!outputDirectory.existsSync()) {
       outputDirectory.createSync();
     }
 
     // Only copy the kernel blob in debug mode.
     if (buildMode == BuildMode.debug) {
-      environment.buildDir.childFile('app.dill')
-        .copySync(outputDirectory.childFile('kernel_blob.bin').path);
+      environment.buildDir.childFile('app.dill').copySync(
+        outputDirectory.childFile('kernel_blob.bin').path,
+      );
     }
     final String versionInfo = getVersionInfo(environment.defines);
     final Depfile depfile = await copyAssets(
@@ -151,9 +152,9 @@ abstract class BundleLinuxAssets extends Target {
 
   /// Return json encoded string that contains data about version for package_info
   String getVersionInfo(Map<String, String> defines) {
-    final Map<String, dynamic> versionInfo =
-        jsonDecode(FlutterProject.current().getVersionInfo())
-            as Map<String, dynamic>;
+    final Map<String, dynamic> versionInfo = jsonDecode(
+      FlutterProject.current().getVersionInfo(),
+    ) as Map<String, dynamic>;
 
     if (defines.containsKey(kBuildNumber)) {
       versionInfo['build_number'] = defines[kBuildNumber];
@@ -189,14 +190,14 @@ class LinuxAotBundle extends Target {
   ];
 
   @override
-  List<Target> get dependencies => <Target>[
-    aotTarget,
-  ];
+  List<Target> get dependencies => <Target>[aotTarget];
 
   @override
   Future<void> build(Environment environment) async {
     final File outputFile = environment.buildDir.childFile('app.so');
-    final Directory outputDirectory = environment.outputDir.childDirectory('lib');
+    final Directory outputDirectory = environment.outputDir.childDirectory(
+      'lib',
+    );
     if (!outputDirectory.existsSync()) {
       outputDirectory.createSync(recursive: true);
     }
@@ -208,7 +209,8 @@ class DebugBundleLinuxAssets extends BundleLinuxAssets {
   const DebugBundleLinuxAssets(super.targetPlatform);
 
   @override
-  String get name => 'debug_bundle_${getNameForTargetPlatform(targetPlatform)}_assets';
+  String get name =>
+      'debug_bundle_${getNameForTargetPlatform(targetPlatform)}_assets';
 
   @override
   List<Source> get inputs => <Source>[
@@ -225,7 +227,8 @@ class ProfileBundleLinuxAssets extends BundleLinuxAssets {
   const ProfileBundleLinuxAssets(super.targetPlatform);
 
   @override
-  String get name => 'profile_bundle_${getNameForTargetPlatform(targetPlatform)}_assets';
+  String get name =>
+      'profile_bundle_${getNameForTargetPlatform(targetPlatform)}_assets';
 
   @override
   List<Source> get outputs => const <Source>[];
@@ -241,7 +244,8 @@ class ReleaseBundleLinuxAssets extends BundleLinuxAssets {
   const ReleaseBundleLinuxAssets(super.targetPlatform);
 
   @override
-  String get name => 'release_bundle_${getNameForTargetPlatform(targetPlatform)}_assets';
+  String get name =>
+      'release_bundle_${getNameForTargetPlatform(targetPlatform)}_assets';
 
   @override
   List<Source> get outputs => const <Source>[];

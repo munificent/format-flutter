@@ -23,7 +23,11 @@ import 'dart:convert';
 ///
 /// Since the function is executed on the host driving the test, you can access any environment
 /// variable from it.
-typedef ScreenshotCallback = Future<bool> Function(String name, List<int> image, [Map<String, Object?>? args]);
+typedef ScreenshotCallback = Future<bool> Function(
+  String name,
+  List<int> image, [
+  Map<String, Object?>? args,
+]);
 
 /// Classes shared between `integration_test.dart` and `flutter drive` based
 /// adaptor (ex: `integration_test_driver.dart`).
@@ -33,22 +37,22 @@ typedef ScreenshotCallback = Future<bool> Function(String name, List<int> image,
 class Response {
   /// Constructor to use for positive response.
   Response.allTestsPassed({this.data})
-      : _allTestsPassed = true,
-        _failureDetails = null;
+    : _allTestsPassed = true,
+      _failureDetails = null;
 
   /// Constructor for failure response.
   Response.someTestsFailed(this._failureDetails, {this.data})
-      : _allTestsPassed = false;
+    : _allTestsPassed = false;
 
   /// Constructor for failure response.
   Response.toolException({String? ex})
-      : _allTestsPassed = false,
-        _failureDetails = <Failure>[Failure('ToolException', ex)];
+    : _allTestsPassed = false,
+      _failureDetails = <Failure>[Failure('ToolException', ex)];
 
   /// Constructor for web driver commands response.
   Response.webDriverCommand({this.data})
-      : _allTestsPassed = false,
-        _failureDetails = null;
+    : _allTestsPassed = false,
+      _failureDetails = null;
 
   final List<Failure>? _failureDetails;
 
@@ -69,21 +73,23 @@ class Response {
 
   /// Serializes this message to a JSON map.
   String toJson() => json.encode(<String, dynamic>{
-        'result': allTestsPassed.toString(),
-        'failureDetails': _failureDetailsAsString(),
-        if (data != null) 'data': data,
-      });
+    'result': allTestsPassed.toString(),
+    'failureDetails': _failureDetailsAsString(),
+    if (data != null) 'data': data,
+  });
 
   /// Deserializes the result from JSON.
   static Response fromJson(String source) {
-    final Map<String, dynamic> responseJson = json.decode(source) as Map<String, dynamic>;
+    final Map<String, dynamic> responseJson =
+        json.decode(source) as Map<String, dynamic>;
     if ((responseJson['result'] as String?) == 'true') {
-      return Response.allTestsPassed(data: responseJson['data'] as Map<String, dynamic>?);
-    } else {
-      return Response.someTestsFailed(
-        _failureDetailsFromJson(responseJson['failureDetails'] as List<dynamic>),
+      return Response.allTestsPassed(
         data: responseJson['data'] as Map<String, dynamic>?,
       );
+    } else {
+      return Response.someTestsFailed(_failureDetailsFromJson(
+        responseJson['failureDetails'] as List<dynamic>,
+      ), data: responseJson['data'] as Map<String, dynamic>?);
     }
   }
 
@@ -150,8 +156,12 @@ class Failure {
 
   /// Decode a JSON string to create a Failure object.
   static Failure fromJsonString(String jsonString) {
-    final Map<String, dynamic> failure = json.decode(jsonString) as Map<String, dynamic>;
-    return Failure(failure['methodName'] as String, failure['details'] as String?);
+    final Map<String, dynamic> failure =
+        json.decode(jsonString) as Map<String, dynamic>;
+    return Failure(
+      failure['methodName'] as String,
+      failure['details'] as String?,
+    );
   }
 }
 
@@ -164,20 +174,14 @@ class Failure {
 /// the driver side test such as: status pending or tests failed.
 class DriverTestMessage {
   /// When tests are failed on the driver side.
-  DriverTestMessage.error()
-      : _isSuccess = false,
-        _isPending = false;
+  DriverTestMessage.error() : _isSuccess = false, _isPending = false;
 
   /// When driver side is waiting on [WebDriverCommand]s to be sent from the
   /// app side.
-  DriverTestMessage.pending()
-      : _isSuccess = false,
-        _isPending = true;
+  DriverTestMessage.pending() : _isSuccess = false, _isPending = true;
 
   /// When driver side successfully completed executing the [WebDriverCommand].
-  DriverTestMessage.complete()
-      : _isSuccess = true,
-        _isPending = false;
+  DriverTestMessage.complete() : _isSuccess = true, _isPending = false;
 
   final bool _isSuccess;
   final bool _isPending;
@@ -249,16 +253,18 @@ enum WebDriverCommandType {
 class WebDriverCommand {
   /// Constructor for [WebDriverCommandType.noop] command.
   WebDriverCommand.noop()
-      : type = WebDriverCommandType.noop,
-        values = <String, dynamic>{};
+    : type = WebDriverCommandType.noop,
+      values = <String, dynamic>{};
 
   /// Constructor for [WebDriverCommandType.noop] screenshot.
-  WebDriverCommand.screenshot(String screenshotName, [Map<String, Object?>? args])
-      : type = WebDriverCommandType.screenshot,
-        values = <String, dynamic>{
-          'screenshot_name': screenshotName,
-          if (args != null) 'args': args,
-        };
+  WebDriverCommand.screenshot(
+    String screenshotName, [
+    Map<String, Object?>? args,
+  ]) : type = WebDriverCommandType.screenshot,
+       values = <String, dynamic>{
+         'screenshot_name': screenshotName,
+         if (args != null) 'args': args,
+       };
 
   /// Type of the [WebDriverCommand].
   ///
@@ -275,9 +281,9 @@ class WebDriverCommand {
   /// Util method for converting [WebDriverCommandType] to a map entry.
   ///
   /// Used for converting messages to json format.
-  static Map<String, dynamic> typeToMap(WebDriverCommandType type) => <String, dynamic>{
-    'web_driver_command': '$type',
-  };
+  static Map<String, dynamic> typeToMap(
+    WebDriverCommandType type,
+  ) => <String, dynamic>{'web_driver_command': '$type'};
 }
 
 /// Template methods each class that responses the driver side inputs must
@@ -291,11 +297,16 @@ class WebDriverCommand {
 abstract class CallbackManager {
   /// The callback function to response the driver side input.
   Future<Map<String, dynamic>> callback(
-      Map<String, String> params, IntegrationTestResults testRunner);
+    Map<String, String> params,
+    IntegrationTestResults testRunner,
+  );
 
   /// Takes a screenshot of the application.
   /// Returns the data that is sent back to the host.
-   Future<Map<String, dynamic>> takeScreenshot(String screenshot, [Map<String, Object?>? args]);
+  Future<Map<String, dynamic>> takeScreenshot(
+    String screenshot, [
+    Map<String, Object?>? args,
+  ]);
 
   /// Android only. Converts the Flutter surface to an image view.
   Future<void> convertFlutterSurfaceToImage();

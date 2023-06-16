@@ -23,10 +23,7 @@ class _NestedMouseRegion extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget current = child;
     for (int i = 0; i < nests; i++) {
-      current = MouseRegion(
-        onEnter: (_) {},
-        child: child,
-      );
+      current = MouseRegion(onEnter: (_) {}, child: child);
     }
     return current;
   }
@@ -66,10 +63,12 @@ class BenchMouseRegionGridHover extends WidgetRecorder {
   void frameDidDraw() {
     if (!started) {
       started = true;
-      SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) async {
-        _tester.start();
-        registerDidStop(_tester.stop);
-      });
+      SchedulerBinding.instance.addPostFrameCallback(
+        (Duration timeStamp) async {
+          _tester.start();
+          registerDidStop(_tester.stop);
+        },
+      );
     }
     super.frameDidDraw();
   }
@@ -90,25 +89,31 @@ class BenchMouseRegionGridHover extends WidgetRecorder {
             itemCount: rowsCount,
             cacheExtent: rowsCount * containerSize,
             physics: const ClampingScrollPhysics(),
-            itemBuilder: (BuildContext context, int rowIndex) => _NestedMouseRegion(
-              nests: 10,
-              child: Row(
-                children: List<Widget>.generate(
-                  columnsCount,
-                  (int columnIndex) => _NestedMouseRegion(
-                    nests: 10,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: _getBorder(columnIndex, rowIndex),
-                        color: Color.fromARGB(255, rowIndex * 20 % 256, 127, 127),
+            itemBuilder:
+                (BuildContext context, int rowIndex) => _NestedMouseRegion(
+                  nests: 10,
+                  child: Row(
+                    children: List<Widget>.generate(
+                      columnsCount,
+                      (int columnIndex) => _NestedMouseRegion(
+                        nests: 10,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: _getBorder(columnIndex, rowIndex),
+                            color: Color.fromARGB(
+                              255,
+                              rowIndex * 20 % 256,
+                              127,
+                              127,
+                            ),
+                          ),
+                          width: containerSize,
+                          height: containerSize,
+                        ),
                       ),
-                      width: containerSize,
-                      height: containerSize,
                     ),
                   ),
                 ),
-              ),
-            ),
           ),
         ),
       ),
@@ -148,6 +153,7 @@ class _Tester {
       kind: PointerDeviceKind.mouse,
     );
   }
+
   TestGesture? _gesture;
 
   Duration currentTime = Duration.zero;

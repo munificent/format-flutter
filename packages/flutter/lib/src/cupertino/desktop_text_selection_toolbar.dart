@@ -123,15 +123,11 @@ class CupertinoDesktopTextSelectionToolbar extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: _kToolbarBackgroundColor.resolveFrom(context),
-            border: Border.all(
-              color: _kToolbarBorderColor.resolveFrom(context),
-            ),
+            border:
+                Border.all(color: _kToolbarBorderColor.resolveFrom(context)),
             borderRadius: const BorderRadius.all(_kToolbarBorderRadius),
           ),
-          child: Padding(
-            padding: _kToolbarPadding,
-            child: child,
-          ),
+          child: Padding(padding: _kToolbarPadding, child: child),
         ),
       ),
     );
@@ -158,10 +154,7 @@ class CupertinoDesktopTextSelectionToolbar extends StatelessWidget {
         ),
         child: _defaultToolbarBuilder(
           context,
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: children,
-          ),
+          Column(mainAxisSize: MainAxisSize.min, children: children),
         ),
       ),
     );

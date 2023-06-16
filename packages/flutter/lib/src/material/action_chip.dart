@@ -61,7 +61,8 @@ enum _ChipVariant { flat, elevated }
 ///  * [Wrap], A widget that displays its children in multiple horizontal or
 ///    vertical runs.
 ///  * <https://material.io/design/components/chips.html>
-class ActionChip extends StatelessWidget implements ChipAttributes, TappableChipAttributes, DisabledChipAttributes {
+class ActionChip extends StatelessWidget
+    implements ChipAttributes, TappableChipAttributes, DisabledChipAttributes {
   /// Create a chip that acts like a button.
   ///
   /// The [label], [onPressed], [autofocus], and [clipBehavior] arguments must
@@ -178,8 +179,8 @@ class ActionChip extends StatelessWidget implements ChipAttributes, TappableChip
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     final ChipThemeData? defaults = Theme.of(context).useMaterial3
-      ? _ActionChipDefaultsM3(context, isEnabled, _chipVariant)
-      : null;
+        ? _ActionChipDefaultsM3(context, isEnabled, _chipVariant)
+        : null;
     return RawChip(
       defaultProperties: defaults,
       avatar: avatar,
@@ -217,7 +218,9 @@ class ActionChip extends StatelessWidget implements ChipAttributes, TappableChip
 class _ActionChipDefaultsM3 extends ChipThemeData {
   _ActionChipDefaultsM3(this.context, this.isEnabled, this._chipVariant)
     : super(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        ),
         showCheckmark: true,
       );
 
@@ -229,8 +232,10 @@ class _ActionChipDefaultsM3 extends ChipThemeData {
 
   @override
   double? get elevation => _chipVariant == _ChipVariant.flat
-    ? 0.0
-    : isEnabled ? 1.0 : 0.0;
+      ? 0.0
+      : isEnabled
+          ? 1.0
+          : 0.0;
 
   @override
   double? get pressElevation => 1.0;
@@ -242,9 +247,8 @@ class _ActionChipDefaultsM3 extends ChipThemeData {
   Color? get backgroundColor => null;
 
   @override
-  Color? get shadowColor => _chipVariant == _ChipVariant.flat
-    ? Colors.transparent
-    : _colors.shadow;
+  Color? get shadowColor =>
+      _chipVariant == _ChipVariant.flat ? Colors.transparent : _colors.shadow;
 
   @override
   Color? get surfaceTintColor => _colors.surfaceTint;
@@ -257,24 +261,22 @@ class _ActionChipDefaultsM3 extends ChipThemeData {
 
   @override
   Color? get disabledColor => _chipVariant == _ChipVariant.flat
-    ? null
-    : _colors.onSurface.withOpacity(0.12);
+      ? null
+      : _colors.onSurface.withOpacity(0.12);
 
   @override
   Color? get deleteIconColor => null;
 
   @override
   BorderSide? get side => _chipVariant == _ChipVariant.flat
-    ? isEnabled
-        ? BorderSide(color: _colors.outline)
-        : BorderSide(color: _colors.onSurface.withOpacity(0.12))
-    : const BorderSide(color: Colors.transparent);
+      ? isEnabled
+          ? BorderSide(color: _colors.outline)
+          : BorderSide(color: _colors.onSurface.withOpacity(0.12))
+      : const BorderSide(color: Colors.transparent);
 
   @override
   IconThemeData? get iconTheme => IconThemeData(
-    color: isEnabled
-      ? _colors.primary
-      : _colors.onSurface,
+    color: isEnabled ? _colors.primary : _colors.onSurface,
     size: 18.0,
   );
 

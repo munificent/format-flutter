@@ -13,9 +13,7 @@ class HeroApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HeroExample(),
-    );
+    return const MaterialApp(home: HeroExample());
   }
 }
 
@@ -48,16 +46,14 @@ class HeroExample extends StatelessWidget {
   void _gotoDetailsPage(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Second Page'),
-        ),
-        body: const Center(
-          child: Hero(
-            tag: 'hero-rectangle',
-            child: BoxWidget(size: Size(200.0, 200.0)),
+            appBar: AppBar(title: const Text('Second Page')),
+            body: const Center(
+              child: Hero(
+                tag: 'hero-rectangle',
+                child: BoxWidget(size: Size(200.0, 200.0)),
+              ),
+            ),
           ),
-        ),
-      ),
     ));
   }
 }

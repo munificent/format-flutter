@@ -16,8 +16,8 @@ bool _dateIntlDataInitialized = false;
 /// invocations have no effect.
 void loadDateIntlDataIfNotLoaded() {
   if (!_dateIntlDataInitialized) {
-    date_localizations.dateSymbols
-      .forEach((String locale, intl.DateSymbols symbols) {
+    date_localizations.dateSymbols.forEach(
+      (String locale, intl.DateSymbols symbols) {
         // Perform initialization.
         assert(date_localizations.datePatterns.containsKey(locale));
         date_symbol_data_custom.initializeDateFormattingCustom(
@@ -25,7 +25,8 @@ void loadDateIntlDataIfNotLoaded() {
           symbols: symbols,
           patterns: date_localizations.datePatterns[locale],
         );
-      });
+      },
+    );
     _dateIntlDataInitialized = true;
   }
 }

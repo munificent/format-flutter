@@ -15,7 +15,8 @@ import '../base/logger.dart';
 ///
 /// If [throwOnError] is false, in the event of an error an empty package
 /// config is returned.
-Future<PackageConfig> loadPackageConfigWithLogging(File file, {
+Future<PackageConfig> loadPackageConfigWithLogging(
+  File file, {
   required Logger logger,
   bool throwOnError = true,
 }) async {
@@ -36,15 +37,19 @@ Future<PackageConfig> loadPackageConfigWithLogging(File file, {
       }
       logger.printTrace(error.toString());
       String message = '${file.path} does not exist.';
-      final String pubspecPath = fileSystem.path.absolute(fileSystem.path.dirname(file.path), 'pubspec.yaml');
+      final String pubspecPath = fileSystem.path.absolute(
+        fileSystem.path.dirname(file.path),
+        'pubspec.yaml',
+      );
       if (fileSystem.isFileSync(pubspecPath)) {
         message += '\nDid you run "flutter pub get" in this directory?';
       } else {
-        message += '\nDid you run this command from the same directory as your pubspec.yaml file?';
+        message +=
+            '\nDid you run this command from the same directory as your pubspec.yaml file?';
       }
       logger.printError(message);
       didError = true;
-    }
+    },
   );
   if (didError) {
     throwToolExit('');

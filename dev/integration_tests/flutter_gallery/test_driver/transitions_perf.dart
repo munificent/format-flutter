@@ -36,7 +36,7 @@ class _MessageHandler {
         return const JsonEncoder.withIndent('  ').convert(kProfiledDemos);
       case 'restDemos':
         controller ??= LiveWidgetController(WidgetsBinding.instance);
-        final List<String> restDemos =  _unTestedDemos.toList();
+        final List<String> restDemos = _unTestedDemos.toList();
         await runDemos(restDemos, controller!);
         return const JsonEncoder.withIndent('  ').convert(restDemos);
       default:
@@ -46,7 +46,9 @@ class _MessageHandler {
 }
 
 void main() {
-  enableFlutterDriverExtension(handler: (String? message) => _MessageHandler().call(message!));
+  enableFlutterDriverExtension(
+    handler: (String? message) => _MessageHandler().call(message!),
+  );
   // As in lib/main.dart: overriding https://github.com/flutter/flutter/issues/13736
   // for better visual effect at the cost of performance.
   runApp(const GalleryApp(testMode: true));

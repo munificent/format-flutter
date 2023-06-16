@@ -69,8 +69,7 @@ enum Operation { Addition, Subtraction, Multiplication, Division }
 
 /// A token that represents an arithmetic operation symbol.
 class OperationToken extends ExpressionToken {
-  OperationToken(this.operation)
-   : super(opString(operation));
+  OperationToken(this.operation) : super(opString(operation));
 
   Operation operation;
 
@@ -121,8 +120,7 @@ enum ExpressionState {
 class CalcExpression {
   CalcExpression(this._list, this.state);
 
-  CalcExpression.empty()
-    : this(<ExpressionToken>[], ExpressionState.Start);
+  CalcExpression.empty() : this(<ExpressionToken>[], ExpressionState.Start);
 
   CalcExpression.result(FloatToken result)
     : _list = <ExpressionToken?>[],
@@ -132,6 +130,7 @@ class CalcExpression {
 
   /// The tokens comprising the expression.
   final List<ExpressionToken?> _list;
+
   /// The state of the expression.
   final ExpressionState state;
 

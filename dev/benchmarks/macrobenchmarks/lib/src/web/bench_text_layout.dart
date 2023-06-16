@@ -58,11 +58,9 @@ enum _TestMode {
 ///
 /// Creates a different paragraph each time in order to avoid hitting the cache.
 class BenchTextLayout extends RawRecorder {
-  BenchTextLayout.canvas()
-      : super(name: canvasBenchmarkName);
+  BenchTextLayout.canvas() : super(name: canvasBenchmarkName);
 
-  BenchTextLayout.canvasKit()
-      : super(name: canvasKitBenchmarkName);
+  BenchTextLayout.canvasKit() : super(name: canvasKitBenchmarkName);
 
   static const String canvasBenchmarkName = 'text_canvas_layout';
   static const String canvasKitBenchmarkName = 'text_canvaskit_layout';
@@ -143,23 +141,22 @@ class BenchTextLayout extends RawRecorder {
 /// use the same paragraph instance because the layout method will shortcircuit
 /// in that case.
 class BenchTextCachedLayout extends RawRecorder {
-  BenchTextCachedLayout.canvas()
-      : super(name: canvasBenchmarkName);
+  BenchTextCachedLayout.canvas() : super(name: canvasBenchmarkName);
 
-  BenchTextCachedLayout.canvasKit()
-      : super(name: canvasKitBenchmarkName);
+  BenchTextCachedLayout.canvasKit() : super(name: canvasKitBenchmarkName);
 
   static const String canvasBenchmarkName = 'text_canvas_cached_layout';
   static const String canvasKitBenchmarkName = 'text_canvas_kit_cached_layout';
 
   @override
   void body(Profile profile) {
-    final ui.ParagraphBuilder builder = ui.ParagraphBuilder(ui.ParagraphStyle(fontFamily: 'sans-serif'))
-        ..pushStyle(ui.TextStyle(fontSize: 12.0))
-        ..addText(
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, '
-          'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        );
+    final ui.ParagraphBuilder builder =
+        ui.ParagraphBuilder(ui.ParagraphStyle(fontFamily: 'sans-serif'))
+          ..pushStyle(ui.TextStyle(fontSize: 12.0))
+          ..addText(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, '
+            'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+          );
     final ui.Paragraph paragraph = builder.build();
     profile.record('layout', () {
       paragraph.layout(const ui.ParagraphConstraints(width: double.infinity));
@@ -180,10 +177,12 @@ int _counter = 0;
 /// colors. Each color's description is made of several [Text] nodes.
 class BenchBuildColorsGrid extends WidgetBuildRecorder {
   BenchBuildColorsGrid.canvas()
-      : _mode = _TestMode.useCanvasTextLayout, super(name: canvasBenchmarkName);
+    : _mode = _TestMode.useCanvasTextLayout,
+      super(name: canvasBenchmarkName);
 
   BenchBuildColorsGrid.canvasKit()
-      : _mode = _TestMode.useCanvasKit, super(name: canvasKitBenchmarkName);
+    : _mode = _TestMode.useCanvasKit,
+      super(name: canvasKitBenchmarkName);
 
   /// Disables tracing for this benchmark.
   ///
@@ -247,88 +246,107 @@ class BenchBuildColorsGrid extends WidgetBuildRecorder {
 const double kColorItemHeight = 48.0;
 
 class Palette {
-  Palette({required this.name, required this.primary, this.accent, this.threshold = 900});
+  Palette({
+    required this.name,
+    required this.primary,
+    this.accent,
+    this.threshold = 900,
+  });
 
   final String name;
   final MaterialColor primary;
   final MaterialAccentColor? accent;
   final int
-      threshold; // titles for indices > threshold are white, otherwise black
+  threshold; // titles for indices > threshold are white, otherwise black
 }
 
 final List<Palette> allPalettes = <Palette>[
   Palette(
-      name: 'RED',
-      primary: Colors.red,
-      accent: Colors.redAccent,
-      threshold: 300),
+    name: 'RED',
+    primary: Colors.red,
+    accent: Colors.redAccent,
+    threshold: 300,
+  ),
   Palette(
-      name: 'PINK',
-      primary: Colors.pink,
-      accent: Colors.pinkAccent,
-      threshold: 200),
+    name: 'PINK',
+    primary: Colors.pink,
+    accent: Colors.pinkAccent,
+    threshold: 200,
+  ),
   Palette(
-      name: 'PURPLE',
-      primary: Colors.purple,
-      accent: Colors.purpleAccent,
-      threshold: 200),
+    name: 'PURPLE',
+    primary: Colors.purple,
+    accent: Colors.purpleAccent,
+    threshold: 200,
+  ),
   Palette(
-      name: 'DEEP PURPLE',
-      primary: Colors.deepPurple,
-      accent: Colors.deepPurpleAccent,
-      threshold: 200),
+    name: 'DEEP PURPLE',
+    primary: Colors.deepPurple,
+    accent: Colors.deepPurpleAccent,
+    threshold: 200,
+  ),
   Palette(
-      name: 'INDIGO',
-      primary: Colors.indigo,
-      accent: Colors.indigoAccent,
-      threshold: 200),
+    name: 'INDIGO',
+    primary: Colors.indigo,
+    accent: Colors.indigoAccent,
+    threshold: 200,
+  ),
   Palette(
-      name: 'BLUE',
-      primary: Colors.blue,
-      accent: Colors.blueAccent,
-      threshold: 400),
+    name: 'BLUE',
+    primary: Colors.blue,
+    accent: Colors.blueAccent,
+    threshold: 400,
+  ),
   Palette(
-      name: 'LIGHT BLUE',
-      primary: Colors.lightBlue,
-      accent: Colors.lightBlueAccent,
-      threshold: 500),
+    name: 'LIGHT BLUE',
+    primary: Colors.lightBlue,
+    accent: Colors.lightBlueAccent,
+    threshold: 500,
+  ),
   Palette(
-      name: 'CYAN',
-      primary: Colors.cyan,
-      accent: Colors.cyanAccent,
-      threshold: 600),
+    name: 'CYAN',
+    primary: Colors.cyan,
+    accent: Colors.cyanAccent,
+    threshold: 600,
+  ),
   Palette(
-      name: 'TEAL',
-      primary: Colors.teal,
-      accent: Colors.tealAccent,
-      threshold: 400),
+    name: 'TEAL',
+    primary: Colors.teal,
+    accent: Colors.tealAccent,
+    threshold: 400,
+  ),
   Palette(
-      name: 'GREEN',
-      primary: Colors.green,
-      accent: Colors.greenAccent,
-      threshold: 500),
+    name: 'GREEN',
+    primary: Colors.green,
+    accent: Colors.greenAccent,
+    threshold: 500,
+  ),
   Palette(
-      name: 'LIGHT GREEN',
-      primary: Colors.lightGreen,
-      accent: Colors.lightGreenAccent,
-      threshold: 600),
+    name: 'LIGHT GREEN',
+    primary: Colors.lightGreen,
+    accent: Colors.lightGreenAccent,
+    threshold: 600,
+  ),
   Palette(
-      name: 'LIME',
-      primary: Colors.lime,
-      accent: Colors.limeAccent,
-      threshold: 800),
+    name: 'LIME',
+    primary: Colors.lime,
+    accent: Colors.limeAccent,
+    threshold: 800,
+  ),
   Palette(name: 'YELLOW', primary: Colors.yellow, accent: Colors.yellowAccent),
   Palette(name: 'AMBER', primary: Colors.amber, accent: Colors.amberAccent),
   Palette(
-      name: 'ORANGE',
-      primary: Colors.orange,
-      accent: Colors.orangeAccent,
-      threshold: 700),
+    name: 'ORANGE',
+    primary: Colors.orange,
+    accent: Colors.orangeAccent,
+    threshold: 700,
+  ),
   Palette(
-      name: 'DEEP ORANGE',
-      primary: Colors.deepOrange,
-      accent: Colors.deepOrangeAccent,
-      threshold: 400),
+    name: 'DEEP ORANGE',
+    primary: Colors.deepOrange,
+    accent: Colors.deepOrangeAccent,
+    threshold: 400,
+  ),
   Palette(name: 'BROWN', primary: Colors.brown, threshold: 200),
   Palette(name: 'GREY', primary: Colors.grey, threshold: 500),
   Palette(name: 'BLUE GREY', primary: Colors.blueGrey, threshold: 500),
@@ -346,8 +364,10 @@ class ColorItem extends StatelessWidget {
   final Color color;
   final String prefix;
 
-  String colorString() =>
-      "$_counter:#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}";
+  String colorString() => "$_counter:#${color.value.toRadixString(16).padLeft(
+    8,
+    '0',
+  ).toUpperCase()}";
 
   @override
   Widget build(BuildContext context) {
@@ -374,10 +394,7 @@ class ColorItem extends StatelessWidget {
 }
 
 class PaletteTabView extends StatelessWidget {
-  const PaletteTabView({
-    super.key,
-    required this.colors,
-  });
+  const PaletteTabView({super.key, required this.colors});
 
   final Palette colors;
 
@@ -398,10 +415,12 @@ class PaletteTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final TextStyle whiteTextStyle =
-        textTheme.bodyMedium!.copyWith(color: Colors.white);
-    final TextStyle blackTextStyle =
-        textTheme.bodyMedium!.copyWith(color: Colors.black);
+    final TextStyle whiteTextStyle = textTheme.bodyMedium!.copyWith(
+      color: Colors.white,
+    );
+    final TextStyle blackTextStyle = textTheme.bodyMedium!.copyWith(
+      color: Colors.black,
+    );
     return Scrollbar(
       child: ListView(
         itemExtent: kColorItemHeight,
@@ -415,10 +434,14 @@ class PaletteTabView extends StatelessWidget {
           if (colors.accent != null)
             ...accentKeys.map<Widget>((int index) {
               return DefaultTextStyle(
-                style:
-                    index > colors.threshold ? whiteTextStyle : blackTextStyle,
+                style: index > colors.threshold
+                    ? whiteTextStyle
+                    : blackTextStyle,
                 child: ColorItem(
-                    index: index, color: colors.accent![index]!, prefix: 'A'),
+                  index: index,
+                  color: colors.accent![index]!,
+                  prefix: 'A',
+                ),
               );
             }),
         ],
@@ -440,10 +463,9 @@ class ColorsDemo extends StatelessWidget {
           title: const Text('Colors'),
           bottom: TabBar(
             isScrollable: true,
-            tabs: allPalettes
-                .map<Widget>(
-                    (Palette swatch) => Tab(text: '$_counter:${swatch.name}'))
-                .toList(),
+            tabs: allPalettes.map<Widget>(
+              (Palette swatch) => Tab(text: '$_counter:${swatch.name}'),
+            ).toList(),
           ),
         ),
         body: TabBarView(

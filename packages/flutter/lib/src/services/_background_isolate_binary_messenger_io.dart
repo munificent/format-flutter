@@ -25,9 +25,10 @@ class BackgroundIsolateBinaryMessenger extends BinaryMessenger {
   static BinaryMessenger get instance {
     if (_instance == null) {
       throw StateError(
-          'The BackgroundIsolateBinaryMessenger.instance value is invalid '
-          'until BackgroundIsolateBinaryMessenger.ensureInitialized is '
-          'executed.');
+        'The BackgroundIsolateBinaryMessenger.instance value is invalid '
+        'until BackgroundIsolateBinaryMessenger.ensureInitialized is '
+        'executed.',
+      );
     }
     return _instance!;
   }
@@ -52,9 +53,9 @@ class BackgroundIsolateBinaryMessenger extends BinaryMessenger {
           final int identifier = args[0] as int;
           final Uint8List bytes = args[1] as Uint8List;
           final ByteData byteData = ByteData.sublistView(bytes);
-          portBinaryMessenger._completers
-              .remove(identifier)!
-              .complete(byteData);
+          portBinaryMessenger._completers.remove(identifier)!.complete(
+            byteData,
+          );
         } catch (exception, stack) {
           FlutterError.reportError(FlutterErrorDetails(
             exception: exception,
@@ -69,8 +70,11 @@ class BackgroundIsolateBinaryMessenger extends BinaryMessenger {
   }
 
   @override
-  Future<void> handlePlatformMessage(String channel, ByteData? data,
-      ui.PlatformMessageResponseCallback? callback) {
+  Future<void> handlePlatformMessage(
+    String channel,
+    ByteData? data,
+    ui.PlatformMessageResponseCallback? callback,
+  ) {
     throw UnimplementedError('handlePlatformMessage is deprecated.');
   }
 
@@ -92,6 +96,7 @@ class BackgroundIsolateBinaryMessenger extends BinaryMessenger {
   @override
   void setMessageHandler(String channel, MessageHandler? handler) {
     throw UnsupportedError(
-        'Background isolates do not support setMessageHandler(). Messages from the host platform always go to the root isolate.');
+      'Background isolates do not support setMessageHandler(). Messages from the host platform always go to the root isolate.',
+    );
   }
 }

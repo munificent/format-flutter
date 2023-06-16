@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_api_samples/material/popup_menu/popup_menu.0.dart' as example;
+import 'package:flutter_api_samples/material/popup_menu/popup_menu.0.dart'
+    as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -11,11 +12,7 @@ void main() {
     const String menuItem = 'Item 1';
 
     await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
-          body: example.PopupMenuApp(),
-        ),
-      ),
+      const MaterialApp(home: Scaffold(body: example.PopupMenuApp())),
     );
 
     expect(find.text(menuItem), findsNothing);

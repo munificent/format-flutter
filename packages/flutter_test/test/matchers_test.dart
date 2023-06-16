@@ -33,7 +33,10 @@ class _MockToStringDeep {
   /// line break.
   final List<String> _lines;
 
-  String toStringDeep({ String prefixLineOne = '', String prefixOtherLines = '' }) {
+  String toStringDeep({
+    String prefixLineOne = '',
+    String prefixOtherLines = '',
+  }) {
     final StringBuffer sb = StringBuffer();
     if (_lines.isNotEmpty) {
       sb.write('$prefixLineOne${_lines.first}');
@@ -64,25 +67,22 @@ void main() {
     // Not terminated with a line break.
     expect(_MockToStringDeep('Hello\n World'), isNot(hasAGoodToStringDeep));
     // Trailing whitespace on last line.
-    expect(_MockToStringDeep('Hello\n World \n'),
-        isNot(hasAGoodToStringDeep));
-    expect(_MockToStringDeep('Hello\n World\t\n'),
-        isNot(hasAGoodToStringDeep));
+    expect(_MockToStringDeep('Hello\n World \n'), isNot(hasAGoodToStringDeep));
+    expect(_MockToStringDeep('Hello\n World\t\n'), isNot(hasAGoodToStringDeep));
     // Leading whitespace on line 1.
-    expect(_MockToStringDeep(' Hello\n World \n'),
-        isNot(hasAGoodToStringDeep));
+    expect(_MockToStringDeep(' Hello\n World \n'), isNot(hasAGoodToStringDeep));
 
     // Single line.
     expect(_MockToStringDeep('Hello World'), isNot(hasAGoodToStringDeep));
     expect(_MockToStringDeep('Hello World\n'), isNot(hasAGoodToStringDeep));
 
-    expect(_MockToStringDeep('Hello: World\nFoo: bar\n'),
-        hasAGoodToStringDeep);
-    expect(_MockToStringDeep('Hello: World\nFoo: 42\n'),
-        hasAGoodToStringDeep);
+    expect(_MockToStringDeep('Hello: World\nFoo: bar\n'), hasAGoodToStringDeep);
+    expect(_MockToStringDeep('Hello: World\nFoo: 42\n'), hasAGoodToStringDeep);
     // Contains default Object.toString().
-    expect(_MockToStringDeep('Hello: World\nFoo: ${Object()}\n'),
-        isNot(hasAGoodToStringDeep));
+    expect(
+      _MockToStringDeep('Hello: World\nFoo: ${Object()}\n'),
+      isNot(hasAGoodToStringDeep),
+    );
     expect(_MockToStringDeep('A\n├─B\n'), hasAGoodToStringDeep);
     expect(_MockToStringDeep('A\n├─B\n╘══════\n'), hasAGoodToStringDeep);
     // Last line is all whitespace or vertical line art.
@@ -98,28 +98,30 @@ void main() {
     expect(_MockToStringDeep('A\n├─B\n ││\n'), isNot(hasAGoodToStringDeep));
 
     expect(_MockToStringDeep(
-        'A\n'
-        '├─B\n'
-        '│\n'
-        '└─C\n'), hasAGoodToStringDeep);
+      'A\n'
+      '├─B\n'
+      '│\n'
+      '└─C\n',
+    ), hasAGoodToStringDeep);
     // Last line is all whitespace or vertical line art.
-    expect(_MockToStringDeep(
+    expect(
+      _MockToStringDeep(
         'A\n'
         '├─B\n'
-        '│\n'), isNot(hasAGoodToStringDeep));
-
-    expect(
-      _MockToStringDeep.fromLines(<String>[
-        'Paragraph#00000\n',
-        ' │ size: (400x200)\n',
-        ' ╘═╦══ text ═══\n',
-        '   ║ TextSpan:\n',
-        '   ║   "I polished up that handle so carefullee\n',
-        '   ║   That now I am the Ruler of the Queen\'s Navee!"\n',
-        '   ╚═══════════\n',
-      ]),
-      hasAGoodToStringDeep,
+        '│\n',
+      ),
+      isNot(hasAGoodToStringDeep),
     );
+
+    expect(_MockToStringDeep.fromLines(<String>[
+      'Paragraph#00000\n',
+      ' │ size: (400x200)\n',
+      ' ╘═╦══ text ═══\n',
+      '   ║ TextSpan:\n',
+      '   ║   "I polished up that handle so carefullee\n',
+      '   ║   That now I am the Ruler of the Queen\'s Navee!"\n',
+      '   ╚═══════════\n',
+    ]), hasAGoodToStringDeep);
 
     // Text span
     expect(
@@ -164,33 +166,40 @@ void main() {
     expect('FOO#A3b4D', equalsIgnoringHashCodes('FOO#00000'));
     expect('FOO#A3b4J', isNot(equalsIgnoringHashCodes('FOO#00000')));
 
-    expect('Foo#12345(Bar#9110f)',
-        equalsIgnoringHashCodes('Foo#00000(Bar#00000)'));
-    expect('Foo#12345(Bar#9110f)',
-        isNot(equalsIgnoringHashCodes('Foo#00000(Bar#)')));
+    expect(
+      'Foo#12345(Bar#9110f)',
+      equalsIgnoringHashCodes('Foo#00000(Bar#00000)'),
+    );
+    expect(
+      'Foo#12345(Bar#9110f)',
+      isNot(equalsIgnoringHashCodes('Foo#00000(Bar#)')),
+    );
 
     expect('Foo', isNot(equalsIgnoringHashCodes('Foo#00000')));
     expect('Foo#', isNot(equalsIgnoringHashCodes('Foo#00000')));
     expect('Foo#3421', isNot(equalsIgnoringHashCodes('Foo#00000')));
     expect('Foo#342193', isNot(equalsIgnoringHashCodes('Foo#00000')));
-    expect(<String>['Foo#a3b4d'], equalsIgnoringHashCodes(<String>['Foo#12345']));
-    expect(
-      <String>['Foo#a3b4d', 'Foo#12345'],
-      equalsIgnoringHashCodes(<String>['Foo#00000', 'Foo#00000']),
-    );
-    expect(
-      <String>['Foo#a3b4d', 'Bar#12345'],
-      equalsIgnoringHashCodes(<String>['Foo#00000', 'Bar#00000']),
-    );
-    expect(
-      <String>['Foo#a3b4d', 'Bar#12345'],
-      isNot(equalsIgnoringHashCodes(<String>['Bar#00000', 'Foo#00000'])),
-    );
-    expect(<String>['Foo#a3b4d'], isNot(equalsIgnoringHashCodes(<String>['Foo'])));
-    expect(
-      <String>['Foo#a3b4d'],
-      isNot(equalsIgnoringHashCodes(<String>['Foo#00000', 'Bar#00000'])),
-    );
+    expect(<String>[
+      'Foo#a3b4d',
+    ], equalsIgnoringHashCodes(<String>['Foo#12345']));
+    expect(<String>[
+      'Foo#a3b4d',
+      'Foo#12345',
+    ], equalsIgnoringHashCodes(<String>['Foo#00000', 'Foo#00000']));
+    expect(<String>[
+      'Foo#a3b4d',
+      'Bar#12345',
+    ], equalsIgnoringHashCodes(<String>['Foo#00000', 'Bar#00000']));
+    expect(<String>[
+      'Foo#a3b4d',
+      'Bar#12345',
+    ], isNot(equalsIgnoringHashCodes(<String>['Bar#00000', 'Foo#00000'])));
+    expect(<String>[
+      'Foo#a3b4d',
+    ], isNot(equalsIgnoringHashCodes(<String>['Foo'])));
+    expect(<String>[
+      'Foo#a3b4d',
+    ], isNot(equalsIgnoringHashCodes(<String>['Foo#00000', 'Bar#00000'])));
   });
 
   test('moreOrLessEquals', () {
@@ -223,31 +232,67 @@ void main() {
     expect(
       Matrix4.rotationZ(math.pi),
       matrixMoreOrLessEquals(Matrix4.fromList(<double>[
-       -1,  0, 0, 0,
-        0, -1, 0, 0,
-        0,  0, 1, 0,
-        0,  0, 0, 1,
-      ]))
+        -1,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+      ])),
     );
 
     expect(
       Matrix4.rotationZ(math.pi),
       matrixMoreOrLessEquals(Matrix4.fromList(<double>[
-       -2,  0, 0, 0,
-        0, -2, 0, 0,
-        0,  0, 1, 0,
-        0,  0, 0, 1,
-      ]), epsilon: 2)
+        -2,
+        0,
+        0,
+        0,
+        0,
+        -2,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+      ]), epsilon: 2),
     );
 
     expect(
       Matrix4.rotationZ(math.pi),
       isNot(matrixMoreOrLessEquals(Matrix4.fromList(<double>[
-       -2,  0, 0, 0,
-        0, -2, 0, 0,
-        0,  0, 1, 0,
-        0,  0, 0, 1,
-      ])))
+        -2,
+        0,
+        0,
+        0,
+        0,
+        -2,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+      ]))),
     );
   });
 
@@ -257,15 +302,17 @@ void main() {
       rectMoreOrLessEquals(const Rect.fromLTRB(0.0, 0.0, 10.0, 10.00000000001)),
     );
 
-    expect(
-      const Rect.fromLTRB(11.0, 11.0, 20.0, 20.0),
-      isNot(rectMoreOrLessEquals(const Rect.fromLTRB(-11.0, -11.0, 20.0, 20.0), epsilon: 1.0)),
-    );
+    expect(const Rect.fromLTRB(11.0, 11.0, 20.0, 20.0), isNot(
+      rectMoreOrLessEquals(
+        const Rect.fromLTRB(-11.0, -11.0, 20.0, 20.0),
+        epsilon: 1.0,
+      ),
+    ));
 
-    expect(
-      const Rect.fromLTRB(11.0, 11.0, 20.0, 20.0),
-      rectMoreOrLessEquals(const Rect.fromLTRB(-11.0, -11.0, 20.0, 20.0), epsilon: 100.0),
-    );
+    expect(const Rect.fromLTRB(11.0, 11.0, 20.0, 20.0), rectMoreOrLessEquals(
+      const Rect.fromLTRB(-11.0, -11.0, 20.0, 20.0),
+      epsilon: 100.0,
+    ));
   });
 
   test('within', () {
@@ -275,29 +322,63 @@ void main() {
     expect(0, within<int>(distance: 1, from: 1));
     expect(0, isNot(within<int>(distance: 1, from: 2)));
 
-    expect(const Color(0x00000000), within<Color>(distance: 1, from: const Color(0x01000000)));
-    expect(const Color(0x00000000), within<Color>(distance: 1, from: const Color(0x00010000)));
-    expect(const Color(0x00000000), within<Color>(distance: 1, from: const Color(0x00000100)));
-    expect(const Color(0x00000000), within<Color>(distance: 1, from: const Color(0x00000001)));
-    expect(const Color(0x00000000), within<Color>(distance: 1, from: const Color(0x01010101)));
-    expect(const Color(0x00000000), isNot(within<Color>(distance: 1, from: const Color(0x02000000))));
-
-    expect(const Offset(1.0, 0.0), within(distance: 1.0, from: Offset.zero));
-    expect(const Offset(1.0, 0.0), isNot(within(distance: 1.0, from: const Offset(-1.0, 0.0))));
-
-    expect(const Rect.fromLTRB(0.0, 1.0, 2.0, 3.0), within<Rect>(distance: 4.0, from: const Rect.fromLTRB(1.0, 3.0, 5.0, 7.0)));
-    expect(const Rect.fromLTRB(0.0, 1.0, 2.0, 3.0), isNot(within<Rect>(distance: 3.9, from: const Rect.fromLTRB(1.0, 3.0, 5.0, 7.0))));
-
-    expect(const Size(1.0, 1.0), within<Size>(distance: 1.415, from: const Size(2.0, 2.0)));
-    expect(const Size(1.0, 1.0), isNot(within<Size>(distance: 1.414, from: const Size(2.0, 2.0))));
-
     expect(
-      () => within<bool>(distance: 1, from: false),
-      throwsArgumentError,
+      const Color(0x00000000),
+      within<Color>(distance: 1, from: const Color(0x01000000)),
+    );
+    expect(
+      const Color(0x00000000),
+      within<Color>(distance: 1, from: const Color(0x00010000)),
+    );
+    expect(
+      const Color(0x00000000),
+      within<Color>(distance: 1, from: const Color(0x00000100)),
+    );
+    expect(
+      const Color(0x00000000),
+      within<Color>(distance: 1, from: const Color(0x00000001)),
+    );
+    expect(
+      const Color(0x00000000),
+      within<Color>(distance: 1, from: const Color(0x01010101)),
+    );
+    expect(
+      const Color(0x00000000),
+      isNot(within<Color>(distance: 1, from: const Color(0x02000000))),
     );
 
+    expect(const Offset(1.0, 0.0), within(distance: 1.0, from: Offset.zero));
     expect(
-      () => within<int>(distance: 1, from: 2, distanceFunction: (int a, int b) => -1).matches(1, <dynamic, dynamic>{}),
+      const Offset(1.0, 0.0),
+      isNot(within(distance: 1.0, from: const Offset(-1.0, 0.0))),
+    );
+
+    expect(const Rect.fromLTRB(0.0, 1.0, 2.0, 3.0), within<Rect>(
+      distance: 4.0,
+      from: const Rect.fromLTRB(1.0, 3.0, 5.0, 7.0),
+    ));
+    expect(const Rect.fromLTRB(0.0, 1.0, 2.0, 3.0), isNot(within<Rect>(
+      distance: 3.9,
+      from: const Rect.fromLTRB(1.0, 3.0, 5.0, 7.0),
+    )));
+
+    expect(
+      const Size(1.0, 1.0),
+      within<Size>(distance: 1.415, from: const Size(2.0, 2.0)),
+    );
+    expect(
+      const Size(1.0, 1.0),
+      isNot(within<Size>(distance: 1.414, from: const Size(2.0, 2.0))),
+    );
+
+    expect(() => within<bool>(distance: 1, from: false), throwsArgumentError);
+
+    expect(
+      () => within<int>(
+        distance: 1,
+        from: 2,
+        distanceFunction: (int a, int b) => -1,
+      ).matches(1, <dynamic, dynamic>{}),
       throwsArgumentError,
     );
   });
@@ -331,38 +412,29 @@ void main() {
 
   group('coversSameAreaAs', () {
     test('empty Paths', () {
-      expect(
+      expect(Path(), coversSameAreaAs(
         Path(),
-        coversSameAreaAs(
-          Path(),
-          areaToCompare: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
-        ),
-      );
+        areaToCompare: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+      ));
     });
 
     test('mismatch', () {
       final Path rectPath = Path()
         ..addRect(const Rect.fromLTRB(5.0, 5.0, 6.0, 6.0));
-      expect(
-        Path(),
-        isNot(coversSameAreaAs(
-          rectPath,
-          areaToCompare: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
-        )),
-      );
+      expect(Path(), isNot(coversSameAreaAs(
+        rectPath,
+        areaToCompare: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+      )));
     });
 
     test('mismatch out of examined area', () {
       final Path rectPath = Path()
         ..addRect(const Rect.fromLTRB(5.0, 5.0, 6.0, 6.0));
       rectPath.addRect(const Rect.fromLTRB(5.0, 5.0, 6.0, 6.0));
-      expect(
-        Path(),
-        coversSameAreaAs(
-          rectPath,
-          areaToCompare: const Rect.fromLTRB(0.0, 0.0, 4.0, 4.0),
-        ),
-      );
+      expect(Path(), coversSameAreaAs(
+        rectPath,
+        areaToCompare: const Rect.fromLTRB(0.0, 0.0, 4.0, 4.0),
+      ));
     });
 
     test('differently constructed rects match', () {
@@ -374,13 +446,10 @@ void main() {
         ..lineTo(6.0, 6.0)
         ..lineTo(6.0, 5.0)
         ..close();
-      expect(
-        linePath,
-        coversSameAreaAs(
-          rectPath,
-          areaToCompare: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
-        ),
-      );
+      expect(linePath, coversSameAreaAs(
+        rectPath,
+        areaToCompare: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+      ));
     });
 
     test('partially overlapping paths', () {
@@ -392,13 +461,10 @@ void main() {
         ..lineTo(6.0, 6.0)
         ..lineTo(6.0, 5.5)
         ..close();
-      expect(
-        linePath,
-        isNot(coversSameAreaAs(
-          rectPath,
-          areaToCompare: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
-        )),
-      );
+      expect(linePath, isNot(coversSameAreaAs(
+        rectPath,
+        areaToCompare: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+      )));
     });
   });
 
@@ -406,10 +472,7 @@ void main() {
     late _FakeComparator comparator;
 
     Widget boilerplate(Widget child) {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: child,
-      );
+      return Directionality(textDirection: TextDirection.ltr, child: child);
     }
 
     setUp(() {
@@ -435,7 +498,10 @@ void main() {
       });
 
       testWidgets('future list of integers', (WidgetTester tester) async {
-        await expectLater(Future<List<int>>.value(<int>[1, 2]), matchesGoldenFile('foo.png'));
+        await expectLater(
+          Future<List<int>>.value(<int>[1, 2]),
+          matchesGoldenFile('foo.png'),
+        );
         expect(comparator.invocation, _ComparatorInvocation.compare);
         expect(comparator.imageBytes, equals(<int>[1, 2]));
         expect(comparator.golden, Uri.parse('foo.png'));
@@ -487,33 +553,39 @@ void main() {
         expect(comparator.invocation, isNull);
       });
 
-      testWidgets('if finder finds multiple widgets', (WidgetTester tester) async {
-        await tester.pumpWidget(boilerplate(const Column(
-          children: <Widget>[Text('hello'), Text('world')],
-        )));
-        final Finder finder = find.byType(Text);
-        await expectLater(
-          () => expectLater(finder, matchesGoldenFile('foo.png')),
-          throwsA(isA<TestFailure>().having(
-            (TestFailure error) => error.message,
-            'message',
-            contains('too many widgets'),
-          )),
-        );
-        expect(comparator.invocation, isNull);
-      });
+      testWidgets(
+        'if finder finds multiple widgets',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(boilerplate(
+            const Column(children: <Widget>[Text('hello'), Text('world')]),
+          ));
+          final Finder finder = find.byType(Text);
+          await expectLater(
+            () => expectLater(finder, matchesGoldenFile('foo.png')),
+            throwsA(isA<TestFailure>().having(
+              (TestFailure error) => error.message,
+              'message',
+              contains('too many widgets'),
+            )),
+          );
+          expect(comparator.invocation, isNull);
+        },
+      );
     });
 
-    testWidgets('calls update on comparator if autoUpdateGoldenFiles is true', (WidgetTester tester) async {
-      autoUpdateGoldenFiles = true;
-      await tester.pumpWidget(boilerplate(const Text('hello')));
-      final Finder finder = find.byType(Text);
-      await expectLater(finder, matchesGoldenFile('foo.png'));
-      expect(comparator.invocation, _ComparatorInvocation.update);
-      expect(comparator.imageBytes, hasLength(greaterThan(0)));
-      expect(comparator.golden, Uri.parse('foo.png'));
-      autoUpdateGoldenFiles = false;
-    });
+    testWidgets(
+      'calls update on comparator if autoUpdateGoldenFiles is true',
+      (WidgetTester tester) async {
+        autoUpdateGoldenFiles = true;
+        await tester.pumpWidget(boilerplate(const Text('hello')));
+        final Finder finder = find.byType(Text);
+        await expectLater(finder, matchesGoldenFile('foo.png'));
+        expect(comparator.invocation, _ComparatorInvocation.update);
+        expect(comparator.imageBytes, hasLength(greaterThan(0)));
+        expect(comparator.golden, Uri.parse('foo.png'));
+        autoUpdateGoldenFiles = false;
+      },
+    );
   });
 
   group('matchesSemanticsData', () {
@@ -526,8 +598,8 @@ void main() {
         header: true,
         button: true,
         link: true,
-        onTap: () { },
-        onLongPress: () { },
+        onTap: () {},
+        onLongPress: () {},
         label: 'foo',
         hint: 'bar',
         value: 'baz',
@@ -537,12 +609,13 @@ void main() {
         onTapHint: 'scan',
         onLongPressHint: 'fill',
         customSemanticsActions: <CustomSemanticsAction, VoidCallback>{
-          const CustomSemanticsAction(label: 'foo'): () { },
-          const CustomSemanticsAction(label: 'bar'): () { },
+          const CustomSemanticsAction(label: 'foo'): () {},
+          const CustomSemanticsAction(label: 'bar'): () {},
         },
       ));
 
-      expect(tester.getSemantics(find.byKey(key)),
+      expect(
+        tester.getSemantics(find.byKey(key)),
         matchesSemantics(
           label: 'foo',
           hint: 'bar',
@@ -566,7 +639,8 @@ void main() {
       );
 
       // Doesn't match custom actions
-      expect(tester.getSemantics(find.byKey(key)),
+      expect(
+        tester.getSemantics(find.byKey(key)),
         isNot(matchesSemantics(
           label: 'foo',
           hint: 'bar',
@@ -588,7 +662,8 @@ void main() {
       );
 
       // Doesn't match wrong hints
-      expect(tester.getSemantics(find.byKey(key)),
+      expect(
+        tester.getSemantics(find.byKey(key)),
         isNot(matchesSemantics(
           label: 'foo',
           hint: 'bar',
@@ -612,7 +687,9 @@ void main() {
       handle.dispose();
     });
 
-    testWidgets('Can match all semantics flags and actions', (WidgetTester tester) async {
+    testWidgets('Can match all semantics flags and actions', (
+      WidgetTester tester,
+    ) async {
       int actions = 0;
       int flags = 0;
       const CustomSemanticsAction action = CustomSemanticsAction(label: 'test');
@@ -642,70 +719,72 @@ void main() {
         scrollExtentMax: null,
         scrollExtentMin: null,
         platformViewId: 105,
-        customSemanticsActionIds: <int>[CustomSemanticsAction.getIdentifier(action)],
+        customSemanticsActionIds: <int>[
+          CustomSemanticsAction.getIdentifier(action),
+        ],
         currentValueLength: 10,
         maxValueLength: 15,
       );
       final _FakeSemanticsNode node = _FakeSemanticsNode(data);
 
       expect(node, matchesSemantics(
-         rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
-         size: const Size(10.0, 10.0),
-         elevation: 3.0,
-         thickness: 4.0,
-         platformViewId: 105,
-         currentValueLength: 10,
-         maxValueLength: 15,
-         /* Flags */
-         hasCheckedState: true,
-         isChecked: true,
-         isCheckStateMixed: true,
-         isSelected: true,
-         isButton: true,
-         isSlider: true,
-         isKeyboardKey: true,
-         isLink: true,
-         isTextField: true,
-         isReadOnly: true,
-         hasEnabledState: true,
-         isFocused: true,
-         isFocusable: true,
-         isEnabled: true,
-         isInMutuallyExclusiveGroup: true,
-         isHeader: true,
-         isObscured: true,
-         isMultiline: true,
-         namesRoute: true,
-         scopesRoute: true,
-         isHidden: true,
-         isImage: true,
-         isLiveRegion: true,
-         hasToggledState: true,
-         isToggled: true,
-         hasImplicitScrolling: true,
-         /* Actions */
-         hasTapAction: true,
-         hasLongPressAction: true,
-         hasScrollLeftAction: true,
-         hasScrollRightAction: true,
-         hasScrollUpAction: true,
-         hasScrollDownAction: true,
-         hasIncreaseAction: true,
-         hasDecreaseAction: true,
-         hasShowOnScreenAction: true,
-         hasMoveCursorForwardByCharacterAction: true,
-         hasMoveCursorBackwardByCharacterAction: true,
-         hasMoveCursorForwardByWordAction: true,
-         hasMoveCursorBackwardByWordAction: true,
-         hasSetTextAction: true,
-         hasSetSelectionAction: true,
-         hasCopyAction: true,
-         hasCutAction: true,
-         hasPasteAction: true,
-         hasDidGainAccessibilityFocusAction: true,
-         hasDidLoseAccessibilityFocusAction: true,
-         hasDismissAction: true,
-         customActions: <CustomSemanticsAction>[action],
+        rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+        size: const Size(10.0, 10.0),
+        elevation: 3.0,
+        thickness: 4.0,
+        platformViewId: 105,
+        currentValueLength: 10,
+        maxValueLength: 15,
+        /* Flags */
+        hasCheckedState: true,
+        isChecked: true,
+        isCheckStateMixed: true,
+        isSelected: true,
+        isButton: true,
+        isSlider: true,
+        isKeyboardKey: true,
+        isLink: true,
+        isTextField: true,
+        isReadOnly: true,
+        hasEnabledState: true,
+        isFocused: true,
+        isFocusable: true,
+        isEnabled: true,
+        isInMutuallyExclusiveGroup: true,
+        isHeader: true,
+        isObscured: true,
+        isMultiline: true,
+        namesRoute: true,
+        scopesRoute: true,
+        isHidden: true,
+        isImage: true,
+        isLiveRegion: true,
+        hasToggledState: true,
+        isToggled: true,
+        hasImplicitScrolling: true,
+        /* Actions */
+        hasTapAction: true,
+        hasLongPressAction: true,
+        hasScrollLeftAction: true,
+        hasScrollRightAction: true,
+        hasScrollUpAction: true,
+        hasScrollDownAction: true,
+        hasIncreaseAction: true,
+        hasDecreaseAction: true,
+        hasShowOnScreenAction: true,
+        hasMoveCursorForwardByCharacterAction: true,
+        hasMoveCursorBackwardByCharacterAction: true,
+        hasMoveCursorForwardByWordAction: true,
+        hasMoveCursorBackwardByWordAction: true,
+        hasSetTextAction: true,
+        hasSetSelectionAction: true,
+        hasCopyAction: true,
+        hasCutAction: true,
+        hasPasteAction: true,
+        hasDidGainAccessibilityFocusAction: true,
+        hasDidLoseAccessibilityFocusAction: true,
+        hasDismissAction: true,
+        customActions: <CustomSemanticsAction>[action],
       ));
     });
 
@@ -718,10 +797,7 @@ void main() {
         container: true,
         explicitChildNodes: true,
         textDirection: TextDirection.ltr,
-        child: Semantics(
-          label: 'Bar',
-          textDirection: TextDirection.ltr,
-        ),
+        child: Semantics(label: 'Bar', textDirection: TextDirection.ltr),
       ));
       final SemanticsNode node = tester.getSemantics(find.byKey(key));
 
@@ -729,70 +805,71 @@ void main() {
         label: 'Foo',
         textDirection: TextDirection.ltr,
         children: <Matcher>[
-          matchesSemantics(
-            label: 'Bar',
-            textDirection: TextDirection.ltr,
-          ),
+          matchesSemantics(label: 'Bar', textDirection: TextDirection.ltr),
         ],
       ));
       handle.dispose();
     });
 
-    testWidgets('failure does not throw unexpected errors', (WidgetTester tester) async {
-      final SemanticsHandle handle = tester.ensureSemantics();
+    testWidgets(
+      'failure does not throw unexpected errors',
+      (WidgetTester tester) async {
+        final SemanticsHandle handle = tester.ensureSemantics();
 
-      const Key key = Key('semantics');
-      await tester.pumpWidget(Semantics(
-        key: key,
-        namesRoute: true,
-        header: true,
-        button: true,
-        link: true,
-        onTap: () { },
-        onLongPress: () { },
-        label: 'foo',
-        hint: 'bar',
-        value: 'baz',
-        increasedValue: 'a',
-        decreasedValue: 'b',
-        textDirection: TextDirection.rtl,
-        onTapHint: 'scan',
-        onLongPressHint: 'fill',
-        customSemanticsActions: <CustomSemanticsAction, VoidCallback>{
-          const CustomSemanticsAction(label: 'foo'): () { },
-          const CustomSemanticsAction(label: 'bar'): () { },
-        },
-      ));
-
-      // This should fail due to the mis-match between the `namesRoute` value.
-      void failedExpectation() => expect(tester.getSemantics(find.byKey(key)),
-        matchesSemantics(
-          // Adding the explicit `false` for test readability
-          // ignore: avoid_redundant_argument_values
-          namesRoute: false,
+        const Key key = Key('semantics');
+        await tester.pumpWidget(Semantics(
+          key: key,
+          namesRoute: true,
+          header: true,
+          button: true,
+          link: true,
+          onTap: () {},
+          onLongPress: () {},
           label: 'foo',
           hint: 'bar',
           value: 'baz',
           increasedValue: 'a',
           decreasedValue: 'b',
           textDirection: TextDirection.rtl,
-          hasTapAction: true,
-          hasLongPressAction: true,
-          isButton: true,
-          isLink: true,
-          isHeader: true,
           onTapHint: 'scan',
           onLongPressHint: 'fill',
-          customActions: <CustomSemanticsAction>[
-            const CustomSemanticsAction(label: 'foo'),
-            const CustomSemanticsAction(label: 'bar'),
-          ],
-        ),
-      );
+          customSemanticsActions: <CustomSemanticsAction, VoidCallback>{
+            const CustomSemanticsAction(label: 'foo'): () {},
+            const CustomSemanticsAction(label: 'bar'): () {},
+          },
+        ));
 
-      expect(failedExpectation, throwsA(isA<TestFailure>()));
-      handle.dispose();
-    });
+        // This should fail due to the mis-match between the `namesRoute` value.
+        void failedExpectation() => expect(
+          tester.getSemantics(find.byKey(key)),
+          matchesSemantics(
+            // Adding the explicit `false` for test readability
+            // ignore: avoid_redundant_argument_values
+            namesRoute: false,
+            label: 'foo',
+            hint: 'bar',
+            value: 'baz',
+            increasedValue: 'a',
+            decreasedValue: 'b',
+            textDirection: TextDirection.rtl,
+            hasTapAction: true,
+            hasLongPressAction: true,
+            isButton: true,
+            isLink: true,
+            isHeader: true,
+            onTapHint: 'scan',
+            onLongPressHint: 'fill',
+            customActions: <CustomSemanticsAction>[
+              const CustomSemanticsAction(label: 'foo'),
+              const CustomSemanticsAction(label: 'bar'),
+            ],
+          ),
+        );
+
+        expect(failedExpectation, throwsA(isA<TestFailure>()));
+        handle.dispose();
+      },
+    );
   });
 
   group('containsSemantics', () {
@@ -806,8 +883,8 @@ void main() {
         header: true,
         button: true,
         link: true,
-        onTap: () { },
-        onLongPress: () { },
+        onTap: () {},
+        onLongPress: () {},
         label: 'foo',
         hint: 'bar',
         value: 'baz',
@@ -817,8 +894,8 @@ void main() {
         onTapHint: 'scan',
         onLongPressHint: 'fill',
         customSemanticsActions: <CustomSemanticsAction, VoidCallback>{
-          const CustomSemanticsAction(label: 'foo'): () { },
-          const CustomSemanticsAction(label: 'bar'): () { },
+          const CustomSemanticsAction(label: 'foo'): () {},
+          const CustomSemanticsAction(label: 'bar'): () {},
         },
       ));
 
@@ -866,7 +943,7 @@ void main() {
             const CustomSemanticsAction(label: 'barz'),
           ],
         )),
-        reason: 'CustomSemanticsAction "barz" should not have matched "bar".'
+        reason: 'CustomSemanticsAction "barz" should not have matched "bar".',
       );
 
       expect(
@@ -894,7 +971,9 @@ void main() {
       handle.dispose();
     });
 
-    testWidgets('can match all semantics flags and actions enabled', (WidgetTester tester) async {
+    testWidgets('can match all semantics flags and actions enabled', (
+      WidgetTester tester,
+    ) async {
       int actions = 0;
       int flags = 0;
       const CustomSemanticsAction action = CustomSemanticsAction(label: 'test');
@@ -924,104 +1003,103 @@ void main() {
         scrollExtentMax: null,
         scrollExtentMin: null,
         platformViewId: 105,
-        customSemanticsActionIds: <int>[CustomSemanticsAction.getIdentifier(action)],
+        customSemanticsActionIds: <int>[
+          CustomSemanticsAction.getIdentifier(action),
+        ],
         currentValueLength: 10,
         maxValueLength: 15,
       );
       final _FakeSemanticsNode node = _FakeSemanticsNode(data);
 
-      expect(
-        node,
-        containsSemantics(
-          rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
-          size: const Size(10.0, 10.0),
-          elevation: 3.0,
-          thickness: 4.0,
-          platformViewId: 105,
-          currentValueLength: 10,
-          maxValueLength: 15,
-          /* Flags */
-          hasCheckedState: true,
-          isChecked: true,
-          isSelected: true,
-          isButton: true,
-          isSlider: true,
-          isKeyboardKey: true,
-          isLink: true,
-          isTextField: true,
-          isReadOnly: true,
-          hasEnabledState: true,
-          isFocused: true,
-          isFocusable: true,
-          isEnabled: true,
-          isInMutuallyExclusiveGroup: true,
-          isHeader: true,
-          isObscured: true,
-          isMultiline: true,
-          namesRoute: true,
-          scopesRoute: true,
-          isHidden: true,
-          isImage: true,
-          isLiveRegion: true,
-          hasToggledState: true,
-          isToggled: true,
-          hasImplicitScrolling: true,
-          /* Actions */
-          hasTapAction: true,
-          hasLongPressAction: true,
-          hasScrollLeftAction: true,
-          hasScrollRightAction: true,
-          hasScrollUpAction: true,
-          hasScrollDownAction: true,
-          hasIncreaseAction: true,
-          hasDecreaseAction: true,
-          hasShowOnScreenAction: true,
-          hasMoveCursorForwardByCharacterAction: true,
-          hasMoveCursorBackwardByCharacterAction: true,
-          hasMoveCursorForwardByWordAction: true,
-          hasMoveCursorBackwardByWordAction: true,
-          hasSetTextAction: true,
-          hasSetSelectionAction: true,
-          hasCopyAction: true,
-          hasCutAction: true,
-          hasPasteAction: true,
-          hasDidGainAccessibilityFocusAction: true,
-          hasDidLoseAccessibilityFocusAction: true,
-          hasDismissAction: true,
-          customActions: <CustomSemanticsAction>[action],
-        ),
-      );
-    });
-
-    testWidgets('can match all flags and actions disabled', (WidgetTester tester) async {
-      final SemanticsData data = SemanticsData(
-        flags: 0,
-        actions: 0,
-        attributedLabel: AttributedString('a'),
-        attributedIncreasedValue: AttributedString('b'),
-        attributedValue: AttributedString('c'),
-        attributedDecreasedValue: AttributedString('d'),
-        attributedHint: AttributedString('e'),
-        tooltip: 'f',
-        textDirection: TextDirection.ltr,
+      expect(node, containsSemantics(
         rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+        size: const Size(10.0, 10.0),
         elevation: 3.0,
         thickness: 4.0,
-        textSelection: null,
-        scrollIndex: null,
-        scrollChildCount: null,
-        scrollPosition: null,
-        scrollExtentMax: null,
-        scrollExtentMin: null,
         platformViewId: 105,
         currentValueLength: 10,
         maxValueLength: 15,
-      );
-      final _FakeSemanticsNode node = _FakeSemanticsNode(data);
+        /* Flags */
+        hasCheckedState: true,
+        isChecked: true,
+        isSelected: true,
+        isButton: true,
+        isSlider: true,
+        isKeyboardKey: true,
+        isLink: true,
+        isTextField: true,
+        isReadOnly: true,
+        hasEnabledState: true,
+        isFocused: true,
+        isFocusable: true,
+        isEnabled: true,
+        isInMutuallyExclusiveGroup: true,
+        isHeader: true,
+        isObscured: true,
+        isMultiline: true,
+        namesRoute: true,
+        scopesRoute: true,
+        isHidden: true,
+        isImage: true,
+        isLiveRegion: true,
+        hasToggledState: true,
+        isToggled: true,
+        hasImplicitScrolling: true,
+        /* Actions */
+        hasTapAction: true,
+        hasLongPressAction: true,
+        hasScrollLeftAction: true,
+        hasScrollRightAction: true,
+        hasScrollUpAction: true,
+        hasScrollDownAction: true,
+        hasIncreaseAction: true,
+        hasDecreaseAction: true,
+        hasShowOnScreenAction: true,
+        hasMoveCursorForwardByCharacterAction: true,
+        hasMoveCursorBackwardByCharacterAction: true,
+        hasMoveCursorForwardByWordAction: true,
+        hasMoveCursorBackwardByWordAction: true,
+        hasSetTextAction: true,
+        hasSetSelectionAction: true,
+        hasCopyAction: true,
+        hasCutAction: true,
+        hasPasteAction: true,
+        hasDidGainAccessibilityFocusAction: true,
+        hasDidLoseAccessibilityFocusAction: true,
+        hasDismissAction: true,
+        customActions: <CustomSemanticsAction>[action],
+      ));
+    });
 
-      expect(
-        node,
-        containsSemantics(
+    testWidgets(
+      'can match all flags and actions disabled',
+      (WidgetTester tester) async {
+        final SemanticsData data = SemanticsData(
+          flags: 0,
+          actions: 0,
+          attributedLabel: AttributedString('a'),
+          attributedIncreasedValue: AttributedString('b'),
+          attributedValue: AttributedString('c'),
+          attributedDecreasedValue: AttributedString('d'),
+          attributedHint: AttributedString('e'),
+          tooltip: 'f',
+          textDirection: TextDirection.ltr,
+          rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+          elevation: 3.0,
+          thickness: 4.0,
+          textSelection: null,
+          scrollIndex: null,
+          scrollChildCount: null,
+          scrollPosition: null,
+          scrollExtentMax: null,
+          scrollExtentMin: null,
+          platformViewId: 105,
+          currentValueLength: 10,
+          maxValueLength: 15,
+        );
+        final _FakeSemanticsNode node = _FakeSemanticsNode(data);
+
+        expect(node, containsSemantics(
           rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
           size: const Size(10.0, 10.0),
           elevation: 3.0,
@@ -1077,11 +1155,13 @@ void main() {
           hasDidGainAccessibilityFocusAction: false,
           hasDidLoseAccessibilityFocusAction: false,
           hasDismissAction: false,
-        ),
-      );
-    });
+        ));
+      },
+    );
 
-    testWidgets('only matches given flags and actions', (WidgetTester tester) async {
+    testWidgets('only matches given flags and actions', (
+      WidgetTester tester,
+    ) async {
       int allActions = 0;
       int allFlags = 0;
       for (final SemanticsAction action in SemanticsAction.values) {
@@ -1138,36 +1218,32 @@ void main() {
         platformViewId: 105,
         currentValueLength: 10,
         maxValueLength: 15,
-        customSemanticsActionIds: <int>[CustomSemanticsAction.getIdentifier(action)],
+        customSemanticsActionIds: <int>[
+          CustomSemanticsAction.getIdentifier(action),
+        ],
       );
       final _FakeSemanticsNode fullNode = _FakeSemanticsNode(fullData);
 
-      expect(
-        emptyNode,
-        containsSemantics(
-          rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
-          size: const Size(10.0, 10.0),
-          elevation: 3.0,
-          thickness: 4.0,
-          platformViewId: 105,
-          currentValueLength: 10,
-          maxValueLength: 15,
-        ),
-      );
+      expect(emptyNode, containsSemantics(
+        rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+        size: const Size(10.0, 10.0),
+        elevation: 3.0,
+        thickness: 4.0,
+        platformViewId: 105,
+        currentValueLength: 10,
+        maxValueLength: 15,
+      ));
 
-      expect(
-        fullNode,
-        containsSemantics(
-          rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
-          size: const Size(10.0, 10.0),
-          elevation: 3.0,
-          thickness: 4.0,
-          platformViewId: 105,
-          currentValueLength: 10,
-          maxValueLength: 15,
-          customActions: <CustomSemanticsAction>[action],
-        ),
-      );
+      expect(fullNode, containsSemantics(
+        rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+        size: const Size(10.0, 10.0),
+        elevation: 3.0,
+        thickness: 4.0,
+        platformViewId: 105,
+        currentValueLength: 10,
+        maxValueLength: 15,
+        customActions: <CustomSemanticsAction>[action],
+      ));
     });
 
     testWidgets('can match child semantics', (WidgetTester tester) async {
@@ -1179,26 +1255,17 @@ void main() {
         container: true,
         explicitChildNodes: true,
         textDirection: TextDirection.ltr,
-        child: Semantics(
-          label: 'Bar',
-          textDirection: TextDirection.ltr,
-        ),
+        child: Semantics(label: 'Bar', textDirection: TextDirection.ltr),
       ));
       final SemanticsNode node = tester.getSemantics(find.byKey(key));
 
-      expect(
-        node,
-        containsSemantics(
-          label: 'Foo',
-          textDirection: TextDirection.ltr,
-          children: <Matcher>[
-            containsSemantics(
-              label: 'Bar',
-              textDirection: TextDirection.ltr,
-            ),
-          ],
-        ),
-      );
+      expect(node, containsSemantics(
+        label: 'Foo',
+        textDirection: TextDirection.ltr,
+        children: <Matcher>[
+          containsSemantics(label: 'Bar', textDirection: TextDirection.ltr),
+        ],
+      ));
 
       handle.dispose();
     });
@@ -1227,115 +1294,120 @@ void main() {
         platformViewId: 105,
         currentValueLength: 10,
         maxValueLength: 15,
-        customSemanticsActionIds: <int>[CustomSemanticsAction.getIdentifier(action)],
+        customSemanticsActionIds: <int>[
+          CustomSemanticsAction.getIdentifier(action),
+        ],
       );
       final _FakeSemanticsNode node = _FakeSemanticsNode(data);
 
-      expect(node, containsSemantics(customActions: <CustomSemanticsAction>[action]));
+      expect(
+        node,
+        containsSemantics(customActions: <CustomSemanticsAction>[action]),
+      );
     });
 
-    testWidgets('failure does not throw unexpected errors', (WidgetTester tester) async {
-      final SemanticsHandle handle = tester.ensureSemantics();
+    testWidgets(
+      'failure does not throw unexpected errors',
+      (WidgetTester tester) async {
+        final SemanticsHandle handle = tester.ensureSemantics();
 
-      const Key key = Key('semantics');
-      await tester.pumpWidget(Semantics(
-        key: key,
-        namesRoute: true,
-        header: true,
-        button: true,
-        link: true,
-        onTap: () { },
-        onLongPress: () { },
-        label: 'foo',
-        hint: 'bar',
-        value: 'baz',
-        increasedValue: 'a',
-        decreasedValue: 'b',
-        textDirection: TextDirection.rtl,
-        onTapHint: 'scan',
-        onLongPressHint: 'fill',
-        customSemanticsActions: <CustomSemanticsAction, VoidCallback>{
-          const CustomSemanticsAction(label: 'foo'): () { },
-          const CustomSemanticsAction(label: 'bar'): () { },
-        },
-      ));
-
-      // This should fail due to the mis-match between the `namesRoute` value.
-      void failedExpectation() => expect(tester.getSemantics(find.byKey(key)),
-        containsSemantics(
+        const Key key = Key('semantics');
+        await tester.pumpWidget(Semantics(
+          key: key,
+          namesRoute: true,
+          header: true,
+          button: true,
+          link: true,
+          onTap: () {},
+          onLongPress: () {},
           label: 'foo',
           hint: 'bar',
           value: 'baz',
           increasedValue: 'a',
           decreasedValue: 'b',
           textDirection: TextDirection.rtl,
-          hasTapAction: true,
-          hasLongPressAction: true,
-          isButton: true,
-          isLink: true,
-          isHeader: true,
-          namesRoute: false,
           onTapHint: 'scan',
           onLongPressHint: 'fill',
-          customActions: <CustomSemanticsAction>[
-            const CustomSemanticsAction(label: 'foo'),
-            const CustomSemanticsAction(label: 'bar'),
-          ],
-        ),
-      );
+          customSemanticsActions: <CustomSemanticsAction, VoidCallback>{
+            const CustomSemanticsAction(label: 'foo'): () {},
+            const CustomSemanticsAction(label: 'bar'): () {},
+          },
+        ));
 
-      expect(failedExpectation, throwsA(isA<TestFailure>()));
-      handle.dispose();
-    });
+        // This should fail due to the mis-match between the `namesRoute` value.
+        void failedExpectation() => expect(
+          tester.getSemantics(find.byKey(key)),
+          containsSemantics(
+            label: 'foo',
+            hint: 'bar',
+            value: 'baz',
+            increasedValue: 'a',
+            decreasedValue: 'b',
+            textDirection: TextDirection.rtl,
+            hasTapAction: true,
+            hasLongPressAction: true,
+            isButton: true,
+            isLink: true,
+            isHeader: true,
+            namesRoute: false,
+            onTapHint: 'scan',
+            onLongPressHint: 'fill',
+            customActions: <CustomSemanticsAction>[
+              const CustomSemanticsAction(label: 'foo'),
+              const CustomSemanticsAction(label: 'bar'),
+            ],
+          ),
+        );
+
+        expect(failedExpectation, throwsA(isA<TestFailure>()));
+        handle.dispose();
+      },
+    );
   });
 
   group('findsAtLeastNWidgets', () {
     Widget boilerplate(Widget child) {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: child,
-      );
+      return Directionality(textDirection: TextDirection.ltr, child: child);
     }
 
-    testWidgets('succeeds when finds more then the specified count',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(boilerplate(const Column(
-        children: <Widget>[Text('1'), Text('2'), Text('3')],
-      )));
+    testWidgets(
+      'succeeds when finds more then the specified count',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(boilerplate(
+          const Column(children: <Widget>[Text('1'), Text('2'), Text('3')]),
+        ));
 
-      expect(find.byType(Text), findsAtLeastNWidgets(2));
-    });
+        expect(find.byType(Text), findsAtLeastNWidgets(2));
+      },
+    );
 
-    testWidgets('succeeds when finds the exact specified count',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(boilerplate(const Column(
-        children: <Widget>[Text('1'), Text('2')],
-      )));
+    testWidgets(
+      'succeeds when finds the exact specified count',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          boilerplate(const Column(children: <Widget>[Text('1'), Text('2')])),
+        );
 
-      expect(find.byType(Text), findsAtLeastNWidgets(2));
-    });
+        expect(find.byType(Text), findsAtLeastNWidgets(2));
+      },
+    );
 
-    testWidgets('fails when finds less then specified count',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(boilerplate(const Column(
-        children: <Widget>[Text('1'), Text('2')],
-      )));
+    testWidgets(
+      'fails when finds less then specified count',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          boilerplate(const Column(children: <Widget>[Text('1'), Text('2')])),
+        );
 
-      expect(find.byType(Text), isNot(findsAtLeastNWidgets(3)));
-    });
+        expect(find.byType(Text), isNot(findsAtLeastNWidgets(3)));
+      },
+    );
   });
 }
 
-enum _ComparatorBehavior {
-  returnTrue,
-  returnFalse,
-  throwTestFailure,
-}
+enum _ComparatorBehavior { returnTrue, returnFalse, throwTestFailure }
 
-enum _ComparatorInvocation {
-  compare,
-  update,
-}
+enum _ComparatorInvocation { compare, update }
 
 class _FakeComparator implements GoldenFileComparator {
   _ComparatorBehavior behavior = _ComparatorBehavior.returnTrue;

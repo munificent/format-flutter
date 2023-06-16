@@ -17,10 +17,10 @@ class RunningProcessInfo {
 
   @override
   bool operator ==(Object other) {
-    return other is RunningProcessInfo
-        && other.pid == pid
-        && other.commandLine == commandLine
-        && other.creationDate == creationDate;
+    return other is RunningProcessInfo &&
+        other.pid == pid &&
+        other.commandLine == commandLine &&
+        other.creationDate == creationDate;
   }
 
   Future<bool> terminate({required ProcessManager processManager}) async {
@@ -29,12 +29,8 @@ class RunningProcessInfo {
     if (Platform.isWindows) {
       // TODO(ianh): Move Windows to killPid once we can.
       //  - killPid on Windows has not-useful return code: https://github.com/dart-lang/sdk/issues/47675
-      final ProcessResult result = await processManager.run(<String>[
-          'taskkill.exe',
-        '/pid',
-        '$pid',
-        '/f',
-      ]);
+      final ProcessResult result = await processManager
+          .run(<String>['taskkill.exe', '/pid', '$pid', '/f']);
       return result.exitCode == 0;
     }
     return processManager.killPid(pid, ProcessSignal.sigkill);
@@ -71,10 +67,8 @@ Future<Set<RunningProcessInfo>> windowsRunningProcesses(
       : '"Get-CimInstance Win32_Process | Select-Object ProcessId,CreationDate,CommandLine | Format-Table -AutoSize | Out-String -Width 4096"';
   // TODO(ianh): Unfortunately, there doesn't seem to be a good way to get
   // ProcessManager to run this.
-  final ProcessResult result = await Process.run(
-    'powershell -command $script',
-    <String>[],
-  );
+  final ProcessResult result =
+      await Process.run('powershell -command $script', <String>[]);
   if (result.exitCode != 0) {
     print('Could not list processes!');
     print(result.stderr);
@@ -115,10 +109,8 @@ Iterable<RunningProcessInfo> processPowershellOutput(String output) sync* {
 
     // 3/11/2019 11:01:54 AM
     // 12/11/2019 11:01:54 AM
-    String rawTime = line.substring(
-      creationDateHeaderStart,
-      creationDateHeaderEnd,
-    ).trim();
+    String rawTime =
+        line.substring(creationDateHeaderStart, creationDateHeaderEnd).trim();
 
     if (rawTime[1] == '/') {
       rawTime = '0$rawTime';
@@ -155,11 +147,8 @@ Future<Set<RunningProcessInfo>> posixRunningProcesses(
     print('Cannot list processes on this system: "ps" not available.');
     return <RunningProcessInfo>{};
   }
-  final ProcessResult result = await processManager.run(<String>[
-    'ps',
-    '-eo',
-    'lstart,pid,command',
-  ]);
+  final ProcessResult result = await processManager
+      .run(<String>['ps', '-eo', 'lstart,pid,command']);
   if (result.exitCode != 0) {
     print('Could not list processes!');
     print(result.stderr);

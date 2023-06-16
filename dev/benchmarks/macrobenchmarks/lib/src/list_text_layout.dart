@@ -11,7 +11,8 @@ class ColumnOfText extends StatefulWidget {
   State<ColumnOfText> createState() => ColumnOfTextState();
 }
 
-class ColumnOfTextState extends State<ColumnOfText> with SingleTickerProviderStateMixin {
+class ColumnOfTextState extends State<ColumnOfText>
+    with SingleTickerProviderStateMixin {
   bool _showText = false;
   late AnimationController _controller;
 
@@ -52,9 +53,7 @@ class ColumnOfTextState extends State<ColumnOfText> with SingleTickerProviderSta
             : Column(
                 children: List<Widget>.generate(9, (int index) {
                   return ListTile(
-                    leading: CircleAvatar(
-                      child: Text('G$index'),
-                    ),
+                    leading: CircleAvatar(child: Text('G$index')),
                     title: Text(
                       'Foo contact from $index-th local contact',
                       overflow: TextOverflow.ellipsis,

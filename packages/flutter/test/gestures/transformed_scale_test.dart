@@ -8,13 +8,14 @@ import 'package:flutter_test/flutter_test.dart';
 import '../foundation/leak_tracking.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('gets local coordinates', (WidgetTester tester) async {
-    final List<ScaleStartDetails> startDetails = <ScaleStartDetails>[];
-    final List<ScaleUpdateDetails> updateDetails = <ScaleUpdateDetails>[];
+  testWidgetsWithLeakTracking(
+    'gets local coordinates',
+    (WidgetTester tester) async {
+      final List<ScaleStartDetails> startDetails = <ScaleStartDetails>[];
+      final List<ScaleUpdateDetails> updateDetails = <ScaleUpdateDetails>[];
 
-    final Key redContainer = UniqueKey();
-    await tester.pumpWidget(
-      Center(
+      final Key redContainer = UniqueKey();
+      await tester.pumpWidget(Center(
         child: GestureDetector(
           onScaleStart: (ScaleStartDetails details) {
             startDetails.add(details);
@@ -29,20 +30,26 @@ void main() {
             color: Colors.red,
           ),
         ),
-      ),
-    );
+      ));
 
-    await tester.startGesture(tester.getCenter(find.byKey(redContainer)) - const Offset(20, 20));
-    final TestGesture pointer2 = await tester.startGesture(tester.getCenter(find.byKey(redContainer)) + const Offset(30, 30));
-    await pointer2.moveTo(tester.getCenter(find.byKey(redContainer)) + const Offset(20, 20));
+      await tester.startGesture(
+        tester.getCenter(find.byKey(redContainer)) - const Offset(20, 20),
+      );
+      final TestGesture pointer2 = await tester.startGesture(
+        tester.getCenter(find.byKey(redContainer)) + const Offset(30, 30),
+      );
+      await pointer2.moveTo(
+        tester.getCenter(find.byKey(redContainer)) + const Offset(20, 20),
+      );
 
-    expect(updateDetails.single.localFocalPoint, const Offset(50, 50));
-    expect(updateDetails.single.focalPoint, const Offset(400, 300));
+      expect(updateDetails.single.localFocalPoint, const Offset(50, 50));
+      expect(updateDetails.single.focalPoint, const Offset(400, 300));
 
-    expect(startDetails, hasLength(2));
-    expect(startDetails.first.localFocalPoint, const Offset(30, 30));
-    expect(startDetails.first.focalPoint, const Offset(380, 280));
-    expect(startDetails.last.localFocalPoint, const Offset(50, 50));
-    expect(startDetails.last.focalPoint, const Offset(400, 300));
-  });
+      expect(startDetails, hasLength(2));
+      expect(startDetails.first.localFocalPoint, const Offset(30, 30));
+      expect(startDetails.first.focalPoint, const Offset(380, 280));
+      expect(startDetails.last.localFocalPoint, const Offset(50, 50));
+      expect(startDetails.last.focalPoint, const Offset(400, 300));
+    },
+  );
 }

@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import '../../gallery/demo.dart';
 
 const String _introText =
-  'Tooltips are short identifying messages that briefly appear in response to '
-  'a long press. Tooltip messages are also used by services that make Flutter '
-  'apps accessible, like screen readers.';
+    'Tooltips are short identifying messages that briefly appear in response to '
+    'a long press. Tooltip messages are also used by services that make Flutter '
+    'apps accessible, like screen readers.';
 
 class TooltipDemo extends StatelessWidget {
   const TooltipDemo({super.key});
@@ -53,23 +53,24 @@ class TooltipDemo extends StatelessWidget {
                     color: theme.iconTheme.color,
                     tooltip: 'Place a phone call',
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                         content: Text('That was an ordinary tap.'),
-                      ));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('That was an ordinary tap.'),
+                        ),
+                      );
                     },
                   ),
                 ),
-              ]
-              .map<Widget>((Widget widget) {
+              ].map<Widget>((Widget widget) {
                 return Padding(
-                  padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+                  padding:
+                      const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
                   child: widget,
                 );
-              })
-              .toList(),
+              }).toList(),
             ),
           );
-        }
+        },
       ),
     );
   }

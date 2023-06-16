@@ -16,7 +16,8 @@ class ExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WidgetsApp(
-      builder: (BuildContext context, Widget? navigator) => const ExampleWidget(),
+      builder: (BuildContext context, Widget? navigator) =>
+          const ExampleWidget(),
       color: const Color(0xffffffff),
     );
   }
@@ -33,9 +34,7 @@ class ExampleWidget extends StatelessWidget {
       '1st, 2nd, 3rd, 4th...',
       style: TextStyle(
         fontFamily: 'Piazzolla',
-        fontFeatures: <FontFeature>[
-          FontFeature.ordinalForms(),
-        ],
+        fontFeatures: <FontFeature>[FontFeature.ordinalForms()],
       ),
     );
   }

@@ -21,7 +21,10 @@ abstract class AssetManifest {
   /// Loads asset manifest data from an [AssetBundle] object and creates an
   /// [AssetManifest] object from that data.
   static Future<AssetManifest> loadFromAssetBundle(AssetBundle bundle) {
-    return bundle.loadStructuredBinaryData(_kAssetManifestFilename, _AssetManifestBin.fromStandardMessageCodecMessage);
+    return bundle.loadStructuredBinaryData(
+      _kAssetManifestFilename,
+      _AssetManifestBin.fromStandardMessageCodecMessage,
+    );
   }
 
   /// Lists the keys of all main assets. This does not include assets
@@ -56,7 +59,8 @@ abstract class AssetManifest {
 // New fields could be added to this object schema to support new asset variation
 // features, such as themes, locale/region support, reading directions, and so on.
 class _AssetManifestBin implements AssetManifest {
-  _AssetManifestBin(Map<Object?, Object?> standardMessageData): _data = standardMessageData;
+  _AssetManifestBin(Map<Object?, Object?> standardMessageData)
+    : _data = standardMessageData;
 
   factory _AssetManifestBin.fromStandardMessageCodecMessage(ByteData message) {
     final dynamic data = const StandardMessageCodec().decodeMessage(message);
@@ -64,7 +68,8 @@ class _AssetManifestBin implements AssetManifest {
   }
 
   final Map<Object?, Object?> _data;
-  final Map<String, List<AssetMetadata>> _typeCastedData = <String, List<AssetMetadata>>{};
+  final Map<String, List<AssetMetadata>> _typeCastedData =
+      <String, List<AssetMetadata>>{};
 
   @override
   List<AssetMetadata>? getAssetVariants(String key) {
@@ -77,17 +82,17 @@ class _AssetManifestBin implements AssetManifest {
         return null;
       }
       _typeCastedData[key] = ((_data[key] ?? <Object?>[]) as Iterable<Object?>)
-        .cast<Map<Object?, Object?>>()
-        .map((Map<Object?, Object?> data) {
-          final String asset = data['asset']! as String;
-          final Object? dpr = data['dpr'];
-          return AssetMetadata(
-            key: data['asset']! as String,
-            targetDevicePixelRatio: dpr as double?,
-            main: key == asset,
-          );
-        })
-        .toList();
+          .cast<Map<Object?, Object?>>()
+          .map((Map<Object?, Object?> data) {
+            final String asset = data['asset']! as String;
+            final Object? dpr = data['dpr'];
+            return AssetMetadata(
+              key: data['asset']! as String,
+              targetDevicePixelRatio: dpr as double?,
+              main: key == asset,
+            );
+          })
+          .toList();
 
       _data.remove(key);
     }

@@ -33,6 +33,7 @@ void main() {
     void callback(PointerEvent event) {
       callbackRan = true;
     }
+
     final PointerRouter router = PointerRouter();
     router.addRoute(2, (PointerEvent event) {
       router.removeRoute(2, callback);
@@ -67,6 +68,7 @@ void main() {
     void callback(PointerEvent event) {
       callbackRan = true;
     }
+
     final PointerRouter router = PointerRouter();
     router.addGlobalRoute((PointerEvent event) {
       router.removeGlobalRoute(callback);
@@ -82,6 +84,7 @@ void main() {
     void callback(PointerEvent event) {
       callbackRan = true;
     }
+
     final PointerRouter router = PointerRouter();
     bool perPointerCallbackRan = false;
     router.addRoute(2, (PointerEvent event) {
@@ -157,7 +160,9 @@ void main() {
     } catch (e) {
       expect(e, contains("router: Instance of 'PointerRouter'"));
       expect(e, contains('route: Closure: (PointerEvent) => Null'));
-      expect(e, contains('event: PointerDownEvent#[a-zA-Z0-9]{5}(position: Offset(0.0, 0.0))'));
+      expect(e, contains(
+        'event: PointerDownEvent#[a-zA-Z0-9]{5}(position: Offset(0.0, 0.0))',
+      ));
     }
   });
 
@@ -165,7 +170,8 @@ void main() {
     final List<PointerEvent> events = <PointerEvent>[];
     final List<PointerEvent> globalEvents = <PointerEvent>[];
     final PointerRouter router = PointerRouter();
-    final Matrix4 transform = (Matrix4.identity()..scale(1 / 2.0, 1 / 2.0, 1.0)).multiplied(Matrix4.translationValues(-10, -30, 0));
+    final Matrix4 transform = (Matrix4.identity()..scale(1 / 2.0, 1 / 2.0, 1.0))
+        .multiplied(Matrix4.translationValues(-10, -30, 0));
 
     router.addRoute(1, (PointerEvent event) {
       events.add(event);

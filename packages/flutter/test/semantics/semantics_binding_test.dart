@@ -6,44 +6,52 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Listeners are called when semantics are turned on with ensureSemantics', (WidgetTester tester) async {
-    expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
+  testWidgets(
+    'Listeners are called when semantics are turned on with ensureSemantics',
+    (WidgetTester tester) async {
+      expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
 
-    final List<bool> status = <bool>[];
-    void listener() {
-      status.add(SemanticsBinding.instance.semanticsEnabled);
-    }
+      final List<bool> status = <bool>[];
+      void listener() {
+        status.add(SemanticsBinding.instance.semanticsEnabled);
+      }
 
-    SemanticsBinding.instance.addSemanticsEnabledListener(listener);
-    expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
+      SemanticsBinding.instance.addSemanticsEnabledListener(listener);
+      expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
 
-    final SemanticsHandle handle1 = SemanticsBinding.instance.ensureSemantics();
-    expect(status.single, isTrue);
-    expect(SemanticsBinding.instance.semanticsEnabled, isTrue);
-    status.clear();
+      final SemanticsHandle handle1 =
+          SemanticsBinding.instance.ensureSemantics();
+      expect(status.single, isTrue);
+      expect(SemanticsBinding.instance.semanticsEnabled, isTrue);
+      status.clear();
 
-    final SemanticsHandle handle2 = SemanticsBinding.instance.ensureSemantics();
-    expect(status, isEmpty); // Listener didn't fire again.
-    expect(SemanticsBinding.instance.semanticsEnabled, isTrue);
+      final SemanticsHandle handle2 =
+          SemanticsBinding.instance.ensureSemantics();
+      expect(status, isEmpty); // Listener didn't fire again.
+      expect(SemanticsBinding.instance.semanticsEnabled, isTrue);
 
-    expect(tester.binding.platformDispatcher.semanticsEnabled, isFalse);
-    tester.binding.platformDispatcher.semanticsEnabledTestValue = true;
-    expect(tester.binding.platformDispatcher.semanticsEnabled, isTrue);
-    tester.binding.platformDispatcher.clearSemanticsEnabledTestValue();
-    expect(tester.binding.platformDispatcher.semanticsEnabled, isFalse);
-    expect(status, isEmpty); // Listener didn't fire again.
-    expect(SemanticsBinding.instance.semanticsEnabled, isTrue);
+      expect(tester.binding.platformDispatcher.semanticsEnabled, isFalse);
+      tester.binding.platformDispatcher.semanticsEnabledTestValue = true;
+      expect(tester.binding.platformDispatcher.semanticsEnabled, isTrue);
+      tester.binding.platformDispatcher.clearSemanticsEnabledTestValue();
+      expect(tester.binding.platformDispatcher.semanticsEnabled, isFalse);
+      expect(status, isEmpty); // Listener didn't fire again.
+      expect(SemanticsBinding.instance.semanticsEnabled, isTrue);
 
-    handle1.dispose();
-    expect(status, isEmpty); // Listener didn't fire.
-    expect(SemanticsBinding.instance.semanticsEnabled, isTrue);
+      handle1.dispose();
+      expect(status, isEmpty); // Listener didn't fire.
+      expect(SemanticsBinding.instance.semanticsEnabled, isTrue);
 
-    handle2.dispose();
-    expect(status.single, isFalse);
-    expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
-  }, semanticsEnabled: false);
+      handle2.dispose();
+      expect(status.single, isFalse);
+      expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
+    },
+    semanticsEnabled: false,
+  );
 
-  testWidgets('Listeners are called when semantics are turned on by platform', (WidgetTester tester) async {
+  testWidgets('Listeners are called when semantics are turned on by platform', (
+    WidgetTester tester,
+  ) async {
     expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
 
     final List<bool> status = <bool>[];
@@ -69,16 +77,21 @@ void main() {
     expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
   }, semanticsEnabled: false);
 
-  testWidgets('SemanticsBinding.ensureSemantics triggers creation of semantics owner.', (WidgetTester tester) async {
-    expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
-    expect(tester.binding.pipelineOwner.semanticsOwner, isNull);
+  testWidgets(
+    'SemanticsBinding.ensureSemantics triggers creation of semantics owner.',
+    (WidgetTester tester) async {
+      expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
+      expect(tester.binding.pipelineOwner.semanticsOwner, isNull);
 
-    final SemanticsHandle handle = SemanticsBinding.instance.ensureSemantics();
-    expect(SemanticsBinding.instance.semanticsEnabled, isTrue);
-    expect(tester.binding.pipelineOwner.semanticsOwner, isNotNull);
+      final SemanticsHandle handle =
+          SemanticsBinding.instance.ensureSemantics();
+      expect(SemanticsBinding.instance.semanticsEnabled, isTrue);
+      expect(tester.binding.pipelineOwner.semanticsOwner, isNotNull);
 
-    handle.dispose();
-    expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
-    expect(tester.binding.pipelineOwner.semanticsOwner, isNull);
-  }, semanticsEnabled: false);
+      handle.dispose();
+      expect(SemanticsBinding.instance.semanticsEnabled, isFalse);
+      expect(tester.binding.pipelineOwner.semanticsOwner, isNull);
+    },
+    semanticsEnabled: false,
+  );
 }

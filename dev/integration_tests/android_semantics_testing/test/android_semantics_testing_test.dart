@@ -34,7 +34,9 @@ const String source = r'''
 void main() {
   group(AndroidSemanticsNode, () {
     test('can be parsed from json data', () {
-      final AndroidSemanticsNode node = AndroidSemanticsNode.deserialize(source);
+      final AndroidSemanticsNode node = AndroidSemanticsNode.deserialize(
+        source,
+      );
 
       expect(node.isChecked, false);
       expect(node.isCheckable, false);
@@ -59,7 +61,10 @@ void main() {
 
   group(AndroidSemanticsAction, () {
     test('can be parsed from correct constant id', () {
-      expect(AndroidSemanticsAction.deserialize(0x1), AndroidSemanticsAction.focus);
+      expect(
+        AndroidSemanticsAction.deserialize(0x1),
+        AndroidSemanticsAction.focus,
+      );
     });
 
     test('returns null passed a bogus id', () {
@@ -69,7 +74,9 @@ void main() {
 
   group('hasAndroidSemantics', () {
     test('matches all android semantics properties', () {
-      final AndroidSemanticsNode node = AndroidSemanticsNode.deserialize(source);
+      final AndroidSemanticsNode node = AndroidSemanticsNode.deserialize(
+        source,
+      );
 
       expect(node, hasAndroidSemantics(
         isChecked: false,
@@ -83,7 +90,7 @@ void main() {
         contentDescription: 'other hello',
         className: 'android.view.View',
         id: 23,
-        rect:  const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+        rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
         actions: <AndroidSemanticsAction>[
           AndroidSemanticsAction.focus,
           AndroidSemanticsAction.clearFocus,

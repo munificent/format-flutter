@@ -15,55 +15,51 @@ void main() {
     // the values of this test should change very slightly. See the issue this is based off
     // of: https://github.com/flutter/flutter/issues/25782.
     final Key targetKey = UniqueKey();
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: true),
-        routes: <String, WidgetBuilder>{
-          '/next': (BuildContext context) {
-            return const Text('Next');
-          },
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: true),
+      routes: <String, WidgetBuilder>{
+        '/next': (BuildContext context) {
+          return const Text('Next');
         },
-        localizationsDelegates: GlobalMaterialLocalizations.delegates,
-        supportedLocales: const <Locale>[
-          Locale('en', 'US'),
-          Locale('es', 'ES'),
-          Locale('zh', 'CN'),
-        ],
-        locale: const Locale('zh', 'CN'),
-        home: Material(
-          child: Center(
-            child: Builder(
-              key: targetKey,
-              builder: (BuildContext context) {
-                return PopupMenuButton<int>(
-                  onSelected: (int value) {
-                    Navigator.pushNamed(context, '/next');
-                  },
-                  itemBuilder: (BuildContext context) {
-                    return <PopupMenuItem<int>>[
-                      const PopupMenuItem<int>(
-                        value: 1,
-                        child: Text(
-                          'hello, world',
-                          style: TextStyle(color: Colors.blue),
-                        ),
+      },
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const <Locale>[
+        Locale('en', 'US'),
+        Locale('es', 'ES'),
+        Locale('zh', 'CN'),
+      ],
+      locale: const Locale('zh', 'CN'),
+      home: Material(
+        child: Center(
+          child: Builder(
+            key: targetKey,
+            builder: (BuildContext context) {
+              return PopupMenuButton<int>(
+                onSelected: (int value) {
+                  Navigator.pushNamed(context, '/next');
+                },
+                itemBuilder: (BuildContext context) {
+                  return <PopupMenuItem<int>>[
+                    const PopupMenuItem<int>(
+                      value: 1,
+                      child: Text(
+                        'hello, world',
+                        style: TextStyle(color: Colors.blue),
                       ),
-                      const PopupMenuItem<int>(
-                        value: 2,
-                        child: Text(
-                          '你好，世界',
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                    ];
-                  },
-                );
-              },
-            ),
+                    ),
+                    const PopupMenuItem<int>(
+                      value: 2,
+                      child:
+                          Text('你好，世界', style: TextStyle(color: Colors.blue)),
+                    ),
+                  ];
+                },
+              );
+            },
           ),
         ),
       ),
-    );
+    ));
 
     await tester.tap(find.byKey(targetKey));
     await tester.pumpAndSettle();
@@ -100,55 +96,51 @@ void main() {
     // the values of this test should change very slightly. See the issue this is based off
     // of: https://github.com/flutter/flutter/issues/25782.
     final Key targetKey = UniqueKey();
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: true),
-        routes: <String, WidgetBuilder>{
-          '/next': (BuildContext context) {
-            return const Text('Next');
-          },
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: true),
+      routes: <String, WidgetBuilder>{
+        '/next': (BuildContext context) {
+          return const Text('Next');
         },
-        localizationsDelegates: GlobalMaterialLocalizations.delegates,
-        supportedLocales: const <Locale>[
-          Locale('en', 'US'),
-          Locale('es', 'ES'),
-          Locale('zh', 'CN'),
-        ],
-        locale: const Locale('en', 'US'),
-        home: Material(
-          child: Center(
-            child: Builder(
-              key: targetKey,
-              builder: (BuildContext context) {
-                return PopupMenuButton<int>(
-                  onSelected: (int value) {
-                    Navigator.pushNamed(context, '/next');
-                  },
-                  itemBuilder: (BuildContext context) {
-                    return <PopupMenuItem<int>>[
-                      const PopupMenuItem<int>(
-                        value: 1,
-                        child: Text(
-                          'hello, world',
-                          style: TextStyle(color: Colors.blue),
-                        ),
+      },
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const <Locale>[
+        Locale('en', 'US'),
+        Locale('es', 'ES'),
+        Locale('zh', 'CN'),
+      ],
+      locale: const Locale('en', 'US'),
+      home: Material(
+        child: Center(
+          child: Builder(
+            key: targetKey,
+            builder: (BuildContext context) {
+              return PopupMenuButton<int>(
+                onSelected: (int value) {
+                  Navigator.pushNamed(context, '/next');
+                },
+                itemBuilder: (BuildContext context) {
+                  return <PopupMenuItem<int>>[
+                    const PopupMenuItem<int>(
+                      value: 1,
+                      child: Text(
+                        'hello, world',
+                        style: TextStyle(color: Colors.blue),
                       ),
-                      const PopupMenuItem<int>(
-                        value: 2,
-                        child: Text(
-                          '你好，世界',
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                    ];
-                  },
-                );
-              },
-            ),
+                    ),
+                    const PopupMenuItem<int>(
+                      value: 2,
+                      child:
+                          Text('你好，世界', style: TextStyle(color: Colors.blue)),
+                    ),
+                  ];
+                },
+              );
+            },
           ),
         ),
       ),
-    );
+    ));
 
     await tester.tap(find.byKey(targetKey));
     await tester.pumpAndSettle();

@@ -24,13 +24,17 @@ class StrokeAlignExample extends StatefulWidget {
   State<StrokeAlignExample> createState() => _StrokeAlignExampleState();
 }
 
-class _StrokeAlignExampleState extends State<StrokeAlignExample> with TickerProviderStateMixin {
+class _StrokeAlignExampleState extends State<StrokeAlignExample>
+    with TickerProviderStateMixin {
   late final AnimationController animation;
 
   @override
   void initState() {
     super.initState();
-    animation = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    animation = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
     animation.repeat(reverse: true);
     animation.addListener(_markDirty);
   }
@@ -181,10 +185,7 @@ class _StrokeAlignExampleState extends State<StrokeAlignExample> with TickerProv
 }
 
 class BorderedBox extends StatelessWidget {
-  const BorderedBox({
-    super.key,
-    required this.shape,
-  });
+  const BorderedBox({super.key, required this.shape});
 
   final ShapeBorder shape;
 
@@ -193,10 +194,7 @@ class BorderedBox extends StatelessWidget {
     return Container(
       width: 100,
       height: 50,
-      decoration: ShapeDecoration(
-        color: const Color(0xff012677),
-        shape: shape,
-      ),
+      decoration: ShapeDecoration(color: const Color(0xff012677), shape: shape),
     );
   }
 }

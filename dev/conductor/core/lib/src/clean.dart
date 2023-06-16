@@ -19,16 +19,12 @@ const String kStateOption = 'state-file';
 ///
 /// If the release was not completed, this command will abort the release.
 class CleanCommand extends Command<void> {
-  CleanCommand({
-    required this.checkouts,
-  })  : platform = checkouts.platform,
-        fileSystem = checkouts.fileSystem,
-        stdio = checkouts.stdio {
+  CleanCommand({required this.checkouts})
+    : platform = checkouts.platform,
+      fileSystem = checkouts.fileSystem,
+      stdio = checkouts.stdio {
     final String defaultPath = defaultStateFilePath(platform);
-    argParser.addFlag(
-      kYesFlag,
-      help: 'Override confirmation checks.',
-    );
+    argParser.addFlag(kYesFlag, help: 'Override confirmation checks.');
     argParser.addOption(
       kStateOption,
       defaultsTo: defaultPath,
@@ -51,9 +47,13 @@ class CleanCommand extends Command<void> {
   @override
   Future<void> run() {
     final ArgResults argumentResults = argResults!;
-    final File stateFile = checkouts.fileSystem.file(argumentResults[kStateOption]);
+    final File stateFile = checkouts.fileSystem.file(
+      argumentResults[kStateOption],
+    );
     if (!stateFile.existsSync()) {
-      throw ConductorException('No persistent state file found at ${stateFile.path}!');
+      throw ConductorException(
+        'No persistent state file found at ${stateFile.path}!',
+      );
     }
 
     if (!(argumentResults[kYesFlag] as bool)) {
@@ -70,9 +70,7 @@ class CleanCommand extends Command<void> {
     }
     stdio.printStatus('Deleting persistent state file ${stateFile.path}...');
 
-    final CleanContext cleanContext = CleanContext(
-      stateFile: stateFile,
-    );
+    final CleanContext cleanContext = CleanContext(stateFile: stateFile);
     return cleanContext.run();
   }
 }
@@ -81,9 +79,7 @@ class CleanCommand extends Command<void> {
 ///
 /// This is a frontend-agnostic implementation.
 class CleanContext {
-  CleanContext({
-    required this.stateFile,
-  });
+  CleanContext({required this.stateFile});
 
   final File stateFile;
 

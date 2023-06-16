@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class CardTemplate extends TokenTemplate {
-  const CardTemplate(super.blockName, super.fileName, super.tokens, {
+  const CardTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
   });
 
@@ -27,10 +30,14 @@ class _${blockName}DefaultsM3 extends CardTheme {
   Color? get color => ${componentColor("md.comp.elevated-card.container")};
 
   @override
-  Color? get shadowColor => ${colorOrTransparent("md.comp.elevated-card.container.shadow-color")};
+  Color? get shadowColor => ${colorOrTransparent(
+        "md.comp.elevated-card.container.shadow-color",
+      )};
 
   @override
-  Color? get surfaceTintColor => ${colorOrTransparent("md.comp.elevated-card.container.surface-tint-layer.color")};
+  Color? get surfaceTintColor => ${colorOrTransparent(
+        "md.comp.elevated-card.container.surface-tint-layer.color",
+      )};
 }
 ''';
 }

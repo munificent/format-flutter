@@ -14,14 +14,16 @@ void _expectStartsWith(List<String?> actual, List<String?> matcher) {
 }
 
 void main() {
-  final _MockLiveTestWidgetsFlutterBinding binding = _MockLiveTestWidgetsFlutterBinding();
+  final _MockLiveTestWidgetsFlutterBinding binding =
+      _MockLiveTestWidgetsFlutterBinding();
 
-  testWidgets('Should print message on pointer events', (WidgetTester tester) async {
-    final List<String?> printedMessages = <String?>[];
+  testWidgets(
+    'Should print message on pointer events',
+    (WidgetTester tester) async {
+      final List<String?> printedMessages = <String?>[];
 
-    int invocations = 0;
-    await tester.pumpWidget(
-      Directionality(
+      int invocations = 0;
+      await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Center(
           child: GestureDetector(
@@ -31,65 +33,16 @@ void main() {
             child: const Text('Test'),
           ),
         ),
-      ),
-    );
+      ));
 
-    final Size windowCenter = tester.view.physicalSize /
-        tester.view.devicePixelRatio /
-        2;
-    final double windowCenterX = windowCenter.width;
-    final double windowCenterY = windowCenter.height;
-
-    final Offset widgetCenter = tester.getRect(find.byType(Text)).center;
-    expect(widgetCenter.dx, windowCenterX);
-    expect(widgetCenter.dy, windowCenterY);
-
-    await binding.collectDebugPrints(printedMessages, () async {
-      await tester.tap(find.byType(Text));
-    });
-    await tester.pump();
-    expect(invocations, 0);
-
-    _expectStartsWith(printedMessages, '''
-Some possible finders for the widgets at Offset(400.0, 300.0):
-  find.text('Test')
-'''.trim().split('\n'));
-    printedMessages.clear();
-
-    await binding.collectDebugPrints(printedMessages, () async {
-      await tester.tapAt(const Offset(1, 1));
-    });
-    expect(printedMessages, equals('''
-No widgets found at Offset(1.0, 1.0).
-'''.trim().split('\n')));
-  });
-
-  testWidgets('Should print message on pointer events with setSurfaceSize', (WidgetTester tester) async {
-    final List<String?> printedMessages = <String?>[];
-
-    int invocations = 0;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child:GestureDetector(
-            onTap: () {
-              invocations++;
-            },
-            child: const Text('Test'),
-          ),
-        ),
-      ),
-    );
-
-    final Size originalSize = tester.binding.createViewConfiguration().size;
-    await tester.binding.setSurfaceSize(const Size(2000, 1800));
-    try {
-      await tester.pump();
+      final Size windowCenter =
+          tester.view.physicalSize / tester.view.devicePixelRatio / 2;
+      final double windowCenterX = windowCenter.width;
+      final double windowCenterY = windowCenter.height;
 
       final Offset widgetCenter = tester.getRect(find.byType(Text)).center;
-      expect(widgetCenter.dx, 1000);
-      expect(widgetCenter.dy, 900);
+      expect(widgetCenter.dx, windowCenterX);
+      expect(widgetCenter.dy, windowCenterY);
 
       await binding.collectDebugPrints(printedMessages, () async {
         await tester.tap(find.byType(Text));
@@ -98,9 +51,11 @@ No widgets found at Offset(1.0, 1.0).
       expect(invocations, 0);
 
       _expectStartsWith(printedMessages, '''
-Some possible finders for the widgets at Offset(1000.0, 900.0):
+Some possible finders for the widgets at Offset(400.0, 300.0):
   find.text('Test')
-'''.trim().split('\n'));
+'''
+          .trim()
+          .split('\n'));
       printedMessages.clear();
 
       await binding.collectDebugPrints(printedMessages, () async {
@@ -108,11 +63,66 @@ Some possible finders for the widgets at Offset(1000.0, 900.0):
       });
       expect(printedMessages, equals('''
 No widgets found at Offset(1.0, 1.0).
-'''.trim().split('\n')));
-    } finally {
-      await tester.binding.setSurfaceSize(originalSize);
-    }
-  });
+'''
+          .trim()
+          .split('\n')));
+    },
+  );
+
+  testWidgets(
+    'Should print message on pointer events with setSurfaceSize',
+    (WidgetTester tester) async {
+      final List<String?> printedMessages = <String?>[];
+
+      int invocations = 0;
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: GestureDetector(
+            onTap: () {
+              invocations++;
+            },
+            child: const Text('Test'),
+          ),
+        ),
+      ));
+
+      final Size originalSize = tester.binding.createViewConfiguration().size;
+      await tester.binding.setSurfaceSize(const Size(2000, 1800));
+      try {
+        await tester.pump();
+
+        final Offset widgetCenter = tester.getRect(find.byType(Text)).center;
+        expect(widgetCenter.dx, 1000);
+        expect(widgetCenter.dy, 900);
+
+        await binding.collectDebugPrints(printedMessages, () async {
+          await tester.tap(find.byType(Text));
+        });
+        await tester.pump();
+        expect(invocations, 0);
+
+        _expectStartsWith(printedMessages, '''
+Some possible finders for the widgets at Offset(1000.0, 900.0):
+  find.text('Test')
+'''
+            .trim()
+            .split('\n'));
+        printedMessages.clear();
+
+        await binding.collectDebugPrints(printedMessages, () async {
+          await tester.tapAt(const Offset(1, 1));
+        });
+        expect(printedMessages, equals('''
+No widgets found at Offset(1.0, 1.0).
+'''
+            .trim()
+            .split('\n')));
+      } finally {
+        await tester.binding.setSurfaceSize(originalSize);
+      }
+    },
+  );
 }
 
 class _MockLiveTestWidgetsFlutterBinding extends LiveTestWidgetsFlutterBinding {
@@ -126,7 +136,9 @@ class _MockLiveTestWidgetsFlutterBinding extends LiveTestWidgetsFlutterBinding {
     // real devices touches sends event in the global coordinate system.
     // See the documentation of [handlePointerEventForSource] for details.
     if (source == TestBindingEventSource.test) {
-      final PointerEvent globalEvent = event.copyWith(position: localToGlobal(event.position, renderView));
+      final PointerEvent globalEvent = event.copyWith(
+        position: localToGlobal(event.position, renderView),
+      );
       return super.handlePointerEventForSource(globalEvent);
     }
     return super.handlePointerEventForSource(event, source: source);
@@ -138,11 +150,16 @@ class _MockLiveTestWidgetsFlutterBinding extends LiveTestWidgetsFlutterBinding {
   DebugPrintCallback get debugPrintOverride {
     return _storeDebugPrints == null
         ? super.debugPrintOverride
-        : ((String? message, { int? wrapWidth }) => _storeDebugPrints!.add(message));
+        : ((String? message, {int? wrapWidth}) => _storeDebugPrints!.add(
+            message,
+          ));
   }
 
   // Execute `task` while redirecting [debugPrint] to appending to `store`.
-  Future<void> collectDebugPrints(List<String?>? store, AsyncValueGetter<void> task) async {
+  Future<void> collectDebugPrints(
+    List<String?>? store,
+    AsyncValueGetter<void> task,
+  ) async {
     _storeDebugPrints = store;
     try {
       await task();

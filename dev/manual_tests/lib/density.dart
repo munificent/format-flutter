@@ -17,7 +17,10 @@ final Map<int, Color> m2SwatchColors = <int, Color>{
   800: const Color(0xff270096),
   900: const Color(0xff270096),
 };
-final MaterialColor m2Swatch = MaterialColor(m2SwatchColors[500]!.value, m2SwatchColors);
+final MaterialColor m2Swatch = MaterialColor(
+  m2SwatchColors[500]!.value,
+  m2SwatchColors,
+);
 
 void main() => runApp(const MyApp());
 
@@ -28,10 +31,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: MyHomePage(title: _title),
-    );
+    return const MaterialApp(title: _title, home: MyHomePage(title: _title));
   }
 }
 
@@ -112,7 +112,12 @@ class OptionModel extends ChangeNotifier {
 }
 
 class LabeledCheckbox extends StatelessWidget {
-  const LabeledCheckbox({super.key, required this.label, this.onChanged, this.value});
+  const LabeledCheckbox({
+    super.key,
+    required this.label,
+    this.onChanged,
+    this.value,
+  });
 
   final String label;
   final ValueChanged<bool?>? onChanged;
@@ -123,10 +128,7 @@ class LabeledCheckbox extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Checkbox(
-          onChanged: onChanged,
-          value: value,
-        ),
+        Checkbox(onChanged: onChanged, value: value),
         Text(label),
       ],
     );
@@ -206,160 +208,181 @@ class _OptionsState extends State<Options> {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 10.0),
-      child: Builder(builder: (BuildContext context) {
-        return DefaultTextStyle(
-          style: TextStyle(color: Colors.grey[50]),
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: <Widget>[
-                    const Text('Text Scale'),
-                    Expanded(
-                      child: SliderTheme(
-                        data: controlTheme,
-                        child: Slider(
-                          label: '${widget.model.size}',
-                          min: 0.5,
-                          max: 3.0,
-                          onChanged: (double value) {
-                            widget.model.size = value;
-                          },
-                          value: widget.model.size,
+      child: Builder(
+        builder: (BuildContext context) {
+          return DefaultTextStyle(
+            style: TextStyle(color: Colors.grey[50]),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      const Text('Text Scale'),
+                      Expanded(
+                        child: SliderTheme(
+                          data: controlTheme,
+                          child: Slider(
+                            label: '${widget.model.size}',
+                            min: 0.5,
+                            max: 3.0,
+                            onChanged: (double value) {
+                              widget.model.size = value;
+                            },
+                            value: widget.model.size,
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      widget.model.size.toStringAsFixed(3),
-                      style: TextStyle(color: Colors.grey[50]),
-                    ),
-                  ],
+                      Text(
+                        widget.model.size.toStringAsFixed(3),
+                        style: TextStyle(color: Colors.grey[50]),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: <Widget>[
-                    const Text('X Density'),
-                    Expanded(
-                      child: SliderTheme(
-                        data: controlTheme,
-                        child: Slider(
-                          label: widget.model.density.horizontal.toStringAsFixed(1),
-                          min: VisualDensity.minimumDensity,
-                          max: VisualDensity.maximumDensity,
-                          onChanged: (double value) {
-                            widget.model.density = widget.model.density.copyWith(
-                              horizontal: value,
-                              vertical: widget.model.density.vertical,
-                            );
-                          },
-                          value: widget.model.density.horizontal,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      const Text('X Density'),
+                      Expanded(
+                        child: SliderTheme(
+                          data: controlTheme,
+                          child: Slider(
+                            label: widget.model.density.horizontal
+                                .toStringAsFixed(1),
+                            min: VisualDensity.minimumDensity,
+                            max: VisualDensity.maximumDensity,
+                            onChanged: (double value) {
+                              widget.model.density = widget.model.density
+                                  .copyWith(
+                                    horizontal: value,
+                                    vertical: widget.model.density.vertical,
+                                  );
+                            },
+                            value: widget.model.density.horizontal,
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      widget.model.density.horizontal.toStringAsFixed(3),
-                      style: TextStyle(color: Colors.grey[50]),
-                    ),
-                  ],
+                      Text(
+                        widget.model.density.horizontal.toStringAsFixed(3),
+                        style: TextStyle(color: Colors.grey[50]),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: <Widget>[
-                    const Text('Y Density'),
-                    Expanded(
-                      child: SliderTheme(
-                        data: controlTheme,
-                        child: Slider(
-                          label: widget.model.density.vertical.toStringAsFixed(1),
-                          min: VisualDensity.minimumDensity,
-                          max: VisualDensity.maximumDensity,
-                          onChanged: (double value) {
-                            widget.model.density = widget.model.density.copyWith(
-                              horizontal: widget.model.density.horizontal,
-                              vertical: value,
-                            );
-                          },
-                          value: widget.model.density.vertical,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      const Text('Y Density'),
+                      Expanded(
+                        child: SliderTheme(
+                          data: controlTheme,
+                          child: Slider(
+                            label: widget.model.density.vertical
+                                .toStringAsFixed(1),
+                            min: VisualDensity.minimumDensity,
+                            max: VisualDensity.maximumDensity,
+                            onChanged: (double value) {
+                              widget.model.density = widget.model.density
+                                  .copyWith(
+                                    horizontal: widget.model.density.horizontal,
+                                    vertical: value,
+                                  );
+                            },
+                            value: widget.model.density.vertical,
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      widget.model.density.vertical.toStringAsFixed(3),
-                      style: TextStyle(color: Colors.grey[50]),
-                    ),
-                  ],
+                      Text(
+                        widget.model.density.vertical.toStringAsFixed(3),
+                        style: TextStyle(color: Colors.grey[50]),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Wrap(
-                alignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: <Widget>[
-                  Theme(
-                    data: Theme.of(context).copyWith(canvasColor: Colors.grey[600]),
-                    child: DropdownButton<String>(
-                      style: TextStyle(color: Colors.grey[50]),
-                      isDense: true,
-                      onChanged: (String? value) {
-                        widget.model.density = _profileToDensity(value);
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        canvasColor: Colors.grey[600],
+                      ),
+                      child: DropdownButton<String>(
+                        style: TextStyle(color: Colors.grey[50]),
+                        isDense: true,
+                        onChanged: (String? value) {
+                          widget.model.density = _profileToDensity(value);
+                        },
+                        items: const <DropdownMenuItem<String>>[
+                          DropdownMenuItem<String>(
+                            value: 'standard',
+                            child: Text('Standard'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'comfortable',
+                            child: Text('Comfortable'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'compact',
+                            child: Text('Compact'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'custom',
+                            child: Text('Custom'),
+                          ),
+                        ],
+                        value: _densityToProfile(widget.model.density),
+                      ),
+                    ),
+                    LabeledCheckbox(
+                      label: 'Enabled',
+                      onChanged: (bool? checked) {
+                        widget.model.enable = checked ?? false;
                       },
-                      items: const <DropdownMenuItem<String>>[
-                        DropdownMenuItem<String>(
-                          value: 'standard',
-                          child: Text('Standard'),
-                        ),
-                        DropdownMenuItem<String>(value: 'comfortable', child: Text('Comfortable')),
-                        DropdownMenuItem<String>(value: 'compact', child: Text('Compact')),
-                        DropdownMenuItem<String>(value: 'custom', child: Text('Custom')),
-                      ],
-                      value: _densityToProfile(widget.model.density),
+                      value: widget.model.enable,
                     ),
-                  ),
-                  LabeledCheckbox(
-                    label: 'Enabled',
-                    onChanged: (bool? checked) {
-                      widget.model.enable = checked ?? false;
-                    },
-                    value: widget.model.enable,
-                  ),
-                  LabeledCheckbox(
-                    label: 'Slow',
-                    onChanged: (bool? checked) {
-                      widget.model.slowAnimations = checked ?? false;
-                      Future<void>.delayed(const Duration(milliseconds: 150)).then((_) {
-                        if (widget.model.slowAnimations) {
-                          timeDilation = 20.0;
-                        } else {
-                          timeDilation = 1.0;
-                        }
-                      });
-                    },
-                    value: widget.model.slowAnimations,
-                  ),
-                  LabeledCheckbox(
-                    label: 'RTL',
-                    onChanged: (bool? checked) {
-                      widget.model.rtl = checked ?? false;
-                    },
-                    value: widget.model.rtl,
-                  ),
-                  MaterialButton(
-                    onPressed: () {
-                      widget.model.reset();
-                      sliderValue = 0.0;
-                    },
-                    child: Text('Reset', style: TextStyle(color: Colors.grey[50])),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      }),
+                    LabeledCheckbox(
+                      label: 'Slow',
+                      onChanged: (bool? checked) {
+                        widget.model.slowAnimations = checked ?? false;
+                        Future<void>.delayed(const Duration(milliseconds: 150))
+                            .then((_) {
+                              if (widget.model.slowAnimations) {
+                                timeDilation = 20.0;
+                              } else {
+                                timeDilation = 1.0;
+                              }
+                            });
+                      },
+                      value: widget.model.slowAnimations,
+                    ),
+                    LabeledCheckbox(
+                      label: 'RTL',
+                      onChanged: (bool? checked) {
+                        widget.model.rtl = checked ?? false;
+                      },
+                      value: widget.model.rtl,
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        widget.model.reset();
+                        sliderValue = 0.0;
+                      },
+                      child: Text(
+                        'Reset',
+                        style: TextStyle(color: Colors.grey[50]),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -379,10 +402,7 @@ class _ControlTile extends StatelessWidget {
           children: <Widget>[
             Align(
               alignment: AlignmentDirectional.topStart,
-              child: Text(
-                label,
-                textAlign: TextAlign.start,
-              ),
+              child: Text(label, textAlign: TextAlign.start),
             ),
             child,
           ],
@@ -393,7 +413,8 @@ class _ControlTile extends StatelessWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  static final GlobalKey<ScaffoldState> scaffoldKey =
+      GlobalKey<ScaffoldState>();
   final OptionModel _model = OptionModel();
   final TextEditingController textController = TextEditingController();
 
@@ -415,15 +436,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   double sliderValue = 0.0;
   List<bool> checkboxValues = <bool>[false, false, false, false];
-  List<IconData> iconValues = <IconData>[Icons.arrow_back, Icons.play_arrow, Icons.arrow_forward];
+  List<IconData> iconValues = <IconData>[
+    Icons.arrow_back,
+    Icons.play_arrow,
+    Icons.arrow_forward,
+  ];
   List<String> chipValues = <String>['Potato', 'Computer'];
   int radioValue = 0;
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = ThemeData(
-      primarySwatch: m2Swatch,
-    );
+    final ThemeData theme = ThemeData(primarySwatch: m2Swatch);
     final Widget label = Text(_model.rtl ? 'اضغط علي' : 'Press Me');
     textController.text = _model.rtl
         ? 'يعتمد القرار الجيد على المعرفة وليس على الأرقام.'
@@ -438,37 +461,61 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               ListTile(
-                title: Text(_model.rtl ? 'هذا عنوان طويل نسبيا' : 'This is a relatively long title'),
+                title: Text(
+                  _model.rtl
+                      ? 'هذا عنوان طويل نسبيا'
+                      : 'This is a relatively long title',
+                ),
                 onTap: () {},
               ),
               ListTile(
-                title: Text(_model.rtl ? 'هذا عنوان قصير' : 'This is a short title'),
-                subtitle:
-                    Text(_model.rtl ? 'هذا عنوان فرعي مناسب.' : 'This is an appropriate subtitle.'),
+                title: Text(
+                  _model.rtl ? 'هذا عنوان قصير' : 'This is a short title',
+                ),
+                subtitle: Text(
+                  _model.rtl
+                      ? 'هذا عنوان فرعي مناسب.'
+                      : 'This is an appropriate subtitle.',
+                ),
                 trailing: const Icon(Icons.check_box),
                 onTap: () {},
               ),
               ListTile(
-                title: Text(_model.rtl ? 'هذا عنوان قصير' : 'This is a short title'),
-                subtitle:
-                    Text(_model.rtl ? 'هذا عنوان فرعي مناسب.' : 'This is an appropriate subtitle.'),
+                title: Text(
+                  _model.rtl ? 'هذا عنوان قصير' : 'This is a short title',
+                ),
+                subtitle: Text(
+                  _model.rtl
+                      ? 'هذا عنوان فرعي مناسب.'
+                      : 'This is an appropriate subtitle.',
+                ),
                 leading: const Icon(Icons.check_box),
                 dense: true,
                 onTap: () {},
               ),
               ListTile(
-                title: Text(_model.rtl ? 'هذا عنوان قصير' : 'This is a short title'),
-                subtitle:
-                    Text(_model.rtl ? 'هذا عنوان فرعي مناسب.' : 'This is an appropriate subtitle.'),
+                title: Text(
+                  _model.rtl ? 'هذا عنوان قصير' : 'This is a short title',
+                ),
+                subtitle: Text(
+                  _model.rtl
+                      ? 'هذا عنوان فرعي مناسب.'
+                      : 'This is an appropriate subtitle.',
+                ),
                 dense: true,
                 leading: const Icon(Icons.add_box),
                 trailing: const Icon(Icons.check_box),
                 onTap: () {},
               ),
               ListTile(
-                title: Text(_model.rtl ? 'هذا عنوان قصير' : 'This is a short title'),
-                subtitle:
-                    Text(_model.rtl ? 'هذا عنوان فرعي مناسب.' : 'This is an appropriate subtitle.'),
+                title: Text(
+                  _model.rtl ? 'هذا عنوان قصير' : 'This is a short title',
+                ),
+                subtitle: Text(
+                  _model.rtl
+                      ? 'هذا عنوان فرعي مناسب.'
+                      : 'This is an appropriate subtitle.',
+                ),
                 isThreeLine: true,
                 leading: const Icon(Icons.add_box),
                 trailing: const Icon(Icons.check_box),
@@ -494,13 +541,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   border: OutlineInputBorder(),
                 ),
               ),
-              TextField(
-                controller: textController,
-              ),
-              TextField(
-                controller: textController,
-                maxLines: 3,
-              ),
+              TextField(controller: textController),
+              TextField(controller: textController, maxLines: 3),
             ],
           ),
         ),
@@ -533,7 +575,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: TextButton(
           style: TextButton.styleFrom(
             foregroundColor: Colors.white,
-            backgroundColor: m2Swatch[200]
+            backgroundColor: m2Swatch[200],
           ),
           onPressed: _model.enable ? () {} : null,
           child: label,
@@ -628,14 +670,14 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Theme(
               data: Theme.of(context).copyWith(visualDensity: _model.density),
               child: Directionality(
-                textDirection: _model.rtl ? TextDirection.rtl : TextDirection.ltr,
+                textDirection: _model.rtl
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
                 child: MediaQuery(
-                  data: MediaQuery.of(context).copyWith(textScaleFactor: _model.size),
-                  child: SizedBox.expand(
-                    child: ListView(
-                      children: tiles,
-                    ),
+                  data: MediaQuery.of(context).copyWith(
+                    textScaleFactor: _model.size,
                   ),
+                  child: SizedBox.expand(child: ListView(children: tiles)),
                 ),
               ),
             ),

@@ -14,8 +14,8 @@ class RemoveMacOSFrameworkLinkAndEmbeddingMigration extends ProjectMigrator {
     MacOSProject project,
     super.logger,
     Usage usage,
-  )   : _xcodeProjectInfoFile = project.xcodeProjectInfoFile,
-        _usage = usage;
+  ) : _xcodeProjectInfoFile = project.xcodeProjectInfoFile,
+      _usage = usage;
 
   final File _xcodeProjectInfoFile;
   final Usage _usage;
@@ -24,7 +24,8 @@ class RemoveMacOSFrameworkLinkAndEmbeddingMigration extends ProjectMigrator {
   void migrate() {
     if (!_xcodeProjectInfoFile.existsSync()) {
       logger.printTrace(
-          'Xcode project not found, skipping framework link and embedding migration');
+        'Xcode project not found, skipping framework link and embedding migration',
+      );
       return;
     }
 
@@ -81,16 +82,20 @@ class RemoveMacOSFrameworkLinkAndEmbeddingMigration extends ProjectMigrator {
     const String thinBinaryScript = r'/Flutter/ephemeral/.app_filename';
     if (line.contains(thinBinaryScript) && !line.contains(' embed')) {
       return line.replaceFirst(
-          thinBinaryScript, r'/Flutter/ephemeral/.app_filename && \"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh embed');
+        thinBinaryScript,
+        r'/Flutter/ephemeral/.app_filename && \"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh embed',
+      );
     }
 
     if (line.contains('/* App.framework ') ||
         line.contains('/* FlutterMacOS.framework ')) {
-      UsageEvent('macos-migration', 'remove-frameworks',
-              label: 'failure', flutterUsage: _usage)
-          .send();
-      throwToolExit(
-          'Your Xcode project requires migration.');
+      UsageEvent(
+        'macos-migration',
+        'remove-frameworks',
+        label: 'failure',
+        flutterUsage: _usage,
+      ).send();
+      throwToolExit('Your Xcode project requires migration.');
     }
 
     return line;

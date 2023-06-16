@@ -16,39 +16,45 @@ void main() {
 
     for (final TestTimePhases phase in TestTimePhases.values) {
       final TestTimeRecorder recorder = createRecorderWithTimesForPhase(
-          phase, combinedDuration, wallClockDuration);
+        phase,
+        combinedDuration,
+        wallClockDuration,
+      );
       final Set<String> prints = recorder.getPrintAsListForTesting().toSet();
 
       // Expect one entry per phase.
       expect(prints, hasLength(TestTimePhases.values.length));
 
       // Expect this phase to have the specified times.
-      expect(
-        prints,
-        contains('Runtime for phase ${phase.name}: '
-            'Wall-clock: $wallClockDuration; combined: $combinedDuration.'),
-      );
+      expect(prints, contains(
+        'Runtime for phase ${phase.name}: '
+        'Wall-clock: $wallClockDuration; combined: $combinedDuration.',
+      ));
 
       // Expect all other phases to say 0.
       for (final TestTimePhases innerPhase in TestTimePhases.values) {
         if (phase == innerPhase) {
           continue;
         }
-        expect(
-          prints,
-          contains('Runtime for phase ${innerPhase.name}: '
-              'Wall-clock: $zero; combined: $zero.'),
-        );
+        expect(prints, contains(
+          'Runtime for phase ${innerPhase.name}: '
+          'Wall-clock: $zero; combined: $zero.',
+        ));
       }
     }
   });
 }
 
-TestTimeRecorder createRecorderWithTimesForPhase(TestTimePhases phase,
-    Duration combinedDuration, Duration wallClockDuration) {
+TestTimeRecorder createRecorderWithTimesForPhase(
+  TestTimePhases phase,
+  Duration combinedDuration,
+  Duration wallClockDuration,
+) {
   final LoggingLogger logger = LoggingLogger();
-  final TestTimeRecorder recorder =
-      TestTimeRecorder(logger, stopwatchFactory: FakeStopwatchFactory());
+  final TestTimeRecorder recorder = TestTimeRecorder(
+    logger,
+    stopwatchFactory: FakeStopwatchFactory(),
+  );
   final FakeStopwatch combinedStopwatch =
       recorder.start(phase) as FakeStopwatch;
   final FakeStopwatch wallClockStopwatch =

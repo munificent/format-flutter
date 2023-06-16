@@ -13,24 +13,25 @@ void main() {
       onEnter: (_) {},
       onExit: (_) {},
     );
-    expect(
-      annotation1.toString(),
-      equals('MouseTrackerAnnotation#${shortHash(annotation1)}(callbacks: [enter, exit])'),
-    );
+    expect(annotation1.toString(), equals(
+      'MouseTrackerAnnotation#${shortHash(
+        annotation1,
+      )}(callbacks: [enter, exit])',
+    ));
 
     const MouseTrackerAnnotation annotation2 = MouseTrackerAnnotation();
-    expect(
-      annotation2.toString(),
-      equals('MouseTrackerAnnotation#${shortHash(annotation2)}(callbacks: <none>)'),
-    );
+    expect(annotation2.toString(), equals(
+      'MouseTrackerAnnotation#${shortHash(annotation2)}(callbacks: <none>)',
+    ));
 
     final MouseTrackerAnnotation annotation3 = MouseTrackerAnnotation(
       onEnter: (_) {},
       cursor: SystemMouseCursors.grab,
     );
-    expect(
-      annotation3.toString(),
-      equals('MouseTrackerAnnotation#${shortHash(annotation3)}(callbacks: [enter], cursor: SystemMouseCursor(grab))'),
-    );
+    expect(annotation3.toString(), equals(
+      'MouseTrackerAnnotation#${shortHash(
+        annotation3,
+      )}(callbacks: [enter], cursor: SystemMouseCursor(grab))',
+    ));
   });
 }

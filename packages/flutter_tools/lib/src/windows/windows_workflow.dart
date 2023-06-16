@@ -25,13 +25,16 @@ class WindowsWorkflow implements Workflow {
   final FeatureFlags _featureFlags;
 
   @override
-  bool get appliesToHostPlatform => _platform.isWindows && _featureFlags.isWindowsEnabled;
+  bool get appliesToHostPlatform =>
+      _platform.isWindows && _featureFlags.isWindowsEnabled;
 
   @override
-  bool get canLaunchDevices => _platform.isWindows && _featureFlags.isWindowsEnabled;
+  bool get canLaunchDevices =>
+      _platform.isWindows && _featureFlags.isWindowsEnabled;
 
   @override
-  bool get canListDevices => _platform.isWindows && _featureFlags.isWindowsEnabled;
+  bool get canListDevices =>
+      _platform.isWindows && _featureFlags.isWindowsEnabled;
 
   @override
   bool get canListEmulators => false;

@@ -17,30 +17,21 @@ import './stdio.dart';
 import './version.dart';
 
 /// Allowed git remote names.
-enum RemoteName {
-  upstream,
-  mirror,
-}
+enum RemoteName { upstream, mirror }
 
 class Remote {
   const Remote({
     required RemoteName name,
     required this.url,
-  })  : _name = name,
-        assert(url != '');
+  }) : _name = name,
+       assert(url != '');
 
   factory Remote.mirror(String url) {
-    return Remote(
-      name: RemoteName.mirror,
-      url: url,
-    );
+    return Remote(name: RemoteName.mirror, url: url);
   }
 
   factory Remote.upstream(String url) {
-    return Remote(
-      name: RemoteName.upstream,
-      url: url,
-    );
+    return Remote(name: RemoteName.upstream, url: url);
   }
 
   final RemoteName _name;
@@ -107,8 +98,8 @@ abstract class Repository {
     this.localUpstream = false,
     this.previousCheckoutLocation,
     this.mirrorRemote,
-  })  : git = Git(processManager),
-        assert(upstreamRemote.url.isNotEmpty);
+  }) : git = Git(processManager),
+       assert(upstreamRemote.url.isNotEmpty);
 
   final String name;
   final Remote upstreamRemote;
@@ -153,7 +144,8 @@ abstract class Repository {
       _checkoutDirectory = fileSystem.directory(previousCheckoutLocation);
       if (!_checkoutDirectory!.existsSync()) {
         throw ConductorException(
-            'Provided previousCheckoutLocation $previousCheckoutLocation does not exist on disk!');
+          'Provided previousCheckoutLocation $previousCheckoutLocation does not exist on disk!',
+        );
       }
       if (initialRef != null) {
         assert(initialRef != '');
@@ -193,11 +185,11 @@ abstract class Repository {
 
   /// Parse git ls-remote --heads and return branch names.
   Future<List<String>> listRemoteBranches(String remote) async {
-    final String output = await git.getOutput(
-      <String>['ls-remote', '--heads', remote],
-      'get remote branches',
-      workingDirectory: (await checkoutDirectory).path,
-    );
+    final String output = await git.getOutput(<String>[
+      'ls-remote',
+      '--heads',
+      remote,
+    ], 'get remote branches', workingDirectory: (await checkoutDirectory).path);
 
     final List<String> remoteBranches = <String>[];
     for (final String line in output.split('\n')) {
@@ -220,18 +212,14 @@ abstract class Repository {
     stdio.printTrace(
       'Cloning $name from ${upstreamRemote.url} to ${checkoutDirectory.path}...',
     );
-    await git.run(
-      <String>[
-        'clone',
-        '--origin',
-        upstreamRemote.name,
-        '--',
-        upstreamRemote.url,
-        checkoutDirectory.path,
-      ],
-      'Cloning $name repo',
-      workingDirectory: parentDirectory.path,
-    );
+    await git.run(<String>[
+      'clone',
+      '--origin',
+      upstreamRemote.name,
+      '--',
+      upstreamRemote.url,
+      checkoutDirectory.path,
+    ], 'Cloning $name repo', workingDirectory: parentDirectory.path);
     if (mirrorRemote != null) {
       await git.run(
         <String>['remote', 'add', mirrorRemote!.name, mirrorRemote!.url],
@@ -291,10 +279,11 @@ abstract class Repository {
   /// Return the revision for the branch point between two refs.
   Future<String> branchPoint(String firstRef, String secondRef) async {
     return (await git.getOutput(
-      <String>['merge-base', firstRef, secondRef],
-      'determine the merge base between $firstRef and $secondRef',
-      workingDirectory: (await checkoutDirectory).path,
-    )).trim();
+          <String>['merge-base', firstRef, secondRef],
+          'determine the merge base between $firstRef and $secondRef',
+          workingDirectory: (await checkoutDirectory).path,
+        ))
+        .trim();
   }
 
   /// Fetch all branches and associated commits and tags from [remoteName].
@@ -319,11 +308,10 @@ abstract class Repository {
 
   /// Check out the given ref.
   Future<void> checkout(String ref) async {
-    await git.run(
-      <String>['checkout', ref],
-      'checkout ref',
-      workingDirectory: (await checkoutDirectory).path,
-    );
+    await git.run(<String>[
+      'checkout',
+      ref,
+    ], 'checkout ref', workingDirectory: (await checkoutDirectory).path);
   }
 
   /// Obtain the version tag at the tip of a release branch.
@@ -373,9 +361,11 @@ abstract class Repository {
 
   /// List commits in reverse chronological order.
   Future<List<String>> revList(List<String> args) async {
-    return (await git.getOutput(<String>['rev-list', ...args],
-            'rev-list with args ${args.join(' ')}',
-            workingDirectory: (await checkoutDirectory).path))
+    return (await git.getOutput(
+          <String>['rev-list', ...args],
+          'rev-list with args ${args.join(' ')}',
+          workingDirectory: (await checkoutDirectory).path,
+        ))
         .trim()
         .split('\n');
   }
@@ -392,7 +382,10 @@ abstract class Repository {
   }
 
   /// Determines if one ref is an ancestor for another.
-  Future<bool> isAncestor(String possibleAncestor, String possibleDescendant) async {
+  Future<bool> isAncestor(
+    String possibleAncestor,
+    String possibleDescendant,
+  ) async {
     final int exitcode = await git.run(
       <String>[
         'merge-base',
@@ -420,11 +413,11 @@ abstract class Repository {
 
   /// Resets repository HEAD to [ref].
   Future<void> reset(String ref) async {
-    await git.run(
-      <String>['reset', ref, '--hard'],
-      'reset to $ref',
-      workingDirectory: (await checkoutDirectory).path,
-    );
+    await git.run(<String>[
+      'reset',
+      ref,
+      '--hard',
+    ], 'reset to $ref', workingDirectory: (await checkoutDirectory).path);
   }
 
   /// Push [commit] to the release channel [branch].
@@ -441,10 +434,7 @@ abstract class Repository {
       remote,
       '$fromRef:$toRef',
     ];
-    final String command = <String>[
-      'git',
-      ...args,
-    ].join(' ');
+    final String command = <String>['git', ...args].join(' ');
     if (dryRun) {
       stdio.printStatus('About to execute command: `$command`');
     } else {
@@ -463,13 +453,16 @@ abstract class Repository {
     String? author,
   }) async {
     final bool hasChanges = (await git.getOutput(
-      <String>['status', '--porcelain'],
-      'check for uncommitted changes',
-      workingDirectory: (await checkoutDirectory).path,
-    )).trim().isNotEmpty;
+          <String>['status', '--porcelain'],
+          'check for uncommitted changes',
+          workingDirectory: (await checkoutDirectory).path,
+        ))
+        .trim()
+        .isNotEmpty;
     if (!hasChanges) {
       throw ConductorException(
-          'Tried to commit with message $message but no changes were present');
+        'Tried to commit with message $message but no changes were present',
+      );
     }
     if (addFirst) {
       await git.run(
@@ -487,22 +480,16 @@ abstract class Repository {
       }
       // verify [author] matches git author convention, e.g. "Jane Doe <jane.doe@email.com>"
       if (!RegExp(r'.+<.*>').hasMatch(author)) {
-        throw FormatException(
-          'Commit author appears malformed: "$author"',
-        );
+        throw FormatException('Commit author appears malformed: "$author"');
       }
       authorArg = '--author="$author"';
     }
-    await git.run(
-      <String>[
-        'commit',
-        '--message',
-        message,
-        if (authorArg != null) authorArg,
-      ],
-      'commit changes',
-      workingDirectory: (await checkoutDirectory).path,
-    );
+    await git.run(<String>[
+      'commit',
+      '--message',
+      message,
+      if (authorArg != null) authorArg,
+    ], 'commit changes', workingDirectory: (await checkoutDirectory).path);
     return reverseParse('HEAD');
   }
 
@@ -541,23 +528,25 @@ class FrameworkRepository extends Repository {
     this.checkouts, {
     super.name = 'framework',
     super.upstreamRemote = const Remote(
-        name: RemoteName.upstream, url: FrameworkRepository.defaultUpstream),
+      name: RemoteName.upstream,
+      url: FrameworkRepository.defaultUpstream,
+    ),
     super.localUpstream,
     super.previousCheckoutLocation,
     String super.initialRef = FrameworkRepository.defaultBranch,
     super.mirrorRemote,
     List<String>? additionalRequiredLocalBranches,
   }) : super(
-          fileSystem: checkouts.fileSystem,
-          parentDirectory: checkouts.directory,
-          platform: checkouts.platform,
-          processManager: checkouts.processManager,
-          stdio: checkouts.stdio,
-          requiredLocalBranches: <String>[
-            ...?additionalRequiredLocalBranches,
-            ...kReleaseChannels,
-          ],
-        );
+         fileSystem: checkouts.fileSystem,
+         parentDirectory: checkouts.directory,
+         platform: checkouts.platform,
+         processManager: checkouts.processManager,
+         stdio: checkouts.stdio,
+         requiredLocalBranches: <String>[
+           ...?additionalRequiredLocalBranches,
+           ...kReleaseChannels,
+         ],
+       );
 
   /// A [FrameworkRepository] with the host conductor's repo set as upstream.
   ///
@@ -573,10 +562,8 @@ class FrameworkRepository extends Repository {
     return FrameworkRepository(
       checkouts,
       name: name,
-      upstreamRemote: Remote(
-        name: RemoteName.upstream,
-        url: 'file://$upstreamPath/',
-      ),
+      upstreamRemote:
+          Remote(name: RemoteName.upstream, url: 'file://$upstreamPath/'),
       previousCheckoutLocation: previousCheckoutLocation,
       initialRef: initialRef,
     );
@@ -587,11 +574,7 @@ class FrameworkRepository extends Repository {
   static const String defaultBranch = 'master';
 
   Future<String> get cacheDirectory async {
-    return fileSystem.path.join(
-      (await checkoutDirectory).path,
-      'bin',
-      'cache',
-    );
+    return fileSystem.path.join((await checkoutDirectory).path, 'bin', 'cache');
   }
 
   @override
@@ -602,8 +585,9 @@ class FrameworkRepository extends Repository {
       checkouts,
       name: cloneName,
       upstreamRemote: Remote(
-          name: RemoteName.upstream,
-          url: 'file://${(await checkoutDirectory).path}/'),
+        name: RemoteName.upstream,
+        url: 'file://${(await checkoutDirectory).path}/',
+      ),
     );
   }
 
@@ -645,13 +629,11 @@ class FrameworkRepository extends Repository {
       fileSystem.path.join((await checkoutDirectory).path, 'bin', 'flutter'),
       ...args,
     ]);
-    process
-        .stdout
+    process.stdout
         .transform(utf8.decoder)
         .transform(const LineSplitter())
         .listen(stdoutCallback ?? stdio.printTrace);
-    process
-        .stderr
+    process.stderr
         .transform(utf8.decoder)
         .transform(const LineSplitter())
         .listen(stderrCallback ?? stdio.printError);
@@ -676,9 +658,8 @@ class FrameworkRepository extends Repository {
     // Check version
     final io.ProcessResult result =
         await runFlutter(<String>['--version', '--machine']);
-    final Map<String, dynamic> versionJson = jsonDecode(
-      stdoutToString(result.stdout),
-    ) as Map<String, dynamic>;
+    final Map<String, dynamic> versionJson =
+        jsonDecode(stdoutToString(result.stdout)) as Map<String, dynamic>;
     return Version.fromString(versionJson['frameworkVersion'] as String);
   }
 
@@ -755,14 +736,12 @@ class HostFrameworkRepository extends FrameworkRepository {
     String name = 'host-framework',
     required String upstreamPath,
   }) : super(
-          checkouts,
-          name: name,
-          upstreamRemote: Remote(
-            name: RemoteName.upstream,
-            url: 'file://$upstreamPath/',
-          ),
-          localUpstream: false,
-        ) {
+         checkouts,
+         name: name,
+         upstreamRemote:
+             Remote(name: RemoteName.upstream, url: 'file://$upstreamPath/'),
+         localUpstream: false,
+       ) {
     _checkoutDirectory = checkouts.fileSystem.directory(upstreamPath);
   }
 
@@ -772,13 +751,15 @@ class HostFrameworkRepository extends FrameworkRepository {
   @override
   Future<void> newBranch(String branchName) async {
     throw ConductorException(
-        'newBranch not implemented for the host repository');
+      'newBranch not implemented for the host repository',
+    );
   }
 
   @override
   Future<void> checkout(String ref) async {
     throw ConductorException(
-        'checkout not implemented for the host repository');
+      'checkout not implemented for the host repository',
+    );
   }
 
   @override
@@ -799,7 +780,8 @@ class HostFrameworkRepository extends FrameworkRepository {
     bool dryRun = false,
   }) {
     throw ConductorException(
-        'updateChannel not implemented for the host repository');
+      'updateChannel not implemented for the host repository',
+    );
   }
 
   @override
@@ -816,19 +798,22 @@ class EngineRepository extends Repository {
     super.name = 'engine',
     String super.initialRef = EngineRepository.defaultBranch,
     super.upstreamRemote = const Remote(
-        name: RemoteName.upstream, url: EngineRepository.defaultUpstream),
+      name: RemoteName.upstream,
+      url: EngineRepository.defaultUpstream,
+    ),
     super.localUpstream,
     super.previousCheckoutLocation,
     super.mirrorRemote,
     List<String>? additionalRequiredLocalBranches,
   }) : super(
-          fileSystem: checkouts.fileSystem,
-          parentDirectory: checkouts.directory,
-          platform: checkouts.platform,
-          processManager: checkouts.processManager,
-          stdio: checkouts.stdio,
-          requiredLocalBranches: additionalRequiredLocalBranches ?? const <String>[],
-        );
+         fileSystem: checkouts.fileSystem,
+         parentDirectory: checkouts.directory,
+         platform: checkouts.platform,
+         processManager: checkouts.processManager,
+         stdio: checkouts.stdio,
+         requiredLocalBranches:
+             additionalRequiredLocalBranches ?? const <String>[],
+       );
 
   final Checkouts checkouts;
 
@@ -844,13 +829,15 @@ class EngineRepository extends Repository {
     depsFile ??= (await checkoutDirectory).childFile('DEPS');
     final String fileContent = depsFile.readAsStringSync();
     final RegExp dartPattern = RegExp("[ ]+'dart_revision': '([a-z0-9]{40})',");
-    final Iterable<RegExpMatch> allMatches =
-        dartPattern.allMatches(fileContent);
+    final Iterable<RegExpMatch> allMatches = dartPattern.allMatches(
+      fileContent,
+    );
     if (allMatches.length != 1) {
       throw ConductorException(
-          'Unexpected content in the DEPS file at ${depsFile.path}\n'
-          'Expected to find pattern ${dartPattern.pattern} 1 times, but got '
-          '${allMatches.length}.');
+        'Unexpected content in the DEPS file at ${depsFile.path}\n'
+        'Expected to find pattern ${dartPattern.pattern} 1 times, but got '
+        '${allMatches.length}.',
+      );
     }
     final String updatedFileContent = fileContent.replaceFirst(
       dartPattern,
@@ -868,17 +855,15 @@ class EngineRepository extends Repository {
       checkouts,
       name: cloneName,
       upstreamRemote: Remote(
-          name: RemoteName.upstream,
-          url: 'file://${(await checkoutDirectory).path}/'),
+        name: RemoteName.upstream,
+        url: 'file://${(await checkoutDirectory).path}/',
+      ),
     );
   }
 }
 
 /// An enum of all the repositories that the Conductor supports.
-enum RepositoryType {
-  framework,
-  engine,
-}
+enum RepositoryType { framework, engine }
 
 class Checkouts {
   Checkouts({

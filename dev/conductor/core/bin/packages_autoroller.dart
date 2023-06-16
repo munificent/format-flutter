@@ -143,6 +143,7 @@ Directory get _localFlutterRoot {
 }
 
 @visibleForTesting
-void validateTokenFile(String filePath, [FileSystem fs = const LocalFileSystem()]) {
-
-}
+void validateTokenFile(
+  String filePath, [
+  FileSystem fs = const LocalFileSystem(),
+]) {}

@@ -11,19 +11,27 @@ class DrawerTemplate extends TokenTemplate {
   String generate() => '''
 class _${blockName}DefaultsM3 extends DrawerThemeData {
   _${blockName}DefaultsM3(this.context)
-      : super(elevation: ${elevation("md.comp.navigation-drawer.modal.container")});
+      : super(elevation: ${elevation(
+        "md.comp.navigation-drawer.modal.container",
+      )});
 
   final BuildContext context;
   late final TextDirection direction = Directionality.of(context);
 
   @override
-  Color? get backgroundColor => ${componentColor("md.comp.navigation-drawer.container")};
+  Color? get backgroundColor => ${componentColor(
+        "md.comp.navigation-drawer.container",
+      )};
 
   @override
-  Color? get surfaceTintColor => ${colorOrTransparent("md.comp.navigation-drawer.container.surface-tint-layer.color")};
+  Color? get surfaceTintColor => ${colorOrTransparent(
+        "md.comp.navigation-drawer.container.surface-tint-layer.color",
+      )};
 
   @override
-  Color? get shadowColor => ${colorOrTransparent("md.comp.navigation-drawer.container.shadow-color")};
+  Color? get shadowColor => ${colorOrTransparent(
+        "md.comp.navigation-drawer.container.shadow-color",
+      )};
 
   // There isn't currently a token for this value, but it is shown in the spec,
   // so hard coding here for now.

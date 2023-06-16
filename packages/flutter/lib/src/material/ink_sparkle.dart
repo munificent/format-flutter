@@ -112,14 +112,19 @@ class InkSparkle extends InteractiveInkFeature {
        _position = position,
        _borderRadius = borderRadius ?? BorderRadius.zero,
        _textDirection = textDirection,
-       _targetRadius = (radius ?? _getTargetRadius(
-                                    referenceBox,
-                                    containedInkWell,
-                                    rectCallback,
-                                    position,
-                                  )
-                       ) * _targetRadiusMultiplier,
-       _clipCallback = _getClipCallback(referenceBox, containedInkWell, rectCallback) {
+       _targetRadius = (radius ??
+               _getTargetRadius(
+                 referenceBox,
+                 containedInkWell,
+                 rectCallback,
+                 position,
+               )) *
+           _targetRadiusMultiplier,
+       _clipCallback = _getClipCallback(
+         referenceBox,
+         containedInkWell,
+         rectCallback,
+       ) {
     // InkSparkle will not be painted until the async compilation completes.
     _InkSparkleFactory.initializeShader();
     controller.addInkFeature(this);
@@ -128,76 +133,61 @@ class InkSparkle extends InteractiveInkFeature {
     _animationController = AnimationController(
       duration: _animationDuration,
       vsync: controller.vsync,
-    )..addListener(controller.markNeedsPaint)
-     ..addStatusListener(_handleStatusChanged)
-     ..forward();
+    )
+      ..addListener(controller.markNeedsPaint)
+      ..addStatusListener(_handleStatusChanged)
+      ..forward();
 
-    _radiusScale = TweenSequence<double>(
-      <TweenSequenceItem<double>>[
-        TweenSequenceItem<double>(
-          tween: CurveTween(curve: Curves.fastOutSlowIn),
-          weight: 75,
-        ),
-        TweenSequenceItem<double>(
-          tween: ConstantTween<double>(1.0),
-          weight: 25,
-        ),
-      ],
-    ).animate(_animationController);
+    _radiusScale = TweenSequence<double>(<TweenSequenceItem<double>>[
+      TweenSequenceItem<double>(
+        tween: CurveTween(curve: Curves.fastOutSlowIn),
+        weight: 75,
+      ),
+      TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 25),
+    ]).animate(_animationController);
 
     // Functionally equivalent to Android 12's SkSL:
     //`return mix(u_touch, u_resolution, saturate(in_radius_scale * 2.0))`
     final Tween<Vector2> centerTween = Tween<Vector2>(
       begin: Vector2.array(<double>[_position.dx, _position.dy]),
-      end: Vector2.array(<double>[referenceBox.size.width / 2, referenceBox.size.height / 2]),
+      end: Vector2.array(<double>[
+        referenceBox.size.width / 2,
+        referenceBox.size.height / 2,
+      ]),
     );
-    final Animation<double> centerProgress = TweenSequence<double>(
-      <TweenSequenceItem<double>>[
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 0.0, end: 1.0),
-          weight: 50,
-        ),
-        TweenSequenceItem<double>(
-          tween: ConstantTween<double>(1.0),
-          weight: 50,
-        ),
-      ],
-    ).animate(_radiusScale);
+    final Animation<double>
+    centerProgress = TweenSequence<double>(<TweenSequenceItem<double>>[
+      TweenSequenceItem<double>(
+        tween: Tween<double>(begin: 0.0, end: 1.0),
+        weight: 50,
+      ),
+      TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 50),
+    ]).animate(_radiusScale);
     _center = centerTween.animate(centerProgress);
 
-    _alpha = TweenSequence<double>(
-      <TweenSequenceItem<double>>[
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 0.0, end: 1.0),
-          weight: 13,
-        ),
-        TweenSequenceItem<double>(
-          tween: ConstantTween<double>(1.0),
-          weight: 27,
-        ),
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 1.0, end: 0.0),
-          weight: 60,
-        ),
-      ],
-    ).animate(_animationController);
+    _alpha = TweenSequence<double>(<TweenSequenceItem<double>>[
+      TweenSequenceItem<double>(
+        tween: Tween<double>(begin: 0.0, end: 1.0),
+        weight: 13,
+      ),
+      TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 27),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(begin: 1.0, end: 0.0),
+        weight: 60,
+      ),
+    ]).animate(_animationController);
 
-    _sparkleAlpha = TweenSequence<double>(
-      <TweenSequenceItem<double>>[
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 0.0, end: 1.0),
-          weight: 13,
-        ),
-        TweenSequenceItem<double>(
-          tween: ConstantTween<double>(1.0),
-          weight: 27,
-        ),
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 1.0, end: 0.0),
-          weight: 50,
-        ),
-      ],
-    ).animate(_animationController);
+    _sparkleAlpha = TweenSequence<double>(<TweenSequenceItem<double>>[
+      TweenSequenceItem<double>(
+        tween: Tween<double>(begin: 0.0, end: 1.0),
+        weight: 13,
+      ),
+      TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 27),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(begin: 1.0, end: 0.0),
+        weight: 50,
+      ),
+    ]).animate(_animationController);
 
     // Creates an element of randomness so that ink emanating from the same
     // pixel have slightly different rings and sparkles.
@@ -244,14 +234,17 @@ class InkSparkle extends InteractiveInkFeature {
   ///
   /// Since no [turbulenceSeed] is passed, the effect will be random for
   /// subsequent presses in the same position.
-  static const InteractiveInkFeatureFactory splashFactory = _InkSparkleFactory();
+  static const InteractiveInkFeatureFactory splashFactory =
+      _InkSparkleFactory();
 
   /// Used to specify this type of ink splash for an [InkWell], [InkResponse],
   /// material [Theme], or [ButtonStyle].
   ///
   /// Since a [turbulenceSeed] is passed, the effect will not be random for
   /// subsequent presses in the same position. This can be used for testing.
-  static const InteractiveInkFeatureFactory constantTurbulenceSeedSplashFactory = _InkSparkleFactory.constantTurbulenceSeed();
+  static const InteractiveInkFeatureFactory
+  constantTurbulenceSeedSplashFactory =
+      _InkSparkleFactory.constantTurbulenceSeed();
 
   @override
   void dispose() {
@@ -306,7 +299,6 @@ class InkSparkle extends InteractiveInkFeature {
   double get _width => referenceBox.size.width;
   double get _height => referenceBox.size.height;
 
-
   /// All double values for uniforms come from the Android 12 ripple
   /// implementation from the following files:
   /// - https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/drawable/RippleShader.java
@@ -353,14 +345,38 @@ class InkSparkle extends InteractiveInkFeature {
       // uNoisePhase
       ..setFloat(19, noisePhase / 1000.0)
       // uCircle1
-      ..setFloat(20, turbulenceScale * 0.5 + (turbulencePhase * 0.01 * math.cos(turbulenceScale * 0.55)))
-      ..setFloat(21, turbulenceScale * 0.5 + (turbulencePhase * 0.01 * math.sin(turbulenceScale * 0.55)))
+      ..setFloat(
+        20,
+        turbulenceScale * 0.5 +
+            (turbulencePhase * 0.01 * math.cos(turbulenceScale * 0.55)),
+      )
+      ..setFloat(
+        21,
+        turbulenceScale * 0.5 +
+            (turbulencePhase * 0.01 * math.sin(turbulenceScale * 0.55)),
+      )
       // uCircle2
-      ..setFloat(22, turbulenceScale * 0.2 + (turbulencePhase * -0.0066 * math.cos(turbulenceScale * 0.45)))
-      ..setFloat(23, turbulenceScale * 0.2 + (turbulencePhase * -0.0066 * math.sin(turbulenceScale * 0.45)))
+      ..setFloat(
+        22,
+        turbulenceScale * 0.2 +
+            (turbulencePhase * -0.0066 * math.cos(turbulenceScale * 0.45)),
+      )
+      ..setFloat(
+        23,
+        turbulenceScale * 0.2 +
+            (turbulencePhase * -0.0066 * math.sin(turbulenceScale * 0.45)),
+      )
       // uCircle3
-      ..setFloat(24, turbulenceScale + (turbulencePhase * -0.0066 * math.cos(turbulenceScale * 0.35)))
-      ..setFloat(25, turbulenceScale + (turbulencePhase * -0.0066 * math.sin(turbulenceScale * 0.35)))
+      ..setFloat(
+        24,
+        turbulenceScale +
+            (turbulencePhase * -0.0066 * math.cos(turbulenceScale * 0.35)),
+      )
+      ..setFloat(
+        25,
+        turbulenceScale +
+            (turbulencePhase * -0.0066 * math.sin(turbulenceScale * 0.35)),
+      )
       // uRotation1
       ..setFloat(26, math.cos(rotation1))
       ..setFloat(27, math.sin(rotation1))
@@ -382,10 +398,7 @@ class InkSparkle extends InteractiveInkFeature {
   /// the ink feature is to be painted.
   ///
   /// For examples on how the function is used, see [InkSparkle] and [paintInkCircle].
-  void _transformCanvas({
-    required Canvas canvas,
-    required Matrix4 transform,
-  }) {
+  void _transformCanvas({required Canvas canvas, required Matrix4 transform}) {
     final Offset? originOffset = MatrixUtils.getAsTranslation(transform);
     if (originOffset == null) {
       canvas.transform(transform.storage);
@@ -419,7 +432,8 @@ class InkSparkle extends InteractiveInkFeature {
     final Rect rect = clipCallback();
     if (customBorder != null) {
       canvas.clipPath(
-          customBorder.getOuterPath(rect, textDirection: textDirection));
+        customBorder.getOuterPath(rect, textDirection: textDirection),
+      );
     } else if (borderRadius != BorderRadius.zero) {
       canvas.clipRRect(RRect.fromRectAndCorners(
         rect,
@@ -507,8 +521,11 @@ double _getTargetRadius(
   RectCallback? rectCallback,
   Offset position,
 ) {
-  final Size size = rectCallback != null ? rectCallback().size : referenceBox.size;
+  final Size size = rectCallback != null
+      ? rectCallback().size
+      : referenceBox.size;
   final double d1 = size.bottomRight(Offset.zero).distance;
-  final double d2 = (size.topRight(Offset.zero) - size.bottomLeft(Offset.zero)).distance;
+  final double d2 =
+      (size.topRight(Offset.zero) - size.bottomLeft(Offset.zero)).distance;
   return math.max(d1, d2) / 2.0;
 }

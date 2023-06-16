@@ -9,7 +9,7 @@ import 'package:flutter/rendering.dart';
 /// Used by [TestRecordingCanvas] to trace canvas calls.
 class RecordedInvocation {
   /// Create a record for an invocation list.
-  const RecordedInvocation(this.invocation, { required this.stack });
+  const RecordedInvocation(this.invocation, {required this.stack});
 
   /// The method that was called and its arguments.
   ///
@@ -27,10 +27,11 @@ class RecordedInvocation {
   String toString() => _describeInvocation(invocation);
 
   /// Converts [stack] to a string using the [FlutterError.defaultStackFilter] logic.
-  String stackToString({ String indent = '' }) {
-    return indent + FlutterError.defaultStackFilter(
-      stack.toString().trimRight().split('\n'),
-    ).join('\n$indent');
+  String stackToString({String indent = ''}) {
+    return indent +
+        FlutterError.defaultStackFilter(
+          stack.toString().trimRight().split('\n'),
+        ).join('\n$indent');
   }
 }
 
@@ -65,20 +66,27 @@ class TestRecordingCanvas implements Canvas {
   @override
   void save() {
     _saveCount += 1;
-    invocations.add(RecordedInvocation(_MethodCall(#save), stack: StackTrace.current));
+    invocations.add(
+      RecordedInvocation(_MethodCall(#save), stack: StackTrace.current),
+    );
   }
 
   @override
   void saveLayer(Rect? bounds, Paint paint) {
     _saveCount += 1;
-    invocations.add(RecordedInvocation(_MethodCall(#saveLayer, <dynamic>[bounds, paint]), stack: StackTrace.current));
+    invocations.add(RecordedInvocation(
+      _MethodCall(#saveLayer, <dynamic>[bounds, paint]),
+      stack: StackTrace.current,
+    ));
   }
 
   @override
   void restore() {
     _saveCount -= 1;
     assert(_saveCount >= 0);
-    invocations.add(RecordedInvocation(_MethodCall(#restore), stack: StackTrace.current));
+    invocations.add(
+      RecordedInvocation(_MethodCall(#restore), stack: StackTrace.current),
+    );
   }
 
   @override
@@ -88,7 +96,8 @@ class TestRecordingCanvas implements Canvas {
 }
 
 /// A [PaintingContext] for tests that use [TestRecordingCanvas].
-class TestRecordingPaintingContext extends ClipContext implements PaintingContext {
+class TestRecordingPaintingContext extends ClipContext
+    implements PaintingContext {
   /// Creates a [PaintingContext] for tests that use [TestRecordingCanvas].
   TestRecordingPaintingContext(this.canvas);
 
@@ -109,7 +118,12 @@ class TestRecordingPaintingContext extends ClipContext implements PaintingContex
     Clip clipBehavior = Clip.hardEdge,
     ClipRectLayer? oldLayer,
   }) {
-    clipRectAndPaint(clipRect.shift(offset), clipBehavior, clipRect.shift(offset), () => painter(this, offset));
+    clipRectAndPaint(
+      clipRect.shift(offset),
+      clipBehavior,
+      clipRect.shift(offset),
+      () => painter(this, offset),
+    );
     return null;
   }
 
@@ -123,7 +137,12 @@ class TestRecordingPaintingContext extends ClipContext implements PaintingContex
     Clip clipBehavior = Clip.antiAlias,
     ClipRRectLayer? oldLayer,
   }) {
-    clipRRectAndPaint(clipRRect.shift(offset), clipBehavior, bounds.shift(offset), () => painter(this, offset));
+    clipRRectAndPaint(
+      clipRRect.shift(offset),
+      clipBehavior,
+      bounds.shift(offset),
+      () => painter(this, offset),
+    );
     return null;
   }
 
@@ -137,7 +156,12 @@ class TestRecordingPaintingContext extends ClipContext implements PaintingContex
     Clip clipBehavior = Clip.antiAlias,
     ClipPathLayer? oldLayer,
   }) {
-    clipPathAndPaint(clipPath.shift(offset), clipBehavior, bounds.shift(offset), () => painter(this, offset));
+    clipPathAndPaint(
+      clipPath.shift(offset),
+      clipBehavior,
+      bounds.shift(offset),
+      () => painter(this, offset),
+    );
     return null;
   }
 
@@ -183,11 +207,11 @@ class TestRecordingPaintingContext extends ClipContext implements PaintingContex
   VoidCallback addCompositionCallback(CompositionCallback callback) => () {};
 
   @override
-  void noSuchMethod(Invocation invocation) { }
+  void noSuchMethod(Invocation invocation) {}
 }
 
 class _MethodCall implements Invocation {
-  _MethodCall(this._name, [ this._arguments = const <dynamic>[]]);
+  _MethodCall(this._name, [this._arguments = const <dynamic>[]]);
   final Symbol _name;
   final List<dynamic> _arguments;
   @override
@@ -205,7 +229,7 @@ class _MethodCall implements Invocation {
   @override
   List<dynamic> get positionalArguments => _arguments;
   @override
-  List<Type> get typeArguments => const <Type> [];
+  List<Type> get typeArguments => const <Type>[];
 }
 
 String _valueName(Object? value) {

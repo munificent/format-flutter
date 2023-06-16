@@ -8,7 +8,8 @@ class AnimationWithMicrotasks extends StatefulWidget {
   const AnimationWithMicrotasks({super.key});
 
   @override
-  State<AnimationWithMicrotasks> createState() => _AnimationWithMicrotasksState();
+  State<AnimationWithMicrotasks> createState() =>
+      _AnimationWithMicrotasksState();
 }
 
 class _AnimationWithMicrotasksState extends State<AnimationWithMicrotasks> {
@@ -31,11 +32,8 @@ class _AnimationWithMicrotasksState extends State<AnimationWithMicrotasks> {
     return const Scaffold(
       backgroundColor: Colors.grey,
       body: Center(
-        child: SizedBox(
-          width: 200,
-          height: 100,
-          child: LinearProgressIndicator(),
-        ),
+        child:
+            SizedBox(width: 200, height: 100, child: LinearProgressIndicator()),
       ),
     );
   }

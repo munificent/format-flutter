@@ -46,11 +46,10 @@ Future<TaskResult> _runWithTempDir(Directory tempDir) async {
   const String testDirName = 'entrypoint_dart_registrant';
   final String testPath = '${tempDir.path}/$testDirName';
   await inDirectory(tempDir, () async {
-    await flutter('create', options: <String>[
-      '--platforms',
-      'android',
-      testDirName,
-    ]);
+    await flutter(
+      'create',
+      options: <String>['--platforms', 'android', testDirName],
+    );
   });
   final String mainPath = '${tempDir.path}/$testDirName/lib/main.dart';
   print(mainPath);
@@ -72,11 +71,11 @@ Future<TaskResult> _runWithTempDir(Directory tempDir) async {
         .transform<String>(const Utf8Decoder())
         .transform<String>(const LineSplitter())
         .listen((String line) async {
-      print(line);
-      if (line.contains(_messagePrefix)) {
-        completer.complete(line);
-      }
-    });
+          print(line);
+          if (line.contains(_messagePrefix)) {
+            completer.complete(line);
+          }
+        });
     final String entrypoint = await completer.future;
     await stdoutSub.cancel();
     process.stdin.write('q');
@@ -87,7 +86,9 @@ Future<TaskResult> _runWithTempDir(Directory tempDir) async {
   if (entrypoint.contains('$_messagePrefix $_entrypointName')) {
     return TaskResult.success(null);
   } else {
-    return TaskResult.failure('expected entrypoint:"$_entrypointName" but found:"$entrypoint"');
+    return TaskResult.failure(
+      'expected entrypoint:"$_entrypointName" but found:"$entrypoint"',
+    );
   }
 }
 
@@ -95,8 +96,9 @@ Future<TaskResult> _runWithTempDir(Directory tempDir) async {
 /// registrant.
 TaskFunction entrypointDartRegistrant() {
   return () async {
-    final Directory tempDir =
-        Directory.systemTemp.createTempSync('entrypoint_dart_registrant.');
+    final Directory tempDir = Directory.systemTemp.createTempSync(
+      'entrypoint_dart_registrant.',
+    );
     try {
       return await _runWithTempDir(tempDir);
     } finally {

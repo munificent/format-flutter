@@ -22,9 +22,7 @@ class AnalyzeOnce extends AnalyzeBase {
     required super.artifacts,
     required super.suppressAnalytics,
     this.workingDirectory,
-  }) : super(
-        repoPackages: repoPackages,
-      );
+  }) : super(repoPackages: repoPackages);
 
   /// The working directory for testing analysis using dartanalyzer.
   final Directory? workingDirectory;
@@ -40,7 +38,8 @@ class AnalyzeOnce extends AnalyzeBase {
       final PackageDependencyTracker dependencies = PackageDependencyTracker();
       dependencies.checkForConflictingDependencies(repoPackages, dependencies);
       items.add(flutterRoot);
-      if (argResults.wasParsed('current-package') && (argResults['current-package'] as bool)) {
+      if (argResults.wasParsed('current-package') &&
+          (argResults['current-package'] as bool)) {
         items.add(currentDirectory);
       }
     } else {
@@ -81,10 +80,14 @@ class AnalyzeOnce extends AnalyzeBase {
         }
       }
 
-      subscription = server.onAnalyzing.listen((bool isAnalyzing) => handleAnalysisStatus(isAnalyzing));
+      subscription = server.onAnalyzing.listen(
+        (bool isAnalyzing) => handleAnalysisStatus(isAnalyzing),
+      );
 
       void handleAnalysisErrors(FileAnalysisErrors fileErrors) {
-        fileErrors.errors.removeWhere((AnalysisError error) => error.type == 'TODO');
+        fileErrors.errors.removeWhere(
+          (AnalysisError error) => error.type == 'TODO',
+        );
 
         errors.addAll(fileErrors.errors);
       }
@@ -98,7 +101,9 @@ class AnalyzeOnce extends AnalyzeBase {
           analysisCompleter.completeError(
             // Include the last 20 lines of server output in exception message
             Exception(
-              'analysis server exited with code $exitCode and output:\n${server.getLogs(20)}',
+              'analysis server exited with code $exitCode and output:\n${server.getLogs(
+                20,
+              )}',
             ),
           );
         }
@@ -110,9 +115,7 @@ class AnalyzeOnce extends AnalyzeBase {
           ? '${items.length} ${items.length == 1 ? 'item' : 'items'}'
           : fileSystem.path.basename(items.first);
       progress = argResults['preamble'] == true
-          ? logger.startProgress(
-            'Analyzing $message...',
-          )
+          ? logger.startProgress('Analyzing $message...')
           : null;
 
       await analysisCompleter.future;
@@ -128,7 +131,9 @@ class AnalyzeOnce extends AnalyzeBase {
     }
 
     // --write
-    dumpErrors(errors.map<String>((AnalysisError error) => error.toLegacyString()));
+    dumpErrors(
+      errors.map<String>((AnalysisError error) => error.toLegacyString()),
+    );
 
     // report errors
     if (errors.isNotEmpty && (argResults['preamble'] as bool)) {
@@ -140,7 +145,9 @@ class AnalyzeOnce extends AnalyzeBase {
     }
 
     final int errorCount = errors.length;
-    final String seconds = (timer.elapsedMilliseconds / 1000.0).toStringAsFixed(1);
+    final String seconds = (timer.elapsedMilliseconds / 1000.0).toStringAsFixed(
+      1,
+    );
     final String errorsMessage = AnalyzeBase.generateErrorsMessage(
       issueCount: errorCount,
       seconds: seconds,
@@ -166,10 +173,12 @@ class AnalyzeOnce extends AnalyzeBase {
       if (severityLevel == AnalysisSeverity.error) {
         return true;
       }
-      if (severityLevel == AnalysisSeverity.warning && argResults['fatal-warnings'] as bool) {
+      if (severityLevel == AnalysisSeverity.warning &&
+          argResults['fatal-warnings'] as bool) {
         return true;
       }
-      if (severityLevel == AnalysisSeverity.info && argResults['fatal-infos'] as bool) {
+      if (severityLevel == AnalysisSeverity.info &&
+          argResults['fatal-infos'] as bool) {
         return true;
       }
     }

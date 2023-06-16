@@ -13,7 +13,8 @@ import 'package:file/local.dart';
 import 'package:platform/platform.dart';
 import 'package:process/process.dart';
 
-const String readmeUrl = 'https://github.com/flutter/flutter/tree/master/dev/conductor/README.md';
+const String readmeUrl =
+    'https://github.com/flutter/flutter/tree/master/dev/conductor/README.md';
 
 Future<void> main(List<String> args) async {
   const FileSystem fileSystem = LocalFileSystem();
@@ -35,38 +36,24 @@ Future<void> main(List<String> args) async {
   final CommandRunner<void> runner = CommandRunner<void>(
     'conductor',
     'A tool for coordinating Flutter releases. For more documentation on '
-    'usage, please see $readmeUrl.',
+        'usage, please see $readmeUrl.',
     usageLineLength: 80,
   );
 
   final String conductorVersion = (await const Git(processManager).getOutput(
-    <String>['rev-parse'],
-    'Get the revision of the current Flutter SDK',
-    workingDirectory: _localFlutterRoot.path,
-  )).trim();
+        <String>['rev-parse'],
+        'Get the revision of the current Flutter SDK',
+        workingDirectory: _localFlutterRoot.path,
+      ))
+      .trim();
 
   <Command<void>>[
-    CodesignCommand(
-      checkouts: checkouts,
-      flutterRoot: _localFlutterRoot,
-    ),
-    StatusCommand(
-      checkouts: checkouts,
-    ),
-    StartCommand(
-      checkouts: checkouts,
-      conductorVersion: conductorVersion,
-    ),
-    CleanCommand(
-      checkouts: checkouts,
-    ),
-    CandidatesCommand(
-      checkouts: checkouts,
-      flutterRoot: _localFlutterRoot,
-    ),
-    NextCommand(
-      checkouts: checkouts,
-    ),
+    CodesignCommand(checkouts: checkouts, flutterRoot: _localFlutterRoot),
+    StatusCommand(checkouts: checkouts),
+    StartCommand(checkouts: checkouts, conductorVersion: conductorVersion),
+    CleanCommand(checkouts: checkouts),
+    CandidatesCommand(checkouts: checkouts, flutterRoot: _localFlutterRoot),
+    NextCommand(checkouts: checkouts),
   ].forEach(runner.addCommand);
 
   if (!assertsEnabled()) {

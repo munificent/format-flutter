@@ -6,10 +6,7 @@ import 'template.dart';
 
 class AppBarTemplate extends TokenTemplate {
   const AppBarTemplate(super.blockName, super.fileName, super.tokens)
-    : super(
-      colorSchemePrefix: '_colors.',
-      textThemePrefix: '_textTheme.',
-    );
+    : super(colorSchemePrefix: '_colors.', textThemePrefix: '_textTheme.');
 
   @override
   String generate() => '''
@@ -17,7 +14,9 @@ class _${blockName}DefaultsM3 extends AppBarTheme {
   _${blockName}DefaultsM3(this.context)
     : super(
       elevation: ${elevation('md.comp.top-app-bar.small.container')},
-      scrolledUnderElevation: ${elevation('md.comp.top-app-bar.small.on-scroll.container')},
+      scrolledUnderElevation: ${elevation(
+        'md.comp.top-app-bar.small.on-scroll.container',
+      )},
       titleSpacing: NavigationToolbar.kMiddleSpacing,
       toolbarHeight: ${getToken('md.comp.top-app-bar.small.container.height')},
     );
@@ -28,16 +27,24 @@ class _${blockName}DefaultsM3 extends AppBarTheme {
   late final TextTheme _textTheme = _theme.textTheme;
 
   @override
-  Color? get backgroundColor => ${componentColor('md.comp.top-app-bar.small.container')};
+  Color? get backgroundColor => ${componentColor(
+        'md.comp.top-app-bar.small.container',
+      )};
 
   @override
-  Color? get foregroundColor => ${color('md.comp.top-app-bar.small.headline.color')};
+  Color? get foregroundColor => ${color(
+        'md.comp.top-app-bar.small.headline.color',
+      )};
 
   @override
-  Color? get shadowColor => ${colorOrTransparent('md.comp.top-app-bar.small.container.shadow-color')};
+  Color? get shadowColor => ${colorOrTransparent(
+        'md.comp.top-app-bar.small.container.shadow-color',
+      )};
 
   @override
-  Color? get surfaceTintColor => ${colorOrTransparent('md.comp.top-app-bar.small.container.surface-tint-layer.color')};
+  Color? get surfaceTintColor => ${colorOrTransparent(
+        'md.comp.top-app-bar.small.container.surface-tint-layer.color',
+      )};
 
   @override
   IconThemeData? get iconTheme => IconThemeData(
@@ -55,7 +62,9 @@ class _${blockName}DefaultsM3 extends AppBarTheme {
   TextStyle? get toolbarTextStyle => _textTheme.bodyMedium;
 
   @override
-  TextStyle? get titleTextStyle => ${textStyle('md.comp.top-app-bar.small.headline')};
+  TextStyle? get titleTextStyle => ${textStyle(
+        'md.comp.top-app-bar.small.headline',
+      )};
 }
 
 // Variant configuration
@@ -67,16 +76,24 @@ class _MediumScrollUnderFlexibleConfig with _ScrollUnderFlexibleConfig {
   late final ColorScheme _colors = _theme.colorScheme;
   late final TextTheme _textTheme = _theme.textTheme;
 
-  static const double collapsedHeight = ${getToken('md.comp.top-app-bar.small.container.height')};
-  static const double expandedHeight = ${getToken('md.comp.top-app-bar.medium.container.height')};
+  static const double collapsedHeight = ${getToken(
+        'md.comp.top-app-bar.small.container.height',
+      )};
+  static const double expandedHeight = ${getToken(
+        'md.comp.top-app-bar.medium.container.height',
+      )};
 
   @override
   TextStyle? get collapsedTextStyle =>
-    ${textStyle('md.comp.top-app-bar.small.headline')}?.apply(color: ${color('md.comp.top-app-bar.small.headline.color')});
+    ${textStyle('md.comp.top-app-bar.small.headline')}?.apply(color: ${color(
+        'md.comp.top-app-bar.small.headline.color',
+      )});
 
   @override
   TextStyle? get expandedTextStyle =>
-    ${textStyle('md.comp.top-app-bar.medium.headline')}?.apply(color: ${color('md.comp.top-app-bar.medium.headline.color')});
+    ${textStyle('md.comp.top-app-bar.medium.headline')}?.apply(color: ${color(
+        'md.comp.top-app-bar.medium.headline.color',
+      )});
 
   @override
   EdgeInsetsGeometry get expandedTitlePadding => const EdgeInsets.fromLTRB(16, 0, 16, 20);
@@ -90,16 +107,24 @@ class _LargeScrollUnderFlexibleConfig with _ScrollUnderFlexibleConfig {
   late final ColorScheme _colors = _theme.colorScheme;
   late final TextTheme _textTheme = _theme.textTheme;
 
-  static const double collapsedHeight = ${getToken('md.comp.top-app-bar.small.container.height')};
-  static const double expandedHeight = ${getToken('md.comp.top-app-bar.large.container.height')};
+  static const double collapsedHeight = ${getToken(
+        'md.comp.top-app-bar.small.container.height',
+      )};
+  static const double expandedHeight = ${getToken(
+        'md.comp.top-app-bar.large.container.height',
+      )};
 
   @override
   TextStyle? get collapsedTextStyle =>
-    ${textStyle('md.comp.top-app-bar.small.headline')}?.apply(color: ${color('md.comp.top-app-bar.small.headline.color')});
+    ${textStyle('md.comp.top-app-bar.small.headline')}?.apply(color: ${color(
+        'md.comp.top-app-bar.small.headline.color',
+      )});
 
   @override
   TextStyle? get expandedTextStyle =>
-    ${textStyle('md.comp.top-app-bar.large.headline')}?.apply(color: ${color('md.comp.top-app-bar.large.headline.color')});
+    ${textStyle('md.comp.top-app-bar.large.headline')}?.apply(color: ${color(
+        'md.comp.top-app-bar.large.headline.color',
+      )});
 
   @override
   EdgeInsetsGeometry get expandedTitlePadding => const EdgeInsets.fromLTRB(16, 0, 16, 28);

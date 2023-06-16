@@ -11,15 +11,16 @@ import 'package:flutter_devicelab/framework/utils.dart';
 import 'package:path/path.dart' as path;
 
 final String gradlew = Platform.isWindows ? 'gradlew.bat' : 'gradlew';
-final String gradlewExecutable = Platform.isWindows ? '.\\$gradlew' : './$gradlew';
+final String gradlewExecutable = Platform.isWindows
+    ? '.\\$gradlew'
+    : './$gradlew';
 final String fileReadWriteMode = Platform.isWindows ? 'rw-rw-rw-' : 'rw-r--r--';
-final String platformLineSep = Platform.isWindows ? '\r\n': '\n';
+final String platformLineSep = Platform.isWindows ? '\r\n' : '\n';
 
 /// Tests that the Flutter module project template works and supports
 /// adding Flutter to an existing Android app.
 Future<void> main() async {
   await task(() async {
-
     section('Find Java');
 
     final String? javaHome = await findJavaHome();
@@ -30,34 +31,35 @@ Future<void> main() async {
 
     section('Create Flutter module project');
 
-    final Directory tempDir = Directory.systemTemp.createTempSync('flutter_module_test.');
+    final Directory tempDir = Directory.systemTemp.createTempSync(
+      'flutter_module_test.',
+    );
     final Directory projectDir = Directory(path.join(tempDir.path, 'hello'));
     try {
       await inDirectory(tempDir, () async {
         await flutter(
           'create',
-          options: <String>['--org', 'io.flutter.devicelab', '--template=module', 'hello'],
+          options: <String>[
+            '--org',
+            'io.flutter.devicelab',
+            '--template=module',
+            'hello',
+          ],
         );
       });
 
       section('Add read-only asset');
 
-      final File readonlyTxtAssetFile = await File(path.join(
-        projectDir.path,
-        'assets',
-        'read-only.txt'
-      ))
-      .create(recursive: true);
+      final File readonlyTxtAssetFile = await File(
+        path.join(projectDir.path, 'assets', 'read-only.txt'),
+      ).create(recursive: true);
 
       if (!exists(readonlyTxtAssetFile)) {
         return TaskResult.failure('Failed to create read-only asset');
       }
 
       if (!Platform.isWindows) {
-        await exec('chmod', <String>[
-          '444',
-          readonlyTxtAssetFile.path,
-        ]);
+        await exec('chmod', <String>['444', readonlyTxtAssetFile.path]);
       }
 
       final File pubspec = File(path.join(projectDir.path, 'pubspec.yaml'));
@@ -77,21 +79,21 @@ Future<void> main() async {
       );
       await pubspec.writeAsString(content, flush: true);
       await inDirectory(projectDir, () async {
-        await flutter(
-          'packages',
-          options: <String>['get'],
-        );
+        await flutter('packages', options: <String>['get']);
       });
 
       section('Build Flutter module library archive');
 
-      await inDirectory(Directory(path.join(projectDir.path, '.android')), () async {
-        await exec(
-          gradlewExecutable,
-          <String>['flutter:assembleDebug'],
-          environment: <String, String>{ 'JAVA_HOME': javaHome },
-        );
-      });
+      await inDirectory(
+        Directory(path.join(projectDir.path, '.android')),
+        () async {
+          await exec(
+            gradlewExecutable,
+            <String>['flutter:assembleDebug'],
+            environment: <String, String>{'JAVA_HOME': javaHome},
+          );
+        },
+      );
 
       final bool aarBuilt = exists(File(path.join(
         projectDir.path,
@@ -110,10 +112,7 @@ Future<void> main() async {
       section('Build ephemeral host app');
 
       await inDirectory(projectDir, () async {
-        await flutter(
-          'build',
-          options: <String>['apk'],
-        );
+        await flutter('build', options: <String>['apk']);
       });
 
       final bool ephemeralHostApkBuilt = exists(File(path.join(
@@ -139,19 +138,13 @@ Future<void> main() async {
       section('Make Android host app editable');
 
       await inDirectory(projectDir, () async {
-        await flutter(
-          'make-host-app-editable',
-          options: <String>['android'],
-        );
+        await flutter('make-host-app-editable', options: <String>['android']);
       });
 
       section('Build editable host app');
 
       await inDirectory(projectDir, () async {
-        await flutter(
-          'build',
-          options: <String>['apk'],
-        );
+        await flutter('build', options: <String>['apk']);
       });
 
       final bool editableHostApkBuilt = exists(File(path.join(
@@ -170,29 +163,31 @@ Future<void> main() async {
 
       section('Add to existing Android app');
 
-      final Directory hostApp = Directory(path.join(tempDir.path, 'hello_host_app'));
+      final Directory hostApp = Directory(
+        path.join(tempDir.path, 'hello_host_app'),
+      );
       mkdir(hostApp);
-      recursiveCopy(
-        Directory(
-          path.join(
-            flutterDirectory.path,
-            'dev',
-            'integration_tests',
-            'android_custom_host_app',
-          ),
-        ),
-        hostApp,
-      );
+      recursiveCopy(Directory(path.join(
+        flutterDirectory.path,
+        'dev',
+        'integration_tests',
+        'android_custom_host_app',
+      )), hostApp);
+      copy(File(path.join(projectDir.path, '.android', gradlew)), hostApp);
       copy(
-        File(path.join(projectDir.path, '.android', gradlew)),
-        hostApp,
-      );
-      copy(
-        File(path.join(projectDir.path, '.android', 'gradle', 'wrapper', 'gradle-wrapper.jar')),
+        File(path.join(
+          projectDir.path,
+          '.android',
+          'gradle',
+          'wrapper',
+          'gradle-wrapper.jar',
+        )),
         Directory(path.join(hostApp.path, 'gradle', 'wrapper')),
       );
 
-      final File analyticsOutputFile = File(path.join(tempDir.path, 'analytics.log'));
+      final File analyticsOutputFile = File(
+        path.join(tempDir.path, 'analytics.log'),
+      );
 
       section('Build debug host APK');
 
@@ -200,7 +195,8 @@ Future<void> main() async {
         if (!Platform.isWindows) {
           await exec('chmod', <String>['+x', 'gradlew']);
         }
-        await exec(gradlewExecutable,
+        await exec(
+          gradlewExecutable,
           <String>['SampleApp:assembleDebug'],
           environment: <String, String>{
             'JAVA_HOME': javaHome,
@@ -234,27 +230,31 @@ Future<void> main() async {
 
       section('Check debug AndroidManifest.xml');
 
-      final String androidManifestDebug = await getAndroidManifest(debugHostApk);
+      final String androidManifestDebug =
+          await getAndroidManifest(debugHostApk);
       if (!androidManifestDebug.contains('''
         <meta-data
             android:name="flutterProjectType"
-            android:value="module" />''')
-      ) {
-        return TaskResult.failure("Debug host APK doesn't contain metadata: flutterProjectType = module ");
-      }
-
-      final String analyticsOutput = analyticsOutputFile.readAsStringSync();
-      if (!analyticsOutput.contains('cd24: android')
-          || !analyticsOutput.contains('cd25: true')
-          || !analyticsOutput.contains('viewName: assemble')) {
+            android:value="module" />''')) {
         return TaskResult.failure(
-          'Building outer app produced the following analytics: "$analyticsOutput" '
-          'but not the expected strings: "cd24: android", "cd25: true" and '
-          '"viewName: assemble"'
+          "Debug host APK doesn't contain metadata: flutterProjectType = module ",
         );
       }
 
-      section('Check file access modes for read-only asset from Flutter module');
+      final String analyticsOutput = analyticsOutputFile.readAsStringSync();
+      if (!analyticsOutput.contains('cd24: android') ||
+          !analyticsOutput.contains('cd25: true') ||
+          !analyticsOutput.contains('viewName: assemble')) {
+        return TaskResult.failure(
+          'Building outer app produced the following analytics: "$analyticsOutput" '
+          'but not the expected strings: "cd24: android", "cd25: true" and '
+          '"viewName: assemble"',
+        );
+      }
+
+      section(
+        'Check file access modes for read-only asset from Flutter module',
+      );
 
       final String readonlyDebugAssetFilePath = path.joinAll(<String>[
         hostApp.path,
@@ -276,13 +276,16 @@ Future<void> main() async {
       String modes = readonlyDebugAssetFile.statSync().modeString();
       print('\nread-only.txt file access modes = $modes');
       if (modes.compareTo(fileReadWriteMode) != 0) {
-        return TaskResult.failure('Failed to make assets user-readable and writable');
+        return TaskResult.failure(
+          'Failed to make assets user-readable and writable',
+        );
       }
 
       section('Build release host APK');
 
       await inDirectory(hostApp, () async {
-        await exec(gradlewExecutable,
+        await exec(
+          gradlewExecutable,
           <String>['SampleApp:assembleRelease'],
           environment: <String, String>{
             'JAVA_HOME': javaHome,
@@ -317,16 +320,20 @@ Future<void> main() async {
 
       section('Check release AndroidManifest.xml');
 
-      final String androidManifestRelease = await getAndroidManifest(debugHostApk);
+      final String androidManifestRelease =
+          await getAndroidManifest(debugHostApk);
       if (!androidManifestRelease.contains('''
         <meta-data
             android:name="flutterProjectType"
-            android:value="module" />''')
-      ) {
-        return TaskResult.failure("Release host APK doesn't contain metadata: flutterProjectType = module ");
+            android:value="module" />''')) {
+        return TaskResult.failure(
+          "Release host APK doesn't contain metadata: flutterProjectType = module ",
+        );
       }
 
-      section('Check file access modes for read-only asset from Flutter module');
+      section(
+        'Check file access modes for read-only asset from Flutter module',
+      );
 
       final String readonlyReleaseAssetFilePath = path.joinAll(<String>[
         hostApp.path,
@@ -348,7 +355,9 @@ Future<void> main() async {
       modes = readonlyReleaseAssetFile.statSync().modeString();
       print('\nread-only.txt file access modes = $modes');
       if (modes.compareTo(fileReadWriteMode) != 0) {
-        return TaskResult.failure('Failed to make assets user-readable and writable');
+        return TaskResult.failure(
+          'Failed to make assets user-readable and writable',
+        );
       }
 
       return TaskResult.success(null);

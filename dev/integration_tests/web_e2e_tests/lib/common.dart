@@ -7,7 +7,9 @@ import 'dart:html';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Whether the current browser is Firefox.
-bool get isFirefox => window.navigator.userAgent.toLowerCase().contains('firefox');
+bool get isFirefox => window.navigator.userAgent.toLowerCase().contains(
+  'firefox',
+);
 
 /// Finds elements in the DOM tree rendered by the Flutter Web engine.
 ///
@@ -22,7 +24,7 @@ List<Node> findElements(String selector) {
     fail(
       'Failed to locate <flutter-view>. Possible reasons:\n'
       ' - The application failed to start'
-      ' - `findElements` was called before the application started'
+      ' - `findElements` was called before the application started',
     );
   }
 

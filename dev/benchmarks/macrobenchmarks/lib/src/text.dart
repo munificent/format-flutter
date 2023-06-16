@@ -16,9 +16,7 @@ class TextPage extends StatelessWidget {
           SizedBox(
             width: 200,
             height: 100,
-            child: TextField(
-              key: Key('basic-textfield'),
-            ),
+            child: TextField(key: Key('basic-textfield')),
           ),
         ],
       ),

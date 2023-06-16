@@ -25,32 +25,43 @@ void main() {
       await driver.waitFor(presentText);
     }, timeout: Timeout.none);
 
-    test('waitForAbsent should time out waiting for text "present" to disappear', () async {
-      await expectLater(
-        () => driver.waitForAbsent(presentText, timeout: const Duration(seconds: 1)),
-        throwsA(isA<DriverError>().having(
-          (DriverError error) => error.message,
-          'message',
-          contains('Timeout while executing waitForAbsent'),
-        )),
-      );
-    }, timeout: Timeout.none);
+    test(
+      'waitForAbsent should time out waiting for text "present" to disappear',
+      () async {
+        await expectLater(
+          () => driver.waitForAbsent(
+            presentText,
+            timeout: const Duration(seconds: 1),
+          ),
+          throwsA(isA<DriverError>().having(
+            (DriverError error) => error.message,
+            'message',
+            contains('Timeout while executing waitForAbsent'),
+          )),
+        );
+      },
+      timeout: Timeout.none,
+    );
 
-    test('waitForAbsent should resolve when text "present" disappears', () async {
-      // Begin waiting for it to disappear
-      final Completer<void> whenWaitForAbsentResolves = Completer<void>();
-      driver.waitForAbsent(presentText).then(
-        whenWaitForAbsentResolves.complete,
-        onError: whenWaitForAbsentResolves.completeError,
-      );
+    test(
+      'waitForAbsent should resolve when text "present" disappears',
+      () async {
+        // Begin waiting for it to disappear
+        final Completer<void> whenWaitForAbsentResolves = Completer<void>();
+        driver.waitForAbsent(presentText).then(
+          whenWaitForAbsentResolves.complete,
+          onError: whenWaitForAbsentResolves.completeError,
+        );
 
-      // Wait 1 second then make it disappear
-      await Future<void>.delayed(const Duration(seconds: 1));
-      await driver.tap(find.byValueKey('togglePresent'));
+        // Wait 1 second then make it disappear
+        await Future<void>.delayed(const Duration(seconds: 1));
+        await driver.tap(find.byValueKey('togglePresent'));
 
-      // Ensure waitForAbsent resolves
-      await whenWaitForAbsentResolves.future;
-    }, timeout: Timeout.none);
+        // Ensure waitForAbsent resolves
+        await whenWaitForAbsentResolves.future;
+      },
+      timeout: Timeout.none,
+    );
 
     test('waitFor times out waiting for "present" to reappear', () async {
       await expectLater(
@@ -79,9 +90,13 @@ void main() {
       await whenWaitForResolves.future;
     }, timeout: Timeout.none);
 
-    test('waitForAbsent resolves immediately when the element does not exist', () async {
-      await driver.waitForAbsent(find.text('that does not exist'));
-    }, timeout: Timeout.none);
+    test(
+      'waitForAbsent resolves immediately when the element does not exist',
+      () async {
+        await driver.waitForAbsent(find.text('that does not exist'));
+      },
+      timeout: Timeout.none,
+    );
 
     test('uses hit test to determine tappable elements', () async {
       final SerializableFinder a = find.byValueKey('a');

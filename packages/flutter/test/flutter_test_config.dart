@@ -8,8 +8,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
-import '_goldens_io.dart'
-  if (dart.library.html) '_goldens_web.dart' as flutter_goldens;
+import '_goldens_io.dart' if (dart.library.html) '_goldens_web.dart'
+    as flutter_goldens;
 
 /// Test configuration for each test library in this directory.
 ///

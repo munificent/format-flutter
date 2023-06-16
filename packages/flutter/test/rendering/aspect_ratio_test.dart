@@ -111,9 +111,14 @@ void main() {
     );
 
     final List<FlutterErrorDetails> errors = <FlutterErrorDetails>[];
-    layout(box, onErrors: () {
-      errors.addAll(TestRenderingFlutterBinding.instance.takeAllFlutterErrorDetails());
-    });
+    layout(
+      box,
+      onErrors: () {
+        errors.addAll(
+          TestRenderingFlutterBinding.instance.takeAllFlutterErrorDetails(),
+        );
+      },
+    );
     expect(errors, hasLength(2));
     expect(errors.first.exception, isFlutterError);
     expect(
@@ -131,9 +136,11 @@ void main() {
   test('RenderAspectRatio: Sizing', () {
     RenderConstrainedOverflowBox outside;
     RenderAspectRatio inside;
-    layout(outside = RenderConstrainedOverflowBox(
-      child: inside = RenderAspectRatio(aspectRatio: 1.0),
-    ));
+    layout(
+      outside = RenderConstrainedOverflowBox(
+        child: inside = RenderAspectRatio(aspectRatio: 1.0),
+      ),
+    );
     pumpFrame();
     expect(inside.size, const Size(800.0, 600.0));
     outside.minWidth = 0.0;

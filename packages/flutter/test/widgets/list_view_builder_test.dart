@@ -8,58 +8,61 @@ import 'package:flutter_test/flutter_test.dart';
 import 'test_widgets.dart';
 
 void main() {
-  testWidgets('ListView.builder mount/dismount smoke test', (WidgetTester tester) async {
-    final List<int> callbackTracker = <int>[];
+  testWidgets(
+    'ListView.builder mount/dismount smoke test',
+    (WidgetTester tester) async {
+      final List<int> callbackTracker = <int>[];
 
-    // the root view is 800x600 in the test environment
-    // so if our widget is 100 pixels tall, it should fit exactly 6 times.
+      // the root view is 800x600 in the test environment
+      // so if our widget is 100 pixels tall, it should fit exactly 6 times.
 
-    Widget builder() {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: FlipWidget(
-          left: ListView.builder(
-            itemExtent: 100.0,
-            itemBuilder: (BuildContext context, int index) {
-              callbackTracker.add(index);
-              return SizedBox(
-                key: ValueKey<int>(index),
-                height: 100.0,
-                child: Text('$index'),
-              );
-            },
+      Widget builder() {
+        return Directionality(
+          textDirection: TextDirection.ltr,
+          child: FlipWidget(
+            left: ListView.builder(
+              itemExtent: 100.0,
+              itemBuilder: (BuildContext context, int index) {
+                callbackTracker.add(index);
+                return SizedBox(
+                  key: ValueKey<int>(index),
+                  height: 100.0,
+                  child: Text('$index'),
+                );
+              },
+            ),
+            right: const Text('Not Today'),
           ),
-          right: const Text('Not Today'),
-        ),
-      );
-    }
+        );
+      }
 
-    await tester.pumpWidget(builder());
+      await tester.pumpWidget(builder());
 
-    final FlipWidgetState testWidget = tester.state(find.byType(FlipWidget));
+      final FlipWidgetState testWidget = tester.state(find.byType(FlipWidget));
 
-    expect(callbackTracker, equals(<int>[
-      0, 1, 2, 3, 4, 5, // visible in viewport
-      6, 7, 8, // in caching area
-    ]));
-    check(visible: <int>[0, 1, 2, 3, 4, 5], hidden: <int>[ 6, 7, 8]);
+      expect(callbackTracker, equals(<int>[
+        0, 1, 2, 3, 4, 5, // visible in viewport
+        6, 7, 8, // in caching area
+      ]));
+      check(visible: <int>[0, 1, 2, 3, 4, 5], hidden: <int>[6, 7, 8]);
 
-    callbackTracker.clear();
-    testWidget.flip();
-    await tester.pump();
+      callbackTracker.clear();
+      testWidget.flip();
+      await tester.pump();
 
-    expect(callbackTracker, equals(<int>[]));
+      expect(callbackTracker, equals(<int>[]));
 
-    callbackTracker.clear();
-    testWidget.flip();
-    await tester.pump();
+      callbackTracker.clear();
+      testWidget.flip();
+      await tester.pump();
 
-    expect(callbackTracker, equals(<int>[
-      0, 1, 2, 3, 4, 5,
-      6, 7, 8, // in caching area
-    ]));
-    check(visible: <int>[0, 1, 2, 3, 4, 5], hidden: <int>[ 6, 7, 8]);
-  });
+      expect(callbackTracker, equals(<int>[
+        0, 1, 2, 3, 4, 5,
+        6, 7, 8, // in caching area
+      ]));
+      check(visible: <int>[0, 1, 2, 3, 4, 5], hidden: <int>[6, 7, 8]);
+    },
+  );
 
   testWidgets('ListView.builder vertical', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
@@ -208,7 +211,9 @@ void main() {
     callbackTracker.clear();
   });
 
-  testWidgets('ListView.builder 10 items, 2-3 items visible', (WidgetTester tester) async {
+  testWidgets('ListView.builder 10 items, 2-3 items visible', (
+    WidgetTester tester,
+  ) async {
     final List<int> callbackTracker = <int>[];
 
     // The root view is 800x600 in the test environment and our list
@@ -217,7 +222,11 @@ void main() {
 
     Widget itemBuilder(BuildContext context, int index) {
       callbackTracker.add(index);
-      return Text('$index', key: ValueKey<int>(index), textDirection: TextDirection.ltr);
+      return Text(
+        '$index',
+        key: ValueKey<int>(index),
+        textDirection: TextDirection.ltr,
+      );
     }
 
     final Widget testWidget = Directionality(
@@ -261,7 +270,9 @@ void main() {
     callbackTracker.clear();
   });
 
-  testWidgets('ListView.builder 30 items with big jump, using prototypeItem', (WidgetTester tester) async {
+  testWidgets('ListView.builder 30 items with big jump, using prototypeItem', (
+    WidgetTester tester,
+  ) async {
     final List<int> callbackTracker = <int>[];
 
     // The root view is 800x600 in the test environment and our list
@@ -270,17 +281,18 @@ void main() {
 
     Widget itemBuilder(BuildContext context, int index) {
       callbackTracker.add(index);
-      return Text('$index', key: ValueKey<int>(index), textDirection: TextDirection.ltr);
+      return Text(
+        '$index',
+        key: ValueKey<int>(index),
+        textDirection: TextDirection.ltr,
+      );
     }
 
     final Widget testWidget = Directionality(
       textDirection: TextDirection.ltr,
       child: ListView.builder(
         itemBuilder: itemBuilder,
-        prototypeItem: const SizedBox(
-          width: 800,
-          height: 300,
-        ),
+        prototypeItem: const SizedBox(width: 800, height: 300),
         itemCount: 30,
       ),
     );
@@ -294,7 +306,10 @@ void main() {
 
     // 2 is in the cache area, but not visible.
     expect(callbackTracker, equals(<int>[0, 1, 2]));
-    final List<int> initialExpectedHidden = List<int>.generate(28, (int i) => i + 2);
+    final List<int> initialExpectedHidden = List<int>.generate(
+      28,
+      (int i) => i + 2,
+    );
     check(visible: <int>[0, 1], hidden: initialExpectedHidden);
     callbackTracker.clear();
 
@@ -310,22 +325,16 @@ void main() {
   });
 
   testWidgets('ListView.separated', (WidgetTester tester) async {
-    Widget buildFrame({ required int itemCount }) {
+    Widget buildFrame({required int itemCount}) {
       return Directionality(
         textDirection: TextDirection.ltr,
         child: ListView.separated(
           itemCount: itemCount,
           itemBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 100.0,
-              child: Text('i$index'),
-            );
+            return SizedBox(height: 100.0, child: Text('i$index'));
           },
           separatorBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 10.0,
-              child: Text('s$index'),
-            );
+            return SizedBox(height: 10.0, child: Text('s$index'));
           },
         ),
       );
@@ -347,86 +356,98 @@ void main() {
 
     // ListView's height is 600, so items i0-i5 and s0-s4 fit.
     await tester.pumpWidget(buildFrame(itemCount: 25));
-    for (final String s in <String>['i0', 's0', 'i1', 's1', 'i2', 's2', 'i3', 's3', 'i4', 's4', 'i5']) {
+    for (final String s in <String>[
+          'i0',
+          's0',
+          'i1',
+          's1',
+          'i2',
+          's2',
+          'i3',
+          's3',
+          'i4',
+          's4',
+          'i5',
+        ]) {
       expect(find.text(s), findsOneWidget);
     }
     expect(find.text('s5'), findsNothing);
     expect(find.text('i6'), findsNothing);
   });
 
-
-  testWidgets('ListView.separated uses correct semanticChildCount', (WidgetTester tester) async {
-    Widget buildFrame({ required int itemCount}) {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView.separated(
-          itemCount: itemCount,
-          itemBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 100.0,
-              child: Text('i$index'),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 10.0,
-              child: Text('s$index'),
-            );
-          },
-        ),
-      );
-    }
-
-    Scrollable scrollable() {
-      return tester.widget<Scrollable>(
-        find.descendant(
-          of: find.byType(ListView),
-          matching: find.byType(Scrollable),
-        ),
-      );
-    }
-
-    await tester.pumpWidget(buildFrame(itemCount: 0));
-    expect(scrollable().semanticChildCount, 0);
-
-    await tester.pumpWidget(buildFrame(itemCount: 1));
-    expect(scrollable().semanticChildCount, 1);
-
-    await tester.pumpWidget(buildFrame(itemCount: 2));
-    expect(scrollable().semanticChildCount, 2);
-
-    await tester.pumpWidget(buildFrame(itemCount: 3));
-    expect(scrollable().semanticChildCount, 3);
-
-    await tester.pumpWidget(buildFrame(itemCount: 4));
-    expect(scrollable().semanticChildCount, 4);
-  });
-
-  // Regression test for https://github.com/flutter/flutter/issues/72292
-  testWidgets('ListView.builder and SingleChildScrollView can work well together', (WidgetTester tester) async {
-    Widget builder(int itemCount) {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: SingleChildScrollView(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemExtent: 35,
+  testWidgets(
+    'ListView.separated uses correct semanticChildCount',
+    (WidgetTester tester) async {
+      Widget buildFrame({required int itemCount}) {
+        return Directionality(
+          textDirection: TextDirection.ltr,
+          child: ListView.separated(
             itemCount: itemCount,
             itemBuilder: (BuildContext context, int index) {
-              return const Text('I love Flutter.');
+              return SizedBox(height: 100.0, child: Text('i$index'));
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return SizedBox(height: 10.0, child: Text('s$index'));
             },
           ),
-        ),
-      );
-    }
+        );
+      }
 
-    await tester.pumpWidget(builder(1));
-    // Trigger relayout and garbage collect.
-    await tester.pumpWidget(builder(2));
-  });
+      Scrollable scrollable() {
+        return tester.widget<Scrollable>(find.descendant(
+          of: find.byType(ListView),
+          matching: find.byType(Scrollable),
+        ));
+      }
+
+      await tester.pumpWidget(buildFrame(itemCount: 0));
+      expect(scrollable().semanticChildCount, 0);
+
+      await tester.pumpWidget(buildFrame(itemCount: 1));
+      expect(scrollable().semanticChildCount, 1);
+
+      await tester.pumpWidget(buildFrame(itemCount: 2));
+      expect(scrollable().semanticChildCount, 2);
+
+      await tester.pumpWidget(buildFrame(itemCount: 3));
+      expect(scrollable().semanticChildCount, 3);
+
+      await tester.pumpWidget(buildFrame(itemCount: 4));
+      expect(scrollable().semanticChildCount, 4);
+    },
+  );
+
+  // Regression test for https://github.com/flutter/flutter/issues/72292
+  testWidgets(
+    'ListView.builder and SingleChildScrollView can work well together',
+    (WidgetTester tester) async {
+      Widget builder(int itemCount) {
+        return Directionality(
+          textDirection: TextDirection.ltr,
+          child: SingleChildScrollView(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemExtent: 35,
+              itemCount: itemCount,
+              itemBuilder: (BuildContext context, int index) {
+                return const Text('I love Flutter.');
+              },
+            ),
+          ),
+        );
+      }
+
+      await tester.pumpWidget(builder(1));
+      // Trigger relayout and garbage collect.
+      await tester.pumpWidget(builder(2));
+    },
+  );
 }
 
-void check({ List<int> visible = const <int>[], List<int> hidden = const <int>[] }) {
+void check({
+  List<int> visible = const <int>[],
+  List<int> hidden = const <int>[],
+}) {
   for (final int i in visible) {
     expect(find.text('$i'), findsOneWidget);
   }

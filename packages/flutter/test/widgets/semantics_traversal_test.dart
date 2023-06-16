@@ -31,30 +31,36 @@ void main() {
   // ┌───┐ ┌───┐
   // │ A │>│ B │
   // └───┘ └───┘
-  testTraversal('Semantics traverses horizontally left-to-right', (TraversalTester tester) async {
-    await tester.test(
-      textDirection: TextDirection.ltr,
-      children: <String, Rect>{
-        'A': Offset.zero & tenByTen,
-        'B': const Offset(20.0, 0.0) & tenByTen,
-      },
-      expectedTraversal: 'A B',
-    );
-  });
+  testTraversal(
+    'Semantics traverses horizontally left-to-right',
+    (TraversalTester tester) async {
+      await tester.test(
+        textDirection: TextDirection.ltr,
+        children: <String, Rect>{
+          'A': Offset.zero & tenByTen,
+          'B': const Offset(20.0, 0.0) & tenByTen,
+        },
+        expectedTraversal: 'A B',
+      );
+    },
+  );
 
   // ┌───┐ ┌───┐
   // │ A │<│ B │
   // └───┘ └───┘
-  testTraversal('Semantics traverses horizontally right-to-left', (TraversalTester tester) async {
-    await tester.test(
-      textDirection: TextDirection.rtl,
-      children: <String, Rect>{
-        'A': Offset.zero & tenByTen,
-        'B': const Offset(20.0, 0.0) & tenByTen,
-      },
-      expectedTraversal: 'B A',
-    );
-  });
+  testTraversal(
+    'Semantics traverses horizontally right-to-left',
+    (TraversalTester tester) async {
+      await tester.test(
+        textDirection: TextDirection.rtl,
+        children: <String, Rect>{
+          'A': Offset.zero & tenByTen,
+          'B': const Offset(20.0, 0.0) & tenByTen,
+        },
+        expectedTraversal: 'B A',
+      );
+    },
+  );
 
   // ┌───┐
   // │ A │
@@ -63,18 +69,21 @@ void main() {
   // ┌───┐
   // │ B │
   // └───┘
-  testTraversal('Semantics traverses vertically top-to-bottom', (TraversalTester tester) async {
-    for (final TextDirection textDirection in TextDirection.values) {
-      await tester.test(
-        textDirection: textDirection,
-        children: <String, Rect>{
-          'A': Offset.zero & tenByTen,
-          'B': const Offset(0.0, 20.0) & tenByTen,
-        },
-        expectedTraversal: 'A B',
-      );
-    }
-  });
+  testTraversal(
+    'Semantics traverses vertically top-to-bottom',
+    (TraversalTester tester) async {
+      for (final TextDirection textDirection in TextDirection.values) {
+        await tester.test(
+          textDirection: textDirection,
+          children: <String, Rect>{
+            'A': Offset.zero & tenByTen,
+            'B': const Offset(0.0, 20.0) & tenByTen,
+          },
+          expectedTraversal: 'A B',
+        );
+      }
+    },
+  );
 
   // ┌───┐ ┌───┐
   // │ A │>│ B │
@@ -84,18 +93,21 @@ void main() {
   // ┌───┐ ┌───┐
   // │ C │>│ D │
   // └───┘ └───┘
-  testTraversal('Semantics traverses a grid left-to-right', (TraversalTester tester) async {
-    await tester.test(
-      textDirection: TextDirection.ltr,
-      children: <String, Rect>{
-        'A': Offset.zero & tenByTen,
-        'B': const Offset(20.0, 0.0) & tenByTen,
-        'C': const Offset(0.0, 20.0) & tenByTen,
-        'D': const Offset(20.0, 20.0) & tenByTen,
-      },
-      expectedTraversal: 'A B C D',
-    );
-  });
+  testTraversal(
+    'Semantics traverses a grid left-to-right',
+    (TraversalTester tester) async {
+      await tester.test(
+        textDirection: TextDirection.ltr,
+        children: <String, Rect>{
+          'A': Offset.zero & tenByTen,
+          'B': const Offset(20.0, 0.0) & tenByTen,
+          'C': const Offset(0.0, 20.0) & tenByTen,
+          'D': const Offset(20.0, 20.0) & tenByTen,
+        },
+        expectedTraversal: 'A B C D',
+      );
+    },
+  );
 
   // ┌───┐ ┌───┐
   // │ A │<│ B │
@@ -105,43 +117,49 @@ void main() {
   // ┌───┐ ┌───┐
   // │ C │<│ D │
   // └───┘ └───┘
-  testTraversal('Semantics traverses a grid right-to-left', (TraversalTester tester) async {
-    await tester.test(
-      textDirection: TextDirection.rtl,
-      children: <String, Rect>{
-        'A': Offset.zero & tenByTen,
-        'B': const Offset(20.0, 0.0) & tenByTen,
-        'C': const Offset(0.0, 20.0) & tenByTen,
-        'D': const Offset(20.0, 20.0) & tenByTen,
-      },
-      expectedTraversal: 'B A D C',
-    );
-  });
+  testTraversal(
+    'Semantics traverses a grid right-to-left',
+    (TraversalTester tester) async {
+      await tester.test(
+        textDirection: TextDirection.rtl,
+        children: <String, Rect>{
+          'A': Offset.zero & tenByTen,
+          'B': const Offset(20.0, 0.0) & tenByTen,
+          'C': const Offset(0.0, 20.0) & tenByTen,
+          'D': const Offset(20.0, 20.0) & tenByTen,
+        },
+        expectedTraversal: 'B A D C',
+      );
+    },
+  );
 
   // ┌───┐           ┌───┐
   // │ A │           │ C │
   // └───┘<->┌───┐<->└───┘
   //         │ B │
   //         └───┘
-  testTraversal('Semantics traverses vertically overlapping nodes horizontally', (TraversalTester tester) async {
-    final Map<String, Rect> children = <String, Rect>{
-      'A': Offset.zero & tenByTen,
-      'B': const Offset(20.0, 5.0) & tenByTen,
-      'C': const Offset(40.0, 0.0) & tenByTen,
-    };
+  testTraversal(
+    'Semantics traverses vertically overlapping nodes horizontally',
+    (TraversalTester tester) async {
+      final Map<String, Rect> children = <String, Rect>{
+        'A': Offset.zero & tenByTen,
+        'B': const Offset(20.0, 5.0) & tenByTen,
+        'C': const Offset(40.0, 0.0) & tenByTen,
+      };
 
-    await tester.test(
-      textDirection: TextDirection.ltr,
-      children: children,
-      expectedTraversal: 'A B C',
-    );
+      await tester.test(
+        textDirection: TextDirection.ltr,
+        children: children,
+        expectedTraversal: 'A B C',
+      );
 
-    await tester.test(
-      textDirection: TextDirection.rtl,
-      children: children,
-      expectedTraversal: 'C B A',
-    );
-  });
+      await tester.test(
+        textDirection: TextDirection.rtl,
+        children: children,
+        expectedTraversal: 'C B A',
+      );
+    },
+  );
 
   // LTR:
   // ┌───┐ ┌───┐ ┌───┐ ┌───┐
@@ -180,35 +198,38 @@ void main() {
   // ┌───┐ ┌───┐ ┌───┐ ┌───┐
   // │ J │<│ K │<│ L │<│ M │
   // └───┘ └───┘ └───┘ └───┘
-  testTraversal('Semantics traverses vertical groups, then horizontal groups, then knots', (TraversalTester tester) async {
-    final Map<String, Rect> children = <String, Rect>{
-      'A': Offset.zero & tenByTen,
-      'B': const Offset(20.0, 0.0) & tenByTen,
-      'C': const Offset(40.0, 0.0) & tenByTen,
-      'D': const Offset(60.0, 0.0) & tenByTen,
-      'E': const Offset(0.0, 20.0) & tenByTen,
-      'F': const Offset(20.0, 20.0) & (tenByTen * 2.0),
-      'G': const Offset(60.0, 20.0) & tenByTen,
-      'H': const Offset(0.0, 40.0) & tenByTen,
-      'I': const Offset(60.0, 40.0) & tenByTen,
-      'J': const Offset(0.0, 60.0) & tenByTen,
-      'K': const Offset(20.0, 60.0) & tenByTen,
-      'L': const Offset(40.0, 60.0) & tenByTen,
-      'M': const Offset(60.0, 60.0) & tenByTen,
-    };
+  testTraversal(
+    'Semantics traverses vertical groups, then horizontal groups, then knots',
+    (TraversalTester tester) async {
+      final Map<String, Rect> children = <String, Rect>{
+        'A': Offset.zero & tenByTen,
+        'B': const Offset(20.0, 0.0) & tenByTen,
+        'C': const Offset(40.0, 0.0) & tenByTen,
+        'D': const Offset(60.0, 0.0) & tenByTen,
+        'E': const Offset(0.0, 20.0) & tenByTen,
+        'F': const Offset(20.0, 20.0) & (tenByTen * 2.0),
+        'G': const Offset(60.0, 20.0) & tenByTen,
+        'H': const Offset(0.0, 40.0) & tenByTen,
+        'I': const Offset(60.0, 40.0) & tenByTen,
+        'J': const Offset(0.0, 60.0) & tenByTen,
+        'K': const Offset(20.0, 60.0) & tenByTen,
+        'L': const Offset(40.0, 60.0) & tenByTen,
+        'M': const Offset(60.0, 60.0) & tenByTen,
+      };
 
-    await tester.test(
-      textDirection: TextDirection.ltr,
-      children: children,
-      expectedTraversal: 'A B C D E F G H I J K L M',
-    );
+      await tester.test(
+        textDirection: TextDirection.ltr,
+        children: children,
+        expectedTraversal: 'A B C D E F G H I J K L M',
+      );
 
-    await tester.test(
-      textDirection: TextDirection.rtl,
-      children: children,
-      expectedTraversal: 'D C B A G F E I H M L K J',
-    );
-  });
+      await tester.test(
+        textDirection: TextDirection.rtl,
+        children: children,
+        expectedTraversal: 'D C B A G F E I H M L K J',
+      );
+    },
+  );
 
   // The following test tests traversal of the simplest "knot", which is two
   // nodes overlapping both vertically and horizontally. For example:
@@ -294,49 +315,41 @@ class TraversalTester {
     required String expectedTraversal,
   }) async {
     assert(children is LinkedHashMap);
-    await tester.pumpWidget(
-        Directionality(
-          textDirection: textDirection,
-          child: Semantics(
-            textDirection: textDirection,
-            child: CustomMultiChildLayout(
-              delegate: TestLayoutDelegate(children),
-              children: children.keys.map<Widget>((String label) {
-                return LayoutId(
-                  id: label,
-                  child: Semantics(
-                    container: true,
-                    explicitChildNodes: true,
-                    label: label,
-                    child: SizedBox(
-                      width: children[label]!.width,
-                      height: children[label]!.height,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-    );
-
-    expect(semantics, hasSemantics(
-      TestSemantics.root(
-        children: <TestSemantics>[
-          TestSemantics.rootChild(
-            textDirection: textDirection,
-            children: expectedTraversal.split(' ').map<TestSemantics>((String label) {
-              return TestSemantics(
+    await tester.pumpWidget(Directionality(
+      textDirection: textDirection,
+      child: Semantics(
+        textDirection: textDirection,
+        child: CustomMultiChildLayout(
+          delegate: TestLayoutDelegate(children),
+          children: children.keys.map<Widget>((String label) {
+            return LayoutId(
+              id: label,
+              child: Semantics(
+                container: true,
+                explicitChildNodes: true,
                 label: label,
-              );
-            }).toList(),
-          ),
-        ],
+                child: SizedBox(
+                  width: children[label]!.width,
+                  height: children[label]!.height,
+                ),
+              ),
+            );
+          }).toList(),
+        ),
       ),
-      ignoreTransform: true,
-      ignoreRect: true,
-      ignoreId: true,
     ));
+
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        TestSemantics.rootChild(
+          textDirection: textDirection,
+          children:
+              expectedTraversal.split(' ').map<TestSemantics>((String label) {
+                return TestSemantics(label: label);
+              }).toList(),
+        ),
+      ],
+    ), ignoreTransform: true, ignoreRect: true, ignoreId: true));
   }
 
   void dispose() {
@@ -345,7 +358,6 @@ class TraversalTester {
 }
 
 class TestLayoutDelegate extends MultiChildLayoutDelegate {
-
   TestLayoutDelegate(this.children);
 
   final Map<String, Rect> children;
@@ -359,5 +371,6 @@ class TestLayoutDelegate extends MultiChildLayoutDelegate {
   }
 
   @override
-  bool shouldRelayout(MultiChildLayoutDelegate oldDelegate) => oldDelegate == this;
+  bool shouldRelayout(MultiChildLayoutDelegate oldDelegate) =>
+      oldDelegate == this;
 }

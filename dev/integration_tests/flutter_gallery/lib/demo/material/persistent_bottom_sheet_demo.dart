@@ -12,7 +12,8 @@ class PersistentBottomSheetDemo extends StatefulWidget {
   static const String routeName = '/material/persistent-bottom-sheet';
 
   @override
-  State<PersistentBottomSheetDemo> createState() => _PersistentBottomSheetDemoState();
+  State<PersistentBottomSheetDemo> createState() =>
+      _PersistentBottomSheetDemoState();
 }
 
 class _PersistentBottomSheetDemoState extends State<PersistentBottomSheetDemo> {
@@ -27,18 +28,20 @@ class _PersistentBottomSheetDemoState extends State<PersistentBottomSheetDemo> {
   }
 
   void _showBottomSheet() {
-    setState(() { // disable the button
+    setState(() {
+      // disable the button
       _showBottomSheetCallback = null;
     });
     _scaffoldKey.currentState!.showBottomSheet<void>((BuildContext context) {
       final ThemeData themeData = Theme.of(context);
       return Container(
         decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: themeData.disabledColor))
+          border: Border(top: BorderSide(color: themeData.disabledColor)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(32.0),
-          child: Text('This is a Material persistent bottom sheet. Drag downwards to dismiss it.',
+          child: Text(
+            'This is a Material persistent bottom sheet. Drag downwards to dismiss it.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: themeData.colorScheme.secondary,
@@ -47,10 +50,10 @@ class _PersistentBottomSheetDemoState extends State<PersistentBottomSheetDemo> {
           ),
         ),
       );
-    })
-    .closed.whenComplete(() {
+    }).closed.whenComplete(() {
       if (mounted) {
-        setState(() { // re-enable the button
+        setState(() {
+          // re-enable the button
           _showBottomSheetCallback = _showBottomSheet;
         });
       }
@@ -89,10 +92,7 @@ class _PersistentBottomSheetDemoState extends State<PersistentBottomSheetDemo> {
       floatingActionButton: FloatingActionButton(
         onPressed: _showMessage,
         backgroundColor: Colors.redAccent,
-        child: const Icon(
-          Icons.add,
-          semanticLabel: 'Add',
-        ),
+        child: const Icon(Icons.add, semanticLabel: 'Add'),
       ),
       body: Center(
         child: ElevatedButton(

@@ -7,10 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('SemanticsEvent.toString', () {
-    expect(
-      TestSemanticsEvent().toString(),
-      'TestSemanticsEvent()',
-    );
+    expect(TestSemanticsEvent().toString(), 'TestSemanticsEvent()');
     expect(
       TestSemanticsEvent(number: 10).toString(),
       'TestSemanticsEvent(number: 10)',
@@ -29,10 +26,7 @@ void main() {
       TestSemanticsEvent(text: 'hi', number: 11).toMap(),
       <String, dynamic>{
         'type': 'TestEvent',
-        'data': <String, dynamic>{
-          'text': 'hi',
-          'number': 11,
-        },
+        'data': <String, dynamic>{'text': 'hi', 'number': 11},
       },
     );
     expect(
@@ -40,26 +34,20 @@ void main() {
       <String, dynamic>{
         'type': 'TestEvent',
         'nodeId': 123,
-        'data': <String, dynamic>{
-          'text': 'hi',
-          'number': 11,
-        },
+        'data': <String, dynamic>{'text': 'hi', 'number': 11},
       },
     );
   });
   test('FocusSemanticEvent.toMap', () {
-    expect(
-      const FocusSemanticEvent().toMap(),
-      <String, dynamic>{
-        'type': 'focus',
-        'data': <String, dynamic>{},
-      },
-    );
+    expect(const FocusSemanticEvent().toMap(), <String, dynamic>{
+      'type': 'focus',
+      'data': <String, dynamic>{},
+    });
   });
 }
 
 class TestSemanticsEvent extends SemanticsEvent {
-  TestSemanticsEvent({ this.text, this.number }) : super('TestEvent');
+  TestSemanticsEvent({this.text, this.number}) : super('TestEvent');
 
   final String? text;
   final int? number;

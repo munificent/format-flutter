@@ -66,10 +66,7 @@ void runTest(FileSystemStyle style) {
     fs = MultiRootFileSystem(
       delegate: memory,
       scheme: 'scheme',
-      roots: <String>[
-        '${root}foo$sep',
-        '${root}bar',
-      ],
+      roots: <String>['${root}foo$sep', '${root}bar'],
     );
   });
 
@@ -89,8 +86,10 @@ void runTest(FileSystemStyle style) {
 
   testWithoutContext('file outside root', () {
     final File file = fs.file('${root}other${sep}directory${sep}file');
-    expect(file.readAsStringSync(),
-        'Content: ${root}other${sep}directory${sep}file');
+    expect(
+      file.readAsStringSync(),
+      'Content: ${root}other${sep}directory${sep}file',
+    );
     expect(file.path, '${root}other${sep}directory${sep}file');
     expect(file.uri, Uri.parse('file:///${rootUri}other/directory/file'));
   });
@@ -132,16 +131,20 @@ void runTest(FileSystemStyle style) {
 
   testWithoutContext('file with scheme in subdirectory', () {
     final File file = fs.file(Uri.parse('scheme:///subdir/in_subdir'));
-    expect(file.readAsStringSync(),
-        'Content: ${root}foo${sep}subdir${sep}in_subdir');
+    expect(
+      file.readAsStringSync(),
+      'Content: ${root}foo${sep}subdir${sep}in_subdir',
+    );
     expect(file.path, '${root}foo${sep}subdir${sep}in_subdir');
     expect(file.uri, Uri.parse('scheme:///subdir/in_subdir'));
   });
 
   testWithoutContext('file in second root with scheme in subdirectory', () {
     final File file = fs.file(Uri.parse('scheme:///bar_subdir/in_subdir'));
-    expect(file.readAsStringSync(),
-        'Content: ${root}bar${sep}bar_subdir${sep}in_subdir');
+    expect(
+      file.readAsStringSync(),
+      'Content: ${root}bar${sep}bar_subdir${sep}in_subdir',
+    );
     expect(file.path, '${root}bar${sep}bar_subdir${sep}in_subdir');
     expect(file.uri, Uri.parse('scheme:///bar_subdir/in_subdir'));
   });
@@ -153,37 +156,103 @@ void runTest(FileSystemStyle style) {
   });
 
   testWithoutContext('stat', () async {
-    expect((await fs.stat('${root}foo${sep}only_in_foo')).type, io.FileSystemEntityType.file);
-    expect((await fs.stat('scheme:///only_in_foo')).type, io.FileSystemEntityType.file);
-    expect(fs.statSync('${root}foo${sep}only_in_foo').type, io.FileSystemEntityType.file);
-    expect(fs.statSync('scheme:///only_in_foo').type, io.FileSystemEntityType.file);
+    expect(
+      (await fs.stat('${root}foo${sep}only_in_foo')).type,
+      io.FileSystemEntityType.file,
+    );
+    expect(
+      (await fs.stat('scheme:///only_in_foo')).type,
+      io.FileSystemEntityType.file,
+    );
+    expect(
+      fs.statSync('${root}foo${sep}only_in_foo').type,
+      io.FileSystemEntityType.file,
+    );
+    expect(
+      fs.statSync('scheme:///only_in_foo').type,
+      io.FileSystemEntityType.file,
+    );
   });
 
   testWithoutContext('type', () async {
-    expect(await fs.type('${root}foo${sep}only_in_foo'), io.FileSystemEntityType.file);
-    expect(await fs.type('scheme:///only_in_foo'), io.FileSystemEntityType.file);
-    expect(await fs.type('${root}foo${sep}subdir'), io.FileSystemEntityType.directory);
-    expect(await fs.type('scheme:///subdir'), io.FileSystemEntityType.directory);
-    expect(await fs.type('${root}foo${sep}not_found'), io.FileSystemEntityType.notFound);
-    expect(await fs.type('scheme:///not_found'), io.FileSystemEntityType.notFound);
+    expect(
+      await fs.type('${root}foo${sep}only_in_foo'),
+      io.FileSystemEntityType.file,
+    );
+    expect(
+      await fs.type('scheme:///only_in_foo'),
+      io.FileSystemEntityType.file,
+    );
+    expect(
+      await fs.type('${root}foo${sep}subdir'),
+      io.FileSystemEntityType.directory,
+    );
+    expect(
+      await fs.type('scheme:///subdir'),
+      io.FileSystemEntityType.directory,
+    );
+    expect(
+      await fs.type('${root}foo${sep}not_found'),
+      io.FileSystemEntityType.notFound,
+    );
+    expect(
+      await fs.type('scheme:///not_found'),
+      io.FileSystemEntityType.notFound,
+    );
 
-    expect(fs.typeSync('${root}foo${sep}only_in_foo'), io.FileSystemEntityType.file);
+    expect(
+      fs.typeSync('${root}foo${sep}only_in_foo'),
+      io.FileSystemEntityType.file,
+    );
     expect(fs.typeSync('scheme:///only_in_foo'), io.FileSystemEntityType.file);
-    expect(fs.typeSync('${root}foo${sep}subdir'), io.FileSystemEntityType.directory);
+    expect(
+      fs.typeSync('${root}foo${sep}subdir'),
+      io.FileSystemEntityType.directory,
+    );
     expect(fs.typeSync('scheme:///subdir'), io.FileSystemEntityType.directory);
-    expect(fs.typeSync('${root}foo${sep}not_found'), io.FileSystemEntityType.notFound);
-    expect(fs.typeSync('scheme:///not_found'), io.FileSystemEntityType.notFound);
+    expect(
+      fs.typeSync('${root}foo${sep}not_found'),
+      io.FileSystemEntityType.notFound,
+    );
+    expect(
+      fs.typeSync('scheme:///not_found'),
+      io.FileSystemEntityType.notFound,
+    );
   });
 
   testWithoutContext('identical', () async {
-    expect(await fs.identical('${root}foo${sep}in_both', '${root}foo${sep}in_both'), true);
-    expect(await fs.identical('${root}foo${sep}in_both', 'scheme:///in_both'), true);
-    expect(await fs.identical('${root}foo${sep}in_both', 'scheme:///in_both'), true);
-    expect(await fs.identical('${root}bar${sep}in_both', 'scheme:///in_both'), false);
+    expect(
+      await fs.identical('${root}foo${sep}in_both', '${root}foo${sep}in_both'),
+      true,
+    );
+    expect(
+      await fs.identical('${root}foo${sep}in_both', 'scheme:///in_both'),
+      true,
+    );
+    expect(
+      await fs.identical('${root}foo${sep}in_both', 'scheme:///in_both'),
+      true,
+    );
+    expect(
+      await fs.identical('${root}bar${sep}in_both', 'scheme:///in_both'),
+      false,
+    );
 
-    expect(fs.identicalSync('${root}foo${sep}in_both', '${root}foo${sep}in_both'), true);
-    expect(fs.identicalSync('${root}foo${sep}in_both', 'scheme:///in_both'), true);
-    expect(fs.identicalSync('${root}foo${sep}in_both', 'scheme:///in_both'), true);
-    expect(fs.identicalSync('${root}bar${sep}in_both', 'scheme:///in_both'), false);
+    expect(
+      fs.identicalSync('${root}foo${sep}in_both', '${root}foo${sep}in_both'),
+      true,
+    );
+    expect(
+      fs.identicalSync('${root}foo${sep}in_both', 'scheme:///in_both'),
+      true,
+    );
+    expect(
+      fs.identicalSync('${root}foo${sep}in_both', 'scheme:///in_both'),
+      true,
+    );
+    expect(
+      fs.identicalSync('${root}bar${sep}in_both', 'scheme:///in_both'),
+      false,
+    );
   });
 }

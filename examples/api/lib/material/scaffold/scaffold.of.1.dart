@@ -13,9 +13,7 @@ class OfExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: OfExample(),
-    );
+    return const MaterialApp(home: OfExample());
   }
 }
 

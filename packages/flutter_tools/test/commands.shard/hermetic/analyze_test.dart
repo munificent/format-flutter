@@ -28,22 +28,16 @@ const int SIGABRT = -6;
 void main() {
   testWithoutContext('analyze generate correct errors message', () async {
     expect(
-      AnalyzeBase.generateErrorsMessage(
-        issueCount: 0,
-        seconds: '0.1',
-      ),
+      AnalyzeBase.generateErrorsMessage(issueCount: 0, seconds: '0.1'),
       'No issues found! (ran in 0.1s)',
     );
 
-    expect(
-      AnalyzeBase.generateErrorsMessage(
-        issueCount: 3,
-        issueDiff: 2,
-        files: 1,
-        seconds: '0.1',
-      ),
-      '3 issues found. (2 new) • analyzed 1 file (ran in 0.1s)',
-    );
+    expect(AnalyzeBase.generateErrorsMessage(
+      issueCount: 3,
+      issueDiff: 2,
+      files: 1,
+      seconds: '0.1',
+    ), '3 issues found. (2 new) • analyzed 1 file (ran in 0.1s)');
   });
 
   group('analyze command', () {
@@ -81,14 +75,17 @@ void main() {
       const String homePath = '/home/user/flutter';
       Cache.flutterRoot = homePath;
       for (final String dir in <String>['dev', 'examples', 'packages']) {
-        fileSystem.directory(homePath).childDirectory(dir).createSync(recursive: true);
+        fileSystem.directory(homePath).childDirectory(dir).createSync(
+          recursive: true,
+        );
       }
     });
 
-    testUsingContext('SIGABRT throws Exception', () async {
-      const String stderr = 'Something bad happened!';
-      processManager.addCommands(
-        <FakeCommand>[
+    testUsingContext(
+      'SIGABRT throws Exception',
+      () async {
+        const String stderr = 'Something bad happened!';
+        processManager.addCommands(<FakeCommand>[
           const FakeCommand(
             // artifact paths are from Artifacts.test() and stable
             command: <String>[
@@ -104,29 +101,31 @@ void main() {
             exitCode: SIGABRT,
             stderr: stderr,
           ),
-        ],
-      );
-      await expectLater(
-        runner.run(<String>['analyze']),
-        throwsA(
-          isA<Exception>().having(
+        ]);
+        await expectLater(
+          runner.run(<String>['analyze']),
+          throwsA(isA<Exception>().having(
             (Exception e) => e.toString(),
             'description',
-            contains('analysis server exited with code $SIGABRT and output:\n[stderr] $stderr'),
-          ),
-        ),
-      );
-    },
-    overrides: <Type, Generator>{
-      FileSystem: () => fileSystem,
-      ProcessManager: () => processManager,
-    });
+            contains(
+              'analysis server exited with code $SIGABRT and output:\n[stderr] $stderr',
+            ),
+          )),
+        );
+      },
+      overrides: <Type, Generator>{
+        FileSystem: () => fileSystem,
+        ProcessManager: () => processManager,
+      },
+    );
 
-    testUsingContext('--flutter-repo analyzes everything in the flutterRoot', () async {
-      final StreamController<List<int>> streamController = StreamController<List<int>>();
-      final IOSink sink = IOSink(streamController.sink);
-      processManager.addCommands(
-        <FakeCommand>[
+    testUsingContext(
+      '--flutter-repo analyzes everything in the flutterRoot',
+      () async {
+        final StreamController<List<int>> streamController =
+            StreamController<List<int>>();
+        final IOSink sink = IOSink(streamController.sink);
+        processManager.addCommands(<FakeCommand>[
           FakeCommand(
             // artifact paths are from Artifacts.test() and stable
             command: const <String>[
@@ -140,35 +139,45 @@ void main() {
               '--suppress-analytics',
             ],
             stdin: sink,
-            stdout: '{"event":"server.status","params":{"analysis":{"isAnalyzing":false}}}',
+            stdout:
+                '{"event":"server.status","params":{"analysis":{"isAnalyzing":false}}}',
           ),
-        ],
-      );
-      await runner.run(<String>['analyze', '--flutter-repo']);
-      final Map<String, Object?> setAnalysisRootsCommand = jsonDecode(await streamController.stream.transform(utf8.decoder).elementAt(2)) as Map<String, Object?>;
-      expect(setAnalysisRootsCommand['method'], 'analysis.setAnalysisRoots');
-      final Map<String, Object?> params = setAnalysisRootsCommand['params']! as Map<String, Object?>;
-      expect(params['included'], <String?>[Cache.flutterRoot]);
-      expect(params['excluded'], isEmpty);
-    },
-    overrides: <Type, Generator>{
-      FileSystem: () => fileSystem,
-      ProcessManager: () => processManager,
-    });
+        ]);
+        await runner.run(<String>['analyze', '--flutter-repo']);
+        final Map<String, Object?> setAnalysisRootsCommand = jsonDecode(
+          await streamController.stream.transform(utf8.decoder).elementAt(2),
+        ) as Map<String, Object?>;
+        expect(setAnalysisRootsCommand['method'], 'analysis.setAnalysisRoots');
+        final Map<String, Object?> params =
+            setAnalysisRootsCommand['params']! as Map<String, Object?>;
+        expect(params['included'], <String?>[Cache.flutterRoot]);
+        expect(params['excluded'], isEmpty);
+      },
+      overrides: <Type, Generator>{
+        FileSystem: () => fileSystem,
+        ProcessManager: () => processManager,
+      },
+    );
   });
 
   testWithoutContext('analyze inRepo', () {
     final FileSystem fileSystem = MemoryFileSystem.test();
     fileSystem.directory(_kFlutterRoot).createSync(recursive: true);
-    final Directory tempDir = fileSystem.systemTempDirectory
-      .createTempSync('flutter_analysis_test.');
+    final Directory tempDir = fileSystem.systemTempDirectory.createTempSync(
+      'flutter_analysis_test.',
+    );
     Cache.flutterRoot = _kFlutterRoot;
 
     // Absolute paths
     expect(inRepo(<String>[tempDir.path], fileSystem), isFalse);
-    expect(inRepo(<String>[fileSystem.path.join(tempDir.path, 'foo')], fileSystem), isFalse);
+    expect(
+      inRepo(<String>[fileSystem.path.join(tempDir.path, 'foo')], fileSystem),
+      isFalse,
+    );
     expect(inRepo(<String>[Cache.flutterRoot!], fileSystem), isTrue);
-    expect(inRepo(<String>[fileSystem.path.join(Cache.flutterRoot!, 'foo')], fileSystem), isTrue);
+    expect(inRepo(<String>[
+      fileSystem.path.join(Cache.flutterRoot!, 'foo'),
+    ], fileSystem), isTrue);
 
     // Relative paths
     fileSystem.currentDirectory = Cache.flutterRoot;
@@ -194,12 +203,15 @@ void main() {
         'startLine': 15,
         'startColumn': 4,
       },
-      'message': 'Prefer final for variable declarations if they are not reassigned.',
+      'message':
+          'Prefer final for variable declarations if they are not reassigned.',
       'code': 'var foo = 123;',
       'hasFix': false,
     };
-    expect(WrittenError.fromJson(json).toString(),
-        '[info] Prefer final for variable declarations if they are not reassigned (/Users/.../lib/test.dart:15:4)');
+    expect(
+      WrittenError.fromJson(json).toString(),
+      '[info] Prefer final for variable declarations if they are not reassigned (/Users/.../lib/test.dart:15:4)',
+    );
   });
 }
 
@@ -207,7 +219,9 @@ bool inRepo(List<String>? fileList, FileSystem fileSystem) {
   if (fileList == null || fileList.isEmpty) {
     fileList = <String>[fileSystem.path.current];
   }
-  final String root = fileSystem.path.normalize(fileSystem.path.absolute(Cache.flutterRoot!));
+  final String root = fileSystem.path.normalize(
+    fileSystem.path.absolute(Cache.flutterRoot!),
+  );
   final String prefix = root + fileSystem.path.separator;
   for (String file in fileList) {
     file = fileSystem.path.normalize(fileSystem.path.absolute(file));

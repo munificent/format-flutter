@@ -114,9 +114,9 @@ class ProfilingSummarizer {
   double computePercentile(ProfileType profileType, double percentile) {
     final List<TimelineEvent> events = eventByType[profileType]!;
     assert(events.isNotEmpty);
-    final List<double> doubles = events
-        .map((TimelineEvent e) => _getProfileValue(profileType, e))
-        .toList();
+    final List<double> doubles = events.map(
+      (TimelineEvent e) => _getProfileValue(profileType, e),
+    ).toList();
     return findPercentile(doubles, percentile);
   }
 
@@ -141,8 +141,10 @@ class ProfilingSummarizer {
         return _getArgValue('gpu_usage', e);
       case ProfileType.Memory:
         final double dirtyMem = _getArgValue('dirty_memory_usage', e);
-        final double ownedSharedMem =
-            _getArgValue('owned_shared_memory_usage', e);
+        final double ownedSharedMem = _getArgValue(
+          'owned_shared_memory_usage',
+          e,
+        );
         return dirtyMem + ownedSharedMem;
     }
   }

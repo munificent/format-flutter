@@ -9,41 +9,42 @@ import 'package:flutter_test/flutter_test.dart';
 import '../foundation/leak_tracking.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('gets local coordinates', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('gets local coordinates', (
+    WidgetTester tester,
+  ) async {
     int longPressCount = 0;
     int longPressUpCount = 0;
     final List<LongPressEndDetails> endDetails = <LongPressEndDetails>[];
-    final List<LongPressMoveUpdateDetails> moveDetails = <LongPressMoveUpdateDetails>[];
+    final List<LongPressMoveUpdateDetails> moveDetails =
+        <LongPressMoveUpdateDetails>[];
     final List<LongPressStartDetails> startDetails = <LongPressStartDetails>[];
 
     final Key redContainer = UniqueKey();
-    await tester.pumpWidget(
-        Center(
-          child: GestureDetector(
-              onLongPress: () {
-                longPressCount++;
-              },
-              onLongPressEnd: (LongPressEndDetails details) {
-                endDetails.add(details);
-              },
-              onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
-                moveDetails.add(details);
-              },
-              onLongPressStart: (LongPressStartDetails details) {
-                startDetails.add(details);
-              },
-              onLongPressUp: () {
-                longPressUpCount++;
-              },
-              child: Container(
-                key: redContainer,
-                width: 100,
-                height: 150,
-                color: Colors.red,
-              ),
-          ),
+    await tester.pumpWidget(Center(
+      child: GestureDetector(
+        onLongPress: () {
+          longPressCount++;
+        },
+        onLongPressEnd: (LongPressEndDetails details) {
+          endDetails.add(details);
+        },
+        onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
+          moveDetails.add(details);
+        },
+        onLongPressStart: (LongPressStartDetails details) {
+          startDetails.add(details);
+        },
+        onLongPressUp: () {
+          longPressUpCount++;
+        },
+        child: Container(
+          key: redContainer,
+          width: 100,
+          height: 150,
+          color: Colors.red,
         ),
-    );
+      ),
+    ));
 
     await tester.longPressAt(tester.getCenter(find.byKey(redContainer)));
     expect(longPressCount, 1);
@@ -59,42 +60,42 @@ void main() {
     int longPressCount = 0;
     int longPressUpCount = 0;
     final List<LongPressEndDetails> endDetails = <LongPressEndDetails>[];
-    final List<LongPressMoveUpdateDetails> moveDetails = <LongPressMoveUpdateDetails>[];
+    final List<LongPressMoveUpdateDetails> moveDetails =
+        <LongPressMoveUpdateDetails>[];
     final List<LongPressStartDetails> startDetails = <LongPressStartDetails>[];
 
     final Key redContainer = UniqueKey();
-    await tester.pumpWidget(
-        Center(
-          child: Transform.scale(
-            scale: 2.0,
-            child: GestureDetector(
-                onLongPress: () {
-                  longPressCount++;
-                },
-                onLongPressEnd: (LongPressEndDetails details) {
-                  endDetails.add(details);
-                },
-                onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
-                  moveDetails.add(details);
-                },
-                onLongPressStart: (LongPressStartDetails details) {
-                  startDetails.add(details);
-                },
-                onLongPressUp: () {
-                  longPressUpCount++;
-                },
-                child: Container(
-                  key: redContainer,
-                  width: 100,
-                  height: 150,
-                  color: Colors.red,
-                ),
-            ),
+    await tester.pumpWidget(Center(
+      child: Transform.scale(
+        scale: 2.0,
+        child: GestureDetector(
+          onLongPress: () {
+            longPressCount++;
+          },
+          onLongPressEnd: (LongPressEndDetails details) {
+            endDetails.add(details);
+          },
+          onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
+            moveDetails.add(details);
+          },
+          onLongPressStart: (LongPressStartDetails details) {
+            startDetails.add(details);
+          },
+          onLongPressUp: () {
+            longPressUpCount++;
+          },
+          child: Container(
+            key: redContainer,
+            width: 100,
+            height: 150,
+            color: Colors.red,
           ),
         ),
-    );
+      ),
+    ));
 
-    TestGesture gesture = await tester.startGesture(tester.getCenter(find.byKey(redContainer)));
+    TestGesture gesture =
+        await tester.startGesture(tester.getCenter(find.byKey(redContainer)));
     await gesture.moveBy(const Offset(0, 10.0));
     await tester.pump(kLongPressTimeout);
     await gesture.up();
@@ -113,7 +114,8 @@ void main() {
     longPressUpCount = 0;
 
     // Move after recognized.
-    gesture = await tester.startGesture(tester.getCenter(find.byKey(redContainer)));
+    gesture =
+        await tester.startGesture(tester.getCenter(find.byKey(redContainer)));
     await tester.pump(kLongPressTimeout);
     await gesture.moveBy(const Offset(0, 100));
     await gesture.up();
@@ -124,52 +126,58 @@ void main() {
     expect(startDetails.single.globalPosition, const Offset(400, 300));
     expect(endDetails.single.localPosition, const Offset(50, 75 + 100.0 / 2.0));
     expect(endDetails.single.globalPosition, const Offset(400, 300.0 + 100.0));
-    expect(moveDetails.single.localPosition, const Offset(50, 75 + 100.0 / 2.0));
+    expect(
+      moveDetails.single.localPosition,
+      const Offset(50, 75 + 100.0 / 2.0),
+    );
     expect(moveDetails.single.globalPosition, const Offset(400, 300.0 + 100.0));
     expect(moveDetails.single.offsetFromOrigin, const Offset(0, 100.0));
-    expect(moveDetails.single.localOffsetFromOrigin, const Offset(0, 100.0 / 2.0));
+    expect(
+      moveDetails.single.localOffsetFromOrigin,
+      const Offset(0, 100.0 / 2.0),
+    );
   });
 
   testWidgetsWithLeakTracking('scaled down', (WidgetTester tester) async {
     int longPressCount = 0;
     int longPressUpCount = 0;
     final List<LongPressEndDetails> endDetails = <LongPressEndDetails>[];
-    final List<LongPressMoveUpdateDetails> moveDetails = <LongPressMoveUpdateDetails>[];
+    final List<LongPressMoveUpdateDetails> moveDetails =
+        <LongPressMoveUpdateDetails>[];
     final List<LongPressStartDetails> startDetails = <LongPressStartDetails>[];
 
     final Key redContainer = UniqueKey();
-    await tester.pumpWidget(
-        Center(
-          child: Transform.scale(
-            scale: 0.5,
-            child: GestureDetector(
-                onLongPress: () {
-                  longPressCount++;
-                },
-                onLongPressEnd: (LongPressEndDetails details) {
-                  endDetails.add(details);
-                },
-                onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
-                  moveDetails.add(details);
-                },
-                onLongPressStart: (LongPressStartDetails details) {
-                  startDetails.add(details);
-                },
-                onLongPressUp: () {
-                  longPressUpCount++;
-                },
-                child: Container(
-                  key: redContainer,
-                  width: 100,
-                  height: 150,
-                  color: Colors.red,
-                ),
-            ),
+    await tester.pumpWidget(Center(
+      child: Transform.scale(
+        scale: 0.5,
+        child: GestureDetector(
+          onLongPress: () {
+            longPressCount++;
+          },
+          onLongPressEnd: (LongPressEndDetails details) {
+            endDetails.add(details);
+          },
+          onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
+            moveDetails.add(details);
+          },
+          onLongPressStart: (LongPressStartDetails details) {
+            startDetails.add(details);
+          },
+          onLongPressUp: () {
+            longPressUpCount++;
+          },
+          child: Container(
+            key: redContainer,
+            width: 100,
+            height: 150,
+            color: Colors.red,
           ),
         ),
-    );
+      ),
+    ));
 
-    TestGesture gesture = await tester.startGesture(tester.getCenter(find.byKey(redContainer)));
+    TestGesture gesture =
+        await tester.startGesture(tester.getCenter(find.byKey(redContainer)));
     await gesture.moveBy(const Offset(0, 10.0));
     await tester.pump(kLongPressTimeout);
     await gesture.up();
@@ -188,7 +196,8 @@ void main() {
     longPressUpCount = 0;
 
     // Move after recognized.
-    gesture = await tester.startGesture(tester.getCenter(find.byKey(redContainer)));
+    gesture =
+        await tester.startGesture(tester.getCenter(find.byKey(redContainer)));
     await tester.pump(kLongPressTimeout);
     await gesture.moveBy(const Offset(0, 100));
     await gesture.up();
@@ -199,9 +208,15 @@ void main() {
     expect(startDetails.single.globalPosition, const Offset(400, 300));
     expect(endDetails.single.localPosition, const Offset(50, 75 + 100.0 * 2.0));
     expect(endDetails.single.globalPosition, const Offset(400, 300.0 + 100.0));
-    expect(moveDetails.single.localPosition, const Offset(50, 75 + 100.0 * 2.0));
+    expect(
+      moveDetails.single.localPosition,
+      const Offset(50, 75 + 100.0 * 2.0),
+    );
     expect(moveDetails.single.globalPosition, const Offset(400, 300.0 + 100.0));
     expect(moveDetails.single.offsetFromOrigin, const Offset(0, 100.0));
-    expect(moveDetails.single.localOffsetFromOrigin, const Offset(0, 100.0 * 2.0));
+    expect(
+      moveDetails.single.localOffsetFromOrigin,
+      const Offset(0, 100.0 * 2.0),
+    );
   });
 }

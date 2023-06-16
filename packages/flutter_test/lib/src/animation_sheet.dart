@@ -115,16 +115,20 @@ class AnimationSheetBuilder {
 
   final List<Future<ui.Image>> _recordedFrames = <Future<ui.Image>>[];
   Future<List<ui.Image>> get _frames async {
-    final List<ui.Image> frames = await Future.wait<ui.Image>(_recordedFrames, eagerError: true);
-    assert(() {
-      for (final ui.Image frame in frames) {
-        assert(frame.width == frameSize.width && frame.height == frameSize.height,
-          'Unexpected size mismatch: frame has (${frame.width}, ${frame.height}) '
-          'while `frameSize` is $frameSize.'
-        );
-      }
-      return true;
-    }());
+    final List<ui.Image> frames =
+        await Future.wait<ui.Image>(_recordedFrames, eagerError: true);
+    assert(
+      () {
+        for (final ui.Image frame in frames) {
+          assert(
+            frame.width == frameSize.width && frame.height == frameSize.height,
+            'Unexpected size mismatch: frame has (${frame.width}, ${frame.height}) '
+            'while `frameSize` is $frameSize.',
+          );
+        }
+        return true;
+      }(),
+    );
     return frames;
   }
 
@@ -145,10 +149,7 @@ class AnimationSheetBuilder {
   ///
   ///  * [WidgetTester.pumpFrames], which renders a widget in a series of frames
   ///    with a fixed time interval.
-  Widget record(Widget child, {
-    Key? key,
-    bool recording = true,
-  }) {
+  Widget record(Widget child, {Key? key, bool recording = true}) {
     return _AnimationSheetRecorder(
       key: key,
       size: frameSize,
@@ -254,14 +255,16 @@ class AnimationSheetBuilder {
     return _CellSheet(
       key: key,
       cellSize: frameSize,
-      children: frames.map((ui.Image image) => RawImage(
-        image: image.clone(),
-        width: frameSize.width,
-        height: frameSize.height,
-        // Disable quality enhancement because the point of this class is to
-        // precisely record what the widget looks like.
-        filterQuality: ui.FilterQuality.none,
-      )).toList(),
+      children: frames.map(
+        (ui.Image image) => RawImage(
+          image: image.clone(),
+          width: frameSize.width,
+          height: frameSize.height,
+          // Disable quality enhancement because the point of this class is to
+          // precisely record what the widget looks like.
+          filterQuality: ui.FilterQuality.none,
+        ),
+      ).toList(),
     );
   }
 
@@ -273,8 +276,10 @@ class AnimationSheetBuilder {
   /// An example of using this method can be found at [AnimationSheetBuilder].
   Future<ui.Image> collate(int cellsPerRow) async {
     final List<ui.Image> frames = await _frames;
-    assert(frames.isNotEmpty,
-      'No frames are collected. Have you forgot to set `recording` to true?');
+    assert(
+      frames.isNotEmpty,
+      'No frames are collected. Have you forgot to set `recording` to true?',
+    );
     return _collateFrames(frames, frameSize, cellsPerRow);
   }
 
@@ -304,7 +309,8 @@ class AnimationSheetBuilder {
     assert(_recordedFrames.isNotEmpty);
     final int cellsPerRow = (maxWidth / frameSize.width).floor();
     final int rowNum = (_recordedFrames.length / cellsPerRow).ceil();
-    final double width = math.min(cellsPerRow, _recordedFrames.length) * frameSize.width;
+    final double width =
+        math.min(cellsPerRow, _recordedFrames.length) * frameSize.width;
     return Size(width, frameSize.height * rowNum);
   }
 
@@ -337,7 +343,8 @@ class _AnimationSheetRecorderState extends State<_AnimationSheetRecorder> {
 
   void _record(Duration duration) {
     assert(widget.handleRecorded != null);
-    final _RenderRootableRepaintBoundary boundary = boundaryKey.currentContext!.findRenderObject()! as _RenderRootableRepaintBoundary;
+    final _RenderRootableRepaintBoundary boundary = boundaryKey.currentContext!
+        .findRenderObject()! as _RenderRootableRepaintBoundary;
     if (widget.allLayers) {
       widget.handleRecorded!(boundary.allLayersToImage());
     } else {
@@ -372,28 +379,26 @@ class _AnimationSheetRecorderState extends State<_AnimationSheetRecorder> {
 //
 // If `callback` is null, `_PostFrameCallbacker` is equivalent to a proxy box.
 class _PostFrameCallbacker extends SingleChildRenderObjectWidget {
-  const _PostFrameCallbacker({
-    super.child,
-    this.callback,
-  });
+  const _PostFrameCallbacker({super.child, this.callback});
 
   final FrameCallback? callback;
 
   @override
-  _RenderPostFrameCallbacker createRenderObject(BuildContext context) => _RenderPostFrameCallbacker(
-    callback: callback,
-  );
+  _RenderPostFrameCallbacker createRenderObject(
+    BuildContext context,
+  ) => _RenderPostFrameCallbacker(callback: callback);
 
   @override
-  void updateRenderObject(BuildContext context, _RenderPostFrameCallbacker renderObject) {
+  void updateRenderObject(
+    BuildContext context,
+    _RenderPostFrameCallbacker renderObject,
+  ) {
     renderObject.callback = callback;
   }
 }
 
 class _RenderPostFrameCallbacker extends RenderProxyBox {
-  _RenderPostFrameCallbacker({
-    FrameCallback? callback,
-  }) : _callback = callback;
+  _RenderPostFrameCallbacker({FrameCallback? callback}) : _callback = callback;
 
   FrameCallback? get callback => _callback;
   FrameCallback? _callback;
@@ -418,24 +423,33 @@ class _RenderPostFrameCallbacker extends RenderProxyBox {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(FlagProperty('callback', value: callback != null, ifTrue: 'has a callback'));
+    properties.add(FlagProperty(
+      'callback',
+      value: callback != null,
+      ifTrue: 'has a callback',
+    ));
   }
 }
 
-Future<ui.Image> _collateFrames(List<ui.Image> frames, Size frameSize, int cellsPerRow) async {
+Future<ui.Image> _collateFrames(
+  List<ui.Image> frames,
+  Size frameSize,
+  int cellsPerRow,
+) async {
   final int rowNum = (frames.length / cellsPerRow).ceil();
 
   final ui.PictureRecorder recorder = ui.PictureRecorder();
-  final Canvas canvas = Canvas(
-    recorder,
-    Rect.fromLTWH(0, 0, frameSize.width * cellsPerRow, frameSize.height * rowNum),
-  );
+  final Canvas canvas = Canvas(recorder, Rect.fromLTWH(
+    0,
+    0,
+    frameSize.width * cellsPerRow,
+    frameSize.height * rowNum,
+  ));
   for (int i = 0; i < frames.length; i += 1) {
-    canvas.drawImage(
-      frames[i],
-      Offset(frameSize.width * (i % cellsPerRow), frameSize.height * (i / cellsPerRow).floor()),
-      Paint(),
-    );
+    canvas.drawImage(frames[i], Offset(
+      frameSize.width * (i % cellsPerRow),
+      frameSize.height * (i / cellsPerRow).floor(),
+    ), Paint());
   }
   final ui.Picture picture = recorder.endRecording();
   final ui.Image image = await picture.toImage(
@@ -462,26 +476,35 @@ class _CellSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-      final double rowWidth = constraints.biggest.width;
-      final int cellsPerRow = (rowWidth / cellSize.width).floor();
-      final List<Widget> rows = <Widget>[];
-      for (int rowStart = 0; rowStart < children.length; rowStart += cellsPerRow) {
-        final Iterable<Widget> rowTargets = children.sublist(rowStart, math.min(rowStart + cellsPerRow, children.length));
-        rows.add(Row(
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final double rowWidth = constraints.biggest.width;
+        final int cellsPerRow = (rowWidth / cellSize.width).floor();
+        final List<Widget> rows = <Widget>[];
+        for (int rowStart = 0;
+            rowStart < children.length;
+            rowStart += cellsPerRow) {
+          final Iterable<Widget> rowTargets = children.sublist(
+            rowStart,
+            math.min(rowStart + cellsPerRow, children.length),
+          );
+          rows.add(Row(
+            textDirection: TextDirection.ltr,
+            children: rowTargets.map(
+              (Widget target) => SizedBox.fromSize(
+                size: cellSize,
+                child: target,
+              ),
+            ).toList(),
+          ));
+        }
+        return Column(
           textDirection: TextDirection.ltr,
-          children: rowTargets.map((Widget target) => SizedBox.fromSize(
-            size: cellSize,
-            child: target,
-          )).toList(),
-        ));
-      }
-      return Column(
-        textDirection: TextDirection.ltr,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: rows,
-      );
-    });
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: rows,
+        );
+      },
+    );
   }
 }
 
@@ -490,7 +513,8 @@ class _RenderRootableRepaintBoundary extends RenderRepaintBoundary {
   // RenderView and its children) clipped by the region of this object.
   Future<ui.Image> allLayersToImage() {
     final TransformLayer rootLayer = _rootLayer();
-    final Matrix4 rootTransform = (rootLayer.transform ?? Matrix4.identity()).clone();
+    final Matrix4 rootTransform =
+        (rootLayer.transform ?? Matrix4.identity()).clone();
     final Matrix4 transform = rootTransform.multiplied(getTransformTo(null));
     final Rect rect = MatrixUtils.transformRect(transform, Offset.zero & size);
     // The scale was used to fit the actual device. Revert it since the target
@@ -510,8 +534,9 @@ class _RenderRootableRepaintBoundary extends RenderRepaintBoundary {
 // A [RepaintBoundary], except that its render object has a `fullscreenToImage` method.
 class _RootableRepaintBoundary extends SingleChildRenderObjectWidget {
   /// Creates a widget that isolates repaints.
-  const _RootableRepaintBoundary({ super.key, super.child });
+  const _RootableRepaintBoundary({super.key, super.child});
 
   @override
-  _RenderRootableRepaintBoundary createRenderObject(BuildContext context) => _RenderRootableRepaintBoundary();
+  _RenderRootableRepaintBoundary createRenderObject(BuildContext context) =>
+      _RenderRootableRepaintBoundary();
 }

@@ -18,10 +18,12 @@ class MacOSWorkflow implements Workflow {
   final FeatureFlags _featureFlags;
 
   @override
-  bool get appliesToHostPlatform => _platform.isMacOS && _featureFlags.isMacOSEnabled;
+  bool get appliesToHostPlatform =>
+      _platform.isMacOS && _featureFlags.isMacOSEnabled;
 
   @override
-  bool get canLaunchDevices => _platform.isMacOS && _featureFlags.isMacOSEnabled;
+  bool get canLaunchDevices =>
+      _platform.isMacOS && _featureFlags.isMacOSEnabled;
 
   @override
   bool get canListDevices => _platform.isMacOS && _featureFlags.isMacOSEnabled;

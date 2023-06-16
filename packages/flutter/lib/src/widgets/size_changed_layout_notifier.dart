@@ -55,10 +55,7 @@ class SizeChangedLayoutNotification extends LayoutChangedNotification {
 class SizeChangedLayoutNotifier extends SingleChildRenderObjectWidget {
   /// Creates a [SizeChangedLayoutNotifier] that dispatches layout changed
   /// notifications when [child] changes layout size.
-  const SizeChangedLayoutNotifier({
-    super.key,
-    super.child,
-  });
+  const SizeChangedLayoutNotifier({super.key, super.child});
 
   @override
   RenderObject createRenderObject(BuildContext context) {

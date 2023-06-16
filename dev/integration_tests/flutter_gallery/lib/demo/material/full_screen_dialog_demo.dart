@@ -8,14 +8,10 @@ import 'package:intl/intl.dart';
 // This demo is based on
 // https://material.io/design/components/dialogs.html#full-screen-dialog
 
-enum DismissDialogAction {
-  cancel,
-  discard,
-  save,
-}
+enum DismissDialogAction { cancel, discard, save }
 
 class DateTimeItem extends StatelessWidget {
-  DateTimeItem({ super.key, required DateTime dateTime, required this.onChanged })
+  DateTimeItem({super.key, required DateTime dateTime, required this.onChanged})
     : date = DateTime(dateTime.year, dateTime.month, dateTime.day),
       time = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
 
@@ -35,7 +31,7 @@ class DateTimeItem extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: theme.dividerColor))
+                border: Border(bottom: BorderSide(color: theme.dividerColor)),
               ),
               child: InkWell(
                 onTap: () {
@@ -44,10 +40,15 @@ class DateTimeItem extends StatelessWidget {
                     initialDate: date,
                     firstDate: date.subtract(const Duration(days: 30)),
                     lastDate: date.add(const Duration(days: 30)),
-                  )
-                  .then((DateTime? value) {
+                  ).then((DateTime? value) {
                     if (value != null) {
-                      onChanged(DateTime(value.year, value.month, value.day, time.hour, time.minute));
+                      onChanged(DateTime(
+                        value.year,
+                        value.month,
+                        value.day,
+                        time.hour,
+                        time.minute,
+                      ));
                     }
                   });
                 },
@@ -65,19 +66,23 @@ class DateTimeItem extends StatelessWidget {
             margin: const EdgeInsets.only(left: 8.0),
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: theme.dividerColor))
+              border: Border(bottom: BorderSide(color: theme.dividerColor)),
             ),
             child: InkWell(
               onTap: () {
-                showTimePicker(
-                  context: context,
-                  initialTime: time,
-                )
-                .then((TimeOfDay? value) {
-                  if (value != null) {
-                    onChanged(DateTime(date.year, date.month, date.day, value.hour, value.minute));
-                  }
-                });
+                showTimePicker(context: context, initialTime: time).then(
+                  (TimeOfDay? value) {
+                    if (value != null) {
+                      onChanged(DateTime(
+                        date.year,
+                        date.month,
+                        date.day,
+                        value.hour,
+                        value.minute,
+                      ));
+                    }
+                  },
+                );
               },
               child: Row(
                 children: <Widget>[
@@ -116,27 +121,30 @@ class FullScreenDialogDemoState extends State<FullScreenDialogDemo> {
     }
 
     final ThemeData theme = Theme.of(context);
-    final TextStyle dialogTextStyle = theme.textTheme.titleMedium!.copyWith(color: theme.textTheme.bodySmall!.color);
+    final TextStyle dialogTextStyle = theme.textTheme.titleMedium!.copyWith(
+      color: theme.textTheme.bodySmall!.color,
+    );
 
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(
-            'Discard new event?',
-            style: dialogTextStyle,
-          ),
+          content: Text('Discard new event?', style: dialogTextStyle),
           actions: <Widget>[
             TextButton(
               child: const Text('CANCEL'),
               onPressed: () {
-                Navigator.of(context).pop(false); // Pops the confirmation dialog but not the page.
+                Navigator.of(context).pop(
+                  false,
+                ); // Pops the confirmation dialog but not the page.
               },
             ),
             TextButton(
               child: const Text('DISCARD'),
               onPressed: () {
-                Navigator.of(context).pop(true); // Returning true to _onWillPop will pop again.
+                Navigator.of(context).pop(
+                  true,
+                ); // Returning true to _onWillPop will pop again.
               },
             ),
           ],
@@ -152,9 +160,12 @@ class FullScreenDialogDemoState extends State<FullScreenDialogDemo> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_hasName ? _eventName : 'Event Name TBD'),
-        actions: <Widget> [
+        actions: <Widget>[
           TextButton(
-            child: Text('SAVE', style: theme.textTheme.bodyMedium!.copyWith(color: Colors.white)),
+            child: Text(
+              'SAVE',
+              style: theme.textTheme.bodyMedium!.copyWith(color: Colors.white),
+            ),
             onPressed: () {
               Navigator.pop(context, DismissDialogAction.save);
             },
@@ -236,10 +247,10 @@ class FullScreenDialogDemoState extends State<FullScreenDialogDemo> {
               ),
               Container(
                 decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: theme.dividerColor))
+                  border: Border(bottom: BorderSide(color: theme.dividerColor)),
                 ),
                 child: Row(
-                  children: <Widget> [
+                  children: <Widget>[
                     Checkbox(
                       value: _allDayValue,
                       onChanged: (bool? value) {
@@ -253,15 +264,13 @@ class FullScreenDialogDemoState extends State<FullScreenDialogDemo> {
                   ],
                 ),
               ),
-            ]
-            .map<Widget>((Widget child) {
+            ].map<Widget>((Widget child) {
               return Container(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 height: 96.0,
                 child: child,
               );
-            })
-            .toList(),
+            }).toList(),
           ),
         ),
       ),

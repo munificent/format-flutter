@@ -14,18 +14,12 @@ class FocusableActionDetectorExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: FocusableActionDetectorExample(),
-    );
+    return const MaterialApp(home: FocusableActionDetectorExample());
   }
 }
 
 class FadButton extends StatefulWidget {
-  const FadButton({
-    super.key,
-    required this.onPressed,
-    required this.child,
-  });
+  const FadButton({super.key, required this.onPressed, required this.child});
 
   final VoidCallback onPressed;
   final Widget child;
@@ -39,17 +33,17 @@ class _FadButtonState extends State<FadButton> {
   bool _hovering = false;
   bool _on = false;
   late final Map<Type, Action<Intent>> _actionMap;
-  final Map<ShortcutActivator, Intent> _shortcutMap = const <ShortcutActivator, Intent>{
-    SingleActivator(LogicalKeyboardKey.keyX): ActivateIntent(),
-  };
+  final Map<ShortcutActivator, Intent> _shortcutMap = const <
+    ShortcutActivator,
+    Intent
+  >{SingleActivator(LogicalKeyboardKey.keyX): ActivateIntent()};
 
   @override
   void initState() {
     super.initState();
     _actionMap = <Type, Action<Intent>>{
-      ActivateIntent: CallbackAction<Intent>(
-        onInvoke: (Intent intent) => _toggleState(),
-      ),
+      ActivateIntent:
+          CallbackAction<Intent>(onInvoke: (Intent intent) => _toggleState()),
     };
   }
 
@@ -115,23 +109,24 @@ class FocusableActionDetectorExample extends StatefulWidget {
   const FocusableActionDetectorExample({super.key});
 
   @override
-  State<FocusableActionDetectorExample> createState() => _FocusableActionDetectorExampleState();
+  State<FocusableActionDetectorExample> createState() =>
+      _FocusableActionDetectorExampleState();
 }
 
-class _FocusableActionDetectorExampleState extends State<FocusableActionDetectorExample> {
+class _FocusableActionDetectorExampleState
+    extends State<FocusableActionDetectorExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('FocusableActionDetector Example'),
-      ),
+      appBar: AppBar(title: const Text('FocusableActionDetector Example')),
       body: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextButton(onPressed: () {}, child: const Text('Press Me')),
+              child:
+                  TextButton(onPressed: () {}, child: const Text('Press Me')),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),

@@ -39,10 +39,7 @@ class Title extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setApplicationSwitcherDescription(
-      ApplicationSwitcherDescription(
-        label: title,
-        primaryColor: color.value,
-      ),
+      ApplicationSwitcherDescription(label: title, primaryColor: color.value),
     );
     return child;
   }

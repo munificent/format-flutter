@@ -66,7 +66,9 @@ class MenuThemeData with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<MenuStyle>('style', style, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MenuStyle>('style', style, defaultValue: null),
+    );
   }
 }
 
@@ -90,11 +92,7 @@ class MenuThemeData with Diagnosticable {
 class MenuTheme extends InheritedTheme {
   /// Creates a const theme that controls the configurations for the menus
   /// created by the [SubmenuButton] or [MenuAnchor] widgets.
-  const MenuTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const MenuTheme({super.key, required this.data, required super.child});
 
   /// The properties for [MenuBar] and [MenuItemButton] in this widget's
   /// descendants.
@@ -119,7 +117,8 @@ class MenuTheme extends InheritedTheme {
   /// }
   /// ```
   static MenuThemeData of(BuildContext context) {
-    final MenuTheme? menuTheme = context.dependOnInheritedWidgetOfExactType<MenuTheme>();
+    final MenuTheme? menuTheme =
+        context.dependOnInheritedWidgetOfExactType<MenuTheme>();
     return menuTheme?.data ?? Theme.of(context).menuTheme;
   }
 

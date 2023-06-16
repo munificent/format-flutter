@@ -20,13 +20,17 @@ File? findTestConfigFile(File testFile, Logger logger) {
   while (directory.path != directory.parent.path) {
     final File configFile = directory.childFile(_kTestConfigFileName);
     if (configFile.existsSync()) {
-      logger.printTrace('Discovered $_kTestConfigFileName in ${directory.path}');
+      logger.printTrace(
+        'Discovered $_kTestConfigFileName in ${directory.path}',
+      );
       testConfigFile = configFile;
       break;
     }
     if (directory.childFile(_kProjectRootSentinel).existsSync()) {
-      logger.printTrace('Stopping scan for $_kTestConfigFileName; '
-          'found project root at ${directory.path}');
+      logger.printTrace(
+        'Stopping scan for $_kTestConfigFileName; '
+        'found project root at ${directory.path}',
+      );
       break;
     }
     directory = directory.parent;

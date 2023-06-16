@@ -53,12 +53,15 @@ import 'package:flutter/foundation.dart';
 ''';
 
 void _standardFlutterDirectoryL10nSetup(FileSystem fs) {
-  final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-    ..createSync(recursive: true);
-  l10nDirectory.childFile(defaultTemplateArbFileName)
-    .writeAsStringSync(singleMessageArbFileString);
-  l10nDirectory.childFile(esArbFileName)
-    .writeAsStringSync(singleEsMessageArbFileString);
+  final Directory l10nDirectory = fs.currentDirectory
+      .childDirectory('lib')
+      .childDirectory('l10n')..createSync(recursive: true);
+  l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+    singleMessageArbFileString,
+  );
+  l10nDirectory.childFile(esArbFileName).writeAsStringSync(
+    singleEsMessageArbFileString,
+  );
 }
 
 void main() {
@@ -83,46 +86,58 @@ void main() {
   });
 
   group('Setters', () {
-    testWithoutContext('setInputDirectory fails if the directory does not exist', () {
-      expect(
-        () => LocalizationsGenerator.inputDirectoryFromPath(fs, 'lib', fs.directory('bogus')),
-        throwsA(isA<L10nException>().having(
-          (L10nException e) => e.message,
-          'message',
-          contains('Make sure that the correct path was provided'),
-        )),
-      );
-    });
+    testWithoutContext(
+      'setInputDirectory fails if the directory does not exist',
+      () {
+        expect(
+          () => LocalizationsGenerator.inputDirectoryFromPath(
+            fs,
+            'lib',
+            fs.directory('bogus'),
+          ),
+          throwsA(isA<L10nException>().having(
+            (L10nException e) => e.message,
+            'message',
+            contains('Make sure that the correct path was provided'),
+          )),
+        );
+      },
+    );
 
     testWithoutContext('setting className fails if input string is empty', () {
       _standardFlutterDirectoryL10nSetup(fs);
-      expect(
-        () => LocalizationsGenerator.classNameFromString(''),
-        throwsA(isA<L10nException>().having(
+      expect(() => LocalizationsGenerator.classNameFromString(''), throwsA(
+        isA<L10nException>().having(
           (L10nException e) => e.message,
           'message',
           contains('cannot be empty'),
-        )),
-      );
+        ),
+      ));
     });
 
     testWithoutContext('sets absolute path of the target Flutter project', () {
       // Set up project directory.
       final Directory l10nDirectory = fs.currentDirectory
-        .childDirectory('absolute')
-        .childDirectory('path')
-        .childDirectory('to')
-        .childDirectory('flutter_project')
-        .childDirectory('lib')
-        .childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(singleMessageArbFileString);
-      l10nDirectory.childFile(esArbFileName)
-        .writeAsStringSync(singleEsMessageArbFileString);
+          .childDirectory('absolute')
+          .childDirectory('path')
+          .childDirectory('to')
+          .childDirectory('flutter_project')
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+        singleMessageArbFileString,
+      );
+      l10nDirectory.childFile(esArbFileName).writeAsStringSync(
+        singleEsMessageArbFileString,
+      );
 
       // Run localizations generator in specified absolute path.
-      final String flutterProjectPath = fs.path.join('absolute', 'path', 'to', 'flutter_project');
+      final String flutterProjectPath = fs.path.join(
+        'absolute',
+        'path',
+        'to',
+        'flutter_project',
+      );
       LocalizationsGenerator(
         fileSystem: fs,
         projectPathString: flutterProjectPath,
@@ -137,65 +152,63 @@ void main() {
         ..writeOutputFiles();
 
       // Output files should be generated in the provided absolute path.
-      expect(
-        fs.isFileSync(fs.path.join(
-          flutterProjectPath,
-          '.dart_tool',
-          'flutter_gen',
-          'gen_l10n',
-          'output-localization-file_en.dart',
-        )),
-        true,
-      );
-      expect(
-        fs.isFileSync(fs.path.join(
-          flutterProjectPath,
-          '.dart_tool',
-          'flutter_gen',
-          'gen_l10n',
-          'output-localization-file_es.dart',
-        )),
-        true,
-      );
+      expect(fs.isFileSync(fs.path.join(
+        flutterProjectPath,
+        '.dart_tool',
+        'flutter_gen',
+        'gen_l10n',
+        'output-localization-file_en.dart',
+      )), true);
+      expect(fs.isFileSync(fs.path.join(
+        flutterProjectPath,
+        '.dart_tool',
+        'flutter_gen',
+        'gen_l10n',
+        'output-localization-file_es.dart',
+      )), true);
     });
 
-    testWithoutContext('throws error when directory at absolute path does not exist', () {
-      // Set up project directory.
-      final Directory l10nDirectory = fs.currentDirectory
-        .childDirectory('lib')
-        .childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(singleMessageArbFileString);
-      l10nDirectory.childFile(esArbFileName)
-        .writeAsStringSync(singleEsMessageArbFileString);
+    testWithoutContext(
+      'throws error when directory at absolute path does not exist',
+      () {
+        // Set up project directory.
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          singleMessageArbFileString,
+        );
+        l10nDirectory.childFile(esArbFileName).writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
 
-      // Project path should be intentionally a directory that does not exist.
-      expect(
-        () => LocalizationsGenerator(
-          fileSystem: fs,
-          projectPathString: 'absolute/path/to/flutter_project',
-          inputPathString: defaultL10nPathString,
-          outputPathString: defaultL10nPathString,
-          templateArbFileName: defaultTemplateArbFileName,
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          logger: logger,
-        ),
-        throwsA(isA<L10nException>().having(
-          (L10nException e) => e.message,
-          'message',
-          contains('Directory does not exist'),
-        )),
-      );
-    });
+        // Project path should be intentionally a directory that does not exist.
+        expect(
+          () => LocalizationsGenerator(
+            fileSystem: fs,
+            projectPathString: 'absolute/path/to/flutter_project',
+            inputPathString: defaultL10nPathString,
+            outputPathString: defaultL10nPathString,
+            templateArbFileName: defaultTemplateArbFileName,
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            logger: logger,
+          ),
+          throwsA(isA<L10nException>().having(
+            (L10nException e) => e.message,
+            'message',
+            contains('Directory does not exist'),
+          )),
+        );
+      },
+    );
 
     testWithoutContext('throws error when arb file does not exist', () {
       // Set up project directory.
       fs.currentDirectory
-        .childDirectory('lib')
-        .childDirectory('l10n')
-        .createSync(recursive: true);
+          .childDirectory('lib')
+          .childDirectory('l10n')
+          .createSync(recursive: true);
 
       // Arb file should be nonexistent in the l10n directory.
       expect(
@@ -224,7 +237,9 @@ void main() {
 
       testWithoutContext('fails on string with spaces', () {
         expect(
-          () => LocalizationsGenerator.classNameFromString('String with spaces'),
+          () => LocalizationsGenerator.classNameFromString(
+            'String with spaces',
+          ),
           throwsA(isA<L10nException>().having(
             (L10nException e) => e.message,
             'message',
@@ -246,7 +261,9 @@ void main() {
 
       testWithoutContext('fails on camel-case', () {
         expect(
-          () => LocalizationsGenerator.classNameFromString('camelCaseClassName'),
+          () => LocalizationsGenerator.classNameFromString(
+            'camelCaseClassName',
+          ),
           throwsA(isA<L10nException>().having(
             (L10nException e) => e.message,
             'message',
@@ -288,9 +305,13 @@ void main() {
   testWithoutContext('correctly adds a headerFile when it is set', () {
     fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
       ..createSync(recursive: true)
-      ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleMessageArbFileString)
+      ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+        singleMessageArbFileString,
+      )
       ..childFile(esArbFileName).writeAsStringSync(singleEsMessageArbFileString)
-      ..childFile('header.txt').writeAsStringSync('/// Sample header in a text file');
+      ..childFile('header.txt').writeAsStringSync(
+        '/// Sample header in a text file',
+      );
 
     final LocalizationsGenerator generator = LocalizationsGenerator(
       fileSystem: fs,
@@ -306,164 +327,219 @@ void main() {
     expect(generator.header, '/// Sample header in a text file');
   });
 
-  testWithoutContext('sets templateArbFileName with more than one underscore correctly', () {
-    final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true);
-    l10nDirectory.childFile('app_localizations_en.arb')
-      .writeAsStringSync(singleMessageArbFileString);
-    l10nDirectory.childFile('app_localizations_es.arb')
-      .writeAsStringSync(singleEsMessageArbFileString);
-    LocalizationsGenerator(
-      fileSystem: fs,
+  testWithoutContext(
+    'sets templateArbFileName with more than one underscore correctly',
+    () {
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile('app_localizations_en.arb').writeAsStringSync(
+        singleMessageArbFileString,
+      );
+      l10nDirectory.childFile('app_localizations_es.arb').writeAsStringSync(
+        singleEsMessageArbFileString,
+      );
+      LocalizationsGenerator(
+        fileSystem: fs,
         inputPathString: defaultL10nPathString,
         templateArbFileName: 'app_localizations_en.arb',
         outputFileString: defaultOutputFileString,
         classNameString: defaultClassNameString,
         logger: logger,
       )
-      ..loadResources()
-      ..writeOutputFiles();
-
-    final Directory outputDirectory = fs.directory(syntheticL10nPackagePath);
-    expect(outputDirectory.childFile('output-localization-file.dart').existsSync(), isTrue);
-    expect(outputDirectory.childFile('output-localization-file_en.dart').existsSync(), isTrue);
-    expect(outputDirectory.childFile('output-localization-file_es.dart').existsSync(), isTrue);
-  });
-
-  testWithoutContext('filenames with invalid locales should not be recognized', () {
-    final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true);
-    l10nDirectory.childFile('app_localizations_en.arb')
-      .writeAsStringSync(singleMessageArbFileString);
-    l10nDirectory.childFile('app_localizations_en_CA_foo.arb')
-      .writeAsStringSync(singleMessageArbFileString);
-    expect(
-      () {
-        LocalizationsGenerator(
-          fileSystem: fs,
-          inputPathString: defaultL10nPathString,
-          templateArbFileName: 'app_localizations_en.arb',
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          logger: logger,
-        ).loadResources();
-      },
-      throwsA(isA<L10nException>().having(
-        (L10nException e) => e.message,
-        'message',
-        contains("The following .arb file's locale could not be determined"),
-      )),
-    );
-  });
-
-  testWithoutContext('correctly creates an untranslated messages file (useSyntheticPackage = true)', () {
-    fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true)
-      ..childFile(defaultTemplateArbFileName).writeAsStringSync(twoMessageArbFileString)
-      ..childFile(esArbFileName).writeAsStringSync(singleEsMessageArbFileString);
-
-    LocalizationsGenerator(
-      fileSystem: fs,
-      inputPathString: defaultL10nPathString,
-      outputPathString: defaultL10nPathString,
-      templateArbFileName: defaultTemplateArbFileName,
-      outputFileString: defaultOutputFileString,
-      classNameString: defaultClassNameString,
-      untranslatedMessagesFile: fs.path.join('lib', 'l10n', 'unimplemented_message_translations.json'),
-      logger: logger,
-    )
-      ..loadResources()
-      ..writeOutputFiles();
-
-    final File unimplementedOutputFile = fs.file(
-      fs.path.join('lib', 'l10n', 'unimplemented_message_translations.json'),
-    );
-    final String unimplementedOutputString = unimplementedOutputFile.readAsStringSync();
-    try {
-      // Since ARB file is essentially JSON, decoding it should not fail.
-      json.decode(unimplementedOutputString);
-    } on Exception {
-      fail('Parsing arb file should not fail');
-    }
-    expect(unimplementedOutputString, contains('es'));
-    expect(unimplementedOutputString, contains('subtitle'));
-  });
-
-  testWithoutContext('correctly creates an untranslated messages file (useSyntheticPackage = false)', () {
-    fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true)
-      ..childFile(defaultTemplateArbFileName).writeAsStringSync(twoMessageArbFileString)
-      ..childFile(esArbFileName).writeAsStringSync(singleEsMessageArbFileString);
-
-    LocalizationsGenerator(
-      fileSystem: fs,
-      inputPathString: defaultL10nPathString,
-      outputPathString: defaultL10nPathString,
-      templateArbFileName: defaultTemplateArbFileName,
-      outputFileString: defaultOutputFileString,
-      classNameString: defaultClassNameString,
-      useSyntheticPackage: false,
-      untranslatedMessagesFile: fs.path.join('lib', 'l10n', 'unimplemented_message_translations.json'),
-      logger: logger,
-    )
-      ..loadResources()
-      ..writeOutputFiles();
-
-    final File unimplementedOutputFile = fs.file(
-      fs.path.join('lib', 'l10n', 'unimplemented_message_translations.json'),
-    );
-    final String unimplementedOutputString = unimplementedOutputFile.readAsStringSync();
-    try {
-      // Since ARB file is essentially JSON, decoding it should not fail.
-      json.decode(unimplementedOutputString);
-    } on Exception {
-      fail('Parsing arb file should not fail');
-    }
-    expect(unimplementedOutputString, contains('es'));
-    expect(unimplementedOutputString, contains('subtitle'));
-  });
-
-  testWithoutContext(
-    'untranslated messages suggestion is printed when translation is missing: '
-    'command line message',
-    () {
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(twoMessageArbFileString)
-        ..childFile(esArbFileName).writeAsStringSync(singleEsMessageArbFileString);
-
-      LocalizationsGenerator(
-        fileSystem: fs,
-          inputPathString: defaultL10nPathString,
-          outputPathString: defaultL10nPathString,
-          templateArbFileName: defaultTemplateArbFileName,
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          useSyntheticPackage: false,
-          logger: logger,
-        )
         ..loadResources()
         ..writeOutputFiles();
 
+      final Directory outputDirectory = fs.directory(syntheticL10nPackagePath);
       expect(
-        logger.statusText,
-        contains('To see a detailed report, use the --untranslated-messages-file'),
+        outputDirectory.childFile('output-localization-file.dart').existsSync(),
+        isTrue,
       );
       expect(
-        logger.statusText,
-        contains('flutter gen-l10n --untranslated-messages-file=desiredFileName.txt'),
+        outputDirectory.childFile(
+          'output-localization-file_en.dart',
+        ).existsSync(),
+        isTrue,
+      );
+      expect(
+        outputDirectory.childFile(
+          'output-localization-file_es.dart',
+        ).existsSync(),
+        isTrue,
       );
     },
   );
 
   testWithoutContext(
-    'untranslated messages suggestion is printed when translation is missing: '
-    'l10n.yaml message',
+    'filenames with invalid locales should not be recognized',
+    () {
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile('app_localizations_en.arb').writeAsStringSync(
+        singleMessageArbFileString,
+      );
+      l10nDirectory
+          .childFile('app_localizations_en_CA_foo.arb')
+          .writeAsStringSync(singleMessageArbFileString);
+      expect(
+        () {
+          LocalizationsGenerator(
+            fileSystem: fs,
+            inputPathString: defaultL10nPathString,
+            templateArbFileName: 'app_localizations_en.arb',
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            logger: logger,
+          ).loadResources();
+        },
+        throwsA(isA<L10nException>().having(
+          (L10nException e) => e.message,
+          'message',
+          contains("The following .arb file's locale could not be determined"),
+        )),
+      );
+    },
+  );
+
+  testWithoutContext(
+    'correctly creates an untranslated messages file (useSyntheticPackage = true)',
     () {
       fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
         ..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(twoMessageArbFileString)
-        ..childFile(esArbFileName).writeAsStringSync(singleEsMessageArbFileString);
+        ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+          twoMessageArbFileString,
+        )
+        ..childFile(esArbFileName).writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
+
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        outputPathString: defaultL10nPathString,
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        untranslatedMessagesFile: fs.path.join(
+          'lib',
+          'l10n',
+          'unimplemented_message_translations.json',
+        ),
+        logger: logger,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
+
+      final File unimplementedOutputFile = fs.file(
+        fs.path.join('lib', 'l10n', 'unimplemented_message_translations.json'),
+      );
+      final String unimplementedOutputString =
+          unimplementedOutputFile.readAsStringSync();
+      try {
+        // Since ARB file is essentially JSON, decoding it should not fail.
+        json.decode(unimplementedOutputString);
+      } on Exception {
+        fail('Parsing arb file should not fail');
+      }
+      expect(unimplementedOutputString, contains('es'));
+      expect(unimplementedOutputString, contains('subtitle'));
+    },
+  );
+
+  testWithoutContext(
+    'correctly creates an untranslated messages file (useSyntheticPackage = false)',
+    () {
+      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+        ..createSync(recursive: true)
+        ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+          twoMessageArbFileString,
+        )
+        ..childFile(esArbFileName).writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
+
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        outputPathString: defaultL10nPathString,
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        useSyntheticPackage: false,
+        untranslatedMessagesFile: fs.path.join(
+          'lib',
+          'l10n',
+          'unimplemented_message_translations.json',
+        ),
+        logger: logger,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
+
+      final File unimplementedOutputFile = fs.file(
+        fs.path.join('lib', 'l10n', 'unimplemented_message_translations.json'),
+      );
+      final String unimplementedOutputString =
+          unimplementedOutputFile.readAsStringSync();
+      try {
+        // Since ARB file is essentially JSON, decoding it should not fail.
+        json.decode(unimplementedOutputString);
+      } on Exception {
+        fail('Parsing arb file should not fail');
+      }
+      expect(unimplementedOutputString, contains('es'));
+      expect(unimplementedOutputString, contains('subtitle'));
+    },
+  );
+
+  testWithoutContext(
+    'untranslated messages suggestion is printed when translation is missing: '
+        'command line message',
+    () {
+      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+        ..createSync(recursive: true)
+        ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+          twoMessageArbFileString,
+        )
+        ..childFile(esArbFileName).writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
+
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        outputPathString: defaultL10nPathString,
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        useSyntheticPackage: false,
+        logger: logger,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
+
+      expect(logger.statusText, contains(
+        'To see a detailed report, use the --untranslated-messages-file',
+      ));
+      expect(logger.statusText, contains(
+        'flutter gen-l10n --untranslated-messages-file=desiredFileName.txt',
+      ));
+    },
+  );
+
+  testWithoutContext(
+    'untranslated messages suggestion is printed when translation is missing: '
+        'l10n.yaml message',
+    () {
+      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+        ..createSync(recursive: true)
+        ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+          twoMessageArbFileString,
+        )
+        ..childFile(esArbFileName).writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
 
       LocalizationsGenerator(
         fileSystem: fs,
@@ -476,10 +552,9 @@ void main() {
         ..loadResources()
         ..writeOutputFiles(isFromYaml: true);
 
-      expect(
-        logger.statusText,
-        contains('To see a detailed report, use the untranslated-messages-file'),
-      );
+      expect(logger.statusText, contains(
+        'To see a detailed report, use the untranslated-messages-file',
+      ));
       expect(
         logger.statusText,
         contains('untranslated-messages-file: desiredFileName.txt'),
@@ -489,11 +564,13 @@ void main() {
 
   testWithoutContext(
     'unimplemented messages suggestion is not printed when all messages '
-    'are fully translated',
+        'are fully translated',
     () {
       fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
         ..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(twoMessageArbFileString)
+        ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+          twoMessageArbFileString,
+        )
         ..childFile(esArbFileName).writeAsStringSync(twoMessageArbFileString);
 
       LocalizationsGenerator(
@@ -512,37 +589,48 @@ void main() {
     },
   );
 
-  testWithoutContext('untranslated messages file included in generated JSON list of outputs', () {
-    _standardFlutterDirectoryL10nSetup(fs);
+  testWithoutContext(
+    'untranslated messages file included in generated JSON list of outputs',
+    () {
+      _standardFlutterDirectoryL10nSetup(fs);
 
-    LocalizationsGenerator(
-      fileSystem: fs,
-      inputPathString: defaultL10nPathString,
-      templateArbFileName: defaultTemplateArbFileName,
-      outputFileString: defaultOutputFileString,
-      classNameString: defaultClassNameString,
-      inputsAndOutputsListPath: syntheticL10nPackagePath,
-      untranslatedMessagesFile: fs.path.join('lib', 'l10n', 'unimplemented_message_translations.json'),
-      logger: logger,
-    )
-      ..loadResources()
-      ..writeOutputFiles();
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        inputsAndOutputsListPath: syntheticL10nPackagePath,
+        untranslatedMessagesFile: fs.path.join(
+          'lib',
+          'l10n',
+          'unimplemented_message_translations.json',
+        ),
+        logger: logger,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
 
-    final File inputsAndOutputsList = fs.file(
-      fs.path.join(syntheticL10nPackagePath, 'gen_l10n_inputs_and_outputs.json'),
-    );
-    expect(inputsAndOutputsList.existsSync(), isTrue);
-    final Map<String, dynamic> jsonResult = json.decode(
-      inputsAndOutputsList.readAsStringSync(),
-    ) as Map<String, dynamic>;
-    expect(jsonResult.containsKey('outputs'), isTrue);
-    final List<dynamic> outputList = jsonResult['outputs'] as List<dynamic>;
-    expect(outputList, contains(contains('unimplemented_message_translations.json')));
-  });
+      final File inputsAndOutputsList = fs.file(fs.path.join(
+        syntheticL10nPackagePath,
+        'gen_l10n_inputs_and_outputs.json',
+      ));
+      expect(inputsAndOutputsList.existsSync(), isTrue);
+      final Map<String, dynamic> jsonResult = json.decode(
+        inputsAndOutputsList.readAsStringSync(),
+      ) as Map<String, dynamic>;
+      expect(jsonResult.containsKey('outputs'), isTrue);
+      final List<dynamic> outputList = jsonResult['outputs'] as List<dynamic>;
+      expect(
+        outputList,
+        contains(contains('unimplemented_message_translations.json')),
+      );
+    },
+  );
 
   testWithoutContext(
     'uses inputPathString as outputPathString when the outputPathString is '
-    'null while not using the synthetic package option',
+        'null while not using the synthetic package option',
     () {
       _standardFlutterDirectoryL10nSetup(fs);
       LocalizationsGenerator(
@@ -558,30 +646,44 @@ void main() {
         ..loadResources()
         ..writeOutputFiles();
 
-      final Directory outputDirectory = fs.directory('lib').childDirectory('l10n');
-      expect(outputDirectory.childFile('output-localization-file.dart').existsSync(), isTrue);
-      expect(outputDirectory.childFile('output-localization-file_en.dart').existsSync(), isTrue);
-      expect(outputDirectory.childFile('output-localization-file_es.dart').existsSync(), isTrue);
+      final Directory outputDirectory = fs.directory('lib').childDirectory(
+        'l10n',
+      );
+      expect(
+        outputDirectory.childFile('output-localization-file.dart').existsSync(),
+        isTrue,
+      );
+      expect(
+        outputDirectory.childFile(
+          'output-localization-file_en.dart',
+        ).existsSync(),
+        isTrue,
+      );
+      expect(
+        outputDirectory.childFile(
+          'output-localization-file_es.dart',
+        ).existsSync(),
+        isTrue,
+      );
     },
   );
 
   testWithoutContext(
     'correctly generates output files in non-default output directory if it '
-    'already exists while not using the synthetic package option',
+        'already exists while not using the synthetic package option',
     () {
       final Directory l10nDirectory = fs.currentDirectory
-        .childDirectory('lib')
-        .childDirectory('l10n')
-        ..createSync(recursive: true);
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
       // Create the directory 'lib/l10n/output'.
       l10nDirectory.childDirectory('output');
 
-      l10nDirectory
-        .childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(singleMessageArbFileString);
-      l10nDirectory
-        .childFile(esArbFileName)
-        .writeAsStringSync(singleEsMessageArbFileString);
+      l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+        singleMessageArbFileString,
+      );
+      l10nDirectory.childFile(esArbFileName).writeAsStringSync(
+        singleEsMessageArbFileString,
+      );
 
       LocalizationsGenerator(
         fileSystem: fs,
@@ -596,44 +698,33 @@ void main() {
         ..loadResources()
         ..writeOutputFiles();
 
-      final Directory outputDirectory = fs.directory('lib').childDirectory('l10n').childDirectory('output');
+      final Directory outputDirectory = fs
+          .directory('lib')
+          .childDirectory('l10n')
+          .childDirectory('output');
       expect(outputDirectory.existsSync(), isTrue);
-      expect(outputDirectory.childFile('output-localization-file.dart').existsSync(), isTrue);
-      expect(outputDirectory.childFile('output-localization-file_en.dart').existsSync(), isTrue);
-      expect(outputDirectory.childFile('output-localization-file_es.dart').existsSync(), isTrue);
+      expect(
+        outputDirectory.childFile('output-localization-file.dart').existsSync(),
+        isTrue,
+      );
+      expect(
+        outputDirectory.childFile(
+          'output-localization-file_en.dart',
+        ).existsSync(),
+        isTrue,
+      );
+      expect(
+        outputDirectory.childFile(
+          'output-localization-file_es.dart',
+        ).existsSync(),
+        isTrue,
+      );
     },
   );
 
   testWithoutContext(
     'correctly creates output directory if it does not exist and writes files '
-    'in it while not using the synthetic package option',
-    () {
-      _standardFlutterDirectoryL10nSetup(fs);
-
-      LocalizationsGenerator(
-        fileSystem: fs,
-          inputPathString: defaultL10nPathString,
-          outputPathString: fs.path.join('lib', 'l10n', 'output'),
-          templateArbFileName: defaultTemplateArbFileName,
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          useSyntheticPackage: false,
-          logger: logger,
-        )
-        ..loadResources()
-        ..writeOutputFiles();
-
-      final Directory outputDirectory = fs.directory('lib').childDirectory('l10n').childDirectory('output');
-      expect(outputDirectory.existsSync(), isTrue);
-      expect(outputDirectory.childFile('output-localization-file.dart').existsSync(), isTrue);
-      expect(outputDirectory.childFile('output-localization-file_en.dart').existsSync(), isTrue);
-      expect(outputDirectory.childFile('output-localization-file_es.dart').existsSync(), isTrue);
-    },
-  );
-
-  testWithoutContext(
-    'generates nullable localizations class getter via static `of` method '
-    'by default',
+        'in it while not using the synthetic package option',
     () {
       _standardFlutterDirectoryL10nSetup(fs);
 
@@ -650,16 +741,71 @@ void main() {
         ..loadResources()
         ..writeOutputFiles();
 
-      final Directory outputDirectory = fs.directory('lib').childDirectory('l10n').childDirectory('output');
+      final Directory outputDirectory = fs
+          .directory('lib')
+          .childDirectory('l10n')
+          .childDirectory('output');
       expect(outputDirectory.existsSync(), isTrue);
-      expect(outputDirectory.childFile('output-localization-file.dart').existsSync(), isTrue);
       expect(
-        outputDirectory.childFile('output-localization-file.dart').readAsStringSync(),
+        outputDirectory.childFile('output-localization-file.dart').existsSync(),
+        isTrue,
+      );
+      expect(
+        outputDirectory.childFile(
+          'output-localization-file_en.dart',
+        ).existsSync(),
+        isTrue,
+      );
+      expect(
+        outputDirectory.childFile(
+          'output-localization-file_es.dart',
+        ).existsSync(),
+        isTrue,
+      );
+    },
+  );
+
+  testWithoutContext(
+    'generates nullable localizations class getter via static `of` method '
+        'by default',
+    () {
+      _standardFlutterDirectoryL10nSetup(fs);
+
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        outputPathString: fs.path.join('lib', 'l10n', 'output'),
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        useSyntheticPackage: false,
+        logger: logger,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
+
+      final Directory outputDirectory = fs
+          .directory('lib')
+          .childDirectory('l10n')
+          .childDirectory('output');
+      expect(outputDirectory.existsSync(), isTrue);
+      expect(
+        outputDirectory.childFile('output-localization-file.dart').existsSync(),
+        isTrue,
+      );
+      expect(
+        outputDirectory.childFile(
+          'output-localization-file.dart',
+        ).readAsStringSync(),
         contains('static AppLocalizations? of(BuildContext context)'),
       );
       expect(
-        outputDirectory.childFile('output-localization-file.dart').readAsStringSync(),
-        contains('return Localizations.of<AppLocalizations>(context, AppLocalizations);'),
+        outputDirectory.childFile(
+          'output-localization-file.dart',
+        ).readAsStringSync(),
+        contains(
+          'return Localizations.of<AppLocalizations>(context, AppLocalizations);',
+        ),
       );
     },
   );
@@ -683,137 +829,193 @@ void main() {
         ..loadResources()
         ..writeOutputFiles();
 
-      final Directory outputDirectory = fs.directory('lib').childDirectory('l10n').childDirectory('output');
+      final Directory outputDirectory = fs
+          .directory('lib')
+          .childDirectory('l10n')
+          .childDirectory('output');
       expect(outputDirectory.existsSync(), isTrue);
-      expect(outputDirectory.childFile('output-localization-file.dart').existsSync(), isTrue);
       expect(
-        outputDirectory.childFile('output-localization-file.dart').readAsStringSync(),
+        outputDirectory.childFile('output-localization-file.dart').existsSync(),
+        isTrue,
+      );
+      expect(
+        outputDirectory.childFile(
+          'output-localization-file.dart',
+        ).readAsStringSync(),
         contains('static AppLocalizations of(BuildContext context)'),
       );
       expect(
-        outputDirectory.childFile('output-localization-file.dart').readAsStringSync(),
-        contains('return Localizations.of<AppLocalizations>(context, AppLocalizations)!;'),
+        outputDirectory.childFile(
+          'output-localization-file.dart',
+        ).readAsStringSync(),
+        contains(
+          'return Localizations.of<AppLocalizations>(context, AppLocalizations)!;',
+        ),
       );
     },
   );
 
-  testWithoutContext('creates list of inputs and outputs when file path is specified', () {
-    _standardFlutterDirectoryL10nSetup(fs);
+  testWithoutContext(
+    'creates list of inputs and outputs when file path is specified',
+    () {
+      _standardFlutterDirectoryL10nSetup(fs);
 
-    LocalizationsGenerator(
-      fileSystem: fs,
-      inputPathString: defaultL10nPathString,
-      templateArbFileName: defaultTemplateArbFileName,
-      outputFileString: defaultOutputFileString,
-      classNameString: defaultClassNameString,
-      inputsAndOutputsListPath: syntheticL10nPackagePath,
-      logger: logger,
-    )
-      ..loadResources()
-      ..writeOutputFiles();
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        inputsAndOutputsListPath: syntheticL10nPackagePath,
+        logger: logger,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
 
-    final File inputsAndOutputsList = fs.file(
-      fs.path.join(syntheticL10nPackagePath, 'gen_l10n_inputs_and_outputs.json'),
-    );
-    expect(inputsAndOutputsList.existsSync(), isTrue);
+      final File inputsAndOutputsList = fs.file(fs.path.join(
+        syntheticL10nPackagePath,
+        'gen_l10n_inputs_and_outputs.json',
+      ));
+      expect(inputsAndOutputsList.existsSync(), isTrue);
 
-    final Map<String, dynamic> jsonResult = json.decode(inputsAndOutputsList.readAsStringSync()) as Map<String, dynamic>;
-    expect(jsonResult.containsKey('inputs'), isTrue);
-    final List<dynamic> inputList = jsonResult['inputs'] as List<dynamic>;
-    expect(inputList, contains(fs.path.absolute('lib', 'l10n', 'app_en.arb')));
-    expect(inputList, contains(fs.path.absolute('lib', 'l10n', 'app_es.arb')));
+      final Map<String, dynamic> jsonResult = json.decode(
+        inputsAndOutputsList.readAsStringSync(),
+      ) as Map<String, dynamic>;
+      expect(jsonResult.containsKey('inputs'), isTrue);
+      final List<dynamic> inputList = jsonResult['inputs'] as List<dynamic>;
+      expect(
+        inputList,
+        contains(fs.path.absolute('lib', 'l10n', 'app_en.arb')),
+      );
+      expect(
+        inputList,
+        contains(fs.path.absolute('lib', 'l10n', 'app_es.arb')),
+      );
 
-    expect(jsonResult.containsKey('outputs'), isTrue);
-    final List<dynamic> outputList = jsonResult['outputs'] as List<dynamic>;
-    expect(outputList, contains(fs.path.absolute(syntheticL10nPackagePath, 'output-localization-file.dart')));
-    expect(outputList, contains(fs.path.absolute(syntheticL10nPackagePath, 'output-localization-file_en.dart')));
-    expect(outputList, contains(fs.path.absolute(syntheticL10nPackagePath, 'output-localization-file_es.dart')));
-  });
+      expect(jsonResult.containsKey('outputs'), isTrue);
+      final List<dynamic> outputList = jsonResult['outputs'] as List<dynamic>;
+      expect(outputList, contains(fs.path.absolute(
+        syntheticL10nPackagePath,
+        'output-localization-file.dart',
+      )));
+      expect(outputList, contains(fs.path.absolute(
+        syntheticL10nPackagePath,
+        'output-localization-file_en.dart',
+      )));
+      expect(outputList, contains(fs.path.absolute(
+        syntheticL10nPackagePath,
+        'output-localization-file_es.dart',
+      )));
+    },
+  );
 
-  testWithoutContext('setting both a headerString and a headerFile should fail', () {
-    fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true)
-      ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleMessageArbFileString)
-      ..childFile(esArbFileName).writeAsStringSync(singleEsMessageArbFileString)
-      ..childFile('header.txt').writeAsStringSync('/// Sample header in a text file');
-
-    expect(
-      () {
-        LocalizationsGenerator(
-          fileSystem: fs,
-          inputPathString: defaultL10nPathString,
-          outputPathString: defaultL10nPathString,
-          templateArbFileName: defaultTemplateArbFileName,
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          headerString: '/// Sample header for localizations file.',
-          headerFile: 'header.txt',
-          logger: logger,
+  testWithoutContext(
+    'setting both a headerString and a headerFile should fail',
+    () {
+      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+        ..createSync(recursive: true)
+        ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+          singleMessageArbFileString,
+        )
+        ..childFile(esArbFileName).writeAsStringSync(
+          singleEsMessageArbFileString,
+        )
+        ..childFile('header.txt').writeAsStringSync(
+          '/// Sample header in a text file',
         );
-      },
-      throwsA(isA<L10nException>().having(
-        (L10nException e) => e.message,
-        'message',
-        contains('Cannot accept both header and header file arguments'),
-      )),
-    );
-  });
 
-  testWithoutContext('setting a headerFile that does not exist should fail', () {
-    final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true);
-    l10nDirectory.childFile(defaultTemplateArbFileName)
-      .writeAsStringSync(singleMessageArbFileString);
-    l10nDirectory.childFile(esArbFileName)
-      .writeAsStringSync(singleEsMessageArbFileString);
-    l10nDirectory.childFile('header.txt')
-      .writeAsStringSync('/// Sample header in a text file');
+      expect(
+        () {
+          LocalizationsGenerator(
+            fileSystem: fs,
+            inputPathString: defaultL10nPathString,
+            outputPathString: defaultL10nPathString,
+            templateArbFileName: defaultTemplateArbFileName,
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            headerString: '/// Sample header for localizations file.',
+            headerFile: 'header.txt',
+            logger: logger,
+          );
+        },
+        throwsA(isA<L10nException>().having(
+          (L10nException e) => e.message,
+          'message',
+          contains('Cannot accept both header and header file arguments'),
+        )),
+      );
+    },
+  );
 
-    expect(
-      () {
-        LocalizationsGenerator(
-          fileSystem: fs,
-          inputPathString: defaultL10nPathString,
-          outputPathString: defaultL10nPathString,
-          templateArbFileName: defaultTemplateArbFileName,
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          headerFile: 'header.tx', // Intentionally spelled incorrectly
-          logger: logger,
-        );
-      },
-      throwsA(isA<L10nException>().having(
-        (L10nException e) => e.message,
-        'message',
-        contains('Failed to read header file'),
-      )),
-    );
-  });
+  testWithoutContext(
+    'setting a headerFile that does not exist should fail',
+    () {
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+        singleMessageArbFileString,
+      );
+      l10nDirectory.childFile(esArbFileName).writeAsStringSync(
+        singleEsMessageArbFileString,
+      );
+      l10nDirectory.childFile('header.txt').writeAsStringSync(
+        '/// Sample header in a text file',
+      );
+
+      expect(
+        () {
+          LocalizationsGenerator(
+            fileSystem: fs,
+            inputPathString: defaultL10nPathString,
+            outputPathString: defaultL10nPathString,
+            templateArbFileName: defaultTemplateArbFileName,
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            headerFile: 'header.tx', // Intentionally spelled incorrectly
+            logger: logger,
+          );
+        },
+        throwsA(isA<L10nException>().having(
+          (L10nException e) => e.message,
+          'message',
+          contains('Failed to read header file'),
+        )),
+      );
+    },
+  );
 
   group('generateLocalizations', () {
     // Regression test for https://github.com/flutter/flutter/issues/119593
-    testWithoutContext('other logs from flutter_tools does not affect gen-l10n', () async {
-      _standardFlutterDirectoryL10nSetup(fs);
+    testWithoutContext(
+      'other logs from flutter_tools does not affect gen-l10n',
+      () async {
+        _standardFlutterDirectoryL10nSetup(fs);
 
-      final Logger logger = BufferLogger.test();
-      logger.printError('An error output from a different tool in flutter_tools');
+        final Logger logger = BufferLogger.test();
+        logger.printError(
+          'An error output from a different tool in flutter_tools',
+        );
 
-      // Should run without error.
-      await generateLocalizations(
-        fileSystem: fs,
-        options: LocalizationOptions(
-          arbDir: Uri.directory(defaultL10nPathString).path,
-          outputDir: Uri.directory(defaultL10nPathString, windows: false).path,
-          templateArbFile: Uri.file(defaultTemplateArbFileName, windows: false).path,
-          syntheticPackage: false,
-        ),
-        logger: logger,
-        projectDir: fs.currentDirectory,
-        dependenciesDir: fs.currentDirectory,
-        artifacts: artifacts,
-        processManager: processManager,
-      );
-    });
+        // Should run without error.
+        await generateLocalizations(
+          fileSystem: fs,
+          options: LocalizationOptions(
+            arbDir: Uri.directory(defaultL10nPathString).path,
+            outputDir:
+                Uri.directory(defaultL10nPathString, windows: false).path,
+            templateArbFile:
+                Uri.file(defaultTemplateArbFileName, windows: false).path,
+            syntheticPackage: false,
+          ),
+          logger: logger,
+          projectDir: fs.currentDirectory,
+          dependenciesDir: fs.currentDirectory,
+          artifacts: artifacts,
+          processManager: processManager,
+        );
+      },
+    );
 
     testWithoutContext('forwards arguments correctly', () async {
       _standardFlutterDirectoryL10nSetup(fs);
@@ -825,7 +1027,8 @@ void main() {
         outputLocalizationFile: Uri.file('bar.dart', windows: false).path,
         outputDir: Uri.directory(defaultL10nPathString, windows: false).path,
         preferredSupportedLocales: <String>['es'],
-        templateArbFile: Uri.file(defaultTemplateArbFileName, windows: false).path,
+        templateArbFile:
+            Uri.file(defaultTemplateArbFileName, windows: false).path,
         untranslatedMessagesFile: Uri.file('untranslated', windows: false).path,
         syntheticPackage: false,
         requiredResourceAttributes: true,
@@ -848,10 +1051,16 @@ void main() {
       expect(generator.templateArbFile.path, '/lib/l10n/app_en.arb');
       expect(generator.baseOutputFile.path, '/lib/l10n/bar.dart');
       expect(generator.className, 'Foo');
-      expect(generator.preferredSupportedLocales.single, LocaleInfo.fromString('es'));
+      expect(
+        generator.preferredSupportedLocales.single,
+        LocaleInfo.fromString('es'),
+      );
       expect(generator.header, 'HEADER');
       expect(generator.useDeferredLoading, isTrue);
-      expect(generator.inputsAndOutputsListFile?.path, '/gen_l10n_inputs_and_outputs.json');
+      expect(
+        generator.inputsAndOutputsListFile?.path,
+        '/gen_l10n_inputs_and_outputs.json',
+      );
       expect(generator.useSyntheticPackage, isFalse);
       expect(generator.projectDirectory?.path, '/');
       expect(generator.areResourceAttributesRequired, isTrue);
@@ -874,45 +1083,50 @@ class FooEn extends Foo {
 ''');
     });
 
-    testWithoutContext('throws exception on missing flutter: generate: true flag', () async {
-      _standardFlutterDirectoryL10nSetup(fs);
+    testWithoutContext(
+      'throws exception on missing flutter: generate: true flag',
+      () async {
+        _standardFlutterDirectoryL10nSetup(fs);
 
-      // Missing flutter: generate: true should throw exception.
-      fs.file(fs.path.join(syntheticPackagePath, 'pubspec.yaml'))
-        ..createSync(recursive: true)
-        ..writeAsStringSync('''
+        // Missing flutter: generate: true should throw exception.
+        fs.file(fs.path.join(syntheticPackagePath, 'pubspec.yaml'))
+          ..createSync(recursive: true)
+          ..writeAsStringSync('''
 flutter:
   uses-material-design: true
 ''');
 
-      final LocalizationOptions options = LocalizationOptions(
-        header: 'HEADER',
-        headerFile: Uri.file('header', windows: false).path,
-        arbDir: Uri.file('arb', windows: false).path,
-        useDeferredLoading: true,
-        outputClass: 'Foo',
-        outputLocalizationFile: Uri.file('bar', windows: false).path,
-        preferredSupportedLocales: <String>['en_US'],
-        templateArbFile: Uri.file('example.arb', windows: false).path,
-        untranslatedMessagesFile: Uri.file('untranslated', windows: false).path,
-      );
+        final LocalizationOptions options = LocalizationOptions(
+          header: 'HEADER',
+          headerFile: Uri.file('header', windows: false).path,
+          arbDir: Uri.file('arb', windows: false).path,
+          useDeferredLoading: true,
+          outputClass: 'Foo',
+          outputLocalizationFile: Uri.file('bar', windows: false).path,
+          preferredSupportedLocales: <String>['en_US'],
+          templateArbFile: Uri.file('example.arb', windows: false).path,
+          untranslatedMessagesFile:
+              Uri.file('untranslated', windows: false).path,
+        );
 
-      expect(
-        () => generateLocalizations(
-          fileSystem: fs,
-          options: options,
-          logger: BufferLogger.test(),
-          projectDir: fs.currentDirectory,
-          dependenciesDir: fs.currentDirectory,
-          artifacts: artifacts,
-          processManager: processManager,
-        ),
-        throwsToolExit(
-          message: 'Attempted to generate localizations code without having the '
-              'flutter: generate flag turned on.',
-        ),
-      );
-    });
+        expect(
+          () => generateLocalizations(
+            fileSystem: fs,
+            options: options,
+            logger: BufferLogger.test(),
+            projectDir: fs.currentDirectory,
+            dependenciesDir: fs.currentDirectory,
+            artifacts: artifacts,
+            processManager: processManager,
+          ),
+          throwsToolExit(
+            message:
+                'Attempted to generate localizations code without having the '
+                'flutter: generate flag turned on.',
+          ),
+        );
+      },
+    );
 
     testWithoutContext('blank lines generated nicely', () async {
       _standardFlutterDirectoryL10nSetup(fs);
@@ -923,7 +1137,8 @@ flutter:
         options: LocalizationOptions(
           arbDir: Uri.directory(defaultL10nPathString).path,
           outputDir: Uri.directory(defaultL10nPathString, windows: false).path,
-          templateArbFile: Uri.file(defaultTemplateArbFileName, windows: false).path,
+          templateArbFile:
+              Uri.file(defaultTemplateArbFileName, windows: false).path,
           syntheticPackage: false,
         ),
         logger: BufferLogger.test(),
@@ -933,7 +1148,9 @@ flutter:
         processManager: processManager,
       );
 
-      expect(fs.file('/lib/l10n/app_localizations_en.dart').readAsStringSync(), '''
+      expect(
+        fs.file('/lib/l10n/app_localizations_en.dart').readAsStringSync(),
+        '''
 import 'app_localizations.dart';
 
 /// The translations for English (`en`).
@@ -943,26 +1160,30 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get title => 'Title';
 }
-''');
+''',
+      );
 
-    // Test with headers.
-    await generateLocalizations(
-      fileSystem: fs,
-      options: LocalizationOptions(
-        header: 'HEADER',
-        arbDir: Uri.directory(defaultL10nPathString).path,
-        outputDir: Uri.directory(defaultL10nPathString, windows: false).path,
-        templateArbFile: Uri.file(defaultTemplateArbFileName, windows: false).path,
-        syntheticPackage: false,
-      ),
-      logger: logger,
-      projectDir: fs.currentDirectory,
-      dependenciesDir: fs.currentDirectory,
-      artifacts: artifacts,
-      processManager: processManager,
-    );
+      // Test with headers.
+      await generateLocalizations(
+        fileSystem: fs,
+        options: LocalizationOptions(
+          header: 'HEADER',
+          arbDir: Uri.directory(defaultL10nPathString).path,
+          outputDir: Uri.directory(defaultL10nPathString, windows: false).path,
+          templateArbFile:
+              Uri.file(defaultTemplateArbFileName, windows: false).path,
+          syntheticPackage: false,
+        ),
+        logger: logger,
+        projectDir: fs.currentDirectory,
+        dependenciesDir: fs.currentDirectory,
+        artifacts: artifacts,
+        processManager: processManager,
+      );
 
-    expect(fs.file('/lib/l10n/app_localizations_en.dart').readAsStringSync(), '''
+      expect(
+        fs.file('/lib/l10n/app_localizations_en.dart').readAsStringSync(),
+        '''
 HEADER
 
 import 'app_localizations.dart';
@@ -974,95 +1195,132 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get title => 'Title';
 }
-''');
+''',
+      );
     });
   });
 
   group('loadResources', () {
-    testWithoutContext('correctly initializes supportedLocales and supportedLanguageCodes properties', () {
-      _standardFlutterDirectoryL10nSetup(fs);
+    testWithoutContext(
+      'correctly initializes supportedLocales and supportedLanguageCodes properties',
+      () {
+        _standardFlutterDirectoryL10nSetup(fs);
 
-      final LocalizationsGenerator generator = LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources();
+        final LocalizationsGenerator generator = LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          logger: logger,
+        )..loadResources();
 
-      expect(generator.supportedLocales.contains(LocaleInfo.fromString('en')), true);
-      expect(generator.supportedLocales.contains(LocaleInfo.fromString('es')), true);
-    });
+        expect(
+          generator.supportedLocales.contains(LocaleInfo.fromString('en')),
+          true,
+        );
+        expect(
+          generator.supportedLocales.contains(LocaleInfo.fromString('es')),
+          true,
+        );
+      },
+    );
 
-    testWithoutContext('correctly sorts supportedLocales and supportedLanguageCodes alphabetically', () {
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      // Write files in non-alphabetical order so that read performs in that order
-      l10nDirectory.childFile('app_zh.arb')
-        .writeAsStringSync(singleZhMessageArbFileString);
-      l10nDirectory.childFile('app_es.arb')
-        .writeAsStringSync(singleEsMessageArbFileString);
-      l10nDirectory.childFile('app_en.arb')
-        .writeAsStringSync(singleMessageArbFileString);
+    testWithoutContext(
+      'correctly sorts supportedLocales and supportedLanguageCodes alphabetically',
+      () {
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        // Write files in non-alphabetical order so that read performs in that order
+        l10nDirectory.childFile('app_zh.arb').writeAsStringSync(
+          singleZhMessageArbFileString,
+        );
+        l10nDirectory.childFile('app_es.arb').writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
+        l10nDirectory.childFile('app_en.arb').writeAsStringSync(
+          singleMessageArbFileString,
+        );
 
-      final LocalizationsGenerator generator = LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources();
+        final LocalizationsGenerator generator = LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          logger: logger,
+        )..loadResources();
 
-      expect(generator.supportedLocales.first, LocaleInfo.fromString('en'));
-      expect(generator.supportedLocales.elementAt(1), LocaleInfo.fromString('es'));
-      expect(generator.supportedLocales.elementAt(2), LocaleInfo.fromString('zh'));
-    });
+        expect(generator.supportedLocales.first, LocaleInfo.fromString('en'));
+        expect(
+          generator.supportedLocales.elementAt(1),
+          LocaleInfo.fromString('es'),
+        );
+        expect(
+          generator.supportedLocales.elementAt(2),
+          LocaleInfo.fromString('zh'),
+        );
+      },
+    );
 
-    testWithoutContext('adds preferred locales to the top of supportedLocales and supportedLanguageCodes', () {
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile('app_en.arb')
-        .writeAsStringSync(singleMessageArbFileString);
-      l10nDirectory.childFile('app_es.arb')
-        .writeAsStringSync(singleEsMessageArbFileString);
-      l10nDirectory.childFile('app_zh.arb')
-        .writeAsStringSync(singleZhMessageArbFileString);
+    testWithoutContext(
+      'adds preferred locales to the top of supportedLocales and supportedLanguageCodes',
+      () {
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile('app_en.arb').writeAsStringSync(
+          singleMessageArbFileString,
+        );
+        l10nDirectory.childFile('app_es.arb').writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
+        l10nDirectory.childFile('app_zh.arb').writeAsStringSync(
+          singleZhMessageArbFileString,
+        );
 
-      const List<String> preferredSupportedLocale = <String>['zh', 'es'];
-      final LocalizationsGenerator generator = LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        preferredSupportedLocales: preferredSupportedLocale,
-        logger: logger,
-      )
-        ..loadResources();
+        const List<String> preferredSupportedLocale = <String>['zh', 'es'];
+        final LocalizationsGenerator generator = LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          preferredSupportedLocales: preferredSupportedLocale,
+          logger: logger,
+        )..loadResources();
 
-      expect(generator.supportedLocales.first, LocaleInfo.fromString('zh'));
-      expect(generator.supportedLocales.elementAt(1), LocaleInfo.fromString('es'));
-      expect(generator.supportedLocales.elementAt(2), LocaleInfo.fromString('en'));
-    });
+        expect(generator.supportedLocales.first, LocaleInfo.fromString('zh'));
+        expect(
+          generator.supportedLocales.elementAt(1),
+          LocaleInfo.fromString('es'),
+        );
+        expect(
+          generator.supportedLocales.elementAt(2),
+          LocaleInfo.fromString('en'),
+        );
+      },
+    );
 
     testWithoutContext(
       'throws an error attempting to add preferred locales when there is no corresponding arb file for that locale',
       () {
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile('app_en.arb')
-          .writeAsStringSync(singleMessageArbFileString);
-        l10nDirectory.childFile('app_es.arb')
-          .writeAsStringSync(singleEsMessageArbFileString);
-        l10nDirectory.childFile('app_zh.arb')
-          .writeAsStringSync(singleZhMessageArbFileString);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile('app_en.arb').writeAsStringSync(
+          singleMessageArbFileString,
+        );
+        l10nDirectory.childFile('app_es.arb').writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
+        l10nDirectory.childFile('app_zh.arb').writeAsStringSync(
+          singleZhMessageArbFileString,
+        );
 
         const List<String> preferredSupportedLocale = <String>['am', 'es'];
         expect(
@@ -1088,15 +1346,19 @@ class AppLocalizationsEn extends AppLocalizations {
     );
 
     testWithoutContext('correctly sorts arbPathString alphabetically', () {
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
       // Write files in non-alphabetical order so that read performs in that order
-      l10nDirectory.childFile('app_zh.arb')
-        .writeAsStringSync(singleZhMessageArbFileString);
-      l10nDirectory.childFile('app_es.arb')
-        .writeAsStringSync(singleEsMessageArbFileString);
-      l10nDirectory.childFile('app_en.arb')
-        .writeAsStringSync(singleMessageArbFileString);
+      l10nDirectory.childFile('app_zh.arb').writeAsStringSync(
+        singleZhMessageArbFileString,
+      );
+      l10nDirectory.childFile('app_es.arb').writeAsStringSync(
+        singleEsMessageArbFileString,
+      );
+      l10nDirectory.childFile('app_en.arb').writeAsStringSync(
+        singleMessageArbFileString,
+      );
 
       final LocalizationsGenerator generator = LocalizationsGenerator(
         fileSystem: fs,
@@ -1106,12 +1368,20 @@ class AppLocalizationsEn extends AppLocalizations {
         outputFileString: defaultOutputFileString,
         classNameString: defaultClassNameString,
         logger: logger,
-      )
-        ..loadResources();
+      )..loadResources();
 
-      expect(generator.arbPathStrings.first, fs.path.join('lib', 'l10n', 'app_en.arb'));
-      expect(generator.arbPathStrings.elementAt(1), fs.path.join('lib', 'l10n', 'app_es.arb'));
-      expect(generator.arbPathStrings.elementAt(2), fs.path.join('lib', 'l10n', 'app_zh.arb'));
+      expect(
+        generator.arbPathStrings.first,
+        fs.path.join('lib', 'l10n', 'app_en.arb'),
+      );
+      expect(
+        generator.arbPathStrings.elementAt(1),
+        fs.path.join('lib', 'l10n', 'app_es.arb'),
+      );
+      expect(
+        generator.arbPathStrings.elementAt(2),
+        fs.path.join('lib', 'l10n', 'app_zh.arb'),
+      );
     });
 
     testWithoutContext('correctly parses @@locale property in arb file', () {
@@ -1133,12 +1403,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 }''';
 
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile('first_file.arb')
-        .writeAsStringSync(arbFileWithEnLocale);
-      l10nDirectory.childFile('second_file.arb')
-        .writeAsStringSync(arbFileWithZhLocale);
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile('first_file.arb').writeAsStringSync(
+        arbFileWithEnLocale,
+      );
+      l10nDirectory.childFile('second_file.arb').writeAsStringSync(
+        arbFileWithZhLocale,
+      );
 
       final LocalizationsGenerator generator = LocalizationsGenerator(
         fileSystem: fs,
@@ -1148,15 +1421,22 @@ class AppLocalizationsEn extends AppLocalizations {
         outputFileString: defaultOutputFileString,
         classNameString: defaultClassNameString,
         logger: logger,
-      )
-        ..loadResources();
+      )..loadResources();
 
-      expect(generator.supportedLocales.contains(LocaleInfo.fromString('en')), true);
-      expect(generator.supportedLocales.contains(LocaleInfo.fromString('zh')), true);
+      expect(
+        generator.supportedLocales.contains(LocaleInfo.fromString('en')),
+        true,
+      );
+      expect(
+        generator.supportedLocales.contains(LocaleInfo.fromString('zh')),
+        true,
+      );
     });
 
-    testWithoutContext('correctly requires @@locale property in arb file to match the filename locale suffix', () {
-      const String arbFileWithEnLocale = '''
+    testWithoutContext(
+      'correctly requires @@locale property in arb file to match the filename locale suffix',
+      () {
+        const String arbFileWithEnLocale = '''
 {
   "@@locale": "en",
   "title": "Stocks",
@@ -1165,7 +1445,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 }''';
 
-      const String arbFileWithZhLocale = '''
+        const String arbFileWithZhLocale = '''
 {
   "@@locale": "zh",
   "title": "标题",
@@ -1174,57 +1454,65 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 }''';
 
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile('app_es.arb')
-        .writeAsStringSync(arbFileWithEnLocale);
-      l10nDirectory.childFile('app_am.arb')
-        .writeAsStringSync(arbFileWithZhLocale);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile('app_es.arb').writeAsStringSync(
+          arbFileWithEnLocale,
+        );
+        l10nDirectory.childFile('app_am.arb').writeAsStringSync(
+          arbFileWithZhLocale,
+        );
 
-      expect(
-        () {
-          LocalizationsGenerator(
-            fileSystem: fs,
-            inputPathString: defaultL10nPathString,
-            outputPathString: defaultL10nPathString,
-            templateArbFileName: 'app_es.arb',
-            outputFileString: defaultOutputFileString,
-            classNameString: defaultClassNameString,
-            logger: logger,
-          ).loadResources();
-        },
-        throwsA(isA<L10nException>().having(
-          (L10nException e) => e.message,
-          'message',
-          contains('The locale specified in @@locale and the arb filename do not match.'),
-        )),
-      );
-    });
+        expect(
+          () {
+            LocalizationsGenerator(
+              fileSystem: fs,
+              inputPathString: defaultL10nPathString,
+              outputPathString: defaultL10nPathString,
+              templateArbFileName: 'app_es.arb',
+              outputFileString: defaultOutputFileString,
+              classNameString: defaultClassNameString,
+              logger: logger,
+            ).loadResources();
+          },
+          throwsA(isA<L10nException>().having(
+            (L10nException e) => e.message,
+            'message',
+            contains(
+              'The locale specified in @@locale and the arb filename do not match.',
+            ),
+          )),
+        );
+      },
+    );
 
-    testWithoutContext("throws when arb file's locale could not be determined", () {
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true)
-        ..childFile('app.arb')
-        .writeAsStringSync(singleMessageArbFileString);
-      expect(
-        () {
-          LocalizationsGenerator(
-            fileSystem: fs,
-            inputPathString: defaultL10nPathString,
-            outputPathString: defaultL10nPathString,
-            templateArbFileName: 'app.arb',
-            outputFileString: defaultOutputFileString,
-            classNameString: defaultClassNameString,
-            logger: logger,
-          ).loadResources();
-        },
-        throwsA(isA<L10nException>().having(
-          (L10nException e) => e.message,
-          'message',
-          contains('locale could not be determined'),
-        )),
-      );
-    });
+    testWithoutContext(
+      "throws when arb file's locale could not be determined",
+      () {
+        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+          ..createSync(recursive: true)
+          ..childFile('app.arb').writeAsStringSync(singleMessageArbFileString);
+        expect(
+          () {
+            LocalizationsGenerator(
+              fileSystem: fs,
+              inputPathString: defaultL10nPathString,
+              outputPathString: defaultL10nPathString,
+              templateArbFileName: 'app.arb',
+              outputFileString: defaultOutputFileString,
+              classNameString: defaultClassNameString,
+              logger: logger,
+            ).loadResources();
+          },
+          throwsA(isA<L10nException>().having(
+            (L10nException e) => e.message,
+            'message',
+            contains('locale could not be determined'),
+          )),
+        );
+      },
+    );
 
     testWithoutContext('throws when an empty string is used as a key', () {
       const String arbFileStringWithEmptyResourceId = '''
@@ -1235,10 +1523,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 }''';
 
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile('app_en.arb')
-        .writeAsStringSync(arbFileStringWithEmptyResourceId);
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile('app_en.arb').writeAsStringSync(
+        arbFileStringWithEmptyResourceId,
+      );
 
       expect(
         () => LocalizationsGenerator(
@@ -1258,8 +1548,10 @@ class AppLocalizationsEn extends AppLocalizations {
       );
     });
 
-    testWithoutContext('throws when the same locale is detected more than once', () {
-      const String secondMessageArbFileString = '''
+    testWithoutContext(
+      'throws when the same locale is detected more than once',
+      () {
+        const String secondMessageArbFileString = '''
 {
   "market": "MARKET",
   "@market": {
@@ -1267,38 +1559,44 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 }''';
 
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile('app_en.arb')
-        .writeAsStringSync(singleMessageArbFileString);
-      l10nDirectory.childFile('app2_en.arb')
-        .writeAsStringSync(secondMessageArbFileString);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile('app_en.arb').writeAsStringSync(
+          singleMessageArbFileString,
+        );
+        l10nDirectory.childFile('app2_en.arb').writeAsStringSync(
+          secondMessageArbFileString,
+        );
 
-      expect(
-        () {
-          LocalizationsGenerator(
-            fileSystem: fs,
-            inputPathString: defaultL10nPathString,
-            outputPathString: defaultL10nPathString,
-            templateArbFileName: 'app_en.arb',
-            outputFileString: defaultOutputFileString,
-            classNameString: defaultClassNameString,
-            logger: logger,
-          ).loadResources();
-        },
-        throwsA(isA<L10nException>().having(
-          (L10nException e) => e.message,
-          'message',
-          contains("Multiple arb files with the same 'en' locale detected"),
-        )),
-      );
-    });
+        expect(
+          () {
+            LocalizationsGenerator(
+              fileSystem: fs,
+              inputPathString: defaultL10nPathString,
+              outputPathString: defaultL10nPathString,
+              templateArbFileName: 'app_en.arb',
+              outputFileString: defaultOutputFileString,
+              classNameString: defaultClassNameString,
+              logger: logger,
+            ).loadResources();
+          },
+          throwsA(isA<L10nException>().having(
+            (L10nException e) => e.message,
+            'message',
+            contains("Multiple arb files with the same 'en' locale detected"),
+          )),
+        );
+      },
+    );
 
     testWithoutContext('throws when the base locale does not exist', () {
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile('app_en_US.arb')
-        .writeAsStringSync(singleMessageArbFileString);
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile('app_en_US.arb').writeAsStringSync(
+        singleMessageArbFileString,
+      );
 
       expect(
         () {
@@ -1322,18 +1620,101 @@ class AppLocalizationsEn extends AppLocalizations {
   });
 
   group('writeOutputFiles', () {
-    testWithoutContext('multiple messages with syntax error all log their errors', () {
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(r'''
+    testWithoutContext(
+      'multiple messages with syntax error all log their errors',
+      () {
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          r'''
 {
   "msg1": "{",
   "msg2": "{ {"
+}''',
+        );
+        l10nDirectory.childFile(esArbFileName).writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
+        try {
+          LocalizationsGenerator(
+            fileSystem: fs,
+            inputPathString: defaultL10nPathString,
+            outputPathString: defaultL10nPathString,
+            templateArbFileName: defaultTemplateArbFileName,
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            logger: logger,
+          )
+            ..loadResources()
+            ..writeOutputFiles();
+        } on L10nException catch (error) {
+          expect(error.message, equals('Found syntax errors.'));
+          expect(logger.errorText, contains('''
+[app_en.arb:msg1] ICU Syntax Error: Expected "identifier" but found no tokens.
+    {
+      ^
+[app_en.arb:msg2] ICU Syntax Error: Expected "identifier" but found "{".
+    { {
+      ^'''));
+        }
+      },
+    );
+
+    testWithoutContext('no description generates generic comment', () {
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(r'''
+{
+  "helloWorld": "Hello world!"
 }''');
-      l10nDirectory.childFile(esArbFileName)
-        .writeAsStringSync(singleEsMessageArbFileString);
-      try {
+      l10nDirectory.childFile(esArbFileName).writeAsStringSync(
+        singleEsMessageArbFileString,
+      );
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        outputPathString: defaultL10nPathString,
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        logger: logger,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
+      final File baseLocalizationsFile = fs.file(
+        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart'),
+      );
+      expect(baseLocalizationsFile.existsSync(), isTrue);
+
+      final String baseLocalizationsFileContents = fs.file(
+        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart'),
+      ).readAsStringSync();
+      expect(
+        baseLocalizationsFileContents,
+        contains('/// No description provided for @helloWorld.'),
+      );
+    });
+
+    testWithoutContext(
+      'multiline descriptions are correctly formatted as comments',
+      () {
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          r'''
+{
+  "helloWorld": "Hello world!",
+  "@helloWorld": {
+    "description": "The generic example string in every language.\nUse this for tests!"
+  }
+}''',
+        );
+        l10nDirectory.childFile(esArbFileName).writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
         LocalizationsGenerator(
           fileSystem: fs,
           inputPathString: defaultL10nPathString,
@@ -1345,160 +1726,117 @@ class AppLocalizationsEn extends AppLocalizations {
         )
           ..loadResources()
           ..writeOutputFiles();
-      } on L10nException catch (error) {
-        expect(error.message, equals('Found syntax errors.'));
-        expect(logger.errorText, contains('''
-[app_en.arb:msg1] ICU Syntax Error: Expected "identifier" but found no tokens.
-    {
-      ^
-[app_en.arb:msg2] ICU Syntax Error: Expected "identifier" but found "{".
-    { {
-      ^'''));
-      }
-    });
+        final File baseLocalizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file.dart',
+        ));
+        expect(baseLocalizationsFile.existsSync(), isTrue);
 
-    testWithoutContext('no description generates generic comment', () {
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(r'''
-{
-  "helloWorld": "Hello world!"
-}''');
-      l10nDirectory.childFile(esArbFileName)
-        .writeAsStringSync(singleEsMessageArbFileString);
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
-      final File baseLocalizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart')
-      );
-      expect(baseLocalizationsFile.existsSync(), isTrue);
-
-      final String baseLocalizationsFileContents = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart')
-      ).readAsStringSync();
-      expect(baseLocalizationsFileContents, contains('/// No description provided for @helloWorld.'));
-    });
-
-        testWithoutContext('multiline descriptions are correctly formatted as comments', () {
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(r'''
-{
-  "helloWorld": "Hello world!",
-  "@helloWorld": {
-    "description": "The generic example string in every language.\nUse this for tests!"
-  }
-}''');
-      l10nDirectory.childFile(esArbFileName)
-        .writeAsStringSync(singleEsMessageArbFileString);
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
-      final File baseLocalizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart')
-      );
-      expect(baseLocalizationsFile.existsSync(), isTrue);
-
-      final String baseLocalizationsFileContents = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart')
-      ).readAsStringSync();
-      expect(baseLocalizationsFileContents, contains('''
+        final String baseLocalizationsFileContents = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file.dart',
+        )).readAsStringSync();
+        expect(baseLocalizationsFileContents, contains('''
   /// The generic example string in every language.
   /// Use this for tests!'''));
-    });
+      },
+    );
 
-    testWithoutContext('message without placeholders - should generate code comment with description and template message translation', () {
-      _standardFlutterDirectoryL10nSetup(fs);
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
+    testWithoutContext(
+      'message without placeholders - should generate code comment with description and template message translation',
+      () {
+        _standardFlutterDirectoryL10nSetup(fs);
+        LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          logger: logger,
+        )
+          ..loadResources()
+          ..writeOutputFiles();
 
-      final File baseLocalizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart')
-      );
-      expect(baseLocalizationsFile.existsSync(), isTrue);
+        final File baseLocalizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file.dart',
+        ));
+        expect(baseLocalizationsFile.existsSync(), isTrue);
 
-      final String baseLocalizationsFileContents = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart')
-      ).readAsStringSync();
-      expect(baseLocalizationsFileContents, contains('/// Title for the application.'));
-      expect(baseLocalizationsFileContents, contains('''
+        final String baseLocalizationsFileContents = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file.dart',
+        )).readAsStringSync();
+        expect(
+          baseLocalizationsFileContents,
+          contains('/// Title for the application.'),
+        );
+        expect(baseLocalizationsFileContents, contains('''
   /// In en, this message translates to:
   /// **'Title'**'''));
-    });
+      },
+    );
 
-    testWithoutContext('template message translation handles newline characters', () {
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(r'''
+    testWithoutContext(
+      'template message translation handles newline characters',
+      () {
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          r'''
 {
   "title": "Title \n of the application",
   "@title": {
     "description": "Title for the application."
   }
-}''');
-      l10nDirectory.childFile(esArbFileName)
-        .writeAsStringSync(singleEsMessageArbFileString);
+}''',
+        );
+        l10nDirectory.childFile(esArbFileName).writeAsStringSync(
+          singleEsMessageArbFileString,
+        );
 
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
+        LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          logger: logger,
+        )
+          ..loadResources()
+          ..writeOutputFiles();
 
-      final File baseLocalizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart')
-      );
-      expect(baseLocalizationsFile.existsSync(), isTrue);
+        final File baseLocalizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file.dart',
+        ));
+        expect(baseLocalizationsFile.existsSync(), isTrue);
 
-      final String baseLocalizationsFileContents = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart')
-      ).readAsStringSync();
-      expect(baseLocalizationsFileContents, contains('/// Title for the application.'));
-      expect(baseLocalizationsFileContents, contains(r'''
+        final String baseLocalizationsFileContents = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file.dart',
+        )).readAsStringSync();
+        expect(
+          baseLocalizationsFileContents,
+          contains('/// Title for the application.'),
+        );
+        expect(baseLocalizationsFileContents, contains(r'''
   /// In en, this message translates to:
   /// **'Title \n of the application'**'''));
-    });
+      },
+    );
 
-    testWithoutContext('message with placeholders - should generate code comment with description and template message translation', () {
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(r'''
+    testWithoutContext(
+      'message with placeholders - should generate code comment with description and template message translation',
+      () {
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          r'''
 {
   "price": "The price of this item is: ${price}",
   "@price": {
@@ -1510,47 +1848,58 @@ class AppLocalizationsEn extends AppLocalizations {
       }
     }
   }
-}''');
-      l10nDirectory.childFile(esArbFileName)
-        .writeAsStringSync(r'''
+}''',
+        );
+        l10nDirectory.childFile(esArbFileName).writeAsStringSync(r'''
 {
   "price": "el precio de este artículo es: ${price}"
 }''');
 
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
+        LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          logger: logger,
+        )
+          ..loadResources()
+          ..writeOutputFiles();
 
-      final File baseLocalizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart')
-      );
-      expect(baseLocalizationsFile.existsSync(), isTrue);
+        final File baseLocalizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file.dart',
+        ));
+        expect(baseLocalizationsFile.existsSync(), isTrue);
 
-      final String baseLocalizationsFileContents = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart')
-      ).readAsStringSync();
-      expect(baseLocalizationsFileContents, contains('/// The price of an online shopping cart item.'));
-      expect(baseLocalizationsFileContents, contains(r'''
+        final String baseLocalizationsFileContents = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file.dart',
+        )).readAsStringSync();
+        expect(
+          baseLocalizationsFileContents,
+          contains('/// The price of an online shopping cart item.'),
+        );
+        expect(baseLocalizationsFileContents, contains(r'''
   /// In en, this message translates to:
   /// **'The price of this item is: \${price}'**'''));
-    });
+      },
+    );
 
     testWithoutContext('should generate a file per language', () {
       const String singleEnCaMessageArbFileString = '''
 {
   "title": "Canadian Title"
 }''';
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleMessageArbFileString)
-        ..childFile('app_en_CA.arb').writeAsStringSync(singleEnCaMessageArbFileString);
+      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+        ..createSync(recursive: true)
+        ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+          singleMessageArbFileString,
+        )
+        ..childFile('app_en_CA.arb').writeAsStringSync(
+          singleEnCaMessageArbFileString,
+        );
 
       LocalizationsGenerator(
         fileSystem: fs,
@@ -1564,51 +1913,76 @@ class AppLocalizationsEn extends AppLocalizations {
         ..loadResources()
         ..writeOutputFiles();
 
-      expect(fs.isFileSync(fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart')), true);
-      expect(fs.isFileSync(fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en_US.dart')), false);
+      expect(fs.isFileSync(fs.path.join(
+        syntheticL10nPackagePath,
+        'output-localization-file_en.dart',
+      )), true);
+      expect(fs.isFileSync(fs.path.join(
+        syntheticL10nPackagePath,
+        'output-localization-file_en_US.dart',
+      )), false);
 
-      final String englishLocalizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart')
-      ).readAsStringSync();
-      expect(englishLocalizationsFile, contains('class AppLocalizationsEnCa extends AppLocalizationsEn'));
-      expect(englishLocalizationsFile, contains('class AppLocalizationsEn extends AppLocalizations'));
+      final String englishLocalizationsFile = fs.file(fs.path.join(
+        syntheticL10nPackagePath,
+        'output-localization-file_en.dart',
+      )).readAsStringSync();
+      expect(
+        englishLocalizationsFile,
+        contains('class AppLocalizationsEnCa extends AppLocalizationsEn'),
+      );
+      expect(
+        englishLocalizationsFile,
+        contains('class AppLocalizationsEn extends AppLocalizations'),
+      );
     });
 
-    testWithoutContext('language imports are sorted when preferredSupportedLocaleString is given', () {
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleMessageArbFileString)
-        ..childFile('app_zh.arb').writeAsStringSync(singleZhMessageArbFileString)
-        ..childFile('app_es.arb').writeAsStringSync(singleEsMessageArbFileString);
+    testWithoutContext(
+      'language imports are sorted when preferredSupportedLocaleString is given',
+      () {
+        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+          ..createSync(recursive: true)
+          ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+            singleMessageArbFileString,
+          )
+          ..childFile('app_zh.arb').writeAsStringSync(
+            singleZhMessageArbFileString,
+          )
+          ..childFile('app_es.arb').writeAsStringSync(
+            singleEsMessageArbFileString,
+          );
 
-      const List<String> preferredSupportedLocale = <String>['zh'];
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        preferredSupportedLocales: preferredSupportedLocale,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
+        const List<String> preferredSupportedLocale = <String>['zh'];
+        LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          preferredSupportedLocales: preferredSupportedLocale,
+          logger: logger,
+        )
+          ..loadResources()
+          ..writeOutputFiles();
 
-      final String localizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, defaultOutputFileString),
-      ).readAsStringSync();
-      expect(localizationsFile, contains(
-'''
+        final String localizationsFile = fs.file(
+          fs.path.join(syntheticL10nPackagePath, defaultOutputFileString),
+        ).readAsStringSync();
+        expect(localizationsFile, contains('''
 import 'output-localization-file_en.dart';
 import 'output-localization-file_es.dart';
 import 'output-localization-file_zh.dart';
 '''));
-    });
+      },
+    );
 
     // Regression test for https://github.com/flutter/flutter/issues/88356
     testWithoutContext('full output file suffix is retained', () {
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleMessageArbFileString);
+      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+        ..createSync(recursive: true)
+        ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+          singleMessageArbFileString,
+        );
 
       LocalizationsGenerator(
         fileSystem: fs,
@@ -1622,26 +1996,31 @@ import 'output-localization-file_zh.dart';
         ..loadResources()
         ..writeOutputFiles();
 
-      final String baseLocalizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.g.dart'),
-      ).readAsStringSync();
-      expect(baseLocalizationsFile, contains(
-'''
+      final String baseLocalizationsFile = fs.file(fs.path.join(
+        syntheticL10nPackagePath,
+        'output-localization-file.g.dart',
+      )).readAsStringSync();
+      expect(baseLocalizationsFile, contains('''
 import 'output-localization-file_en.g.dart';
 '''));
 
-      final String englishLocalizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.g.dart'),
-      ).readAsStringSync();
-      expect(englishLocalizationsFile, contains(
-'''
+      final String englishLocalizationsFile = fs.file(fs.path.join(
+        syntheticL10nPackagePath,
+        'output-localization-file_en.g.dart',
+      )).readAsStringSync();
+      expect(englishLocalizationsFile, contains('''
 import 'output-localization-file.g.dart';
 '''));
     });
 
-    testWithoutContext('throws an exception when invalid output file name is passed in', () {
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleMessageArbFileString);
+    testWithoutContext(
+      'throws an exception when invalid output file name is passed in',
+      () {
+        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+          ..createSync(recursive: true)
+          ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+            singleMessageArbFileString,
+          );
 
         expect(
           () {
@@ -1694,64 +2073,84 @@ import 'output-localization-file.g.dart';
             ),
           )),
         );
-      });
+      },
+    );
 
-    testWithoutContext('imports are deferred and loaded when useDeferredImports are set', () {
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleMessageArbFileString);
+    testWithoutContext(
+      'imports are deferred and loaded when useDeferredImports are set',
+      () {
+        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+          ..createSync(recursive: true)
+          ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+            singleMessageArbFileString,
+          );
 
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        useDeferredLoading: true,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
-
-      final String localizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, defaultOutputFileString),
-      ).readAsStringSync();
-      expect(localizationsFile, contains(
-'''
-import 'output-localization-file_en.dart' deferred as output-localization-file_en;
-'''));
-      expect(localizationsFile, contains('output-localization-file_en.loadLibrary()'));
-    });
-
-    group('placeholder tests', () {
-      testWithoutContext('should automatically infer placeholders that are not explicitly defined', () {
-        const String messageWithoutDefinedPlaceholder = '''
-{
-  "helloWorld": "Hello {name}"
-}''';
-
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(messageWithoutDefinedPlaceholder);
         LocalizationsGenerator(
           fileSystem: fs,
           inputPathString: defaultL10nPathString,
-          outputPathString: defaultL10nPathString,
           templateArbFileName: defaultTemplateArbFileName,
           outputFileString: defaultOutputFileString,
           classNameString: defaultClassNameString,
+          useDeferredLoading: true,
           logger: logger,
         )
           ..loadResources()
           ..writeOutputFiles();
-        final String localizationsFile = fs.file(
-          fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-        ).readAsStringSync();
-        expect(localizationsFile, contains('String helloWorld(Object name) {'));
-      });
 
-      testWithoutContext('placeholder parameter list should be consistent between languages', () {
-        const String messageEn = '''
+        final String localizationsFile = fs.file(
+          fs.path.join(syntheticL10nPackagePath, defaultOutputFileString),
+        ).readAsStringSync();
+        expect(localizationsFile, contains('''
+import 'output-localization-file_en.dart' deferred as output-localization-file_en;
+'''));
+        expect(
+          localizationsFile,
+          contains('output-localization-file_en.loadLibrary()'),
+        );
+      },
+    );
+
+    group('placeholder tests', () {
+      testWithoutContext(
+        'should automatically infer placeholders that are not explicitly defined',
+        () {
+          const String messageWithoutDefinedPlaceholder = '''
+{
+  "helloWorld": "Hello {name}"
+}''';
+
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            messageWithoutDefinedPlaceholder,
+          );
+          LocalizationsGenerator(
+            fileSystem: fs,
+            inputPathString: defaultL10nPathString,
+            outputPathString: defaultL10nPathString,
+            templateArbFileName: defaultTemplateArbFileName,
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            logger: logger,
+          )
+            ..loadResources()
+            ..writeOutputFiles();
+          final String localizationsFile = fs.file(fs.path.join(
+            syntheticL10nPackagePath,
+            'output-localization-file_en.dart',
+          )).readAsStringSync();
+          expect(
+            localizationsFile,
+            contains('String helloWorld(Object name) {'),
+          );
+        },
+      );
+
+      testWithoutContext(
+        'placeholder parameter list should be consistent between languages',
+        () {
+          const String messageEn = '''
 {
   "helloWorld": "Hello {name}",
   "@helloWorld": {
@@ -1760,36 +2159,46 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     }
   }
 }''';
-        const String messageEs = '''
+          const String messageEs = '''
 {
   "helloWorld": "Hola"
 }
 ''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(messageEn);
-        l10nDirectory.childFile('app_es.arb')
-          .writeAsStringSync(messageEs);
-        LocalizationsGenerator(
-          fileSystem: fs,
-          inputPathString: defaultL10nPathString,
-          templateArbFileName: defaultTemplateArbFileName,
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          logger: logger,
-        )
-          ..loadResources()
-          ..writeOutputFiles();
-        final String localizationsFileEn = fs.file(
-          fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-        ).readAsStringSync();
-        final String localizationsFileEs = fs.file(
-          fs.path.join(syntheticL10nPackagePath, 'output-localization-file_es.dart'),
-        ).readAsStringSync();
-        expect(localizationsFileEn, contains('String helloWorld(Object name) {'));
-        expect(localizationsFileEs, contains('String helloWorld(Object name) {'));
-      });
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            messageEn,
+          );
+          l10nDirectory.childFile('app_es.arb').writeAsStringSync(messageEs);
+          LocalizationsGenerator(
+            fileSystem: fs,
+            inputPathString: defaultL10nPathString,
+            templateArbFileName: defaultTemplateArbFileName,
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            logger: logger,
+          )
+            ..loadResources()
+            ..writeOutputFiles();
+          final String localizationsFileEn = fs.file(fs.path.join(
+            syntheticL10nPackagePath,
+            'output-localization-file_en.dart',
+          )).readAsStringSync();
+          final String localizationsFileEs = fs.file(fs.path.join(
+            syntheticL10nPackagePath,
+            'output-localization-file_es.dart',
+          )).readAsStringSync();
+          expect(
+            localizationsFileEn,
+            contains('String helloWorld(Object name) {'),
+          );
+          expect(
+            localizationsFileEs,
+            contains('String helloWorld(Object name) {'),
+          );
+        },
+      );
     });
 
     group('DateTime tests', () {
@@ -1808,8 +2217,11 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     }
   }
 }''';
-        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-          ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleDateMessageArbFileString);
+        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+          ..createSync(recursive: true)
+          ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+            singleDateMessageArbFileString,
+          );
 
         LocalizationsGenerator(
           fileSystem: fs,
@@ -1823,14 +2235,17 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
           ..loadResources()
           ..writeOutputFiles();
 
-        final String localizationsFile = fs.file(
-          fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-        ).readAsStringSync();
+        final String localizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file_en.dart',
+        )).readAsStringSync();
         expect(localizationsFile, contains(intlImportDartCode));
       });
 
-      testWithoutContext('throws an exception when improperly formatted date is passed in', () {
-        const String singleDateMessageArbFileString = '''
+      testWithoutContext(
+        'throws an exception when improperly formatted date is passed in',
+        () {
+          const String singleDateMessageArbFileString = '''
 {
   "@@locale": "en",
   "springBegins": "Spring begins on {springStartDate}",
@@ -1844,35 +2259,38 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     }
   }
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(singleDateMessageArbFileString);
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            singleDateMessageArbFileString,
+          );
 
-        expect(
-          () {
-            LocalizationsGenerator(
-              fileSystem: fs,
-              inputPathString: defaultL10nPathString,
-              templateArbFileName: defaultTemplateArbFileName,
-              outputFileString: defaultOutputFileString,
-              classNameString: defaultClassNameString,
-              logger: logger,
-            )
-              ..loadResources()
-              ..writeOutputFiles();
-          },
-          throwsA(isA<L10nException>().having(
-            (L10nException e) => e.message,
-            'message',
-            allOf(
-              contains('asdf'),
-              contains('springStartDate'),
-              contains('does not have a corresponding DateFormat'),
-            ),
-          )),
-        );
-      });
+          expect(
+            () {
+              LocalizationsGenerator(
+                fileSystem: fs,
+                inputPathString: defaultL10nPathString,
+                templateArbFileName: defaultTemplateArbFileName,
+                outputFileString: defaultOutputFileString,
+                classNameString: defaultClassNameString,
+                logger: logger,
+              )
+                ..loadResources()
+                ..writeOutputFiles();
+            },
+            throwsA(isA<L10nException>().having(
+              (L10nException e) => e.message,
+              'message',
+              allOf(
+                contains('asdf'),
+                contains('springStartDate'),
+                contains('does not have a corresponding DateFormat'),
+              ),
+            )),
+          );
+        },
+      );
 
       testWithoutContext('use standard date format whenever possible', () {
         const String singleDateMessageArbFileString = '''
@@ -1890,10 +2308,12 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     }
   }
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-            .writeAsStringSync(singleDateMessageArbFileString);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          singleDateMessageArbFileString,
+        );
 
         LocalizationsGenerator(
           fileSystem: fs,
@@ -1906,9 +2326,10 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
           ..loadResources()
           ..writeOutputFiles();
 
-        final String localizationsFile = fs.file(
-          fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-        ).readAsStringSync();
+        final String localizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file_en.dart',
+        )).readAsStringSync();
         expect(localizationsFile, contains('DateFormat.yMd(localeName)'));
       });
 
@@ -1928,10 +2349,12 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     }
   }
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-            .writeAsStringSync(singleDateMessageArbFileString);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          singleDateMessageArbFileString,
+        );
 
         LocalizationsGenerator(
           fileSystem: fs,
@@ -1944,14 +2367,20 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
           ..loadResources()
           ..writeOutputFiles();
 
-        final String localizationsFile = fs.file(
-          fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-        ).readAsStringSync();
-        expect(localizationsFile, contains(r"DateFormat('asdf o\'clock', localeName)"));
+        final String localizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file_en.dart',
+        )).readAsStringSync();
+        expect(
+          localizationsFile,
+          contains(r"DateFormat('asdf o\'clock', localeName)"),
+        );
       });
 
-      testWithoutContext('throws an exception when no format attribute is passed in', () {
-        const String singleDateMessageArbFileString = '''
+      testWithoutContext(
+        'throws an exception when no format attribute is passed in',
+        () {
+          const String singleDateMessageArbFileString = '''
 {
   "springBegins": "Spring begins on {springStartDate}",
   "@springBegins": {
@@ -1963,32 +2392,35 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     }
   }
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(singleDateMessageArbFileString);
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            singleDateMessageArbFileString,
+          );
 
-        expect(
-          () {
-            LocalizationsGenerator(
-              fileSystem: fs,
-              inputPathString: defaultL10nPathString,
-              outputPathString: defaultL10nPathString,
-              templateArbFileName: defaultTemplateArbFileName,
-              outputFileString: defaultOutputFileString,
-              classNameString: defaultClassNameString,
-              logger: logger,
-            )
-              ..loadResources()
-              ..writeOutputFiles();
-          },
-          throwsA(isA<L10nException>().having(
-            (L10nException e) => e.message,
-            'message',
-            contains('the "format" attribute needs to be set'),
-          )),
-        );
-      });
+          expect(
+            () {
+              LocalizationsGenerator(
+                fileSystem: fs,
+                inputPathString: defaultL10nPathString,
+                outputPathString: defaultL10nPathString,
+                templateArbFileName: defaultTemplateArbFileName,
+                outputFileString: defaultOutputFileString,
+                classNameString: defaultClassNameString,
+                logger: logger,
+              )
+                ..loadResources()
+                ..writeOutputFiles();
+            },
+            throwsA(isA<L10nException>().having(
+              (L10nException e) => e.message,
+              'message',
+              contains('the "format" attribute needs to be set'),
+            )),
+          );
+        },
+      );
     });
 
     group('NumberFormat tests', () {
@@ -2009,7 +2441,8 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
         fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
           ..createSync(recursive: true)
           ..childFile(defaultTemplateArbFileName).writeAsStringSync(
-              singleDateMessageArbFileString);
+            singleDateMessageArbFileString,
+          );
 
         LocalizationsGenerator(
           fileSystem: fs,
@@ -2023,14 +2456,17 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
           ..loadResources()
           ..writeOutputFiles();
 
-        final String localizationsFile = fs.file(
-          fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-        ).readAsStringSync();
+        final String localizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file_en.dart',
+        )).readAsStringSync();
         expect(localizationsFile, contains(intlImportDartCode));
       });
 
-      testWithoutContext('throws an exception when improperly formatted number is passed in', () {
-        const String singleDateMessageArbFileString = '''
+      testWithoutContext(
+        'throws an exception when improperly formatted number is passed in',
+        () {
+          const String singleDateMessageArbFileString = '''
 {
   "courseCompletion": "You have completed {progress} of the course.",
   "@courseCompletion": {
@@ -2043,90 +2479,100 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     }
   }
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(singleDateMessageArbFileString);
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            singleDateMessageArbFileString,
+          );
 
-        expect(
-          () {
-            LocalizationsGenerator(
-              fileSystem: fs,
-              inputPathString: defaultL10nPathString,
-              outputPathString: defaultL10nPathString,
-              templateArbFileName: defaultTemplateArbFileName,
-              outputFileString: defaultOutputFileString,
-              classNameString: defaultClassNameString,
-              logger: logger,
-            )
-              ..loadResources()
-              ..writeOutputFiles();
-          },
-          throwsA(isA<L10nException>().having(
-            (L10nException e) => e.message,
-            'message',
-            allOf(
-              contains('asdf'),
-              contains('progress'),
-              contains('does not have a corresponding NumberFormat'),
-            ),
-          )),
-        );
-      });
+          expect(
+            () {
+              LocalizationsGenerator(
+                fileSystem: fs,
+                inputPathString: defaultL10nPathString,
+                outputPathString: defaultL10nPathString,
+                templateArbFileName: defaultTemplateArbFileName,
+                outputFileString: defaultOutputFileString,
+                classNameString: defaultClassNameString,
+                logger: logger,
+              )
+                ..loadResources()
+                ..writeOutputFiles();
+            },
+            throwsA(isA<L10nException>().having(
+              (L10nException e) => e.message,
+              'message',
+              allOf(
+                contains('asdf'),
+                contains('progress'),
+                contains('does not have a corresponding NumberFormat'),
+              ),
+            )),
+          );
+        },
+      );
     });
 
     group('plural messages', () {
-      testWithoutContext('warnings are generated when plural parts are repeated', () {
-        const String pluralMessageWithOverriddenParts = '''
+      testWithoutContext(
+        'warnings are generated when plural parts are repeated',
+        () {
+          const String pluralMessageWithOverriddenParts = '''
 {
   "helloWorlds": "{count,plural, =0{Hello}zero{hello} other{hi}}",
   "@helloWorlds": {
     "description": "Properly formatted but has redundant zero cases."
   }
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(pluralMessageWithOverriddenParts);
-        LocalizationsGenerator(
-          fileSystem: fs,
-          inputPathString: defaultL10nPathString,
-          outputPathString: defaultL10nPathString,
-          templateArbFileName: defaultTemplateArbFileName,
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          logger: logger,
-        )
-          ..loadResources()
-          ..writeOutputFiles();
-        expect(logger.hadWarningOutput, isTrue);
-        expect(logger.warningText, contains('''
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            pluralMessageWithOverriddenParts,
+          );
+          LocalizationsGenerator(
+            fileSystem: fs,
+            inputPathString: defaultL10nPathString,
+            outputPathString: defaultL10nPathString,
+            templateArbFileName: defaultTemplateArbFileName,
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            logger: logger,
+          )
+            ..loadResources()
+            ..writeOutputFiles();
+          expect(logger.hadWarningOutput, isTrue);
+          expect(logger.warningText, contains('''
 [app_en.arb:helloWorlds] ICU Syntax Warning: The plural part specified below is overridden by a later plural part.
     {count,plural, =0{Hello}zero{hello} other{hi}}
                    ^'''));
-      });
+        },
+      );
 
       testWithoutContext('undefined plural cases throws syntax error', () {
-         const String pluralMessageWithUndefinedParts = '''
+        const String pluralMessageWithUndefinedParts = '''
 {
   "count": "{count,plural, =0{None} =1{One} =2{Two} =3{Undefined Behavior!} other{Hmm...}}"
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(pluralMessageWithUndefinedParts);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          pluralMessageWithUndefinedParts,
+        );
         try {
-        LocalizationsGenerator(
-          fileSystem: fs,
-          inputPathString: defaultL10nPathString,
-          outputPathString: defaultL10nPathString,
-          templateArbFileName: defaultTemplateArbFileName,
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          logger: logger,
-        )
-          ..loadResources()
-          ..writeOutputFiles();
+          LocalizationsGenerator(
+            fileSystem: fs,
+            inputPathString: defaultL10nPathString,
+            outputPathString: defaultL10nPathString,
+            templateArbFileName: defaultTemplateArbFileName,
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            logger: logger,
+          )
+            ..loadResources()
+            ..writeOutputFiles();
         } on L10nException catch (error) {
           expect(error.message, contains('Found syntax errors.'));
           expect(logger.hadErrorOutput, isTrue);
@@ -2138,8 +2584,10 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
         }
       });
 
-      testWithoutContext('should automatically infer plural placeholders that are not explicitly defined', () {
-        const String pluralMessageWithoutPlaceholdersAttribute = '''
+      testWithoutContext(
+        'should automatically infer plural placeholders that are not explicitly defined',
+        () {
+          const String pluralMessageWithoutPlaceholdersAttribute = '''
 {
   "helloWorlds": "{count,plural, =0{Hello}=1{Hello World}=2{Hello two worlds}few{Hello {count} worlds}many{Hello all {count} worlds}other{Hello other {count} worlds}}",
   "@helloWorlds": {
@@ -2147,29 +2595,38 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
   }
 }''';
 
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(pluralMessageWithoutPlaceholdersAttribute);
-        LocalizationsGenerator(
-          fileSystem: fs,
-          inputPathString: defaultL10nPathString,
-          outputPathString: defaultL10nPathString,
-          templateArbFileName: defaultTemplateArbFileName,
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          logger: logger,
-        )
-          ..loadResources()
-          ..writeOutputFiles();
-        final String localizationsFile = fs.file(
-          fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-        ).readAsStringSync();
-        expect(localizationsFile, contains('String helloWorlds(num count) {'));
-      });
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            pluralMessageWithoutPlaceholdersAttribute,
+          );
+          LocalizationsGenerator(
+            fileSystem: fs,
+            inputPathString: defaultL10nPathString,
+            outputPathString: defaultL10nPathString,
+            templateArbFileName: defaultTemplateArbFileName,
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            logger: logger,
+          )
+            ..loadResources()
+            ..writeOutputFiles();
+          final String localizationsFile = fs.file(fs.path.join(
+            syntheticL10nPackagePath,
+            'output-localization-file_en.dart',
+          )).readAsStringSync();
+          expect(
+            localizationsFile,
+            contains('String helloWorlds(num count) {'),
+          );
+        },
+      );
 
-      testWithoutContext('should throw attempting to generate a plural message with incorrect format for placeholders', () {
-        const String pluralMessageWithIncorrectPlaceholderFormat = '''
+      testWithoutContext(
+        'should throw attempting to generate a plural message with incorrect format for placeholders',
+        () {
+          const String pluralMessageWithIncorrectPlaceholderFormat = '''
 {
   "helloWorlds": "{count,plural, =0{Hello}=1{Hello World}=2{Hello two worlds}few{Hello {count} worlds}many{Hello all {count} worlds}other{Hello other {count} worlds}}",
   "@helloWorlds": {
@@ -2177,40 +2634,45 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
   }
 }''';
 
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(pluralMessageWithIncorrectPlaceholderFormat);
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            pluralMessageWithIncorrectPlaceholderFormat,
+          );
 
-        expect(
-          () {
-            LocalizationsGenerator(
-              fileSystem: fs,
-              inputPathString: defaultL10nPathString,
-              outputPathString: defaultL10nPathString,
-              templateArbFileName: defaultTemplateArbFileName,
-              outputFileString: defaultOutputFileString,
-              classNameString: defaultClassNameString,
-              logger: logger,
-            )
-              ..loadResources()
-              ..writeOutputFiles();
-          },
-          throwsA(isA<L10nException>().having(
-            (L10nException e) => e.message,
-            'message',
-            allOf(
-              contains('is not properly formatted'),
-              contains('Ensure that it is a map with string valued keys'),
-            ),
-          )),
-        );
-      });
+          expect(
+            () {
+              LocalizationsGenerator(
+                fileSystem: fs,
+                inputPathString: defaultL10nPathString,
+                outputPathString: defaultL10nPathString,
+                templateArbFileName: defaultTemplateArbFileName,
+                outputFileString: defaultOutputFileString,
+                classNameString: defaultClassNameString,
+                logger: logger,
+              )
+                ..loadResources()
+                ..writeOutputFiles();
+            },
+            throwsA(isA<L10nException>().having(
+              (L10nException e) => e.message,
+              'message',
+              allOf(
+                contains('is not properly formatted'),
+                contains('Ensure that it is a map with string valued keys'),
+              ),
+            )),
+          );
+        },
+      );
     });
 
     group('select messages', () {
-      testWithoutContext('should automatically infer select placeholders that are not explicitly defined', () {
-        const String selectMessageWithoutPlaceholdersAttribute = '''
+      testWithoutContext(
+        'should automatically infer select placeholders that are not explicitly defined',
+        () {
+          const String selectMessageWithoutPlaceholdersAttribute = '''
 {
   "genderSelect": "{gender, select, female {She} male {He} other {they} }",
   "@genderSelect": {
@@ -2218,29 +2680,38 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
   }
 }''';
 
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(selectMessageWithoutPlaceholdersAttribute);
-        LocalizationsGenerator(
-          fileSystem: fs,
-          inputPathString: defaultL10nPathString,
-          outputPathString: defaultL10nPathString,
-          templateArbFileName: defaultTemplateArbFileName,
-          outputFileString: defaultOutputFileString,
-          classNameString: defaultClassNameString,
-          logger: logger,
-        )
-          ..loadResources()
-          ..writeOutputFiles();
-        final String localizationsFile = fs.file(
-          fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-        ).readAsStringSync();
-        expect(localizationsFile, contains('String genderSelect(String gender) {'));
-      });
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            selectMessageWithoutPlaceholdersAttribute,
+          );
+          LocalizationsGenerator(
+            fileSystem: fs,
+            inputPathString: defaultL10nPathString,
+            outputPathString: defaultL10nPathString,
+            templateArbFileName: defaultTemplateArbFileName,
+            outputFileString: defaultOutputFileString,
+            classNameString: defaultClassNameString,
+            logger: logger,
+          )
+            ..loadResources()
+            ..writeOutputFiles();
+          final String localizationsFile = fs.file(fs.path.join(
+            syntheticL10nPackagePath,
+            'output-localization-file_en.dart',
+          )).readAsStringSync();
+          expect(
+            localizationsFile,
+            contains('String genderSelect(String gender) {'),
+          );
+        },
+      );
 
-      testWithoutContext('should throw attempting to generate a select message with incorrect format for placeholders', () {
-        const String selectMessageWithIncorrectPlaceholderFormat = '''
+      testWithoutContext(
+        'should throw attempting to generate a select message with incorrect format for placeholders',
+        () {
+          const String selectMessageWithIncorrectPlaceholderFormat = '''
 {
   "genderSelect": "{gender, select, female {She} male {He} other {they} }",
   "@genderSelect": {
@@ -2248,38 +2719,43 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
   }
 }''';
 
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-            .writeAsStringSync(selectMessageWithIncorrectPlaceholderFormat);
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            selectMessageWithIncorrectPlaceholderFormat,
+          );
 
-        expect(
-          () {
-            LocalizationsGenerator(
-              fileSystem: fs,
-              inputPathString: defaultL10nPathString,
-              outputPathString: defaultL10nPathString,
-              templateArbFileName: defaultTemplateArbFileName,
-              outputFileString: defaultOutputFileString,
-              classNameString: defaultClassNameString,
-              logger: logger,
-            )
-              ..loadResources()
-              ..writeOutputFiles();
-          },
-          throwsA(isA<L10nException>().having(
-            (L10nException e) => e.message,
-            'message',
-            allOf(
-              contains('is not properly formatted'),
-              contains('Ensure that it is a map with string valued keys'),
-            ),
-          )),
-        );
-      });
+          expect(
+            () {
+              LocalizationsGenerator(
+                fileSystem: fs,
+                inputPathString: defaultL10nPathString,
+                outputPathString: defaultL10nPathString,
+                templateArbFileName: defaultTemplateArbFileName,
+                outputFileString: defaultOutputFileString,
+                classNameString: defaultClassNameString,
+                logger: logger,
+              )
+                ..loadResources()
+                ..writeOutputFiles();
+            },
+            throwsA(isA<L10nException>().having(
+              (L10nException e) => e.message,
+              'message',
+              allOf(
+                contains('is not properly formatted'),
+                contains('Ensure that it is a map with string valued keys'),
+              ),
+            )),
+          );
+        },
+      );
 
-      testWithoutContext('should throw attempting to generate a select message with an incorrect message', () {
-        const String selectMessageWithoutPlaceholdersAttribute = '''
+      testWithoutContext(
+        'should throw attempting to generate a select message with an incorrect message',
+        () {
+          const String selectMessageWithoutPlaceholdersAttribute = '''
 {
   "genderSelect": "{gender, select,}",
   "@genderSelect": {
@@ -2289,64 +2765,70 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
   }
 }''';
 
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(selectMessageWithoutPlaceholdersAttribute);
-        try {
-          LocalizationsGenerator(
-            fileSystem: fs,
-            inputPathString: defaultL10nPathString,
-            outputPathString: defaultL10nPathString,
-            templateArbFileName: defaultTemplateArbFileName,
-            outputFileString: defaultOutputFileString,
-            classNameString: defaultClassNameString,
-            logger: logger,
-          )
-            ..loadResources()
-            ..writeOutputFiles();
-        } on L10nException {
-          expect(logger.errorText, contains('''
+          final Directory l10nDirectory = fs.currentDirectory
+              .childDirectory('lib')
+              .childDirectory('l10n')..createSync(recursive: true);
+          l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+            selectMessageWithoutPlaceholdersAttribute,
+          );
+          try {
+            LocalizationsGenerator(
+              fileSystem: fs,
+              inputPathString: defaultL10nPathString,
+              outputPathString: defaultL10nPathString,
+              templateArbFileName: defaultTemplateArbFileName,
+              outputFileString: defaultOutputFileString,
+              classNameString: defaultClassNameString,
+              logger: logger,
+            )
+              ..loadResources()
+              ..writeOutputFiles();
+          } on L10nException {
+            expect(logger.errorText, contains('''
 [app_en.arb:genderSelect] ICU Syntax Error: Select expressions must have an "other" case.
     {gender, select,}
-                    ^''')
-          );
-        }
-      });
+                    ^'''));
+          }
+        },
+      );
     });
 
     // All error handling for messages should collect errors on a per-error
     // basis and log them out individually. Then, it will throw an L10nException.
     group('error handling tests', () {
-      testWithoutContext('syntax/code-gen errors properly logs errors per message', () {
-        // TODO(thkim1011): Fix error handling so that long indents don't get truncated.
-        // See https://github.com/flutter/flutter/issues/120490.
-        const String messagesWithSyntaxErrors = '''
+      testWithoutContext(
+        'syntax/code-gen errors properly logs errors per message',
+        () {
+          // TODO(thkim1011): Fix error handling so that long indents don't get truncated.
+          // See https://github.com/flutter/flutter/issues/120490.
+          const String messagesWithSyntaxErrors = '''
 {
   "hello": "Hello { name",
   "plural": "This is an incorrectly formatted plural: { count, plural, zero{No frog} one{One frog} other{{count} frogs}",
   "explanationWithLexingError": "The 'string above is incorrect as it forgets to close the brace",
   "pluralWithInvalidCase": "{ count, plural, woohoo{huh?} other{lol} }"
 }''';
-        try {
-          final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-            ..createSync(recursive: true);
-          l10nDirectory.childFile(defaultTemplateArbFileName)
-            .writeAsStringSync(messagesWithSyntaxErrors);
-          LocalizationsGenerator(
-            fileSystem: fs,
-            inputPathString: defaultL10nPathString,
-            outputPathString: defaultL10nPathString,
-            templateArbFileName: defaultTemplateArbFileName,
-            outputFileString: defaultOutputFileString,
-            classNameString: defaultClassNameString,
-            useEscaping: true,
-            logger: logger,
-          )
-            ..loadResources()
-            ..writeOutputFiles();
-        } on L10nException {
-          expect(logger.errorText, contains('''
+          try {
+            final Directory l10nDirectory = fs.currentDirectory
+                .childDirectory('lib')
+                .childDirectory('l10n')..createSync(recursive: true);
+            l10nDirectory
+                .childFile(defaultTemplateArbFileName)
+                .writeAsStringSync(messagesWithSyntaxErrors);
+            LocalizationsGenerator(
+              fileSystem: fs,
+              inputPathString: defaultL10nPathString,
+              outputPathString: defaultL10nPathString,
+              templateArbFileName: defaultTemplateArbFileName,
+              outputFileString: defaultOutputFileString,
+              classNameString: defaultClassNameString,
+              useEscaping: true,
+              logger: logger,
+            )
+              ..loadResources()
+              ..writeOutputFiles();
+          } on L10nException {
+            expect(logger.errorText, contains('''
 [app_en.arb:hello] ICU Syntax Error: Expected "}" but found no tokens.
     Hello { name
                  ^
@@ -2359,74 +2841,90 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
 [app_en.arb:pluralWithInvalidCase] ICU Syntax Error: Plural expressions case must be one of "zero", "one", "two", "few", "many", or "other".
     { count, plural, woohoo{huh?} other{lol} }
                      ^'''));
-        }
-      });
+          }
+        },
+      );
 
-      testWithoutContext('errors thrown in multiple languages are all shown', () {
-        const String messageEn = '''
+      testWithoutContext(
+        'errors thrown in multiple languages are all shown',
+        () {
+          const String messageEn = '''
 {
   "hello": "Hello { name"
 }''';
-        const String messageEs = '''
+          const String messageEs = '''
 {
   "hello": "Hola { name"
 }''';
-        try {
-          final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-            ..createSync(recursive: true);
-          l10nDirectory.childFile(defaultTemplateArbFileName)
-            .writeAsStringSync(messageEn);
-          l10nDirectory.childFile('app_es.arb')
-            .writeAsStringSync(messageEs);
-          LocalizationsGenerator(
-            fileSystem: fs,
-            inputPathString: defaultL10nPathString,
-            outputPathString: defaultL10nPathString,
-            templateArbFileName: defaultTemplateArbFileName,
-            outputFileString: defaultOutputFileString,
-            classNameString: defaultClassNameString,
-            useEscaping: true,
-            logger: logger,
-          )
-            ..loadResources()
-            ..writeOutputFiles();
-        } on L10nException {
-          expect(logger.errorText, contains('''
+          try {
+            final Directory l10nDirectory = fs.currentDirectory
+                .childDirectory('lib')
+                .childDirectory('l10n')..createSync(recursive: true);
+            l10nDirectory
+                .childFile(defaultTemplateArbFileName)
+                .writeAsStringSync(messageEn);
+            l10nDirectory.childFile('app_es.arb').writeAsStringSync(messageEs);
+            LocalizationsGenerator(
+              fileSystem: fs,
+              inputPathString: defaultL10nPathString,
+              outputPathString: defaultL10nPathString,
+              templateArbFileName: defaultTemplateArbFileName,
+              outputFileString: defaultOutputFileString,
+              classNameString: defaultClassNameString,
+              useEscaping: true,
+              logger: logger,
+            )
+              ..loadResources()
+              ..writeOutputFiles();
+          } on L10nException {
+            expect(logger.errorText, contains('''
 [app_en.arb:hello] ICU Syntax Error: Expected "}" but found no tokens.
     Hello { name
                  ^
 [app_es.arb:hello] ICU Syntax Error: Expected "}" but found no tokens.
     Hola { name
                 ^'''));
-        }
-      });
+          }
+        },
+      );
     });
 
-    testWithoutContext('intl package import should be omitted in subclass files when no plurals are included', () {
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleMessageArbFileString)
-        ..childFile('app_es.arb').writeAsStringSync(singleEsMessageArbFileString);
+    testWithoutContext(
+      'intl package import should be omitted in subclass files when no plurals are included',
+      () {
+        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+          ..createSync(recursive: true)
+          ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+            singleMessageArbFileString,
+          )
+          ..childFile('app_es.arb').writeAsStringSync(
+            singleEsMessageArbFileString,
+          );
 
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
+        LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          logger: logger,
+        )
+          ..loadResources()
+          ..writeOutputFiles();
 
-      final String localizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file_es.dart'),
-      ).readAsStringSync();
-      expect(localizationsFile, isNot(contains(intlImportDartCode)));
-    });
+        final String localizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file_es.dart',
+        )).readAsStringSync();
+        expect(localizationsFile, isNot(contains(intlImportDartCode)));
+      },
+    );
 
-    testWithoutContext('intl package import should be kept in subclass files when plurals are included', () {
-      const String pluralMessageArb = '''
+    testWithoutContext(
+      'intl package import should be kept in subclass files when plurals are included',
+      () {
+        const String pluralMessageArb = '''
 {
   "helloWorlds": "{count,plural, =0{Hello} =1{Hello World} =2{Hello two worlds} few{Hello {count} worlds} many{Hello all {count} worlds} other{Hello other {count} worlds}}",
   "@helloWorlds": {
@@ -2438,36 +2936,43 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
 }
 ''';
 
-      const String pluralMessageEsArb = '''
+        const String pluralMessageEsArb = '''
 {
   "helloWorlds": "{count,plural, =0{ES - Hello} =1{ES - Hello World} =2{ES - Hello two worlds} few{ES - Hello {count} worlds} many{ES - Hello all {count} worlds} other{ES - Hello other {count} worlds}}"
 }
 ''';
 
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(pluralMessageArb)
-        ..childFile('app_es.arb').writeAsStringSync(pluralMessageEsArb);
+        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+          ..createSync(recursive: true)
+          ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+            pluralMessageArb,
+          )
+          ..childFile('app_es.arb').writeAsStringSync(pluralMessageEsArb);
 
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
+        LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          logger: logger,
+        )
+          ..loadResources()
+          ..writeOutputFiles();
 
-      final String localizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file_es.dart'),
-      ).readAsStringSync();
-      expect(localizationsFile, contains(intlImportDartCode));
-    });
+        final String localizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file_es.dart',
+        )).readAsStringSync();
+        expect(localizationsFile, contains(intlImportDartCode));
+      },
+    );
 
-    testWithoutContext('intl package import should be kept in subclass files when select is included', () {
-      const String selectMessageArb = '''
+    testWithoutContext(
+      'intl package import should be kept in subclass files when select is included',
+      () {
+        const String selectMessageArb = '''
 {
   "genderSelect": "{gender, select, female {She} male {He} other {they} }",
   "@genderSelect": {
@@ -2479,33 +2984,38 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
 }
 ''';
 
-      const String selectMessageEsArb = '''
+        const String selectMessageEsArb = '''
 {
   "genderSelect": "{gender, select, female {ES - She} male {ES - He} other {ES - they} }"
 }
 ''';
 
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(selectMessageArb)
-        ..childFile('app_es.arb').writeAsStringSync(selectMessageEsArb);
+        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+          ..createSync(recursive: true)
+          ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+            selectMessageArb,
+          )
+          ..childFile('app_es.arb').writeAsStringSync(selectMessageEsArb);
 
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
+        LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          logger: logger,
+        )
+          ..loadResources()
+          ..writeOutputFiles();
 
-      final String localizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file_es.dart'),
-      ).readAsStringSync();
-      expect(localizationsFile, contains(intlImportDartCode));
-    });
+        final String localizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file_es.dart',
+        )).readAsStringSync();
+        expect(localizationsFile, contains(intlImportDartCode));
+      },
+    );
 
     testWithoutContext('check indentation on generated files', () {
       _standardFlutterDirectoryL10nSetup(fs);
@@ -2527,64 +3037,91 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
       ).readAsStringSync();
       // Tests a few of the lines in the generated code.
       // Localizations lookup code
-      expect(localizationsFile.contains('  switch (locale.languageCode) {'), true);
-      expect(localizationsFile.contains("    case 'en': return AppLocalizationsEn();"), true);
-      expect(localizationsFile.contains("    case 'es': return AppLocalizationsEs();"), true);
+      expect(
+        localizationsFile.contains('  switch (locale.languageCode) {'),
+        true,
+      );
+      expect(localizationsFile.contains(
+        "    case 'en': return AppLocalizationsEn();",
+      ), true);
+      expect(localizationsFile.contains(
+        "    case 'es': return AppLocalizationsEs();",
+      ), true);
       expect(localizationsFile.contains('  }'), true);
 
       // Supported locales list
-      expect(localizationsFile.contains('  static const List<Locale> supportedLocales = <Locale>['), true);
+      expect(localizationsFile.contains(
+        '  static const List<Locale> supportedLocales = <Locale>[',
+      ), true);
       expect(localizationsFile.contains("    Locale('en'),"), true);
       expect(localizationsFile.contains("    Locale('es')"), true);
       expect(localizationsFile.contains('  ];'), true);
     });
 
-    testWithoutContext('foundation package import should be omitted from file template when deferred loading = true', () {
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleMessageArbFileString)
-        ..childFile('app_es.arb').writeAsStringSync(singleEsMessageArbFileString);
+    testWithoutContext(
+      'foundation package import should be omitted from file template when deferred loading = true',
+      () {
+        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+          ..createSync(recursive: true)
+          ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+            singleMessageArbFileString,
+          )
+          ..childFile('app_es.arb').writeAsStringSync(
+            singleEsMessageArbFileString,
+          );
 
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        useDeferredLoading: true,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
+        LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          useDeferredLoading: true,
+          logger: logger,
+        )
+          ..loadResources()
+          ..writeOutputFiles();
 
-      final String localizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart'),
-      ).readAsStringSync();
-      expect(localizationsFile, isNot(contains(foundationImportDartCode)));
-    });
+        final String localizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file.dart',
+        )).readAsStringSync();
+        expect(localizationsFile, isNot(contains(foundationImportDartCode)));
+      },
+    );
 
-    testWithoutContext('foundation package import should be kept in file template when deferred loading = false', () {
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(singleMessageArbFileString)
-        ..childFile('app_es.arb').writeAsStringSync(singleEsMessageArbFileString);
+    testWithoutContext(
+      'foundation package import should be kept in file template when deferred loading = false',
+      () {
+        fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+          ..createSync(recursive: true)
+          ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+            singleMessageArbFileString,
+          )
+          ..childFile('app_es.arb').writeAsStringSync(
+            singleEsMessageArbFileString,
+          );
 
-      LocalizationsGenerator(
-        fileSystem: fs,
-        inputPathString: defaultL10nPathString,
-        outputPathString: defaultL10nPathString,
-        templateArbFileName: defaultTemplateArbFileName,
-        outputFileString: defaultOutputFileString,
-        classNameString: defaultClassNameString,
-        logger: logger,
-      )
-        ..loadResources()
-        ..writeOutputFiles();
+        LocalizationsGenerator(
+          fileSystem: fs,
+          inputPathString: defaultL10nPathString,
+          outputPathString: defaultL10nPathString,
+          templateArbFileName: defaultTemplateArbFileName,
+          outputFileString: defaultOutputFileString,
+          classNameString: defaultClassNameString,
+          logger: logger,
+        )
+          ..loadResources()
+          ..writeOutputFiles();
 
-      final String localizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file.dart'),
-      ).readAsStringSync();
-      expect(localizationsFile, contains(foundationImportDartCode));
-    });
+        final String localizationsFile = fs.file(fs.path.join(
+          syntheticL10nPackagePath,
+          'output-localization-file.dart',
+        )).readAsStringSync();
+        expect(localizationsFile, contains(foundationImportDartCode));
+      },
+    );
 
     testWithoutContext('check for string interpolation rules', () {
       const String enArbCheckList = '''
@@ -2689,8 +3226,11 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
 }
 ''';
 
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(enArbCheckList)
+      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+        ..createSync(recursive: true)
+        ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+          enArbCheckList,
+        )
         ..childFile('app_es.arb').writeAsStringSync(esArbCheckList);
 
       LocalizationsGenerator(
@@ -2705,9 +3245,10 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
         ..loadResources()
         ..writeOutputFiles();
 
-      final String localizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file_es.dart'),
-      ).readAsStringSync();
+      final String localizationsFile = fs.file(fs.path.join(
+        syntheticL10nPackagePath,
+        'output-localization-file_es.dart',
+      )).readAsStringSync();
 
       expect(localizationsFile, contains(r'$one'));
       expect(localizationsFile, contains(r'$two'));
@@ -2759,8 +3300,11 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
 }
 ''';
 
-      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')..createSync(recursive: true)
-        ..childFile(defaultTemplateArbFileName).writeAsStringSync(enArbCheckList)
+      fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
+        ..createSync(recursive: true)
+        ..childFile(defaultTemplateArbFileName).writeAsStringSync(
+          enArbCheckList,
+        )
         ..childFile('app_es.arb').writeAsStringSync(esArbCheckList);
 
       LocalizationsGenerator(
@@ -2775,9 +3319,10 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
         ..loadResources()
         ..writeOutputFiles();
 
-      final String localizationsFile = fs.file(
-        fs.path.join(syntheticL10nPackagePath, 'output-localization-file_es.dart'),
-      ).readAsStringSync();
+      final String localizationsFile = fs.file(fs.path.join(
+        syntheticL10nPackagePath,
+        'output-localization-file_es.dart',
+      )).readAsStringSync();
 
       expect(localizationsFile, contains(r'test $count test'));
       expect(localizationsFile, contains(r'哈$count哈'));
@@ -2787,14 +3332,17 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
       expect(localizationsFile, contains(r'${count}m'));
       expect(localizationsFile, contains(r'test $count'));
       expect(localizationsFile, contains(r' $count'));
-      expect(localizationsFile, contains(r'String totalString = totalNumberFormat'));
+      expect(
+        localizationsFile,
+        contains(r'String totalString = totalNumberFormat'),
+      );
       expect(localizationsFile, contains(r'totalString'));
       expect(localizationsFile, contains(r'totalString'));
     });
 
     testWithoutContext(
       'should throw with descriptive error message when failing to parse the '
-      'arb file',
+          'arb file',
       () {
         const String arbFileWithTrailingComma = '''
 {
@@ -2803,10 +3351,12 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     "description": "Title for the Stocks application"
   },
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(arbFileWithTrailingComma);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          arbFileWithTrailingComma,
+        );
 
         expect(
           () {
@@ -2835,38 +3385,43 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
       },
     );
 
-    testWithoutContext('should throw when resource is missing resource attribute (isResourceAttributeRequired = true)', () {
-      const String arbFileWithMissingResourceAttribute = '''
+    testWithoutContext(
+      'should throw when resource is missing resource attribute (isResourceAttributeRequired = true)',
+      () {
+        const String arbFileWithMissingResourceAttribute = '''
 {
   "title": "Stocks"
 }''';
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(arbFileWithMissingResourceAttribute);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          arbFileWithMissingResourceAttribute,
+        );
 
-      expect(
-        () {
-          LocalizationsGenerator(
-            fileSystem: fs,
-            inputPathString: defaultL10nPathString,
-            outputPathString: defaultL10nPathString,
-            templateArbFileName: defaultTemplateArbFileName,
-            outputFileString: defaultOutputFileString,
-            classNameString: defaultClassNameString,
-            areResourceAttributesRequired: true,
-            logger: logger,
-          )
-            ..loadResources()
-            ..writeOutputFiles();
-        },
-        throwsA(isA<L10nException>().having(
-          (L10nException e) => e.message,
-          'message',
-          contains('Resource attribute "@title" was not found'),
-        )),
-      );
-    });
+        expect(
+          () {
+            LocalizationsGenerator(
+              fileSystem: fs,
+              inputPathString: defaultL10nPathString,
+              outputPathString: defaultL10nPathString,
+              templateArbFileName: defaultTemplateArbFileName,
+              outputFileString: defaultOutputFileString,
+              classNameString: defaultClassNameString,
+              areResourceAttributesRequired: true,
+              logger: logger,
+            )
+              ..loadResources()
+              ..writeOutputFiles();
+          },
+          throwsA(isA<L10nException>().having(
+            (L10nException e) => e.message,
+            'message',
+            contains('Resource attribute "@title" was not found'),
+          )),
+        );
+      },
+    );
 
     group('checks for method/getter formatting', () {
       testWithoutContext('cannot contain non-alphanumeric symbols', () {
@@ -2877,10 +3432,12 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     "description": "Title for the Stocks application"
   }
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(nonAlphaNumericArbFile);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          nonAlphaNumericArbFile,
+        );
 
         expect(
           () {
@@ -2912,10 +3469,12 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     "description": "Title for the Stocks application"
   }
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(nonAlphaNumericArbFile);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          nonAlphaNumericArbFile,
+        );
 
         expect(
           () {
@@ -2947,10 +3506,12 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     "description": "Title for the Stocks application"
   }
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-          .writeAsStringSync(nonAlphaNumericArbFile);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          nonAlphaNumericArbFile,
+        );
 
         expect(
           () {
@@ -2981,10 +3542,12 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     "description": "Title for the application"
   }
 }''';
-        final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-          ..createSync(recursive: true);
-        l10nDirectory.childFile(defaultTemplateArbFileName)
-            .writeAsStringSync(dollarArbFile);
+        final Directory l10nDirectory = fs.currentDirectory
+            .childDirectory('lib')
+            .childDirectory('l10n')..createSync(recursive: true);
+        l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+          dollarArbFile,
+        );
 
         LocalizationsGenerator(
           fileSystem: fs,
@@ -3006,10 +3569,12 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
   "title": "invalid"
 }''';
 
-      final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-        ..createSync(recursive: true);
-      l10nDirectory.childFile('app_invalid.arb')
-        .writeAsStringSync(arbFileWithInvalidCode);
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile('app_invalid.arb').writeAsStringSync(
+        arbFileWithInvalidCode,
+      );
 
       expect(
         () {
@@ -3034,53 +3599,63 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
     });
   });
 
-  testWithoutContext('should generate a valid pubspec.yaml file when using synthetic package if it does not already exist', () {
-    _standardFlutterDirectoryL10nSetup(fs);
-    LocalizationsGenerator(
-      fileSystem: fs,
-      inputPathString: defaultL10nPathString,
-      templateArbFileName: defaultTemplateArbFileName,
-      outputFileString: defaultOutputFileString,
-      classNameString: defaultClassNameString,
-      logger: logger,
-    )
-      ..loadResources()
-      ..writeOutputFiles();
+  testWithoutContext(
+    'should generate a valid pubspec.yaml file when using synthetic package if it does not already exist',
+    () {
+      _standardFlutterDirectoryL10nSetup(fs);
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        logger: logger,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
 
-    final Directory outputDirectory = fs.directory(syntheticPackagePath);
-    final File pubspecFile = outputDirectory.childFile('pubspec.yaml');
-    expect(pubspecFile.existsSync(), isTrue);
+      final Directory outputDirectory = fs.directory(syntheticPackagePath);
+      final File pubspecFile = outputDirectory.childFile('pubspec.yaml');
+      expect(pubspecFile.existsSync(), isTrue);
 
-    final YamlNode yamlNode = loadYamlNode(pubspecFile.readAsStringSync());
-    expect(yamlNode, isA<YamlMap>());
+      final YamlNode yamlNode = loadYamlNode(pubspecFile.readAsStringSync());
+      expect(yamlNode, isA<YamlMap>());
 
-    final YamlMap yamlMap = yamlNode as YamlMap;
-    final String pubspecName = yamlMap['name'] as String;
-    final String pubspecDescription = yamlMap['description'] as String;
-    expect(pubspecName, 'synthetic_package');
-    expect(pubspecDescription, "The Flutter application's synthetic package.");
-  });
+      final YamlMap yamlMap = yamlNode as YamlMap;
+      final String pubspecName = yamlMap['name'] as String;
+      final String pubspecDescription = yamlMap['description'] as String;
+      expect(pubspecName, 'synthetic_package');
+      expect(
+        pubspecDescription,
+        "The Flutter application's synthetic package.",
+      );
+    },
+  );
 
-  testWithoutContext('should not overwrite existing pubspec.yaml file when using synthetic package', () {
-    _standardFlutterDirectoryL10nSetup(fs);
-    final File pubspecFile = fs.file(fs.path.join(syntheticPackagePath, 'pubspec.yaml'))
-      ..createSync(recursive: true)
-      ..writeAsStringSync('abcd');
+  testWithoutContext(
+    'should not overwrite existing pubspec.yaml file when using synthetic package',
+    () {
+      _standardFlutterDirectoryL10nSetup(fs);
+      final File pubspecFile =
+          fs.file(fs.path.join(syntheticPackagePath, 'pubspec.yaml'))
+            ..createSync(recursive: true)
+            ..writeAsStringSync('abcd');
 
-    LocalizationsGenerator(
-      fileSystem: fs,
-      inputPathString: defaultL10nPathString,
-      templateArbFileName: defaultTemplateArbFileName,
-      outputFileString: defaultOutputFileString,
-      classNameString: defaultClassNameString,
-      logger: logger,
-    )
-      ..loadResources()
-      ..writeOutputFiles();
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        logger: logger,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
 
-    // The original pubspec file should not be overwritten.
-    expect(pubspecFile.readAsStringSync(), 'abcd');
-  });
+      // The original pubspec file should not be overwritten.
+      expect(pubspecFile.readAsStringSync(), 'abcd');
+    },
+  );
 
   testWithoutContext('can use type: int without specifying a format', () {
     const String arbFile = '''
@@ -3096,10 +3671,12 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
   }
 }''';
 
-    final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true);
-    l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(arbFile);
+    final Directory l10nDirectory = fs.currentDirectory
+        .childDirectory('lib')
+        .childDirectory('l10n')..createSync(recursive: true);
+    l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+      arbFile,
+    );
 
     LocalizationsGenerator(
       fileSystem: fs,
@@ -3113,9 +3690,10 @@ import 'output-localization-file_en.dart' deferred as output-localization-file_e
       ..loadResources()
       ..writeOutputFiles();
 
-    final String localizationsFile = fs.file(
-      fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-    ).readAsStringSync();
+    final String localizationsFile = fs.file(fs.path.join(
+      syntheticL10nPackagePath,
+      'output-localization-file_en.dart',
+    )).readAsStringSync();
     expect(localizationsFile, containsIgnoringWhitespace(r'''
 String orderNumber(int number) {
   return 'This is order #$number.';
@@ -3125,10 +3703,12 @@ String orderNumber(int number) {
   });
 
   testWithoutContext('app localizations lookup is a public method', () {
-    final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true);
-    l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(singleMessageArbFileString);
+    final Directory l10nDirectory = fs.currentDirectory
+        .childDirectory('lib')
+        .childDirectory('l10n')..createSync(recursive: true);
+    l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+      singleMessageArbFileString,
+    );
 
     LocalizationsGenerator(
       fileSystem: fs,
@@ -3159,10 +3739,12 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 }''';
 
-    final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true);
-    l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(arbFile);
+    final Directory l10nDirectory = fs.currentDirectory
+        .childDirectory('lib')
+        .childDirectory('l10n')..createSync(recursive: true);
+    l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+      arbFile,
+    );
 
     LocalizationsGenerator(
       fileSystem: fs,
@@ -3177,9 +3759,10 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       ..loadResources()
       ..writeOutputFiles();
 
-    final String localizationsFile = fs.file(
-      fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-    ).readAsStringSync();
+    final String localizationsFile = fs.file(fs.path.join(
+      syntheticL10nPackagePath,
+      'output-localization-file_en.dart',
+    )).readAsStringSync();
     expect(localizationsFile, contains(r"Flutter\'s amazing"));
   });
 
@@ -3194,10 +3777,12 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     }
   }
 }''';
-    final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true);
-    l10nDirectory.childFile(defaultTemplateArbFileName)
-      .writeAsStringSync(pluralMessageWithOverriddenParts);
+    final Directory l10nDirectory = fs.currentDirectory
+        .childDirectory('lib')
+        .childDirectory('l10n')..createSync(recursive: true);
+    l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+      pluralMessageWithOverriddenParts,
+    );
     LocalizationsGenerator(
       fileSystem: fs,
       inputPathString: defaultL10nPathString,
@@ -3213,8 +3798,10 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     expect(logger.hadWarningOutput, isFalse);
   });
 
-  testWithoutContext('can use decimalPatternDigits with decimalDigits optional parameter', () {
-    const String arbFile = '''
+  testWithoutContext(
+    'can use decimalPatternDigits with decimalDigits optional parameter',
+    () {
+      const String arbFile = '''
 {
   "treeHeight": "Tree height is {height}m.",
   "@treeHeight": {
@@ -3230,62 +3817,75 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 }''';
 
-    final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true);
-    l10nDirectory.childFile(defaultTemplateArbFileName)
-        .writeAsStringSync(arbFile);
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+        arbFile,
+      );
 
-    LocalizationsGenerator(
-      fileSystem: fs,
-      inputPathString: defaultL10nPathString,
-      outputPathString: defaultL10nPathString,
-      templateArbFileName: defaultTemplateArbFileName,
-      outputFileString: defaultOutputFileString,
-      classNameString: defaultClassNameString,
-      logger: logger,
-    )
-      ..loadResources()
-      ..writeOutputFiles();
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        outputPathString: defaultL10nPathString,
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        logger: logger,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
 
-    final String localizationsFile = fs.file(
-      fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-    ).readAsStringSync();
-    expect(localizationsFile, containsIgnoringWhitespace(r'''
+      final String localizationsFile = fs.file(fs.path.join(
+        syntheticL10nPackagePath,
+        'output-localization-file_en.dart',
+      )).readAsStringSync();
+      expect(localizationsFile, containsIgnoringWhitespace(r'''
 String treeHeight(double height) {
 '''));
-    expect(localizationsFile, containsIgnoringWhitespace(r'''
+      expect(localizationsFile, containsIgnoringWhitespace(r'''
 NumberFormat.decimalPatternDigits(
   locale: localeName,
   decimalDigits: 3
 );
 '''));
-  });
+    },
+  );
 
   // Regression test for https://github.com/flutter/flutter/issues/125461.
-  testWithoutContext('dollar signs are escaped properly when there is a select clause', () {
-    const String dollarSignWithSelect = r'''
+  testWithoutContext(
+    'dollar signs are escaped properly when there is a select clause',
+    () {
+      const String dollarSignWithSelect = r'''
 {
   "dollarSignWithSelect": "$nice_bug\nHello Bug! Manifistation #1 {selectPlaceholder, select, case{message} other{messageOther}}"
 }''';
-    final Directory l10nDirectory = fs.currentDirectory.childDirectory('lib').childDirectory('l10n')
-      ..createSync(recursive: true);
-    l10nDirectory.childFile(defaultTemplateArbFileName)
-      .writeAsStringSync(dollarSignWithSelect);
-    LocalizationsGenerator(
-      fileSystem: fs,
-      inputPathString: defaultL10nPathString,
-      outputPathString: defaultL10nPathString,
-      templateArbFileName: defaultTemplateArbFileName,
-      outputFileString: defaultOutputFileString,
-      classNameString: defaultClassNameString,
-      logger: logger,
-      suppressWarnings: true,
-    )
-      ..loadResources()
-      ..writeOutputFiles();
-    final String localizationsFile = fs.file(
-      fs.path.join(syntheticL10nPackagePath, 'output-localization-file_en.dart'),
-    ).readAsStringSync();
-    expect(localizationsFile, contains(r'\$nice_bug\nHello Bug! Manifistation #1 $_temp0'));
-  });
+      final Directory l10nDirectory = fs.currentDirectory
+          .childDirectory('lib')
+          .childDirectory('l10n')..createSync(recursive: true);
+      l10nDirectory.childFile(defaultTemplateArbFileName).writeAsStringSync(
+        dollarSignWithSelect,
+      );
+      LocalizationsGenerator(
+        fileSystem: fs,
+        inputPathString: defaultL10nPathString,
+        outputPathString: defaultL10nPathString,
+        templateArbFileName: defaultTemplateArbFileName,
+        outputFileString: defaultOutputFileString,
+        classNameString: defaultClassNameString,
+        logger: logger,
+        suppressWarnings: true,
+      )
+        ..loadResources()
+        ..writeOutputFiles();
+      final String localizationsFile = fs.file(fs.path.join(
+        syntheticL10nPackagePath,
+        'output-localization-file_en.dart',
+      )).readAsStringSync();
+      expect(
+        localizationsFile,
+        contains(r'\$nice_bug\nHello Bug! Manifistation #1 $_temp0'),
+      );
+    },
+  );
 }

@@ -29,7 +29,8 @@ const Duration _kReactionFadeDuration = Duration(milliseconds: 50);
 /// This mixin is used to implement the material components for [Switch],
 /// [Checkbox], and [Radio] controls.
 @optionalTypeArgs
-mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin<S> {
+mixin ToggleableStateMixin<S extends StatefulWidget>
+    on TickerProviderStateMixin<S> {
   /// Used by subclasses to manipulate the visual value of the control.
   ///
   /// Some controls respond to user input by updating their visual value. For
@@ -242,7 +243,9 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
 
   void _handleTapEnd([TapUpDetails? _]) {
     if (_downPosition != null) {
-      setState(() { _downPosition = null; });
+      setState(() {
+        _downPosition = null;
+      });
     }
     _reactionController.reverse();
   }
@@ -250,7 +253,9 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
   bool _focused = false;
   void _handleFocusHighlightChanged(bool focused) {
     if (focused != _focused) {
-      setState(() { _focused = focused; });
+      setState(() {
+        _focused = focused;
+      });
       if (focused) {
         _reactionFocusFadeController.forward();
       } else {
@@ -262,7 +267,9 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
   bool _hovering = false;
   void _handleHoverChanged(bool hovering) {
     if (hovering != _hovering) {
-      setState(() { _hovering = hovering; });
+      setState(() {
+        _hovering = hovering;
+      });
       if (hovering) {
         _reactionHoverFadeController.forward();
       } else {
@@ -325,10 +332,7 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
         onTapCancel: isInteractive ? _handleTapEnd : null,
         child: Semantics(
           enabled: isInteractive,
-          child: CustomPaint(
-            size: size,
-            painter: painter,
-          ),
+          child: CustomPaint(size: size, painter: painter),
         ),
       ),
     );
@@ -342,7 +346,8 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
 /// Subclasses must implement the [paint] method to draw the actual visuals of
 /// the Toggleable. In their [paint] method subclasses may call
 /// [paintRadialReaction] to draw a radial ink reaction for this control.
-abstract class ToggleablePainter extends ChangeNotifier implements CustomPainter {
+abstract class ToggleablePainter extends ChangeNotifier
+    implements CustomPainter {
   /// The visual value of the control.
   ///
   /// Usually set to [ToggleableStateMixin.position].
@@ -547,17 +552,15 @@ abstract class ToggleablePainter extends ChangeNotifier implements CustomPainter
     Offset offset = Offset.zero,
     required Offset origin,
   }) {
-    if (!reaction.isDismissed || !reactionFocusFade.isDismissed || !reactionHoverFade.isDismissed) {
+    if (!reaction.isDismissed ||
+        !reactionFocusFade.isDismissed ||
+        !reactionHoverFade.isDismissed) {
       final Paint reactionPaint = Paint()
-        ..color = Color.lerp(
-          Color.lerp(
-            Color.lerp(inactiveReactionColor, reactionColor, position.value),
-            hoverColor,
-            reactionHoverFade.value,
-          ),
-          focusColor,
-          reactionFocusFade.value,
-        )!;
+        ..color = Color.lerp(Color.lerp(
+          Color.lerp(inactiveReactionColor, reactionColor, position.value),
+          hoverColor,
+          reactionHoverFade.value,
+        ), focusColor, reactionFocusFade.value)!;
       final Animatable<double> radialReactionRadiusTween = Tween<double>(
         begin: 0.0,
         end: splashRadius,
@@ -570,7 +573,6 @@ abstract class ToggleablePainter extends ChangeNotifier implements CustomPainter
       }
     }
   }
-
 
   @override
   void dispose() {
