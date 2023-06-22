@@ -18,7 +18,10 @@ void verifyPaintPosition(GlobalKey key, Offset ideal, bool visible) {
 
 void verifyActualBoxPosition(WidgetTester tester, Finder finder, int index, Rect ideal) {
   final RenderBox box = tester.renderObjectList<RenderBox>(finder).elementAt(index);
-  final Rect rect = Rect.fromPoints(box.localToGlobal(Offset.zero), box.localToGlobal(box.size.bottomRight(Offset.zero)));
+  final Rect rect = Rect.fromPoints(
+    box.localToGlobal(Offset.zero),
+    box.localToGlobal(box.size.bottomRight(Offset.zero)),
+  );
   expect(rect, equals(ideal));
 }
 
@@ -26,22 +29,21 @@ void main() {
   testWidgets('Sliver appbars - pinned', (WidgetTester tester) async {
     const double bigHeight = 550.0;
     GlobalKey key1, key2, key3, key4, key5;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            BigSliver(key: key1 = GlobalKey(), height: bigHeight),
-            SliverPersistentHeader(key: key2 = GlobalKey(), delegate: TestDelegate(), pinned: true),
-            SliverPersistentHeader(key: key3 = GlobalKey(), delegate: TestDelegate(), pinned: true),
-            BigSliver(key: key4 = GlobalKey(), height: bigHeight),
-            BigSliver(key: key5 = GlobalKey(), height: bigHeight),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: CustomScrollView(
+        slivers: <Widget>[
+          BigSliver(key: key1 = GlobalKey(), height: bigHeight),
+          SliverPersistentHeader(key: key2 = GlobalKey(), delegate: TestDelegate(), pinned: true),
+          SliverPersistentHeader(key: key3 = GlobalKey(), delegate: TestDelegate(), pinned: true),
+          BigSliver(key: key4 = GlobalKey(), height: bigHeight),
+          BigSliver(key: key5 = GlobalKey(), height: bigHeight),
+        ],
       ),
-    );
+    ));
     final ScrollPosition position = tester.state<ScrollableState>(find.byType(Scrollable)).position;
-    final double max = bigHeight * 3.0 + TestDelegate().maxExtent * 2.0 - 600.0; // 600 is the height of the test viewport
+    final double max =
+        bigHeight * 3.0 + TestDelegate().maxExtent * 2.0 - 600.0; // 600 is the height of the test viewport
     assert(max < 10000.0);
     expect(max, 1450.0);
     expect(position.pixels, 0.0);
@@ -62,16 +64,12 @@ void main() {
   testWidgets('Sliver appbars - toStringDeep of maxExtent that throws', (WidgetTester tester) async {
     final TestDelegateThatCanThrow delegateThatCanThrow = TestDelegateThatCanThrow();
     GlobalKey key;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverPersistentHeader(key: key = GlobalKey(), delegate: delegateThatCanThrow, pinned: true),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: CustomScrollView(
+        slivers: <Widget>[SliverPersistentHeader(key: key = GlobalKey(), delegate: delegateThatCanThrow, pinned: true)],
       ),
-    );
+    ));
     await tester.pumpAndSettle(const Duration(milliseconds: 10));
 
     final RenderObject renderObject = key.currentContext!.findRenderObject()!;
@@ -124,20 +122,18 @@ void main() {
   testWidgets('Sliver appbars - pinned with slow scroll', (WidgetTester tester) async {
     const double bigHeight = 550.0;
     GlobalKey key1, key2, key3, key4, key5;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            BigSliver(key: key1 = GlobalKey(), height: bigHeight),
-            SliverPersistentHeader(key: key2 = GlobalKey(), delegate: TestDelegate(), pinned: true),
-            SliverPersistentHeader(key: key3 = GlobalKey(), delegate: TestDelegate(), pinned: true),
-            BigSliver(key: key4 = GlobalKey(), height: bigHeight),
-            BigSliver(key: key5 = GlobalKey(), height: bigHeight),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: CustomScrollView(
+        slivers: <Widget>[
+          BigSliver(key: key1 = GlobalKey(), height: bigHeight),
+          SliverPersistentHeader(key: key2 = GlobalKey(), delegate: TestDelegate(), pinned: true),
+          SliverPersistentHeader(key: key3 = GlobalKey(), delegate: TestDelegate(), pinned: true),
+          BigSliver(key: key4 = GlobalKey(), height: bigHeight),
+          BigSliver(key: key5 = GlobalKey(), height: bigHeight),
+        ],
       ),
-    );
+    ));
 
     final ScrollPosition position = tester.state<ScrollableState>(find.byType(Scrollable)).position;
     verifyPaintPosition(key1, Offset.zero, true);
@@ -217,22 +213,21 @@ void main() {
   testWidgets('Sliver appbars - pinned with less overlap', (WidgetTester tester) async {
     const double bigHeight = 650.0;
     GlobalKey key1, key2, key3, key4, key5;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            BigSliver(key: key1 = GlobalKey(), height: bigHeight),
-            SliverPersistentHeader(key: key2 = GlobalKey(), delegate: TestDelegate(), pinned: true),
-            SliverPersistentHeader(key: key3 = GlobalKey(), delegate: TestDelegate(), pinned: true),
-            BigSliver(key: key4 = GlobalKey(), height: bigHeight),
-            BigSliver(key: key5 = GlobalKey(), height: bigHeight),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: CustomScrollView(
+        slivers: <Widget>[
+          BigSliver(key: key1 = GlobalKey(), height: bigHeight),
+          SliverPersistentHeader(key: key2 = GlobalKey(), delegate: TestDelegate(), pinned: true),
+          SliverPersistentHeader(key: key3 = GlobalKey(), delegate: TestDelegate(), pinned: true),
+          BigSliver(key: key4 = GlobalKey(), height: bigHeight),
+          BigSliver(key: key5 = GlobalKey(), height: bigHeight),
+        ],
       ),
-    );
+    ));
     final ScrollPosition position = tester.state<ScrollableState>(find.byType(Scrollable)).position;
-    final double max = bigHeight * 3.0 + TestDelegate().maxExtent * 2.0 - 600.0; // 600 is the height of the test viewport
+    final double max =
+        bigHeight * 3.0 + TestDelegate().maxExtent * 2.0 - 600.0; // 600 is the height of the test viewport
     assert(max < 10000.0);
     expect(max, 1750.0);
     expect(position.pixels, 0.0);
@@ -251,25 +246,16 @@ void main() {
   });
 
   testWidgets('Sliver appbars - overscroll gap is below header', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: <Widget>[
-            SliverPersistentHeader(delegate: TestDelegate(), pinned: true),
-            SliverList(
-              delegate: SliverChildListDelegate(<Widget>[
-                const SizedBox(
-                  height: 300.0,
-                  child: Text('X'),
-                ),
-              ]),
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: <Widget>[
+          SliverPersistentHeader(delegate: TestDelegate(), pinned: true),
+          SliverList(delegate: SliverChildListDelegate(<Widget>[const SizedBox(height: 300.0, child: Text('X'))])),
+        ],
       ),
-    );
+    ));
 
     expect(tester.getTopLeft(find.byType(Container)), Offset.zero);
     expect(tester.getTopLeft(find.text('X')), const Offset(0.0, 200.0));
@@ -333,7 +319,6 @@ class TestDelegateThatCanThrow extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(TestDelegate oldDelegate) => false;
 }
 
-
 class RenderBigSliver extends RenderSliver {
   RenderBigSliver(double height) : _height = height;
 
@@ -351,16 +336,12 @@ class RenderBigSliver extends RenderSliver {
 
   @override
   void performLayout() {
-    geometry = SliverGeometry(
-      scrollExtent: height,
-      paintExtent: paintExtent,
-      maxPaintExtent: height,
-    );
+    geometry = SliverGeometry(scrollExtent: height, paintExtent: paintExtent, maxPaintExtent: height);
   }
 }
 
 class BigSliver extends LeafRenderObjectWidget {
-  const BigSliver({ super.key, required this.height });
+  const BigSliver({super.key, required this.height});
 
   final double height;
 

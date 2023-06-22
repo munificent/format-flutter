@@ -22,6 +22,7 @@ class TestIconState extends State<TestIcon> {
     return const Icon(Icons.expand_more);
   }
 }
+
 class TestText extends StatefulWidget {
   const TestText(this.text, {super.key});
 
@@ -129,56 +130,49 @@ void main() {
     const Color collapsedIconColor = Colors.blue;
     const Color textColor = Colors.black;
     const Color collapsedTextColor = Colors.white;
-    const ShapeBorder shape = Border(
-      top: BorderSide(color: Colors.red),
-      bottom: BorderSide(color: Colors.red),
-    );
+    const ShapeBorder shape = Border(top: BorderSide(color: Colors.red), bottom: BorderSide(color: Colors.red));
     const ShapeBorder collapsedShape = Border(
       top: BorderSide(color: Colors.green),
       bottom: BorderSide(color: Colors.green),
     );
     const Clip clipBehavior = Clip.antiAlias;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          expansionTileTheme: const ExpansionTileThemeData(
-            backgroundColor: backgroundColor,
-            collapsedBackgroundColor: collapsedBackgroundColor,
-            tilePadding: EdgeInsets.fromLTRB(8, 12, 4, 10),
-            expandedAlignment: Alignment.centerRight,
-            childrenPadding: EdgeInsets.all(20.0),
-            iconColor: iconColor,
-            collapsedIconColor: collapsedIconColor,
-            textColor: textColor,
-            collapsedTextColor: collapsedTextColor,
-            shape: shape,
-            collapsedShape: collapsedShape,
-            clipBehavior: clipBehavior,
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(
+        expansionTileTheme: const ExpansionTileThemeData(
+          backgroundColor: backgroundColor,
+          collapsedBackgroundColor: collapsedBackgroundColor,
+          tilePadding: EdgeInsets.fromLTRB(8, 12, 4, 10),
+          expandedAlignment: Alignment.centerRight,
+          childrenPadding: EdgeInsets.all(20.0),
+          iconColor: iconColor,
+          collapsedIconColor: collapsedIconColor,
+          textColor: textColor,
+          collapsedTextColor: collapsedTextColor,
+          shape: shape,
+          collapsedShape: collapsedShape,
+          clipBehavior: clipBehavior,
         ),
-        home: Material(
-          child: Center(
-            child: ExpansionTile(
-              key: tileKey,
-              title: TestText('Collapsed Tile', key: titleKey),
-              trailing: TestIcon(key: iconKey),
-              children: const <Widget>[Text('Tile 1')],
-            ),
+      ),
+      home: Material(
+        child: Center(
+          child: ExpansionTile(
+            key: tileKey,
+            title: TestText('Collapsed Tile', key: titleKey),
+            trailing: TestIcon(key: iconKey),
+            children: const <Widget>[Text('Tile 1')],
           ),
         ),
       ),
-    );
+    ));
 
-    final ShapeDecoration shapeDecoration =  tester.firstWidget<Container>(find.descendant(
-      of: find.byKey(tileKey),
-      matching: find.byType(Container),
-    )).decoration! as ShapeDecoration;
+    final ShapeDecoration shapeDecoration = tester.firstWidget<Container>(
+      find.descendant(of: find.byKey(tileKey), matching: find.byType(Container)),
+    ).decoration! as ShapeDecoration;
 
-    final Clip tileClipBehavior = tester.firstWidget<Container>(find.descendant(
-      of: find.byKey(tileKey),
-      matching: find.byType(Container),
-    )).clipBehavior;
+    final Clip tileClipBehavior = tester.firstWidget<Container>(
+      find.descendant(of: find.byKey(tileKey), matching: find.byType(Container)),
+    ).clipBehavior;
 
     // expansionTile should have Clip.antiAlias as clipBehavior
     expect(tileClipBehavior, clipBehavior);
@@ -221,50 +215,44 @@ void main() {
     const Color collapsedIconColor = Colors.blue;
     const Color textColor = Colors.black;
     const Color collapsedTextColor = Colors.white;
-    const ShapeBorder shape = Border(
-      top: BorderSide(color: Colors.red),
-      bottom: BorderSide(color: Colors.red),
-    );
+    const ShapeBorder shape = Border(top: BorderSide(color: Colors.red), bottom: BorderSide(color: Colors.red));
     const ShapeBorder collapsedShape = Border(
       top: BorderSide(color: Colors.green),
       bottom: BorderSide(color: Colors.green),
     );
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          expansionTileTheme: const ExpansionTileThemeData(
-            backgroundColor: backgroundColor,
-            collapsedBackgroundColor: collapsedBackgroundColor,
-            tilePadding: EdgeInsets.fromLTRB(8, 12, 4, 10),
-            expandedAlignment: Alignment.centerRight,
-            childrenPadding: EdgeInsets.all(20.0),
-            iconColor: iconColor,
-            collapsedIconColor: collapsedIconColor,
-            textColor: textColor,
-            collapsedTextColor: collapsedTextColor,
-            shape: shape,
-            collapsedShape: collapsedShape,
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(
+        expansionTileTheme: const ExpansionTileThemeData(
+          backgroundColor: backgroundColor,
+          collapsedBackgroundColor: collapsedBackgroundColor,
+          tilePadding: EdgeInsets.fromLTRB(8, 12, 4, 10),
+          expandedAlignment: Alignment.centerRight,
+          childrenPadding: EdgeInsets.all(20.0),
+          iconColor: iconColor,
+          collapsedIconColor: collapsedIconColor,
+          textColor: textColor,
+          collapsedTextColor: collapsedTextColor,
+          shape: shape,
+          collapsedShape: collapsedShape,
         ),
-        home: Material(
-          child: Center(
-            child: ExpansionTile(
-              key: tileKey,
-              initiallyExpanded: true,
-              title: TestText('Expanded Tile', key: titleKey),
-              trailing: TestIcon(key: iconKey),
-              children: const <Widget>[Text('Tile 1')],
-            ),
+      ),
+      home: Material(
+        child: Center(
+          child: ExpansionTile(
+            key: tileKey,
+            initiallyExpanded: true,
+            title: TestText('Expanded Tile', key: titleKey),
+            trailing: TestIcon(key: iconKey),
+            children: const <Widget>[Text('Tile 1')],
           ),
         ),
       ),
-    );
+    ));
 
-    final ShapeDecoration shapeDecoration =  tester.firstWidget<Container>(find.descendant(
-      of: find.byKey(tileKey),
-      matching: find.byType(Container),
-    )).decoration! as ShapeDecoration;
+    final ShapeDecoration shapeDecoration = tester.firstWidget<Container>(
+      find.descendant(of: find.byKey(tileKey), matching: find.byType(Container)),
+    ).decoration! as ShapeDecoration;
     // Check the tile's background color when backgroundColor is applied.
     expect(shapeDecoration.color, backgroundColor);
 

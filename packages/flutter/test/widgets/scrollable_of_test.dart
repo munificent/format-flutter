@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class ScrollPositionListener extends StatefulWidget {
-  const ScrollPositionListener({ super.key, required this.child, required this.log});
+  const ScrollPositionListener({super.key, required this.child, required this.log});
 
   final Widget child;
   final ValueChanged<String> log;
@@ -42,28 +42,18 @@ class _ScrollPositionListenerState extends State<ScrollPositionListener> {
 }
 
 class TestScrollController extends ScrollController {
-  TestScrollController({ required this.deferLoading });
+  TestScrollController({required this.deferLoading});
 
   final bool deferLoading;
 
   @override
   ScrollPosition createScrollPosition(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition) {
-    return TestScrollPosition(
-      physics: physics,
-      context: context,
-      oldPosition: oldPosition,
-      deferLoading: deferLoading,
-    );
+    return TestScrollPosition(physics: physics, context: context, oldPosition: oldPosition, deferLoading: deferLoading);
   }
 }
 
 class TestScrollPosition extends ScrollPositionWithSingleContext {
-  TestScrollPosition({
-    required super.physics,
-    required super.context,
-    super.oldPosition,
-    required this.deferLoading,
-  });
+  TestScrollPosition({required super.physics, required super.context, super.oldPosition, required this.deferLoading});
 
   final bool deferLoading;
 
@@ -72,7 +62,7 @@ class TestScrollPosition extends ScrollPositionWithSingleContext {
 }
 
 class TestScrollable extends StatefulWidget {
-  const TestScrollable({ super.key, required this.child });
+  const TestScrollable({super.key, required this.child});
 
   final Widget child;
 
@@ -96,7 +86,7 @@ class TestScrollableState extends State<TestScrollable> {
 }
 
 class TestChild extends StatefulWidget {
-  const TestChild({ super.key });
+  const TestChild({super.key});
 
   @override
   State<TestChild> createState() => TestChildState();
@@ -115,10 +105,7 @@ class TestChildState extends State<TestChild> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.square(
-      dimension: 1000,
-      child: Text(scrollable.axisDirection.toString()),
-    );
+    return SizedBox.square(dimension: 1000, child: Text(scrollable.axisDirection.toString()));
   }
 }
 
@@ -135,7 +122,9 @@ void main() {
         controller: controller,
         physics: physics,
         child: ScrollPositionListener(
-          log: (String s) { logValue = s; },
+          log: (String s) {
+            logValue = s;
+          },
           child: const SizedBox(height: 400.0),
         ),
       );
@@ -171,9 +160,7 @@ void main() {
         notification = value;
         return false;
       },
-      child: const SingleChildScrollView(
-        child: SizedBox(height: 1200.0),
-      ),
+      child: const SingleChildScrollView(child: SizedBox(height: 1200.0)),
     ));
 
     await tester.startGesture(const Offset(100.0, 100.0));
@@ -198,16 +185,10 @@ void main() {
           controller: verticalController,
           child: Builder(
             builder: (BuildContext context) {
-              foundAxisDirection = Scrollable.of(
-                context,
-                axis: Axis.horizontal,
-              ).axisDirection;
-              foundRecommendation = Scrollable.recommendDeferredLoadingForContext(
-                context,
-                axis: Axis.horizontal,
-              );
+              foundAxisDirection = Scrollable.of(context, axis: Axis.horizontal).axisDirection;
+              foundRecommendation = Scrollable.recommendDeferredLoadingForContext(context, axis: Axis.horizontal);
               return const SizedBox(height: 1200.0, width: 1200.0);
-            }
+            },
           ),
         ),
       ),
@@ -226,10 +207,7 @@ void main() {
       textDirection: TextDirection.ltr,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: TestScrollable(
-          key: verticalKey,
-          child: TestChild(key: childKey),
-        ),
+        child: TestScrollable(key: verticalKey, child: TestChild(key: childKey)),
       ),
     ));
     await tester.pumpAndSettle();
@@ -243,10 +221,7 @@ void main() {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         controller: ScrollController(),
-        child: TestScrollable(
-          key: verticalKey,
-          child: TestChild(key: childKey),
-        ),
+        child: TestScrollable(key: verticalKey, child: TestChild(key: childKey)),
       ),
     ));
     await tester.pumpAndSettle();

@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class TestRoute<T> extends PageRoute<T> {
-  TestRoute({ required this.child, super.settings });
+  TestRoute({required this.child, super.settings});
 
   final Widget child;
 
@@ -29,14 +29,12 @@ class TestRoute<T> extends PageRoute<T> {
 }
 
 Future<void> pumpApp(WidgetTester tester) async {
-  await tester.pumpWidget(
-    WidgetsApp(
-      color: const Color(0xFF333333),
-      onGenerateRoute: (RouteSettings settings) {
-        return TestRoute<void>(settings: settings, child: Container());
-      },
-    ),
-  );
+  await tester.pumpWidget(WidgetsApp(
+    color: const Color(0xFF333333),
+    onGenerateRoute: (RouteSettings settings) {
+      return TestRoute<void>(settings: settings, child: Container());
+    },
+  ));
 }
 
 void main() {

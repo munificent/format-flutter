@@ -24,12 +24,7 @@ void main() {
 
   testWidgets('Passing no CardTheme returns defaults', (WidgetTester tester) async {
     final ThemeData theme = ThemeData(useMaterial3: true);
-    await tester.pumpWidget(MaterialApp(
-      theme: theme,
-      home: const Scaffold(
-        body: Card(),
-      ),
-    ));
+    await tester.pumpWidget(MaterialApp(theme: theme, home: const Scaffold(body: Card())));
 
     final Container container = _getCardContainer(tester);
     final Material material = _getCardMaterial(tester);
@@ -40,20 +35,13 @@ void main() {
     expect(material.surfaceTintColor, theme.colorScheme.surfaceTint); // Default primary color
     expect(material.elevation, 1.0);
     expect(container.margin, const EdgeInsets.all(4.0));
-    expect(material.shape, const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(12.0)),
-    ));
+    expect(material.shape, const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))));
   });
 
   testWidgets('Card uses values from CardTheme', (WidgetTester tester) async {
     final CardTheme cardTheme = _cardTheme();
 
-    await tester.pumpWidget(MaterialApp(
-      theme: ThemeData(cardTheme: cardTheme),
-      home: const Scaffold(
-        body: Card(),
-      ),
-    ));
+    await tester.pumpWidget(MaterialApp(theme: ThemeData(cardTheme: cardTheme), home: const Scaffold(body: Card())));
 
     final Container container = _getCardContainer(tester);
     final Material material = _getCardMaterial(tester);
@@ -73,9 +61,7 @@ void main() {
     const Color shadowColor = Colors.pink;
     const double elevation = 7.0;
     const EdgeInsets margin = EdgeInsets.all(3.0);
-    const ShapeBorder shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(9.0)),
-    );
+    const ShapeBorder shape = RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(9.0)));
 
     await tester.pumpWidget(MaterialApp(
       theme: _themeData().copyWith(cardTheme: _cardTheme()),
@@ -106,12 +92,7 @@ void main() {
     final CardTheme cardTheme = _cardTheme();
     final ThemeData themeData = _themeData().copyWith(cardTheme: cardTheme);
 
-    await tester.pumpWidget(MaterialApp(
-      theme: themeData,
-      home: const Scaffold(
-        body: Card(),
-      ),
-    ));
+    await tester.pumpWidget(MaterialApp(theme: themeData, home: const Scaffold(body: Card())));
 
     final Material material = _getCardMaterial(tester);
     expect(material.color, cardTheme.color);
@@ -121,15 +102,10 @@ void main() {
     final ThemeData themeData = _themeData();
     final bool material3 = themeData.useMaterial3;
 
-    await tester.pumpWidget(MaterialApp(
-      theme: themeData,
-      home: const Scaffold(
-        body: Card(),
-      ),
-    ));
+    await tester.pumpWidget(MaterialApp(theme: themeData, home: const Scaffold(body: Card())));
 
     final Material material = _getCardMaterial(tester);
-    expect(material.color, material3 ? themeData.colorScheme.surface: themeData.cardColor);
+    expect(material.color, material3 ? themeData.colorScheme.surface : themeData.cardColor);
   });
 
   testWidgets('CardTheme customizes shape', (WidgetTester tester) async {
@@ -146,19 +122,12 @@ void main() {
       home: Scaffold(
         body: RepaintBoundary(
           key: painterKey,
-          child: Center(
-            child: Card(
-              child: SizedBox.fromSize(size: const Size(200, 300)),
-            ),
-          ),
+          child: Center(child: Card(child: SizedBox.fromSize(size: const Size(200, 300)))),
         ),
       ),
     ));
 
-    await expectLater(
-      find.byKey(painterKey),
-      matchesGoldenFile('card_theme.custom_shape.png'),
-    );
+    await expectLater(find.byKey(painterKey), matchesGoldenFile('card_theme.custom_shape.png'));
   });
 
   group('Material 2', () {
@@ -167,12 +136,7 @@ void main() {
     // can be deleted.
 
     testWidgets('Passing no CardTheme returns defaults - M2', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: const Scaffold(
-          body: Card(),
-        ),
-      ));
+      await tester.pumpWidget(MaterialApp(theme: ThemeData(useMaterial3: false), home: const Scaffold(body: Card())));
 
       final Container container = _getCardContainer(tester);
       final Material material = _getCardMaterial(tester);
@@ -183,9 +147,7 @@ void main() {
       expect(material.surfaceTintColor, null);
       expect(material.elevation, 1.0);
       expect(container.margin, const EdgeInsets.all(4.0));
-      expect(material.shape, const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-      ));
+      expect(material.shape, const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))));
     });
 
     testWidgets('CardTheme customizes shape - M2', (WidgetTester tester) async {
@@ -202,19 +164,12 @@ void main() {
         home: Scaffold(
           body: RepaintBoundary(
             key: painterKey,
-            child: Center(
-              child: Card(
-                child: SizedBox.fromSize(size: const Size(200, 300)),
-              ),
-            ),
+            child: Center(child: Card(child: SizedBox.fromSize(size: const Size(200, 300)))),
           ),
         ),
       ));
 
-      await expectLater(
-        find.byKey(painterKey),
-        matchesGoldenFile('card_theme.custom_shape_m2.png'),
-      );
+      await expectLater(find.byKey(painterKey), matchesGoldenFile('card_theme.custom_shape_m2.png'));
     });
   });
 }
@@ -227,32 +182,18 @@ CardTheme _cardTheme() {
     surfaceTintColor: Colors.purple,
     elevation: 6.0,
     margin: EdgeInsets.all(7.0),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
   );
 }
 
 ThemeData _themeData() {
-  return ThemeData(
-    cardColor: Colors.pink,
-  );
+  return ThemeData(cardColor: Colors.pink);
 }
 
 Material _getCardMaterial(WidgetTester tester) {
-  return tester.widget<Material>(
-    find.descendant(
-      of: find.byType(Card),
-      matching: find.byType(Material),
-    ),
-  );
+  return tester.widget<Material>(find.descendant(of: find.byType(Card), matching: find.byType(Material)));
 }
 
 Container _getCardContainer(WidgetTester tester) {
-  return tester.widget<Container>(
-    find.descendant(
-      of: find.byType(Card),
-      matching: find.byType(Container),
-    ),
-  );
+  return tester.widget<Container>(find.descendant(of: find.byType(Card), matching: find.byType(Container)));
 }

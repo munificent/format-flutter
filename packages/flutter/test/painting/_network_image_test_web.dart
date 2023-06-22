@@ -16,8 +16,7 @@ void runTests() {
     debugRestoreHttpRequestFactory();
   });
 
-  testWidgets('loads an image from the network with headers',
-      (WidgetTester tester) async {
+  testWidgets('loads an image from the network with headers', (WidgetTester tester) async {
     final TestHttpRequest testHttpRequest = TestHttpRequest()
       ..status = 200
       ..mockEvent = MockEvent('load', createDomEvent('Event', 'test error'))
@@ -27,48 +26,33 @@ void runTests() {
       return testHttpRequest.getMock();
     };
 
-    const Map<String, String> headers = <String, String>{
-      'flutter': 'flutter',
-      'second': 'second',
-    };
+    const Map<String, String> headers = <String, String>{'flutter': 'flutter', 'second': 'second'};
 
-    final Image image = Image.network(
-      'https://www.example.com/images/frame.png',
-      headers: headers,
-    );
+    final Image image = Image.network('https://www.example.com/images/frame.png', headers: headers);
 
     await tester.pumpWidget(image);
 
     assert(mapEquals(testHttpRequest.responseHeaders, headers), true);
   });
 
-  testWidgets('loads an image from the network with unsuccessful HTTP code',
-      (WidgetTester tester) async {
+  testWidgets('loads an image from the network with unsuccessful HTTP code', (WidgetTester tester) async {
     final TestHttpRequest testHttpRequest = TestHttpRequest()
       ..status = 404
       ..mockEvent = MockEvent('error', createDomEvent('Event', 'test error'));
-
 
     httpRequestFactory = () {
       return testHttpRequest.getMock();
     };
 
-    const Map<String, String> headers = <String, String>{
-      'flutter': 'flutter',
-      'second': 'second',
-    };
+    const Map<String, String> headers = <String, String>{'flutter': 'flutter', 'second': 'second'};
 
-    final Image image = Image.network(
-      'https://www.example.com/images/frame2.png',
-      headers: headers,
-    );
+    final Image image = Image.network('https://www.example.com/images/frame2.png', headers: headers);
 
     await tester.pumpWidget(image);
     expect((tester.takeException() as DomProgressEvent).type, 'test error');
   });
 
-  testWidgets('loads an image from the network with empty response',
-      (WidgetTester tester) async {
+  testWidgets('loads an image from the network with empty response', (WidgetTester tester) async {
     final TestHttpRequest testHttpRequest = TestHttpRequest()
       ..status = 200
       ..mockEvent = MockEvent('load', createDomEvent('Event', 'test error'))
@@ -78,18 +62,14 @@ void runTests() {
       return testHttpRequest.getMock();
     };
 
-    const Map<String, String> headers = <String, String>{
-      'flutter': 'flutter',
-      'second': 'second',
-    };
+    const Map<String, String> headers = <String, String>{'flutter': 'flutter', 'second': 'second'};
 
-    final Image image = Image.network(
-      'https://www.example.com/images/frame3.png',
-      headers: headers,
-    );
+    final Image image = Image.network('https://www.example.com/images/frame3.png', headers: headers);
 
     await tester.pumpWidget(image);
-    expect(tester.takeException().toString(),
-        'HTTP request failed, statusCode: 200, https://www.example.com/images/frame3.png');
+    expect(
+      tester.takeException().toString(),
+      'HTTP request failed, statusCode: 200, https://www.example.com/images/frame3.png',
+    );
   });
 }

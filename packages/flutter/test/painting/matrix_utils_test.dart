@@ -80,16 +80,25 @@ void main() {
   });
 
   test('cylindricalProjectionTransform calculation spot check', () {
-    final Matrix4 actual = MatrixUtils.createCylindricalProjectionTransform(
-      radius: 100.0,
-      angle: pi / 3.0,
-    );
+    final Matrix4 actual = MatrixUtils.createCylindricalProjectionTransform(radius: 100.0, angle: pi / 3.0);
 
     expect(actual.storage, <dynamic>[
-      1.0, 0.0, 0.0, 0.0,
-      0.0, moreOrLessEquals(0.5), moreOrLessEquals(0.8660254037844386), moreOrLessEquals(-0.0008660254037844386),
-      0.0, moreOrLessEquals(-0.8660254037844386), moreOrLessEquals(0.5), moreOrLessEquals(-0.0005),
-      0.0, moreOrLessEquals(-86.60254037844386), moreOrLessEquals(-50.0), 1.05,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      moreOrLessEquals(0.5),
+      moreOrLessEquals(0.8660254037844386),
+      moreOrLessEquals(-0.0008660254037844386),
+      0.0,
+      moreOrLessEquals(-0.8660254037844386),
+      moreOrLessEquals(0.5),
+      moreOrLessEquals(-0.0005),
+      0.0,
+      moreOrLessEquals(-86.60254037844386),
+      moreOrLessEquals(-50.0),
+      1.05,
     ]);
   });
 
@@ -97,45 +106,24 @@ void main() {
     const Offset forcedOffset = Offset(20, -30);
     final Matrix4 forcedTransform = MatrixUtils.forceToPoint(forcedOffset);
 
-    expect(
-      MatrixUtils.transformPoint(forcedTransform, forcedOffset),
-      forcedOffset,
-    );
+    expect(MatrixUtils.transformPoint(forcedTransform, forcedOffset), forcedOffset);
 
-    expect(
-      MatrixUtils.transformPoint(forcedTransform, Offset.zero),
-      forcedOffset,
-    );
+    expect(MatrixUtils.transformPoint(forcedTransform, Offset.zero), forcedOffset);
 
-    expect(
-      MatrixUtils.transformPoint(forcedTransform, const Offset(1, 1)),
-      forcedOffset,
-    );
+    expect(MatrixUtils.transformPoint(forcedTransform, const Offset(1, 1)), forcedOffset);
 
-    expect(
-      MatrixUtils.transformPoint(forcedTransform, const Offset(-1, -1)),
-      forcedOffset,
-    );
+    expect(MatrixUtils.transformPoint(forcedTransform, const Offset(-1, -1)), forcedOffset);
 
-    expect(
-      MatrixUtils.transformPoint(forcedTransform, const Offset(-20, 30)),
-      forcedOffset,
-    );
+    expect(MatrixUtils.transformPoint(forcedTransform, const Offset(-20, 30)), forcedOffset);
 
-    expect(
-      MatrixUtils.transformPoint(forcedTransform, const Offset(-1.2344, 1422434.23)),
-      forcedOffset,
-    );
+    expect(MatrixUtils.transformPoint(forcedTransform, const Offset(-1.2344, 1422434.23)), forcedOffset);
   });
 
   test('transformRect with no perspective (w = 1)', () {
     const Rect rectangle20x20 = Rect.fromLTRB(10, 20, 30, 40);
 
     // Identity
-    expect(
-      MatrixUtils.transformRect(Matrix4.identity(), rectangle20x20),
-      rectangle20x20,
-    );
+    expect(MatrixUtils.transformRect(Matrix4.identity(), rectangle20x20), rectangle20x20);
 
     // 2D Scaling
     expect(
@@ -160,10 +148,7 @@ void main() {
     for (int i = 1; i < 10000; i++) {
       final Rect rect = Rect.fromLTRB(11.0 * i, 12.0 * i, 15.0 * i, 18.0 * i);
       final Rect golden = _vectorWiseTransformRect(transform, rect);
-      expect(
-        MatrixUtils.transformRect(transform, rect),
-        within<Rect>(distance: 0.00001, from: golden),
-      );
+      expect(MatrixUtils.transformRect(transform, rect), within<Rect>(distance: 0.00001, from: golden));
     }
   });
 }

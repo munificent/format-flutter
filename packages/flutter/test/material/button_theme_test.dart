@@ -11,9 +11,7 @@ void main() {
     expect(theme.textTheme, ButtonTextTheme.normal);
     expect(theme.constraints, const BoxConstraints(minWidth: 88.0, minHeight: 36.0));
     expect(theme.padding, const EdgeInsets.symmetric(horizontal: 16.0));
-    expect(theme.shape, const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(2.0)),
-    ));
+    expect(theme.shape, const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(2.0))));
     expect(theme.alignedDropdown, false);
     expect(theme.layoutBehavior, ButtonBarLayoutBehavior.padded);
   });
@@ -40,9 +38,7 @@ void main() {
     expect(theme.layoutBehavior, ButtonBarLayoutBehavior.padded);
     expect(theme.constraints, const BoxConstraints(minWidth: 88.0, minHeight: 36.0));
     expect(theme.padding, const EdgeInsets.symmetric(horizontal: 16.0));
-    expect(theme.shape, const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(2.0)),
-    ));
+    expect(theme.shape, const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(2.0))));
     expect(theme.alignedDropdown, false);
     expect(theme.colorScheme, null);
 
@@ -69,13 +65,10 @@ void main() {
   testWidgets('ButtonTheme alignedDropdown', (WidgetTester tester) async {
     final Key dropdownKey = UniqueKey();
 
-    Widget buildFrame({ required bool alignedDropdown, required TextDirection textDirection }) {
+    Widget buildFrame({required bool alignedDropdown, required TextDirection textDirection}) {
       return MaterialApp(
         builder: (BuildContext context, Widget? child) {
-          return Directionality(
-            textDirection: textDirection,
-            child: child!,
-          );
+          return Directionality(textDirection: textDirection, child: child!);
         },
         home: ButtonTheme(
           alignedDropdown: alignedDropdown,
@@ -89,17 +82,11 @@ void main() {
                       width: 200.0,
                       child: DropdownButton<String>(
                         key: dropdownKey,
-                        onChanged: (String? value) { },
+                        onChanged: (String? value) {},
                         value: 'foo',
                         items: const <DropdownMenuItem<String>>[
-                          DropdownMenuItem<String>(
-                            value: 'foo',
-                            child: Text('foo'),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: 'bar',
-                            child: Text('bar'),
-                          ),
+                          DropdownMenuItem<String>(value: 'foo', child: Text('foo')),
+                          DropdownMenuItem<String>(value: 'bar', child: Text('bar')),
                         ],
                       ),
                     ),
@@ -115,12 +102,7 @@ void main() {
     final Finder button = find.byKey(dropdownKey);
     final Finder menu = find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_DropdownMenu<String>');
 
-    await tester.pumpWidget(
-      buildFrame(
-        alignedDropdown: false,
-        textDirection: TextDirection.ltr,
-      ),
-    );
+    await tester.pumpWidget(buildFrame(alignedDropdown: false, textDirection: TextDirection.ltr));
     await tester.tap(button);
     await tester.pumpAndSettle();
 
@@ -133,12 +115,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(menu, findsNothing);
 
-    await tester.pumpWidget(
-      buildFrame(
-        alignedDropdown: true,
-        textDirection: TextDirection.ltr,
-      ),
-    );
+    await tester.pumpWidget(buildFrame(alignedDropdown: true, textDirection: TextDirection.ltr));
     await tester.tap(button);
     await tester.pumpAndSettle();
 
@@ -158,12 +135,7 @@ void main() {
     expect(menu, findsNothing);
 
     // Same test as above except RTL
-    await tester.pumpWidget(
-      buildFrame(
-        alignedDropdown: true,
-        textDirection: TextDirection.rtl,
-      ),
-    );
+    await tester.pumpWidget(buildFrame(alignedDropdown: true, textDirection: TextDirection.rtl));
     await tester.tap(button);
     await tester.pumpAndSettle();
 

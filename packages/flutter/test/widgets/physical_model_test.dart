@@ -13,17 +13,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('PhysicalModel updates clipBehavior in updateRenderObject', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(home: PhysicalModel(color: Colors.red)),
-    );
+    await tester.pumpWidget(const MaterialApp(home: PhysicalModel(color: Colors.red)));
 
     final RenderPhysicalModel renderPhysicalModel = tester.allRenderObjects.whereType<RenderPhysicalModel>().first;
 
     expect(renderPhysicalModel.clipBehavior, equals(Clip.none));
 
-    await tester.pumpWidget(
-      const MaterialApp(home: PhysicalModel(clipBehavior: Clip.antiAlias, color: Colors.red)),
-    );
+    await tester.pumpWidget(const MaterialApp(home: PhysicalModel(clipBehavior: Clip.antiAlias, color: Colors.red)));
 
     expect(renderPhysicalModel.clipBehavior, equals(Clip.antiAlias));
   });
@@ -38,7 +34,13 @@ void main() {
     expect(renderPhysicalShape.clipBehavior, equals(Clip.none));
 
     await tester.pumpWidget(
-      const MaterialApp(home: PhysicalShape(clipBehavior: Clip.antiAlias, color: Colors.red, clipper: ShapeBorderClipper(shape: CircleBorder()))),
+      const MaterialApp(
+        home: PhysicalShape(
+          clipBehavior: Clip.antiAlias,
+          color: Colors.red,
+          clipper: ShapeBorderClipper(shape: CircleBorder()),
+        ),
+      ),
     );
 
     expect(renderPhysicalShape.clipBehavior, equals(Clip.antiAlias));
@@ -73,9 +75,6 @@ void main() {
     expect(exception.diagnostics.first.level, DiagnosticLevel.summary);
     // ignore: avoid_dynamic_calls
     expect(exception.diagnostics.first.toString(), startsWith('A RenderFlex overflowed by '));
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('physical_model_overflow.png'),
-    );
+    await expectLater(find.byKey(key), matchesGoldenFile('physical_model_overflow.png'));
   });
 }

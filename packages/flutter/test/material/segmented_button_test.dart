@@ -14,34 +14,28 @@ import '../rendering/mock_canvas.dart';
 import '../widgets/semantics_tester.dart';
 
 Widget boilerplate({required Widget child}) {
-  return Directionality(
-    textDirection: TextDirection.ltr,
-    child: Center(child: child),
-  );
+  return Directionality(textDirection: TextDirection.ltr, child: Center(child: child));
 }
 
 void main() {
-
   testWidgets('SegmentedButton is built with Material of type MaterialType.transparency', (WidgetTester tester) async {
     final ThemeData theme = ThemeData(useMaterial3: true);
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: Scaffold(
-          body: Center(
-            child: SegmentedButton<int>(
-              segments: const <ButtonSegment<int>>[
-                ButtonSegment<int>(value: 1, label: Text('1')),
-                ButtonSegment<int>(value: 2, label: Text('2')),
-                ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
-              ],
-              selected: const <int>{2},
-              onSelectionChanged: (Set<int> selected) { },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: Scaffold(
+        body: Center(
+          child: SegmentedButton<int>(
+            segments: const <ButtonSegment<int>>[
+              ButtonSegment<int>(value: 1, label: Text('1')),
+              ButtonSegment<int>(value: 2, label: Text('2')),
+              ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
+            ],
+            selected: const <int>{2},
+            onSelectionChanged: (Set<int> selected) {},
           ),
         ),
       ),
-    );
+    ));
 
     // Expect SegmentedButton to be built with type MaterialType.transparency.
     final Finder text = find.text('1');
@@ -156,7 +150,7 @@ void main() {
     expect(selection, <int>{2, 3});
   });
 
-testWidgets('SegmentedButton allows for empty selection', (WidgetTester tester) async {
+  testWidgets('SegmentedButton allows for empty selection', (WidgetTester tester) async {
     int callbackCount = 0;
     int? selectedSegment = 1;
 
@@ -181,7 +175,7 @@ testWidgets('SegmentedButton allows for empty selection', (WidgetTester tester) 
     }
 
     await tester.pumpWidget(frameWithSelection(selectedSegment));
-    expect(selectedSegment,1);
+    expect(selectedSegment, 1);
     expect(callbackCount, 0);
 
     // Tap on segment 1 should deselect it and make the selection empty.
@@ -209,7 +203,7 @@ testWidgets('SegmentedButton allows for empty selection', (WidgetTester tester) 
     expect(selectedSegment, 3);
   });
 
-testWidgets('SegmentedButton shows checkboxes for selected segments', (WidgetTester tester) async {
+  testWidgets('SegmentedButton shows checkboxes for selected segments', (WidgetTester tester) async {
     Widget frameWithSelection(int selected) {
       return Material(
         child: boilerplate(
@@ -227,10 +221,7 @@ testWidgets('SegmentedButton shows checkboxes for selected segments', (WidgetTes
     }
 
     Finder textHasIcon(String text, IconData icon) {
-      return find.descendant(
-        of: find.widgetWithText(Row, text),
-        matching: find.byIcon(icon)
-      );
+      return find.descendant(of: find.widgetWithText(Row, text), matching: find.byIcon(icon));
     }
 
     await tester.pumpWidget(frameWithSelection(1));
@@ -246,251 +237,222 @@ testWidgets('SegmentedButton shows checkboxes for selected segments', (WidgetTes
     expect(find.byIcon(Icons.check), findsOneWidget);
   });
 
-  testWidgets('SegmentedButton shows selected checkboxes in place of icon if it has a label as well', (WidgetTester tester) async {
-    Widget frameWithSelection(int selected) {
-      return Material(
-        child: boilerplate(
-          child: SegmentedButton<int>(
-            segments: const <ButtonSegment<int>>[
-              ButtonSegment<int>(value: 1, icon: Icon(Icons.add), label: Text('1')),
-              ButtonSegment<int>(value: 2, icon: Icon(Icons.add_a_photo), label: Text('2')),
-              ButtonSegment<int>(value: 3, icon: Icon(Icons.add_alarm), label: Text('3')),
-            ],
-            selected: <int>{selected},
-            onSelectionChanged: (Set<int> selected) {},
+  testWidgets(
+    'SegmentedButton shows selected checkboxes in place of icon if it has a label as well',
+    (WidgetTester tester) async {
+      Widget frameWithSelection(int selected) {
+        return Material(
+          child: boilerplate(
+            child: SegmentedButton<int>(
+              segments: const <ButtonSegment<int>>[
+                ButtonSegment<int>(value: 1, icon: Icon(Icons.add), label: Text('1')),
+                ButtonSegment<int>(value: 2, icon: Icon(Icons.add_a_photo), label: Text('2')),
+                ButtonSegment<int>(value: 3, icon: Icon(Icons.add_alarm), label: Text('3')),
+              ],
+              selected: <int>{selected},
+              onSelectionChanged: (Set<int> selected) {},
+            ),
           ),
-        ),
-      );
-    }
+        );
+      }
 
-    Finder textHasIcon(String text, IconData icon) {
-      return find.descendant(
-        of: find.widgetWithText(Row, text),
-        matching: find.byIcon(icon)
-      );
-    }
+      Finder textHasIcon(String text, IconData icon) {
+        return find.descendant(of: find.widgetWithText(Row, text), matching: find.byIcon(icon));
+      }
 
-    await tester.pumpWidget(frameWithSelection(1));
-    expect(textHasIcon('1', Icons.check), findsOneWidget);
-    expect(find.byIcon(Icons.add), findsNothing);
-    expect(textHasIcon('2', Icons.add_a_photo), findsOneWidget);
-    expect(textHasIcon('3', Icons.add_alarm), findsOneWidget);
+      await tester.pumpWidget(frameWithSelection(1));
+      expect(textHasIcon('1', Icons.check), findsOneWidget);
+      expect(find.byIcon(Icons.add), findsNothing);
+      expect(textHasIcon('2', Icons.add_a_photo), findsOneWidget);
+      expect(textHasIcon('3', Icons.add_alarm), findsOneWidget);
 
-    await tester.pumpWidget(frameWithSelection(2));
-    expect(textHasIcon('1', Icons.add), findsOneWidget);
-    expect(textHasIcon('2', Icons.check), findsOneWidget);
-    expect(find.byIcon(Icons.add_a_photo), findsNothing);
-    expect(textHasIcon('3', Icons.add_alarm), findsOneWidget);
+      await tester.pumpWidget(frameWithSelection(2));
+      expect(textHasIcon('1', Icons.add), findsOneWidget);
+      expect(textHasIcon('2', Icons.check), findsOneWidget);
+      expect(find.byIcon(Icons.add_a_photo), findsNothing);
+      expect(textHasIcon('3', Icons.add_alarm), findsOneWidget);
 
-    await tester.pumpWidget(frameWithSelection(3));
-    expect(textHasIcon('1', Icons.add), findsOneWidget);
-    expect(textHasIcon('2', Icons.add_a_photo), findsOneWidget);
-    expect(textHasIcon('3', Icons.check), findsOneWidget);
-    expect(find.byIcon(Icons.add_alarm), findsNothing);
-  });
+      await tester.pumpWidget(frameWithSelection(3));
+      expect(textHasIcon('1', Icons.add), findsOneWidget);
+      expect(textHasIcon('2', Icons.add_a_photo), findsOneWidget);
+      expect(textHasIcon('3', Icons.check), findsOneWidget);
+      expect(find.byIcon(Icons.add_alarm), findsNothing);
+    },
+  );
 
-  testWidgets('SegmentedButton shows selected checkboxes next to icon if there is no label', (WidgetTester tester) async {
-    Widget frameWithSelection(int selected) {
-      return Material(
-        child: boilerplate(
-          child: SegmentedButton<int>(
-            segments: const <ButtonSegment<int>>[
-              ButtonSegment<int>(value: 1, icon: Icon(Icons.add)),
-              ButtonSegment<int>(value: 2, icon: Icon(Icons.add_a_photo)),
-              ButtonSegment<int>(value: 3, icon: Icon(Icons.add_alarm)),
-            ],
-            selected: <int>{selected},
-            onSelectionChanged: (Set<int> selected) {},
+  testWidgets(
+    'SegmentedButton shows selected checkboxes next to icon if there is no label',
+    (WidgetTester tester) async {
+      Widget frameWithSelection(int selected) {
+        return Material(
+          child: boilerplate(
+            child: SegmentedButton<int>(
+              segments: const <ButtonSegment<int>>[
+                ButtonSegment<int>(value: 1, icon: Icon(Icons.add)),
+                ButtonSegment<int>(value: 2, icon: Icon(Icons.add_a_photo)),
+                ButtonSegment<int>(value: 3, icon: Icon(Icons.add_alarm)),
+              ],
+              selected: <int>{selected},
+              onSelectionChanged: (Set<int> selected) {},
+            ),
           ),
-        ),
-      );
-    }
+        );
+      }
 
-    Finder rowWithIcons(IconData icon1, IconData icon2) {
-      return find.descendant(
-        of: find.widgetWithIcon(Row, icon1),
-        matching: find.byIcon(icon2)
-      );
-    }
+      Finder rowWithIcons(IconData icon1, IconData icon2) {
+        return find.descendant(of: find.widgetWithIcon(Row, icon1), matching: find.byIcon(icon2));
+      }
 
-    await tester.pumpWidget(frameWithSelection(1));
-    expect(rowWithIcons(Icons.add, Icons.check), findsOneWidget);
-    expect(rowWithIcons(Icons.add_a_photo, Icons.check), findsNothing);
-    expect(rowWithIcons(Icons.add_alarm, Icons.check), findsNothing);
+      await tester.pumpWidget(frameWithSelection(1));
+      expect(rowWithIcons(Icons.add, Icons.check), findsOneWidget);
+      expect(rowWithIcons(Icons.add_a_photo, Icons.check), findsNothing);
+      expect(rowWithIcons(Icons.add_alarm, Icons.check), findsNothing);
 
-    await tester.pumpWidget(frameWithSelection(2));
-    expect(rowWithIcons(Icons.add, Icons.check), findsNothing);
-    expect(rowWithIcons(Icons.add_a_photo, Icons.check), findsOneWidget);
-    expect(rowWithIcons(Icons.add_alarm, Icons.check), findsNothing);
+      await tester.pumpWidget(frameWithSelection(2));
+      expect(rowWithIcons(Icons.add, Icons.check), findsNothing);
+      expect(rowWithIcons(Icons.add_a_photo, Icons.check), findsOneWidget);
+      expect(rowWithIcons(Icons.add_alarm, Icons.check), findsNothing);
 
-    await tester.pumpWidget(frameWithSelection(3));
-    expect(rowWithIcons(Icons.add, Icons.check), findsNothing);
-    expect(rowWithIcons(Icons.add_a_photo, Icons.check), findsNothing);
-    expect(rowWithIcons(Icons.add_alarm, Icons.check), findsOneWidget);
-
-  });
+      await tester.pumpWidget(frameWithSelection(3));
+      expect(rowWithIcons(Icons.add, Icons.check), findsNothing);
+      expect(rowWithIcons(Icons.add_a_photo, Icons.check), findsNothing);
+      expect(rowWithIcons(Icons.add_alarm, Icons.check), findsOneWidget);
+    },
+  );
 
   testWidgets('SegmentedButtons have correct semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
-    await tester.pumpWidget(
-      Material(
-        child: boilerplate(
-          child: SegmentedButton<int>(
-            segments: const <ButtonSegment<int>>[
-              ButtonSegment<int>(value: 1, label: Text('1')),
-              ButtonSegment<int>(value: 2, label: Text('2')),
-              ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
-            ],
-            selected: const <int>{2},
-            onSelectionChanged: (Set<int> selected) {},
-          ),
-        ),
-      ),
-    );
-
-    expect(
-      semantics,
-      hasSemantics(
-        TestSemantics.root(
-          children: <TestSemantics>[
-            // First is an unselected, enabled button.
-            TestSemantics(
-              flags: <SemanticsFlag>[
-                SemanticsFlag.isButton,
-                SemanticsFlag.isEnabled,
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.hasCheckedState,
-                SemanticsFlag.isFocusable,
-                SemanticsFlag.isInMutuallyExclusiveGroup,
-              ],
-              label: '1',
-              actions: <SemanticsAction>[
-                SemanticsAction.tap,
-              ],
-            ),
-
-            // Second is a selected, enabled button.
-            TestSemantics(
-              flags: <SemanticsFlag>[
-                SemanticsFlag.isButton,
-                SemanticsFlag.isEnabled,
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.hasCheckedState,
-                SemanticsFlag.isChecked,
-                SemanticsFlag.isFocusable,
-                SemanticsFlag.isInMutuallyExclusiveGroup,
-              ],
-              label: '2',
-              actions: <SemanticsAction>[
-                SemanticsAction.tap,
-              ],
-            ),
-
-            // Third is an unselected, disabled button.
-            TestSemantics(
-              flags: <SemanticsFlag>[
-                SemanticsFlag.isButton,
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.hasCheckedState,
-                SemanticsFlag.isInMutuallyExclusiveGroup,
-              ],
-              label: '3',
-            ),
+    await tester.pumpWidget(Material(
+      child: boilerplate(
+        child: SegmentedButton<int>(
+          segments: const <ButtonSegment<int>>[
+            ButtonSegment<int>(value: 1, label: Text('1')),
+            ButtonSegment<int>(value: 2, label: Text('2')),
+            ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
           ],
+          selected: const <int>{2},
+          onSelectionChanged: (Set<int> selected) {},
         ),
-        ignoreId: true,
-        ignoreRect: true,
-        ignoreTransform: true,
       ),
-    );
+    ));
+
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        // First is an unselected, enabled button.
+        TestSemantics(
+          flags: <SemanticsFlag>[
+            SemanticsFlag.isButton,
+            SemanticsFlag.isEnabled,
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.isFocusable,
+            SemanticsFlag.isInMutuallyExclusiveGroup,
+          ],
+          label: '1',
+          actions: <SemanticsAction>[SemanticsAction.tap],
+        ),
+
+        // Second is a selected, enabled button.
+        TestSemantics(
+          flags: <SemanticsFlag>[
+            SemanticsFlag.isButton,
+            SemanticsFlag.isEnabled,
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.isChecked,
+            SemanticsFlag.isFocusable,
+            SemanticsFlag.isInMutuallyExclusiveGroup,
+          ],
+          label: '2',
+          actions: <SemanticsAction>[SemanticsAction.tap],
+        ),
+
+        // Third is an unselected, disabled button.
+        TestSemantics(
+          flags: <SemanticsFlag>[
+            SemanticsFlag.isButton,
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.isInMutuallyExclusiveGroup,
+          ],
+          label: '3',
+        ),
+      ],
+    ), ignoreId: true, ignoreRect: true, ignoreTransform: true));
 
     semantics.dispose();
   });
-
 
   testWidgets('Multi-select SegmentedButtons have correct semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
-    await tester.pumpWidget(
-      Material(
-        child: boilerplate(
-          child: SegmentedButton<int>(
-            segments: const <ButtonSegment<int>>[
-              ButtonSegment<int>(value: 1, label: Text('1')),
-              ButtonSegment<int>(value: 2, label: Text('2')),
-              ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
-            ],
-            selected: const <int>{1, 3},
-            onSelectionChanged: (Set<int> selected) {},
-            multiSelectionEnabled: true,
-          ),
-        ),
-      ),
-    );
-
-    expect(
-      semantics,
-      hasSemantics(
-        TestSemantics.root(
-          children: <TestSemantics>[
-            // First is selected, enabled button.
-            TestSemantics(
-              flags: <SemanticsFlag>[
-                SemanticsFlag.isButton,
-                SemanticsFlag.isEnabled,
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.hasCheckedState,
-                SemanticsFlag.isChecked,
-                SemanticsFlag.isFocusable,
-              ],
-              label: '1',
-              actions: <SemanticsAction>[
-                SemanticsAction.tap,
-              ],
-            ),
-
-            // Second is an unselected, enabled button.
-            TestSemantics(
-              flags: <SemanticsFlag>[
-                SemanticsFlag.isButton,
-                SemanticsFlag.isEnabled,
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.hasCheckedState,
-                SemanticsFlag.isFocusable,
-              ],
-              label: '2',
-              actions: <SemanticsAction>[
-                SemanticsAction.tap,
-              ],
-            ),
-
-            // Third is a selected, disabled button.
-            TestSemantics(
-              flags: <SemanticsFlag>[
-                SemanticsFlag.isButton,
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.isChecked,
-                SemanticsFlag.hasCheckedState,
-              ],
-              label: '3',
-            ),
+    await tester.pumpWidget(Material(
+      child: boilerplate(
+        child: SegmentedButton<int>(
+          segments: const <ButtonSegment<int>>[
+            ButtonSegment<int>(value: 1, label: Text('1')),
+            ButtonSegment<int>(value: 2, label: Text('2')),
+            ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
           ],
+          selected: const <int>{1, 3},
+          onSelectionChanged: (Set<int> selected) {},
+          multiSelectionEnabled: true,
         ),
-        ignoreId: true,
-        ignoreRect: true,
-        ignoreTransform: true,
       ),
-    );
+    ));
+
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        // First is selected, enabled button.
+        TestSemantics(
+          flags: <SemanticsFlag>[
+            SemanticsFlag.isButton,
+            SemanticsFlag.isEnabled,
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.isChecked,
+            SemanticsFlag.isFocusable,
+          ],
+          label: '1',
+          actions: <SemanticsAction>[SemanticsAction.tap],
+        ),
+
+        // Second is an unselected, enabled button.
+        TestSemantics(
+          flags: <SemanticsFlag>[
+            SemanticsFlag.isButton,
+            SemanticsFlag.isEnabled,
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.isFocusable,
+          ],
+          label: '2',
+          actions: <SemanticsAction>[SemanticsAction.tap],
+        ),
+
+        // Third is a selected, disabled button.
+        TestSemantics(
+          flags: <SemanticsFlag>[
+            SemanticsFlag.isButton,
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.isChecked,
+            SemanticsFlag.hasCheckedState,
+          ],
+          label: '3',
+        ),
+      ],
+    ), ignoreId: true, ignoreRect: true, ignoreTransform: true));
 
     semantics.dispose();
   });
 
-  testWidgets('SegmentedButton default overlayColor and foregroundColor resolve pressed state', (WidgetTester tester) async {
-    final ThemeData theme = ThemeData(useMaterial3: true);
+  testWidgets(
+    'SegmentedButton default overlayColor and foregroundColor resolve pressed state',
+    (WidgetTester tester) async {
+      final ThemeData theme = ThemeData(useMaterial3: true);
 
-    await tester.pumpWidget(
-      MaterialApp(
+      await tester.pumpWidget(MaterialApp(
         theme: theme,
         home: Scaffold(
           body: Center(
@@ -504,85 +466,80 @@ testWidgets('SegmentedButton shows checkboxes for selected segments', (WidgetTes
             ),
           ),
         ),
-      ),
-    );
+      ));
 
-    RenderObject overlayColor() {
-      return tester.allRenderObjects.firstWhere((RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures');
-    }
+      RenderObject overlayColor() {
+        return tester.allRenderObjects.firstWhere(
+          (RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures',
+        );
+      }
 
-    final Material material = tester.widget<Material>(find.descendant(
-      of: find.byType(TextButton),
-      matching: find.byType(Material),
-    ));
+      final Material material = tester.widget<Material>(
+        find.descendant(of: find.byType(TextButton), matching: find.byType(Material)),
+      );
 
-    // Hovered.
-    final Offset center = tester.getCenter(find.text('2'));
-    final TestGesture gesture = await tester.createGesture(
-      kind: PointerDeviceKind.mouse,
-    );
-    await gesture.addPointer();
-    await gesture.moveTo(center);
-    await tester.pumpAndSettle();
-    expect(overlayColor(), paints..rect(color: theme.colorScheme.onSurface.withOpacity(0.08)));
-    expect(material.textStyle?.color, theme.colorScheme.onSurface);
+      // Hovered.
+      final Offset center = tester.getCenter(find.text('2'));
+      final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer();
+      await gesture.moveTo(center);
+      await tester.pumpAndSettle();
+      expect(overlayColor(), paints..rect(color: theme.colorScheme.onSurface.withOpacity(0.08)));
+      expect(material.textStyle?.color, theme.colorScheme.onSurface);
 
-    // Highlighted (pressed).
-    await gesture.down(center);
-    await tester.pumpAndSettle();
-    expect(overlayColor(), paints..rect()..rect(color: theme.colorScheme.onSurface.withOpacity(0.12)));
-    expect(material.textStyle?.color, theme.colorScheme.onSurface);
-  });
+      // Highlighted (pressed).
+      await gesture.down(center);
+      await tester.pumpAndSettle();
+      expect(
+        overlayColor(),
+        paints
+          ..rect()
+          ..rect(color: theme.colorScheme.onSurface.withOpacity(0.12)),
+      );
+      expect(material.textStyle?.color, theme.colorScheme.onSurface);
+    },
+  );
 
   testWidgets('SegmentedButton has no tooltips by default', (WidgetTester tester) async {
     final ThemeData theme = ThemeData(useMaterial3: true);
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: Scaffold(
-          body: Center(
-            child: SegmentedButton<int>(
-              segments: const <ButtonSegment<int>>[
-                ButtonSegment<int>(value: 1, label: Text('1')),
-                ButtonSegment<int>(value: 2, label: Text('2')),
-                ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
-              ],
-              selected: const <int>{2},
-              onSelectionChanged: (Set<int> selected) { },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: Scaffold(
+        body: Center(
+          child: SegmentedButton<int>(
+            segments: const <ButtonSegment<int>>[
+              ButtonSegment<int>(value: 1, label: Text('1')),
+              ButtonSegment<int>(value: 2, label: Text('2')),
+              ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
+            ],
+            selected: const <int>{2},
+            onSelectionChanged: (Set<int> selected) {},
           ),
         ),
       ),
-    );
+    ));
 
     expect(find.byType(Tooltip), findsNothing);
   });
 
   testWidgets('SegmentedButton has correct tooltips', (WidgetTester tester) async {
     final ThemeData theme = ThemeData(useMaterial3: true);
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: Scaffold(
-          body: Center(
-            child: SegmentedButton<int>(
-              segments: const <ButtonSegment<int>>[
-                ButtonSegment<int>(value: 1, label: Text('1')),
-                ButtonSegment<int>(value: 2, label: Text('2'), tooltip: 't2'),
-                ButtonSegment<int>(
-                    value: 3,
-                    label: Text('3'),
-                    tooltip: 't3',
-                    enabled: false,
-                ),
-              ],
-              selected: const <int>{2},
-              onSelectionChanged: (Set<int> selected) { },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: Scaffold(
+        body: Center(
+          child: SegmentedButton<int>(
+            segments: const <ButtonSegment<int>>[
+              ButtonSegment<int>(value: 1, label: Text('1')),
+              ButtonSegment<int>(value: 2, label: Text('2'), tooltip: 't2'),
+              ButtonSegment<int>(value: 3, label: Text('3'), tooltip: 't3', enabled: false),
+            ],
+            selected: const <int>{2},
+            onSelectionChanged: (Set<int> selected) {},
           ),
         ),
       ),
-    );
+    ));
 
     expect(find.byType(Tooltip), findsNWidgets(2));
     expect(find.byTooltip('t2'), findsOneWidget);

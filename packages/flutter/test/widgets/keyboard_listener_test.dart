@@ -19,13 +19,7 @@ void main() {
 
     final FocusNode focusNode = FocusNode();
 
-    await tester.pumpWidget(
-      KeyboardListener(
-        focusNode: focusNode,
-        onKeyEvent: events.add,
-        child: Container(),
-      ),
-    );
+    await tester.pumpWidget(KeyboardListener(focusNode: focusNode, onKeyEvent: events.add, child: Container()));
 
     focusNode.requestFocus();
     await tester.idle();
@@ -47,13 +41,7 @@ void main() {
 
     final FocusNode focusNode = FocusNode();
 
-    await tester.pumpWidget(
-      KeyboardListener(
-        focusNode: focusNode,
-        onKeyEvent: events.add,
-        child: Container(),
-      ),
-    );
+    await tester.pumpWidget(KeyboardListener(focusNode: focusNode, onKeyEvent: events.add, child: Container()));
 
     focusNode.requestFocus();
     await tester.idle();
@@ -75,13 +63,7 @@ void main() {
 
     final FocusNode focusNode = FocusNode();
 
-    await tester.pumpWidget(
-      KeyboardListener(
-        focusNode: focusNode,
-        onKeyEvent: events.add,
-        child: Container(),
-      ),
-    );
+    await tester.pumpWidget(KeyboardListener(focusNode: focusNode, onKeyEvent: events.add, child: Container()));
 
     focusNode.requestFocus();
     await tester.idle();

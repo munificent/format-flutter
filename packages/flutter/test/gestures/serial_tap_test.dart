@@ -32,68 +32,33 @@ void main() {
   });
 
   // Down/up pair 1: normal tap sequence
-  const PointerDownEvent down1 = PointerDownEvent(
-    pointer: 1,
-    position: Offset(10.0, 10.0),
-  );
+  const PointerDownEvent down1 = PointerDownEvent(pointer: 1, position: Offset(10.0, 10.0));
 
-  const PointerCancelEvent cancel1 = PointerCancelEvent(
-    pointer: 1,
-  );
+  const PointerCancelEvent cancel1 = PointerCancelEvent(pointer: 1);
 
-  const PointerUpEvent up1 = PointerUpEvent(
-    pointer: 1,
-    position: Offset(11.0, 9.0),
-  );
+  const PointerUpEvent up1 = PointerUpEvent(pointer: 1, position: Offset(11.0, 9.0));
 
   // Down/up pair 2: normal tap sequence close to pair 1
-  const PointerDownEvent down2 = PointerDownEvent(
-    pointer: 2,
-    position: Offset(12.0, 12.0),
-  );
+  const PointerDownEvent down2 = PointerDownEvent(pointer: 2, position: Offset(12.0, 12.0));
 
-  const PointerUpEvent up2 = PointerUpEvent(
-    pointer: 2,
-    position: Offset(13.0, 11.0),
-  );
+  const PointerUpEvent up2 = PointerUpEvent(pointer: 2, position: Offset(13.0, 11.0));
 
   // Down/up pair 3: normal tap sequence close to pair 1
-  const PointerDownEvent down3 = PointerDownEvent(
-    pointer: 3,
-    position: Offset(12.0, 12.0),
-  );
+  const PointerDownEvent down3 = PointerDownEvent(pointer: 3, position: Offset(12.0, 12.0));
 
-  const PointerUpEvent up3 = PointerUpEvent(
-    pointer: 3,
-    position: Offset(13.0, 11.0),
-  );
+  const PointerUpEvent up3 = PointerUpEvent(pointer: 3, position: Offset(13.0, 11.0));
 
   // Down/up pair 4: normal tap sequence far away from pair 1
-  const PointerDownEvent down4 = PointerDownEvent(
-    pointer: 4,
-    position: Offset(130.0, 130.0),
-  );
+  const PointerDownEvent down4 = PointerDownEvent(pointer: 4, position: Offset(130.0, 130.0));
 
-  const PointerUpEvent up4 = PointerUpEvent(
-    pointer: 4,
-    position: Offset(131.0, 129.0),
-  );
+  const PointerUpEvent up4 = PointerUpEvent(pointer: 4, position: Offset(131.0, 129.0));
 
   // Down/move/up sequence 5: intervening motion
-  const PointerDownEvent down5 = PointerDownEvent(
-    pointer: 5,
-    position: Offset(10.0, 10.0),
-  );
+  const PointerDownEvent down5 = PointerDownEvent(pointer: 5, position: Offset(10.0, 10.0));
 
-  const PointerMoveEvent move5 = PointerMoveEvent(
-    pointer: 5,
-    position: Offset(25.0, 25.0),
-  );
+  const PointerMoveEvent move5 = PointerMoveEvent(pointer: 5, position: Offset(25.0, 25.0));
 
-  const PointerUpEvent up5 = PointerUpEvent(
-    pointer: 5,
-    position: Offset(25.0, 25.0),
-  );
+  const PointerUpEvent up5 = PointerUpEvent(pointer: 5, position: Offset(25.0, 25.0));
 
   // Down/up pair 7: normal tap sequence close to pair 1 but on secondary button
   const PointerDownEvent down6 = PointerDownEvent(
@@ -102,10 +67,7 @@ void main() {
     buttons: kSecondaryMouseButton,
   );
 
-  const PointerUpEvent up6 = PointerUpEvent(
-    pointer: 6,
-    position: Offset(11.0, 9.0),
-  );
+  const PointerUpEvent up6 = PointerUpEvent(pointer: 6, position: Offset(11.0, 9.0));
 
   testGesture('Recognizes serial taps', (GestureTester tester) {
     serial.addPointer(down1);

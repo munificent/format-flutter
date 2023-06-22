@@ -18,19 +18,14 @@ Future<void> main() async {
   final ui.Image rawImage = await decodeImageFromList(Uint8List.fromList(kTransparentImage));
   final ImageProvider image = TestImageProvider(0, 0, image: rawImage);
   testWidgets('ShapeDecoration.image', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: DecoratedBox(
-          decoration: ShapeDecoration(
-            shape: Border.all(color: Colors.white) +
-                   Border.all(),
-            image: DecorationImage(
-              image: image,
-            ),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: DecoratedBox(
+        decoration: ShapeDecoration(
+          shape: Border.all(color: Colors.white) + Border.all(),
+          image: DecorationImage(image: image),
         ),
       ),
-    );
+    ));
     expect(
       find.byType(DecoratedBox),
       paints
@@ -41,17 +36,11 @@ Future<void> main() async {
   });
 
   testWidgets('ShapeDecoration.color', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: DecoratedBox(
-          decoration: ShapeDecoration(
-            shape: Border.all(color: Colors.white) +
-                   Border.all(),
-            color: Colors.blue,
-          ),
-        ),
+    await tester.pumpWidget(MaterialApp(
+      home: DecoratedBox(
+        decoration: ShapeDecoration(shape: Border.all(color: Colors.white) + Border.all(), color: Colors.blue),
       ),
-    );
+    ));
     expect(
       find.byType(DecoratedBox),
       paints
@@ -72,46 +61,25 @@ Future<void> main() async {
   testWidgets('TestBorder and Directionality - 1', (WidgetTester tester) async {
     final List<String> log = <String>[];
     await tester.pumpWidget(
-      MaterialApp(
-        home: DecoratedBox(
-          decoration: ShapeDecoration(
-            shape: TestBorder(log.add),
-            color: Colors.green,
-          ),
-        ),
-      ),
+      MaterialApp(home: DecoratedBox(decoration: ShapeDecoration(shape: TestBorder(log.add), color: Colors.green))),
     );
-    expect(
-      log,
-      <String>[
-        'getOuterPath Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) TextDirection.ltr',
-        'paint Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) TextDirection.ltr',
-      ],
-    );
+    expect(log, <String>[
+      'getOuterPath Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) TextDirection.ltr',
+      'paint Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) TextDirection.ltr',
+    ]);
   });
 
   testWidgets('TestBorder and Directionality - 2', (WidgetTester tester) async {
     final List<String> log = <String>[];
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.rtl,
-        child: DecoratedBox(
-          decoration: ShapeDecoration(
-            shape: TestBorder(log.add),
-            image: DecorationImage(
-              image: image,
-            ),
-          ),
-        ),
-      ),
-    );
-    expect(
-      log,
-      <String>[
-        'getInnerPath Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) TextDirection.rtl',
-        'paint Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) TextDirection.rtl',
-      ],
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.rtl,
+      child:
+          DecoratedBox(decoration: ShapeDecoration(shape: TestBorder(log.add), image: DecorationImage(image: image))),
+    ));
+    expect(log, <String>[
+      'getInnerPath Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) TextDirection.rtl',
+      'paint Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) TextDirection.rtl',
+    ]);
   });
 
   testWidgets('Does not crash with directional gradient', (WidgetTester tester) async {
@@ -129,9 +97,7 @@ Future<void> main() async {
               colors: <Color>[Colors.red, Colors.black],
               stops: <double>[0.0, 0.4],
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
           ),
         ),
       ),

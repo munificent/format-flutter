@@ -27,85 +27,72 @@ void expectRects(WidgetTester tester, List<Rect> expected) {
 }
 
 void main() {
-
   testWidgets('ListBody down', (WidgetTester tester) async {
-    await tester.pumpWidget(const Flex(
-      direction: Axis.vertical,
-      children: <Widget>[ ListBody(children: children) ],
-    ));
+    await tester.pumpWidget(const Flex(direction: Axis.vertical, children: <Widget>[ListBody(children: children)]));
 
-    expectRects(
-      tester,
-      <Rect>[
-        const Rect.fromLTWH(0.0, 0.0, 800.0, 150.0),
-        const Rect.fromLTWH(0.0, 150.0, 800.0, 150.0),
-        const Rect.fromLTWH(0.0, 300.0, 800.0, 150.0),
-        const Rect.fromLTWH(0.0, 450.0, 800.0, 150.0),
-      ],
-    );
+    expectRects(tester, <Rect>[
+      const Rect.fromLTWH(0.0, 0.0, 800.0, 150.0),
+      const Rect.fromLTWH(0.0, 150.0, 800.0, 150.0),
+      const Rect.fromLTWH(0.0, 300.0, 800.0, 150.0),
+      const Rect.fromLTWH(0.0, 450.0, 800.0, 150.0),
+    ]);
   });
 
   testWidgets('ListBody up', (WidgetTester tester) async {
-    await tester.pumpWidget(const Flex(
-      direction: Axis.vertical,
-      children: <Widget>[ ListBody(reverse: true, children: children) ],
-    ));
-
-    expectRects(
-      tester,
-      <Rect>[
-        const Rect.fromLTWH(0.0, 450.0, 800.0, 150.0),
-        const Rect.fromLTWH(0.0, 300.0, 800.0, 150.0),
-        const Rect.fromLTWH(0.0, 150.0, 800.0, 150.0),
-        const Rect.fromLTWH(0.0, 0.0, 800.0, 150.0),
-      ],
+    await tester.pumpWidget(
+      const Flex(direction: Axis.vertical, children: <Widget>[ListBody(reverse: true, children: children)]),
     );
+
+    expectRects(tester, <Rect>[
+      const Rect.fromLTWH(0.0, 450.0, 800.0, 150.0),
+      const Rect.fromLTWH(0.0, 300.0, 800.0, 150.0),
+      const Rect.fromLTWH(0.0, 150.0, 800.0, 150.0),
+      const Rect.fromLTWH(0.0, 0.0, 800.0, 150.0),
+    ]);
   });
 
   testWidgets('ListBody right', (WidgetTester tester) async {
-    await tester.pumpWidget(const Flex(
-      textDirection: TextDirection.ltr,
-      direction: Axis.horizontal,
-      children: <Widget>[
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ListBody(mainAxis: Axis.horizontal, children: children),
-        ),
-      ],
-    ));
-
-    expectRects(
-      tester,
-      <Rect>[
-        const Rect.fromLTWH(0.0, 0.0, 200.0, 600.0),
-        const Rect.fromLTWH(200.0, 0.0, 200.0, 600.0),
-        const Rect.fromLTWH(400.0, 0.0, 200.0, 600.0),
-        const Rect.fromLTWH(600.0, 0.0, 200.0, 600.0),
-      ],
+    await tester.pumpWidget(
+      const Flex(
+        textDirection: TextDirection.ltr,
+        direction: Axis.horizontal,
+        children: <Widget>[
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: ListBody(mainAxis: Axis.horizontal, children: children),
+          ),
+        ],
+      ),
     );
+
+    expectRects(tester, <Rect>[
+      const Rect.fromLTWH(0.0, 0.0, 200.0, 600.0),
+      const Rect.fromLTWH(200.0, 0.0, 200.0, 600.0),
+      const Rect.fromLTWH(400.0, 0.0, 200.0, 600.0),
+      const Rect.fromLTWH(600.0, 0.0, 200.0, 600.0),
+    ]);
   });
 
   testWidgets('ListBody left', (WidgetTester tester) async {
-    await tester.pumpWidget(const Flex(
-      textDirection: TextDirection.ltr,
-      direction: Axis.horizontal,
-      children: <Widget>[
-        Directionality(
-          textDirection: TextDirection.rtl,
-          child: ListBody(mainAxis: Axis.horizontal, children: children),
-        ),
-      ],
-    ));
-
-    expectRects(
-      tester,
-      <Rect>[
-        const Rect.fromLTWH(600.0, 0.0, 200.0, 600.0),
-        const Rect.fromLTWH(400.0, 0.0, 200.0, 600.0),
-        const Rect.fromLTWH(200.0, 0.0, 200.0, 600.0),
-        const Rect.fromLTWH(0.0, 0.0, 200.0, 600.0),
-      ],
+    await tester.pumpWidget(
+      const Flex(
+        textDirection: TextDirection.ltr,
+        direction: Axis.horizontal,
+        children: <Widget>[
+          Directionality(
+            textDirection: TextDirection.rtl,
+            child: ListBody(mainAxis: Axis.horizontal, children: children),
+          ),
+        ],
+      ),
     );
+
+    expectRects(tester, <Rect>[
+      const Rect.fromLTWH(600.0, 0.0, 200.0, 600.0),
+      const Rect.fromLTWH(400.0, 0.0, 200.0, 600.0),
+      const Rect.fromLTWH(200.0, 0.0, 200.0, 600.0),
+      const Rect.fromLTWH(0.0, 0.0, 200.0, 600.0),
+    ]);
   });
 
   testWidgets('Limited space along main axis error', (WidgetTester tester) async {
@@ -119,10 +106,7 @@ void main() {
           height: 100,
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: ListBody(
-              mainAxis: Axis.horizontal,
-              children: children,
-            ),
+            child: ListBody(mainAxis: Axis.horizontal, children: children),
           ),
         ),
       );
@@ -160,12 +144,7 @@ void main() {
                     textDirection: TextDirection.ltr,
                     direction: Axis.vertical,
                     children: <Widget>[
-                      Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: ListBody(
-                          children: children,
-                        ),
-                      ),
+                      Directionality(textDirection: TextDirection.ltr, child: ListBody(children: children)),
                     ],
                   ),
                 ],

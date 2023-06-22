@@ -7,7 +7,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-
   test('ButtonBarThemeData lerp special cases', () {
     expect(ButtonBarThemeData.lerp(null, null, 0), null);
     const ButtonBarThemeData data = ButtonBarThemeData();
@@ -119,17 +118,15 @@ void main() {
   testWidgets('ButtonBarTheme.of falls back to ThemeData.buttonBarTheme', (WidgetTester tester) async {
     const ButtonBarThemeData buttonBarTheme = ButtonBarThemeData(buttonMinWidth: 42.0);
     late BuildContext capturedContext;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(buttonBarTheme: buttonBarTheme),
-        home: Builder(
-          builder: (BuildContext context) {
-            capturedContext = context;
-            return Container();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(buttonBarTheme: buttonBarTheme),
+      home: Builder(
+        builder: (BuildContext context) {
+          capturedContext = context;
+          return Container();
+        },
       ),
-    );
+    ));
     expect(ButtonBarTheme.of(capturedContext), equals(buttonBarTheme));
     expect(ButtonBarTheme.of(capturedContext).buttonMinWidth, equals(42.0));
   });
@@ -138,24 +135,22 @@ void main() {
     const ButtonBarThemeData defaultBarTheme = ButtonBarThemeData(buttonMinWidth: 42.0);
     const ButtonBarThemeData buttonBarTheme = ButtonBarThemeData(buttonMinWidth: 84.0);
     late BuildContext capturedContext;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(buttonBarTheme: defaultBarTheme),
-        home: Builder(
-          builder: (BuildContext context) {
-            return ButtonBarTheme(
-              data: buttonBarTheme,
-              child: Builder(
-                builder: (BuildContext context) {
-                  capturedContext = context;
-                  return Container();
-                },
-              ),
-            );
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(buttonBarTheme: defaultBarTheme),
+      home: Builder(
+        builder: (BuildContext context) {
+          return ButtonBarTheme(
+            data: buttonBarTheme,
+            child: Builder(
+              builder: (BuildContext context) {
+                capturedContext = context;
+                return Container();
+              },
+            ),
+          );
+        },
       ),
-    );
+    ));
     expect(ButtonBarTheme.of(capturedContext), equals(buttonBarTheme));
     expect(ButtonBarTheme.of(capturedContext).buttonMinWidth, equals(84.0));
   });

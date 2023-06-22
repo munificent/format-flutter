@@ -10,18 +10,22 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class RenderFoo extends RenderShiftedBox {
-  RenderFoo({ RenderBox? child }) : super(child);
+  RenderFoo({RenderBox? child}) : super(child);
 
   @override
   void performLayout() {
-    child?.layout(const BoxConstraints(  // THIS MUST BE LINE 17
-      minWidth: 100.0, maxWidth: 50.0,
-    ));
+    child?.layout(
+      const BoxConstraints(
+        // THIS MUST BE LINE 17
+        minWidth: 100.0,
+        maxWidth: 50.0,
+      ),
+    );
   }
 }
 
 class Foo extends SingleChildRenderObjectWidget {
-  const Foo({ super.key, super.child });
+  const Foo({super.key, super.child});
 
   @override
   RenderFoo createRenderObject(BuildContext context) {

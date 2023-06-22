@@ -6,11 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class TestStatusTransitionWidget extends StatusTransitionWidget {
-  const TestStatusTransitionWidget({
-    super.key,
-    required this.builder,
-    required super.animation,
-  });
+  const TestStatusTransitionWidget({super.key, required this.builder, required super.animation});
 
   final WidgetBuilder builder;
 

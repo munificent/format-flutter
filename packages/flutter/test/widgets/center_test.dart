@@ -8,10 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('Can be placed in an infinite box', (WidgetTester tester) async {
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(children: const <Widget>[Center()]),
-      ),
+      Directionality(textDirection: TextDirection.ltr, child: ListView(children: const <Widget>[Center()])),
     );
   });
 }

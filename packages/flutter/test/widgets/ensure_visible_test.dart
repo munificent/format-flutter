@@ -10,7 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 Finder findKey(int i) => find.byKey(ValueKey<int>(i), skipOffstage: false);
 
-Widget buildSingleChildScrollView(Axis scrollDirection, { bool reverse = false }) {
+Widget buildSingleChildScrollView(Axis scrollDirection, {bool reverse = false}) {
   return Directionality(
     textDirection: TextDirection.ltr,
     child: Center(
@@ -38,7 +38,7 @@ Widget buildSingleChildScrollView(Axis scrollDirection, { bool reverse = false }
   );
 }
 
-Widget buildListView(Axis scrollDirection, { bool reverse = false, bool shrinkWrap = false }) {
+Widget buildListView(Axis scrollDirection, {bool reverse = false, bool shrinkWrap = false}) {
   return Directionality(
     textDirection: TextDirection.ltr,
     child: Center(
@@ -66,7 +66,6 @@ Widget buildListView(Axis scrollDirection, { bool reverse = false, bool shrinkWr
 }
 
 void main() {
-
   group('SingleChildScrollView', () {
     testWidgets('SingleChildScrollView ensureVisible Axis.vertical', (WidgetTester tester) async {
       BuildContext findContext(int i) => tester.element(findKey(i));
@@ -156,23 +155,14 @@ void main() {
       // within a centered SizedBox.
       expect(tester.getBottomLeft(findKey(4)).dy, equals(100.0));
       expect(tester.getBottomLeft(findKey(6)).dy, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(6),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(6), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
-      Scrollable.ensureVisible(
-        findContext(5),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(5), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // 5 and 6 are already visible beyond the top edge, so no change.
       expect(tester.getBottomLeft(findKey(4)).dy, equals(100.0));
       expect(tester.getBottomLeft(findKey(6)).dy, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(4),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(4), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // Since it is reversed, 4 should have come into view at the top
       // edge of the scrollable, matching the alignment expectation.
@@ -181,10 +171,7 @@ void main() {
 
       // Bring 6 back into view at the trailing edge, checking the other
       // alignment.
-      Scrollable.ensureVisible(
-        findContext(6),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-      );
+      Scrollable.ensureVisible(findContext(6), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
       await tester.pump();
       expect(tester.getBottomLeft(findKey(4)).dy, equals(100.0));
       expect(tester.getBottomLeft(findKey(6)).dy, equals(500.0));
@@ -224,28 +211,16 @@ void main() {
       // within a centered SizedBox.
       expect(tester.getBottomLeft(findKey(3)).dx, equals(-100.0));
       expect(tester.getBottomLeft(findKey(6)).dx, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(6),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(6), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
-      Scrollable.ensureVisible(
-        findContext(5),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(5), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
-      Scrollable.ensureVisible(
-        findContext(4),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(4), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // 4, 5 and 6 are already visible beyond the left edge, so no change.
       expect(tester.getBottomLeft(findKey(3)).dx, equals(-100.0));
       expect(tester.getBottomLeft(findKey(6)).dx, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(3),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(3), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // Since it is reversed, 3 should have come into view at the leading
       // edge of the scrollable, matching the alignment expectation.
@@ -254,10 +229,7 @@ void main() {
 
       // Bring 6 back into view at the trailing edge, checking the other
       // alignment.
-      Scrollable.ensureVisible(
-        findContext(6),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-      );
+      Scrollable.ensureVisible(findContext(6), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
       await tester.pump();
       expect(tester.getBottomLeft(findKey(3)).dx, equals(-100.0));
       expect(tester.getBottomLeft(findKey(6)).dx, equals(500.0));
@@ -266,40 +238,38 @@ void main() {
     testWidgets('SingleChildScrollView ensureVisible rotated child', (WidgetTester tester) async {
       BuildContext findContext(int i) => tester.element(findKey(i));
 
-      await tester.pumpWidget(
-        Center(
-          child: SizedBox(
-            width: 600.0,
-            height: 400.0,
-            child: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  const SizedBox(height: 200.0),
-                  const SizedBox(height: 200.0),
-                  const SizedBox(height: 200.0),
-                  SizedBox(
-                    height: 200.0,
-                    child: Center(
-                      child: Transform(
-                        transform: Matrix4.rotationZ(math.pi),
-                        child: Container(
-                          key: const ValueKey<int>(0),
-                          width: 100.0,
-                          height: 100.0,
-                          color: const Color(0xFFFFFFFF),
-                        ),
+      await tester.pumpWidget(Center(
+        child: SizedBox(
+          width: 600.0,
+          height: 400.0,
+          child: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                const SizedBox(height: 200.0),
+                const SizedBox(height: 200.0),
+                const SizedBox(height: 200.0),
+                SizedBox(
+                  height: 200.0,
+                  child: Center(
+                    child: Transform(
+                      transform: Matrix4.rotationZ(math.pi),
+                      child: Container(
+                        key: const ValueKey<int>(0),
+                        width: 100.0,
+                        height: 100.0,
+                        color: const Color(0xFFFFFFFF),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 200.0),
-                  const SizedBox(height: 200.0),
-                  const SizedBox(height: 200.0),
-                ],
-              ),
+                ),
+                const SizedBox(height: 200.0),
+                const SizedBox(height: 200.0),
+                const SizedBox(height: 200.0),
+              ],
             ),
           ),
         ),
-      );
+      ));
 
       Scrollable.ensureVisible(findContext(0));
       await tester.pump();
@@ -324,25 +294,19 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Center(
-            child: SizedBox(
-              width: 600.0,
-              height: 400.0,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: rows,
-                  ),
-                ),
-              ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: SizedBox(
+            width: 600.0,
+            height: 400.0,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(child: Column(children: rows)),
             ),
           ),
         ),
-      );
+      ));
 
       //      Items: 7 * 7 Container(width: 200.0, height: 200.0)
       //      viewport: Size(width: 600.0, height: 400.0)
@@ -502,23 +466,14 @@ void main() {
       // within a centered SizedBox.
       expect(tester.getBottomLeft(findKey(2)).dy, equals(100.0));
       expect(tester.getBottomLeft(findKey(0)).dy, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(0),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(0), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
-      Scrollable.ensureVisible(
-        findContext(1),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(1), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // 0 and 1 are already visible beyond the top edge, so no change.
       expect(tester.getBottomLeft(findKey(2)).dy, equals(100.0));
       expect(tester.getBottomLeft(findKey(0)).dy, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(2),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(2), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // Since it is reversed, 2 should have come into view at the top
       // edge of the scrollable, matching the alignment expectation.
@@ -527,10 +482,7 @@ void main() {
 
       // Bring 0 back into view at the trailing edge, checking the other
       // alignment.
-      Scrollable.ensureVisible(
-        findContext(0),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-      );
+      Scrollable.ensureVisible(findContext(0), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
       await tester.pump();
       expect(tester.getBottomLeft(findKey(2)).dy, equals(100.0));
       expect(tester.getBottomLeft(findKey(0)).dy, equals(500.0));
@@ -578,28 +530,16 @@ void main() {
       // within a centered SizedBox.
       expect(tester.getBottomLeft(findKey(3)).dx, equals(-100.0));
       expect(tester.getBottomLeft(findKey(0)).dx, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(0),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(0), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
-      Scrollable.ensureVisible(
-        findContext(1),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(1), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
-      Scrollable.ensureVisible(
-        findContext(2),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(2), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // 0, 1 and 2 are already visible beyond the left edge, so no change.
       expect(tester.getBottomLeft(findKey(3)).dx, equals(-100.0));
       expect(tester.getBottomLeft(findKey(0)).dx, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(3),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(3), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // Since it is reversed, 3 should have come into view at the leading
       // edge of the scrollable, matching the alignment expectation.
@@ -608,10 +548,7 @@ void main() {
 
       // Bring 0 back into view at the trailing edge, checking the other
       // alignment.
-      Scrollable.ensureVisible(
-        findContext(0),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-      );
+      Scrollable.ensureVisible(findContext(0), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
       await tester.pump();
       expect(tester.getBottomLeft(findKey(3)).dx, equals(-100.0));
       expect(tester.getBottomLeft(findKey(0)).dx, equals(500.0));
@@ -629,40 +566,35 @@ void main() {
       }
 
       Widget buildSliver(int i) {
-        return SliverToBoxAdapter(
-          key: ValueKey<int>(i),
-          child: const SizedBox(width: 200.0, height: 200.0),
-        );
+        return SliverToBoxAdapter(key: ValueKey<int>(i), child: const SizedBox(width: 200.0, height: 200.0));
       }
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Center(
-            child: SizedBox(
-              width: 600.0,
-              height: 400.0,
-              child: Scrollable(
-                viewportBuilder: (BuildContext context, ViewportOffset offset) {
-                  return Viewport(
-                    offset: offset,
-                    center: const ValueKey<int>(4),
-                    slivers: <Widget>[
-                      buildSliver(0),
-                      buildSliver(1),
-                      buildSliver(2),
-                      buildSliver(3),
-                      buildSliver(4),
-                      buildSliver(5),
-                      buildSliver(6),
-                    ],
-                  );
-                },
-              ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: SizedBox(
+            width: 600.0,
+            height: 400.0,
+            child: Scrollable(
+              viewportBuilder: (BuildContext context, ViewportOffset offset) {
+                return Viewport(
+                  offset: offset,
+                  center: const ValueKey<int>(4),
+                  slivers: <Widget>[
+                    buildSliver(0),
+                    buildSliver(1),
+                    buildSliver(2),
+                    buildSliver(3),
+                    buildSliver(4),
+                    buildSliver(5),
+                    buildSliver(6),
+                  ],
+                );
+              },
             ),
           ),
         ),
-      );
+      ));
 
       await prepare(-125.0);
       Scrollable.ensureVisible(findContext(3));
@@ -842,23 +774,14 @@ void main() {
       // within a centered SizedBox.
       expect(tester.getBottomLeft(findKey(2)).dy, equals(100.0));
       expect(tester.getBottomLeft(findKey(0)).dy, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(0),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(0), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
-      Scrollable.ensureVisible(
-        findContext(1),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(1), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // 0 and 1 are already visible beyond the top edge, so no change.
       expect(tester.getBottomLeft(findKey(2)).dy, equals(100.0));
       expect(tester.getBottomLeft(findKey(0)).dy, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(2),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(2), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // Since it is reversed, 2 should have come into view at the top
       // edge of the scrollable, matching the alignment expectation.
@@ -867,10 +790,7 @@ void main() {
 
       // Bring 0 back into view at the trailing edge, checking the other
       // alignment.
-      Scrollable.ensureVisible(
-        findContext(0),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-      );
+      Scrollable.ensureVisible(findContext(0), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
       await tester.pump();
       expect(tester.getBottomLeft(findKey(2)).dy, equals(100.0));
       expect(tester.getBottomLeft(findKey(0)).dy, equals(500.0));
@@ -918,28 +838,16 @@ void main() {
       // within a centered SizedBox.
       expect(tester.getBottomLeft(findKey(3)).dx, equals(-100.0));
       expect(tester.getBottomLeft(findKey(0)).dx, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(0),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(0), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
-      Scrollable.ensureVisible(
-        findContext(1),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(1), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
-      Scrollable.ensureVisible(
-        findContext(2),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(2), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // 0, 1 and 2 are already visible beyond the left edge, so no change.
       expect(tester.getBottomLeft(findKey(3)).dx, equals(-100.0));
       expect(tester.getBottomLeft(findKey(0)).dx, equals(500.0));
-      Scrollable.ensureVisible(
-        findContext(3),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-      );
+      Scrollable.ensureVisible(findContext(3), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
       await tester.pump();
       // Since it is reversed, 3 should have come into view at the leading
       // edge of the scrollable, matching the alignment expectation.
@@ -948,10 +856,7 @@ void main() {
 
       // Bring 0 back into view at the trailing edge, checking the other
       // alignment.
-      Scrollable.ensureVisible(
-        findContext(0),
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-      );
+      Scrollable.ensureVisible(findContext(0), alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
       await tester.pump();
       expect(tester.getBottomLeft(findKey(3)).dx, equals(-100.0));
       expect(tester.getBottomLeft(findKey(0)).dx, equals(500.0));
@@ -966,40 +871,41 @@ void main() {
         await tester.pump();
       }
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Center(
-            child: SizedBox(
-              width: 600.0,
-              height: 400.0,
-              child: Scrollable(
-                viewportBuilder: (BuildContext context, ViewportOffset offset) {
-                  return Viewport(
-                    offset: offset,
-                    center: const ValueKey<String>('center'),
-                    slivers: const <Widget>[
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-6), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-5), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-4), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-3), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-2), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-1), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(key: ValueKey<String>('center'), child: SizedBox(key: ValueKey<int>(0), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(1), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(2), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(3), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(4), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(5), width: 200.0, height: 200.0)),
-                      SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(6), width: 200.0, height: 200.0)),
-                    ],
-                  );
-                },
-              ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: SizedBox(
+            width: 600.0,
+            height: 400.0,
+            child: Scrollable(
+              viewportBuilder: (BuildContext context, ViewportOffset offset) {
+                return Viewport(
+                  offset: offset,
+                  center: const ValueKey<String>('center'),
+                  slivers: const <Widget>[
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-6), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-5), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-4), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-3), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-2), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(-1), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(
+                      key: ValueKey<String>('center'),
+                      child: SizedBox(key: ValueKey<int>(0), width: 200.0, height: 200.0),
+                    ),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(1), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(2), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(3), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(4), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(5), width: 200.0, height: 200.0)),
+                    SliverToBoxAdapter(child: SizedBox(key: ValueKey<int>(6), width: 200.0, height: 200.0)),
+                  ],
+                );
+              },
             ),
           ),
         ),
-      );
+      ));
 
       await prepare(480.0);
       Scrollable.ensureVisible(findContext(3));
@@ -1026,7 +932,6 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 1020));
       expect(tester.getTopLeft(findKey(3)).dy, equals(100.0));
-
 
       await prepare(-480.0);
       Scrollable.ensureVisible(findContext(-3));

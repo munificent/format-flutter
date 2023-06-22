@@ -17,15 +17,10 @@ void main() {
     expect(RendererBinding.instance.sendFramesToEngine, isTrue);
 
     final Completer<void> completer = Completer<void>();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: _DeferringWidget(
-          key: UniqueKey(),
-          loader: completer.future,
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: _DeferringWidget(key: UniqueKey(), loader: completer.future),
+    ));
     final _DeferringWidgetState state = tester.state<_DeferringWidgetState>(find.byType(_DeferringWidget));
 
     expect(find.text(_loading), findsOneWidget);
@@ -55,23 +50,15 @@ void main() {
 
     final Completer<void> completer1 = Completer<void>();
     final Completer<void> completer2 = Completer<void>();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Row(
-          children: <Widget>[
-            _DeferringWidget(
-              key: UniqueKey(),
-              loader: completer1.future,
-            ),
-            _DeferringWidget(
-              key: UniqueKey(),
-              loader: completer2.future,
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Row(
+        children: <Widget>[
+          _DeferringWidget(key: UniqueKey(), loader: completer1.future),
+          _DeferringWidget(key: UniqueKey(), loader: completer2.future),
+        ],
       ),
-    );
+    ));
     expect(find.text(_loading), findsNWidgets(2));
     expect(find.text(_actualContent), findsNothing);
     expect(RendererBinding.instance.sendFramesToEngine, isFalse);
@@ -113,8 +100,6 @@ class _DeferringWidgetState extends State<_DeferringWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return doneLoading
-        ? const Text(_actualContent)
-        : const Text(_loading);
+    return doneLoading ? const Text(_actualContent) : const Text(_loading);
   }
 }

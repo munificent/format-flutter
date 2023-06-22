@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class TestStatefulWidget extends StatefulWidget {
-  const TestStatefulWidget({ super.key });
+  const TestStatefulWidget({super.key});
 
   @override
   TestStatefulWidgetState createState() => TestStatefulWidgetState();
@@ -19,7 +19,7 @@ class TestStatefulWidgetState extends State<TestStatefulWidget> {
 }
 
 class TestChildWidget extends StatefulWidget {
-  const TestChildWidget({ super.key });
+  const TestChildWidget({super.key});
 
   @override
   TestChildState createState() => TestChildState();
@@ -29,7 +29,9 @@ class TestChildState extends State<TestChildWidget> {
   bool toggle = true;
 
   void toggleMe() {
-    setState(() { toggle = !toggle; });
+    setState(() {
+      toggle = !toggle;
+    });
   }
 
   @override
@@ -38,40 +40,21 @@ class TestChildState extends State<TestChildWidget> {
 
 void main() {
   testWidgets('Table widget - empty', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(),
-      ),
-    );
+    await tester.pumpWidget(Directionality(textDirection: TextDirection.ltr, child: Table()));
   });
 
   testWidgets('Table widget - control test', (WidgetTester tester) async {
     Future<void> run(TextDirection textDirection) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: textDirection,
-          child: Table(
-            children: const <TableRow>[
-              TableRow(
-                children: <Widget>[
-                  Text('AAAAAA'), Text('B'), Text('C'),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  Text('D'), Text('EEE'), Text('F'),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  Text('G'), Text('H'), Text('III'),
-                ],
-              ),
-            ],
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: textDirection,
+        child: Table(
+          children: const <TableRow>[
+            TableRow(children: <Widget>[Text('AAAAAA'), Text('B'), Text('C')]),
+            TableRow(children: <Widget>[Text('D'), Text('EEE'), Text('F')]),
+            TableRow(children: <Widget>[Text('G'), Text('H'), Text('III')]),
+          ],
         ),
-      );
+      ));
       final RenderBox boxA = tester.renderObject(find.text('AAAAAA'));
       final RenderBox boxD = tester.renderObject(find.text('D'));
       final RenderBox boxG = tester.renderObject(find.text('G'));
@@ -90,70 +73,37 @@ void main() {
     final Widget table = Table(
       key: GlobalKey(),
       children: const <TableRow>[
-        TableRow(
-          decoration: BoxDecoration(
-              color: Colors.yellow,
-          ),
-          children: <Widget>[Placeholder()],
-        ),
+        TableRow(decoration: BoxDecoration(color: Colors.yellow), children: <Widget>[Placeholder()]),
       ],
     );
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: table,
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(textDirection: TextDirection.ltr, child: Center(child: table)));
     // Move table to a different location to simulate detaching and re-attaching effect.
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: Center(
-            child: table,
-          ),
-        ),
-      ),
+      Directionality(textDirection: TextDirection.ltr, child: Center(child: Center(child: table))),
     );
 
     expect(tester.takeException(), isNull);
   });
 
   testWidgets('Table widget - column offset (LTR)', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: Table(
-            columnWidths: const <int, TableColumnWidth>{
-              0: FixedColumnWidth(100.0),
-              1: FixedColumnWidth(110.0),
-              2: FixedColumnWidth(125.0),
-            },
-            defaultColumnWidth: const FixedColumnWidth(333.0),
-            children: const <TableRow>[
-              TableRow(
-                children: <Widget>[
-                  Text('A1'), Text('B1'), Text('C1'),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  Text('A2'), Text('B2'), Text('C2'),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  Text('A3'), Text('B3'), Text('C3'),
-                ],
-              ),
-            ],
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: Table(
+          columnWidths: const <int, TableColumnWidth>{
+            0: FixedColumnWidth(100.0),
+            1: FixedColumnWidth(110.0),
+            2: FixedColumnWidth(125.0),
+          },
+          defaultColumnWidth: const FixedColumnWidth(333.0),
+          children: const <TableRow>[
+            TableRow(children: <Widget>[Text('A1'), Text('B1'), Text('C1')]),
+            TableRow(children: <Widget>[Text('A2'), Text('B2'), Text('C2')]),
+            TableRow(children: <Widget>[Text('A3'), Text('B3'), Text('C3')]),
+          ],
         ),
       ),
-    );
+    ));
 
     final Rect table = tester.getRect(find.byType(Table));
     final Rect a1 = tester.getRect(find.text('A1'));
@@ -192,38 +142,24 @@ void main() {
   });
 
   testWidgets('Table widget - column offset (RTL)', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.rtl,
-        child: Center(
-          child: Table(
-            columnWidths: const <int, TableColumnWidth>{
-              0: FixedColumnWidth(100.0),
-              1: FixedColumnWidth(110.0),
-              2: FixedColumnWidth(125.0),
-            },
-            defaultColumnWidth: const FixedColumnWidth(333.0),
-            children: const <TableRow>[
-              TableRow(
-                children: <Widget>[
-                  Text('A1'), Text('B1'), Text('C1'),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  Text('A2'), Text('B2'), Text('C2'),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  Text('A3'), Text('B3'), Text('C3'),
-                ],
-              ),
-            ],
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.rtl,
+      child: Center(
+        child: Table(
+          columnWidths: const <int, TableColumnWidth>{
+            0: FixedColumnWidth(100.0),
+            1: FixedColumnWidth(110.0),
+            2: FixedColumnWidth(125.0),
+          },
+          defaultColumnWidth: const FixedColumnWidth(333.0),
+          children: const <TableRow>[
+            TableRow(children: <Widget>[Text('A1'), Text('B1'), Text('C1')]),
+            TableRow(children: <Widget>[Text('A2'), Text('B2'), Text('C2')]),
+            TableRow(children: <Widget>[Text('A3'), Text('B3'), Text('C3')]),
+          ],
         ),
       ),
-    );
+    ));
 
     final Rect table = tester.getRect(find.byType(Table));
     final Rect a1 = tester.getRect(find.text('A1'));
@@ -263,31 +199,17 @@ void main() {
 
   testWidgets('Table border - smoke test', (WidgetTester tester) async {
     Future<void> run(TextDirection textDirection) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: textDirection,
-          child: Table(
-            border: TableBorder.all(),
-            children: const <TableRow>[
-              TableRow(
-                children: <Widget>[
-                  Text('AAAAAA'), Text('B'), Text('C'),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  Text('D'), Text('EEE'), Text('F'),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  Text('G'), Text('H'), Text('III'),
-                ],
-              ),
-            ],
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: textDirection,
+        child: Table(
+          border: TableBorder.all(),
+          children: const <TableRow>[
+            TableRow(children: <Widget>[Text('AAAAAA'), Text('B'), Text('C')]),
+            TableRow(children: <Widget>[Text('D'), Text('EEE'), Text('F')]),
+            TableRow(children: <Widget>[Text('G'), Text('H'), Text('III')]),
+          ],
         ),
-      );
+      ));
     }
 
     await run(TextDirection.ltr);
@@ -296,53 +218,29 @@ void main() {
   });
 
   testWidgets('Table widget - changing table dimensions', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                Text('A'), Text('B'), Text('C'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('D'), Text('E'), Text('F'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('G'), Text('H'), Text('I'),
-              ],
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: const <TableRow>[
+          TableRow(children: <Widget>[Text('A'), Text('B'), Text('C')]),
+          TableRow(children: <Widget>[Text('D'), Text('E'), Text('F')]),
+          TableRow(children: <Widget>[Text('G'), Text('H'), Text('I')]),
+        ],
       ),
-    );
+    ));
     final RenderBox boxA1 = tester.renderObject(find.text('A'));
     final RenderBox boxG1 = tester.renderObject(find.text('G'));
     expect(boxA1, isNotNull);
     expect(boxG1, isNotNull);
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                Text('a'), Text('b'), Text('c'), Text('d'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('e'), Text('f'), Text('g'), Text('h'),
-              ],
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: const <TableRow>[
+          TableRow(children: <Widget>[Text('a'), Text('b'), Text('c'), Text('d')]),
+          TableRow(children: <Widget>[Text('e'), Text('f'), Text('g'), Text('h')]),
+        ],
       ),
-    );
+    ));
     final RenderBox boxA2 = tester.renderObject(find.text('a'));
     final RenderBox boxG2 = tester.renderObject(find.text('g'));
     expect(boxA2, isNotNull);
@@ -354,25 +252,15 @@ void main() {
   testWidgets('Really small deficit double precision error', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/27083
     const SizedBox cell = SizedBox(width: 16, height: 16);
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                cell, cell, cell, cell, cell, cell,
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                cell, cell, cell, cell, cell, cell,
-              ],
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: const <TableRow>[
+          TableRow(children: <Widget>[cell, cell, cell, cell, cell, cell]),
+          TableRow(children: <Widget>[cell, cell, cell, cell, cell, cell]),
+        ],
       ),
-    );
+    ));
     // If the above bug is present this test will never terminate.
   });
 
@@ -380,81 +268,51 @@ void main() {
     const SizedBox cell = SizedBox(width: 1, height: 1);
     // If the error is present, pumpWidget() will fail due to an unsatisfied
     // assertion during the layout phase.
-    await tester.pumpWidget(
-      ConstrainedBox(
-        constraints: BoxConstraints.tight(const Size(600, 800)),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Table(
-            columnWidths: const <int, TableColumnWidth>{
-              0: FlexColumnWidth(),
-              1: FlexColumnWidth(0.123),
-              2: FlexColumnWidth(0.123),
-              3: FlexColumnWidth(0.123),
-              4: FlexColumnWidth(0.123),
-              5: FlexColumnWidth(0.123),
-              6: FlexColumnWidth(0.123),
-            },
-            children: <TableRow>[
-              TableRow(children: List<Widget>.filled(7, cell)),
-              TableRow(children: List<Widget>.filled(7, cell)),
-            ],
-          ),
+    await tester.pumpWidget(ConstrainedBox(
+      constraints: BoxConstraints.tight(const Size(600, 800)),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Table(
+          columnWidths: const <int, TableColumnWidth>{
+            0: FlexColumnWidth(),
+            1: FlexColumnWidth(0.123),
+            2: FlexColumnWidth(0.123),
+            3: FlexColumnWidth(0.123),
+            4: FlexColumnWidth(0.123),
+            5: FlexColumnWidth(0.123),
+            6: FlexColumnWidth(0.123),
+          },
+          children: <TableRow>[
+            TableRow(children: List<Widget>.filled(7, cell)),
+            TableRow(children: List<Widget>.filled(7, cell)),
+          ],
         ),
       ),
-    );
+    ));
     expect(tester.takeException(), null);
   });
 
   testWidgets('Table widget - repump test', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                Text('AAAAAA'), Text('B'), Text('C'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('D'), Text('EEE'), Text('F'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('G'), Text('H'), Text('III'),
-              ],
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: const <TableRow>[
+          TableRow(children: <Widget>[Text('AAAAAA'), Text('B'), Text('C')]),
+          TableRow(children: <Widget>[Text('D'), Text('EEE'), Text('F')]),
+          TableRow(children: <Widget>[Text('G'), Text('H'), Text('III')]),
+        ],
       ),
-    );
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                Text('AAA'), Text('B'), Text('C'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('D'), Text('E'), Text('FFFFFF'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('G'), Text('H'), Text('III'),
-              ],
-            ),
-          ],
-        ),
+    ));
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: const <TableRow>[
+          TableRow(children: <Widget>[Text('AAA'), Text('B'), Text('C')]),
+          TableRow(children: <Widget>[Text('D'), Text('E'), Text('FFFFFF')]),
+          TableRow(children: <Widget>[Text('G'), Text('H'), Text('III')]),
+        ],
       ),
-    );
+    ));
     final RenderBox boxA = tester.renderObject(find.text('AAA'));
     final RenderBox boxD = tester.renderObject(find.text('D'));
     final RenderBox boxG = tester.renderObject(find.text('G'));
@@ -465,31 +323,17 @@ void main() {
   });
 
   testWidgets('Table widget - intrinsic sizing test', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
+    await tester.pumpWidget(Directionality(
       textDirection: TextDirection.ltr,
-        child: Table(
-          defaultColumnWidth: const IntrinsicColumnWidth(),
-          children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                Text('AAA'), Text('B'), Text('C'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('D'), Text('E'), Text('FFFFFF'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('G'), Text('H'), Text('III'),
-              ],
-            ),
-          ],
-        ),
+      child: Table(
+        defaultColumnWidth: const IntrinsicColumnWidth(),
+        children: const <TableRow>[
+          TableRow(children: <Widget>[Text('AAA'), Text('B'), Text('C')]),
+          TableRow(children: <Widget>[Text('D'), Text('E'), Text('FFFFFF')]),
+          TableRow(children: <Widget>[Text('G'), Text('H'), Text('III')]),
+        ],
       ),
-    );
+    ));
     final RenderBox boxA = tester.renderObject(find.text('AAA'));
     final RenderBox boxD = tester.renderObject(find.text('D'));
     final RenderBox boxG = tester.renderObject(find.text('G'));
@@ -501,56 +345,28 @@ void main() {
   });
 
   testWidgets('Table widget - intrinsic sizing test, resizing', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          defaultColumnWidth: const IntrinsicColumnWidth(),
-          children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                Text('AAAAAA'), Text('B'), Text('C'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('D'), Text('EEE'), Text('F'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('G'), Text('H'), Text('III'),
-              ],
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        defaultColumnWidth: const IntrinsicColumnWidth(),
+        children: const <TableRow>[
+          TableRow(children: <Widget>[Text('AAAAAA'), Text('B'), Text('C')]),
+          TableRow(children: <Widget>[Text('D'), Text('EEE'), Text('F')]),
+          TableRow(children: <Widget>[Text('G'), Text('H'), Text('III')]),
+        ],
       ),
-    );
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          defaultColumnWidth: const IntrinsicColumnWidth(),
-          children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                Text('A'), Text('B'), Text('C'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('D'), Text('EEE'), Text('F'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('G'), Text('H'), Text('III'),
-              ],
-            ),
-          ],
-        ),
+    ));
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        defaultColumnWidth: const IntrinsicColumnWidth(),
+        children: const <TableRow>[
+          TableRow(children: <Widget>[Text('A'), Text('B'), Text('C')]),
+          TableRow(children: <Widget>[Text('D'), Text('EEE'), Text('F')]),
+          TableRow(children: <Widget>[Text('G'), Text('H'), Text('III')]),
+        ],
       ),
-    );
+    ));
     final RenderBox boxA = tester.renderObject(find.text('A'));
     final RenderBox boxD = tester.renderObject(find.text('D'));
     final RenderBox boxG = tester.renderObject(find.text('G'));
@@ -562,55 +378,27 @@ void main() {
   });
 
   testWidgets('Table widget - intrinsic sizing test, changing column widths', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                Text('AAA'), Text('B'), Text('C'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('D'), Text('E'), Text('FFFFFF'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('G'), Text('H'), Text('III'),
-              ],
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: const <TableRow>[
+          TableRow(children: <Widget>[Text('AAA'), Text('B'), Text('C')]),
+          TableRow(children: <Widget>[Text('D'), Text('E'), Text('FFFFFF')]),
+          TableRow(children: <Widget>[Text('G'), Text('H'), Text('III')]),
+        ],
       ),
-    );
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          defaultColumnWidth: const IntrinsicColumnWidth(),
-          children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                Text('AAA'), Text('B'), Text('C'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('D'), Text('E'), Text('FFFFFF'),
-              ],
-            ),
-            TableRow(
-              children: <Widget>[
-                Text('G'), Text('H'), Text('III'),
-              ],
-            ),
-          ],
-        ),
+    ));
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        defaultColumnWidth: const IntrinsicColumnWidth(),
+        children: const <TableRow>[
+          TableRow(children: <Widget>[Text('AAA'), Text('B'), Text('C')]),
+          TableRow(children: <Widget>[Text('D'), Text('E'), Text('FFFFFF')]),
+          TableRow(children: <Widget>[Text('G'), Text('H'), Text('III')]),
+        ],
       ),
-    );
+    ));
     final RenderBox boxA = tester.renderObject(find.text('AAA'));
     final RenderBox boxD = tester.renderObject(find.text('D'));
     final RenderBox boxG = tester.renderObject(find.text('G'));
@@ -623,84 +411,64 @@ void main() {
 
   testWidgets('Table widget - moving test', (WidgetTester tester) async {
     final List<BuildContext> contexts = <BuildContext>[];
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: <TableRow>[
-            TableRow(
-              key: const ValueKey<int>(1),
-              children: <Widget>[
-                StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setState) {
-                    contexts.add(context);
-                    return const Text('A');
-                  },
-                ),
-              ],
-            ),
-            const TableRow(
-              children: <Widget>[
-                Text('b'),
-              ],
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: <TableRow>[
+          TableRow(
+            key: const ValueKey<int>(1),
+            children: <Widget>[
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  contexts.add(context);
+                  return const Text('A');
+                },
+              ),
+            ],
+          ),
+          const TableRow(children: <Widget>[Text('b')]),
+        ],
       ),
-    );
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: <TableRow>[
-            const TableRow(
-              children: <Widget>[
-                Text('b'),
-              ],
-            ),
-            TableRow(
-              key: const ValueKey<int>(1),
-              children: <Widget>[
-                StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setState) {
-                    contexts.add(context);
-                    return const Text('A');
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
+    ));
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: <TableRow>[
+          const TableRow(children: <Widget>[Text('b')]),
+          TableRow(
+            key: const ValueKey<int>(1),
+            children: <Widget>[
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  contexts.add(context);
+                  return const Text('A');
+                },
+              ),
+            ],
+          ),
+        ],
       ),
-    );
+    ));
     expect(contexts.length, equals(2));
     expect(contexts[0], equals(contexts[1]));
   });
 
   testWidgets('Table widget - keyed rows', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: const <TableRow>[
-            TableRow(
-              key: ValueKey<int>(1),
-              children: <Widget>[
-                TestStatefulWidget(key: ValueKey<int>(11)),
-                TestStatefulWidget(key: ValueKey<int>(12)),
-              ],
-            ),
-            TableRow(
-              key: ValueKey<int>(2),
-              children: <Widget>[
-                TestStatefulWidget(key: ValueKey<int>(21)),
-                TestStatefulWidget(key: ValueKey<int>(22)),
-              ],
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: const <TableRow>[
+          TableRow(
+            key: ValueKey<int>(1),
+            children: <Widget>[TestStatefulWidget(key: ValueKey<int>(11)), TestStatefulWidget(key: ValueKey<int>(12))],
+          ),
+          TableRow(
+            key: ValueKey<int>(2),
+            children: <Widget>[TestStatefulWidget(key: ValueKey<int>(21)), TestStatefulWidget(key: ValueKey<int>(22))],
+          ),
+        ],
       ),
-    );
+    ));
 
     final TestStatefulWidgetState state11 = tester.state(find.byKey(const ValueKey<int>(11)));
     final TestStatefulWidgetState state12 = tester.state(find.byKey(const ValueKey<int>(12)));
@@ -712,22 +480,17 @@ void main() {
     expect(state21.mounted, isTrue);
     expect(state22.mounted, isTrue);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: const <TableRow>[
-            TableRow(
-              key: ValueKey<int>(2),
-              children: <Widget>[
-                TestStatefulWidget(key: ValueKey<int>(21)),
-                TestStatefulWidget(key: ValueKey<int>(22)),
-              ],
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: const <TableRow>[
+          TableRow(
+            key: ValueKey<int>(2),
+            children: <Widget>[TestStatefulWidget(key: ValueKey<int>(21)), TestStatefulWidget(key: ValueKey<int>(22))],
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(state11.mounted, isFalse);
     expect(state12.mounted, isFalse);
@@ -739,110 +502,96 @@ void main() {
     final GlobalKey key = GlobalKey();
     final Key tableKey = UniqueKey();
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Column(
-          children: <Widget> [
-            Expanded(
-              key: tableKey,
-              child: Table(
-                children: <TableRow>[
-                  TableRow(
-                    children: <Widget>[
-                      Container(key: const ValueKey<int>(1)),
-                      TestStatefulWidget(key: key),
-                      Container(key: const ValueKey<int>(2)),
-                    ],
-                  ),
-                ],
-              ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            key: tableKey,
+            child: Table(
+              children: <TableRow>[
+                TableRow(
+                  children: <Widget>[
+                    Container(key: const ValueKey<int>(1)),
+                    TestStatefulWidget(key: key),
+                    Container(key: const ValueKey<int>(2)),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ));
 
     final RenderTable table = tester.renderObject(find.byType(Table));
     expect(table.row(0).length, 3);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Column(
-          children: <Widget> [
-            Expanded(child: TestStatefulWidget(key: key)),
-            Expanded(
-              key: tableKey,
-              child: Table(
-                children: <TableRow>[
-                  TableRow(
-                    children: <Widget>[
-                      Container(key: const ValueKey<int>(1)),
-                      Container(key: const ValueKey<int>(2)),
-                    ],
-                  ),
-                ],
-              ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Column(
+        children: <Widget>[
+          Expanded(child: TestStatefulWidget(key: key)),
+          Expanded(
+            key: tableKey,
+            child: Table(
+              children: <TableRow>[
+                TableRow(
+                  children: <Widget>[Container(key: const ValueKey<int>(1)), Container(key: const ValueKey<int>(2))],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(tester.renderObject(find.byType(Table)), equals(table));
     expect(table.row(0).length, 2);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Column(
-          children: <Widget> [
-            Expanded(
-              key: tableKey,
-              child: Table(
-                children: <TableRow>[
-                  TableRow(
-                    children: <Widget>[
-                      Container(key: const ValueKey<int>(1)),
-                      TestStatefulWidget(key: key),
-                      Container(key: const ValueKey<int>(2)),
-                    ],
-                  ),
-                ],
-              ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            key: tableKey,
+            child: Table(
+              children: <TableRow>[
+                TableRow(
+                  children: <Widget>[
+                    Container(key: const ValueKey<int>(1)),
+                    TestStatefulWidget(key: key),
+                    Container(key: const ValueKey<int>(2)),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(tester.renderObject(find.byType(Table)), equals(table));
     expect(table.row(0).length, 3);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Column(
-          children: <Widget> [
-            Expanded(
-              key: tableKey,
-              child: Table(
-                children: <TableRow>[
-                  TableRow(
-                    children: <Widget>[
-                      Container(key: const ValueKey<int>(1)),
-                      Container(key: const ValueKey<int>(2)),
-                    ],
-                  ),
-                ],
-              ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            key: tableKey,
+            child: Table(
+              children: <TableRow>[
+                TableRow(
+                  children: <Widget>[Container(key: const ValueKey<int>(1)), Container(key: const ValueKey<int>(2))],
+                ),
+              ],
             ),
-            Expanded(child: TestStatefulWidget(key: key)),
-          ],
-        ),
+          ),
+          Expanded(child: TestStatefulWidget(key: key)),
+        ],
       ),
-    );
+    ));
 
     expect(tester.renderObject(find.byType(Table)), equals(table));
     expect(table.row(0).length, 2);
@@ -856,21 +605,9 @@ void main() {
         key: key0 = GlobalKey(),
         defaultColumnWidth: const IntrinsicColumnWidth(),
         children: const <TableRow>[
-          TableRow(
-            children: <Widget>[
-              Text('A'), Text('B'), Text('C'),
-            ],
-          ),
-          TableRow(
-            children: <Widget>[
-              Text('D'), Text('EEE'), Text('F'),
-            ],
-          ),
-          TableRow(
-            children: <Widget>[
-              Text('G'), Text('H'), Text('III'),
-            ],
-          ),
+          TableRow(children: <Widget>[Text('A'), Text('B'), Text('C')]),
+          TableRow(children: <Widget>[Text('D'), Text('EEE'), Text('F')]),
+          TableRow(children: <Widget>[Text('G'), Text('H'), Text('III')]),
         ],
       ),
     );
@@ -907,23 +644,27 @@ void main() {
   testWidgets(
     'Does not crash if a child RenderObject is replaced by another RenderObject of a different type',
     (WidgetTester tester) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Table(children: const <TableRow>[TableRow(children: <Widget>[TestChildWidget()])]),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Table(
+          children: const <TableRow>[
+            TableRow(children: <Widget>[TestChildWidget()]),
+          ],
         ),
-      );
+      ));
       expect(find.text('CRASHHH'), findsNothing);
 
       final TestChildState state = tester.state(find.byType(TestChildWidget));
       state.toggleMe();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Table(children: const <TableRow>[TableRow(children: <Widget>[TestChildWidget()])]),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Table(
+          children: const <TableRow>[
+            TableRow(children: <Widget>[TestChildWidget()]),
+          ],
         ),
-      );
+      ));
 
       // Should not crash.
       expect(find.text('CRASHHH'), findsOneWidget);
@@ -931,59 +672,42 @@ void main() {
   );
 
   testWidgets('Table widget - Default textBaseline is null', (WidgetTester tester) async {
-    expect(
-      () => Table(defaultVerticalAlignment: TableCellVerticalAlignment.baseline),
-      throwsA(
-        isAssertionError
-          .having((AssertionError error) => error.message, 'exception message', contains('baseline')),
-      ),
-    );
+    expect(() => Table(defaultVerticalAlignment: TableCellVerticalAlignment.baseline), throwsA(
+      isAssertionError.having((AssertionError error) => error.message, 'exception message', contains('baseline')),
+    ));
   });
 
-  testWidgets(
-    'Table widget requires all TableRows to have same number of children',
-    (WidgetTester tester) async {
-      FlutterError? error;
-      try {
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Table(
-              children: const <TableRow>[
-                TableRow(children: <Widget>[Text('Some Text')]),
-                TableRow(),
-              ],
-            ),
-          ),
-        );
-      } on FlutterError catch (e) {
-        error = e;
-      } finally {
-        expect(error, isNotNull);
-        expect(error!.toStringDeep(), contains('Table contains irregular row lengths.'));
-      }
-    },
-  );
+  testWidgets('Table widget requires all TableRows to have same number of children', (WidgetTester tester) async {
+    FlutterError? error;
+    try {
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Table(
+          children: const <TableRow>[
+            TableRow(children: <Widget>[Text('Some Text')]),
+            TableRow(),
+          ],
+        ),
+      ));
+    } on FlutterError catch (e) {
+      error = e;
+    } finally {
+      expect(error, isNotNull);
+      expect(error!.toStringDeep(), contains('Table contains irregular row lengths.'));
+    }
+  });
 
   testWidgets('Can replace child with a different RenderObject type', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/69395.
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(children: const <TableRow>[
-          TableRow(children: <Widget>[
-            TestChildWidget(),
-            TestChildWidget(),
-            TestChildWidget(),
-          ]),
-          TableRow(children: <Widget>[
-            TestChildWidget(),
-            TestChildWidget(),
-            TestChildWidget(),
-          ]),
-        ]),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Table(
+        children: const <TableRow>[
+          TableRow(children: <Widget>[TestChildWidget(), TestChildWidget(), TestChildWidget()]),
+          TableRow(children: <Widget>[TestChildWidget(), TestChildWidget(), TestChildWidget()]),
+        ],
       ),
-    );
+    ));
     final RenderTable table = tester.renderObject(find.byType(Table));
 
     expect(find.text('CRASHHH'), findsNothing);
@@ -1001,38 +725,33 @@ void main() {
     expect(table.column(2).last.runtimeType, isNot(toBeReplaced));
   });
 
-  testWidgets('Do not crash if a child that has not been layed out in a previous build is removed', (WidgetTester tester) async {
-    // Regression test for https://github.com/flutter/flutter/issues/60488.
-    Widget buildTable(Key key) {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: <TableRow>[
-            TableRow(
-              children: <Widget>[
-                KeyedSubtree(
-                  key: key,
-                  child: const Text('Hello'),
-                ),
-              ],
-            ),
-          ],
-        ),
+  testWidgets(
+    'Do not crash if a child that has not been layed out in a previous build is removed',
+    (WidgetTester tester) async {
+      // Regression test for https://github.com/flutter/flutter/issues/60488.
+      Widget buildTable(Key key) {
+        return Directionality(
+          textDirection: TextDirection.ltr,
+          child: Table(
+            children: <TableRow>[
+              TableRow(children: <Widget>[KeyedSubtree(key: key, child: const Text('Hello'))]),
+            ],
+          ),
+        );
+      }
+
+      await tester.pumpWidget(
+        buildTable(const ValueKey<int>(1)),
+        null,
+        EnginePhase.build, // Children are not layed out!
       );
-    }
 
-    await tester.pumpWidget(
-      buildTable(const ValueKey<int>(1)),
-      null, EnginePhase.build, // Children are not layed out!
-    );
+      await tester.pumpWidget(buildTable(const ValueKey<int>(2)));
 
-    await tester.pumpWidget(
-      buildTable(const ValueKey<int>(2)),
-    );
-
-    expect(tester.takeException(), isNull);
-    expect(find.text('Hello'), findsOneWidget);
-  });
+      expect(tester.takeException(), isNull);
+      expect(find.text('Hello'), findsOneWidget);
+    },
+  );
 
   testWidgets('TableRow with no children throws an error message', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/119541.
@@ -1044,11 +763,7 @@ void main() {
         textDirection: TextDirection.ltr,
         child: Table(
           children: const <TableRow>[
-            TableRow(
-              children: <Widget>[
-                Text('A'),
-              ],
-            ),
+            TableRow(children: <Widget>[Text('A')]),
           ],
         ),
       ));
@@ -1060,14 +775,9 @@ void main() {
 
     // Test TableRow with no children.
     try {
-      await tester.pumpWidget(Directionality(
-        textDirection: TextDirection.ltr,
-        child: Table(
-          children: const <TableRow>[
-            TableRow(),
-          ],
-        ),
-      ));
+      await tester.pumpWidget(
+        Directionality(textDirection: TextDirection.ltr, child: Table(children: const <TableRow>[TableRow()])),
+      );
     } on FlutterError catch (e) {
       result = e.toString();
     }

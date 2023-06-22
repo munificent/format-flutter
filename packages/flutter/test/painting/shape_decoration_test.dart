@@ -19,7 +19,10 @@ void main() {
     const Color colorG = Color(0xff00ff00);
     const Gradient gradient = LinearGradient(colors: <Color>[colorR, colorG]);
     expect(const ShapeDecoration(shape: Border()), const ShapeDecoration(shape: Border()));
-    expect(() => ShapeDecoration(color: colorR, gradient: nonconst(gradient), shape: const Border()), throwsAssertionError);
+    expect(
+      () => ShapeDecoration(color: colorR, gradient: nonconst(gradient), shape: const Border()),
+      throwsAssertionError,
+    );
     expect(
       ShapeDecoration.fromBoxDecoration(const BoxDecoration(shape: BoxShape.circle)),
       const ShapeDecoration(shape: CircleBorder()),
@@ -79,36 +82,35 @@ void main() {
     final List<int> log = <int>[];
     final ShapeDecoration decoration = ShapeDecoration(
       shape: const CircleBorder(),
-      image: DecorationImage(
-        image: TestImageProvider(image),
-        alignment: AlignmentDirectional.bottomEnd,
-      ),
+      image: DecorationImage(image: TestImageProvider(image), alignment: AlignmentDirectional.bottomEnd),
     );
-    final BoxPainter painter = decoration.createBoxPainter(() { log.add(0); });
-    expect((Canvas canvas) => painter.paint(canvas, Offset.zero, const ImageConfiguration(size: Size(100.0, 100.0))), paintsAssertion);
+    final BoxPainter painter = decoration.createBoxPainter(() {
+      log.add(0);
+    });
+    expect(
+      (Canvas canvas) => painter.paint(canvas, Offset.zero, const ImageConfiguration(size: Size(100.0, 100.0))),
+      paintsAssertion,
+    );
     expect(
       (Canvas canvas) {
         return painter.paint(
           canvas,
           const Offset(20.0, -40.0),
-          const ImageConfiguration(
-            size: Size(1000.0, 1000.0),
-            textDirection: TextDirection.rtl,
-          ),
+          const ImageConfiguration(size: Size(1000.0, 1000.0), textDirection: TextDirection.rtl),
         );
       },
       paints
-        ..drawImageRect(source: const Rect.fromLTRB(0.0, 0.0, 100.0, 200.0), destination: const Rect.fromLTRB(20.0, 1000.0 - 40.0 - 200.0, 20.0 + 100.0, 1000.0 - 40.0)),
+        ..drawImageRect(
+          source: const Rect.fromLTRB(0.0, 0.0, 100.0, 200.0),
+          destination: const Rect.fromLTRB(20.0, 1000.0 - 40.0 - 200.0, 20.0 + 100.0, 1000.0 - 40.0),
+        ),
     );
     expect(
       (Canvas canvas) {
         return painter.paint(
           canvas,
           Offset.zero,
-          const ImageConfiguration(
-            size: Size(100.0, 200.0),
-            textDirection: TextDirection.ltr,
-          ),
+          const ImageConfiguration(size: Size(100.0, 200.0), textDirection: TextDirection.ltr),
         );
       },
       isNot(paints..image()), // we always use drawImageRect
@@ -121,8 +123,8 @@ void main() {
     const Rect rect = Rect.fromLTWH(0.0, 0.0, 100.0, 20.0);
     final Path clipPath = decoration.getClipPath(rect, TextDirection.ltr);
     final Matcher isLookLikeExpectedPath = isPathThat(
-      includes: const <Offset>[ Offset(50.0, 10.0), ],
-      excludes: const <Offset>[ Offset(1.0, 1.0), Offset(30.0, 10.0), Offset(99.0, 19.0), ],
+      includes: const <Offset>[Offset(50.0, 10.0)],
+      excludes: const <Offset>[Offset(1.0, 1.0), Offset(30.0, 10.0), Offset(99.0, 19.0)],
     );
     expect(clipPath, isLookLikeExpectedPath);
   });
@@ -131,8 +133,8 @@ void main() {
     const Rect rect = Rect.fromLTWH(0.0, 0.0, 100.0, 50.0);
     final Path clipPath = decoration.getClipPath(rect, TextDirection.ltr);
     final Matcher isLookLikeExpectedPath = isPathThat(
-      includes: const <Offset>[ Offset(50.0, 10.0), ],
-      excludes: const <Offset>[ Offset(1.0, 1.0), Offset(15.0, 1.0), Offset(99.0, 19.0), ],
+      includes: const <Offset>[Offset(50.0, 10.0)],
+      excludes: const <Offset>[Offset(1.0, 1.0), Offset(15.0, 1.0), Offset(99.0, 19.0)],
     );
     expect(clipPath, isLookLikeExpectedPath);
   });
@@ -150,8 +152,6 @@ class TestImageProvider extends ImageProvider<TestImageProvider> {
 
   @override
   ImageStreamCompleter load(TestImageProvider key, DecoderCallback decode) {
-    return OneFrameImageStreamCompleter(
-      SynchronousFuture<ImageInfo>(ImageInfo(image: image)),
-    );
+    return OneFrameImageStreamCompleter(SynchronousFuture<ImageInfo>(ImageInfo(image: image)));
   }
 }

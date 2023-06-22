@@ -169,21 +169,12 @@ void main() {
     final GlobalKey localizationsAvailable = GlobalKey();
 
     await tester.pumpWidget(
-      Container(
-        key: noLocalizationsAvailable,
-        child: MaterialApp(
-          home: Container(
-            key: localizationsAvailable,
-          ),
-        ),
-      ),
+      Container(key: noLocalizationsAvailable, child: MaterialApp(home: Container(key: localizationsAvailable))),
     );
 
-    expect(() => MaterialLocalizations.of(noLocalizationsAvailable.currentContext!), throwsA(isAssertionError.having(
-      (AssertionError e) => e.message,
-      'message',
-      contains('No MaterialLocalizations found'),
-    )));
+    expect(() => MaterialLocalizations.of(noLocalizationsAvailable.currentContext!), throwsA(
+      isAssertionError.having((AssertionError e) => e.message, 'message', contains('No MaterialLocalizations found')),
+    ));
 
     expect(MaterialLocalizations.of(localizationsAvailable.currentContext!), isA<MaterialLocalizations>());
   });
@@ -192,14 +183,7 @@ void main() {
     // This is a regression test for https://github.com/flutter/flutter/issues/126397.
     final GlobalKey localizations = GlobalKey();
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          key: localizations,
-          child: const SizedBox.expand(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(home: Material(key: localizations, child: const SizedBox.expand())));
 
     final MaterialLocalizations materialLocalizations = MaterialLocalizations.of(localizations.currentContext!);
     expect(materialLocalizations.parseCompactDate('10/05/2023'), isNotNull);

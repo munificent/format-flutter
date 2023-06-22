@@ -9,15 +9,13 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('Does not animate if already at target position', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          controller: controller,
-          children: List<Widget>.generate(80, (int i) => Text('$i', textDirection: TextDirection.ltr)),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        controller: controller,
+        children: List<Widget>.generate(80, (int i) => Text('$i', textDirection: TextDirection.ltr)),
       ),
-    );
+    ));
 
     expectNoAnimation();
     final double currentPosition = controller.position.pixels;
@@ -29,15 +27,13 @@ void main() {
 
   testWidgets('Does not animate if already at target position within tolerance', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          controller: controller,
-          children: List<Widget>.generate(80, (int i) => Text('$i', textDirection: TextDirection.ltr)),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        controller: controller,
+        children: List<Widget>.generate(80, (int i) => Text('$i', textDirection: TextDirection.ltr)),
       ),
-    );
+    ));
 
     expectNoAnimation();
 
@@ -52,15 +48,13 @@ void main() {
 
   testWidgets('Animates if going to a position outside of tolerance', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          controller: controller,
-          children: List<Widget>.generate(80, (int i) => Text('$i', textDirection: TextDirection.ltr)),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        controller: controller,
+        children: List<Widget>.generate(80, (int i) => Text('$i', textDirection: TextDirection.ltr)),
       ),
-    );
+    ));
 
     expectNoAnimation();
 

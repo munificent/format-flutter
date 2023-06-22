@@ -26,46 +26,42 @@ void main() {
     //                                                           |
     //                                     --------------------------------------- 'ground'
     final SemanticsTester semantics = SemanticsTester(tester);
-    await tester.pumpWidget(const MaterialApp(
-      home: Column(
-        children: <Widget>[
-          Text('ground'),
-          Card(
-            elevation: 10.0,
-            child: Column(
-              children: <Widget>[
-                Text('absolute elevation: 10'),
-                PhysicalModel(
-                  elevation: 5.0,
-                  color: Colors.black,
-                  child: Column(
-                    children: <Widget>[
-                      Text('absolute elevation: 15'),
-                      Card(
-                        elevation: 7.0,
-                        child: Column(
-                          children: <Widget>[
-                            Text('absolute elevation: 22'),
-                            Card(
-                              elevation: 8.0,
-                              child: Text('absolute elevation: 30'),
-                            ),
-                          ],
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Column(
+          children: <Widget>[
+            Text('ground'),
+            Card(
+              elevation: 10.0,
+              child: Column(
+                children: <Widget>[
+                  Text('absolute elevation: 10'),
+                  PhysicalModel(
+                    elevation: 5.0,
+                    color: Colors.black,
+                    child: Column(
+                      children: <Widget>[
+                        Text('absolute elevation: 15'),
+                        Card(
+                          elevation: 7.0,
+                          child: Column(
+                            children: <Widget>[
+                              Text('absolute elevation: 22'),
+                              Card(elevation: 8.0, child: Text('absolute elevation: 30')),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Card(
-                  elevation: 15.0,
-                  child: Text('absolute elevation: 25'),
-                ),
-              ],
+                  Card(elevation: 15.0, child: Text('absolute elevation: 25')),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
 
     final SemanticsNode ground = tester.getSemantics(find.text('ground'));
     expect(ground.thickness, 0.0);
@@ -102,46 +98,42 @@ void main() {
     // is reversed
 
     final SemanticsTester semantics = SemanticsTester(tester);
-    await tester.pumpWidget(const MaterialApp(
-      home: Column(
-        children: <Widget>[
-          Text('ground'),
-          Card(
-            elevation: 10.0,
-            child: Column(
-              children: <Widget>[
-                Card(
-                  elevation: 15.0,
-                  child: Text('absolute elevation: 25'),
-                ),
-                PhysicalModel(
-                  elevation: 5.0,
-                  color: Colors.black,
-                  child: Column(
-                    children: <Widget>[
-                      Text('absolute elevation: 15'),
-                      Card(
-                        elevation: 7.0,
-                        child: Column(
-                          children: <Widget>[
-                            Text('absolute elevation: 22'),
-                            Card(
-                              elevation: 8.0,
-                              child: Text('absolute elevation: 30'),
-                            ),
-                          ],
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Column(
+          children: <Widget>[
+            Text('ground'),
+            Card(
+              elevation: 10.0,
+              child: Column(
+                children: <Widget>[
+                  Card(elevation: 15.0, child: Text('absolute elevation: 25')),
+                  PhysicalModel(
+                    elevation: 5.0,
+                    color: Colors.black,
+                    child: Column(
+                      children: <Widget>[
+                        Text('absolute elevation: 15'),
+                        Card(
+                          elevation: 7.0,
+                          child: Column(
+                            children: <Widget>[
+                              Text('absolute elevation: 22'),
+                              Card(elevation: 8.0, child: Text('absolute elevation: 30')),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Text('absolute elevation: 10'),
-              ],
+                  Text('absolute elevation: 10'),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
 
     final SemanticsNode ground = tester.getSemantics(find.text('ground'));
     expect(ground.thickness, 0.0);
@@ -176,14 +168,7 @@ void main() {
   testWidgets('single node thickness', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
-    await tester.pumpWidget(const MaterialApp(
-        home: Center(
-            child: Material(
-              elevation: 24.0,
-              child: Text('Hello'),
-            ),
-        ),
-    ));
+    await tester.pumpWidget(const MaterialApp(home: Center(child: Material(elevation: 24.0, child: Text('Hello')))));
 
     final SemanticsNode node = tester.getSemantics(find.text('Hello'));
     expect(node.thickness, 0.0);
@@ -197,33 +182,26 @@ void main() {
     final SemanticsTester semantics = SemanticsTester(tester);
 
     await tester.pumpWidget(MaterialApp(
-        home: Card(
-          elevation: 10.0,
-          child: Column(
-            children: <Widget>[
-              const Text('abs. elevation: 10.0'),
-              MergeSemantics(
-                child: Semantics(
-                  explicitChildNodes: true, // just to be sure that it's going to be an explicit merge
-                  child: const Column(
-                    children: <Widget>[
-                      Card(
-                        elevation: 15.0,
-                        child: Text('abs. elevation 25.0'),
-                      ),
-                      Card(
-                        elevation: 5.0,
-                        child: Text('abs. elevation 15.0'),
-                      ),
-                    ],
-                  ),
+      home: Card(
+        elevation: 10.0,
+        child: Column(
+          children: <Widget>[
+            const Text('abs. elevation: 10.0'),
+            MergeSemantics(
+              child: Semantics(
+                explicitChildNodes: true, // just to be sure that it's going to be an explicit merge
+                child: const Column(
+                  children: <Widget>[
+                    Card(elevation: 15.0, child: Text('abs. elevation 25.0')),
+                    Card(elevation: 5.0, child: Text('abs. elevation 15.0')),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     ));
-
 
     final SemanticsNode elevation10 = tester.getSemantics(find.text('abs. elevation: 10.0'));
     expect(elevation10.thickness, 10.0);
@@ -251,34 +229,26 @@ void main() {
     final SemanticsTester semantics = SemanticsTester(tester);
 
     await tester.pumpWidget(MaterialApp(
-        home: Card(
-            elevation: 10.0,
-            child: Column(
-              children: <Widget>[
-                const Text('abs. elevation: 10.0'),
-                MergeSemantics(
-                  child: Semantics(
-                    explicitChildNodes: true, // just to be sure that it's going to be an explicit merge
-                    child: const Column(
-                      children: <Widget>[
-                        Card(
-                          elevation: 5.0,
-                          child: Text('abs. elevation 15.0'),
-                        ),
-                        Card(
-                          elevation: 15.0,
-                          child: Text('abs. elevation 25.0'),
-                        ),
-                      ],
-
-                    ),
-                  ),
+      home: Card(
+        elevation: 10.0,
+        child: Column(
+          children: <Widget>[
+            const Text('abs. elevation: 10.0'),
+            MergeSemantics(
+              child: Semantics(
+                explicitChildNodes: true, // just to be sure that it's going to be an explicit merge
+                child: const Column(
+                  children: <Widget>[
+                    Card(elevation: 5.0, child: Text('abs. elevation 15.0')),
+                    Card(elevation: 15.0, child: Text('abs. elevation 25.0')),
+                  ],
                 ),
-              ],
+              ),
             ),
+          ],
         ),
+      ),
     ));
-
 
     final SemanticsNode elevation10 = tester.getSemantics(find.text('abs. elevation: 10.0'));
     expect(elevation10.thickness, 10.0);

@@ -29,16 +29,7 @@ void main() {
 
     await tester.pumpWidget(Theme(
       data: theme,
-      child: Material(
-        child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: 2,
-            onChanged: log.add,
-          ),
-        ),
-      ),
+      child: Material(child: Center(child: Radio<int>(key: key, value: 1, groupValue: 2, onChanged: log.add))),
     ));
 
     await tester.tap(find.byKey(key));
@@ -50,13 +41,7 @@ void main() {
       data: theme,
       child: Material(
         child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: 1,
-            onChanged: log.add,
-            activeColor: Colors.green[500],
-          ),
+          child: Radio<int>(key: key, value: 1, groupValue: 1, onChanged: log.add, activeColor: Colors.green[500]),
         ),
       ),
     ));
@@ -67,16 +52,7 @@ void main() {
 
     await tester.pumpWidget(Theme(
       data: theme,
-      child: Material(
-        child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: 2,
-            onChanged: null,
-          ),
-        ),
-      ),
+      child: Material(child: Center(child: Radio<int>(key: key, value: 1, groupValue: 2, onChanged: null))),
     ));
 
     await tester.tap(find.byKey(key));
@@ -91,15 +67,7 @@ void main() {
     await tester.pumpWidget(Theme(
       data: theme,
       child: Material(
-        child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: 2,
-            onChanged: log.add,
-            toggleable: true,
-          ),
-        ),
+        child: Center(child: Radio<int>(key: key, value: 1, groupValue: 2, onChanged: log.add, toggleable: true)),
       ),
     ));
 
@@ -111,15 +79,7 @@ void main() {
     await tester.pumpWidget(Theme(
       data: theme,
       child: Material(
-        child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: 1,
-            onChanged: log.add,
-            toggleable: true,
-          ),
-        ),
+        child: Center(child: Radio<int>(key: key, value: 1, groupValue: 1, onChanged: log.add, toggleable: true)),
       ),
     ));
 
@@ -131,15 +91,7 @@ void main() {
     await tester.pumpWidget(Theme(
       data: theme,
       child: Material(
-        child: Center(
-          child: Radio<int>(
-            key: key,
-            value: 1,
-            groupValue: null,
-            onChanged: log.add,
-            toggleable: true,
-          ),
-        ),
+        child: Center(child: Radio<int>(key: key, value: 1, groupValue: null, onChanged: log.add, toggleable: true)),
       ),
     ));
 
@@ -150,46 +102,28 @@ void main() {
 
   testWidgets('Radio size is configurable by ThemeData.materialTapTargetSize', (WidgetTester tester) async {
     final Key key1 = UniqueKey();
-    await tester.pumpWidget(
-      Theme(
-        data: theme.copyWith(materialTapTargetSize: MaterialTapTargetSize.padded),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Material(
-            child: Center(
-              child: Radio<bool>(
-                key: key1,
-                groupValue: true,
-                value: true,
-                onChanged: (bool? newValue) { },
-              ),
-            ),
-          ),
+    await tester.pumpWidget(Theme(
+      data: theme.copyWith(materialTapTargetSize: MaterialTapTargetSize.padded),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Material(
+          child: Center(child: Radio<bool>(key: key1, groupValue: true, value: true, onChanged: (bool? newValue) {})),
         ),
       ),
-    );
+    ));
 
     expect(tester.getSize(find.byKey(key1)), const Size(48.0, 48.0));
 
     final Key key2 = UniqueKey();
-    await tester.pumpWidget(
-      Theme(
-        data: theme.copyWith(materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Material(
-            child: Center(
-              child: Radio<bool>(
-                key: key2,
-                groupValue: true,
-                value: true,
-                onChanged: (bool? newValue) { },
-              ),
-            ),
-          ),
+    await tester.pumpWidget(Theme(
+      data: theme.copyWith(materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Material(
+          child: Center(child: Radio<bool>(key: key2, groupValue: true, value: true, onChanged: (bool? newValue) {})),
         ),
       ),
-    );
+    ));
 
     expect(tester.getSize(find.byKey(key2)), const Size(40.0, 40.0));
   });
@@ -197,51 +131,31 @@ void main() {
   testWidgets('Radio selected semantics - platform adaptive', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
-    await tester.pumpWidget(Theme(
-      data: theme,
-      child: Material(
-        child: Radio<int>(
-          value: 1,
-          groupValue: 1,
-          onChanged: (int? i) {},
-        ),
-      ),
-    ));
-    final bool isApple = defaultTargetPlatform == TargetPlatform.iOS ||
-                         defaultTargetPlatform == TargetPlatform.macOS;
-    expect(
-      semantics,
-      includesNodeWith(
-        flags: <SemanticsFlag>[
-          SemanticsFlag.isInMutuallyExclusiveGroup,
-          SemanticsFlag.hasCheckedState,
-          SemanticsFlag.hasEnabledState,
-          SemanticsFlag.isEnabled,
-          SemanticsFlag.isFocusable,
-          SemanticsFlag.isChecked,
-          if (isApple) SemanticsFlag.isSelected,
-        ],
-        actions: <SemanticsAction>[
-          SemanticsAction.tap,
-        ],
-      ),
+    await tester.pumpWidget(
+      Theme(data: theme, child: Material(child: Radio<int>(value: 1, groupValue: 1, onChanged: (int? i) {}))),
     );
+    final bool isApple = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS;
+    expect(semantics, includesNodeWith(
+      flags: <SemanticsFlag>[
+        SemanticsFlag.isInMutuallyExclusiveGroup,
+        SemanticsFlag.hasCheckedState,
+        SemanticsFlag.hasEnabledState,
+        SemanticsFlag.isEnabled,
+        SemanticsFlag.isFocusable,
+        SemanticsFlag.isChecked,
+        if (isApple) SemanticsFlag.isSelected,
+      ],
+      actions: <SemanticsAction>[SemanticsAction.tap],
+    ));
     semantics.dispose();
   }, variant: TargetPlatformVariant.all());
 
   testWidgets('Radio semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
-    await tester.pumpWidget(Theme(
-      data: theme,
-      child: Material(
-        child: Radio<int>(
-          value: 1,
-          groupValue: 2,
-          onChanged: (int? i) { },
-        ),
-      ),
-    ));
+    await tester.pumpWidget(
+      Theme(data: theme, child: Material(child: Radio<int>(value: 1, groupValue: 2, onChanged: (int? i) {}))),
+    );
 
     expect(semantics, hasSemantics(TestSemantics.root(
       children: <TestSemantics>[
@@ -254,23 +168,14 @@ void main() {
             SemanticsFlag.isEnabled,
             SemanticsFlag.isFocusable,
           ],
-          actions: <SemanticsAction>[
-            SemanticsAction.tap,
-          ],
+          actions: <SemanticsAction>[SemanticsAction.tap],
         ),
       ],
     ), ignoreRect: true, ignoreTransform: true));
 
-    await tester.pumpWidget(Theme(
-      data: theme,
-      child: Material(
-        child: Radio<int>(
-          value: 2,
-          groupValue: 2,
-          onChanged: (int? i) { },
-        ),
-      ),
-    ));
+    await tester.pumpWidget(
+      Theme(data: theme, child: Material(child: Radio<int>(value: 2, groupValue: 2, onChanged: (int? i) {}))),
+    );
 
     expect(semantics, hasSemantics(TestSemantics.root(
       children: <TestSemantics>[
@@ -284,23 +189,14 @@ void main() {
             SemanticsFlag.isEnabled,
             SemanticsFlag.isFocusable,
           ],
-          actions: <SemanticsAction>[
-            SemanticsAction.tap,
-          ],
+          actions: <SemanticsAction>[SemanticsAction.tap],
         ),
       ],
     ), ignoreRect: true, ignoreTransform: true));
 
-    await tester.pumpWidget(Theme(
-      data: theme,
-      child: const Material(
-        child: Radio<int>(
-          value: 1,
-          groupValue: 2,
-          onChanged: null,
-        ),
-      ),
-    ));
+    await tester.pumpWidget(
+      Theme(data: theme, child: const Material(child: Radio<int>(value: 1, groupValue: 2, onChanged: null))),
+    );
 
     expect(semantics, hasSemantics(TestSemantics.root(
       children: <TestSemantics>[
@@ -310,7 +206,7 @@ void main() {
             SemanticsFlag.hasCheckedState,
             SemanticsFlag.hasEnabledState,
             SemanticsFlag.isInMutuallyExclusiveGroup,
-            SemanticsFlag.isFocusable,  // This flag is delayed by 1 frame.
+            SemanticsFlag.isFocusable, // This flag is delayed by 1 frame.
           ],
         ),
       ],
@@ -332,16 +228,9 @@ void main() {
       ],
     ), ignoreRect: true, ignoreTransform: true));
 
-    await tester.pumpWidget(Theme(
-      data: theme,
-      child: const Material(
-        child: Radio<int>(
-          value: 2,
-          groupValue: 2,
-          onChanged: null,
-        ),
-      ),
-    ));
+    await tester.pumpWidget(
+      Theme(data: theme, child: const Material(child: Radio<int>(value: 2, groupValue: 2, onChanged: null))),
+    );
 
     expect(semantics, hasSemantics(TestSemantics.root(
       children: <TestSemantics>[
@@ -365,9 +254,12 @@ void main() {
     final Key key = UniqueKey();
     dynamic semanticEvent;
     int? radioValue = 2;
-    tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(SystemChannels.accessibility, (dynamic message) async {
-      semanticEvent = message;
-    });
+    tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(
+      SystemChannels.accessibility,
+      (dynamic message) async {
+        semanticEvent = message;
+      },
+    );
 
     await tester.pumpWidget(Theme(
       data: theme,
@@ -412,12 +304,7 @@ void main() {
               width: 100,
               height: 100,
               color: Colors.white,
-              child: Radio<int>(
-                key: radioKey,
-                value: 1,
-                groupValue: 1,
-                onChanged: (int? value) { },
-              ),
+              child: Radio<int>(key: radioKey, value: 1, groupValue: 1, onChanged: (int? value) {}),
             ),
           ),
         ),
@@ -426,10 +313,7 @@ void main() {
 
     await tester.press(find.byKey(radioKey));
     await tester.pumpAndSettle();
-    await expectLater(
-      find.byKey(painterKey),
-      matchesGoldenFile('radio.ink_ripple.png'),
-    );
+    await expectLater(find.byKey(painterKey), matchesGoldenFile('radio.ink_ripple.png'));
   });
 
   testWidgets('Radio with splash radius set', (WidgetTester tester) async {
@@ -440,31 +324,32 @@ void main() {
         theme: theme,
         home: Material(
           child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: Colors.white,
-                child: Radio<int>(
-                  value: 0,
-                  onChanged: (int? newValue) {},
-                  focusColor: Colors.orange[500],
-                  autofocus: true,
-                  groupValue: 0,
-                  splashRadius: splashRadius,
-                ),
-              );
-            }),
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.white,
+                  child: Radio<int>(
+                    value: 0,
+                    onChanged: (int? newValue) {},
+                    focusColor: Colors.orange[500],
+                    autofocus: true,
+                    groupValue: 0,
+                    splashRadius: splashRadius,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       );
     }
+
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
     expect(
-      Material.of(tester.element(
-        find.byWidgetPredicate((Widget widget) => widget is Radio<int>),
-      )),
+      Material.of(tester.element(find.byWidgetPredicate((Widget widget) => widget is Radio<int>))),
       paints..circle(color: Colors.orange[500], radius: splashRadius),
     );
   });
@@ -480,30 +365,35 @@ void main() {
         theme: theme,
         home: Material(
           child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: Colors.white,
-                child: Radio<int>(
-                  key: radioKey,
-                  value: 0,
-                  onChanged: enabled ? (int? newValue) {
-                    setState(() {
-                      groupValue = newValue;
-                    });
-                  } : null,
-                  focusColor: Colors.orange[500],
-                  autofocus: true,
-                  focusNode: focusNode,
-                  groupValue: groupValue,
-                ),
-              );
-            }),
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.white,
+                  child: Radio<int>(
+                    key: radioKey,
+                    value: 0,
+                    onChanged: enabled
+                        ? (int? newValue) {
+                            setState(() {
+                              groupValue = newValue;
+                            });
+                          }
+                        : null,
+                    focusColor: Colors.orange[500],
+                    autofocus: true,
+                    focusNode: focusNode,
+                    groupValue: groupValue,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       );
     }
+
     await tester.pumpWidget(buildApp());
 
     await tester.pumpAndSettle();
@@ -511,10 +401,7 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       paints
-        ..rect(
-          color: const Color(0xffffffff),
-          rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-        )
+        ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
         ..circle(color: Colors.orange[500])
         ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xff2196f3))
         ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xff2196f3)),
@@ -528,14 +415,14 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       theme.useMaterial3
-        ? (paints..rect()..circle(color: Colors.orange[500])..circle(color: theme.colorScheme.onSurface))
-        : (paints
-          ..rect(
-              color: const Color(0xffffffff),
-              rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-            )
-          ..circle(color: Colors.orange[500])
-          ..circle(color: const Color(0x8a000000), style: PaintingStyle.stroke, strokeWidth: 2.0)),
+          ? (paints
+              ..rect()
+              ..circle(color: Colors.orange[500])
+              ..circle(color: theme.colorScheme.onSurface))
+          : (paints
+              ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
+              ..circle(color: Colors.orange[500])
+              ..circle(color: const Color(0x8a000000), style: PaintingStyle.stroke, strokeWidth: 2.0)),
     );
 
     // Check when the radio is selected, but disabled.
@@ -546,10 +433,7 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
+        ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
         ..circle(color: material3 ? theme.colorScheme.onSurface.withOpacity(0.38) : const Color(0x61000000))
         ..circle(color: material3 ? theme.colorScheme.onSurface.withOpacity(0.38) : const Color(0x61000000)),
     );
@@ -565,28 +449,33 @@ void main() {
         theme: theme,
         home: Material(
           child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: Colors.white,
-                child: Radio<int>(
-                  key: radioKey,
-                  value: 0,
-                  onChanged: enabled ? (int? newValue) {
-                    setState(() {
-                      groupValue = newValue;
-                    });
-                  } : null,
-                  hoverColor: Colors.orange[500],
-                  groupValue: groupValue,
-                ),
-              );
-            }),
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.white,
+                  child: Radio<int>(
+                    key: radioKey,
+                    value: 0,
+                    onChanged: enabled
+                        ? (int? newValue) {
+                            setState(() {
+                              groupValue = newValue;
+                            });
+                          }
+                        : null,
+                    hoverColor: Colors.orange[500],
+                    groupValue: groupValue,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       );
     }
+
     await tester.pumpWidget(buildApp());
 
     await tester.pump();
@@ -594,10 +483,7 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
+        ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
         ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xff2196f3))
         ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xff2196f3)),
     );
@@ -614,12 +500,13 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
+        ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
         ..circle(color: Colors.orange[500])
-        ..circle(color: theme.useMaterial3 ? theme.colorScheme.onSurface : const Color(0x8a000000), style: PaintingStyle.stroke, strokeWidth: 2.0),
+        ..circle(
+          color: theme.useMaterial3 ? theme.colorScheme.onSurface : const Color(0x8a000000),
+          style: PaintingStyle.stroke,
+          strokeWidth: 2.0,
+        ),
     );
 
     // Check when the radio is selected, but disabled.
@@ -630,10 +517,7 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
+        ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
         ..circle(color: material3 ? theme.colorScheme.onSurface.withOpacity(0.38) : const Color(0x61000000))
         ..circle(color: material3 ? theme.colorScheme.onSurface.withOpacity(0.38) : const Color(0x61000000)),
     );
@@ -651,52 +535,60 @@ void main() {
         theme: theme,
         home: Material(
           child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 200,
-                height: 100,
-                color: Colors.white,
-                child: Row(
-                  children: <Widget>[
-                    Radio<int>(
-                      key: radioKey0,
-                      value: 0,
-                      onChanged: enabled ? (int? newValue) {
-                        setState(() {
-                          groupValue = newValue;
-                        });
-                      } : null,
-                      hoverColor: Colors.orange[500],
-                      groupValue: groupValue,
-                      autofocus: true,
-                    ),
-                    Radio<int>(
-                      key: radioKey1,
-                      value: 1,
-                      onChanged: enabled ? (int? newValue) {
-                        setState(() {
-                          groupValue = newValue;
-                        });
-                      } : null,
-                      hoverColor: Colors.orange[500],
-                      groupValue: groupValue,
-                    ),
-                    Radio<int>(
-                      key: radioKey2,
-                      value: 2,
-                      onChanged: enabled ? (int? newValue) {
-                        setState(() {
-                          groupValue = newValue;
-                        });
-                      } : null,
-                      hoverColor: Colors.orange[500],
-                      groupValue: groupValue,
-                      focusNode: focusNode2,
-                    ),
-                  ],
-                ),
-              );
-            }),
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: 200,
+                  height: 100,
+                  color: Colors.white,
+                  child: Row(
+                    children: <Widget>[
+                      Radio<int>(
+                        key: radioKey0,
+                        value: 0,
+                        onChanged: enabled
+                            ? (int? newValue) {
+                                setState(() {
+                                  groupValue = newValue;
+                                });
+                              }
+                            : null,
+                        hoverColor: Colors.orange[500],
+                        groupValue: groupValue,
+                        autofocus: true,
+                      ),
+                      Radio<int>(
+                        key: radioKey1,
+                        value: 1,
+                        onChanged: enabled
+                            ? (int? newValue) {
+                                setState(() {
+                                  groupValue = newValue;
+                                });
+                              }
+                            : null,
+                        hoverColor: Colors.orange[500],
+                        groupValue: groupValue,
+                      ),
+                      Radio<int>(
+                        key: radioKey2,
+                        value: 2,
+                        onChanged: enabled
+                            ? (int? newValue) {
+                                setState(() {
+                                  groupValue = newValue;
+                                });
+                              }
+                            : null,
+                        hoverColor: Colors.orange[500],
+                        groupValue: groupValue,
+                        focusNode: focusNode2,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
       );
@@ -721,22 +613,15 @@ void main() {
   testWidgets('Radio responds to density changes.', (WidgetTester tester) async {
     const Key key = Key('test');
     Future<void> buildTest(VisualDensity visualDensity) async {
-      return tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Material(
-            child: Center(
-              child: Radio<int>(
-                visualDensity: visualDensity,
-                key: key,
-                onChanged: (int? value) {},
-                value: 0,
-                groupValue: 0,
-              ),
-            ),
+      return tester.pumpWidget(MaterialApp(
+        theme: theme,
+        home: Material(
+          child: Center(
+            child:
+                Radio<int>(visualDensity: visualDensity, key: key, onChanged: (int? value) {}, value: 0, groupValue: 0),
           ),
         ),
-      );
+      ));
     }
 
     await buildTest(VisualDensity.standard);
@@ -760,28 +645,26 @@ void main() {
   testWidgets('Radio changes mouse cursor when hovered', (WidgetTester tester) async {
     const Key key = ValueKey<int>(1);
     // Test Radio() constructor
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: Scaffold(
-          body: Align(
-            alignment: Alignment.topLeft,
-            child: Material(
-              child: MouseRegion(
-                cursor: SystemMouseCursors.forbidden,
-                child: Radio<int>(
-                  key: key,
-                  mouseCursor: SystemMouseCursors.text,
-                  value: 1,
-                  onChanged: (int? v) {},
-                  groupValue: 2,
-                ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: Scaffold(
+        body: Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            child: MouseRegion(
+              cursor: SystemMouseCursors.forbidden,
+              child: Radio<int>(
+                key: key,
+                mouseCursor: SystemMouseCursors.text,
+                value: 1,
+                onChanged: (int? v) {},
+                groupValue: 2,
               ),
             ),
           ),
         ),
       ),
-    );
+    ));
 
     final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse, pointer: 1);
     await gesture.addPointer(location: tester.getCenter(find.byKey(key)));
@@ -790,52 +673,39 @@ void main() {
 
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.text);
 
-
     // Test default cursor
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: Scaffold(
-          body: Align(
-            alignment: Alignment.topLeft,
-            child: Material(
-              child: MouseRegion(
-                cursor: SystemMouseCursors.forbidden,
-                child: Radio<int>(
-                  value: 1,
-                  onChanged: (int? v) {},
-                  groupValue: 2,
-                ),
-              ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: Scaffold(
+        body: Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            child: MouseRegion(
+              cursor: SystemMouseCursors.forbidden,
+              child: Radio<int>(value: 1, onChanged: (int? v) {}, groupValue: 2),
             ),
           ),
         ),
       ),
-    );
+    ));
 
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.click);
 
     // Test default cursor when disabled
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Scaffold(
-          body: Align(
-            alignment: Alignment.topLeft,
-            child: Material(
-              child: MouseRegion(
-                cursor: SystemMouseCursors.forbidden,
-                child: Radio<int>(
-                  value: 1,
-                  onChanged: null,
-                  groupValue: 2,
-                ),
-              ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: const Scaffold(
+        body: Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            child: MouseRegion(
+              cursor: SystemMouseCursors.forbidden,
+              child: Radio<int>(value: 1, onChanged: null, groupValue: 2),
             ),
           ),
         ),
       ),
-    );
+    ));
 
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.basic);
   });
@@ -859,8 +729,7 @@ void main() {
       return inactiveEnabledFillColor;
     }
 
-    final MaterialStateProperty<Color> fillColor =
-      MaterialStateColor.resolveWith(getFillColor);
+    final MaterialStateProperty<Color> fillColor = MaterialStateColor.resolveWith(getFillColor);
 
     int? groupValue = 0;
     const Key radioKey = Key('radio');
@@ -869,24 +738,28 @@ void main() {
         theme: theme,
         home: Material(
           child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: Colors.white,
-                child: Radio<int>(
-                  key: radioKey,
-                  value: 0,
-                  fillColor: fillColor,
-                  onChanged: enabled ? (int? newValue) {
-                    setState(() {
-                      groupValue = newValue;
-                    });
-                  } : null,
-                  groupValue: groupValue,
-                ),
-              );
-            }),
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.white,
+                  child: Radio<int>(
+                    key: radioKey,
+                    value: 0,
+                    fillColor: fillColor,
+                    onChanged: enabled
+                        ? (int? newValue) {
+                            setState(() {
+                              groupValue = newValue;
+                            });
+                          }
+                        : null,
+                    groupValue: groupValue,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       );
@@ -899,10 +772,7 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
+        ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
         ..circle(color: activeEnabledFillColor)
         ..circle(color: activeEnabledFillColor),
     );
@@ -912,13 +782,10 @@ void main() {
     await tester.pumpWidget(buildApp(enabled: true));
     await tester.pumpAndSettle();
     expect(
-        Material.of(tester.element(find.byKey(radioKey))),
-        paints
-          ..rect(
-              color: const Color(0xffffffff),
-              rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-            )
-          ..circle(color: inactiveEnabledFillColor, style: PaintingStyle.stroke, strokeWidth: 2.0),
+      Material.of(tester.element(find.byKey(radioKey))),
+      paints
+        ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
+        ..circle(color: inactiveEnabledFillColor, style: PaintingStyle.stroke, strokeWidth: 2.0),
     );
 
     // Check when the radio is selected, but disabled.
@@ -928,10 +795,7 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
+        ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
         ..circle(color: activeDisabledFillColor)
         ..circle(color: activeDisabledFillColor),
     );
@@ -943,10 +807,7 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
+        ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
         ..circle(color: inactiveDisabledFillColor, style: PaintingStyle.stroke, strokeWidth: 2.0),
     );
   });
@@ -967,8 +828,7 @@ void main() {
       return Colors.transparent;
     }
 
-    final MaterialStateProperty<Color> fillColor =
-      MaterialStateColor.resolveWith(getFillColor);
+    final MaterialStateProperty<Color> fillColor = MaterialStateColor.resolveWith(getFillColor);
 
     int? groupValue = 0;
     const Key radioKey = Key('radio');
@@ -977,26 +837,28 @@ void main() {
         theme: theme,
         home: Material(
           child: Center(
-            child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: Colors.white,
-                child: Radio<int>(
-                  autofocus: true,
-                  focusNode: focusNode,
-                  key: radioKey,
-                  value: 0,
-                  fillColor: fillColor,
-                  onChanged: (int? newValue) {
-                    setState(() {
-                      groupValue = newValue;
-                    });
-                  },
-                  groupValue: groupValue,
-                ),
-              );
-            }),
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.white,
+                  child: Radio<int>(
+                    autofocus: true,
+                    focusNode: focusNode,
+                    key: radioKey,
+                    value: 0,
+                    fillColor: fillColor,
+                    onChanged: (int? newValue) {
+                      setState(() {
+                        groupValue = newValue;
+                      });
+                    },
+                    groupValue: groupValue,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       );
@@ -1008,14 +870,14 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       theme.useMaterial3
-        ? (paints..rect()..circle(color: theme.colorScheme.primary.withOpacity(0.12))..circle(color: focusedFillColor))
-        : (paints
-          ..rect(
-              color: const Color(0xffffffff),
-              rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-            )
-          ..circle(color: Colors.black12)
-          ..circle(color: focusedFillColor)),
+          ? (paints
+              ..rect()
+              ..circle(color: theme.colorScheme.primary.withOpacity(0.12))
+              ..circle(color: focusedFillColor))
+          : (paints
+              ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
+              ..circle(color: Colors.black12)
+              ..circle(color: focusedFillColor)),
     );
 
     // Start hovering
@@ -1027,10 +889,7 @@ void main() {
     expect(
       Material.of(tester.element(find.byKey(radioKey))),
       paints
-        ..rect(
-            color: const Color(0xffffffff),
-            rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0),
-          )
+        ..rect(color: const Color(0xffffffff), rect: const Rect.fromLTRB(350.0, 250.0, 450.0, 350.0))
         ..circle(color: theme.useMaterial3 ? theme.colorScheme.primary.withOpacity(0.08) : theme.hoverColor)
         ..circle(color: hoveredFillColor),
     );
@@ -1063,6 +922,7 @@ void main() {
       }
       return null;
     }
+
     const double splashRadius = 24.0;
 
     Finder findRadio() {
@@ -1082,7 +942,7 @@ void main() {
             autofocus: focused,
             value: active,
             groupValue: true,
-            onChanged: (_) { },
+            onChanged: (_) {},
             fillColor: const MaterialStatePropertyAll<Color>(fillColor),
             overlayColor: useOverlay ? MaterialStateProperty.resolveWith(getOverlayColor) : null,
             hoverColor: hoverColor,
@@ -1099,11 +959,7 @@ void main() {
 
     expect(
       getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: fillColor.withAlpha(kRadialReactionAlpha),
-          radius: splashRadius,
-        ),
+      paints..circle(color: fillColor.withAlpha(kRadialReactionAlpha), radius: splashRadius),
       reason: 'Default inactive pressed Radio should have overlay color from fillColor',
     );
 
@@ -1113,11 +969,7 @@ void main() {
 
     expect(
       getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: fillColor.withAlpha(kRadialReactionAlpha),
-          radius: splashRadius,
-        ),
+      paints..circle(color: fillColor.withAlpha(kRadialReactionAlpha), radius: splashRadius),
       reason: 'Default active pressed Radio should have overlay color from fillColor',
     );
 
@@ -1127,11 +979,7 @@ void main() {
 
     expect(
       getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: inactivePressedOverlayColor,
-          radius: splashRadius,
-        ),
+      paints..circle(color: inactivePressedOverlayColor, radius: splashRadius),
       reason: 'Inactive pressed Radio should have overlay color: $inactivePressedOverlayColor',
     );
 
@@ -1141,11 +989,7 @@ void main() {
 
     expect(
       getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: activePressedOverlayColor,
-          radius: splashRadius,
-        ),
+      paints..circle(color: activePressedOverlayColor, radius: splashRadius),
       reason: 'Active pressed Radio should have overlay color: $activePressedOverlayColor',
     );
 
@@ -1156,11 +1000,7 @@ void main() {
     expect(focusNode.hasPrimaryFocus, isTrue);
     expect(
       getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: focusOverlayColor,
-          radius: splashRadius,
-        ),
+      paints..circle(color: focusOverlayColor, radius: splashRadius),
       reason: 'Focused Radio should use overlay color $focusOverlayColor over $focusColor',
     );
 
@@ -1172,11 +1012,7 @@ void main() {
 
     expect(
       getRadioMaterial(tester),
-      paints
-        ..circle(
-          color: hoverOverlayColor,
-          radius: splashRadius,
-        ),
+      paints..circle(color: hoverOverlayColor, radius: splashRadius),
       reason: 'Hovered Radio should use overlay color $hoverOverlayColor over $hoverColor',
     );
   });
@@ -1189,7 +1025,7 @@ void main() {
         theme: theme,
         home: Material(
           child: Center(
-            child: show ? Radio<bool>(key: key, value: true, groupValue: false, onChanged: (_) { }) : Container(),
+            child: show ? Radio<bool>(key: key, value: true, groupValue: false, onChanged: (_) {}) : Container(),
           ),
         ),
       );
@@ -1210,17 +1046,12 @@ void main() {
   testWidgets('disabled radio shows tooltip', (WidgetTester tester) async {
     const String longPressTooltip = 'long press tooltip';
     const String tapTooltip = 'tap tooltip';
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Material(
-          child: Tooltip(
-            message: longPressTooltip,
-            child: Radio<bool>(value: true, groupValue: false, onChanged: null),
-          ),
-        ),
-      )
-    );
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: const Material(
+        child: Tooltip(message: longPressTooltip, child: Radio<bool>(value: true, groupValue: false, onChanged: null)),
+      ),
+    ));
 
     // Default tooltip shows up after long pressed.
     final Finder tooltip0 = find.byType(Tooltip);
@@ -1239,18 +1070,16 @@ void main() {
     expect(find.text(longPressTooltip), findsOneWidget);
 
     // Tooltip shows up after tapping when set triggerMode to TooltipTriggerMode.tap.
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Material(
-          child: Tooltip(
-            triggerMode: TooltipTriggerMode.tap,
-            message: tapTooltip,
-            child: Radio<bool>(value: true, groupValue: false, onChanged: null),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: const Material(
+        child: Tooltip(
+          triggerMode: TooltipTriggerMode.tap,
+          message: tapTooltip,
+          child: Radio<bool>(value: true, groupValue: false, onChanged: null),
         ),
-      )
-    );
+      ),
+    ));
 
     await tester.pump(const Duration(days: 1));
     await tester.pumpAndSettle();
@@ -1268,13 +1097,7 @@ void main() {
     Widget buildRadio({bool enabled = true, bool selected = true}) {
       return MaterialApp(
         theme: theme,
-        home: Scaffold(
-          body: Radio<bool>(
-            value: true,
-            groupValue: true,
-            onChanged: enabled ? (_) {} : null,
-          ),
-        )
+        home: Scaffold(body: Radio<bool>(value: true, groupValue: true, onChanged: enabled ? (_) {} : null)),
       );
     }
 
@@ -1285,7 +1108,8 @@ void main() {
       Material.of(tester.element(find.byType(Radio<bool>))),
       paints
         ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xFF2196F3)) // Outer circle - primary value
-        ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xFF2196F3))..restore(), // Inner circle - primary value
+        ..circle(color: material3 ? theme.colorScheme.primary : const Color(0xFF2196F3))
+        ..restore(), // Inner circle - primary value
     );
 
     await tester.pumpWidget(Container());
@@ -1307,9 +1131,8 @@ void main() {
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
       theme.useMaterial3
-        ? (paints
-          ..circle(color: theme.colorScheme.onSurface.withOpacity(0.38)))
-        : (paints..circle(color: Colors.black38))
+          ? (paints..circle(color: theme.colorScheme.onSurface.withOpacity(0.38)))
+          : (paints..circle(color: Colors.black38)),
     );
   });
 
@@ -1339,9 +1162,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
-      material3
-        ? (paints..circle(color: colors.primary.withOpacity(1)))
-        : (paints..circle(color: colors.secondary))
+      material3 ? (paints..circle(color: colors.primary.withOpacity(1))) : (paints..circle(color: colors.secondary)),
     );
 
     // selected radio in pressed state
@@ -1351,13 +1172,9 @@ void main() {
 
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
-      paints..circle(color: material3
-        ? colors.onSurface.withOpacity(0.12)
-        : colors.secondary.withAlpha(0x1F))
-      ..circle(color: material3
-        ? colors.primary.withOpacity(1)
-        : colors.secondary
-      )
+      paints
+        ..circle(color: material3 ? colors.onSurface.withOpacity(0.12) : colors.secondary.withAlpha(0x1F))
+        ..circle(color: material3 ? colors.primary.withOpacity(1) : colors.secondary),
     );
 
     // unselected radio in pressed state
@@ -1368,8 +1185,12 @@ void main() {
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
       material3
-        ? (paints..circle(color: colors.primary.withOpacity(0.12))..circle(color: colors.onSurfaceVariant.withOpacity(1)))
-        : (paints..circle(color: theme.unselectedWidgetColor.withAlpha(0x1F))..circle(color: theme.unselectedWidgetColor))
+          ? (paints
+              ..circle(color: colors.primary.withOpacity(0.12))
+              ..circle(color: colors.onSurfaceVariant.withOpacity(1)))
+          : (paints
+              ..circle(color: theme.unselectedWidgetColor.withAlpha(0x1F))
+              ..circle(color: theme.unselectedWidgetColor)),
     );
 
     // selected radio in focused state
@@ -1381,8 +1202,12 @@ void main() {
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
       material3
-        ? (paints..circle(color: colors.primary.withOpacity(0.12))..circle(color: colors.primary.withOpacity(1)))
-        : (paints..circle(color: theme.focusColor)..circle(color: colors.secondary))
+          ? (paints
+              ..circle(color: colors.primary.withOpacity(0.12))
+              ..circle(color: colors.primary.withOpacity(1)))
+          : (paints
+              ..circle(color: theme.focusColor)
+              ..circle(color: colors.secondary)),
     );
 
     // unselected radio in focused state
@@ -1394,8 +1219,12 @@ void main() {
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
       material3
-        ? (paints..circle(color: colors.onSurface.withOpacity(0.12))..circle(color: colors.onSurface.withOpacity(1)))
-        : (paints..circle(color: theme.focusColor)..circle(color: theme.unselectedWidgetColor))
+          ? (paints
+              ..circle(color: colors.onSurface.withOpacity(0.12))
+              ..circle(color: colors.onSurface.withOpacity(1)))
+          : (paints
+              ..circle(color: theme.focusColor)
+              ..circle(color: theme.unselectedWidgetColor)),
     );
 
     // selected radio in hovered state
@@ -1409,8 +1238,12 @@ void main() {
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
       material3
-        ? (paints..circle(color: colors.primary.withOpacity(0.08))..circle(color: colors.primary.withOpacity(1)))
-        : (paints..circle(color: theme.hoverColor)..circle(color: colors.secondary))
+          ? (paints
+              ..circle(color: colors.primary.withOpacity(0.08))
+              ..circle(color: colors.primary.withOpacity(1)))
+          : (paints
+              ..circle(color: theme.hoverColor)
+              ..circle(color: colors.secondary)),
     );
   });
 
@@ -1418,26 +1251,23 @@ void main() {
     Widget buildApp(TargetPlatform platform) {
       return MaterialApp(
         theme: ThemeData(platform: platform),
-        home: Material(
-          child: Center(
-            child: Radio<int>.adaptive(
-              value: 1,
-              groupValue: 2,
-              onChanged: (_) {},
-            ),
-          ),
-        ),
+        home: Material(child: Center(child: Radio<int>.adaptive(value: 1, groupValue: 2, onChanged: (_) {}))),
       );
     }
 
-    for (final TargetPlatform platform in <TargetPlatform>[ TargetPlatform.iOS, TargetPlatform.macOS ]) {
+    for (final TargetPlatform platform in <TargetPlatform>[TargetPlatform.iOS, TargetPlatform.macOS]) {
       await tester.pumpWidget(buildApp(platform));
       await tester.pumpAndSettle();
 
       expect(find.byType(CupertinoRadio<int>), findsOneWidget);
     }
 
-    for (final TargetPlatform platform in <TargetPlatform>[ TargetPlatform.android, TargetPlatform.fuchsia, TargetPlatform.linux, TargetPlatform.windows ]) {
+    for (final TargetPlatform platform in <TargetPlatform>[
+          TargetPlatform.android,
+          TargetPlatform.fuchsia,
+          TargetPlatform.linux,
+          TargetPlatform.windows,
+        ]) {
       await tester.pumpWidget(buildApp(platform));
       await tester.pumpAndSettle();
 
@@ -1457,41 +1287,39 @@ void main() {
     MaterialInkController? getRadioMaterial(WidgetTester tester) {
       return Material.of(tester.element(findRadio()));
     }
+
     await tester.pumpWidget(MaterialApp(
       theme: theme,
-      home: Scaffold(
-        body: Radio<bool>(
-          focusNode: focusNode,
-          value: true,
-          groupValue: true,
-          onChanged: (_) { },
-        ),
-      ),
+      home: Scaffold(body: Radio<bool>(focusNode: focusNode, value: true, groupValue: true, onChanged: (_) {})),
     ));
 
     // Hover
     final Offset center = tester.getCenter(find.byType(Radio<bool>));
-    final TestGesture gesture = await tester.createGesture(
-      kind: PointerDeviceKind.mouse,
-    );
+    final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer();
     await gesture.moveTo(center);
     await tester.pumpAndSettle();
 
-    expect(getRadioMaterial(tester),
+    expect(
+      getRadioMaterial(tester),
       paints
         ..circle(color: material3 ? theme.colorScheme.primary.withOpacity(0.08) : theme.hoverColor)
-        ..circle(color: material3 ? theme.colorScheme.primary : theme.colorScheme.secondary)
+        ..circle(color: material3 ? theme.colorScheme.primary : theme.colorScheme.secondary),
     );
 
     // Highlighted (pressed).
     await gesture.down(center);
     await tester.pumpAndSettle();
 
-    expect(getRadioMaterial(tester),
+    expect(
+      getRadioMaterial(tester),
       paints
-        ..circle(color: material3 ? theme.colorScheme.onSurface.withOpacity(0.12) : theme.colorScheme.secondary.withAlpha(kRadialReactionAlpha))
-        ..circle(color: material3 ? theme.colorScheme.primary : theme.colorScheme.secondary)
+        ..circle(
+          color: material3
+              ? theme.colorScheme.onSurface.withOpacity(0.12)
+              : theme.colorScheme.secondary.withAlpha(kRadialReactionAlpha),
+        )
+        ..circle(color: material3 ? theme.colorScheme.primary : theme.colorScheme.secondary),
     );
     // Remove pressed and hovered states
     await gesture.up();
@@ -1503,10 +1331,11 @@ void main() {
     focusNode.requestFocus();
     await tester.pumpAndSettle();
 
-    expect(getRadioMaterial(tester),
+    expect(
+      getRadioMaterial(tester),
       paints
         ..circle(color: material3 ? theme.colorScheme.primary.withOpacity(0.12) : theme.focusColor)
-        ..circle(color: material3 ? theme.colorScheme.primary : theme.colorScheme.secondary)
+        ..circle(color: material3 ? theme.colorScheme.primary : theme.colorScheme.secondary),
     );
   });
 }

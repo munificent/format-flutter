@@ -43,30 +43,25 @@ void main() {
     expect(box.size.width, VIEWPORT_WIDTH);
   });
 
-  testWidgets('SliverConstrainedCrossAxis constrains the height when direction is horizontal', (WidgetTester tester) async {
-    await tester.pumpWidget(_buildSliverConstrainedCrossAxis(
-      maxExtent: 50,
-      scrollDirection: Axis.horizontal,
-    ));
+  testWidgets(
+    'SliverConstrainedCrossAxis constrains the height when direction is horizontal',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(_buildSliverConstrainedCrossAxis(maxExtent: 50, scrollDirection: Axis.horizontal));
 
-    final RenderBox box = tester.renderObject(find.byType(Container));
-    expect(box.size.height, 50);
-  });
+      final RenderBox box = tester.renderObject(find.byType(Container));
+      expect(box.size.height, 50);
+    },
+  );
 
   testWidgets('SliverConstrainedCrossAxis sets its own flex to 0', (WidgetTester tester) async {
-    await tester.pumpWidget(_buildSliverConstrainedCrossAxis(
-      maxExtent: 50,
-    ));
+    await tester.pumpWidget(_buildSliverConstrainedCrossAxis(maxExtent: 50));
 
     final RenderSliver sliver = tester.renderObject(find.byType(SliverConstrainedCrossAxis));
     expect((sliver.parentData! as SliverPhysicalParentData).crossAxisFlex, equals(0));
   });
 }
 
-Widget _buildSliverConstrainedCrossAxis({
-  required double maxExtent,
-  Axis scrollDirection = Axis.vertical,
-}) {
+Widget _buildSliverConstrainedCrossAxis({required double maxExtent, Axis scrollDirection = Axis.vertical}) {
   return Directionality(
     textDirection: TextDirection.ltr,
     child: Center(
@@ -79,9 +74,7 @@ Widget _buildSliverConstrainedCrossAxis({
             SliverConstrainedCrossAxis(
               maxExtent: maxExtent,
               sliver: SliverToBoxAdapter(
-                child: scrollDirection == Axis.vertical
-                  ? Container(height: 100)
-                  : Container(width: 100),
+                child: scrollDirection == Axis.vertical ? Container(height: 100) : Container(width: 100),
               ),
             ),
           ],

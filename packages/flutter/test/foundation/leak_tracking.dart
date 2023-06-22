@@ -57,11 +57,7 @@ void testWidgetsWithLeakTracking(
   LeakTrackingTestConfig leakTrackingConfig = const LeakTrackingTestConfig(),
 }) {
   Future<void> wrappedCallback(WidgetTester tester) async {
-    await _withFlutterLeakTracking(
-      () async => callback(tester),
-      tester,
-      leakTrackingConfig,
-    );
+    await _withFlutterLeakTracking(() async => callback(tester), tester, leakTrackingConfig);
   }
 
   testWidgets(
@@ -102,7 +98,9 @@ Future<void> _withFlutterLeakTracking(
     final bool shouldPrintWarning = !_webWarningPrinted && LeakTrackingTestConfig.warnForNonSupportedPlatforms;
     if (shouldPrintWarning) {
       _webWarningPrinted = true;
-      debugPrint('Leak tracking is not supported on web platform.\nTo turn off this message, set `LeakTrackingTestConfig.warnForNonSupportedPlatforms` to false.');
+      debugPrint(
+        'Leak tracking is not supported on web platform.\nTo turn off this message, set `LeakTrackingTestConfig.warnForNonSupportedPlatforms` to false.',
+      );
     }
     await callback();
     return;
@@ -160,9 +158,11 @@ class LeakCleaner {
   Leaks clean(Leaks leaks) {
     final Map<(String, LeakType), int> countByClassAndType = _countByClassAndType(leaks);
 
-    final Leaks result =  Leaks(<LeakType, List<LeakReport>>{
+    final Leaks result = Leaks(<LeakType, List<LeakReport>>{
       for (final LeakType leakType in leaks.byType.keys)
-        leakType: leaks.byType[leakType]!.where((LeakReport leak) => _shouldReportLeak(leakType, leak, countByClassAndType)).toList()
+        leakType: leaks.byType[leakType]!.where(
+          (LeakReport leak) => _shouldReportLeak(leakType, leak, countByClassAndType),
+        ).toList(),
     });
     return result;
   }

@@ -24,8 +24,7 @@ class TestAssetBundle extends CachingAssetBundle {
 
     loadCallCount[key] = loadCallCount[key] ?? 0 + 1;
     if (key == 'one') {
-      return ByteData(1)
-        ..setInt8(0, 49);
+      return ByteData(1)..setInt8(0, 49);
     }
     throw FlutterError('key not found');
   }
@@ -40,20 +39,15 @@ class TestAssetBundle extends CachingAssetBundle {
 void main() {
   group('1.0 scale device tests', () {
     void buildAndTestWithOneAsset(String mainAssetPath) {
-      final Map<String, List<Map<Object?, Object?>>> assetBundleMap =
-        <String, List<Map<Object?, Object?>>>{};
+      final Map<String, List<Map<Object?, Object?>>> assetBundleMap = <String, List<Map<Object?, Object?>>>{};
 
-      final AssetImage assetImage = AssetImage(
-        mainAssetPath,
-        bundle: TestAssetBundle(assetBundleMap),
-      );
+      final AssetImage assetImage = AssetImage(mainAssetPath, bundle: TestAssetBundle(assetBundleMap));
       const ImageConfiguration configuration = ImageConfiguration.empty;
 
-      assetImage.obtainKey(configuration)
-        .then(expectAsync1((AssetBundleImageKey bundleKey) {
-          expect(bundleKey.name, mainAssetPath);
-          expect(bundleKey.scale, 1.0);
-        }));
+      assetImage.obtainKey(configuration).then(expectAsync1((AssetBundleImageKey bundleKey) {
+        expect(bundleKey.name, mainAssetPath);
+        expect(bundleKey.scale, 1.0);
+      }));
     }
 
     test('When asset is main variant check scale is 1.0', () {
@@ -81,14 +75,12 @@ void main() {
     });
   });
 
-
   group('High-res device behavior tests', () {
     test('When asset is not main variant check scale is not 1.0', () {
       const String mainAssetPath = 'assets/normalFolder/normalFile.png';
       const String variantPath = 'assets/normalFolder/3.0x/normalFile.png';
 
-      final Map<String, List<Map<Object?, Object?>>> assetBundleMap =
-        <String, List<Map<Object?, Object?>>>{};
+      final Map<String, List<Map<Object?, Object?>>> assetBundleMap = <String, List<Map<Object?, Object?>>>{};
 
       final Map<Object?, Object?> mainAssetVariantManifestEntry = <Object?, Object?>{};
       mainAssetVariantManifestEntry['asset'] = variantPath;
@@ -96,55 +88,43 @@ void main() {
       assetBundleMap[mainAssetPath] = <Map<Object?, Object?>>[mainAssetVariantManifestEntry];
       final TestAssetBundle testAssetBundle = TestAssetBundle(assetBundleMap);
 
-      final AssetImage assetImage = AssetImage(
-        mainAssetPath,
-        bundle: testAssetBundle,
-      );
+      final AssetImage assetImage = AssetImage(mainAssetPath, bundle: testAssetBundle);
 
-      assetImage.obtainKey(ImageConfiguration.empty)
-        .then(expectAsync1((AssetBundleImageKey bundleKey) {
-          expect(bundleKey.name, mainAssetPath);
-          expect(bundleKey.scale, 1.0);
-        }));
-
-      assetImage.obtainKey(ImageConfiguration(
-        bundle: testAssetBundle,
-        devicePixelRatio: 3.0,
-      )).then(expectAsync1((AssetBundleImageKey bundleKey) {
-        expect(bundleKey.name, variantPath);
-        expect(bundleKey.scale, 3.0);
+      assetImage.obtainKey(ImageConfiguration.empty).then(expectAsync1((AssetBundleImageKey bundleKey) {
+        expect(bundleKey.name, mainAssetPath);
+        expect(bundleKey.scale, 1.0);
       }));
+
+      assetImage.obtainKey(ImageConfiguration(bundle: testAssetBundle, devicePixelRatio: 3.0)).then(
+        expectAsync1((AssetBundleImageKey bundleKey) {
+          expect(bundleKey.name, variantPath);
+          expect(bundleKey.scale, 3.0);
+        }),
+      );
     });
 
     test('When high-res device and high-res asset not present in bundle then return main variant', () {
       const String mainAssetPath = 'assets/normalFolder/normalFile.png';
 
-      final Map<String, List<Map<Object?, Object?>>> assetBundleMap =
-        <String, List<Map<Object?, Object?>>>{};
+      final Map<String, List<Map<Object?, Object?>>> assetBundleMap = <String, List<Map<Object?, Object?>>>{};
 
       assetBundleMap[mainAssetPath] = <Map<Object?, Object?>>[];
 
       final TestAssetBundle testAssetBundle = TestAssetBundle(assetBundleMap);
 
-      final AssetImage assetImage = AssetImage(
-        mainAssetPath,
-        bundle: TestAssetBundle(assetBundleMap),
-      );
+      final AssetImage assetImage = AssetImage(mainAssetPath, bundle: TestAssetBundle(assetBundleMap));
 
-
-      assetImage.obtainKey(ImageConfiguration.empty)
-        .then(expectAsync1((AssetBundleImageKey bundleKey) {
-          expect(bundleKey.name, mainAssetPath);
-          expect(bundleKey.scale, 1.0);
-        }));
-
-      assetImage.obtainKey(ImageConfiguration(
-        bundle: testAssetBundle,
-        devicePixelRatio: 3.0,
-      )).then(expectAsync1((AssetBundleImageKey bundleKey) {
+      assetImage.obtainKey(ImageConfiguration.empty).then(expectAsync1((AssetBundleImageKey bundleKey) {
         expect(bundleKey.name, mainAssetPath);
         expect(bundleKey.scale, 1.0);
       }));
+
+      assetImage.obtainKey(ImageConfiguration(bundle: testAssetBundle, devicePixelRatio: 3.0)).then(
+        expectAsync1((AssetBundleImageKey bundleKey) {
+          expect(bundleKey.name, mainAssetPath);
+          expect(bundleKey.scale, 1.0);
+        }),
+      );
     });
   });
 
@@ -152,37 +132,24 @@ void main() {
     const String mainAssetPath = 'assets/normalFolder/normalFile.png';
     const String variantPath = 'assets/normalFolder/3.0x/normalFile.png';
 
-
-    void buildBundleAndTestVariantLogic(
-      double deviceRatio,
-      double chosenAssetRatio,
-      String expectedAssetPath,
-    ) {
-      const Map<String, List<Map<Object?, Object?>>> assetManifest =
-          <String, List<Map<Object?, Object?>>>{
+    void buildBundleAndTestVariantLogic(double deviceRatio, double chosenAssetRatio, String expectedAssetPath) {
+      const Map<String, List<Map<Object?, Object?>>> assetManifest = <String, List<Map<Object?, Object?>>>{
         'assets/normalFolder/normalFile.png': <Map<Object?, Object?>>[
           <Object?, Object?>{'asset': 'assets/normalFolder/normalFile.png'},
-          <Object?, Object?>{
-            'asset': 'assets/normalFolder/3.0x/normalFile.png',
-            'dpr': 3.0
-          },
-        ]
+          <Object?, Object?>{'asset': 'assets/normalFolder/3.0x/normalFile.png', 'dpr': 3.0},
+        ],
       };
       final TestAssetBundle testAssetBundle = TestAssetBundle(assetManifest);
 
-      final AssetImage assetImage = AssetImage(
-        mainAssetPath,
-        bundle: testAssetBundle,
-      );
+      final AssetImage assetImage = AssetImage(mainAssetPath, bundle: testAssetBundle);
 
       // we have 1.0 and 3.0, asking for 1.5 should give
-      assetImage.obtainKey(ImageConfiguration(
-        bundle: testAssetBundle,
-        devicePixelRatio: deviceRatio,
-      )).then(expectAsync1((AssetBundleImageKey bundleKey) {
-        expect(bundleKey.name, expectedAssetPath);
-        expect(bundleKey.scale, chosenAssetRatio);
-      }));
+      assetImage.obtainKey(ImageConfiguration(bundle: testAssetBundle, devicePixelRatio: deviceRatio)).then(
+        expectAsync1((AssetBundleImageKey bundleKey) {
+          expect(bundleKey.name, expectedAssetPath);
+          expect(bundleKey.scale, chosenAssetRatio);
+        }),
+      );
     }
 
     test('Obvious case 1.0 - we have exact asset', () {
@@ -208,5 +175,4 @@ void main() {
       buildBundleAndTestVariantLogic(4.0, 3.0, variantPath);
     });
   });
-
 }

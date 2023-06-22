@@ -24,6 +24,7 @@ RenderEditable findRenderEditable(WidgetTester tester, {int index = 0}) {
     }
     child.visitChildren(recursiveFinder);
   }
+
   root.visitChildren(recursiveFinder);
   expect(renderEditable, isNotNull);
   return renderEditable;
@@ -31,35 +32,30 @@ RenderEditable findRenderEditable(WidgetTester tester, {int index = 0}) {
 
 List<TextSelectionPoint> globalize(Iterable<TextSelectionPoint> points, RenderBox box) {
   return points.map<TextSelectionPoint>((TextSelectionPoint point) {
-    return TextSelectionPoint(
-      box.localToGlobal(point.point),
-      point.direction,
-    );
+    return TextSelectionPoint(box.localToGlobal(point.point), point.direction);
   }).toList();
 }
 
 Offset textOffsetToPosition(WidgetTester tester, int offset, {int index = 0}) {
   final RenderEditable renderEditable = findRenderEditable(tester, index: index);
   final List<TextSelectionPoint> endpoints = globalize(
-    renderEditable.getEndpointsForSelection(
-      TextSelection.collapsed(offset: offset),
-    ),
+    renderEditable.getEndpointsForSelection(TextSelection.collapsed(offset: offset)),
     renderEditable,
   );
   expect(endpoints.length, 1);
-  return endpoints[0].point + const Offset(kIsWeb? 1.0 : 0.0, -2.0);
+  return endpoints[0].point + const Offset(kIsWeb ? 1.0 : 0.0, -2.0);
 }
 
 /// Mimic key press events by sending key down and key up events via the [tester].
 Future<void> sendKeys(
-    WidgetTester tester,
-    List<LogicalKeyboardKey> keys, {
-      bool shift = false,
-      bool wordModifier = false,
-      bool lineModifier = false,
-      bool shortcutModifier = false,
-      required TargetPlatform targetPlatform,
-    }) async {
+  WidgetTester tester,
+  List<LogicalKeyboardKey> keys, {
+  bool shift = false,
+  bool wordModifier = false,
+  bool lineModifier = false,
+  bool shortcutModifier = false,
+  required TargetPlatform targetPlatform,
+}) async {
   final String targetPlatformString = targetPlatform.toString();
   final String platform = targetPlatformString.substring(targetPlatformString.indexOf('.') + 1).toLowerCase();
   if (shift) {
@@ -116,21 +112,12 @@ Future<void> sendKeys(
 // Simple controller that builds a WidgetSpan with 100 height.
 class OverflowWidgetTextEditingController extends TextEditingController {
   @override
-  TextSpan buildTextSpan({
-    required BuildContext context,
-    TextStyle? style,
-    required bool withComposing,
-  }) {
+  TextSpan buildTextSpan({required BuildContext context, TextStyle? style, required bool withComposing}) {
     return TextSpan(
       style: style,
       children: <InlineSpan>[
         const TextSpan(text: 'Hi'),
-        WidgetSpan(
-          child: Container(
-            color: Colors.redAccent,
-            height: 100.0,
-          ),
-        ),
+        WidgetSpan(child: Container(color: Colors.redAccent, height: 100.0)),
       ],
     );
   }

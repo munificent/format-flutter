@@ -13,18 +13,11 @@ class TestAssetBundle extends AssetBundle {
     if (key == 'AssetManifest.bin') {
       final Map<String, List<Object>> binManifestData = <String, List<Object>>{
         'assets/foo.png': <Object>[
-          <String, Object>{
-            'asset': 'assets/foo.png',
-          },
-          <String, Object>{
-            'asset': 'assets/2x/foo.png',
-            'dpr': 2.0
-          },
+          <String, Object>{'asset': 'assets/foo.png'},
+          <String, Object>{'asset': 'assets/2x/foo.png', 'dpr': 2.0},
         ],
         'assets/bar.png': <Object>[
-          <String, Object>{
-            'asset': 'assets/bar.png',
-          },
+          <String, Object>{'asset': 'assets/bar.png'},
         ],
       };
 
@@ -75,27 +68,22 @@ void main() {
 }
 
 String createAssetManifestJson(Map<String, List<AssetMetadata>> manifest) {
-  final Map<Object, Object> jsonObject = manifest.map(
-    (String key, List<AssetMetadata> value) {
-      final List<String> variants = value.map((AssetMetadata e) => e.key).toList();
-      return MapEntry<String, List<String>>(key, variants);
-    }
-  );
+  final Map<Object, Object> jsonObject = manifest.map((String key, List<AssetMetadata> value) {
+    final List<String> variants = value.map((AssetMetadata e) => e.key).toList();
+    return MapEntry<String, List<String>>(key, variants);
+  });
 
   return json.encode(jsonObject);
 }
 
 ByteData createAssetManifestSmcBin(Map<String, List<AssetMetadata>> manifest) {
-  final Map<Object, Object> smcObject  = manifest.map(
-    (String key, List<AssetMetadata> value) {
-      final List<Object> variants = value.map((AssetMetadata variant) => <String, Object?>{
-        'asset': variant.key,
-        'dpr': variant.targetDevicePixelRatio,
-      }).toList();
+  final Map<Object, Object> smcObject = manifest.map((String key, List<AssetMetadata> value) {
+    final List<Object> variants = value.map(
+      (AssetMetadata variant) => <String, Object?>{'asset': variant.key, 'dpr': variant.targetDevicePixelRatio},
+    ).toList();
 
-      return MapEntry<String, List<Object>>(key, variants);
-    }
-  );
+    return MapEntry<String, List<Object>>(key, variants);
+  });
 
   return const StandardMessageCodec().encodeMessage(smcObject)!;
 }

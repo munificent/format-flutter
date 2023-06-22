@@ -6,16 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class TestOverlayRoute extends OverlayRoute<void> {
-  TestOverlayRoute({ super.settings });
+  TestOverlayRoute({super.settings});
   @override
   Iterable<OverlayEntry> createOverlayEntries() sync* {
     yield OverlayEntry(builder: _build);
   }
+
   Widget _build(BuildContext context) => const Text('Overlay');
 }
 
 class PersistentBottomSheetTest extends StatefulWidget {
-  const PersistentBottomSheetTest({ super.key });
+  const PersistentBottomSheetTest({super.key});
 
   @override
   PersistentBottomSheetTestState createState() => PersistentBottomSheetTestState();
@@ -29,8 +30,7 @@ class PersistentBottomSheetTestState extends State<PersistentBottomSheetTest> {
   void showBottomSheet() {
     _scaffoldKey.currentState!.showBottomSheet<void>((BuildContext context) {
       return const Text('bottomSheet');
-    })
-    .closed.whenComplete(() {
+    }).closed.whenComplete(() {
       setState(() {
         setStateCalled = true;
       });
@@ -39,10 +39,7 @@ class PersistentBottomSheetTestState extends State<PersistentBottomSheetTest> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: const Text('Sheet'),
-    );
+    return Scaffold(key: _scaffoldKey, body: const Text('Sheet'));
   }
 }
 
@@ -135,26 +132,17 @@ void main() {
     const String kHeroTag = 'hero';
     final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
       '/': (_) => Scaffold(
-        key: containerKey1,
-        body: const ColoredBox(
-          color: Color(0xff00ffff),
-          child: Hero(
-            tag: kHeroTag,
-            child: Text('Home'),
+            key: containerKey1,
+            body: const ColoredBox(color: Color(0xff00ffff), child: Hero(tag: kHeroTag, child: Text('Home'))),
           ),
-        ),
-      ),
       '/settings': (_) => Scaffold(
-        key: containerKey2,
-        body: Container(
-          padding: const EdgeInsets.all(100.0),
-          color: const Color(0xffff00ff),
-          child: const Hero(
-            tag: kHeroTag,
-            child: Text('Settings'),
+            key: containerKey2,
+            body: Container(
+              padding: const EdgeInsets.all(100.0),
+              color: const Color(0xffff00ff),
+              child: const Hero(tag: kHeroTag, child: Text('Settings')),
+            ),
           ),
-        ),
-      ),
     };
 
     await tester.pumpWidget(MaterialApp(routes: routes));
@@ -196,7 +184,7 @@ void main() {
     settingsOffset = tester.getTopLeft(find.text('Settings'));
     expect(settingsOffset.dx, greaterThan(100.0));
     expect(settingsOffset.dy, 100.0);
-  }, variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.iOS,  TargetPlatform.macOS }));
+  }, variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.iOS, TargetPlatform.macOS}));
 
   testWidgets("Check back gesture doesn't start during transitions", (WidgetTester tester) async {
     final GlobalKey containerKey1 = GlobalKey();
@@ -239,7 +227,7 @@ void main() {
 
     expect(find.text('Home'), isOnstage);
     expect(find.text('Settings'), findsNothing);
-  }, variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.iOS,  TargetPlatform.macOS }));
+  }, variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.iOS, TargetPlatform.macOS}));
 
   // Tests bug https://github.com/flutter/flutter/issues/6451
   testWidgets('Check back gesture with a persistent bottom sheet showing', (WidgetTester tester) async {
@@ -293,7 +281,7 @@ void main() {
 
     // Sheet did not call setState (since the gesture did nothing).
     expect(sheet.setStateCalled, isFalse);
-  }, variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.iOS,  TargetPlatform.macOS }));
+  }, variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.iOS, TargetPlatform.macOS}));
 
   testWidgets('Test completed future', (WidgetTester tester) async {
     final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{

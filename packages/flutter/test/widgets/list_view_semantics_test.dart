@@ -18,21 +18,16 @@ void main() {
       final SemanticsTester semantics = SemanticsTester(tester);
       final ScrollController controller = ScrollController();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ListView.builder(
-            controller: controller,
-            itemCount: itemCount,
-            itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: itemHeight,
-                child: Text('Tile $index'),
-              );
-            },
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: ListView.builder(
+          controller: controller,
+          itemCount: itemCount,
+          itemBuilder: (BuildContext context, int index) {
+            return SizedBox(height: itemHeight, child: Text('Tile $index'));
+          },
         ),
-      );
+      ));
 
       expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollUp]));
 
@@ -48,22 +43,17 @@ void main() {
       final SemanticsTester semantics = SemanticsTester(tester);
       final ScrollController controller = ScrollController();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ListView.builder(
-            reverse: true,
-            controller: controller,
-            itemCount: itemCount,
-            itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: itemHeight,
-                child: Text('Tile $index'),
-              );
-            },
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: ListView.builder(
+          reverse: true,
+          controller: controller,
+          itemCount: itemCount,
+          itemBuilder: (BuildContext context, int index) {
+            return SizedBox(height: itemHeight, child: Text('Tile $index'));
+          },
         ),
-      );
+      ));
 
       expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollDown]));
 
@@ -79,22 +69,17 @@ void main() {
       final SemanticsTester semantics = SemanticsTester(tester);
       final ScrollController controller = ScrollController();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            controller: controller,
-            itemCount: itemCount,
-            itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: itemHeight,
-                child: Text('Tile $index'),
-              );
-            },
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          controller: controller,
+          itemCount: itemCount,
+          itemBuilder: (BuildContext context, int index) {
+            return SizedBox(height: itemHeight, child: Text('Tile $index'));
+          },
         ),
-      );
+      ));
 
       expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollLeft]));
 
@@ -110,23 +95,18 @@ void main() {
       final SemanticsTester semantics = SemanticsTester(tester);
       final ScrollController controller = ScrollController();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            reverse: true,
-            controller: controller,
-            itemCount: itemCount,
-            itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: itemHeight,
-                child: Text('Tile $index'),
-              );
-            },
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          reverse: true,
+          controller: controller,
+          itemCount: itemCount,
+          itemBuilder: (BuildContext context, int index) {
+            return SizedBox(height: itemHeight, child: Text('Tile $index'));
+          },
         ),
-      );
+      ));
 
       expect(semantics, includesNodeWith(actions: <SemanticsAction>[SemanticsAction.scrollRight]));
 

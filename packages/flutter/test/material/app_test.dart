@@ -12,7 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../rendering/mock_canvas.dart';
 
 class StateMarker extends StatefulWidget {
-  const StateMarker({ super.key, this.child });
+  const StateMarker({super.key, this.child});
 
   final Widget? child;
 
@@ -34,26 +34,16 @@ class StateMarkerState extends State<StateMarker> {
 
 void main() {
   testWidgets('Can nest apps', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: MaterialApp(
-          home: Text('Home sweet home'),
-        ),
-      ),
-    );
+    await tester.pumpWidget(const MaterialApp(home: MaterialApp(home: Text('Home sweet home'))));
 
     expect(find.text('Home sweet home'), findsOneWidget);
   });
 
   testWidgets('Focus handling', (WidgetTester tester) async {
     final FocusNode focusNode = FocusNode();
-    await tester.pumpWidget(MaterialApp(
-      home: Material(
-        child: Center(
-          child: TextField(focusNode: focusNode, autofocus: true),
-        ),
-      ),
-    ));
+    await tester.pumpWidget(
+      MaterialApp(home: Material(child: Center(child: TextField(focusNode: focusNode, autofocus: true)))),
+    );
 
     expect(focusNode.hasFocus, isTrue);
   });
@@ -61,33 +51,20 @@ void main() {
   testWidgets('Can place app inside FocusScope', (WidgetTester tester) async {
     final FocusScopeNode focusScopeNode = FocusScopeNode();
 
-    await tester.pumpWidget(FocusScope(
-      autofocus: true,
-      node: focusScopeNode,
-      child: const MaterialApp(
-        home: Text('Home'),
-      ),
-    ));
+    await tester.pumpWidget(
+      FocusScope(autofocus: true, node: focusScopeNode, child: const MaterialApp(home: Text('Home'))),
+    );
 
     expect(find.text('Home'), findsOneWidget);
   });
 
   testWidgets('Can show grid without losing sync', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: StateMarker(),
-      ),
-    );
+    await tester.pumpWidget(const MaterialApp(home: StateMarker()));
 
     final StateMarkerState state1 = tester.state(find.byType(StateMarker));
     state1.marker = 'original';
 
-    await tester.pumpWidget(
-      const MaterialApp(
-        debugShowMaterialGrid: true,
-        home: StateMarker(),
-      ),
-    );
+    await tester.pumpWidget(const MaterialApp(debugShowMaterialGrid: true, home: StateMarker()));
 
     final StateMarkerState state2 = tester.state(find.byType(StateMarker));
     expect(state1, equals(state2));
@@ -96,30 +73,30 @@ void main() {
 
   testWidgets('Do not rebuild page during a route transition', (WidgetTester tester) async {
     int buildCounter = 0;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Builder(
-          builder: (BuildContext context) {
-            return Material(
-              child: ElevatedButton(
-                child: const Text('X'),
-                onPressed: () { Navigator.of(context).pushNamed('/next'); },
-              ),
-            );
-          },
-        ),
-        routes: <String, WidgetBuilder>{
-          '/next': (BuildContext context) {
-            return Builder(
-              builder: (BuildContext context) {
-                ++buildCounter;
-                return const Text('Y');
+    await tester.pumpWidget(MaterialApp(
+      home: Builder(
+        builder: (BuildContext context) {
+          return Material(
+            child: ElevatedButton(
+              child: const Text('X'),
+              onPressed: () {
+                Navigator.of(context).pushNamed('/next');
               },
-            );
-          },
+            ),
+          );
         },
       ),
-    );
+      routes: <String, WidgetBuilder>{
+        '/next': (BuildContext context) {
+          return Builder(
+            builder: (BuildContext context) {
+              ++buildCounter;
+              return const Text('Y');
+            },
+          );
+        },
+      },
+    ));
 
     expect(buildCounter, 0);
     await tester.tap(find.text('X'));
@@ -141,28 +118,24 @@ void main() {
 
   testWidgets('Do rebuild the home page if it changes', (WidgetTester tester) async {
     int buildCounter = 0;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Builder(
-          builder: (BuildContext context) {
-            ++buildCounter;
-            return const Text('A');
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      home: Builder(
+        builder: (BuildContext context) {
+          ++buildCounter;
+          return const Text('A');
+        },
       ),
-    );
+    ));
     expect(buildCounter, 1);
     expect(find.text('A'), findsOneWidget);
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Builder(
-          builder: (BuildContext context) {
-            ++buildCounter;
-            return const Text('B');
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      home: Builder(
+        builder: (BuildContext context) {
+          ++buildCounter;
+          return const Text('B');
+        },
       ),
-    );
+    ));
     expect(buildCounter, 2);
     expect(find.text('B'), findsOneWidget);
   });
@@ -175,41 +148,28 @@ void main() {
         return const Placeholder();
       },
     );
-    await tester.pumpWidget(
-      MaterialApp(
-        home: home,
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(home: home));
     expect(buildCounter, 1);
-    await tester.pumpWidget(
-      MaterialApp(
-        home: home,
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(home: home));
     expect(buildCounter, 1);
   });
 
-  testWidgets('Do rebuild pages that come from the routes table if the MaterialApp changes', (WidgetTester tester) async {
-    int buildCounter = 0;
-    final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
-      '/': (BuildContext context) {
-        ++buildCounter;
-        return const Placeholder();
-      },
-    };
-    await tester.pumpWidget(
-      MaterialApp(
-        routes: routes,
-      ),
-    );
-    expect(buildCounter, 1);
-    await tester.pumpWidget(
-      MaterialApp(
-        routes: routes,
-      ),
-    );
-    expect(buildCounter, 2);
-  });
+  testWidgets(
+    'Do rebuild pages that come from the routes table if the MaterialApp changes',
+    (WidgetTester tester) async {
+      int buildCounter = 0;
+      final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
+        '/': (BuildContext context) {
+          ++buildCounter;
+          return const Placeholder();
+        },
+      };
+      await tester.pumpWidget(MaterialApp(routes: routes));
+      expect(buildCounter, 1);
+      await tester.pumpWidget(MaterialApp(routes: routes));
+      expect(buildCounter, 2);
+    },
+  );
 
   testWidgets('Cannot pop the initial route', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: Text('Home')));
@@ -225,25 +185,23 @@ void main() {
   });
 
   testWidgets('Default initialRoute', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(routes: <String, WidgetBuilder>{
-      '/': (BuildContext context) => const Text('route "/"'),
-    }));
+    await tester.pumpWidget(
+      MaterialApp(routes: <String, WidgetBuilder>{'/': (BuildContext context) => const Text('route "/"')}),
+    );
 
     expect(find.text('route "/"'), findsOneWidget);
   });
 
   testWidgets('One-step initial route', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        initialRoute: '/a',
-        routes: <String, WidgetBuilder>{
-          '/': (BuildContext context) => const Text('route "/"'),
-          '/a': (BuildContext context) => const Text('route "/a"'),
-          '/a/b': (BuildContext context) => const Text('route "/a/b"'),
-          '/b': (BuildContext context) => const Text('route "/b"'),
-        },
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      initialRoute: '/a',
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext context) => const Text('route "/"'),
+        '/a': (BuildContext context) => const Text('route "/a"'),
+        '/a/b': (BuildContext context) => const Text('route "/a/b"'),
+        '/b': (BuildContext context) => const Text('route "/b"'),
+      },
+    ));
 
     expect(find.text('route "/"', skipOffstage: false), findsOneWidget);
     expect(find.text('route "/a"'), findsOneWidget);
@@ -253,34 +211,32 @@ void main() {
 
   testWidgets('Return value from pop is correct', (WidgetTester tester) async {
     late Future<Object?> result;
-    await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder: (BuildContext context) {
-              return Material(
-                child: ElevatedButton(
-                    child: const Text('X'),
-                    onPressed: () async {
-                      result = Navigator.of(context).pushNamed<Object?>('/a');
-                    },
-                ),
-              );
-            },
-          ),
-          routes: <String, WidgetBuilder>{
-            '/a': (BuildContext context) {
-              return Material(
-                child: ElevatedButton(
-                  child: const Text('Y'),
-                  onPressed: () {
-                    Navigator.of(context).pop('all done');
-                  },
-                ),
-              );
-            },
-          },
-        ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      home: Builder(
+        builder: (BuildContext context) {
+          return Material(
+            child: ElevatedButton(
+              child: const Text('X'),
+              onPressed: () async {
+                result = Navigator.of(context).pushNamed<Object?>('/a');
+              },
+            ),
+          );
+        },
+      ),
+      routes: <String, WidgetBuilder>{
+        '/a': (BuildContext context) {
+          return Material(
+            child: ElevatedButton(
+              child: const Text('Y'),
+              onPressed: () {
+                Navigator.of(context).pop('all done');
+              },
+            ),
+          );
+        },
+      },
+    ));
     await tester.tap(find.text('X'));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
@@ -299,12 +255,7 @@ void main() {
       '/b': (BuildContext context) => const Text('route "/b"'),
     };
 
-    await tester.pumpWidget(
-      MaterialApp(
-        initialRoute: '/a/b',
-        routes: routes,
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(initialRoute: '/a/b', routes: routes));
     expect(find.text('route "/"', skipOffstage: false), findsOneWidget);
     expect(find.text('route "/a"', skipOffstage: false), findsOneWidget);
     expect(find.text('route "/a/b"'), findsOneWidget);
@@ -319,12 +270,7 @@ void main() {
       '/b': (BuildContext context) => const Text('route "/b"'),
     };
 
-    await tester.pumpWidget(
-      MaterialApp(
-        initialRoute: '/a/b/c',
-        routes: routes,
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(initialRoute: '/a/b/c', routes: routes));
     final dynamic exception = tester.takeException();
     expect(exception, isA<String>());
     if (exception is String) {
@@ -343,23 +289,13 @@ void main() {
       '/b': (BuildContext context) => const Text('route "/b"'),
     };
 
-    await tester.pumpWidget(
-      MaterialApp(
-        initialRoute: '/a',
-        routes: routes,
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(initialRoute: '/a', routes: routes));
     expect(find.text('route "/"', skipOffstage: false), findsOneWidget);
     expect(find.text('route "/a"'), findsOneWidget);
     expect(find.text('route "/b"', skipOffstage: false), findsNothing);
 
     // changing initialRoute has no effect
-    await tester.pumpWidget(
-      MaterialApp(
-        initialRoute: '/b',
-        routes: routes,
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(initialRoute: '/b', routes: routes));
     expect(find.text('route "/"', skipOffstage: false), findsOneWidget);
     expect(find.text('route "/a"'), findsOneWidget);
     expect(find.text('route "/b"', skipOffstage: false), findsNothing);
@@ -373,18 +309,16 @@ void main() {
 
   testWidgets('onGenerateRoute / onUnknownRoute', (WidgetTester tester) async {
     final List<String> log = <String>[];
-    await tester.pumpWidget(
-      MaterialApp(
-        onGenerateRoute: (RouteSettings settings) {
-          log.add('onGenerateRoute ${settings.name}');
-          return null;
-        },
-        onUnknownRoute: (RouteSettings settings) {
-          log.add('onUnknownRoute ${settings.name}');
-          return null;
-        },
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      onGenerateRoute: (RouteSettings settings) {
+        log.add('onGenerateRoute ${settings.name}');
+        return null;
+      },
+      onUnknownRoute: (RouteSettings settings) {
+        log.add('onUnknownRoute ${settings.name}');
+        return null;
+      },
+    ));
     expect(tester.takeException(), isFlutterError);
     expect(log, <String>['onGenerateRoute /', 'onUnknownRoute /']);
 
@@ -395,13 +329,11 @@ void main() {
 
   testWidgets('MaterialApp with builder and no route information works.', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/18904
-    await tester.pumpWidget(
-      MaterialApp(
-        builder: (BuildContext context, Widget? child) {
-          return const SizedBox();
-        },
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      builder: (BuildContext context, Widget? child) {
+        return const SizedBox();
+      },
+    ));
   });
 
   testWidgets("WidgetsApp doesn't rebuild routes when MediaQuery updates", (WidgetTester tester) async {
@@ -415,16 +347,18 @@ void main() {
     await tester.pumpWidget(WidgetsApp(
       color: const Color.fromARGB(255, 255, 255, 255),
       onGenerateRoute: (_) {
-        return PageRouteBuilder<void>(pageBuilder: (_, __, ___) {
-          routeBuildCount++;
-          return Builder(
-            builder: (BuildContext context) {
-              dependentBuildCount++;
-              MediaQuery.of(context);
-              return Container();
-            },
-          );
-        });
+        return PageRouteBuilder<void>(
+          pageBuilder: (_, __, ___) {
+            routeBuildCount++;
+            return Builder(
+              builder: (BuildContext context) {
+                dependentBuildCount++;
+                MediaQuery.of(context);
+                return Container();
+              },
+            );
+          },
+        );
       },
     ));
 
@@ -467,10 +401,12 @@ void main() {
   testWidgets('Can get text scale from media query', (WidgetTester tester) async {
     double? textScaleFactor;
     await tester.pumpWidget(MaterialApp(
-      home: Builder(builder:(BuildContext context) {
-        textScaleFactor = MediaQuery.textScaleFactorOf(context);
-        return Container();
-      }),
+      home: Builder(
+        builder: (BuildContext context) {
+          textScaleFactor = MediaQuery.textScaleFactorOf(context);
+          return Container();
+        },
+      ),
     ));
     expect(textScaleFactor, isNotNull);
     expect(textScaleFactor, equals(1.0));
@@ -478,40 +414,27 @@ void main() {
 
   testWidgets('MaterialApp.navigatorKey', (WidgetTester tester) async {
     final GlobalKey<NavigatorState> key = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(MaterialApp(
-      navigatorKey: key,
-      color: const Color(0xFF112233),
-      home: const Placeholder(),
-    ));
+    await tester.pumpWidget(MaterialApp(navigatorKey: key, color: const Color(0xFF112233), home: const Placeholder()));
     expect(key.currentState, isA<NavigatorState>());
-    await tester.pumpWidget(const MaterialApp(
-      color: Color(0xFF112233),
-      home: Placeholder(),
-    ));
+    await tester.pumpWidget(const MaterialApp(color: Color(0xFF112233), home: Placeholder()));
     expect(key.currentState, isNull);
-    await tester.pumpWidget(MaterialApp(
-      navigatorKey: key,
-      color: const Color(0xFF112233),
-      home: const Placeholder(),
-    ));
+    await tester.pumpWidget(MaterialApp(navigatorKey: key, color: const Color(0xFF112233), home: const Placeholder()));
     expect(key.currentState, isA<NavigatorState>());
   });
 
   testWidgets('Has default material and cupertino localizations', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Builder(
-          builder: (BuildContext context) {
-            return Column(
-              children: <Widget>[
-                Text(MaterialLocalizations.of(context).selectAllButtonLabel),
-                Text(CupertinoLocalizations.of(context).selectAllButtonLabel),
-              ],
-            );
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      home: Builder(
+        builder: (BuildContext context) {
+          return Column(
+            children: <Widget>[
+              Text(MaterialLocalizations.of(context).selectAllButtonLabel),
+              Text(CupertinoLocalizations.of(context).selectAllButtonLabel),
+            ],
+          );
+        },
       ),
-    );
+    ));
 
     // Default US "select all" text.
     expect(find.text('Select all'), findsOneWidget);
@@ -526,44 +449,32 @@ void main() {
     tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
 
     late ThemeData appliedTheme;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-        ),
-        themeMode: ThemeMode.light,
-        home: Builder(
-          builder: (BuildContext context) {
-            appliedTheme = Theme.of(context);
-            return const SizedBox();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(brightness: Brightness.light),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      themeMode: ThemeMode.light,
+      home: Builder(
+        builder: (BuildContext context) {
+          appliedTheme = Theme.of(context);
+          return const SizedBox();
+        },
       ),
-    );
+    ));
     expect(appliedTheme.brightness, Brightness.light);
 
     // Mock the test to explicitly report a dark platformBrightness.
     tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-        ),
-        themeMode: ThemeMode.light,
-        home: Builder(
-          builder: (BuildContext context) {
-            appliedTheme = Theme.of(context);
-            return const SizedBox();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(brightness: Brightness.light),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      themeMode: ThemeMode.light,
+      home: Builder(
+        builder: (BuildContext context) {
+          appliedTheme = Theme.of(context);
+          return const SizedBox();
+        },
       ),
-    );
+    ));
     expect(appliedTheme.brightness, Brightness.light);
   });
 
@@ -574,172 +485,153 @@ void main() {
     tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
 
     late ThemeData appliedTheme;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-        ),
-        themeMode: ThemeMode.dark,
-        home: Builder(
-          builder: (BuildContext context) {
-            appliedTheme = Theme.of(context);
-            return const SizedBox();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(brightness: Brightness.light),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      themeMode: ThemeMode.dark,
+      home: Builder(
+        builder: (BuildContext context) {
+          appliedTheme = Theme.of(context);
+          return const SizedBox();
+        },
       ),
-    );
+    ));
     expect(appliedTheme.brightness, Brightness.dark);
 
     // Mock the test to explicitly report a dark platformBrightness.
     tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-        ),
-        themeMode: ThemeMode.dark,
-        home: Builder(
-          builder: (BuildContext context) {
-            appliedTheme = Theme.of(context);
-            return const SizedBox();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(brightness: Brightness.light),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      themeMode: ThemeMode.dark,
+      home: Builder(
+        builder: (BuildContext context) {
+          appliedTheme = Theme.of(context);
+          return const SizedBox();
+        },
       ),
-    );
+    ));
     expect(appliedTheme.brightness, Brightness.dark);
   });
 
-  testWidgets('MaterialApp uses regular theme when themeMode is system and platformBrightness is light', (WidgetTester tester) async {
-    addTearDown(tester.platformDispatcher.clearAllTestValues);
+  testWidgets(
+    'MaterialApp uses regular theme when themeMode is system and platformBrightness is light',
+    (WidgetTester tester) async {
+      addTearDown(tester.platformDispatcher.clearAllTestValues);
 
-    // Mock the test to explicitly report a light platformBrightness.
-    tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+      // Mock the test to explicitly report a light platformBrightness.
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
 
-    late ThemeData appliedTheme;
+      late ThemeData appliedTheme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-        ),
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(brightness: Brightness.light),
+        darkTheme: ThemeData(brightness: Brightness.dark),
         home: Builder(
           builder: (BuildContext context) {
             appliedTheme = Theme.of(context);
             return const SizedBox();
           },
         ),
-      ),
-    );
+      ));
 
-    expect(appliedTheme.brightness, Brightness.light);
-  });
+      expect(appliedTheme.brightness, Brightness.light);
+    },
+  );
 
-  testWidgets('MaterialApp uses darkTheme when themeMode is system and platformBrightness is dark', (WidgetTester tester) async {
-    addTearDown(tester.platformDispatcher.clearAllTestValues);
+  testWidgets(
+    'MaterialApp uses darkTheme when themeMode is system and platformBrightness is dark',
+    (WidgetTester tester) async {
+      addTearDown(tester.platformDispatcher.clearAllTestValues);
 
-    // Mock the test to explicitly report a dark platformBrightness.
-    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+      // Mock the test to explicitly report a dark platformBrightness.
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
 
-    late ThemeData appliedTheme;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-        ),
+      late ThemeData appliedTheme;
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(brightness: Brightness.light),
+        darkTheme: ThemeData(brightness: Brightness.dark),
         home: Builder(
           builder: (BuildContext context) {
             appliedTheme = Theme.of(context);
             return const SizedBox();
           },
         ),
-      ),
-    );
-    expect(appliedTheme.brightness, Brightness.dark);
-  });
+      ));
+      expect(appliedTheme.brightness, Brightness.dark);
+    },
+  );
 
-  testWidgets('MaterialApp uses light theme when platformBrightness is dark but no dark theme is provided', (WidgetTester tester) async {
-    addTearDown(tester.platformDispatcher.clearAllTestValues);
+  testWidgets(
+    'MaterialApp uses light theme when platformBrightness is dark but no dark theme is provided',
+    (WidgetTester tester) async {
+      addTearDown(tester.platformDispatcher.clearAllTestValues);
 
-    // Mock the test to explicitly report a dark platformBrightness.
-    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+      // Mock the test to explicitly report a dark platformBrightness.
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
 
-    late ThemeData appliedTheme;
+      late ThemeData appliedTheme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-        ),
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(brightness: Brightness.light),
         home: Builder(
           builder: (BuildContext context) {
             appliedTheme = Theme.of(context);
             return const SizedBox();
           },
         ),
-      ),
-    );
+      ));
 
-    expect(appliedTheme.brightness, Brightness.light);
-  });
+      expect(appliedTheme.brightness, Brightness.light);
+    },
+  );
 
-  testWidgets('MaterialApp uses fallback light theme when platformBrightness is dark but no theme is provided at all', (WidgetTester tester) async {
-    addTearDown(tester.platformDispatcher.clearAllTestValues);
+  testWidgets(
+    'MaterialApp uses fallback light theme when platformBrightness is dark but no theme is provided at all',
+    (WidgetTester tester) async {
+      addTearDown(tester.platformDispatcher.clearAllTestValues);
 
-    // Mock the test to explicitly report a dark platformBrightness.
-    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+      // Mock the test to explicitly report a dark platformBrightness.
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
 
-    late ThemeData appliedTheme;
+      late ThemeData appliedTheme;
 
-    await tester.pumpWidget(
-      MaterialApp(
+      await tester.pumpWidget(MaterialApp(
         home: Builder(
           builder: (BuildContext context) {
             appliedTheme = Theme.of(context);
             return const SizedBox();
           },
         ),
-      ),
-    );
+      ));
 
-    expect(appliedTheme.brightness, Brightness.light);
-  });
+      expect(appliedTheme.brightness, Brightness.light);
+    },
+  );
 
-  testWidgets('MaterialApp uses fallback light theme when platformBrightness is light and a dark theme is provided', (WidgetTester tester) async {
-    addTearDown(tester.platformDispatcher.clearAllTestValues);
+  testWidgets(
+    'MaterialApp uses fallback light theme when platformBrightness is light and a dark theme is provided',
+    (WidgetTester tester) async {
+      addTearDown(tester.platformDispatcher.clearAllTestValues);
 
-    // Mock the test to explicitly report a dark platformBrightness.
-    tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+      // Mock the test to explicitly report a dark platformBrightness.
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
 
-    late ThemeData appliedTheme;
+      late ThemeData appliedTheme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-        ),
+      await tester.pumpWidget(MaterialApp(
+        darkTheme: ThemeData(brightness: Brightness.dark),
         home: Builder(
           builder: (BuildContext context) {
             appliedTheme = Theme.of(context);
             return const SizedBox();
           },
         ),
-      ),
-    );
+      ));
 
-    expect(appliedTheme.brightness, Brightness.light);
-  });
+      expect(appliedTheme.brightness, Brightness.light);
+    },
+  );
 
   testWidgets('MaterialApp uses dark theme when platformBrightness is dark', (WidgetTester tester) async {
     addTearDown(tester.platformDispatcher.clearAllTestValues);
@@ -749,22 +641,16 @@ void main() {
 
     late ThemeData appliedTheme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-        ),
-        home: Builder(
-          builder: (BuildContext context) {
-            appliedTheme = Theme.of(context);
-            return const SizedBox();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(brightness: Brightness.light),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      home: Builder(
+        builder: (BuildContext context) {
+          appliedTheme = Theme.of(context);
+          return const SizedBox();
+        },
       ),
-    );
+    ));
 
     expect(appliedTheme.brightness, Brightness.dark);
   });
@@ -777,22 +663,16 @@ void main() {
 
     late ThemeData appliedTheme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          primaryColor: Colors.lightBlue,
-        ),
-        highContrastTheme: ThemeData(
-          primaryColor: Colors.blue,
-        ),
-        home: Builder(
-          builder: (BuildContext context) {
-            appliedTheme = Theme.of(context);
-            return const SizedBox();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(primaryColor: Colors.lightBlue),
+      highContrastTheme: ThemeData(primaryColor: Colors.blue),
+      home: Builder(
+        builder: (BuildContext context) {
+          appliedTheme = Theme.of(context);
+          return const SizedBox();
+        },
       ),
-    );
+    ));
 
     expect(appliedTheme.primaryColor, Colors.blue);
   });
@@ -805,28 +685,18 @@ void main() {
 
     late ThemeData appliedTheme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          primaryColor: Colors.lightBlue,
-        ),
-        darkTheme: ThemeData(
-          primaryColor: Colors.lightGreen,
-        ),
-        highContrastTheme: ThemeData(
-          primaryColor: Colors.blue,
-        ),
-        highContrastDarkTheme: ThemeData(
-          primaryColor: Colors.green,
-        ),
-        home: Builder(
-          builder: (BuildContext context) {
-            appliedTheme = Theme.of(context);
-            return const SizedBox();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(primaryColor: Colors.lightBlue),
+      darkTheme: ThemeData(primaryColor: Colors.lightGreen),
+      highContrastTheme: ThemeData(primaryColor: Colors.blue),
+      highContrastDarkTheme: ThemeData(primaryColor: Colors.green),
+      home: Builder(
+        builder: (BuildContext context) {
+          appliedTheme = Theme.of(context);
+          return const SizedBox();
+        },
       ),
-    );
+    ));
 
     expect(appliedTheme.primaryColor, Colors.green);
   });
@@ -839,22 +709,16 @@ void main() {
 
     late ThemeData appliedTheme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          primaryColor: Colors.lightBlue,
-        ),
-        darkTheme: ThemeData(
-          primaryColor: Colors.lightGreen,
-        ),
-        home: Builder(
-          builder: (BuildContext context) {
-            appliedTheme = Theme.of(context);
-            return const SizedBox();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(primaryColor: Colors.lightBlue),
+      darkTheme: ThemeData(primaryColor: Colors.lightGreen),
+      home: Builder(
+        builder: (BuildContext context) {
+          appliedTheme = Theme.of(context);
+          return const SizedBox();
+        },
       ),
-    );
+    ));
 
     expect(appliedTheme.primaryColor, Colors.lightGreen);
   });
@@ -862,33 +726,29 @@ void main() {
   testWidgets('MaterialApp animates theme changes', (WidgetTester tester) async {
     final ThemeData lightTheme = ThemeData.light();
     final ThemeData darkTheme = ThemeData.dark();
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: lightTheme,
-        darkTheme: darkTheme,
-        themeMode: ThemeMode.light,
-        home: Builder(
-          builder: (BuildContext context) {
-            return const Scaffold();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.light,
+      home: Builder(
+        builder: (BuildContext context) {
+          return const Scaffold();
+        },
       ),
-    );
+    ));
     expect(tester.widget<Material>(find.byType(Material)).color, lightTheme.scaffoldBackgroundColor);
 
     // Change to dark theme
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
-        themeMode: ThemeMode.dark,
-        home: Builder(
-          builder: (BuildContext context) {
-            return const Scaffold();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
+      home: Builder(
+        builder: (BuildContext context) {
+          return const Scaffold();
+        },
       ),
-    );
+    ));
 
     // Wait half kThemeAnimationDuration = 200ms.
     await tester.pump(const Duration(milliseconds: 100));
@@ -912,28 +772,24 @@ void main() {
       },
     );
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: lightTheme,
-        darkTheme: darkTheme,
-        themeMode: ThemeMode.light,
-        themeAnimationDuration: Duration.zero,
-        home: scaffold,
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.light,
+      themeAnimationDuration: Duration.zero,
+      home: scaffold,
+    ));
     expect(tester.widget<Material>(find.byType(Material)).color, lightTheme.scaffoldBackgroundColor);
     expect(scaffoldRebuilds, 1);
 
     // Change to dark theme
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
-        themeMode: ThemeMode.dark,
-        themeAnimationDuration: Duration.zero,
-        home: scaffold,
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
+      themeAnimationDuration: Duration.zero,
+      home: scaffold,
+    ));
 
     // Wait for any animation to finish.
     await tester.pumpAndSettle();
@@ -950,26 +806,20 @@ void main() {
     ThemeData? themeBeforeBrightnessChange;
     ThemeData? themeAfterBrightnessChange;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-        ),
-        home: Builder(
-          builder: (BuildContext context) {
-            if (themeBeforeBrightnessChange == null) {
-              themeBeforeBrightnessChange = Theme.of(context);
-            } else {
-              themeAfterBrightnessChange = Theme.of(context);
-            }
-            return const SizedBox();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(brightness: Brightness.light),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      home: Builder(
+        builder: (BuildContext context) {
+          if (themeBeforeBrightnessChange == null) {
+            themeBeforeBrightnessChange = Theme.of(context);
+          } else {
+            themeAfterBrightnessChange = Theme.of(context);
+          }
+          return const SizedBox();
+        },
       ),
-    );
+    ));
 
     // Switch the platformBrightness from light to dark and pump the widget tree
     // to process changes.
@@ -999,12 +849,7 @@ void main() {
       colorScheme: const ColorScheme.light().copyWith(secondary: secondaryColor),
     );
     await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const SingleChildScrollView(
-          child: SizedBox(height: 2000.0),
-        ),
-      ),
+      MaterialApp(theme: theme, home: const SingleChildScrollView(child: SizedBox(height: 2000.0))),
     );
 
     final RenderObject painter = tester.renderObject(find.byType(CustomPaint).first);
@@ -1014,39 +859,29 @@ void main() {
 
   testWidgets('MaterialApp can customize initial routes', (WidgetTester tester) async {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(
-      MaterialApp(
-        navigatorKey: navigatorKey,
-        onGenerateInitialRoutes: (String initialRoute) {
-          expect(initialRoute, '/abc');
-          return <Route<void>>[
-            PageRouteBuilder<void>(
-              pageBuilder: (
-                BuildContext context,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation,
-              ) {
-                return const Text('non-regular page one');
-              },
-            ),
-            PageRouteBuilder<void>(
-              pageBuilder: (
-                BuildContext context,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation,
-              ) {
-                return const Text('non-regular page two');
-              },
-            ),
-          ];
-        },
-        initialRoute: '/abc',
-        routes: <String, WidgetBuilder>{
-          '/': (BuildContext context) => const Text('regular page one'),
-          '/abc': (BuildContext context) => const Text('regular page two'),
-        },
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      navigatorKey: navigatorKey,
+      onGenerateInitialRoutes: (String initialRoute) {
+        expect(initialRoute, '/abc');
+        return <Route<void>>[
+          PageRouteBuilder<void>(
+            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+              return const Text('non-regular page one');
+            },
+          ),
+          PageRouteBuilder<void>(
+            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+              return const Text('non-regular page two');
+            },
+          ),
+        ];
+      },
+      initialRoute: '/abc',
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext context) => const Text('regular page one'),
+        '/abc': (BuildContext context) => const Text('regular page two'),
+      },
+    ));
     expect(find.text('non-regular page two'), findsOneWidget);
     expect(find.text('non-regular page one'), findsNothing);
     expect(find.text('regular page one'), findsNothing);
@@ -1070,34 +905,24 @@ void main() {
 
   testWidgets('MaterialApp.navigatorKey can be updated', (WidgetTester tester) async {
     final GlobalKey<NavigatorState> key1 = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(MaterialApp(
-      navigatorKey: key1,
-      home: const Placeholder(),
-    ));
+    await tester.pumpWidget(MaterialApp(navigatorKey: key1, home: const Placeholder()));
     expect(key1.currentState, isA<NavigatorState>());
     final GlobalKey<NavigatorState> key2 = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(MaterialApp(
-      navigatorKey: key2,
-      home: const Placeholder(),
-    ));
+    await tester.pumpWidget(MaterialApp(navigatorKey: key2, home: const Placeholder()));
     expect(key2.currentState, isA<NavigatorState>());
     expect(key1.currentState, isNull);
   });
 
   testWidgets('MaterialApp.router works', (WidgetTester tester) async {
     final PlatformRouteInformationProvider provider = PlatformRouteInformationProvider(
-      initialRouteInformation: RouteInformation(
-        uri: Uri.parse('initial'),
-      ),
+      initialRouteInformation: RouteInformation(uri: Uri.parse('initial')),
     );
     final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
       builder: (BuildContext context, RouteInformation information) {
         return Text(information.uri.toString());
       },
       onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
-        delegate.routeInformation = RouteInformation(
-          uri: Uri.parse('popped'),
-        );
+        delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
         return route.didPop(result);
       },
     );
@@ -1110,7 +935,7 @@ void main() {
 
     // Simulate android back button intent.
     final ByteData message = const JSONMethodCodec().encodeMethodCall(const MethodCall('popRoute'));
-    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) { });
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) {});
     await tester.pumpAndSettle();
     expect(find.text('popped'), findsOneWidget);
   });
@@ -1121,100 +946,83 @@ void main() {
         return Text(information.uri.toString());
       },
       onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
-        delegate.routeInformation = RouteInformation(
-          uri: Uri.parse('popped'),
-        );
+        delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
         return route.didPop(result);
       },
     );
     delegate.routeInformation = RouteInformation(uri: Uri.parse('initial'));
-    await tester.pumpWidget(MaterialApp.router(
-      routerDelegate: delegate,
-    ));
+    await tester.pumpWidget(MaterialApp.router(routerDelegate: delegate));
     expect(find.text('initial'), findsOneWidget);
 
     // Simulate android back button intent.
     final ByteData message = const JSONMethodCodec().encodeMethodCall(const MethodCall('popRoute'));
-    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) { });
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) {});
     await tester.pumpAndSettle();
     expect(find.text('popped'), findsOneWidget);
   });
 
-  testWidgets('MaterialApp.router throw if route information provider is provided but no route information parser', (WidgetTester tester) async {
-    final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
-      builder: (BuildContext context, RouteInformation information) {
-        return Text(information.uri.toString());
-      },
-      onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
-        delegate.routeInformation = RouteInformation(
-          uri: Uri.parse('popped'),
-        );
-        return route.didPop(result);
-      },
-    );
-    delegate.routeInformation = RouteInformation(uri: Uri.parse('initial'));
-    final PlatformRouteInformationProvider provider = PlatformRouteInformationProvider(
-      initialRouteInformation: RouteInformation(
-        uri: Uri.parse('initial'),
-      ),
-    );
-    await tester.pumpWidget(MaterialApp.router(
-      routeInformationProvider: provider,
-      routerDelegate: delegate,
-    ));
-    expect(tester.takeException(), isAssertionError);
-  });
+  testWidgets(
+    'MaterialApp.router throw if route information provider is provided but no route information parser',
+    (WidgetTester tester) async {
+      final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
+        builder: (BuildContext context, RouteInformation information) {
+          return Text(information.uri.toString());
+        },
+        onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
+          delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
+          return route.didPop(result);
+        },
+      );
+      delegate.routeInformation = RouteInformation(uri: Uri.parse('initial'));
+      final PlatformRouteInformationProvider provider = PlatformRouteInformationProvider(
+        initialRouteInformation: RouteInformation(uri: Uri.parse('initial')),
+      );
+      await tester.pumpWidget(MaterialApp.router(routeInformationProvider: provider, routerDelegate: delegate));
+      expect(tester.takeException(), isAssertionError);
+    },
+  );
 
-  testWidgets('MaterialApp.router throw if route configuration is provided along with other delegate', (WidgetTester tester) async {
-    final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
-      builder: (BuildContext context, RouteInformation information) {
-        return Text(information.uri.toString());
-      },
-      onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
-        delegate.routeInformation = RouteInformation(
-          uri: Uri.parse('popped'),
-        );
-        return route.didPop(result);
-      },
-    );
-    delegate.routeInformation = RouteInformation(uri: Uri.parse('initial'));
-    final RouterConfig<RouteInformation> routerConfig = RouterConfig<RouteInformation>(routerDelegate: delegate);
-    await tester.pumpWidget(MaterialApp.router(
-      routerDelegate: delegate,
-      routerConfig: routerConfig,
-    ));
-    expect(tester.takeException(), isAssertionError);
-  });
+  testWidgets(
+    'MaterialApp.router throw if route configuration is provided along with other delegate',
+    (WidgetTester tester) async {
+      final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
+        builder: (BuildContext context, RouteInformation information) {
+          return Text(information.uri.toString());
+        },
+        onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
+          delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
+          return route.didPop(result);
+        },
+      );
+      delegate.routeInformation = RouteInformation(uri: Uri.parse('initial'));
+      final RouterConfig<RouteInformation> routerConfig = RouterConfig<RouteInformation>(routerDelegate: delegate);
+      await tester.pumpWidget(MaterialApp.router(routerDelegate: delegate, routerConfig: routerConfig));
+      expect(tester.takeException(), isAssertionError);
+    },
+  );
 
   testWidgets('MaterialApp.router router config works', (WidgetTester tester) async {
     final RouterConfig<RouteInformation> routerConfig = RouterConfig<RouteInformation>(
-        routeInformationProvider: PlatformRouteInformationProvider(
-          initialRouteInformation: RouteInformation(
-            uri: Uri.parse('initial'),
-          ),
-        ),
-        routeInformationParser: SimpleRouteInformationParser(),
-        routerDelegate: SimpleNavigatorRouterDelegate(
-          builder: (BuildContext context, RouteInformation information) {
-            return Text(information.uri.toString());
-          },
-          onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
-            delegate.routeInformation = RouteInformation(
-              uri: Uri.parse('popped'),
-            );
-            return route.didPop(result);
-          },
-        ),
-        backButtonDispatcher: RootBackButtonDispatcher()
+      routeInformationProvider:
+          PlatformRouteInformationProvider(initialRouteInformation: RouteInformation(uri: Uri.parse('initial'))),
+      routeInformationParser: SimpleRouteInformationParser(),
+      routerDelegate: SimpleNavigatorRouterDelegate(
+        builder: (BuildContext context, RouteInformation information) {
+          return Text(information.uri.toString());
+        },
+        onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
+          delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
+          return route.didPop(result);
+        },
+      ),
+      backButtonDispatcher: RootBackButtonDispatcher(),
     );
-    await tester.pumpWidget(MaterialApp.router(
-      routerConfig: routerConfig,
-    ));
+    await tester.pumpWidget(MaterialApp.router(routerConfig: routerConfig));
     expect(find.text('initial'), findsOneWidget);
 
     // Simulate android back button intent.
     final ByteData message = const JSONMethodCodec().encodeMethodCall(const MethodCall('popRoute'));
-    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) { });
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) {});
     await tester.pumpAndSettle();
     expect(find.text('popped'), findsOneWidget);
   });
@@ -1232,32 +1040,28 @@ void main() {
 
   testWidgets('MaterialApp has correct default ScrollBehavior', (WidgetTester tester) async {
     late BuildContext capturedContext;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Builder(
-          builder: (BuildContext context) {
-            capturedContext = context;
-            return const Placeholder();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      home: Builder(
+        builder: (BuildContext context) {
+          capturedContext = context;
+          return const Placeholder();
+        },
       ),
-    );
+    ));
     expect(ScrollConfiguration.of(capturedContext).runtimeType, MaterialScrollBehavior);
   });
 
   testWidgets('A ScrollBehavior can be set for MaterialApp', (WidgetTester tester) async {
     late BuildContext capturedContext;
-    await tester.pumpWidget(
-      MaterialApp(
-        scrollBehavior: const MockScrollBehavior(),
-        home: Builder(
-          builder: (BuildContext context) {
-            capturedContext = context;
-            return const Placeholder();
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      scrollBehavior: const MockScrollBehavior(),
+      home: Builder(
+        builder: (BuildContext context) {
+          capturedContext = context;
+          return const Placeholder();
+        },
       ),
-    );
+    ));
     final ScrollBehavior scrollBehavior = ScrollConfiguration.of(capturedContext);
     expect(scrollBehavior.runtimeType, MockScrollBehavior);
     expect(scrollBehavior.getScrollPhysics(capturedContext).runtimeType, NeverScrollableScrollPhysics);
@@ -1267,15 +1071,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       theme: ThemeData(useMaterial3: false),
       scrollBehavior: const MaterialScrollBehavior(),
-      home: ListView(
-        children: const <Widget>[
-          SizedBox(
-            height: 1000.0,
-            width: 1000.0,
-            child: Text('Test'),
-          ),
-        ],
-      ),
+      home: ListView(children: const <Widget>[SizedBox(height: 1000.0, width: 1000.0, child: Text('Test'))]),
     ));
 
     expect(find.byType(StretchingOverscrollIndicator), findsNothing);
@@ -1285,15 +1081,7 @@ void main() {
   testWidgets('ScrollBehavior stretch android overscroll indicator', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
       scrollBehavior: const MaterialScrollBehavior(androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
-      home: ListView(
-        children: const <Widget>[
-          SizedBox(
-            height: 1000.0,
-            width: 1000.0,
-            child: Text('Test'),
-          ),
-        ],
-      ),
+      home: ListView(children: const <Widget>[SizedBox(height: 1000.0, width: 1000.0, child: Text('Test'))]),
     ));
 
     expect(find.byType(StretchingOverscrollIndicator), findsOneWidget);
@@ -1303,15 +1091,7 @@ void main() {
   testWidgets('ScrollBehavior stretch android overscroll indicator via useMaterial3 flag', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: ListView(
-        children: const <Widget>[
-          SizedBox(
-            height: 1000.0,
-            width: 1000.0,
-            child: Text('Test'),
-          ),
-        ],
-      ),
+      home: ListView(children: const <Widget>[SizedBox(height: 1000.0, width: 1000.0, child: Text('Test'))]),
     ));
 
     expect(find.byType(StretchingOverscrollIndicator), findsOneWidget);
@@ -1322,35 +1102,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       // The current default is glowing, setting via the theme should override.
       theme: ThemeData().copyWith(androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
-      home: ListView(
-        children: const <Widget>[
-          SizedBox(
-            height: 1000.0,
-            width: 1000.0,
-            child: Text('Test'),
-          ),
-        ],
-      ),
-    ));
-
-    expect(find.byType(StretchingOverscrollIndicator), findsOneWidget);
-    expect(find.byType(GlowingOverscrollIndicator), findsNothing);
-  }, variant: TargetPlatformVariant.only(TargetPlatform.android));
-
-  testWidgets('Overscroll indicator in MaterialScrollBehavior takes precedence over theme', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
-      // MaterialScrollBehavior.androidOverscrollIndicator takes precedence over theme.
-      scrollBehavior: const MaterialScrollBehavior(androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
-      theme: ThemeData().copyWith(androidOverscrollIndicator: AndroidOverscrollIndicator.glow),
-      home: ListView(
-        children: const <Widget>[
-          SizedBox(
-            height: 1000.0,
-            width: 1000.0,
-            child: Text('Test'),
-          ),
-        ],
-      ),
+      home: ListView(children: const <Widget>[SizedBox(height: 1000.0, width: 1000.0, child: Text('Test'))]),
     ));
 
     expect(find.byType(StretchingOverscrollIndicator), findsOneWidget);
@@ -1358,87 +1110,94 @@ void main() {
   }, variant: TargetPlatformVariant.only(TargetPlatform.android));
 
   testWidgets(
-    'ListView clip behavior updates overscroll indicator clip behavior', (WidgetTester tester) async {
-      Widget buildFrame(Clip clipBehavior) {
-        return MaterialApp(
-          theme: ThemeData(useMaterial3: true),
-          home: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 300,
-                child: ListView.builder(
-                  itemCount: 20,
-                  clipBehavior: clipBehavior,
-                  itemBuilder: (BuildContext context, int index){
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text('Index $index'),
-                    );
-                  },
-                ),
-              ),
-              Opacity(
-                opacity: 0.5,
-                child: Container(
-                  color: const Color(0xD0FF0000),
-                  height: 100,
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-
-      // Test default clip behavior.
-      await tester.pumpWidget(buildFrame(Clip.hardEdge));
+    'Overscroll indicator in MaterialScrollBehavior takes precedence over theme',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        // MaterialScrollBehavior.androidOverscrollIndicator takes precedence over theme.
+        scrollBehavior: const MaterialScrollBehavior(androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
+        theme: ThemeData().copyWith(androidOverscrollIndicator: AndroidOverscrollIndicator.glow),
+        home: ListView(children: const <Widget>[SizedBox(height: 1000.0, width: 1000.0, child: Text('Test'))]),
+      ));
 
       expect(find.byType(StretchingOverscrollIndicator), findsOneWidget);
       expect(find.byType(GlowingOverscrollIndicator), findsNothing);
-      expect(find.text('Index 1'), findsOneWidget);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.android),
+  );
 
-      RenderClipRect renderClip = tester.allRenderObjects.whereType<RenderClipRect>().first;
-      // Currently not clipping
-      expect(renderClip.clipBehavior, equals(Clip.none));
+  testWidgets('ListView clip behavior updates overscroll indicator clip behavior', (WidgetTester tester) async {
+    Widget buildFrame(Clip clipBehavior) {
+      return MaterialApp(
+        theme: ThemeData(useMaterial3: true),
+        home: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 300,
+              child: ListView.builder(
+                itemCount: 20,
+                clipBehavior: clipBehavior,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(padding: const EdgeInsets.all(10.0), child: Text('Index $index'));
+                },
+              ),
+            ),
+            Opacity(opacity: 0.5, child: Container(color: const Color(0xD0FF0000), height: 100)),
+          ],
+        ),
+      );
+    }
 
-      TestGesture gesture = await tester.startGesture(tester.getCenter(find.text('Index 1')));
-      // Overscroll the start.
-      await gesture.moveBy(const Offset(0.0, 200.0));
-      await tester.pumpAndSettle();
-      expect(find.text('Index 1'), findsOneWidget);
-      expect(tester.getCenter(find.text('Index 1')).dy, greaterThan(0));
-      renderClip = tester.allRenderObjects.whereType<RenderClipRect>().first;
-      // Now clipping
-      expect(renderClip.clipBehavior, equals(Clip.hardEdge));
+    // Test default clip behavior.
+    await tester.pumpWidget(buildFrame(Clip.hardEdge));
 
-      await gesture.up();
-      await tester.pumpAndSettle();
+    expect(find.byType(StretchingOverscrollIndicator), findsOneWidget);
+    expect(find.byType(GlowingOverscrollIndicator), findsNothing);
+    expect(find.text('Index 1'), findsOneWidget);
 
-      // Test custom clip behavior.
-      await tester.pumpWidget(buildFrame(Clip.none));
+    RenderClipRect renderClip = tester.allRenderObjects.whereType<RenderClipRect>().first;
+    // Currently not clipping
+    expect(renderClip.clipBehavior, equals(Clip.none));
 
-      renderClip = tester.allRenderObjects.whereType<RenderClipRect>().first;
-      // Currently not clipping
-      expect(renderClip.clipBehavior, equals(Clip.none));
+    TestGesture gesture = await tester.startGesture(tester.getCenter(find.text('Index 1')));
+    // Overscroll the start.
+    await gesture.moveBy(const Offset(0.0, 200.0));
+    await tester.pumpAndSettle();
+    expect(find.text('Index 1'), findsOneWidget);
+    expect(tester.getCenter(find.text('Index 1')).dy, greaterThan(0));
+    renderClip = tester.allRenderObjects.whereType<RenderClipRect>().first;
+    // Now clipping
+    expect(renderClip.clipBehavior, equals(Clip.hardEdge));
 
-      gesture = await tester.startGesture(tester.getCenter(find.text('Index 1')));
-      // Overscroll the start.
-      await gesture.moveBy(const Offset(0.0, 200.0));
-      await tester.pumpAndSettle();
-      expect(find.text('Index 1'), findsOneWidget);
-      expect(tester.getCenter(find.text('Index 1')).dy, greaterThan(0));
-      renderClip = tester.allRenderObjects.whereType<RenderClipRect>().first;
-      // Now clipping
-      expect(renderClip.clipBehavior, equals(Clip.none));
+    await gesture.up();
+    await tester.pumpAndSettle();
 
-      await gesture.up();
-      await tester.pumpAndSettle();
+    // Test custom clip behavior.
+    await tester.pumpWidget(buildFrame(Clip.none));
+
+    renderClip = tester.allRenderObjects.whereType<RenderClipRect>().first;
+    // Currently not clipping
+    expect(renderClip.clipBehavior, equals(Clip.none));
+
+    gesture = await tester.startGesture(tester.getCenter(find.text('Index 1')));
+    // Overscroll the start.
+    await gesture.moveBy(const Offset(0.0, 200.0));
+    await tester.pumpAndSettle();
+    expect(find.text('Index 1'), findsOneWidget);
+    expect(tester.getCenter(find.text('Index 1')).dy, greaterThan(0));
+    renderClip = tester.allRenderObjects.whereType<RenderClipRect>().first;
+    // Now clipping
+    expect(renderClip.clipBehavior, equals(Clip.none));
+
+    await gesture.up();
+    await tester.pumpAndSettle();
   }, variant: TargetPlatformVariant.only(TargetPlatform.android));
 
-  testWidgets('When `useInheritedMediaQuery` is true an existing MediaQuery is used if one is available', (WidgetTester tester) async {
-    late BuildContext capturedContext;
-    final UniqueKey uniqueKey = UniqueKey();
-    await tester.pumpWidget(
-      MediaQuery(
+  testWidgets(
+    'When `useInheritedMediaQuery` is true an existing MediaQuery is used if one is available',
+    (WidgetTester tester) async {
+      late BuildContext capturedContext;
+      final UniqueKey uniqueKey = UniqueKey();
+      await tester.pumpWidget(MediaQuery(
         key: uniqueKey,
         data: const MediaQueryData(),
         child: MaterialApp(
@@ -1449,10 +1208,10 @@ void main() {
           },
           color: const Color(0xFF123456),
         ),
-      ),
-    );
-    expect(capturedContext.dependOnInheritedWidgetOfExactType<MediaQuery>()?.key, uniqueKey);
-  });
+      ));
+      expect(capturedContext.dependOnInheritedWidgetOfExactType<MediaQuery>()?.key, uniqueKey);
+    },
+  );
 
   testWidgets('Assert in buildScrollbar that controller != null when using it (vertical)', (WidgetTester tester) async {
     const ScrollBehavior defaultBehavior = MaterialScrollBehavior();
@@ -1473,9 +1232,7 @@ void main() {
       ),
     ));
 
-    const ScrollableDetails details = ScrollableDetails(
-      direction: AxisDirection.down,
-    );
+    const ScrollableDetails details = ScrollableDetails(direction: AxisDirection.down);
     final Widget child = Container();
 
     switch (defaultTargetPlatform) {
@@ -1491,51 +1248,54 @@ void main() {
           () {
             defaultBehavior.buildScrollbar(capturedContext, child, details);
           },
-          throwsA(
-            isA<AssertionError>().having((AssertionError error) => error.toString(),
-              'description', contains('details.controller != null')),
-          ),
+          throwsA(isA<AssertionError>().having(
+            (AssertionError error) => error.toString(),
+            'description',
+            contains('details.controller != null'),
+          )),
         );
     }
   }, variant: TargetPlatformVariant.all());
 
-  testWidgets('Assert in buildScrollbar that controller != null when using it (horizontal)', (WidgetTester tester) async {
-    const ScrollBehavior defaultBehavior = MaterialScrollBehavior();
-    late BuildContext capturedContext;
+  testWidgets(
+    'Assert in buildScrollbar that controller != null when using it (horizontal)',
+    (WidgetTester tester) async {
+      const ScrollBehavior defaultBehavior = MaterialScrollBehavior();
+      late BuildContext capturedContext;
 
-    await tester.pumpWidget(MaterialApp(
-      home: ScrollConfiguration(
-        // Avoid the default ones here.
-        behavior: const MaterialScrollBehavior().copyWith(scrollbars: false),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Builder(
-            builder: (BuildContext context) {
-              capturedContext = context;
-              return Container(height: 1000.0);
-            },
+      await tester.pumpWidget(MaterialApp(
+        home: ScrollConfiguration(
+          // Avoid the default ones here.
+          behavior: const MaterialScrollBehavior().copyWith(scrollbars: false),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Builder(
+              builder: (BuildContext context) {
+                capturedContext = context;
+                return Container(height: 1000.0);
+              },
+            ),
           ),
         ),
-      ),
-    ));
+      ));
 
-    const ScrollableDetails details = ScrollableDetails(
-      direction: AxisDirection.left,
-    );
-    final Widget child = Container();
+      const ScrollableDetails details = ScrollableDetails(direction: AxisDirection.left);
+      final Widget child = Container();
 
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.iOS:
-      case TargetPlatform.linux:
-      case TargetPlatform.macOS:
-      case TargetPlatform.windows:
-        // Does not throw if we aren't using it.
-        // Horizontal axis gets no scrollbars for all platforms.
-        defaultBehavior.buildScrollbar(capturedContext, child, details);
-    }
-  }, variant: TargetPlatformVariant.all());
+      switch (defaultTargetPlatform) {
+        case TargetPlatform.android:
+        case TargetPlatform.fuchsia:
+        case TargetPlatform.iOS:
+        case TargetPlatform.linux:
+        case TargetPlatform.macOS:
+        case TargetPlatform.windows:
+          // Does not throw if we aren't using it.
+          // Horizontal axis gets no scrollbars for all platforms.
+          defaultBehavior.buildScrollbar(capturedContext, child, details);
+      }
+    },
+    variant: TargetPlatformVariant.all(),
+  );
 }
 
 class MockScrollBehavior extends ScrollBehavior {
@@ -1546,7 +1306,11 @@ class MockScrollBehavior extends ScrollBehavior {
 }
 
 typedef SimpleRouterDelegateBuilder = Widget Function(BuildContext, RouteInformation);
-typedef SimpleNavigatorRouterDelegatePopPage<T> = bool Function(Route<T> route, T result, SimpleNavigatorRouterDelegate delegate);
+typedef SimpleNavigatorRouterDelegatePopPage<T> = bool Function(
+  Route<T> route,
+  T result,
+  SimpleNavigatorRouterDelegate delegate,
+);
 
 class SimpleRouteInformationParser extends RouteInformationParser<RouteInformation> {
   SimpleRouteInformationParser();
@@ -1562,11 +1326,9 @@ class SimpleRouteInformationParser extends RouteInformationParser<RouteInformati
   }
 }
 
-class SimpleNavigatorRouterDelegate extends RouterDelegate<RouteInformation> with PopNavigatorRouterDelegateMixin<RouteInformation>, ChangeNotifier {
-  SimpleNavigatorRouterDelegate({
-    required this.builder,
-    required this.onPopPage,
-  });
+class SimpleNavigatorRouterDelegate extends RouterDelegate<RouteInformation>
+    with PopNavigatorRouterDelegateMixin<RouteInformation>, ChangeNotifier {
+  SimpleNavigatorRouterDelegate({required this.builder, required this.onPopPage});
 
   @override
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -1599,9 +1361,7 @@ class SimpleNavigatorRouterDelegate extends RouterDelegate<RouteInformation> wit
       pages: <Page<void>>[
         // We need at least two pages for the pop to propagate through.
         // Otherwise, the navigator will bubble the pop to the system navigator.
-        const MaterialPage<void>(
-          child: Text('base'),
-        ),
+        const MaterialPage<void>(child: Text('base')),
         MaterialPage<void>(
           key: ValueKey<String>(routeInformation.uri.toString()),
           child: builder(context, routeInformation),

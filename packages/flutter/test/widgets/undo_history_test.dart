@@ -16,25 +16,20 @@ void main() {
 
   group('UndoHistory', () {
     Future<void> sendUndoRedo(WidgetTester tester, [bool redo = false]) {
-      return sendKeys(
-        tester,
-        <LogicalKeyboardKey>[
-          LogicalKeyboardKey.keyZ,
-        ],
-        shortcutModifier: true,
-        shift: redo,
-        targetPlatform: defaultTargetPlatform,
-      );
+      return sendKeys(tester, <LogicalKeyboardKey>[
+        LogicalKeyboardKey.keyZ,
+      ], shortcutModifier: true, shift: redo, targetPlatform: defaultTargetPlatform);
     }
 
     Future<void> sendUndo(WidgetTester tester) => sendUndoRedo(tester);
     Future<void> sendRedo(WidgetTester tester) => sendUndoRedo(tester, true);
 
-    testWidgets('allows undo and redo to be called programmatically from the UndoHistoryController', (WidgetTester tester) async {
-      final ValueNotifier<int> value = ValueNotifier<int>(0);
-      final UndoHistoryController controller = UndoHistoryController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'allows undo and redo to be called programmatically from the UndoHistoryController',
+      (WidgetTester tester) async {
+        final ValueNotifier<int> value = ValueNotifier<int>(0);
+        final UndoHistoryController controller = UndoHistoryController();
+        await tester.pumpWidget(MaterialApp(
           home: UndoHistory<int>(
             value: value,
             controller: controller,
@@ -44,100 +39,96 @@ void main() {
             focusNode: focusNode,
             child: Container(),
           ),
-        ),
-      );
+        ));
 
-      await tester.pump(const Duration(milliseconds: 500));
+        await tester.pump(const Duration(milliseconds: 500));
 
-      // Undo/redo have no effect if the value has never changed.
-      expect(controller.value.canUndo, false);
-      expect(controller.value.canRedo, false);
-      controller.undo();
-      expect(value.value, 0);
-      controller.redo();
-      expect(value.value, 0);
+        // Undo/redo have no effect if the value has never changed.
+        expect(controller.value.canUndo, false);
+        expect(controller.value.canRedo, false);
+        controller.undo();
+        expect(value.value, 0);
+        controller.redo();
+        expect(value.value, 0);
 
-      focusNode.requestFocus();
-      await tester.pump();
-      expect(controller.value.canUndo, false);
-      expect(controller.value.canRedo, false);
-      controller.undo();
-      expect(value.value, 0);
-      controller.redo();
-      expect(value.value, 0);
+        focusNode.requestFocus();
+        await tester.pump();
+        expect(controller.value.canUndo, false);
+        expect(controller.value.canRedo, false);
+        controller.undo();
+        expect(value.value, 0);
+        controller.redo();
+        expect(value.value, 0);
 
-      value.value = 1;
+        value.value = 1;
 
-      // Wait for the throttling.
-      await tester.pump(const Duration(milliseconds: 500));
+        // Wait for the throttling.
+        await tester.pump(const Duration(milliseconds: 500));
 
-      // Can undo/redo a single change.
-      expect(controller.value.canUndo, true);
-      expect(controller.value.canRedo, false);
-      controller.undo();
-      expect(value.value, 0);
-      expect(controller.value.canUndo, false);
-      expect(controller.value.canRedo, true);
-      controller.redo();
-      expect(value.value, 1);
-      expect(controller.value.canUndo, true);
-      expect(controller.value.canRedo, false);
+        // Can undo/redo a single change.
+        expect(controller.value.canUndo, true);
+        expect(controller.value.canRedo, false);
+        controller.undo();
+        expect(value.value, 0);
+        expect(controller.value.canUndo, false);
+        expect(controller.value.canRedo, true);
+        controller.redo();
+        expect(value.value, 1);
+        expect(controller.value.canUndo, true);
+        expect(controller.value.canRedo, false);
 
-      value.value = 2;
-      await tester.pump(const Duration(milliseconds: 500));
+        value.value = 2;
+        await tester.pump(const Duration(milliseconds: 500));
 
-      // And can undo/redo multiple changes.
-      expect(controller.value.canUndo, true);
-      expect(controller.value.canRedo, false);
-      controller.undo();
-      expect(value.value, 1);
-      expect(controller.value.canUndo, true);
-      expect(controller.value.canRedo, true);
-      controller.undo();
-      expect(value.value, 0);
-      expect(controller.value.canUndo, false);
-      expect(controller.value.canRedo, true);
-      controller.redo();
-      expect(value.value, 1);
-      expect(controller.value.canUndo, true);
-      expect(controller.value.canRedo, true);
-      controller.redo();
-      expect(value.value, 2);
-      expect(controller.value.canUndo, true);
-      expect(controller.value.canRedo, false);
+        // And can undo/redo multiple changes.
+        expect(controller.value.canUndo, true);
+        expect(controller.value.canRedo, false);
+        controller.undo();
+        expect(value.value, 1);
+        expect(controller.value.canUndo, true);
+        expect(controller.value.canRedo, true);
+        controller.undo();
+        expect(value.value, 0);
+        expect(controller.value.canUndo, false);
+        expect(controller.value.canRedo, true);
+        controller.redo();
+        expect(value.value, 1);
+        expect(controller.value.canUndo, true);
+        expect(controller.value.canRedo, true);
+        controller.redo();
+        expect(value.value, 2);
+        expect(controller.value.canUndo, true);
+        expect(controller.value.canRedo, false);
 
-      // Changing the value again clears the redo stack.
-      expect(controller.value.canUndo, true);
-      expect(controller.value.canRedo, false);
-      controller.undo();
-      expect(value.value, 1);
-      expect(controller.value.canUndo, true);
-      expect(controller.value.canRedo, true);
-      value.value = 3;
-      await tester.pump(const Duration(milliseconds: 500));
-      expect(controller.value.canUndo, true);
-      expect(controller.value.canRedo, false);
-    }, variant: TargetPlatformVariant.all());
+        // Changing the value again clears the redo stack.
+        expect(controller.value.canUndo, true);
+        expect(controller.value.canRedo, false);
+        controller.undo();
+        expect(value.value, 1);
+        expect(controller.value.canUndo, true);
+        expect(controller.value.canRedo, true);
+        value.value = 3;
+        await tester.pump(const Duration(milliseconds: 500));
+        expect(controller.value.canUndo, true);
+        expect(controller.value.canRedo, false);
+      },
+      variant: TargetPlatformVariant.all(),
+    );
 
     testWidgets('allows undo and redo to be called using the keyboard', (WidgetTester tester) async {
       final ValueNotifier<int> value = ValueNotifier<int>(0);
       final UndoHistoryController controller = UndoHistoryController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UndoHistory<int>(
-            controller: controller,
-            value: value,
-            onTriggered: (int newValue) {
-              value.value = newValue;
-            },
-            focusNode: focusNode,
-            child: Focus(
-              focusNode: focusNode,
-              child: Container(),
-            ),
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: UndoHistory<int>(
+          controller: controller,
+          value: value,
+          onTriggered: (int newValue) {
+            value.value = newValue;
+          },
+          focusNode: focusNode,
+          child: Focus(focusNode: focusNode, child: Container()),
         ),
-      );
+      ));
 
       await tester.pump(const Duration(milliseconds: 500));
 
@@ -214,19 +205,17 @@ void main() {
     testWidgets('duplicate changes do not affect the undo history', (WidgetTester tester) async {
       final ValueNotifier<int> value = ValueNotifier<int>(0);
       final UndoHistoryController controller = UndoHistoryController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UndoHistory<int>(
-            controller: controller,
-            value: value,
-            onTriggered: (int newValue) {
-              value.value = newValue;
-            },
-            focusNode: focusNode,
-            child: Container(),
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: UndoHistory<int>(
+          controller: controller,
+          value: value,
+          onTriggered: (int newValue) {
+            value.value = newValue;
+          },
+          focusNode: focusNode,
+          child: Container(),
         ),
-      );
+      ));
 
       focusNode.requestFocus();
 
@@ -266,20 +255,18 @@ void main() {
       final UndoHistoryController controller = UndoHistoryController();
       int Function(int newValue) valueToUse = (int value) => value;
       final GlobalKey<UndoHistoryState<int>> key = GlobalKey<UndoHistoryState<int>>();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UndoHistory<int>(
-            key: key,
-            value: value,
-            controller: controller,
-            onTriggered: (int newValue) {
-              value.value = valueToUse(newValue);
-            },
-            focusNode: focusNode,
-            child: Container(),
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: UndoHistory<int>(
+          key: key,
+          value: value,
+          controller: controller,
+          onTriggered: (int newValue) {
+            value.value = valueToUse(newValue);
+          },
+          focusNode: focusNode,
+          child: Container(),
         ),
-      );
+      ));
 
       await tester.pump(const Duration(milliseconds: 500));
 
@@ -311,30 +298,28 @@ void main() {
 
     testWidgets('changes should send setUndoState to the UndoManagerConnection on iOS', (WidgetTester tester) async {
       final List<MethodCall> log = <MethodCall>[];
-      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.undoManager, (MethodCall methodCall) async {
-        log.add(methodCall);
-        return null;
-      });
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.undoManager,
+        (MethodCall methodCall) async {
+          log.add(methodCall);
+          return null;
+        },
+      );
       final FocusNode focusNode = FocusNode();
 
       final ValueNotifier<int> value = ValueNotifier<int>(0);
       final UndoHistoryController controller = UndoHistoryController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UndoHistory<int>(
-            controller: controller,
-            value: value,
-            onTriggered: (int newValue) {
-              value.value = newValue;
-            },
-            focusNode: focusNode,
-            child: Focus(
-              focusNode: focusNode,
-              child: Container(),
-            ),
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: UndoHistory<int>(
+          controller: controller,
+          value: value,
+          onTriggered: (int newValue) {
+            value.value = newValue;
+          },
+          focusNode: focusNode,
+          child: Focus(focusNode: focusNode, child: Container()),
         ),
-      );
+      ));
 
       await tester.pump();
 
@@ -381,22 +366,17 @@ void main() {
     testWidgets('handlePlatformUndo should undo or redo appropriately on iOS', (WidgetTester tester) async {
       final ValueNotifier<int> value = ValueNotifier<int>(0);
       final UndoHistoryController controller = UndoHistoryController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UndoHistory<int>(
-            controller: controller,
-            value: value,
-            onTriggered: (int newValue) {
-              value.value = newValue;
-            },
-            focusNode: focusNode,
-            child: Focus(
-              focusNode: focusNode,
-              child: Container(),
-            ),
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: UndoHistory<int>(
+          controller: controller,
+          value: value,
+          onTriggered: (int newValue) {
+            value.value = newValue;
+          },
+          focusNode: focusNode,
+          child: Focus(focusNode: focusNode, child: Container()),
         ),
-      );
+      ));
 
       await tester.pump(const Duration(milliseconds: 500));
       focusNode.requestFocus();

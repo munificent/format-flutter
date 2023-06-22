@@ -16,31 +16,21 @@ void main() {
   });
 
   testWidgets('Shadows on BoxDecoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          child: Container(
-            margin: const EdgeInsets.all(50.0),
-            decoration: BoxDecoration(
-              boxShadow: kElevationToShadow[9],
-            ),
-            height: 100.0,
-            width: 100.0,
-          ),
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        child: Container(
+          margin: const EdgeInsets.all(50.0),
+          decoration: BoxDecoration(boxShadow: kElevationToShadow[9]),
+          height: 100.0,
+          width: 100.0,
         ),
       ),
-    );
-    await expectLater(
-      find.byType(Container),
-      matchesGoldenFile('shadow.BoxDecoration.disabled.png'),
-    );
+    ));
+    await expectLater(find.byType(Container), matchesGoldenFile('shadow.BoxDecoration.disabled.png'));
     debugDisableShadows = false;
     tester.binding.reassembleApplication();
     await tester.pump();
-    await expectLater(
-      find.byType(Container),
-      matchesGoldenFile('shadow.BoxDecoration.enabled.png'),
-    );
+    await expectLater(find.byType(Container), matchesGoldenFile('shadow.BoxDecoration.enabled.png'));
     debugDisableShadows = true;
   });
 
@@ -60,49 +50,36 @@ void main() {
         ),
       );
     }
+
     for (final int elevation in kElevationToShadow.keys) {
       testWidgets('elevation $elevation', (WidgetTester tester) async {
         debugDisableShadows = false;
         await tester.pumpWidget(build(elevation));
-        await expectLater(
-          find.byType(Container),
-          matchesGoldenFile('shadow.ShapeDecoration.$elevation.png'),
-        );
+        await expectLater(find.byType(Container), matchesGoldenFile('shadow.ShapeDecoration.$elevation.png'));
         debugDisableShadows = true;
       });
     }
   });
 
   testWidgets('Shadows with PhysicalLayer', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          child: Container(
-            margin: const EdgeInsets.all(150.0),
-            color: Colors.yellow[200],
-            child: PhysicalModel(
-              elevation: 9.0,
-              color: Colors.blue[900]!,
-              child: const SizedBox(
-                height: 100.0,
-                width: 100.0,
-              ),
-            ),
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        child: Container(
+          margin: const EdgeInsets.all(150.0),
+          color: Colors.yellow[200],
+          child: PhysicalModel(
+            elevation: 9.0,
+            color: Colors.blue[900]!,
+            child: const SizedBox(height: 100.0, width: 100.0),
           ),
         ),
       ),
-    );
-    await expectLater(
-      find.byType(Container),
-      matchesGoldenFile('shadow.PhysicalModel.disabled.png'),
-    );
+    ));
+    await expectLater(find.byType(Container), matchesGoldenFile('shadow.PhysicalModel.disabled.png'));
     debugDisableShadows = false;
     tester.binding.reassembleApplication();
     await tester.pump();
-    await expectLater(
-      find.byType(Container),
-      matchesGoldenFile('shadow.PhysicalModel.enabled.png'),
-    );
+    await expectLater(find.byType(Container), matchesGoldenFile('shadow.PhysicalModel.enabled.png'));
     debugDisableShadows = true;
   });
 
@@ -116,15 +93,10 @@ void main() {
             child: PhysicalShape(
               color: Colors.green[900]!,
               clipper: const ShapeBorderClipper(
-                shape: BeveledRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                ),
+                shape: BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
               ),
               elevation: elevation,
-              child: const SizedBox(
-                height: 100.0,
-                width: 100.0,
-              ),
+              child: const SizedBox(height: 100.0, width: 100.0),
             ),
           ),
         ),
@@ -135,10 +107,7 @@ void main() {
       testWidgets('elevation $elevation', (WidgetTester tester) async {
         debugDisableShadows = false;
         await tester.pumpWidget(build(elevation.toDouble()));
-        await expectLater(
-          find.byType(Container),
-          matchesGoldenFile('shadow.PhysicalShape.$elevation.png'),
-        );
+        await expectLater(find.byType(Container), matchesGoldenFile('shadow.PhysicalShape.$elevation.png'));
         debugDisableShadows = true;
       });
     }

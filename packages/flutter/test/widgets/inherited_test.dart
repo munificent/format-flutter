@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'test_widgets.dart';
 
 class TestInherited extends InheritedWidget {
-  const TestInherited({ super.key, required super.child, this.shouldNotify = true });
+  const TestInherited({super.key, required super.child, this.shouldNotify = true});
 
   final bool shouldNotify;
 
@@ -19,7 +19,7 @@ class TestInherited extends InheritedWidget {
 }
 
 class ValueInherited extends InheritedWidget {
-  const ValueInherited({ super.key, required super.child, required this.value });
+  const ValueInherited({super.key, required super.child, required this.value});
 
   final int value;
 
@@ -28,7 +28,7 @@ class ValueInherited extends InheritedWidget {
 }
 
 class ExpectFail extends StatefulWidget {
-  const ExpectFail(this.onError, { super.key });
+  const ExpectFail(this.onError, {super.key});
   final VoidCallback onError;
 
   @override
@@ -51,7 +51,7 @@ class ExpectFailState extends State<ExpectFail> {
 }
 
 class ChangeNotifierInherited extends InheritedNotifier<ChangeNotifier> {
-  const ChangeNotifierInherited({ super.key, required super.child, super.notifier });
+  const ChangeNotifierInherited({super.key, required super.child, super.notifier});
 }
 
 void main() {
@@ -114,36 +114,34 @@ void main() {
   testWidgets('Update inherited when removing node', (WidgetTester tester) async {
     final List<String> log = <String>[];
 
-    await tester.pumpWidget(
-      ValueInherited(
-        value: 1,
-        child: FlipWidget(
-          left: ValueInherited(
-            value: 2,
-            child: ValueInherited(
-              value: 3,
-              child: Builder(
-                builder: (BuildContext context) {
-                  final ValueInherited v = context.dependOnInheritedWidgetOfExactType<ValueInherited>()!;
-                  log.add('a: ${v.value}');
-                  return const Text('', textDirection: TextDirection.ltr);
-                },
-              ),
-            ),
-          ),
-          right: ValueInherited(
-            value: 2,
+    await tester.pumpWidget(ValueInherited(
+      value: 1,
+      child: FlipWidget(
+        left: ValueInherited(
+          value: 2,
+          child: ValueInherited(
+            value: 3,
             child: Builder(
               builder: (BuildContext context) {
                 final ValueInherited v = context.dependOnInheritedWidgetOfExactType<ValueInherited>()!;
-                log.add('b: ${v.value}');
+                log.add('a: ${v.value}');
                 return const Text('', textDirection: TextDirection.ltr);
               },
             ),
           ),
         ),
+        right: ValueInherited(
+          value: 2,
+          child: Builder(
+            builder: (BuildContext context) {
+              final ValueInherited v = context.dependOnInheritedWidgetOfExactType<ValueInherited>()!;
+              log.add('b: ${v.value}');
+              return const Text('', textDirection: TextDirection.ltr);
+            },
+          ),
+        ),
       ),
-    );
+    ));
 
     expect(log, equals(<String>['a: 3']));
     log.clear();
@@ -167,47 +165,44 @@ void main() {
   });
 
   testWidgets('Update inherited when removing node and child has global key', (WidgetTester tester) async {
-
     final List<String> log = <String>[];
 
     final Key key = GlobalKey();
 
-    await tester.pumpWidget(
-      ValueInherited(
-        value: 1,
-        child: FlipWidget(
-          left: ValueInherited(
-            value: 2,
-            child: ValueInherited(
-              value: 3,
-              child: Container(
-                key: key,
-                child: Builder(
-                  builder: (BuildContext context) {
-                    final ValueInherited v = context.dependOnInheritedWidgetOfExactType<ValueInherited>()!;
-                    log.add('a: ${v.value}');
-                    return const Text('', textDirection: TextDirection.ltr);
-                  },
-                ),
-              ),
-            ),
-          ),
-          right: ValueInherited(
-            value: 2,
+    await tester.pumpWidget(ValueInherited(
+      value: 1,
+      child: FlipWidget(
+        left: ValueInherited(
+          value: 2,
+          child: ValueInherited(
+            value: 3,
             child: Container(
               key: key,
               child: Builder(
                 builder: (BuildContext context) {
                   final ValueInherited v = context.dependOnInheritedWidgetOfExactType<ValueInherited>()!;
-                  log.add('b: ${v.value}');
+                  log.add('a: ${v.value}');
                   return const Text('', textDirection: TextDirection.ltr);
                 },
               ),
             ),
           ),
         ),
+        right: ValueInherited(
+          value: 2,
+          child: Container(
+            key: key,
+            child: Builder(
+              builder: (BuildContext context) {
+                final ValueInherited v = context.dependOnInheritedWidgetOfExactType<ValueInherited>()!;
+                log.add('b: ${v.value}');
+                return const Text('', textDirection: TextDirection.ltr);
+              },
+            ),
+          ),
+        ),
       ),
-    );
+    ));
 
     expect(log, equals(<String>['a: 3']));
     log.clear();
@@ -230,198 +225,165 @@ void main() {
     log.clear();
   });
 
-  testWidgets('Update inherited when removing node and child has global key with constant child', (WidgetTester tester) async {
-    final List<int> log = <int>[];
+  testWidgets(
+    'Update inherited when removing node and child has global key with constant child',
+    (WidgetTester tester) async {
+      final List<int> log = <int>[];
 
-    final Key key = GlobalKey();
+      final Key key = GlobalKey();
 
-    final Widget child = Builder(
-      builder: (BuildContext context) {
-        final ValueInherited v = context.dependOnInheritedWidgetOfExactType<ValueInherited>()!;
-        log.add(v.value);
-        return const Text('', textDirection: TextDirection.ltr);
-      },
-    );
+      final Widget child = Builder(
+        builder: (BuildContext context) {
+          final ValueInherited v = context.dependOnInheritedWidgetOfExactType<ValueInherited>()!;
+          log.add(v.value);
+          return const Text('', textDirection: TextDirection.ltr);
+        },
+      );
 
-    await tester.pumpWidget(
-      ValueInherited(
+      await tester.pumpWidget(ValueInherited(
         value: 1,
         child: FlipWidget(
-          left: ValueInherited(
-            value: 2,
-            child: ValueInherited(
-              value: 3,
-              child: Container(
-                key: key,
-                child: child,
-              ),
-            ),
-          ),
-          right: ValueInherited(
-            value: 2,
-            child: Container(
-              key: key,
-              child: child,
-            ),
-          ),
+          left: ValueInherited(value: 2, child: ValueInherited(value: 3, child: Container(key: key, child: child))),
+          right: ValueInherited(value: 2, child: Container(key: key, child: child)),
         ),
-      ),
-    );
+      ));
 
-    expect(log, equals(<int>[3]));
-    log.clear();
+      expect(log, equals(<int>[3]));
+      log.clear();
 
-    await tester.pump();
+      await tester.pump();
 
-    expect(log, equals(<int>[]));
-    log.clear();
+      expect(log, equals(<int>[]));
+      log.clear();
 
-    flipStatefulWidget(tester);
-    await tester.pump();
+      flipStatefulWidget(tester);
+      await tester.pump();
 
-    expect(log, equals(<int>[2]));
-    log.clear();
+      expect(log, equals(<int>[2]));
+      log.clear();
 
-    flipStatefulWidget(tester);
-    await tester.pump();
+      flipStatefulWidget(tester);
+      await tester.pump();
 
-    expect(log, equals(<int>[3]));
-    log.clear();
-  });
+      expect(log, equals(<int>[3]));
+      log.clear();
+    },
+  );
 
-  testWidgets('Update inherited when removing node and child has global key with constant child, minimised', (WidgetTester tester) async {
+  testWidgets(
+    'Update inherited when removing node and child has global key with constant child, minimised',
+    (WidgetTester tester) async {
+      final List<int> log = <int>[];
 
-    final List<int> log = <int>[];
-
-    final Widget child = Builder(
-      key: GlobalKey(),
-      builder: (BuildContext context) {
-        final ValueInherited v = context.dependOnInheritedWidgetOfExactType<ValueInherited>()!;
-        log.add(v.value);
-        return const Text('', textDirection: TextDirection.ltr);
-      },
-    );
-
-    await tester.pumpWidget(
-      ValueInherited(
-        value: 2,
-        child: FlipWidget(
-          left: ValueInherited(
-            value: 3,
-            child: child,
-          ),
-          right: child,
-        ),
-      ),
-    );
-
-    expect(log, equals(<int>[3]));
-    log.clear();
-
-    await tester.pump();
-
-    expect(log, equals(<int>[]));
-    log.clear();
-
-    flipStatefulWidget(tester);
-    await tester.pump();
-
-    expect(log, equals(<int>[2]));
-    log.clear();
-
-    flipStatefulWidget(tester);
-    await tester.pump();
-
-    expect(log, equals(<int>[3]));
-    log.clear();
-  });
-
-  testWidgets('Inherited widget notifies descendants when descendant previously failed to find a match', (WidgetTester tester) async {
-    int? inheritedValue = -1;
-
-    final Widget inner = Container(
-      key: GlobalKey(),
-      child: Builder(
+      final Widget child = Builder(
+        key: GlobalKey(),
         builder: (BuildContext context) {
-          final ValueInherited? widget = context.dependOnInheritedWidgetOfExactType<ValueInherited>();
-          inheritedValue = widget?.value;
-          return Container();
+          final ValueInherited v = context.dependOnInheritedWidgetOfExactType<ValueInherited>()!;
+          log.add(v.value);
+          return const Text('', textDirection: TextDirection.ltr);
         },
-      ),
-    );
+      );
 
-    await tester.pumpWidget(
-      inner,
-    );
-    expect(inheritedValue, isNull);
+      await tester.pumpWidget(
+        ValueInherited(value: 2, child: FlipWidget(left: ValueInherited(value: 3, child: child), right: child)),
+      );
 
-    inheritedValue = -2;
-    await tester.pumpWidget(
-      ValueInherited(
-        value: 3,
-        child: inner,
-      ),
-    );
-    expect(inheritedValue, equals(3));
-  });
+      expect(log, equals(<int>[3]));
+      log.clear();
 
-  testWidgets("Inherited widget doesn't notify descendants when descendant did not previously fail to find a match and had no dependencies", (WidgetTester tester) async {
-    int buildCount = 0;
+      await tester.pump();
 
-    final Widget inner = Container(
-      key: GlobalKey(),
-      child: Builder(
-        builder: (BuildContext context) {
-          buildCount += 1;
-          return Container();
-        },
-      ),
-    );
+      expect(log, equals(<int>[]));
+      log.clear();
 
-    await tester.pumpWidget(
-      inner,
-    );
-    expect(buildCount, equals(1));
+      flipStatefulWidget(tester);
+      await tester.pump();
 
-    await tester.pumpWidget(
-      ValueInherited(
-        value: 3,
-        child: inner,
-      ),
-    );
-    expect(buildCount, equals(1));
-  });
+      expect(log, equals(<int>[2]));
+      log.clear();
 
-  testWidgets('Inherited widget does notify descendants when descendant did not previously fail to find a match but did have other dependencies', (WidgetTester tester) async {
-    int buildCount = 0;
+      flipStatefulWidget(tester);
+      await tester.pump();
 
-    final Widget inner = Container(
-      key: GlobalKey(),
-      child: TestInherited(
-        shouldNotify: false,
+      expect(log, equals(<int>[3]));
+      log.clear();
+    },
+  );
+
+  testWidgets(
+    'Inherited widget notifies descendants when descendant previously failed to find a match',
+    (WidgetTester tester) async {
+      int? inheritedValue = -1;
+
+      final Widget inner = Container(
+        key: GlobalKey(),
         child: Builder(
           builder: (BuildContext context) {
-            context.dependOnInheritedWidgetOfExactType<TestInherited>();
+            final ValueInherited? widget = context.dependOnInheritedWidgetOfExactType<ValueInherited>();
+            inheritedValue = widget?.value;
+            return Container();
+          },
+        ),
+      );
+
+      await tester.pumpWidget(inner);
+      expect(inheritedValue, isNull);
+
+      inheritedValue = -2;
+      await tester.pumpWidget(ValueInherited(value: 3, child: inner));
+      expect(inheritedValue, equals(3));
+    },
+  );
+
+  testWidgets(
+    "Inherited widget doesn't notify descendants when descendant did not previously fail to find a match and had no dependencies",
+    (WidgetTester tester) async {
+      int buildCount = 0;
+
+      final Widget inner = Container(
+        key: GlobalKey(),
+        child: Builder(
+          builder: (BuildContext context) {
             buildCount += 1;
             return Container();
           },
         ),
-      ),
-    );
+      );
 
-    await tester.pumpWidget(
-      inner,
-    );
-    expect(buildCount, equals(1));
+      await tester.pumpWidget(inner);
+      expect(buildCount, equals(1));
 
-    await tester.pumpWidget(
-      ValueInherited(
-        value: 3,
-        child: inner,
-      ),
-    );
-    expect(buildCount, equals(2));
-  });
+      await tester.pumpWidget(ValueInherited(value: 3, child: inner));
+      expect(buildCount, equals(1));
+    },
+  );
+
+  testWidgets(
+    'Inherited widget does notify descendants when descendant did not previously fail to find a match but did have other dependencies',
+    (WidgetTester tester) async {
+      int buildCount = 0;
+
+      final Widget inner = Container(
+        key: GlobalKey(),
+        child: TestInherited(
+          shouldNotify: false,
+          child: Builder(
+            builder: (BuildContext context) {
+              context.dependOnInheritedWidgetOfExactType<TestInherited>();
+              buildCount += 1;
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(inner);
+      expect(buildCount, equals(1));
+
+      await tester.pumpWidget(ValueInherited(value: 3, child: inner));
+      expect(buildCount, equals(2));
+    },
+  );
 
   testWidgets("BuildContext.getInheritedWidgetOfExactType doesn't create a dependency", (WidgetTester tester) async {
     int buildCount = 0;
@@ -436,11 +398,7 @@ void main() {
       },
     );
 
-    final Widget inner = ChangeNotifierInherited(
-      key: inheritedKey,
-      notifier: notifier,
-      child: builder,
-    );
+    final Widget inner = ChangeNotifierInherited(key: inheritedKey, notifier: notifier, child: builder);
 
     await tester.pumpWidget(inner);
     expect(buildCount, equals(1));
@@ -453,9 +411,11 @@ void main() {
     // This is a regression test for https://github.com/flutter/flutter/issues/5491
     bool exceptionCaught = false;
 
-    final TestInherited parent = TestInherited(child: ExpectFail(() {
-      exceptionCaught = true;
-    }));
+    final TestInherited parent = TestInherited(
+      child: ExpectFail(() {
+        exceptionCaught = true;
+      }),
+    );
     await tester.pumpWidget(parent);
 
     expect(exceptionCaught, isTrue);
@@ -473,10 +433,7 @@ void main() {
       },
     );
 
-    final Widget inner = ChangeNotifierInherited(
-      notifier: notifier,
-      child: builder,
-    );
+    final Widget inner = ChangeNotifierInherited(notifier: notifier, child: builder);
     await tester.pumpWidget(inner);
     expect(buildCount, equals(1));
 
@@ -493,9 +450,7 @@ void main() {
     await tester.pumpWidget(inner);
     expect(buildCount, equals(2));
 
-    await tester.pumpWidget(ChangeNotifierInherited(
-      child: builder,
-    ));
+    await tester.pumpWidget(ChangeNotifierInherited(child: builder));
     expect(buildCount, equals(3));
   });
 }

@@ -58,7 +58,7 @@ void main() {
       clipBehavior: Clip.antiAlias,
       constraints: BoxConstraints(minWidth: 200, maxWidth: 640),
       dragHandleColor: Color(0xFFFFFFFF),
-      dragHandleSize: Size(20, 20)
+      dragHandleSize: Size(20, 20),
     ).debugFillProperties(builder);
 
     final List<String> description = builder.properties
@@ -92,10 +92,7 @@ void main() {
     ));
 
     final Material material = tester.widget<Material>(
-      find.descendant(
-        of: find.byType(BottomSheet),
-        matching: find.byType(Material),
-      ),
+      find.descendant(of: find.byType(BottomSheet), matching: find.byType(Material)),
     );
     expect(material.color, null);
     expect(material.elevation, 0.0);
@@ -119,10 +116,7 @@ void main() {
     ));
 
     final Material material = tester.widget<Material>(
-      find.descendant(
-        of: find.byType(BottomSheet),
-        matching: find.byType(Material),
-      ),
+      find.descendant(of: find.byType(BottomSheet), matching: find.byType(Material)),
     );
     expect(material.color, bottomSheetTheme.backgroundColor);
     expect(material.elevation, bottomSheetTheme.elevation);
@@ -134,9 +128,7 @@ void main() {
     const Color backgroundColor = Colors.purple;
     const Color shadowColor = Colors.blue;
     const double elevation = 7.0;
-    const ShapeBorder shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(9.0)),
-    );
+    const ShapeBorder shape = RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(9.0)));
     const Clip clipBehavior = Clip.hardEdge;
 
     await tester.pumpWidget(MaterialApp(
@@ -157,10 +149,7 @@ void main() {
     ));
 
     final Material material = tester.widget<Material>(
-      find.descendant(
-        of: find.byType(BottomSheet),
-        matching: find.byType(Material),
-      ),
+      find.descendant(of: find.byType(BottomSheet), matching: find.byType(Material)),
     );
     expect(material.color, backgroundColor);
     expect(material.shadowColor, shadowColor);
@@ -180,7 +169,7 @@ void main() {
       modalElevation: modalElevation,
       backgroundColor: persistentBackgroundColor,
       modalBackgroundColor: modalBackgroundColor,
-      modalBarrierColor:modalBarrierColor,
+      modalBarrierColor: modalBarrierColor,
     );
 
     await tester.pumpWidget(bottomSheetWithElevations(bottomSheetTheme));
@@ -188,10 +177,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final Material material = tester.widget<Material>(
-      find.descendant(
-        of: find.byType(BottomSheet),
-        matching: find.byType(Material),
-      ),
+      find.descendant(of: find.byType(BottomSheet), matching: find.byType(Material)),
     );
     expect(material.elevation, modalElevation);
     expect(material.color, modalBackgroundColor);
@@ -200,53 +186,53 @@ void main() {
     expect(modalBarrier.color, modalBarrierColor);
   });
 
-  testWidgets('General bottom sheet parameters take priority over modal bottom sheet-specific parameters for persistent bottom sheets', (WidgetTester tester) async {
-    const double modalElevation = 5.0;
-    const double persistentElevation = 7.0;
-    const Color modalBackgroundColor = Colors.yellow;
-    const Color persistentBackgroundColor = Colors.red;
-    const BottomSheetThemeData bottomSheetTheme = BottomSheetThemeData(
-      elevation: persistentElevation,
-      modalElevation: modalElevation,
-      backgroundColor: persistentBackgroundColor,
-      modalBackgroundColor: modalBackgroundColor,
-    );
+  testWidgets(
+    'General bottom sheet parameters take priority over modal bottom sheet-specific parameters for persistent bottom sheets',
+    (WidgetTester tester) async {
+      const double modalElevation = 5.0;
+      const double persistentElevation = 7.0;
+      const Color modalBackgroundColor = Colors.yellow;
+      const Color persistentBackgroundColor = Colors.red;
+      const BottomSheetThemeData bottomSheetTheme = BottomSheetThemeData(
+        elevation: persistentElevation,
+        modalElevation: modalElevation,
+        backgroundColor: persistentBackgroundColor,
+        modalBackgroundColor: modalBackgroundColor,
+      );
 
-    await tester.pumpWidget(bottomSheetWithElevations(bottomSheetTheme));
-    await tester.tap(find.text('Show Persistent'));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(bottomSheetWithElevations(bottomSheetTheme));
+      await tester.tap(find.text('Show Persistent'));
+      await tester.pumpAndSettle();
 
-    final Material material = tester.widget<Material>(
-      find.descendant(
-        of: find.byType(BottomSheet),
-        matching: find.byType(Material),
-      ),
-    );
-    expect(material.elevation, persistentElevation);
-    expect(material.color, persistentBackgroundColor);
-  });
+      final Material material = tester.widget<Material>(
+        find.descendant(of: find.byType(BottomSheet), matching: find.byType(Material)),
+      );
+      expect(material.elevation, persistentElevation);
+      expect(material.color, persistentBackgroundColor);
+    },
+  );
 
-  testWidgets("Modal bottom sheet-specific parameters don't apply to persistent bottom sheets", (WidgetTester tester) async {
-    const double modalElevation = 5.0;
-    const Color modalBackgroundColor = Colors.yellow;
-    const BottomSheetThemeData bottomSheetTheme = BottomSheetThemeData(
-      modalElevation: modalElevation,
-      modalBackgroundColor: modalBackgroundColor,
-    );
+  testWidgets(
+    "Modal bottom sheet-specific parameters don't apply to persistent bottom sheets",
+    (WidgetTester tester) async {
+      const double modalElevation = 5.0;
+      const Color modalBackgroundColor = Colors.yellow;
+      const BottomSheetThemeData bottomSheetTheme = BottomSheetThemeData(
+        modalElevation: modalElevation,
+        modalBackgroundColor: modalBackgroundColor,
+      );
 
-    await tester.pumpWidget(bottomSheetWithElevations(bottomSheetTheme));
-    await tester.tap(find.text('Show Persistent'));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(bottomSheetWithElevations(bottomSheetTheme));
+      await tester.tap(find.text('Show Persistent'));
+      await tester.pumpAndSettle();
 
-    final Material material = tester.widget<Material>(
-      find.descendant(
-        of: find.byType(BottomSheet),
-        matching: find.byType(Material),
-      ),
-    );
-    expect(material.elevation, 0);
-    expect(material.color, null);
-  });
+      final Material material = tester.widget<Material>(
+        find.descendant(of: find.byType(BottomSheet), matching: find.byType(Material)),
+      );
+      expect(material.elevation, 0);
+      expect(material.color, null);
+    },
+  );
 
   testWidgets('Modal bottom sheets respond to theme changes', (WidgetTester tester) async {
     const double lightElevation = 5.0;
@@ -297,10 +283,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final Material lightMaterial = tester.widget<Material>(
-      find.descendant(
-        of: find.byType(BottomSheet),
-        matching: find.byType(Material),
-      ),
+      find.descendant(of: find.byType(BottomSheet), matching: find.byType(Material)),
     );
     expect(lightMaterial.elevation, lightElevation);
     expect(lightMaterial.color, lightBackgroundColor);
@@ -311,10 +294,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final Material darkMaterial = tester.widget<Material>(
-    find.descendant(
-      of: find.byType(BottomSheet),
-        matching: find.byType(Material),
-      ),
+      find.descendant(of: find.byType(BottomSheet), matching: find.byType(Material)),
     );
     expect(darkMaterial.elevation, darkElevation);
     expect(darkMaterial.color, darkBackgroundColor);
@@ -329,34 +309,30 @@ Widget bottomSheetWithElevations(BottomSheetThemeData bottomSheetTheme) {
       body: Builder(
         builder: (BuildContext context) {
           return Column(
-              children: <Widget>[
-                RawMaterialButton(
-                  child: const Text('Show Modal'),
-                  onPressed: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext _) {
-                        return const Text(
-                          'This is a modal bottom sheet.',
-                        );
-                      },
-                    );
-                  },
-                ),
-                RawMaterialButton(
-                  child: const Text('Show Persistent'),
-                  onPressed: () {
-                    showBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext _) {
-                        return const Text(
-                          'This is a persistent bottom sheet.',
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
+            children: <Widget>[
+              RawMaterialButton(
+                child: const Text('Show Modal'),
+                onPressed: () {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext _) {
+                      return const Text('This is a modal bottom sheet.');
+                    },
+                  );
+                },
+              ),
+              RawMaterialButton(
+                child: const Text('Show Persistent'),
+                onPressed: () {
+                  showBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext _) {
+                      return const Text('This is a persistent bottom sheet.');
+                    },
+                  );
+                },
+              ),
+            ],
           );
         },
       ),

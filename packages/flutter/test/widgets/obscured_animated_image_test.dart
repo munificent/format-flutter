@@ -19,14 +19,10 @@ Future<void> main() async {
 
   testWidgets('Obscured image does not animate', (WidgetTester tester) async {
     final GlobalKey imageKey = GlobalKey();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Image(image: fakeImageProvider, excludeFromSemantics: true, key: imageKey),
-        routes: <String, WidgetBuilder>{
-          '/page': (BuildContext context) => Container(),
-        },
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      home: Image(image: fakeImageProvider, excludeFromSemantics: true, key: imageKey),
+      routes: <String, WidgetBuilder>{'/page': (BuildContext context) => Container()},
+    ));
     final RenderImage renderImage = tester.renderObject(find.byType(Image));
     final ui.Image? image1 = renderImage.image;
     await tester.pump(const Duration(milliseconds: 100));

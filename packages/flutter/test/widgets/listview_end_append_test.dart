@@ -45,10 +45,7 @@ void main() {
           dragStartBehavior: DragStartBehavior.down,
           itemCount: itemCount,
           itemBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 200.0,
-              child: Text('item $index'),
-            );
+            return SizedBox(height: 200.0, child: Text('item $index'));
           },
         ),
       );

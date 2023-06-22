@@ -38,16 +38,8 @@ void main() {
     final Duration epoch = currentTestFrameTime();
     final ui.PointerDataPacket packet = ui.PointerDataPacket(
       data: <ui.PointerData>[
-        ui.PointerData(
-          viewId: tester.view.viewId,
-          change: ui.PointerChange.add,
-          timeStamp: epoch,
-        ),
-        ui.PointerData(
-          viewId: tester.view.viewId,
-          change: ui.PointerChange.down,
-          timeStamp: epoch,
-        ),
+        ui.PointerData(viewId: tester.view.viewId, change: ui.PointerChange.add, timeStamp: epoch),
+        ui.PointerData(viewId: tester.view.viewId, change: ui.PointerChange.down, timeStamp: epoch),
         ui.PointerData(
           viewId: tester.view.viewId,
           change: ui.PointerChange.move,
@@ -88,17 +80,15 @@ void main() {
     );
 
     final List<PointerEvent> events = <PointerEvent>[];
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Listener(
-          onPointerDown: (PointerDownEvent event) => events.add(event),
-          onPointerMove: (PointerMoveEvent event) => events.add(event),
-          onPointerUp: (PointerUpEvent event) => events.add(event),
-          child: const Text('test'),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Listener(
+        onPointerDown: (PointerDownEvent event) => events.add(event),
+        onPointerMove: (PointerMoveEvent event) => events.add(event),
+        onPointerUp: (PointerUpEvent event) => events.add(event),
+        child: const Text('test'),
       ),
-    );
+    ));
 
     GestureBinding.instance.resamplingEnabled = true;
     const Duration kSamplingOffset = Duration(milliseconds: -5);
@@ -137,11 +127,7 @@ void main() {
   testWidgetsWithLeakTracking('Timer should be canceled when resampling stopped', (WidgetTester tester) async {
     // A timer will be started when event's timeStamp is larger than sampleTime.
     final ui.PointerDataPacket packet = ui.PointerDataPacket(
-      data: <ui.PointerData>[
-        ui.PointerData(
-          timeStamp: Duration(microseconds: DateTime.now().microsecondsSinceEpoch),
-        ),
-      ],
+      data: <ui.PointerData>[ui.PointerData(timeStamp: Duration(microseconds: DateTime.now().microsecondsSinceEpoch))],
     );
     GestureBinding.instance.resamplingEnabled = true;
     GestureBinding.instance.platformDispatcher.onPointerDataPacket!(packet);

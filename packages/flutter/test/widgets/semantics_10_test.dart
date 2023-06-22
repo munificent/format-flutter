@@ -10,35 +10,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'semantics_tester.dart';
 
 void main() {
-  testWidgets('can cease to be semantics boundary after markNeedsSemanticsUpdate() has already been called once', (WidgetTester tester) async {
-    final SemanticsTester semantics = SemanticsTester(tester);
+  testWidgets(
+    'can cease to be semantics boundary after markNeedsSemanticsUpdate() has already been called once',
+    (WidgetTester tester) async {
+      final SemanticsTester semantics = SemanticsTester(tester);
 
-    await tester.pumpWidget(
-      buildTestWidgets(
-        excludeSemantics: false,
-        label: 'label',
-        isSemanticsBoundary: true,
-      ),
-    );
+      await tester.pumpWidget(buildTestWidgets(excludeSemantics: false, label: 'label', isSemanticsBoundary: true));
 
-    // The following should not trigger an assert.
-    await tester.pumpWidget(
-      buildTestWidgets(
-        excludeSemantics: true,
-        label: 'label CHANGED',
-        isSemanticsBoundary: false,
-      ),
-    );
+      // The following should not trigger an assert.
+      await tester.pumpWidget(
+        buildTestWidgets(excludeSemantics: true, label: 'label CHANGED', isSemanticsBoundary: false),
+      );
 
-    semantics.dispose();
-  });
+      semantics.dispose();
+    },
+  );
 }
 
-Widget buildTestWidgets({
-  required bool excludeSemantics,
-  required String label,
-  required bool isSemanticsBoundary,
-}) {
+Widget buildTestWidgets({required bool excludeSemantics, required String label, required bool isSemanticsBoundary}) {
   return Directionality(
     textDirection: TextDirection.ltr,
     child: Semantics(
@@ -49,16 +38,7 @@ Widget buildTestWidgets({
         child: TestWidget(
           label: label,
           isSemanticBoundary: isSemanticsBoundary,
-          child: Column(
-            children: <Widget>[
-              Semantics(
-                label: 'child1',
-              ),
-              Semantics(
-                label: 'child2',
-              ),
-            ],
-          ),
+          child: Column(children: <Widget>[Semantics(label: 'child1'), Semantics(label: 'child2')]),
         ),
       ),
     ),
@@ -66,12 +46,7 @@ Widget buildTestWidgets({
 }
 
 class TestWidget extends SingleChildRenderObjectWidget {
-  const TestWidget({
-    super.key,
-    required Widget super.child,
-    required this.label,
-    required this.isSemanticBoundary,
-  });
+  const TestWidget({super.key, required Widget super.child, required this.label, required this.isSemanticBoundary});
 
   final String label;
   final bool isSemanticBoundary;
@@ -104,7 +79,6 @@ class RenderTest extends RenderProxyBox {
       ..isSemanticBoundary = _isSemanticBoundary
       ..label = _label
       ..textDirection = TextDirection.ltr;
-
   }
 
   String get label => _label;
@@ -116,7 +90,6 @@ class RenderTest extends RenderProxyBox {
     _label = value;
     markNeedsSemanticsUpdate();
   }
-
 
   bool get isSemanticBoundary => _isSemanticBoundary;
   bool _isSemanticBoundary = false;

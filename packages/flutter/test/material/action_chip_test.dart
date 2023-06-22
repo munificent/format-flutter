@@ -18,30 +18,17 @@ Widget wrapForChip({
     theme: ThemeData(brightness: brightness),
     home: Directionality(
       textDirection: textDirection,
-      child: MediaQuery(
-        data: MediaQueryData(textScaleFactor: textScaleFactor),
-        child: Material(child: child),
-      ),
+      child: MediaQuery(data: MediaQueryData(textScaleFactor: textScaleFactor), child: Material(child: child)),
     ),
   );
 }
 
 Material getMaterial(WidgetTester tester) {
-  return tester.widget<Material>(
-    find.descendant(
-      of: find.byType(ActionChip),
-      matching: find.byType(Material),
-    ),
-  );
+  return tester.widget<Material>(find.descendant(of: find.byType(ActionChip), matching: find.byType(Material)));
 }
 
 DefaultTextStyle getLabelStyle(WidgetTester tester, String labelText) {
-  return tester.widget(
-    find.ancestor(
-      of: find.text(labelText),
-      matching: find.byType(DefaultTextStyle),
-    ).first,
-  );
+  return tester.widget(find.ancestor(of: find.text(labelText), matching: find.byType(DefaultTextStyle)).first);
 }
 
 void checkChipMaterialClipBehavior(WidgetTester tester, Clip clipBehavior) {
@@ -59,67 +46,40 @@ void main() {
     const String label = 'action chip';
 
     // Test enabled ActionChip defaults.
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: Material(
-          child: Center(
-            child: ActionChip(
-              onPressed: () {},
-              label: const Text(label),
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: Material(child: Center(child: ActionChip(onPressed: () {}, label: const Text(label)))),
+    ));
 
     // Test default chip size.
     expect(tester.getSize(find.byType(ActionChip)), const Size(190.0, 48.0));
     // Test default label style.
-    expect(
-      getLabelStyle(tester, label).style.color!.value,
-      theme.textTheme.labelLarge!.color!.value,
-    );
+    expect(getLabelStyle(tester, label).style.color!.value, theme.textTheme.labelLarge!.color!.value);
 
     Material chipMaterial = getMaterial(tester);
     expect(chipMaterial.elevation, 0);
     expect(chipMaterial.shadowColor, Colors.transparent);
     expect(chipMaterial.surfaceTintColor, theme.colorScheme.surfaceTint);
-    expect(
-      chipMaterial.shape,
-      RoundedRectangleBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: theme.colorScheme.outline),
-      ),
-    );
+    expect(chipMaterial.shape, RoundedRectangleBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+      side: BorderSide(color: theme.colorScheme.outline),
+    ));
 
     ShapeDecoration decoration = tester.widget<Ink>(find.byType(Ink)).decoration! as ShapeDecoration;
     expect(decoration.color, null);
 
     // Test disabled ActionChip defaults.
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Material(
-          child: ActionChip(
-            label: Text(label),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(theme: theme, home: const Material(child: ActionChip(label: Text(label)))));
     await tester.pumpAndSettle();
 
     chipMaterial = getMaterial(tester);
     expect(chipMaterial.elevation, 0);
     expect(chipMaterial.shadowColor, Colors.transparent);
     expect(chipMaterial.surfaceTintColor, theme.colorScheme.surfaceTint);
-    expect(
-      chipMaterial.shape,
-      RoundedRectangleBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: theme.colorScheme.onSurface.withOpacity(0.12)),
-      ),
-    );
+    expect(chipMaterial.shape, RoundedRectangleBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+      side: BorderSide(color: theme.colorScheme.onSurface.withOpacity(0.12)),
+    ));
 
     decoration = tester.widget<Ink>(find.byType(Ink)).decoration! as ShapeDecoration;
     expect(decoration.color, null);
@@ -130,27 +90,15 @@ void main() {
     const String label = 'action chip';
 
     // Test enabled ActionChip defaults.
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: Material(
-          child: Center(
-            child: ActionChip.elevated(
-              onPressed: () {},
-              label: const Text(label),
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: Material(child: Center(child: ActionChip.elevated(onPressed: () {}, label: const Text(label)))),
+    ));
 
     // Test default chip size.
     expect(tester.getSize(find.byType(ActionChip)), const Size(190.0, 48.0));
     // Test default label style.
-    expect(
-      getLabelStyle(tester, label).style.color!.value,
-      theme.textTheme.labelLarge!.color!.value,
-    );
+    expect(getLabelStyle(tester, label).style.color!.value, theme.textTheme.labelLarge!.color!.value);
 
     Material chipMaterial = getMaterial(tester);
     expect(chipMaterial.elevation, 1);
@@ -169,14 +117,7 @@ void main() {
 
     // Test disabled ActionChip.elevated defaults.
     await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Material(
-          child: ActionChip.elevated(
-            label: Text(label),
-          ),
-        ),
-      ),
+      MaterialApp(theme: theme, home: const Material(child: ActionChip.elevated(label: Text(label)))),
     );
     await tester.pumpAndSettle();
 
@@ -198,26 +139,24 @@ void main() {
 
   testWidgetsWithLeakTracking('ActionChip can be tapped', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: ActionChip(
-            onPressed: () { },
-            label: const Text('action chip'),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: ActionChip(onPressed: () {}, label: const Text('action chip')))),
     );
 
     await tester.tap(find.byType(ActionChip));
     expect(tester.takeException(), null);
   });
 
-  testWidgetsWithLeakTracking('ActionChip clipBehavior properly passes through to the Material', (WidgetTester tester) async {
-    const Text label = Text('label');
-    await tester.pumpWidget(wrapForChip(child: ActionChip(label: label, onPressed: () { })));
-    checkChipMaterialClipBehavior(tester, Clip.none);
+  testWidgetsWithLeakTracking(
+    'ActionChip clipBehavior properly passes through to the Material',
+    (WidgetTester tester) async {
+      const Text label = Text('label');
+      await tester.pumpWidget(wrapForChip(child: ActionChip(label: label, onPressed: () {})));
+      checkChipMaterialClipBehavior(tester, Clip.none);
 
-    await tester.pumpWidget(wrapForChip(child: ActionChip(label: label, clipBehavior: Clip.antiAlias, onPressed: () { })));
-    checkChipMaterialClipBehavior(tester, Clip.antiAlias);
-  });
+      await tester.pumpWidget(
+        wrapForChip(child: ActionChip(label: label, clipBehavior: Clip.antiAlias, onPressed: () {})),
+      );
+      checkChipMaterialClipBehavior(tester, Clip.antiAlias);
+    },
+  );
 }

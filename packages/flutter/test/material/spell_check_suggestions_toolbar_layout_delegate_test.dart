@@ -12,29 +12,21 @@ void main() {
     const double height = 500;
     double anchorY = 200.0;
 
-    await tester.pumpWidget(
-      MediaQuery(
-        data: const MediaQueryData(),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setter) {
-              setState = setter;
-              return CustomSingleChildLayout(
-                delegate: SpellCheckSuggestionsToolbarLayoutDelegate(
-                  anchor: Offset(50.0, anchorY),
-                ),
-                child: Container(
-                  width: 200.0,
-                  height: height,
-                  color: const Color(0xffff0000),
-                ),
-              );
-            },
-          ),
+    await tester.pumpWidget(MediaQuery(
+      data: const MediaQueryData(),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setter) {
+            setState = setter;
+            return CustomSingleChildLayout(
+              delegate: SpellCheckSuggestionsToolbarLayoutDelegate(anchor: Offset(50.0, anchorY)),
+              child: Container(width: 200.0, height: height, color: const Color(0xffff0000)),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     // When the toolbar doesn't fit below anchor, it positions itself such that
     // it can just fit.

@@ -8,7 +8,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
-
 void main() {
   test('BottomNavigationBarThemeData copyWith, ==, hashCode basics', () {
     expect(const BottomNavigationBarThemeData(), const BottomNavigationBarThemeData().copyWith());
@@ -36,7 +35,10 @@ void main() {
     expect(themeData.landscapeLayout, null);
     expect(themeData.mouseCursor, null);
 
-    const BottomNavigationBarTheme theme = BottomNavigationBarTheme(data: BottomNavigationBarThemeData(), child: SizedBox());
+    const BottomNavigationBarTheme theme = BottomNavigationBarTheme(
+      data: BottomNavigationBarThemeData(),
+      child: SizedBox(),
+    );
     expect(theme.data.backgroundColor, null);
     expect(theme.data.elevation, null);
     expect(theme.data.selectedIconTheme, null);
@@ -115,59 +117,45 @@ void main() {
     const TextStyle unselectedTextStyle = TextStyle(fontSize: 21);
     const double elevation = 9.0;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          bottomNavigationBarTheme: BottomNavigationBarThemeData(
-            backgroundColor: backgroundColor,
-            selectedItemColor: selectedItemColor,
-            unselectedItemColor: unselectedItemColor,
-            selectedIconTheme: selectedIconTheme,
-            unselectedIconTheme: unselectedIconTheme,
-            elevation: elevation,
-            showUnselectedLabels: true,
-            showSelectedLabels: true,
-            type: BottomNavigationBarType.fixed,
-            selectedLabelStyle: selectedTextStyle,
-            unselectedLabelStyle: unselectedTextStyle,
-            mouseCursor: MaterialStateProperty.resolveWith<MouseCursor?>((Set<MaterialState> states) {
-              if (states.contains(MaterialState.selected)) {
-                return SystemMouseCursors.grab;
-              }
-              return SystemMouseCursors.move;
-            }),
-          ),
-        ),
-        home: Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.ac_unit),
-                label: 'AC',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.access_alarm),
-                label: 'Alarm',
-              ),
-            ],
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: backgroundColor,
+          selectedItemColor: selectedItemColor,
+          unselectedItemColor: unselectedItemColor,
+          selectedIconTheme: selectedIconTheme,
+          unselectedIconTheme: unselectedIconTheme,
+          elevation: elevation,
+          showUnselectedLabels: true,
+          showSelectedLabels: true,
+          type: BottomNavigationBarType.fixed,
+          selectedLabelStyle: selectedTextStyle,
+          unselectedLabelStyle: unselectedTextStyle,
+          mouseCursor: MaterialStateProperty.resolveWith<MouseCursor?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return SystemMouseCursors.grab;
+            }
+            return SystemMouseCursors.move;
+          }),
         ),
       ),
-    );
+      home: Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: 'AC'),
+            BottomNavigationBarItem(icon: Icon(Icons.access_alarm), label: 'Alarm'),
+          ],
+        ),
+      ),
+    ));
 
     final Finder findACTransform = find.descendant(
       of: find.byType(BottomNavigationBar),
-      matching: find.ancestor(
-        of: find.text('AC'),
-        matching: find.byType(Transform),
-      ),
+      matching: find.ancestor(of: find.text('AC'), matching: find.byType(Transform)),
     );
     final Finder findAlarmTransform = find.descendant(
       of: find.byType(BottomNavigationBar),
-      matching: find.ancestor(
-        of: find.text('Alarm'),
-        matching: find.byType(Transform),
-      ),
+      matching: find.ancestor(of: find.text('Alarm'), matching: find.byType(Transform)),
     );
     final TextStyle selectedFontStyle = tester.renderObject<RenderParagraph>(find.text('AC')).text.style!;
     final TextStyle selectedIcon = _iconStyle(tester, Icons.ac_unit);
@@ -184,10 +172,7 @@ void main() {
     expect(unselectedIcon.fontSize, equals(unselectedIconTheme.size));
     // There should not be any [Opacity] or [FadeTransition] widgets
     // since showUnselectedLabels and showSelectedLabels are true.
-    final Finder findOpacity = find.descendant(
-      of: find.byType(BottomNavigationBar),
-      matching: find.byType(Opacity),
-    );
+    final Finder findOpacity = find.descendant(of: find.byType(BottomNavigationBar), matching: find.byType(Opacity));
     final Finder findFadeTransition = find.descendant(
       of: find.byType(BottomNavigationBar),
       matching: find.byType(FadeTransition),
@@ -232,60 +217,49 @@ void main() {
     const BottomNavigationBarLandscapeLayout landscapeLayout = BottomNavigationBarLandscapeLayout.spread;
     const MaterialStateMouseCursor cursor = MaterialStateMouseCursor.textable;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            backgroundColor: themeBackgroundColor,
-            selectedItemColor: themeSelectedItemColor,
-            unselectedItemColor: themeUnselectedItemColor,
-            selectedIconTheme: themeSelectedIconTheme,
-            unselectedIconTheme: themeUnselectedIconTheme,
-            elevation: themeElevation,
-            showUnselectedLabels: false,
-            showSelectedLabels: false,
-            type: BottomNavigationBarType.shifting,
-            selectedLabelStyle: themeSelectedTextStyle,
-            unselectedLabelStyle: themeUnselectedTextStyle,
-            landscapeLayout: themeLandscapeLayout,
-            mouseCursor: themeCursor,
-          ),
-        ),
-        home: Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: backgroundColor,
-            selectedItemColor: selectedItemColor,
-            unselectedItemColor: unselectedItemColor,
-            selectedIconTheme: selectedIconTheme,
-            unselectedIconTheme: unselectedIconTheme,
-            elevation: elevation,
-            showUnselectedLabels: true,
-            showSelectedLabels: true,
-            type: BottomNavigationBarType.fixed,
-            selectedLabelStyle: selectedTextStyle,
-            unselectedLabelStyle: unselectedTextStyle,
-            landscapeLayout: landscapeLayout,
-            mouseCursor: cursor,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.ac_unit),
-                label: 'AC',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.access_alarm),
-                label: 'Alarm',
-              ),
-            ],
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: themeBackgroundColor,
+          selectedItemColor: themeSelectedItemColor,
+          unselectedItemColor: themeUnselectedItemColor,
+          selectedIconTheme: themeSelectedIconTheme,
+          unselectedIconTheme: themeUnselectedIconTheme,
+          elevation: themeElevation,
+          showUnselectedLabels: false,
+          showSelectedLabels: false,
+          type: BottomNavigationBarType.shifting,
+          selectedLabelStyle: themeSelectedTextStyle,
+          unselectedLabelStyle: themeUnselectedTextStyle,
+          landscapeLayout: themeLandscapeLayout,
+          mouseCursor: themeCursor,
         ),
       ),
-    );
+      home: Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: backgroundColor,
+          selectedItemColor: selectedItemColor,
+          unselectedItemColor: unselectedItemColor,
+          selectedIconTheme: selectedIconTheme,
+          unselectedIconTheme: unselectedIconTheme,
+          elevation: elevation,
+          showUnselectedLabels: true,
+          showSelectedLabels: true,
+          type: BottomNavigationBarType.fixed,
+          selectedLabelStyle: selectedTextStyle,
+          unselectedLabelStyle: unselectedTextStyle,
+          landscapeLayout: landscapeLayout,
+          mouseCursor: cursor,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: 'AC'),
+            BottomNavigationBarItem(icon: Icon(Icons.access_alarm), label: 'Alarm'),
+          ],
+        ),
+      ),
+    ));
 
     Finder findDescendantOfBottomNavigationBar(Finder finder) {
-      return find.descendant(
-        of: find.byType(BottomNavigationBar),
-        matching: finder,
-      );
+      return find.descendant(of: find.byType(BottomNavigationBar), matching: finder);
     }
 
     final TextStyle selectedFontStyle = tester.renderObject<RenderParagraph>(find.text('AC')).text.style!;
@@ -295,12 +269,7 @@ void main() {
     // Unselected label has a font size of 22 but is scaled down to be font size 21.
     expect(
       tester.firstWidget<Transform>(
-        findDescendantOfBottomNavigationBar(
-          find.ancestor(
-            of: find.text('Alarm'),
-            matching: find.byType(Transform),
-          ),
-        ),
+        findDescendantOfBottomNavigationBar(find.ancestor(of: find.text('Alarm'), matching: find.byType(Transform))),
       ).transform,
       equals(Matrix4.diagonal3(Vector3.all(unselectedTextStyle.fontSize! / selectedTextStyle.fontSize!))),
     );
@@ -310,24 +279,15 @@ void main() {
     expect(unselectedIcon.fontSize, equals(unselectedIconTheme.size));
     // There should not be any [Opacity] or [FadeTransition] widgets
     // since showUnselectedLabels and showSelectedLabels are true.
-    final Finder findOpacity = findDescendantOfBottomNavigationBar(
-      find.byType(Opacity),
-    );
-    final Finder findFadeTransition = findDescendantOfBottomNavigationBar(
-      find.byType(FadeTransition),
-    );
+    final Finder findOpacity = findDescendantOfBottomNavigationBar(find.byType(Opacity));
+    final Finder findFadeTransition = findDescendantOfBottomNavigationBar(find.byType(FadeTransition));
     expect(findOpacity, findsNothing);
     expect(findFadeTransition, findsNothing);
     expect(_material(tester).elevation, equals(elevation));
     expect(_material(tester).color, equals(backgroundColor));
 
     final Offset barItem = tester.getCenter(
-      findDescendantOfBottomNavigationBar(
-        find.ancestor(
-          of: find.text('AC'),
-          matching: find.byType(Transform),
-        ),
-      ),
+      findDescendantOfBottomNavigationBar(find.ancestor(of: find.text('AC'), matching: find.byType(Transform))),
     );
     final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer();
@@ -338,31 +298,20 @@ void main() {
 
   testWidgets('BottomNavigationBarTheme can be used to hide all labels', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/66738.
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-          ),
-        ),
-        home: Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.ac_unit),
-                label: 'AC',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.access_alarm),
-                label: 'Alarm',
-              ),
-            ],
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(
+        bottomNavigationBarTheme:
+            const BottomNavigationBarThemeData(showSelectedLabels: false, showUnselectedLabels: false),
+      ),
+      home: Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: 'AC'),
+            BottomNavigationBarItem(icon: Icon(Icons.access_alarm), label: 'Alarm'),
+          ],
         ),
       ),
-    );
-
+    ));
 
     final Finder findVisibility = find.descendant(
       of: find.byType(BottomNavigationBar),
@@ -376,31 +325,20 @@ void main() {
 
   testWidgets('BottomNavigationBarTheme can be used to hide selected labels', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/66738.
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            showSelectedLabels: false,
-            showUnselectedLabels: true,
-          ),
-        ),
-        home: Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.ac_unit),
-                label: 'AC',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.access_alarm),
-                label: 'Alarm',
-              ),
-            ],
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(
+        bottomNavigationBarTheme:
+            const BottomNavigationBarThemeData(showSelectedLabels: false, showUnselectedLabels: true),
+      ),
+      home: Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: 'AC'),
+            BottomNavigationBarItem(icon: Icon(Icons.access_alarm), label: 'Alarm'),
+          ],
         ),
       ),
-    );
-
+    ));
 
     final Finder findFadeTransition = find.descendant(
       of: find.byType(BottomNavigationBar),
@@ -413,31 +351,20 @@ void main() {
   });
 
   testWidgets('BottomNavigationBarTheme can be used to hide unselected labels', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
-          ),
-        ),
-        home: Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.ac_unit),
-                label: 'AC',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.access_alarm),
-                label: 'Alarm',
-              ),
-            ],
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(
+        bottomNavigationBarTheme:
+            const BottomNavigationBarThemeData(showSelectedLabels: true, showUnselectedLabels: false),
+      ),
+      home: Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: 'AC'),
+            BottomNavigationBarItem(icon: Icon(Icons.access_alarm), label: 'Alarm'),
+          ],
         ),
       ),
-    );
-
+    ));
 
     final Finder findFadeTransition = find.descendant(
       of: find.byType(BottomNavigationBar),

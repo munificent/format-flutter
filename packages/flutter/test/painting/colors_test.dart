@@ -38,10 +38,7 @@ void main() {
       output.add(color);
       if (hue != 360.0) {
         // Check that it's reversible.
-        expect(
-          HSVColor.fromColor(color),
-          within<HSVColor>(distance: _doubleColorPrecision, from: hsvColor),
-        );
+        expect(HSVColor.fromColor(color), within<HSVColor>(distance: _doubleColorPrecision, from: hsvColor));
       }
     }
     final List<Color> expectedColors = <Color>[
@@ -67,10 +64,7 @@ void main() {
       final Color color = hslColor.toColor();
       output.add(color);
       // Check that it's reversible.
-      expect(
-        HSVColor.fromColor(color),
-        within<HSVColor>(distance: _doubleColorPrecision, from: hslColor),
-      );
+      expect(HSVColor.fromColor(color), within<HSVColor>(distance: _doubleColorPrecision, from: hslColor));
     }
     final List<Color> expectedColors = <Color>[
       const Color(0xffffffff),
@@ -97,10 +91,7 @@ void main() {
       // Check that it's reversible. Discontinuities at the ends for saturation,
       // so we skip those.
       if (value >= _doubleColorPrecision && value <= (1.0 - _doubleColorPrecision)) {
-        expect(
-          HSVColor.fromColor(color),
-          within<HSVColor>(distance: _doubleColorPrecision, from: hsvColor),
-        );
+        expect(HSVColor.fromColor(color), within<HSVColor>(distance: _doubleColorPrecision, from: hsvColor));
       }
       // output.add(HSVColor.fromAHSV(1.0, 0.0, 1.0, value).toColor());
     }
@@ -240,10 +231,7 @@ void main() {
       output.add(color);
       if (hue != 360.0) {
         // Check that it's reversible.
-        expect(
-          HSLColor.fromColor(color),
-          within<HSLColor>(distance: _doubleColorPrecision, from: hslColor),
-        );
+        expect(HSLColor.fromColor(color), within<HSLColor>(distance: _doubleColorPrecision, from: hslColor));
       }
     }
     final List<Color> expectedColors = <Color>[
@@ -269,10 +257,7 @@ void main() {
       final Color color = hslColor.toColor();
       output.add(color);
       // Check that it's reversible.
-      expect(
-        HSLColor.fromColor(color),
-        within<HSLColor>(distance: _doubleColorPrecision, from: hslColor),
-      );
+      expect(HSLColor.fromColor(color), within<HSLColor>(distance: _doubleColorPrecision, from: hslColor));
     }
     final List<Color> expectedColors = <Color>[
       const Color(0xff808080),
@@ -299,10 +284,7 @@ void main() {
       // Check that it's reversible. Discontinuities at the ends for saturation,
       // so we skip those.
       if (lightness >= _doubleColorPrecision && lightness <= (1.0 - _doubleColorPrecision)) {
-        expect(
-          HSLColor.fromColor(color),
-          within<HSLColor>(distance: _doubleColorPrecision, from: hslColor),
-        );
+        expect(HSLColor.fromColor(color), within<HSLColor>(distance: _doubleColorPrecision, from: hslColor));
       }
     }
     final List<Color> expectedColors = <Color>[
@@ -414,24 +396,18 @@ void main() {
 
   test('ColorSwatch test', () {
     final int color = nonconst(0xFF027223);
-    final ColorSwatch<String> greens1 = ColorSwatch<String>(
-      color,
-      const <String, Color>{
-        '2259 C': Color(0xFF027223),
-        '2273 C': Color(0xFF257226),
-        '2426 XGC': Color(0xFF00932F),
-        '7732 XGC': Color(0xFF007940),
-      },
-    );
-    final ColorSwatch<String> greens2 = ColorSwatch<String>(
-      color,
-      const <String, Color>{
-        '2259 C': Color(0xFF027223),
-        '2273 C': Color(0xFF257226),
-        '2426 XGC': Color(0xFF00932F),
-        '7732 XGC': Color(0xFF007940),
-      },
-    );
+    final ColorSwatch<String> greens1 = ColorSwatch<String>(color, const <String, Color>{
+      '2259 C': Color(0xFF027223),
+      '2273 C': Color(0xFF257226),
+      '2426 XGC': Color(0xFF00932F),
+      '7732 XGC': Color(0xFF007940),
+    });
+    final ColorSwatch<String> greens2 = ColorSwatch<String>(color, const <String, Color>{
+      '2259 C': Color(0xFF027223),
+      '2273 C': Color(0xFF257226),
+      '2426 XGC': Color(0xFF00932F),
+      '7732 XGC': Color(0xFF007940),
+    });
     expect(greens1, greens2);
     expect(greens1.hashCode, greens2.hashCode);
     expect(greens1['2259 C'], const Color(0xFF027223));
@@ -441,26 +417,31 @@ void main() {
   test('ColorSwatch.lerp', () {
     const ColorSwatch<int> swatchA = ColorSwatch<int>(0x00000000, <int, Color>{1: Color(0x00000000)});
     const ColorSwatch<int> swatchB = ColorSwatch<int>(0xFFFFFFFF, <int, Color>{1: Color(0xFFFFFFFF)});
-    expect(
-      ColorSwatch.lerp(swatchA, swatchB, 0.0),
-      const ColorSwatch<int>(0x00000000, <int, Color>{1: Color(0x00000000)}),
-    );
-    expect(
-      ColorSwatch.lerp(swatchA, swatchB, 0.5),
-      const ColorSwatch<int>(0x7F7F7F7F, <int, Color>{1: Color(0x7F7F7F7F)}),
-    );
-    expect(
-      ColorSwatch.lerp(swatchA, swatchB, 1.0),
-      const ColorSwatch<int>(0xFFFFFFFF, <int, Color>{1: Color(0xFFFFFFFF)}),
-    );
-    expect(
-      ColorSwatch.lerp(swatchA, swatchB, -0.1),
-      const ColorSwatch<int>(0x00000000, <int, Color>{1: Color(0x00000000)}),
-    );
-    expect(
-      ColorSwatch.lerp(swatchA, swatchB, 1.1),
-      const ColorSwatch<int>(0xFFFFFFFF, <int, Color>{1: Color(0xFFFFFFFF)}),
-    );
+    expect(ColorSwatch.lerp(
+      swatchA,
+      swatchB,
+      0.0,
+    ), const ColorSwatch<int>(0x00000000, <int, Color>{1: Color(0x00000000)}));
+    expect(ColorSwatch.lerp(
+      swatchA,
+      swatchB,
+      0.5,
+    ), const ColorSwatch<int>(0x7F7F7F7F, <int, Color>{1: Color(0x7F7F7F7F)}));
+    expect(ColorSwatch.lerp(
+      swatchA,
+      swatchB,
+      1.0,
+    ), const ColorSwatch<int>(0xFFFFFFFF, <int, Color>{1: Color(0xFFFFFFFF)}));
+    expect(ColorSwatch.lerp(
+      swatchA,
+      swatchB,
+      -0.1,
+    ), const ColorSwatch<int>(0x00000000, <int, Color>{1: Color(0x00000000)}));
+    expect(ColorSwatch.lerp(
+      swatchA,
+      swatchB,
+      1.1,
+    ), const ColorSwatch<int>(0xFFFFFFFF, <int, Color>{1: Color(0xFFFFFFFF)}));
   });
 
   test('ColorSwatch.lerp identical a,b', () {
@@ -471,7 +452,8 @@ void main() {
 
   test('ColorDiagnosticsProperty includes valueProperties in JSON', () {
     ColorProperty property = ColorProperty('foo', const Color.fromARGB(10, 20, 30, 40));
-    final Map<String, Object> valueProperties = property.toJsonMap(const DiagnosticsSerializationDelegate())['valueProperties']! as Map<String, Object>;
+    final Map<String, Object> valueProperties =
+        property.toJsonMap(const DiagnosticsSerializationDelegate())['valueProperties']! as Map<String, Object>;
     expect(valueProperties['alpha'], 10);
     expect(valueProperties['red'], 20);
     expect(valueProperties['green'], 30);

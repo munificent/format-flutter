@@ -9,9 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('SearchBarThemeData copyWith, ==, hashCode basics', () {
     expect(const SearchBarThemeData(), const SearchBarThemeData().copyWith());
-    expect(const SearchBarThemeData().hashCode, const SearchBarThemeData()
-        .copyWith()
-        .hashCode);
+    expect(const SearchBarThemeData().hashCode, const SearchBarThemeData().copyWith().hashCode);
   });
 
   test('SearchBarThemeData lerp special cases', () {
@@ -53,15 +51,14 @@ void main() {
     const SearchBarThemeData().debugFillProperties(builder);
 
     final List<String> description = builder.properties
-      .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
-      .map((DiagnosticsNode node) => node.toString())
-      .toList();
+        .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
+        .map((DiagnosticsNode node) => node.toString())
+        .toList();
 
     expect(description, <String>[]);
   });
 
-  testWidgets('SearchBarThemeData implements debugFillProperties', (
-      WidgetTester tester) async {
+  testWidgets('SearchBarThemeData implements debugFillProperties', (WidgetTester tester) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     const SearchBarThemeData(
       elevation: MaterialStatePropertyAll<double>(3.0),
@@ -78,9 +75,9 @@ void main() {
     ).debugFillProperties(builder);
 
     final List<String> description = builder.properties
-      .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
-      .map((DiagnosticsNode node) => node.toString())
-      .toList();
+        .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
+        .map((DiagnosticsNode node) => node.toString())
+        .toList();
 
     expect(description[0], 'elevation: MaterialStatePropertyAll(3.0)');
     expect(description[1], 'backgroundColor: MaterialStatePropertyAll(Color(0xfffffff1))');
@@ -102,7 +99,10 @@ void main() {
     const Color surfaceTintColorValue = Color(0xff000001);
     const Color overlayColorValue = Color(0xff000001);
     const BorderSide sideValue = BorderSide(color: Color(0xff000004), width: 2.0);
-    const OutlinedBorder shapeValue = RoundedRectangleBorder(side: sideValue, borderRadius: BorderRadius.all(Radius.circular(2.0)));
+    const OutlinedBorder shapeValue = RoundedRectangleBorder(
+      side: sideValue,
+      borderRadius: BorderRadius.all(Radius.circular(2.0)),
+    );
     const EdgeInsets paddingValue = EdgeInsets.symmetric(horizontal: 16.0);
     const TextStyle textStyleValue = TextStyle(color: Color(0xff000005), fontSize: 20.0);
     const TextStyle hintStyleValue = TextStyle(color: Color(0xff000006), fontSize: 18.0);
@@ -136,21 +136,17 @@ void main() {
     Widget buildFrame({
       bool useSearchBarProperties = false,
       SearchBarThemeData? searchBarThemeData,
-      SearchBarThemeData? overallTheme
+      SearchBarThemeData? overallTheme,
     }) {
       final Widget child = Builder(
         builder: (BuildContext context) {
           if (!useSearchBarProperties) {
-            return const SearchBar(
-              hintText: 'hint',
-              leading: Icon(Icons.search),
-              trailing: <Widget>[ Icon(Icons.menu)],
-            );
+            return const SearchBar(hintText: 'hint', leading: Icon(Icons.search), trailing: <Widget>[Icon(Icons.menu)]);
           }
           return const SearchBar(
             hintText: 'hint',
             leading: Icon(Icons.search),
-            trailing: <Widget>[ Icon(Icons.menu)],
+            trailing: <Widget>[Icon(Icons.menu)],
             elevation: elevation,
             backgroundColor: backgroundColor,
             shadowColor: shadowColor,
@@ -166,37 +162,26 @@ void main() {
         },
       );
       return MaterialApp(
-        theme: ThemeData.from(
-          colorScheme: const ColorScheme.light(), useMaterial3: true)
-          .copyWith(
-            searchBarTheme: overallTheme,
+        theme: ThemeData.from(colorScheme: const ColorScheme.light(), useMaterial3: true).copyWith(
+          searchBarTheme: overallTheme,
         ),
         home: Scaffold(
           body: Center(
             // If the SearchBarThemeData widget is present, it's used
             // instead of the Theme's ThemeData.searchBarTheme.
-            child: searchBarThemeData == null ? child : SearchBarTheme(
-              data: searchBarThemeData,
-              child: child,
-            ),
+            child: searchBarThemeData == null ? child : SearchBarTheme(data: searchBarThemeData, child: child),
           ),
         ),
       );
     }
 
-    final Finder findMaterial = find.descendant(
-      of: find.byType(SearchBar),
-      matching: find.byType(Material),
-    );
+    final Finder findMaterial = find.descendant(of: find.byType(SearchBar), matching: find.byType(Material));
 
-    final Finder findInkWell = find.descendant(
-      of: find.byType(SearchBar),
-      matching: find.byType(InkWell),
-    );
+    final Finder findInkWell = find.descendant(of: find.byType(SearchBar), matching: find.byType(InkWell));
 
-    const Set<MaterialState> hovered = <MaterialState>{ MaterialState.hovered};
-    const Set<MaterialState> focused = <MaterialState>{ MaterialState.focused};
-    const Set<MaterialState> pressed = <MaterialState>{ MaterialState.pressed};
+    const Set<MaterialState> hovered = <MaterialState>{MaterialState.hovered};
+    const Set<MaterialState> focused = <MaterialState>{MaterialState.focused};
+    const Set<MaterialState> pressed = <MaterialState>{MaterialState.pressed};
 
     Future<void> checkSearchBar(WidgetTester tester) async {
       final Material material = tester.widget<Material>(findMaterial);
@@ -254,16 +239,17 @@ void main() {
     // Same as the previous tests with empty SearchBarThemeData's instead of null.
 
     testWidgets('SearchBar properties overrides defaults, empty theme and overall theme', (WidgetTester tester) async {
-      await tester.pumpWidget(buildFrame(useSearchBarProperties: true,
+      await tester.pumpWidget(buildFrame(
+        useSearchBarProperties: true,
         searchBarThemeData: const SearchBarThemeData(),
-        overallTheme: const SearchBarThemeData()));
+        overallTheme: const SearchBarThemeData(),
+      ));
       await tester.pumpAndSettle(); // allow the animations to finish
       checkSearchBar(tester);
     });
 
     testWidgets('SearchBar theme overrides defaults and overall theme', (WidgetTester tester) async {
-      await tester.pumpWidget(buildFrame(searchBarThemeData: searchBarTheme,
-        overallTheme: const SearchBarThemeData()));
+      await tester.pumpWidget(buildFrame(searchBarThemeData: searchBarTheme, overallTheme: const SearchBarThemeData()));
       await tester.pumpAndSettle(); // allow the animations to finish
       checkSearchBar(tester);
     });

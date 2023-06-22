@@ -8,46 +8,42 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('ListView can handle shrinking top elements', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          cacheExtent: 0.0,
-          controller: controller,
-          children: const <Widget>[
-            SizedBox(height: 400.0, child: Text('1')),
-            SizedBox(height: 400.0, child: Text('2')),
-            SizedBox(height: 400.0, child: Text('3')),
-            SizedBox(height: 400.0, child: Text('4')),
-            SizedBox(height: 400.0, child: Text('5')),
-            SizedBox(height: 400.0, child: Text('6')),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        cacheExtent: 0.0,
+        controller: controller,
+        children: const <Widget>[
+          SizedBox(height: 400.0, child: Text('1')),
+          SizedBox(height: 400.0, child: Text('2')),
+          SizedBox(height: 400.0, child: Text('3')),
+          SizedBox(height: 400.0, child: Text('4')),
+          SizedBox(height: 400.0, child: Text('5')),
+          SizedBox(height: 400.0, child: Text('6')),
+        ],
       ),
-    );
+    ));
 
     controller.jumpTo(1000.0);
     await tester.pump();
 
     expect(tester.getTopLeft(find.text('4')).dy, equals(200.0));
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          cacheExtent: 0.0,
-          controller: controller,
-          children: const <Widget>[
-            SizedBox(height: 200.0, child: Text('1')),
-            SizedBox(height: 400.0, child: Text('2')),
-            SizedBox(height: 400.0, child: Text('3')),
-            SizedBox(height: 400.0, child: Text('4')),
-            SizedBox(height: 400.0, child: Text('5')),
-            SizedBox(height: 400.0, child: Text('6')),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        cacheExtent: 0.0,
+        controller: controller,
+        children: const <Widget>[
+          SizedBox(height: 200.0, child: Text('1')),
+          SizedBox(height: 400.0, child: Text('2')),
+          SizedBox(height: 400.0, child: Text('3')),
+          SizedBox(height: 400.0, child: Text('4')),
+          SizedBox(height: 400.0, child: Text('5')),
+          SizedBox(height: 400.0, child: Text('6')),
+        ],
       ),
-    );
+    ));
 
     expect(controller.offset, equals(1000.0));
     expect(tester.getTopLeft(find.text('4')).dy, equals(200.0));
@@ -67,44 +63,40 @@ void main() {
 
   testWidgets('ListView can handle shrinking top elements with cache extent', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          controller: controller,
-          children: const <Widget>[
-            SizedBox(height: 400.0, child: Text('1')),
-            SizedBox(height: 400.0, child: Text('2')),
-            SizedBox(height: 400.0, child: Text('3')),
-            SizedBox(height: 400.0, child: Text('4')),
-            SizedBox(height: 400.0, child: Text('5')),
-            SizedBox(height: 400.0, child: Text('6')),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        controller: controller,
+        children: const <Widget>[
+          SizedBox(height: 400.0, child: Text('1')),
+          SizedBox(height: 400.0, child: Text('2')),
+          SizedBox(height: 400.0, child: Text('3')),
+          SizedBox(height: 400.0, child: Text('4')),
+          SizedBox(height: 400.0, child: Text('5')),
+          SizedBox(height: 400.0, child: Text('6')),
+        ],
       ),
-    );
+    ));
 
     controller.jumpTo(1000.0);
     await tester.pump();
 
     expect(tester.getTopLeft(find.text('4')).dy, equals(200.0));
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          controller: controller,
-          children: const <Widget>[
-            SizedBox(height: 200.0, child: Text('1')),
-            SizedBox(height: 400.0, child: Text('2')),
-            SizedBox(height: 400.0, child: Text('3')),
-            SizedBox(height: 400.0, child: Text('4')),
-            SizedBox(height: 400.0, child: Text('5')),
-            SizedBox(height: 400.0, child: Text('6')),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        controller: controller,
+        children: const <Widget>[
+          SizedBox(height: 200.0, child: Text('1')),
+          SizedBox(height: 400.0, child: Text('2')),
+          SizedBox(height: 400.0, child: Text('3')),
+          SizedBox(height: 400.0, child: Text('4')),
+          SizedBox(height: 400.0, child: Text('5')),
+          SizedBox(height: 400.0, child: Text('6')),
+        ],
       ),
-    );
+    ));
 
     expect(controller.offset, equals(1000.0));
     expect(tester.getTopLeft(find.text('4')).dy, equals(200.0));
@@ -124,20 +116,18 @@ void main() {
 
   testWidgets('ListView can handle inserts at 0', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          controller: controller,
-          children: const <Widget>[
-            SizedBox(height: 400.0, child: Text('0')),
-            SizedBox(height: 400.0, child: Text('1')),
-            SizedBox(height: 400.0, child: Text('2')),
-            SizedBox(height: 400.0, child: Text('3')),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        controller: controller,
+        children: const <Widget>[
+          SizedBox(height: 400.0, child: Text('0')),
+          SizedBox(height: 400.0, child: Text('1')),
+          SizedBox(height: 400.0, child: Text('2')),
+          SizedBox(height: 400.0, child: Text('3')),
+        ],
       ),
-    );
+    ));
     expect(find.text('0'), findsOneWidget);
     expect(find.text('1'), findsOneWidget);
     expect(find.text('2'), findsNothing);
@@ -145,22 +135,20 @@ void main() {
 
     final Finder findItemA = find.descendant(of: find.byType(SizedBox), matching: find.text('A'));
     final Finder findItemB = find.descendant(of: find.byType(SizedBox), matching: find.text('B'));
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          controller: controller,
-          children: const <Widget>[
-            SizedBox(height: 10.0, child: Text('A')),
-            SizedBox(height: 10.0, child: Text('B')),
-            SizedBox(height: 400.0, child: Text('0')),
-            SizedBox(height: 400.0, child: Text('1')),
-            SizedBox(height: 400.0, child: Text('2')),
-            SizedBox(height: 400.0, child: Text('3')),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        controller: controller,
+        children: const <Widget>[
+          SizedBox(height: 10.0, child: Text('A')),
+          SizedBox(height: 10.0, child: Text('B')),
+          SizedBox(height: 400.0, child: Text('0')),
+          SizedBox(height: 400.0, child: Text('1')),
+          SizedBox(height: 400.0, child: Text('2')),
+          SizedBox(height: 400.0, child: Text('3')),
+        ],
       ),
-    );
+    ));
     expect(find.text('A'), findsOneWidget);
     expect(find.text('B'), findsOneWidget);
     expect(tester.getTopLeft(findItemA).dy, 0.0);
@@ -168,28 +156,25 @@ void main() {
     expect(tester.getTopLeft(findItemB).dy, 10.0);
     expect(tester.getBottomRight(findItemB).dy, 20.0);
 
-
     controller.jumpTo(1200.0);
     await tester.pump();
     expect(find.text('A'), findsNothing);
     expect(find.text('B'), findsNothing);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(
-          controller: controller,
-          children: const <Widget>[
-            SizedBox(height: 200.0, child: Text('A')),
-            SizedBox(height: 200.0, child: Text('B')),
-            SizedBox(height: 400.0, child: Text('0')),
-            SizedBox(height: 400.0, child: Text('1')),
-            SizedBox(height: 400.0, child: Text('2')),
-            SizedBox(height: 400.0, child: Text('3')),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: ListView(
+        controller: controller,
+        children: const <Widget>[
+          SizedBox(height: 200.0, child: Text('A')),
+          SizedBox(height: 200.0, child: Text('B')),
+          SizedBox(height: 400.0, child: Text('0')),
+          SizedBox(height: 400.0, child: Text('1')),
+          SizedBox(height: 400.0, child: Text('2')),
+          SizedBox(height: 400.0, child: Text('3')),
+        ],
       ),
-    );
+    ));
     expect(find.text('A'), findsNothing);
     expect(find.text('B'), findsNothing);
 
@@ -204,7 +189,6 @@ void main() {
     expect(controller.offset, greaterThan(0.0)); // RenderSliverList corrected the offset.
     expect(tester.getTopLeft(findItemB).dy, -180.0);
     expect(tester.getBottomRight(findItemB).dy, 20.0);
-
 
     controller.jumpTo(0.0);
     await tester.pump();

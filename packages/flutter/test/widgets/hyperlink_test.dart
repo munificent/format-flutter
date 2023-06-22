@@ -22,27 +22,19 @@ void main() {
 
     const Key textKey = Key('text');
 
-    await tester.pumpWidget(
-      Center(
-        child: RichText(
-          key: textKey,
-          textDirection: TextDirection.ltr,
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(
-                text: 'xxxxxxxx',
-                recognizer: tapLeft,
-              ),
-              const TextSpan(text: 'yyyyyyyy'),
-              TextSpan(
-                text: 'zzzzzzzzz',
-                recognizer: tapRight,
-              ),
-            ],
-          ),
+    await tester.pumpWidget(Center(
+      child: RichText(
+        key: textKey,
+        textDirection: TextDirection.ltr,
+        text: TextSpan(
+          children: <TextSpan>[
+            TextSpan(text: 'xxxxxxxx', recognizer: tapLeft),
+            const TextSpan(text: 'yyyyyyyy'),
+            TextSpan(text: 'zzzzzzzzz', recognizer: tapRight),
+          ],
         ),
       ),
-    );
+    ));
 
     final RenderBox box = tester.renderObject(find.byKey(textKey));
 

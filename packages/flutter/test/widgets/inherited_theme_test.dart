@@ -6,21 +6,17 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class TestRoute extends PageRouteBuilder<void> {
-  TestRoute(Widget child) : super(
-    pageBuilder: (BuildContext _, Animation<double> __, Animation<double> ___) => child,
-  );
+  TestRoute(Widget child) : super(pageBuilder: (BuildContext _, Animation<double> __, Animation<double> ___) => child);
 }
 
 class IconTextBox extends StatelessWidget {
-  const IconTextBox(this.text, { super.key });
+  const IconTextBox(this.text, {super.key});
   final String text;
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      child: Row(
-        children: <Widget>[const Icon(IconData(0x41, fontFamily: 'Roboto')), Text(text)],
-      ),
+      child: Row(children: <Widget>[const Icon(IconData(0x41, fontFamily: 'Roboto')), Text(text)]),
     );
   }
 }
@@ -59,13 +55,11 @@ void main() {
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
                             navigatorContext = context;
-                            Navigator.of(context).push(
-                              TestRoute(
-                                useCaptureAll
+                            Navigator.of(context).push(TestRoute(
+                              useCaptureAll
                                   ? InheritedTheme.captureAll(context, const IconTextBox('Hello'))
                                   : const IconTextBox('Hello'),
-                              ),
-                            );
+                            ));
                           },
                           child: const IconTextBox('Tap'),
                         );
@@ -82,20 +76,12 @@ void main() {
 
     TextStyle getIconStyle() {
       return tester.widget<RichText>(
-        find.descendant(
-          of: find.byType(Icon),
-          matching: find.byType(RichText),
-        ),
+        find.descendant(of: find.byType(Icon), matching: find.byType(RichText)),
       ).text.style!;
     }
 
     TextStyle getTextStyle(String text) {
-      return tester.widget<RichText>(
-        find.descendant(
-          of: find.text(text),
-          matching: find.byType(RichText),
-        ),
-      ).text.style!;
+      return tester.widget<RichText>(find.descendant(of: find.text(text), matching: find.byType(RichText))).text.style!;
     }
 
     useCaptureAll = false;
@@ -155,49 +141,40 @@ void main() {
     final Key icon1 = UniqueKey();
     final Key icon2 = UniqueKey();
 
-    await tester.pumpWidget(
-      WidgetsApp(
-        color: const Color(0xFFFFFFFF),
-        onGenerateRoute: (RouteSettings settings) {
-          return TestRoute(
-            IconTheme(
-              data: const IconThemeData(color: outerColor),
-              child: IconTheme(
-                data: const IconThemeData(size: iconSize, color: innerColor),
-                child: Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(const IconData(0x41, fontFamily: 'Roboto'), key: icon1),
-                      Builder(
-                        builder: (BuildContext context) {
-                          // The same IconThemes are visible from this context
-                          // and the context that the widget returned by captureAll()
-                          // is built in. So only the inner green IconTheme should
-                          // apply to the icon, i.e. both icons will be big and green.
-                          return InheritedTheme.captureAll(
-                            context,
-                            Icon(const IconData(0x41, fontFamily: 'Roboto'), key: icon2),
-                          );
-                        },
-                      ),
-                    ],
+    await tester.pumpWidget(WidgetsApp(
+      color: const Color(0xFFFFFFFF),
+      onGenerateRoute: (RouteSettings settings) {
+        return TestRoute(IconTheme(
+          data: const IconThemeData(color: outerColor),
+          child: IconTheme(
+            data: const IconThemeData(size: iconSize, color: innerColor),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(const IconData(0x41, fontFamily: 'Roboto'), key: icon1),
+                  Builder(
+                    builder: (BuildContext context) {
+                      // The same IconThemes are visible from this context
+                      // and the context that the widget returned by captureAll()
+                      // is built in. So only the inner green IconTheme should
+                      // apply to the icon, i.e. both icons will be big and green.
+                      return InheritedTheme.captureAll(
+                        context,
+                        Icon(const IconData(0x41, fontFamily: 'Roboto'), key: icon2),
+                      );
+                    },
                   ),
-                ),
+                ],
               ),
             ),
-          );
-        },
-      ),
-    );
+          ),
+        ));
+      },
+    ));
 
     TextStyle getIconStyle(Key key) {
-      return tester.widget<RichText>(
-        find.descendant(
-          of: find.byKey(key),
-          matching: find.byType(RichText),
-        ),
-      ).text.style!;
+      return tester.widget<RichText>(find.descendant(of: find.byKey(key), matching: find.byType(RichText))).text.style!;
     }
 
     expect(getIconStyle(icon1).color, innerColor);
@@ -211,39 +188,30 @@ void main() {
 
     const Color textColor = Color(0xFF00FF00);
 
-    await tester.pumpWidget(
-      WidgetsApp(
-        color: const Color(0xFFFFFFFF),
-        onGenerateRoute: (RouteSettings settings) {
-          return TestRoute(
-            DefaultTextStyle(
-              style: const TextStyle(fontSize: 48),
-              child: DefaultTextStyle(
-                style: const TextStyle(color: textColor),
-                child: Row(
-                  children: <Widget>[
-                    const Text('Hello'),
-                    Builder(
-                      builder: (BuildContext context) {
-                        return InheritedTheme.captureAll(context, const Text('World'));
-                      },
-                    ),
-                  ],
+    await tester.pumpWidget(WidgetsApp(
+      color: const Color(0xFFFFFFFF),
+      onGenerateRoute: (RouteSettings settings) {
+        return TestRoute(DefaultTextStyle(
+          style: const TextStyle(fontSize: 48),
+          child: DefaultTextStyle(
+            style: const TextStyle(color: textColor),
+            child: Row(
+              children: <Widget>[
+                const Text('Hello'),
+                Builder(
+                  builder: (BuildContext context) {
+                    return InheritedTheme.captureAll(context, const Text('World'));
+                  },
                 ),
-              ),
+              ],
             ),
-          );
-        },
-      ),
-    );
+          ),
+        ));
+      },
+    ));
 
     TextStyle getTextStyle(String text) {
-      return tester.widget<RichText>(
-        find.descendant(
-          of: find.text(text),
-          matching: find.byType(RichText),
-        ),
-      ).text.style!;
+      return tester.widget<RichText>(find.descendant(of: find.text(text), matching: find.byType(RichText))).text.style!;
     }
 
     expect(getTextStyle('Hello').fontSize, null);

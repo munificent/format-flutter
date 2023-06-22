@@ -32,8 +32,12 @@ void main() {
   String? helpText;
   TextInputType? keyboardType;
 
-  final Finder nextMonthIcon = find.byWidgetPredicate((Widget w) => w is IconButton && (w.tooltip?.startsWith('Next month') ?? false));
-  final Finder previousMonthIcon = find.byWidgetPredicate((Widget w) => w is IconButton && (w.tooltip?.startsWith('Previous month') ?? false));
+  final Finder nextMonthIcon = find.byWidgetPredicate(
+    (Widget w) => w is IconButton && (w.tooltip?.startsWith('Next month') ?? false),
+  );
+  final Finder previousMonthIcon = find.byWidgetPredicate(
+    (Widget w) => w is IconButton && (w.tooltip?.startsWith('Previous month') ?? false),
+  );
   final Finder switchToInputIcon = find.byIcon(Icons.edit);
   final Finder switchToCalendarIcon = find.byIcon(Icons.calendar_today);
 
@@ -112,10 +116,7 @@ void main() {
         currentMode = value;
       },
       builder: (BuildContext context, Widget? child) {
-        return Directionality(
-          textDirection: textDirection,
-          child: child ?? const SizedBox(),
-        );
+        return Directionality(textDirection: textDirection, child: child ?? const SizedBox());
       },
     );
 
@@ -131,6 +132,7 @@ void main() {
         addTearDown(tester.view.reset);
         await prepareDatePicker(tester, (Future<DateTime?> date) async {}, useMaterial3: true);
       }
+
       const Size calendarLandscapeDialogSize = Size(496.0, 346.0);
       const Size calendarPortraitDialogSizeM3 = Size(328.0, 512.0);
 
@@ -155,9 +157,8 @@ void main() {
       final ThemeData theme = ThemeData(useMaterial3: true);
       await prepareDatePicker(tester, (Future<DateTime?> date) async {
         final Material dialogMaterial = tester.widget<Material>(
-          find.descendant(of: find.byType(Dialog),
-          matching: find.byType(Material),
-        ).first);
+          find.descendant(of: find.byType(Dialog), matching: find.byType(Material)).first,
+        );
 
         expect(dialogMaterial.color, theme.colorScheme.surface);
         expect(dialogMaterial.shadowColor, Colors.transparent);
@@ -301,10 +302,7 @@ void main() {
                         firstDate: DateTime(2018),
                         lastDate: DateTime(2030),
                         builder: (BuildContext context, Widget? child) {
-                          return Directionality(
-                            textDirection: textDirection,
-                            child: child ?? const SizedBox(),
-                          );
+                          return Directionality(textDirection: textDirection, child: child ?? const SizedBox());
                         },
                       );
                     },
@@ -375,107 +373,99 @@ void main() {
     testWidgets('honors DialogTheme for shape and elevation', (WidgetTester tester) async {
       // Test that the defaults work
       const DialogTheme datePickerDefaultDialogTheme = DialogTheme(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
         elevation: 24,
       );
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(useMaterial3: false),
-          home: Center(
-            child: Builder(
-              builder: (BuildContext context) {
-                return ElevatedButton(
-                  child: const Text('X'),
-                  onPressed: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2018),
-                      lastDate: DateTime(2030),
-                    );
-                  },
-                );
-              },
-            ),
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(useMaterial3: false),
+        home: Center(
+          child: Builder(
+            builder: (BuildContext context) {
+              return ElevatedButton(
+                child: const Text('X'),
+                onPressed: () {
+                  showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2018),
+                    lastDate: DateTime(2030),
+                  );
+                },
+              );
+            },
           ),
         ),
-      );
+      ));
       await tester.tap(find.text('X'));
       await tester.pumpAndSettle();
-      final Material defaultDialogMaterial = tester.widget<Material>(find.descendant(
-        of: find.byType(Dialog), matching: find.byType(Material)).first);
+      final Material defaultDialogMaterial = tester.widget<Material>(
+        find.descendant(of: find.byType(Dialog), matching: find.byType(Material)).first,
+      );
       expect(defaultDialogMaterial.shape, datePickerDefaultDialogTheme.shape);
       expect(defaultDialogMaterial.elevation, datePickerDefaultDialogTheme.elevation);
 
       // Test that it honors ThemeData.dialogTheme settings
       const DialogTheme customDialogTheme = DialogTheme(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(40.0)),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
         elevation: 50,
       );
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData.fallback(useMaterial3: false).copyWith(dialogTheme: customDialogTheme),
-          home: Center(
-            child: Builder(
-              builder: (BuildContext context) {
-                return ElevatedButton(
-                  child: const Text('X'),
-                  onPressed: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2018),
-                      lastDate: DateTime(2030),
-                    );
-                  },
-                );
-              },
-            ),
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData.fallback(useMaterial3: false).copyWith(dialogTheme: customDialogTheme),
+        home: Center(
+          child: Builder(
+            builder: (BuildContext context) {
+              return ElevatedButton(
+                child: const Text('X'),
+                onPressed: () {
+                  showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2018),
+                    lastDate: DateTime(2030),
+                  );
+                },
+              );
+            },
           ),
         ),
-      );
+      ));
       await tester.pump(); // start theme animation
       await tester.pump(const Duration(seconds: 5)); // end theme animation
-      final Material themeDialogMaterial = tester.widget<Material>(find.descendant(of: find.byType(Dialog), matching: find.byType(Material)).first);
+      final Material themeDialogMaterial = tester.widget<Material>(
+        find.descendant(of: find.byType(Dialog), matching: find.byType(Material)).first,
+      );
       expect(themeDialogMaterial.shape, customDialogTheme.shape);
       expect(themeDialogMaterial.elevation, customDialogTheme.elevation);
     });
 
     testWidgets('OK Cancel button layout', (WidgetTester tester) async {
-       Widget buildFrame(TextDirection textDirection) {
-         return MaterialApp(
-           theme: ThemeData(useMaterial3: false),
-           home: Material(
-             child: Center(
-               child: Builder(
-                 builder: (BuildContext context) {
-                   return ElevatedButton(
-                     child: const Text('X'),
-                     onPressed: () {
-                       showDatePicker(
-                         context: context,
-                         initialDate: DateTime(2016, DateTime.january, 15),
-                         firstDate:DateTime(2001),
-                         lastDate: DateTime(2031, DateTime.december, 31),
-                         builder: (BuildContext context, Widget? child) {
-                           return Directionality(
-                             textDirection: textDirection,
-                             child: child ?? const SizedBox(),
-                           );
-                         },
-                       );
-                     },
-                   );
-                 },
-               ),
-             ),
-           ),
-         );
-       }
+      Widget buildFrame(TextDirection textDirection) {
+        return MaterialApp(
+          theme: ThemeData(useMaterial3: false),
+          home: Material(
+            child: Center(
+              child: Builder(
+                builder: (BuildContext context) {
+                  return ElevatedButton(
+                    child: const Text('X'),
+                    onPressed: () {
+                      showDatePicker(
+                        context: context,
+                        initialDate: DateTime(2016, DateTime.january, 15),
+                        firstDate: DateTime(2001),
+                        lastDate: DateTime(2031, DateTime.december, 31),
+                        builder: (BuildContext context, Widget? child) {
+                          return Directionality(textDirection: textDirection, child: child ?? const SizedBox());
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      }
 
       // Default landscape layout.
 
@@ -523,10 +513,8 @@ void main() {
 
     testWidgets('honors switchToInputEntryModeIcon', (WidgetTester tester) async {
       Widget buildApp({bool? useMaterial3, Icon? switchToInputEntryModeIcon}) {
-       return MaterialApp(
-          theme: ThemeData(
-            useMaterial3: useMaterial3 ?? false,
-          ),
+        return MaterialApp(
+          theme: ThemeData(useMaterial3: useMaterial3 ?? false),
           home: Material(
             child: Builder(
               builder: (BuildContext context) {
@@ -564,11 +552,7 @@ void main() {
       await tester.tap(find.text('OK'));
       await tester.pumpAndSettle();
 
-      await tester.pumpWidget(
-        buildApp(
-          switchToInputEntryModeIcon: const Icon(Icons.keyboard),
-        ),
-      );
+      await tester.pumpWidget(buildApp(switchToInputEntryModeIcon: const Icon(Icons.keyboard)));
       await tester.pumpAndSettle();
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
@@ -579,10 +563,8 @@ void main() {
 
     testWidgets('honors switchToCalendarEntryModeIcon', (WidgetTester tester) async {
       Widget buildApp({bool? useMaterial3, Icon? switchToCalendarEntryModeIcon}) {
-       return MaterialApp(
-          theme: ThemeData(
-            useMaterial3: useMaterial3 ?? false,
-          ),
+        return MaterialApp(
+          theme: ThemeData(useMaterial3: useMaterial3 ?? false),
           home: Material(
             child: Builder(
               builder: (BuildContext context) {
@@ -621,11 +603,7 @@ void main() {
       await tester.tap(find.text('OK'));
       await tester.pumpAndSettle();
 
-      await tester.pumpWidget(
-        buildApp(
-          switchToCalendarEntryModeIcon: const Icon(Icons.favorite),
-        ),
-      );
+      await tester.pumpWidget(buildApp(switchToCalendarEntryModeIcon: const Icon(Icons.favorite)));
       await tester.pumpAndSettle();
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
@@ -649,13 +627,7 @@ void main() {
 
       await tester.pumpWidget(MaterialApp(
         theme: ThemeData(useMaterial3: true),
-        home: Material(
-          child: DatePickerDialog(
-            initialDate: initialDate,
-            firstDate: firstDate,
-            lastDate: lastDate,
-          ),
-        ),
+        home: Material(child: DatePickerDialog(initialDate: initialDate, firstDate: firstDate, lastDate: lastDate)),
       ));
 
       expect(helpText, findsOneWidget);
@@ -698,7 +670,7 @@ void main() {
       // A bug in the HTML renderer and/or Chrome 96+ causes a
       // discrepancy in the paragraph height.
       const bool hasIssue99933 = kIsWeb && !bool.fromEnvironment('FLUTTER_WEB_USE_SKIA');
-      expect(subHeaderTextTopLeft.dy,  dialogTopLeft.dy + 16.0 - (hasIssue99933 ? 0.5 : 0.0));
+      expect(subHeaderTextTopLeft.dy, dialogTopLeft.dy + 16.0 - (hasIssue99933 ? 0.5 : 0.0));
 
       // Test sub header icon position.
       final Finder subHeaderIcon = find.byIcon(Icons.arrow_drop_down);
@@ -747,13 +719,7 @@ void main() {
 
       await tester.pumpWidget(MaterialApp(
         theme: ThemeData(useMaterial3: true),
-        home: Material(
-          child: DatePickerDialog(
-            initialDate: initialDate,
-            firstDate: firstDate,
-            lastDate: lastDate,
-          ),
-        ),
+        home: Material(child: DatePickerDialog(initialDate: initialDate, firstDate: firstDate, lastDate: lastDate)),
       ));
 
       expect(helpText, findsOneWidget);
@@ -1050,15 +1016,18 @@ void main() {
 
         // Hovered.
         final Offset center = tester.getCenter(find.text('30'));
-        final TestGesture gesture = await tester.createGesture(
-          kind: PointerDeviceKind.mouse,
-        );
+        final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
         await gesture.addPointer();
         await gesture.moveTo(center);
         await tester.pumpAndSettle();
         expect(
           Material.of(tester.element(find.text('30'))),
-          paints..circle(color: material3 ? theme.colorScheme.onSurfaceVariant.withOpacity(0.08) : theme.colorScheme.onSurfaceVariant.withOpacity(0.08)),
+          paints
+            ..circle(
+              color: material3
+                  ? theme.colorScheme.onSurfaceVariant.withOpacity(0.08)
+                  : theme.colorScheme.onSurfaceVariant.withOpacity(0.08),
+            ),
         );
 
         // Highlighted (pressed).
@@ -1066,7 +1035,13 @@ void main() {
         await tester.pumpAndSettle();
         expect(
           Material.of(tester.element(find.text('30'))),
-          paints..circle()..circle(color: material3 ? theme.colorScheme.onSurfaceVariant.withOpacity(0.12) : theme.colorScheme.onSurfaceVariant.withOpacity(0.12))
+          paints
+            ..circle()
+            ..circle(
+              color: material3
+                  ? theme.colorScheme.onSurfaceVariant.withOpacity(0.12)
+                  : theme.colorScheme.onSurfaceVariant.withOpacity(0.12),
+            ),
         );
         await gesture.up();
         await tester.pumpAndSettle();
@@ -1099,8 +1074,7 @@ void main() {
 
     testWidgets('Default InputDecoration', (WidgetTester tester) async {
       await prepareDatePicker(tester, (Future<DateTime?> date) async {
-        final InputDecoration decoration = tester.widget<TextField>(
-          find.byType(TextField)).decoration!;
+        final InputDecoration decoration = tester.widget<TextField>(find.byType(TextField)).decoration!;
         expect(decoration.border, const OutlineInputBorder());
         expect(decoration.filled, false);
         expect(decoration.hintText, 'mm/dd/yyyy');
@@ -1262,46 +1236,56 @@ void main() {
 
       await prepareDatePicker(tester, (Future<DateTime?> date) async {
         // Header
-        expect(tester.getSemantics(find.text('SELECT DATE')), matchesSemantics(
-          label: 'SELECT DATE\nFri, Jan 15',
-        ));
+        expect(tester.getSemantics(find.text('SELECT DATE')), matchesSemantics(label: 'SELECT DATE\nFri, Jan 15'));
 
-        expect(tester.getSemantics(find.text('3')), matchesSemantics(
-          label: '3, Sunday, January 3, 2016, Today',
-          isButton: true,
-          hasTapAction: true,
-          isFocusable: true,
-        ));
+        expect(
+          tester.getSemantics(find.text('3')),
+          matchesSemantics(
+            label: '3, Sunday, January 3, 2016, Today',
+            isButton: true,
+            hasTapAction: true,
+            isFocusable: true,
+          ),
+        );
 
         // Input mode toggle button
-        expect(tester.getSemantics(switchToInputIcon), matchesSemantics(
-          tooltip: 'Switch to input',
-          isButton: true,
-          hasTapAction: true,
-          isEnabled: true,
-          hasEnabledState: true,
-          isFocusable: true,
-        ));
+        expect(
+          tester.getSemantics(switchToInputIcon),
+          matchesSemantics(
+            tooltip: 'Switch to input',
+            isButton: true,
+            hasTapAction: true,
+            isEnabled: true,
+            hasEnabledState: true,
+            isFocusable: true,
+          ),
+        );
 
         // The semantics of the CalendarDatePicker are tested in its tests.
 
         // Ok/Cancel buttons
-        expect(tester.getSemantics(find.text('OK')), matchesSemantics(
-          label: 'OK',
-          isButton: true,
-          hasTapAction: true,
-          isEnabled: true,
-          hasEnabledState: true,
-          isFocusable: true,
-        ));
-        expect(tester.getSemantics(find.text('CANCEL')), matchesSemantics(
-          label: 'CANCEL',
-          isButton: true,
-          hasTapAction: true,
-          isEnabled: true,
-          hasEnabledState: true,
-          isFocusable: true,
-        ));
+        expect(
+          tester.getSemantics(find.text('OK')),
+          matchesSemantics(
+            label: 'OK',
+            isButton: true,
+            hasTapAction: true,
+            isEnabled: true,
+            hasEnabledState: true,
+            isFocusable: true,
+          ),
+        );
+        expect(
+          tester.getSemantics(find.text('CANCEL')),
+          matchesSemantics(
+            label: 'CANCEL',
+            isButton: true,
+            hasTapAction: true,
+            isEnabled: true,
+            hasEnabledState: true,
+            isFocusable: true,
+          ),
+        );
       });
       semantics.dispose();
     });
@@ -1312,39 +1296,46 @@ void main() {
       initialEntryMode = DatePickerEntryMode.input;
       await prepareDatePicker(tester, (Future<DateTime?> date) async {
         // Header
-        expect(tester.getSemantics(find.text('SELECT DATE')), matchesSemantics(
-          label: 'SELECT DATE\nFri, Jan 15',
-        ));
+        expect(tester.getSemantics(find.text('SELECT DATE')), matchesSemantics(label: 'SELECT DATE\nFri, Jan 15'));
 
         // Input mode toggle button
-        expect(tester.getSemantics(switchToCalendarIcon), matchesSemantics(
-          tooltip: 'Switch to calendar',
-          isButton: true,
-          hasTapAction: true,
-          isEnabled: true,
-          hasEnabledState: true,
-          isFocusable: true,
-        ));
+        expect(
+          tester.getSemantics(switchToCalendarIcon),
+          matchesSemantics(
+            tooltip: 'Switch to calendar',
+            isButton: true,
+            hasTapAction: true,
+            isEnabled: true,
+            hasEnabledState: true,
+            isFocusable: true,
+          ),
+        );
 
         // The semantics of the InputDatePickerFormField are tested in its tests.
 
         // Ok/Cancel buttons
-        expect(tester.getSemantics(find.text('OK')), matchesSemantics(
-          label: 'OK',
-          isButton: true,
-          hasTapAction: true,
-          isEnabled: true,
-          hasEnabledState: true,
-          isFocusable: true,
-        ));
-        expect(tester.getSemantics(find.text('CANCEL')), matchesSemantics(
-          label: 'CANCEL',
-          isButton: true,
-          hasTapAction: true,
-          isEnabled: true,
-          hasEnabledState: true,
-          isFocusable: true,
-        ));
+        expect(
+          tester.getSemantics(find.text('OK')),
+          matchesSemantics(
+            label: 'OK',
+            isButton: true,
+            hasTapAction: true,
+            isEnabled: true,
+            hasEnabledState: true,
+            isFocusable: true,
+          ),
+        );
+        expect(
+          tester.getSemantics(find.text('CANCEL')),
+          matchesSemantics(
+            label: 'CANCEL',
+            isButton: true,
+            hasTapAction: true,
+            isEnabled: true,
+            hasEnabledState: true,
+            isFocusable: true,
+          ),
+        );
       });
       semantics.dispose();
     });
@@ -1599,27 +1590,25 @@ void main() {
 
   group('showDatePicker avoids overlapping display features', () {
     testWidgets('positioning with anchorPoint', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          builder: (BuildContext context, Widget? child) {
-            return MediaQuery(
-              // Display has a vertical hinge down the middle
-              data: const MediaQueryData(
-                size: Size(800, 600),
-                displayFeatures: <DisplayFeature>[
-                  DisplayFeature(
-                    bounds: Rect.fromLTRB(390, 0, 410, 600),
-                    type: DisplayFeatureType.hinge,
-                    state: DisplayFeatureState.unknown,
-                  ),
-                ],
-              ),
-              child: child!,
-            );
-          },
-          home: const Center(child: Text('Test')),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(
+        builder: (BuildContext context, Widget? child) {
+          return MediaQuery(
+            // Display has a vertical hinge down the middle
+            data: const MediaQueryData(
+              size: Size(800, 600),
+              displayFeatures: <DisplayFeature>[
+                DisplayFeature(
+                  bounds: Rect.fromLTRB(390, 0, 410, 600),
+                  type: DisplayFeatureType.hinge,
+                  state: DisplayFeatureState.unknown,
+                ),
+              ],
+            ),
+            child: child!,
+          );
+        },
+        home: const Center(child: Text('Test')),
+      ));
 
       final BuildContext context = tester.element(find.text('Test'));
       showDatePicker(
@@ -1637,30 +1626,25 @@ void main() {
     });
 
     testWidgets('positioning with Directionality', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          builder: (BuildContext context, Widget? child) {
-            return MediaQuery(
-              // Display has a vertical hinge down the middle
-              data: const MediaQueryData(
-                size: Size(800, 600),
-                displayFeatures: <DisplayFeature>[
-                  DisplayFeature(
-                    bounds: Rect.fromLTRB(390, 0, 410, 600),
-                    type: DisplayFeatureType.hinge,
-                    state: DisplayFeatureState.unknown,
-                  ),
-                ],
-              ),
-              child: Directionality(
-                textDirection: TextDirection.rtl,
-                child: child!,
-              ),
-            );
-          },
-          home: const Center(child: Text('Test')),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(
+        builder: (BuildContext context, Widget? child) {
+          return MediaQuery(
+            // Display has a vertical hinge down the middle
+            data: const MediaQueryData(
+              size: Size(800, 600),
+              displayFeatures: <DisplayFeature>[
+                DisplayFeature(
+                  bounds: Rect.fromLTRB(390, 0, 410, 600),
+                  type: DisplayFeatureType.hinge,
+                  state: DisplayFeatureState.unknown,
+                ),
+              ],
+            ),
+            child: Directionality(textDirection: TextDirection.rtl, child: child!),
+          );
+        },
+        home: const Center(child: Text('Test')),
+      ));
 
       final BuildContext context = tester.element(find.text('Test'));
       showDatePicker(
@@ -1677,27 +1661,25 @@ void main() {
     });
 
     testWidgets('positioning with defaults', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          builder: (BuildContext context, Widget? child) {
-            return MediaQuery(
-              // Display has a vertical hinge down the middle
-              data: const MediaQueryData(
-                size: Size(800, 600),
-                displayFeatures: <DisplayFeature>[
-                  DisplayFeature(
-                    bounds: Rect.fromLTRB(390, 0, 410, 600),
-                    type: DisplayFeatureType.hinge,
-                    state: DisplayFeatureState.unknown,
-                  ),
-                ],
-              ),
-              child: child!,
-            );
-          },
-          home: const Center(child: Text('Test')),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(
+        builder: (BuildContext context, Widget? child) {
+          return MediaQuery(
+            // Display has a vertical hinge down the middle
+            data: const MediaQueryData(
+              size: Size(800, 600),
+              displayFeatures: <DisplayFeature>[
+                DisplayFeature(
+                  bounds: Rect.fromLTRB(390, 0, 410, 600),
+                  type: DisplayFeatureType.hinge,
+                  state: DisplayFeatureState.unknown,
+                ),
+              ],
+            ),
+            child: child!,
+          );
+        },
+        home: const Center(child: Text('Test')),
+      ));
 
       final BuildContext context = tester.element(find.text('Test'));
       showDatePicker(
@@ -1716,10 +1698,7 @@ void main() {
 
   testWidgets('DatePickerDialog is state restorable', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
-        restorationScopeId: 'app',
-        home: _RestorableDatePickerDialogTestWidget(),
-      ),
+      const MaterialApp(restorationScopeId: 'app', home: _RestorableDatePickerDialogTestWidget()),
     );
 
     // The date picker should be closed.
@@ -1771,9 +1750,7 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         restorationScopeId: 'app',
-        home: _RestorableDatePickerDialogTestWidget(
-          datePickerEntryMode: DatePickerEntryMode.calendarOnly,
-        ),
+        home: _RestorableDatePickerDialogTestWidget(datePickerEntryMode: DatePickerEntryMode.calendarOnly),
       ),
     );
 
@@ -1841,7 +1818,7 @@ void main() {
       tester.view.physicalSize = size;
       tester.view.devicePixelRatio = 1.0;
       initialEntryMode = DatePickerEntryMode.input;
-      await prepareDatePicker(tester, (Future<DateTime?> date) async { }, useMaterial3: true);
+      await prepareDatePicker(tester, (Future<DateTime?> date) async {}, useMaterial3: true);
     }
 
     testWidgets('portrait', (WidgetTester tester) async {
@@ -1872,6 +1849,7 @@ void main() {
           addTearDown(tester.view.reset);
           await prepareDatePicker(tester, (Future<DateTime?> date) async {});
         }
+
         const Size wideWindowSize = Size(1920.0, 1080.0);
         const Size narrowWindowSize = Size(1070.0, 1770.0);
         const Size calendarLandscapeDialogSize = Size(496.0, 346.0);
@@ -1898,9 +1876,8 @@ void main() {
         final ThemeData theme = ThemeData(useMaterial3: false);
         await prepareDatePicker(tester, (Future<DateTime?> date) async {
           final Material dialogMaterial = tester.widget<Material>(
-            find.descendant(of: find.byType(Dialog),
-            matching: find.byType(Material),
-          ).first);
+            find.descendant(of: find.byType(Dialog), matching: find.byType(Material)).first,
+          );
 
           expect(dialogMaterial.color, theme.colorScheme.surface);
           expect(dialogMaterial.shadowColor, theme.shadowColor);
@@ -1910,7 +1887,6 @@ void main() {
             const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
           );
           expect(dialogMaterial.clipBehavior, Clip.antiAlias);
-
 
           final Dialog dialog = tester.widget<Dialog>(find.byType(Dialog));
           expect(dialog.insetPadding, const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0));
@@ -1928,8 +1904,7 @@ void main() {
 
       testWidgets('Default InputDecoration', (WidgetTester tester) async {
         await prepareDatePicker(tester, (Future<DateTime?> date) async {
-          final InputDecoration decoration = tester.widget<TextField>(
-            find.byType(TextField)).decoration!;
+          final InputDecoration decoration = tester.widget<TextField>(find.byType(TextField)).decoration!;
           expect(decoration.border, const UnderlineInputBorder());
           expect(decoration.filled, false);
           expect(decoration.hintText, 'mm/dd/yyyy');
@@ -1942,9 +1917,7 @@ void main() {
 }
 
 class _RestorableDatePickerDialogTestWidget extends StatefulWidget {
-  const _RestorableDatePickerDialogTestWidget({
-    this.datePickerEntryMode = DatePickerEntryMode.calendar,
-  });
+  const _RestorableDatePickerDialogTestWidget({this.datePickerEntryMode = DatePickerEntryMode.calendar});
 
   final DatePickerEntryMode datePickerEntryMode;
 
@@ -1952,7 +1925,8 @@ class _RestorableDatePickerDialogTestWidget extends StatefulWidget {
   _RestorableDatePickerDialogTestWidgetState createState() => _RestorableDatePickerDialogTestWidgetState();
 }
 
-class _RestorableDatePickerDialogTestWidgetState extends State<_RestorableDatePickerDialogTestWidget> with RestorationMixin {
+class _RestorableDatePickerDialogTestWidgetState extends State<_RestorableDatePickerDialogTestWidget>
+    with RestorationMixin {
   @override
   String? get restorationId => 'scaffold_state';
 
@@ -1978,15 +1952,14 @@ class _RestorableDatePickerDialogTestWidgetState extends State<_RestorableDatePi
 
   void _selectDate(DateTime? newSelectedDate) {
     if (newSelectedDate != null) {
-      setState(() { _selectedDate.value = newSelectedDate; });
+      setState(() {
+        _selectedDate.value = newSelectedDate;
+      });
     }
   }
 
   @pragma('vm:entry-point')
-  static Route<DateTime> _datePickerRoute(
-    BuildContext context,
-    Object? arguments,
-  ) {
+  static Route<DateTime> _datePickerRoute(BuildContext context, Object? arguments) {
     return DialogRoute<DateTime>(
       context: context,
       builder: (BuildContext context) {

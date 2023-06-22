@@ -37,6 +37,7 @@ void main() {
         stateDisposed = true;
       }
     }
+
     ma.addListener(listener);
 
     await tester.pumpWidget(const _TestStatefulWidget());
@@ -59,7 +60,7 @@ class _TestLeafRenderObjectWidget extends LeafRenderObjectWidget {
 }
 
 class _TestElement extends RenderObjectElement with RootElementMixin {
-  _TestElement(): super(_TestLeafRenderObjectWidget());
+  _TestElement() : super(_TestLeafRenderObjectWidget());
 
   void makeInactive() {
     assignOwner(BuildOwner(focusManager: FocusManager()));
@@ -68,13 +69,13 @@ class _TestElement extends RenderObjectElement with RootElementMixin {
   }
 
   @override
-  void insertRenderObjectChild(covariant RenderObject child, covariant Object? slot) { }
+  void insertRenderObjectChild(covariant RenderObject child, covariant Object? slot) {}
 
   @override
-  void moveRenderObjectChild(covariant RenderObject child, covariant Object? oldSlot, covariant Object? newSlot) { }
+  void moveRenderObjectChild(covariant RenderObject child, covariant Object? oldSlot, covariant Object? newSlot) {}
 
   @override
-  void removeRenderObjectChild(covariant RenderObject child, covariant Object? slot) { }
+  void removeRenderObjectChild(covariant RenderObject child, covariant Object? slot) {}
 }
 
 class _TestRenderObject extends RenderObject {
@@ -94,7 +95,6 @@ class _TestRenderObject extends RenderObject {
   Rect get semanticBounds => throw UnimplementedError();
 }
 
-
 class _TestStatefulWidget extends StatefulWidget {
   const _TestStatefulWidget();
 
@@ -113,11 +113,16 @@ class _TestStatefulWidgetState extends State<_TestStatefulWidget> {
 Future<int> _activateFlutterObjectsAndReturnCountOfEvents() async {
   int count = 0;
 
-  final _TestElement element = _TestElement(); count++;
-  final RenderObject renderObject = _TestRenderObject(); count++;
+  final _TestElement element = _TestElement();
+  count++;
+  final RenderObject renderObject = _TestRenderObject();
+  count++;
 
-  element.makeInactive(); element.unmount(); count += 3;
-  renderObject.dispose(); count++;
+  element.makeInactive();
+  element.unmount();
+  count += 3;
+  renderObject.dispose();
+  count++;
 
   return count;
 }

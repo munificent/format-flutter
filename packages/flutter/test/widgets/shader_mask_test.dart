@@ -19,7 +19,6 @@ Shader createShader(Rect bounds) {
   ).createShader(bounds);
 }
 
-
 void main() {
   testWidgets('Can be constructed', (WidgetTester tester) async {
     const Widget child = SizedBox(width: 100.0, height: 100.0);
@@ -37,10 +36,7 @@ void main() {
       child: SizedBox(
         width: 400.0,
         height: 400.0,
-        child: ShaderMask(
-          shaderCallback: recordShaderBounds,
-          child: const SizedBox(width: 100.0, height: 100.0),
-        ),
+        child: ShaderMask(shaderCallback: recordShaderBounds, child: const SizedBox(width: 100.0, height: 100.0)),
       ),
     );
     await tester.pumpWidget(widget);
@@ -48,7 +44,6 @@ void main() {
     // The shader bounds rectangle should reflect the position of the centered SizedBox.
     expect(shaderBounds, equals(const Rect.fromLTWH(0.0, 0.0, 400.0, 400.0)));
   });
-
 
   testWidgets('Bounds rect includes offset visual inspection', (WidgetTester tester) async {
     final Widget widgetBottomRight = Container(
@@ -61,24 +56,17 @@ void main() {
           child: ShaderMask(
             shaderCallback: (Rect bounds) => const RadialGradient(
               radius: 0.05,
-              colors:  <Color>[Color(0xFFFF0000),  Color(0xFF00FF00)],
+              colors: <Color>[Color(0xFFFF0000), Color(0xFF00FF00)],
               tileMode: TileMode.mirror,
             ).createShader(bounds),
-            child: Container(
-              width: 100,
-              height: 100,
-              color: const Color(0xFFFFFFFF),
-            ),
+            child: Container(width: 100, height: 100, color: const Color(0xFFFFFFFF)),
           ),
         ),
       ),
     );
     await tester.pumpWidget(widgetBottomRight);
 
-    await expectLater(
-      find.byType(RepaintBoundary),
-      matchesGoldenFile('shader_mask.bounds.matches_bottom_right.png'),
-    );
+    await expectLater(find.byType(RepaintBoundary), matchesGoldenFile('shader_mask.bounds.matches_bottom_right.png'));
 
     final Widget widgetTopLeft = Container(
       width: 400,
@@ -90,23 +78,16 @@ void main() {
           child: ShaderMask(
             shaderCallback: (Rect bounds) => const RadialGradient(
               radius: 0.05,
-              colors:  <Color>[Color(0xFFFF0000),  Color(0xFF00FF00)],
+              colors: <Color>[Color(0xFFFF0000), Color(0xFF00FF00)],
               tileMode: TileMode.mirror,
             ).createShader(bounds),
-            child: Container(
-              width: 100,
-              height: 100,
-              color: const Color(0xFFFFFFFF),
-            ),
+            child: Container(width: 100, height: 100, color: const Color(0xFFFFFFFF)),
           ),
         ),
       ),
     );
     await tester.pumpWidget(widgetTopLeft);
 
-    await expectLater(
-      find.byType(RepaintBoundary),
-      matchesGoldenFile('shader_mask.bounds.matches_top_left.png'),
-    );
+    await expectLater(find.byType(RepaintBoundary), matchesGoldenFile('shader_mask.bounds.matches_top_left.png'));
   });
 }

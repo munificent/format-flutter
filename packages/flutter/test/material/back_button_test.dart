@@ -8,20 +8,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('BackButton control test', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: const Material(child: Text('Home')),
-        routes: <String, WidgetBuilder>{
-          '/next': (BuildContext context) {
-            return const Material(
-              child: Center(
-                child: BackButton(),
-              ),
-            );
-          },
+    await tester.pumpWidget(MaterialApp(
+      home: const Material(child: Text('Home')),
+      routes: <String, WidgetBuilder>{
+        '/next': (BuildContext context) {
+          return const Material(child: Center(child: BackButton()));
         },
-      ),
-    );
+      },
+    ));
 
     tester.state<NavigatorState>(find.byType(Navigator)).pushNamed('/next');
 
@@ -36,20 +30,14 @@ void main() {
 
   testWidgets('BackButton onPressed overrides default pop behavior', (WidgetTester tester) async {
     bool customCallbackWasCalled = false;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: const Material(child: Text('Home')),
-        routes: <String, WidgetBuilder>{
-          '/next': (BuildContext context) {
-            return Material(
-              child: Center(
-                child: BackButton(onPressed: () => customCallbackWasCalled = true),
-              ),
-            );
-          },
+    await tester.pumpWidget(MaterialApp(
+      home: const Material(child: Text('Home')),
+      routes: <String, WidgetBuilder>{
+        '/next': (BuildContext context) {
+          return Material(child: Center(child: BackButton(onPressed: () => customCallbackWasCalled = true)));
         },
-      ),
-    );
+      },
+    ));
 
     tester.state<NavigatorState>(find.byType(Navigator)).pushNamed('/next');
 
@@ -74,34 +62,17 @@ void main() {
     final Key macOSKey = UniqueKey();
     final Key windowsKey = UniqueKey();
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Column(
-          children: <Widget>[
-            Theme(
-              data: ThemeData(platform: TargetPlatform.android),
-              child: BackButtonIcon(key: androidKey),
-            ),
-            Theme(
-              data: ThemeData(platform: TargetPlatform.iOS),
-              child: BackButtonIcon(key: iOSKey),
-            ),
-            Theme(
-              data: ThemeData(platform: TargetPlatform.linux),
-              child: BackButtonIcon(key: linuxKey),
-            ),
-            Theme(
-              data: ThemeData(platform: TargetPlatform.macOS),
-              child: BackButtonIcon(key: macOSKey),
-            ),
-            Theme(
-              data: ThemeData(platform: TargetPlatform.windows),
-              child: BackButtonIcon(key: windowsKey),
-            ),
-          ],
-        ),
+    await tester.pumpWidget(MaterialApp(
+      home: Column(
+        children: <Widget>[
+          Theme(data: ThemeData(platform: TargetPlatform.android), child: BackButtonIcon(key: androidKey)),
+          Theme(data: ThemeData(platform: TargetPlatform.iOS), child: BackButtonIcon(key: iOSKey)),
+          Theme(data: ThemeData(platform: TargetPlatform.linux), child: BackButtonIcon(key: linuxKey)),
+          Theme(data: ThemeData(platform: TargetPlatform.macOS), child: BackButtonIcon(key: macOSKey)),
+          Theme(data: ThemeData(platform: TargetPlatform.windows), child: BackButtonIcon(key: windowsKey)),
+        ],
       ),
-    );
+    ));
 
     final Icon androidIcon = tester.widget(find.descendant(of: find.byKey(androidKey), matching: find.byType(Icon)));
     final Icon iOSIcon = tester.widget(find.descendant(of: find.byKey(iOSKey), matching: find.byType(Icon)));
@@ -116,83 +87,53 @@ void main() {
   });
 
   testWidgets('BackButton color', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: Material(
-          child: BackButton(
-            color: Colors.red,
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(const MaterialApp(home: Material(child: BackButton(color: Colors.red))));
 
-    final RichText iconText = tester.firstWidget(find.descendant(
-      of: find.byType(BackButton),
-      matching: find.byType(RichText),
-    ));
+    final RichText iconText = tester.firstWidget(
+      find.descendant(of: find.byType(BackButton), matching: find.byType(RichText)),
+    );
     expect(iconText.text.style!.color, Colors.red);
   });
 
   testWidgets('BackButton color with ButtonStyle', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: true),
-        home: const Material(
-          child: BackButton(
-            style: ButtonStyle(
-              iconColor: MaterialStatePropertyAll<Color>(Colors.red),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    final RichText iconText = tester.firstWidget(find.descendant(
-      of: find.byType(BackButton),
-      matching: find.byType(RichText),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: true),
+      home:
+          const Material(child: BackButton(style: ButtonStyle(iconColor: MaterialStatePropertyAll<Color>(Colors.red)))),
     ));
+
+    final RichText iconText = tester.firstWidget(
+      find.descendant(of: find.byType(BackButton), matching: find.byType(RichText)),
+    );
     expect(iconText.text.style!.color, Colors.red);
   });
 
   testWidgets('BackButton.style.iconColor parameter overrides BackButton.color', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: true),
-        home: const Material(
-          child: BackButton(
-            color: Colors.green,
-            style: ButtonStyle(
-              iconColor: MaterialStatePropertyAll<Color>(Colors.red),
-            ),
-          ),
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: true),
+      home: const Material(
+        child:
+            BackButton(color: Colors.green, style: ButtonStyle(iconColor: MaterialStatePropertyAll<Color>(Colors.red))),
       ),
-    );
-
-    final RichText iconText = tester.firstWidget(find.descendant(
-      of: find.byType(BackButton),
-      matching: find.byType(RichText),
     ));
+
+    final RichText iconText = tester.firstWidget(
+      find.descendant(of: find.byType(BackButton), matching: find.byType(RichText)),
+    );
 
     expect(iconText.text.style!.color, Colors.red);
   });
 
   testWidgets('BackButton semantics', (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: const Material(child: Text('Home')),
-        routes: <String, WidgetBuilder>{
-          '/next': (BuildContext context) {
-            return const Material(
-              child: Center(
-                child: BackButton(),
-              ),
-            );
-          },
+    await tester.pumpWidget(MaterialApp(
+      home: const Material(child: Text('Home')),
+      routes: <String, WidgetBuilder>{
+        '/next': (BuildContext context) {
+          return const Material(child: Center(child: BackButton()));
         },
-      ),
-    );
+      },
+    ));
 
     tester.state<NavigatorState>(find.byType(Navigator)).pushNamed('/next');
 
@@ -208,34 +149,31 @@ void main() {
       case TargetPlatform.windows:
         expectedLabel = null;
     }
-    expect(tester.getSemantics(find.byType(BackButton)), matchesSemantics(
-      tooltip: 'Back',
-      label: expectedLabel,
-      isButton: true,
-      hasEnabledState: true,
-      isEnabled: true,
-      hasTapAction: true,
-      isFocusable: true,
-    ));
+    expect(
+      tester.getSemantics(find.byType(BackButton)),
+      matchesSemantics(
+        tooltip: 'Back',
+        label: expectedLabel,
+        isButton: true,
+        hasEnabledState: true,
+        isEnabled: true,
+        hasTapAction: true,
+        isFocusable: true,
+      ),
+    );
     handle.dispose();
   }, variant: TargetPlatformVariant.all());
 
   testWidgets('CloseButton semantics', (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: const Material(child: Text('Home')),
-        routes: <String, WidgetBuilder>{
-          '/next': (BuildContext context) {
-            return const Material(
-              child: Center(
-                child: CloseButton(),
-              ),
-            );
-          },
+    await tester.pumpWidget(MaterialApp(
+      home: const Material(child: Text('Home')),
+      routes: <String, WidgetBuilder>{
+        '/next': (BuildContext context) {
+          return const Material(child: Center(child: CloseButton()));
         },
-      ),
-    );
+      },
+    ));
 
     tester.state<NavigatorState>(find.byType(Navigator)).pushNamed('/next');
 
@@ -251,96 +189,72 @@ void main() {
       case TargetPlatform.windows:
         expectedLabel = null;
     }
-    expect(tester.getSemantics(find.byType(CloseButton)), matchesSemantics(
-      tooltip: 'Close',
-      label: expectedLabel,
-      isButton: true,
-      hasEnabledState: true,
-      isEnabled: true,
-      hasTapAction: true,
-      isFocusable: true,
-    ));
+    expect(
+      tester.getSemantics(find.byType(CloseButton)),
+      matchesSemantics(
+        tooltip: 'Close',
+        label: expectedLabel,
+        isButton: true,
+        hasEnabledState: true,
+        isEnabled: true,
+        hasTapAction: true,
+        isFocusable: true,
+      ),
+    );
     handle.dispose();
   }, variant: TargetPlatformVariant.all());
 
   testWidgets('CloseButton color', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: Material(
-          child: CloseButton(
-            color: Colors.red,
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(const MaterialApp(home: Material(child: CloseButton(color: Colors.red))));
 
-    final RichText iconText = tester.firstWidget(find.descendant(
-      of: find.byType(CloseButton),
-      matching: find.byType(RichText),
-    ));
+    final RichText iconText = tester.firstWidget(
+      find.descendant(of: find.byType(CloseButton), matching: find.byType(RichText)),
+    );
     expect(iconText.text.style!.color, Colors.red);
   });
 
   testWidgets('CloseButton color with ButtonStyle', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: true),
-        home: const Material(
-          child: CloseButton(
-            style: ButtonStyle(
-              iconColor: MaterialStatePropertyAll<Color>(Colors.red),
-            ),
-          ),
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: true),
+      home: const Material(
+        child: CloseButton(style: ButtonStyle(iconColor: MaterialStatePropertyAll<Color>(Colors.red))),
       ),
-    );
-
-    final RichText iconText = tester.firstWidget(find.descendant(
-      of: find.byType(CloseButton),
-      matching: find.byType(RichText),
     ));
+
+    final RichText iconText = tester.firstWidget(
+      find.descendant(of: find.byType(CloseButton), matching: find.byType(RichText)),
+    );
     expect(iconText.text.style!.color, Colors.red);
   });
 
   testWidgets('CloseButton.style.iconColor parameter overrides CloseButton.color', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: true),
-        home: const Material(
-          child: CloseButton(
-            color: Colors.green,
-            style: ButtonStyle(
-              iconColor: MaterialStatePropertyAll<Color>(Colors.red),
-            ),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: true),
+      home: const Material(
+        child: CloseButton(
+          color: Colors.green,
+          style: ButtonStyle(iconColor: MaterialStatePropertyAll<Color>(Colors.red)),
         ),
       ),
-    );
-
-    final RichText iconText = tester.firstWidget(find.descendant(
-      of: find.byType(CloseButton),
-      matching: find.byType(RichText),
     ));
+
+    final RichText iconText = tester.firstWidget(
+      find.descendant(of: find.byType(CloseButton), matching: find.byType(RichText)),
+    );
 
     expect(iconText.text.style!.color, Colors.red);
   });
 
   testWidgets('CloseButton onPressed overrides default pop behavior', (WidgetTester tester) async {
     bool customCallbackWasCalled = false;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: const Material(child: Text('Home')),
-        routes: <String, WidgetBuilder>{
-          '/next': (BuildContext context) {
-            return Material(
-              child: Center(
-                child: CloseButton(onPressed: () => customCallbackWasCalled = true),
-              ),
-            );
-          },
+    await tester.pumpWidget(MaterialApp(
+      home: const Material(child: Text('Home')),
+      routes: <String, WidgetBuilder>{
+        '/next': (BuildContext context) {
+          return Material(child: Center(child: CloseButton(onPressed: () => customCallbackWasCalled = true)));
         },
-      ),
-    );
+      },
+    ));
 
     tester.state<NavigatorState>(find.byType(Navigator)).pushNamed('/next');
 

@@ -9,7 +9,9 @@ void main() {
   test('MaterialStatesController constructor', () {
     expect(MaterialStatesController().value, <MaterialState>{});
     expect(MaterialStatesController(<MaterialState>{}).value, <MaterialState>{});
-    expect(MaterialStatesController(<MaterialState>{MaterialState.selected}).value, <MaterialState>{MaterialState.selected});
+    expect(MaterialStatesController(<MaterialState>{MaterialState.selected}).value, <MaterialState>{
+      MaterialState.selected,
+    });
   });
 
   test('MaterialStatesController update, listener', () {
@@ -17,6 +19,7 @@ void main() {
     void valueChanged() {
       count += 1;
     }
+
     final MaterialStatesController controller = MaterialStatesController();
     controller.addListener(valueChanged);
 
@@ -65,12 +68,12 @@ void main() {
     expect(count, 8);
   });
 
-
   test('MaterialStatesController const initial value', () {
     int count = 0;
     void valueChanged() {
       count += 1;
     }
+
     final MaterialStatesController controller = MaterialStatesController(const <MaterialState>{MaterialState.selected});
     controller.addListener(valueChanged);
 

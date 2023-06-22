@@ -17,17 +17,12 @@ void main() {
     testWidgets('theme: ThemeData.light(), enabled: true', (WidgetTester tester) async {
       final ThemeData theme = ThemeData.light();
       final bool material3 = theme.useMaterial3;
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Center(
-              child: FloatingActionButton(
-                onPressed: () { }, // button.enabled == true
-                child: const Icon(Icons.add),
-              ),
-          ),
+      await tester.pumpWidget(MaterialApp(
+        theme: theme,
+        home: Center(
+          child: FloatingActionButton(onPressed: () {}, // button.enabled == true child: const Icon(Icons.add)),
         ),
-      );
+      ));
 
       final RawMaterialButton raw = tester.widget<RawMaterialButton>(find.byType(RawMaterialButton));
       expect(raw.enabled, true);
@@ -46,17 +41,12 @@ void main() {
     testWidgets('theme: ThemeData.light(), enabled: false', (WidgetTester tester) async {
       final ThemeData theme = ThemeData.light();
       final bool material3 = theme.useMaterial3;
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: const Center(
-              child: FloatingActionButton(
-                onPressed: null, // button.enabled == false
-                child: Icon(Icons.add),
-              ),
-          ),
+      await tester.pumpWidget(MaterialApp(
+        theme: theme,
+        home: const Center(
+          child: FloatingActionButton(onPressed: null, // button.enabled == false child: Icon(Icons.add)),
         ),
-      );
+      ));
 
       final RawMaterialButton raw = tester.widget<RawMaterialButton>(find.byType(RawMaterialButton));
       expect(raw.enabled, false);

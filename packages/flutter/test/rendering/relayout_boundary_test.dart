@@ -13,35 +13,17 @@ void main() {
       child: WidgetToRenderBoxAdapter(renderBox: renderLayoutCount),
     );
 
-    await tester.pumpWidget(
-      Center(
-        child: SizedBox(
-          width: 100,
-          height: 100,
-          child: Center(
-            child: SizedBox(
-              width: 100,
-              height: 100,
-              child: Center(
-                child: layoutCounter,
-              ),
-            ),
-          ),
-        ),
+    await tester.pumpWidget(Center(
+      child: SizedBox(
+        width: 100,
+        height: 100,
+        child: Center(child: SizedBox(width: 100, height: 100, child: Center(child: layoutCounter))),
       ),
-    );
+    ));
 
     expect(renderLayoutCount.layoutCount, 1);
 
-    await tester.pumpWidget(
-      Center(
-        child: SizedBox(
-          width: 100,
-          height: 100,
-          child: layoutCounter,
-        ),
-      ),
-    );
+    await tester.pumpWidget(Center(child: SizedBox(width: 100, height: 100, child: layoutCounter)));
 
     expect(renderLayoutCount.layoutCount, 1);
   });

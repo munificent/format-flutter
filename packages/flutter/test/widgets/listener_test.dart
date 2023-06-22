@@ -15,62 +15,52 @@ void main() {
   testWidgets('Events bubble up the tree', (WidgetTester tester) async {
     final List<String> log = <String>[];
 
-    await tester.pumpWidget(
-      Listener(
+    await tester.pumpWidget(Listener(
+      onPointerDown: (_) {
+        log.add('top');
+      },
+      child: Listener(
         onPointerDown: (_) {
-          log.add('top');
+          log.add('middle');
         },
-        child: Listener(
-          onPointerDown: (_) {
-            log.add('middle');
-          },
-          child: DecoratedBox(
-            decoration: const BoxDecoration(),
-            child: Listener(
-              onPointerDown: (_) {
-                log.add('bottom');
-              },
-              child: const Text('X', textDirection: TextDirection.ltr),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    await tester.tap(find.text('X'));
-
-    expect(log, equals(<String>[
-      'bottom',
-      'middle',
-      'top',
-    ]));
-  });
-
-  testWidgets('Detects hover events from touch devices', (WidgetTester tester) async {
-    final List<String> log = <String>[];
-
-    await tester.pumpWidget(
-      Center(
-        child: SizedBox(
-          width: 300,
-          height: 300,
+        child: DecoratedBox(
+          decoration: const BoxDecoration(),
           child: Listener(
-            onPointerHover: (_) {
+            onPointerDown: (_) {
               log.add('bottom');
             },
             child: const Text('X', textDirection: TextDirection.ltr),
           ),
         ),
       ),
-    );
+    ));
+
+    await tester.tap(find.text('X'));
+
+    expect(log, equals(<String>['bottom', 'middle', 'top']));
+  });
+
+  testWidgets('Detects hover events from touch devices', (WidgetTester tester) async {
+    final List<String> log = <String>[];
+
+    await tester.pumpWidget(Center(
+      child: SizedBox(
+        width: 300,
+        height: 300,
+        child: Listener(
+          onPointerHover: (_) {
+            log.add('bottom');
+          },
+          child: const Text('X', textDirection: TextDirection.ltr),
+        ),
+      ),
+    ));
 
     final TestGesture gesture = await tester.createGesture();
     await gesture.addPointer();
     await gesture.moveTo(tester.getCenter(find.byType(Listener)));
 
-    expect(log, equals(<String>[
-      'bottom',
-    ]));
+    expect(log, equals(<String>['bottom']));
   });
 
   group('transformed events', () {
@@ -78,30 +68,23 @@ void main() {
       final List<PointerEvent> events = <PointerEvent>[];
       final Key key = UniqueKey();
 
-      await tester.pumpWidget(
-        Center(
-          child: Listener(
-            onPointerDown: (PointerDownEvent event) {
-              events.add(event);
-            },
-            onPointerUp: (PointerUpEvent event) {
-              events.add(event);
-            },
-            onPointerMove: (PointerMoveEvent event) {
-              events.add(event);
-            },
-            onPointerSignal: (PointerSignalEvent event) {
-              events.add(event);
-            },
-            child: Container(
-              key: key,
-              color: Colors.red,
-              height: 100,
-              width: 100,
-            ),
-          ),
+      await tester.pumpWidget(Center(
+        child: Listener(
+          onPointerDown: (PointerDownEvent event) {
+            events.add(event);
+          },
+          onPointerUp: (PointerUpEvent event) {
+            events.add(event);
+          },
+          onPointerMove: (PointerMoveEvent event) {
+            events.add(event);
+          },
+          onPointerSignal: (PointerSignalEvent event) {
+            events.add(event);
+          },
+          child: Container(key: key, color: Colors.red, height: 100, width: 100),
         ),
-      );
+      ));
       const Offset moved = Offset(20, 30);
       final Offset center = tester.getCenter(find.byKey(key));
       final Offset topLeft = tester.getTopLeft(find.byKey(key));
@@ -151,34 +134,27 @@ void main() {
 
       const double scaleFactor = 2;
 
-      await tester.pumpWidget(
-        Align(
-          alignment: Alignment.topLeft,
-          child: Transform(
-            transform: Matrix4.identity()..scale(scaleFactor),
-            child: Listener(
-              onPointerDown: (PointerDownEvent event) {
-                events.add(event);
-              },
-              onPointerUp: (PointerUpEvent event) {
-                events.add(event);
-              },
-              onPointerMove: (PointerMoveEvent event) {
-                events.add(event);
-              },
-              onPointerSignal: (PointerSignalEvent event) {
-                events.add(event);
-              },
-              child: Container(
-                key: key,
-                color: Colors.red,
-                height: 100,
-                width: 100,
-              ),
-            ),
+      await tester.pumpWidget(Align(
+        alignment: Alignment.topLeft,
+        child: Transform(
+          transform: Matrix4.identity()..scale(scaleFactor),
+          child: Listener(
+            onPointerDown: (PointerDownEvent event) {
+              events.add(event);
+            },
+            onPointerUp: (PointerUpEvent event) {
+              events.add(event);
+            },
+            onPointerMove: (PointerMoveEvent event) {
+              events.add(event);
+            },
+            onPointerSignal: (PointerSignalEvent event) {
+              events.add(event);
+            },
+            child: Container(key: key, color: Colors.red, height: 100, width: 100),
           ),
         ),
-      );
+      ));
       const Offset moved = Offset(20, 30);
       final Offset center = tester.getCenter(find.byKey(key));
       final TestGesture gesture = await tester.startGesture(center);
@@ -190,8 +166,7 @@ void main() {
       final PointerMoveEvent move = events[1] as PointerMoveEvent;
       final PointerUpEvent up = events[2] as PointerUpEvent;
 
-      final Matrix4 expectedTransform = Matrix4.identity()
-        ..scale(1 / scaleFactor, 1 / scaleFactor, 1.0);
+      final Matrix4 expectedTransform = Matrix4.identity()..scale(1 / scaleFactor, 1 / scaleFactor, 1.0);
 
       expect(center, isNot(const Offset(50, 50)));
 
@@ -228,33 +203,26 @@ void main() {
 
       const double scaleFactor = 2;
 
-      await tester.pumpWidget(
-        Center(
-          child: Transform(
-            transform: Matrix4.identity()..scale(scaleFactor),
-            child: Listener(
-              onPointerDown: (PointerDownEvent event) {
-                events.add(event);
-              },
-              onPointerUp: (PointerUpEvent event) {
-                events.add(event);
-              },
-              onPointerMove: (PointerMoveEvent event) {
-                events.add(event);
-              },
-              onPointerSignal: (PointerSignalEvent event) {
-                events.add(event);
-              },
-              child: Container(
-                key: key,
-                color: Colors.red,
-                height: 100,
-                width: 100,
-              ),
-            ),
+      await tester.pumpWidget(Center(
+        child: Transform(
+          transform: Matrix4.identity()..scale(scaleFactor),
+          child: Listener(
+            onPointerDown: (PointerDownEvent event) {
+              events.add(event);
+            },
+            onPointerUp: (PointerUpEvent event) {
+              events.add(event);
+            },
+            onPointerMove: (PointerMoveEvent event) {
+              events.add(event);
+            },
+            onPointerSignal: (PointerSignalEvent event) {
+              events.add(event);
+            },
+            child: Container(key: key, color: Colors.red, height: 100, width: 100),
           ),
         ),
-      );
+      ));
       const Offset moved = Offset(20, 30);
       final Offset center = tester.getCenter(find.byKey(key));
       final Offset topLeft = tester.getTopLeft(find.byKey(key));
@@ -304,34 +272,26 @@ void main() {
       final List<PointerEvent> events = <PointerEvent>[];
       final Key key = UniqueKey();
 
-      await tester.pumpWidget(
-        Center(
-          child: Transform(
-            transform: Matrix4.identity()
-              ..rotateZ(math.pi / 2), // 90 degrees clockwise around Container origin
-            child: Listener(
-              onPointerDown: (PointerDownEvent event) {
-                events.add(event);
-              },
-              onPointerUp: (PointerUpEvent event) {
-                events.add(event);
-              },
-              onPointerMove: (PointerMoveEvent event) {
-                events.add(event);
-              },
-              onPointerSignal: (PointerSignalEvent event) {
-                events.add(event);
-              },
-              child: Container(
-                key: key,
-                color: Colors.red,
-                height: 100,
-                width: 100,
-              ),
-            ),
+      await tester.pumpWidget(Center(
+        child: Transform(
+          transform: Matrix4.identity()..rotateZ(math.pi / 2), // 90 degrees clockwise around Container origin
+          child: Listener(
+            onPointerDown: (PointerDownEvent event) {
+              events.add(event);
+            },
+            onPointerUp: (PointerUpEvent event) {
+              events.add(event);
+            },
+            onPointerMove: (PointerMoveEvent event) {
+              events.add(event);
+            },
+            onPointerSignal: (PointerSignalEvent event) {
+              events.add(event);
+            },
+            child: Container(key: key, color: Colors.red, height: 100, width: 100),
           ),
         ),
-      );
+      ));
       const Offset moved = Offset(20, 30);
       final Offset downPosition = tester.getCenter(find.byKey(key)) + const Offset(10, 5);
       final TestGesture gesture = await tester.startGesture(downPosition);
@@ -383,9 +343,9 @@ void main() {
     RenderPointerListener().debugFillProperties(builder);
 
     final List<String> description = builder.properties
-      .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
-      .map((DiagnosticsNode node) => node.toString())
-      .toList();
+        .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
+        .map((DiagnosticsNode node) => node.toString())
+        .toList();
 
     expect(description, <String>[
       'parentData: MISSING',
@@ -410,9 +370,9 @@ void main() {
     ).debugFillProperties(builder);
 
     final List<String> description = builder.properties
-      .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
-      .map((DiagnosticsNode node) => node.toString())
-      .toList();
+        .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
+        .map((DiagnosticsNode node) => node.toString())
+        .toList();
 
     expect(description, <String>[
       'parentData: MISSING',

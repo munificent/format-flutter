@@ -8,230 +8,151 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('CustomScrollView restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: CustomScrollView(
-          restorationId: 'list',
-          cacheExtent: 0,
-          slivers: <Widget>[
-            SliverList(
-              delegate: SliverChildListDelegate(
-                List<Widget>.generate(
-                  50,
-                  (int index) => SizedBox(
-                    height: 50,
-                    child: Text('Tile $index'),
-                  ),
-                ),
-              ),
+    await tester.pumpWidget(TestHarness(
+      child: CustomScrollView(
+        restorationId: 'list',
+        cacheExtent: 0,
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildListDelegate(
+              List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester);
   });
 
   testWidgets('ListView restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: ListView(
-          restorationId: 'list',
-          cacheExtent: 0,
-          children: List<Widget>.generate(
-            50,
-            (int index) => SizedBox(
-              height: 50,
-              child: Text('Tile $index'),
-            ),
-          ),
-        ),
+    await tester.pumpWidget(TestHarness(
+      child: ListView(
+        restorationId: 'list',
+        cacheExtent: 0,
+        children: List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester);
   });
 
   testWidgets('ListView.builder restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: ListView.builder(
-          restorationId: 'list',
-          cacheExtent: 0,
-          itemBuilder: (BuildContext context, int index) => SizedBox(
-            height: 50,
-            child: Text('Tile $index'),
-          ),
-        ),
+    await tester.pumpWidget(TestHarness(
+      child: ListView.builder(
+        restorationId: 'list',
+        cacheExtent: 0,
+        itemBuilder: (BuildContext context, int index) => SizedBox(height: 50, child: Text('Tile $index')),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester);
   });
 
   testWidgets('ListView.separated restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: ListView.separated(
-          restorationId: 'list',
-          cacheExtent: 0,
-          itemCount: 50,
-          separatorBuilder: (BuildContext context, int index) => const SizedBox.shrink(),
-          itemBuilder: (BuildContext context, int index) => SizedBox(
-            height: 50,
-            child: Text('Tile $index'),
-          ),
-        ),
+    await tester.pumpWidget(TestHarness(
+      child: ListView.separated(
+        restorationId: 'list',
+        cacheExtent: 0,
+        itemCount: 50,
+        separatorBuilder: (BuildContext context, int index) => const SizedBox.shrink(),
+        itemBuilder: (BuildContext context, int index) => SizedBox(height: 50, child: Text('Tile $index')),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester);
   });
 
   testWidgets('ListView.custom restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: ListView.custom(
-          restorationId: 'list',
-          cacheExtent: 0,
-          childrenDelegate: SliverChildListDelegate(
-            List<Widget>.generate(
-              50,
-              (int index) => SizedBox(
-                height: 50,
-                child: Text('Tile $index'),
-              ),
-            ),
-          ),
+    await tester.pumpWidget(TestHarness(
+      child: ListView.custom(
+        restorationId: 'list',
+        cacheExtent: 0,
+        childrenDelegate: SliverChildListDelegate(
+          List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
         ),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester);
   });
 
   testWidgets('GridView restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: GridView(
-          restorationId: 'grid',
-          cacheExtent: 0,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
-          children: List<Widget>.generate(
-            50,
-            (int index) => SizedBox(
-              height: 50,
-              child: Text('Tile $index'),
-            ),
-          ),
-        ),
+    await tester.pumpWidget(TestHarness(
+      child: GridView(
+        restorationId: 'grid',
+        cacheExtent: 0,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
+        children: List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester);
   });
 
   testWidgets('GridView.builder restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: GridView.builder(
-          restorationId: 'grid',
-          cacheExtent: 0,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
-          itemBuilder: (BuildContext context, int index) => SizedBox(
-            height: 50,
-            child: Text('Tile $index'),
-          ),
-        ),
+    await tester.pumpWidget(TestHarness(
+      child: GridView.builder(
+        restorationId: 'grid',
+        cacheExtent: 0,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
+        itemBuilder: (BuildContext context, int index) => SizedBox(height: 50, child: Text('Tile $index')),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester);
   });
 
   testWidgets('GridView.custom restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: GridView.custom(
-          restorationId: 'grid',
-          cacheExtent: 0,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
-          childrenDelegate: SliverChildListDelegate(
-            List<Widget>.generate(
-              50,
-              (int index) => SizedBox(
-                height: 50,
-                child: Text('Tile $index'),
-              ),
-            ),
-          ),
+    await tester.pumpWidget(TestHarness(
+      child: GridView.custom(
+        restorationId: 'grid',
+        cacheExtent: 0,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
+        childrenDelegate: SliverChildListDelegate(
+          List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
         ),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester);
   });
 
   testWidgets('GridView.count restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: GridView.count(
-          restorationId: 'grid',
-          cacheExtent: 0,
-          crossAxisCount: 1,
-          children: List<Widget>.generate(
-            50,
-            (int index) => SizedBox(
-              height: 50,
-              child: Text('Tile $index'),
-            ),
-          ),
-        ),
+    await tester.pumpWidget(TestHarness(
+      child: GridView.count(
+        restorationId: 'grid',
+        cacheExtent: 0,
+        crossAxisCount: 1,
+        children: List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester);
   });
 
   testWidgets('GridView.extent restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: GridView.extent(
-          restorationId: 'grid',
-          cacheExtent: 0,
-          maxCrossAxisExtent: 50,
-          children: List<Widget>.generate(
-            50,
-            (int index) => SizedBox(
-              height: 50,
-              child: Text('Tile $index'),
-            ),
-          ),
-        ),
+    await tester.pumpWidget(TestHarness(
+      child: GridView.extent(
+        restorationId: 'grid',
+        cacheExtent: 0,
+        maxCrossAxisExtent: 50,
+        children: List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester);
   });
 
   testWidgets('SingleChildScrollView restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: SingleChildScrollView(
-          restorationId: 'single',
-          child: Column(
-            children: List<Widget>.generate(
-              50,
-              (int index) => SizedBox(
-                height: 50,
-                child: Text('Tile $index'),
-              ),
-            ),
-          ),
+    await tester.pumpWidget(TestHarness(
+      child: SingleChildScrollView(
+        restorationId: 'single',
+        child: Column(
+          children: List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
         ),
       ),
-    );
+    ));
 
     expect(tester.getTopLeft(find.text('Tile 0')), Offset.zero);
     expect(tester.getTopLeft(find.text('Tile 1')), const Offset(0, 50));
@@ -263,132 +184,90 @@ void main() {
   });
 
   testWidgets('PageView restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: PageView(
-          restorationId: 'pager',
-          children: List<Widget>.generate(
-            50,
-            (int index) => Text('Tile $index'),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(TestHarness(
+      child: PageView(restorationId: 'pager', children: List<Widget>.generate(50, (int index) => Text('Tile $index'))),
+    ));
 
     await pageViewScrollAndRestore(tester);
   });
 
   testWidgets('PageView.builder restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: PageView.builder(
-          restorationId: 'pager',
-          itemBuilder: (BuildContext context, int index) => SizedBox(
-            height: 50,
-            child: Text('Tile $index'),
-          ),
-        ),
+    await tester.pumpWidget(TestHarness(
+      child: PageView.builder(
+        restorationId: 'pager',
+        itemBuilder: (BuildContext context, int index) => SizedBox(height: 50, child: Text('Tile $index')),
       ),
-    );
+    ));
 
     await pageViewScrollAndRestore(tester);
   });
 
   testWidgets('PageView.custom restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: PageView.custom(
-          restorationId: 'pager',
-          childrenDelegate: SliverChildListDelegate(
-            List<Widget>.generate(
-              50,
-              (int index) => SizedBox(
-                height: 50,
-                child: Text('Tile $index'),
-              ),
-            ),
-          ),
+    await tester.pumpWidget(TestHarness(
+      child: PageView.custom(
+        restorationId: 'pager',
+        childrenDelegate: SliverChildListDelegate(
+          List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
         ),
       ),
-    );
+    ));
 
     await pageViewScrollAndRestore(tester);
   });
 
   testWidgets('ListWheelScrollView restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: ListWheelScrollView(
-          restorationId: 'wheel',
-          itemExtent: 50,
-          children: List<Widget>.generate(
-            50,
-            (int index) => Text('Tile $index'),
-          ),
-        ),
+    await tester.pumpWidget(TestHarness(
+      child: ListWheelScrollView(
+        restorationId: 'wheel',
+        itemExtent: 50,
+        children: List<Widget>.generate(50, (int index) => Text('Tile $index')),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester, secondOffset: 542);
   });
 
   testWidgets('ListWheelScrollView.useDelegate restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: ListWheelScrollView.useDelegate(
-          restorationId: 'wheel',
-          itemExtent: 50,
-          childDelegate: ListWheelChildListDelegate(
-            children: List<Widget>.generate(
-              50,
-              (int index) => SizedBox(
-                height: 50,
-                child: Text('Tile $index'),
-              ),
-            ),
-          ),
+    await tester.pumpWidget(TestHarness(
+      child: ListWheelScrollView.useDelegate(
+        restorationId: 'wheel',
+        itemExtent: 50,
+        childDelegate: ListWheelChildListDelegate(
+          children: List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
         ),
       ),
-    );
+    ));
 
     await restoreScrollAndVerify(tester, secondOffset: 542);
   });
 
   testWidgets('NestedScrollView restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: TestHarness(
-          height: 200,
-          child: NestedScrollView(
-            restorationId: 'outer',
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverOverlapAbsorber(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverAppBar(
-                    title: const Text('Books'),
-                    pinned: true,
-                    expandedHeight: 150.0,
-                    forceElevated: innerBoxIsScrolled,
-                  ),
-                ),
-              ];
-            },
-            body: ListView(
-              restorationId: 'inner',
-              cacheExtent: 0,
-              children: List<Widget>.generate(
-                50,
-                (int index) => SizedBox(
-                  height: 50,
-                  child: Text('Tile $index'),
+    await tester.pumpWidget(MaterialApp(
+      home: TestHarness(
+        height: 200,
+        child: NestedScrollView(
+          restorationId: 'outer',
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar(
+                  title: const Text('Books'),
+                  pinned: true,
+                  expandedHeight: 150.0,
+                  forceElevated: innerBoxIsScrolled,
                 ),
               ),
-            ),
+            ];
+          },
+          body: ListView(
+            restorationId: 'inner',
+            cacheExtent: 0,
+            children: List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
           ),
         ),
       ),
-    );
+    ));
 
     expect(tester.renderObject<RenderSliver>(find.byType(SliverAppBar)).geometry!.paintExtent, 150);
     expect(find.text('Tile 0'), findsOneWidget);
@@ -423,21 +302,13 @@ void main() {
   });
 
   testWidgets('RestorationData is flushed even if no frame is scheduled', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      TestHarness(
-        child: ListView(
-          restorationId: 'list',
-          cacheExtent: 0,
-          children: List<Widget>.generate(
-            50,
-            (int index) => SizedBox(
-              height: 50,
-              child: Text('Tile $index'),
-            ),
-          ),
-        ),
+    await tester.pumpWidget(TestHarness(
+      child: ListView(
+        restorationId: 'list',
+        cacheExtent: 0,
+        children: List<Widget>.generate(50, (int index) => SizedBox(height: 50, child: Text('Tile $index'))),
       ),
-    );
+    ));
 
     expect(find.text('Tile 0'), findsOneWidget);
     expect(find.text('Tile 1'), findsOneWidget);
@@ -555,14 +426,7 @@ class TestHarness extends StatelessWidget {
       restorationId: 'root',
       child: Directionality(
         textDirection: TextDirection.ltr,
-        child: Align(
-          alignment: Alignment.topLeft,
-          child: SizedBox(
-            height: height,
-            width: 50,
-            child: child,
-          ),
-        ),
+        child: Align(alignment: Alignment.topLeft, child: SizedBox(height: height, width: 50, child: child)),
       ),
     );
   }

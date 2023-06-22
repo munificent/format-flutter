@@ -16,10 +16,7 @@ void main() {
 
     root = RenderPositionedBox(
       child: RenderCustomPaint(
-        child: child = text = RenderParagraph(
-          const TextSpan(text: 'Hello World'),
-          textDirection: TextDirection.ltr,
-        ),
+        child: child = text = RenderParagraph(const TextSpan(text: 'Hello World'), textDirection: TextDirection.ltr),
         painter: TestCallbackPainter(
           onPaint: () {
             baseline1 = child.getDistanceToBaseline(TextBaseline.alphabetic)!;
@@ -33,10 +30,7 @@ void main() {
     root = RenderPositionedBox(
       child: RenderCustomPaint(
         child: child = RenderConstrainedOverflowBox(
-          child: text = RenderParagraph(
-            const TextSpan(text: 'Hello World'),
-            textDirection: TextDirection.ltr,
-          ),
+          child: text = RenderParagraph(const TextSpan(text: 'Hello World'), textDirection: TextDirection.ltr),
           maxHeight: height1 / 2.0,
           alignment: Alignment.topLeft,
         ),

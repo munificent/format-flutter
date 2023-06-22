@@ -54,7 +54,6 @@ void main() {
     expect(typography.white, equals(whiteCopy));
   });
 
-
   test('TextTheme merges properly in the presence of null fields.', () {
     const TextTheme partialTheme = TextTheme(titleLarge: TextStyle(color: Color(0xcafefeed)));
     final TextTheme fullTheme = ThemeData.fallback().textTheme.merge(partialTheme);
@@ -147,10 +146,7 @@ void main() {
   test('TextTheme apply fontSizeFactor fontSizeDelta', () {
     final Typography typography = Typography.material2018();
     final TextTheme baseTheme = Typography.englishLike2018.merge(typography.black);
-    final TextTheme sizeTheme = baseTheme.apply(
-      fontSizeFactor: 2.0,
-      fontSizeDelta: 5.0,
-    );
+    final TextTheme sizeTheme = baseTheme.apply(fontSizeFactor: 2.0, fontSizeDelta: 5.0);
 
     expect(sizeTheme.displayLarge!.fontSize, baseTheme.displayLarge!.fontSize! * 2.0 + 5.0);
     expect(sizeTheme.displayMedium!.fontSize, baseTheme.displayMedium!.fontSize! * 2.0 + 5.0);

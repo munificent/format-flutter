@@ -8,14 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('GridView default control', (WidgetTester tester) async {
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: GridView.count(
-            crossAxisCount: 1,
-          ),
-        ),
-      ),
+      Directionality(textDirection: TextDirection.ltr, child: Center(child: GridView.count(crossAxisCount: 1))),
     );
   });
 
@@ -84,10 +77,7 @@ void main() {
         child: GridView.count(
           crossAxisCount: itemCount,
           children: List<Widget>.generate(itemCount, (int index) {
-            return SizedBox(
-              height: 200.0,
-              child: Text('item $index'),
-            );
+            return SizedBox(height: 200.0, child: Text('item $index'));
           }),
         ),
       );
@@ -104,5 +94,4 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('item 3'), findsOneWidget);
   });
-
 }

@@ -37,8 +37,7 @@ void main() {
     expect(binding.debugGetRequestedPerformanceMode(), isNull);
   });
 
-  test('PerformanceModeHandler revert only after last requestor disposed',
-      () async {
+  test('PerformanceModeHandler revert only after last requestor disposed', () async {
     final PerformanceModeRequestHandle? requestHandle1 = binding.requestPerformanceMode(DartPerformanceMode.latency);
     expect(requestHandle1, isNotNull);
 

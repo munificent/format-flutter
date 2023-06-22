@@ -15,6 +15,7 @@ class RenderTestBox extends RenderBox {
     value += 1.0;
     return value;
   }
+
   @override
   double computeMinIntrinsicWidth(double height) => next();
   @override
@@ -84,26 +85,19 @@ void main() {
     expect(test.getMinIntrinsicWidth(200.0), equals(3.0));
     expect(test.getMinIntrinsicWidth(100.0), equals(2.0));
     expect(test.getMinIntrinsicWidth(0.0), equals(1.0));
-
   });
 
   // Regression test for https://github.com/flutter/flutter/issues/101179
   test('Cached baselines should be cleared if its parent re-layout', () {
-    double viewHeight =  200.0;
+    double viewHeight = 200.0;
     final RenderTestBox test = RenderTestBox();
-    final RenderBox baseline = RenderBaseline(
-      baseline: 0.0,
-      baselineType: TextBaseline.alphabetic,
-      child: test,
-    );
+    final RenderBox baseline = RenderBaseline(baseline: 0.0, baselineType: TextBaseline.alphabetic, child: test);
     final RenderConstrainedBox root = RenderConstrainedBox(
       additionalConstraints: BoxConstraints.tightFor(width: 200.0, height: viewHeight),
       child: baseline,
     );
 
-    layout(RenderPositionedBox(
-      child: root,
-    ));
+    layout(RenderPositionedBox(child: root));
 
     BoxParentData? parentData = test.parentData as BoxParentData?;
     expect(parentData!.offset.dy, -(viewHeight / 2.0));

@@ -7,15 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('MaterialPointArcTween control test', () {
-    final MaterialPointArcTween a = MaterialPointArcTween(
-      begin: Offset.zero,
-      end: const Offset(0.0, 10.0),
-    );
+    final MaterialPointArcTween a = MaterialPointArcTween(begin: Offset.zero, end: const Offset(0.0, 10.0));
 
-    final MaterialPointArcTween b = MaterialPointArcTween(
-      begin: Offset.zero,
-      end: const Offset(0.0, 10.0),
-    );
+    final MaterialPointArcTween b = MaterialPointArcTween(begin: Offset.zero, end: const Offset(0.0, 10.0));
 
     expect(a, hasOneLineDescription);
     expect(a.toString(), equals(b.toString()));
@@ -36,17 +30,11 @@ void main() {
   });
 
   test('on-axis MaterialPointArcTween', () {
-    MaterialPointArcTween tween = MaterialPointArcTween(
-      begin: Offset.zero,
-      end: const Offset(0.0, 10.0),
-    );
+    MaterialPointArcTween tween = MaterialPointArcTween(begin: Offset.zero, end: const Offset(0.0, 10.0));
     expect(tween.lerp(0.5), equals(const Offset(0.0, 5.0)));
     expect(tween, hasOneLineDescription);
 
-    tween = MaterialPointArcTween(
-      begin: Offset.zero,
-      end: const Offset(10.0, 0.0),
-    );
+    tween = MaterialPointArcTween(begin: Offset.zero, end: const Offset(10.0, 0.0));
     expect(tween.lerp(0.5), equals(const Offset(5.0, 0.0)));
   });
 
@@ -87,10 +75,10 @@ void main() {
     const Rect end = Rect.fromLTRB(32.0, 275.0, 132.0, 425.0);
 
     bool sameRect(Rect a, Rect b) {
-      return (a.left - b.left).abs() < 2.0
-        && (a.top - b.top).abs() < 2.0
-        && (a.right - b.right).abs() < 2.0
-        && (a.bottom - b.bottom).abs() < 2.0;
+      return (a.left - b.left).abs() < 2.0 &&
+          (a.top - b.top).abs() < 2.0 &&
+          (a.right - b.right).abs() < 2.0 &&
+          (a.bottom - b.bottom).abs() < 2.0;
     }
 
     MaterialRectArcTween tween = MaterialRectArcTween(begin: begin, end: end);
@@ -105,5 +93,4 @@ void main() {
     expect(sameRect(tween.lerp(0.75), const Rect.fromLTRB(169.7, 168.5, 308.5, 270.3)), isTrue);
     expect(tween.lerp(1.0), begin);
   });
-
 }

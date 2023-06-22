@@ -14,15 +14,7 @@ void main() {
       minHeight: 0.0,
       maxHeight: 100.0,
       alignment: Alignment.topLeft,
-      child: Center(
-        child: FractionallySizedBox(
-          widthFactor: 0.5,
-          heightFactor: 0.25,
-          child: Container(
-            key: inner,
-          ),
-        ),
-      ),
+      child: Center(child: FractionallySizedBox(widthFactor: 0.5, heightFactor: 0.25, child: Container(key: inner))),
     ));
     final RenderBox box = inner.currentContext!.findRenderObject()! as RenderBox;
     expect(box.size, equals(const Size(50.0, 25.0)));
@@ -42,7 +34,10 @@ void main() {
     ));
     final RenderBox box = inner.currentContext!.findRenderObject()! as RenderBox;
     expect(box.size, equals(const Size(400.0, 300.0)));
-    expect(box.localToGlobal(box.size.center(Offset.zero)), equals(const Offset(800.0 - 400.0 / 2.0, 0.0 + 300.0 / 2.0)));
+    expect(
+      box.localToGlobal(box.size.center(Offset.zero)),
+      equals(const Offset(800.0 - 400.0 / 2.0, 0.0 + 300.0 / 2.0)),
+    );
   });
 
   testWidgets('FractionallySizedBox alignment (direction-sensitive)', (WidgetTester tester) async {
@@ -71,15 +66,7 @@ void main() {
         minHeight: 0.0,
         maxHeight: 100.0,
         alignment: AlignmentDirectional.topEnd,
-        child: Center(
-          child: FractionallySizedBox(
-            widthFactor: 0.5,
-            heightFactor: 0.25,
-            child: Container(
-              key: inner,
-            ),
-          ),
-        ),
+        child: Center(child: FractionallySizedBox(widthFactor: 0.5, heightFactor: 0.25, child: Container(key: inner))),
       ),
     ));
     final RenderBox box = inner.currentContext!.findRenderObject()! as RenderBox;

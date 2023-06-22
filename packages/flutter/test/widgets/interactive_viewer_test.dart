@@ -16,28 +16,23 @@ void main() {
   group('InteractiveViewer', () {
     testWidgets('child fits in viewport', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value, equals(Matrix4.identity()));
 
       // Attempting to drag to pan doesn't work because the child fits inside
       // the viewport and has a tight boundary.
       final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
+      final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
       TestGesture gesture = await tester.startGesture(childInterior);
       await tester.pump();
       await gesture.moveTo(childOffset);
@@ -68,28 +63,23 @@ void main() {
     testWidgets('boundary slightly bigger than child', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       const double boundaryMargin = 10.0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(boundaryMargin),
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(boundaryMargin),
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value, equals(Matrix4.identity()));
 
       // Dragging to pan works only until it hits the boundary.
       final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
+      final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
       TestGesture gesture = await tester.startGesture(childInterior);
       await tester.pump();
       await gesture.moveTo(childOffset);
@@ -123,29 +113,24 @@ void main() {
 
     testWidgets('child bigger than viewport', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                constrained: false,
-                scaleEnabled: false,
-                transformationController: transformationController,
-                child: const SizedBox(width: 2000.0, height: 2000.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              constrained: false,
+              scaleEnabled: false,
+              transformationController: transformationController,
+              child: const SizedBox(width: 2000.0, height: 2000.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value, equals(Matrix4.identity()));
 
       // Attempting to move against the boundary doesn't work.
       final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
+      final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
       TestGesture gesture = await tester.startGesture(childOffset);
       await tester.pump();
       await gesture.moveTo(childInterior);
@@ -199,31 +184,26 @@ void main() {
 
     testWidgets('child has no dimensions', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                constrained: false,
-                scaleEnabled: false,
-                transformationController: transformationController,
-                child: const SizedBox.shrink(),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              constrained: false,
+              scaleEnabled: false,
+              transformationController: transformationController,
+              child: const SizedBox.shrink(),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value, equals(Matrix4.identity()));
 
       // Interacting throws an error because the child has no size.
       final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
+      final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
       final TestGesture gesture = await tester.startGesture(childOffset);
-        await tester.pump();
+      await tester.pump();
       await gesture.moveTo(childInterior);
       await tester.pump();
       await gesture.up();
@@ -235,29 +215,24 @@ void main() {
     testWidgets('no boundary', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       const double minScale = 0.8;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(double.infinity),
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(double.infinity),
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value, equals(Matrix4.identity()));
 
       // Drag to pan works because even though the viewport fits perfectly
       // around the child, there is no boundary.
       final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
+      final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
       TestGesture gesture = await tester.startGesture(childInterior);
       await tester.pump();
       await gesture.moveTo(childOffset);
@@ -290,28 +265,23 @@ void main() {
 
     testWidgets('PanAxis.free allows panning in all directions for diagonal gesture', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(double.infinity),
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(double.infinity),
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value, equals(Matrix4.identity()));
 
       // Perform a diagonal drag gesture.
       final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
+      final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
       final TestGesture gesture = await tester.startGesture(childInterior);
       await tester.pump();
       await gesture.moveTo(childOffset);
@@ -326,10 +296,11 @@ void main() {
       expect(translation.y, childOffset.dy - childInterior.dy);
     });
 
-    testWidgets('PanAxis.aligned allows panning in one direction only for diagonal gesture', (WidgetTester tester) async {
-      final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'PanAxis.aligned allows panning in one direction only for diagonal gesture',
+      (WidgetTester tester) async {
+        final TransformationController transformationController = TransformationController();
+        await tester.pumpWidget(MaterialApp(
           home: Scaffold(
             body: Center(
               child: InteractiveViewer(
@@ -340,35 +311,33 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      expect(transformationController.value, equals(Matrix4.identity()));
+        expect(transformationController.value, equals(Matrix4.identity()));
 
-      // Perform a diagonal drag gesture.
-      final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
-      final TestGesture gesture = await tester.startGesture(childInterior);
-      await tester.pump();
-      await gesture.moveTo(childOffset);
-      await tester.pump();
-      await gesture.up();
-      await tester.pumpAndSettle();
+        // Perform a diagonal drag gesture.
+        final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
+        final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
+        final TestGesture gesture = await tester.startGesture(childInterior);
+        await tester.pump();
+        await gesture.moveTo(childOffset);
+        await tester.pump();
+        await gesture.up();
+        await tester.pumpAndSettle();
 
-      // Translation has only happened along the y axis (the default axis when
-      // a gesture is perfectly at 45 degrees to the axes).
-      final Vector3 translation = transformationController.value.getTranslation();
-      expect(translation.x, 0.0);
-      expect(translation.y, childOffset.dy - childInterior.dy);
-    });
+        // Translation has only happened along the y axis (the default axis when
+        // a gesture is perfectly at 45 degrees to the axes).
+        final Vector3 translation = transformationController.value.getTranslation();
+        expect(translation.x, 0.0);
+        expect(translation.y, childOffset.dy - childInterior.dy);
+      },
+    );
 
-    testWidgets('PanAxis.aligned allows panning in one direction only for horizontal leaning gesture', (WidgetTester tester) async {
-      final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'PanAxis.aligned allows panning in one direction only for horizontal leaning gesture',
+      (WidgetTester tester) async {
+        final TransformationController transformationController = TransformationController();
+        await tester.pumpWidget(MaterialApp(
           home: Scaffold(
             body: Center(
               child: InteractiveViewer(
@@ -379,35 +348,33 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      expect(transformationController.value, equals(Matrix4.identity()));
+        expect(transformationController.value, equals(Matrix4.identity()));
 
-      // Perform a horizontally leaning diagonal drag gesture.
-      final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 10.0,
-      );
-      final TestGesture gesture = await tester.startGesture(childInterior);
-      await tester.pump();
-      await gesture.moveTo(childOffset);
-      await tester.pump();
-      await gesture.up();
-      await tester.pumpAndSettle();
+        // Perform a horizontally leaning diagonal drag gesture.
+        final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
+        final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 10.0);
+        final TestGesture gesture = await tester.startGesture(childInterior);
+        await tester.pump();
+        await gesture.moveTo(childOffset);
+        await tester.pump();
+        await gesture.up();
+        await tester.pumpAndSettle();
 
-      // Translation happened only along the x axis because that's the axis that
-      // had the greatest movement.
-      final Vector3 translation = transformationController.value.getTranslation();
-      expect(translation.x, childOffset.dx - childInterior.dx);
-      expect(translation.y, 0.0);
-    });
+        // Translation happened only along the x axis because that's the axis that
+        // had the greatest movement.
+        final Vector3 translation = transformationController.value.getTranslation();
+        expect(translation.x, childOffset.dx - childInterior.dx);
+        expect(translation.y, 0.0);
+      },
+    );
 
-    testWidgets('PanAxis.horizontal allows panning in the horizontal direction only for diagonal gesture', (WidgetTester tester) async {
-      final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'PanAxis.horizontal allows panning in the horizontal direction only for diagonal gesture',
+      (WidgetTester tester) async {
+        final TransformationController transformationController = TransformationController();
+        await tester.pumpWidget(MaterialApp(
           home: Scaffold(
             body: Center(
               child: InteractiveViewer(
@@ -418,35 +385,33 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      expect(transformationController.value, equals(Matrix4.identity()));
+        expect(transformationController.value, equals(Matrix4.identity()));
 
-      // Perform a diagonal drag gesture.
-      final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
-      final TestGesture gesture = await tester.startGesture(childInterior);
-      await tester.pump();
-      await gesture.moveTo(childOffset);
-      await tester.pump();
-      await gesture.up();
-      await tester.pumpAndSettle();
+        // Perform a diagonal drag gesture.
+        final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
+        final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
+        final TestGesture gesture = await tester.startGesture(childInterior);
+        await tester.pump();
+        await gesture.moveTo(childOffset);
+        await tester.pump();
+        await gesture.up();
+        await tester.pumpAndSettle();
 
-      // Translation has only happened along the x axis (the default axis when
-      // a gesture is perfectly at 45 degrees to the axes).
-      final Vector3 translation = transformationController.value.getTranslation();
-      expect(translation.x, childOffset.dx - childInterior.dx);
-      expect(translation.y, 0.0);
-    });
+        // Translation has only happened along the x axis (the default axis when
+        // a gesture is perfectly at 45 degrees to the axes).
+        final Vector3 translation = transformationController.value.getTranslation();
+        expect(translation.x, childOffset.dx - childInterior.dx);
+        expect(translation.y, 0.0);
+      },
+    );
 
-    testWidgets('PanAxis.horizontal allows panning in the horizontal direction only for horizontal leaning gesture', (WidgetTester tester) async {
-      final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'PanAxis.horizontal allows panning in the horizontal direction only for horizontal leaning gesture',
+      (WidgetTester tester) async {
+        final TransformationController transformationController = TransformationController();
+        await tester.pumpWidget(MaterialApp(
           home: Scaffold(
             body: Center(
               child: InteractiveViewer(
@@ -457,35 +422,33 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      expect(transformationController.value, equals(Matrix4.identity()));
+        expect(transformationController.value, equals(Matrix4.identity()));
 
-      // Perform a horizontally leaning diagonal drag gesture.
-      final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 10.0,
-      );
-      final TestGesture gesture = await tester.startGesture(childInterior);
-      await tester.pump();
-      await gesture.moveTo(childOffset);
-      await tester.pump();
-      await gesture.up();
-      await tester.pumpAndSettle();
+        // Perform a horizontally leaning diagonal drag gesture.
+        final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
+        final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 10.0);
+        final TestGesture gesture = await tester.startGesture(childInterior);
+        await tester.pump();
+        await gesture.moveTo(childOffset);
+        await tester.pump();
+        await gesture.up();
+        await tester.pumpAndSettle();
 
-      // Translation happened only along the x axis because that's the axis that
-      // had been set to the panningDirection parameter.
-      final Vector3 translation = transformationController.value.getTranslation();
-      expect(translation.x, childOffset.dx - childInterior.dx);
-      expect(translation.y, 0.0);
-    });
+        // Translation happened only along the x axis because that's the axis that
+        // had been set to the panningDirection parameter.
+        final Vector3 translation = transformationController.value.getTranslation();
+        expect(translation.x, childOffset.dx - childInterior.dx);
+        expect(translation.y, 0.0);
+      },
+    );
 
-     testWidgets('PanAxis.horizontal does not allow panning in vertical direction on vertical gesture', (WidgetTester tester) async {
-      final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'PanAxis.horizontal does not allow panning in vertical direction on vertical gesture',
+      (WidgetTester tester) async {
+        final TransformationController transformationController = TransformationController();
+        await tester.pumpWidget(MaterialApp(
           home: Scaffold(
             body: Center(
               child: InteractiveViewer(
@@ -496,35 +459,33 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      expect(transformationController.value, equals(Matrix4.identity()));
+        expect(transformationController.value, equals(Matrix4.identity()));
 
-      // Perform a horizontally leaning diagonal drag gesture.
-      final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 0.0,
-        childOffset.dy + 10.0,
-      );
-      final TestGesture gesture = await tester.startGesture(childInterior);
-      await tester.pump();
-      await gesture.moveTo(childOffset);
-      await tester.pump();
-      await gesture.up();
-      await tester.pumpAndSettle();
+        // Perform a horizontally leaning diagonal drag gesture.
+        final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
+        final Offset childInterior = Offset(childOffset.dx + 0.0, childOffset.dy + 10.0);
+        final TestGesture gesture = await tester.startGesture(childInterior);
+        await tester.pump();
+        await gesture.moveTo(childOffset);
+        await tester.pump();
+        await gesture.up();
+        await tester.pumpAndSettle();
 
-      // Translation didn't happen because the only axis allowed to do panning
-      // is the horizontal.
-      final Vector3 translation = transformationController.value.getTranslation();
-      expect(translation.x, 0.0);
-      expect(translation.y, 0.0);
-    });
+        // Translation didn't happen because the only axis allowed to do panning
+        // is the horizontal.
+        final Vector3 translation = transformationController.value.getTranslation();
+        expect(translation.x, 0.0);
+        expect(translation.y, 0.0);
+      },
+    );
 
-    testWidgets('PanAxis.vertical allows panning in the vertical direction only for diagonal gesture', (WidgetTester tester) async {
-      final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'PanAxis.vertical allows panning in the vertical direction only for diagonal gesture',
+      (WidgetTester tester) async {
+        final TransformationController transformationController = TransformationController();
+        await tester.pumpWidget(MaterialApp(
           home: Scaffold(
             body: Center(
               child: InteractiveViewer(
@@ -535,35 +496,33 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      expect(transformationController.value, equals(Matrix4.identity()));
+        expect(transformationController.value, equals(Matrix4.identity()));
 
-      // Perform a diagonal drag gesture.
-      final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
-      final TestGesture gesture = await tester.startGesture(childInterior);
-      await tester.pump();
-      await gesture.moveTo(childOffset);
-      await tester.pump();
-      await gesture.up();
-      await tester.pumpAndSettle();
+        // Perform a diagonal drag gesture.
+        final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
+        final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
+        final TestGesture gesture = await tester.startGesture(childInterior);
+        await tester.pump();
+        await gesture.moveTo(childOffset);
+        await tester.pump();
+        await gesture.up();
+        await tester.pumpAndSettle();
 
-      // Translation has only happened along the x axis (the default axis when
-      // a gesture is perfectly at 45 degrees to the axes).
-      final Vector3 translation = transformationController.value.getTranslation();
-      expect(translation.y, childOffset.dy - childInterior.dy);
-      expect(translation.x, 0.0);
-    });
+        // Translation has only happened along the x axis (the default axis when
+        // a gesture is perfectly at 45 degrees to the axes).
+        final Vector3 translation = transformationController.value.getTranslation();
+        expect(translation.y, childOffset.dy - childInterior.dy);
+        expect(translation.x, 0.0);
+      },
+    );
 
-    testWidgets('PanAxis.vertical allows panning in the vertical direction only for vertical leaning gesture', (WidgetTester tester) async {
-      final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'PanAxis.vertical allows panning in the vertical direction only for vertical leaning gesture',
+      (WidgetTester tester) async {
+        final TransformationController transformationController = TransformationController();
+        await tester.pumpWidget(MaterialApp(
           home: Scaffold(
             body: Center(
               child: InteractiveViewer(
@@ -574,35 +533,33 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      expect(transformationController.value, equals(Matrix4.identity()));
+        expect(transformationController.value, equals(Matrix4.identity()));
 
-      // Perform a horizontally leaning diagonal drag gesture.
-      final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 10.0,
-      );
-      final TestGesture gesture = await tester.startGesture(childInterior);
-      await tester.pump();
-      await gesture.moveTo(childOffset);
-      await tester.pump();
-      await gesture.up();
-      await tester.pumpAndSettle();
+        // Perform a horizontally leaning diagonal drag gesture.
+        final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
+        final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 10.0);
+        final TestGesture gesture = await tester.startGesture(childInterior);
+        await tester.pump();
+        await gesture.moveTo(childOffset);
+        await tester.pump();
+        await gesture.up();
+        await tester.pumpAndSettle();
 
-      // Translation happened only along the x axis because that's the axis that
-      // had been set to the panningDirection parameter.
-      final Vector3 translation = transformationController.value.getTranslation();
-      expect(translation.y, childOffset.dy - childInterior.dy);
-      expect(translation.x, 0.0);
-    });
+        // Translation happened only along the x axis because that's the axis that
+        // had been set to the panningDirection parameter.
+        final Vector3 translation = transformationController.value.getTranslation();
+        expect(translation.y, childOffset.dy - childInterior.dy);
+        expect(translation.x, 0.0);
+      },
+    );
 
-     testWidgets('PanAxis.vertical does not allow panning in horizontal direction on vertical gesture', (WidgetTester tester) async {
-      final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'PanAxis.vertical does not allow panning in horizontal direction on vertical gesture',
+      (WidgetTester tester) async {
+        final TransformationController transformationController = TransformationController();
+        await tester.pumpWidget(MaterialApp(
           home: Scaffold(
             body: Center(
               child: InteractiveViewer(
@@ -613,47 +570,42 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      expect(transformationController.value, equals(Matrix4.identity()));
+        expect(transformationController.value, equals(Matrix4.identity()));
 
-      // Perform a horizontally leaning diagonal drag gesture.
-      final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 10.0,
-        childOffset.dy + 0.0,
-      );
-      final TestGesture gesture = await tester.startGesture(childInterior);
-      await tester.pump();
-      await gesture.moveTo(childOffset);
-      await tester.pump();
-      await gesture.up();
-      await tester.pumpAndSettle();
+        // Perform a horizontally leaning diagonal drag gesture.
+        final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
+        final Offset childInterior = Offset(childOffset.dx + 10.0, childOffset.dy + 0.0);
+        final TestGesture gesture = await tester.startGesture(childInterior);
+        await tester.pump();
+        await gesture.moveTo(childOffset);
+        await tester.pump();
+        await gesture.up();
+        await tester.pumpAndSettle();
 
-      // Translation didn't happen because the only axis allowed to do panning
-      // is the horizontal.
-      final Vector3 translation = transformationController.value.getTranslation();
-      expect(translation.x, 0.0);
-      expect(translation.y, 0.0);
-    });
+        // Translation didn't happen because the only axis allowed to do panning
+        // is the horizontal.
+        final Vector3 translation = transformationController.value.getTranslation();
+        expect(translation.x, 0.0);
+        expect(translation.y, 0.0);
+      },
+    );
 
     testWidgets('inertia fling and boundary sliding', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       const double boundaryMargin = 50.0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(boundaryMargin),
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(boundaryMargin),
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       // Fling the child.
       final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
@@ -701,20 +653,18 @@ void main() {
       final TransformationController transformationController = TransformationController();
       const double boundaryMargin = 50.0;
       const double minScale = 0.1;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(boundaryMargin),
-                minScale: minScale,
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(boundaryMargin),
+              minScale: minScale,
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       Vector3 translation = transformationController.value.getTranslation();
       expect(translation.x, 0.0);
@@ -761,10 +711,7 @@ void main() {
       scaleStart2 = Offset(childCenter.dx - 30.0, childCenter.dy);
       scaleEnd1 = Offset(childCenter.dx - 51.0, childCenter.dy);
       scaleEnd2 = Offset(childCenter.dx - 29.0, childCenter.dy);
-      final Offset viewportFocalPoint = Offset(
-        childCenter.dx - 40.0 - childOffset.dx,
-        childCenter.dy - childOffset.dy,
-      );
+      final Offset viewportFocalPoint = Offset(childCenter.dx - 40.0 - childOffset.dx, childCenter.dy - childOffset.dy);
       final Offset sceneFocalPoint = transformationController.toScene(viewportFocalPoint);
       gesture = await tester.createGesture();
       gesture2 = await tester.createGesture();
@@ -782,12 +729,13 @@ void main() {
       expect(newSceneFocalPoint.dy, moreOrLessEquals(sceneFocalPoint.dy, epsilon: 1.0));
     });
 
-    testWidgets('Scaling automatically causes a centering translation even when alignPanAxis is set', (WidgetTester tester) async {
-      final TransformationController transformationController = TransformationController();
-      const double boundaryMargin = 50.0;
-      const double minScale = 0.1;
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'Scaling automatically causes a centering translation even when alignPanAxis is set',
+      (WidgetTester tester) async {
+        final TransformationController transformationController = TransformationController();
+        const double boundaryMargin = 50.0;
+        const double minScale = 0.1;
+        await tester.pumpWidget(MaterialApp(
           home: Scaffold(
             body: Center(
               child: InteractiveViewer(
@@ -799,95 +747,93 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      Vector3 translation = transformationController.value.getTranslation();
-      expect(translation.x, 0.0);
-      expect(translation.y, 0.0);
+        Vector3 translation = transformationController.value.getTranslation();
+        expect(translation.x, 0.0);
+        expect(translation.y, 0.0);
 
-      // Pan into the corner of the boundaries in two gestures, since
-      // alignPanAxis prevents diagonal panning.
-      final Offset childOffset1 = tester.getTopLeft(find.byType(SizedBox));
-      const Offset flingEnd1 = Offset(20.0, 0.0);
-      await tester.flingFrom(childOffset1, flingEnd1, 1000.0);
-      await tester.pumpAndSettle();
-      await tester.pump(const Duration(seconds: 5));
-      final Offset childOffset2 = tester.getTopLeft(find.byType(SizedBox));
-      const Offset flingEnd2 = Offset(0.0, 15.0);
-      await tester.flingFrom(childOffset2, flingEnd2, 1000.0);
-      await tester.pumpAndSettle();
-      translation = transformationController.value.getTranslation();
-      expect(translation.x, moreOrLessEquals(boundaryMargin, epsilon: 1e-9));
-      expect(translation.y, moreOrLessEquals(boundaryMargin, epsilon: 1e-9));
+        // Pan into the corner of the boundaries in two gestures, since
+        // alignPanAxis prevents diagonal panning.
+        final Offset childOffset1 = tester.getTopLeft(find.byType(SizedBox));
+        const Offset flingEnd1 = Offset(20.0, 0.0);
+        await tester.flingFrom(childOffset1, flingEnd1, 1000.0);
+        await tester.pumpAndSettle();
+        await tester.pump(const Duration(seconds: 5));
+        final Offset childOffset2 = tester.getTopLeft(find.byType(SizedBox));
+        const Offset flingEnd2 = Offset(0.0, 15.0);
+        await tester.flingFrom(childOffset2, flingEnd2, 1000.0);
+        await tester.pumpAndSettle();
+        translation = transformationController.value.getTranslation();
+        expect(translation.x, moreOrLessEquals(boundaryMargin, epsilon: 1e-9));
+        expect(translation.y, moreOrLessEquals(boundaryMargin, epsilon: 1e-9));
 
-      // Zoom out so the entire child is visible. The child will also be
-      // translated in order to keep it inside the boundaries.
-      final Offset childCenter = tester.getCenter(find.byType(SizedBox));
-      Offset scaleStart1 = Offset(childCenter.dx - 40.0, childCenter.dy);
-      Offset scaleStart2 = Offset(childCenter.dx + 40.0, childCenter.dy);
-      Offset scaleEnd1 = Offset(childCenter.dx - 10.0, childCenter.dy);
-      Offset scaleEnd2 = Offset(childCenter.dx + 10.0, childCenter.dy);
-      TestGesture gesture = await tester.createGesture();
-      TestGesture gesture2 = await tester.createGesture();
-      await gesture.down(scaleStart1);
-      await gesture2.down(scaleStart2);
-      await tester.pump();
-      await gesture.moveTo(scaleEnd1);
-      await gesture2.moveTo(scaleEnd2);
-      await tester.pump();
-      await gesture.up();
-      await gesture2.up();
-      await tester.pumpAndSettle();
-      expect(transformationController.value.getMaxScaleOnAxis(), lessThan(1.0));
-      translation = transformationController.value.getTranslation();
-      expect(translation.x, lessThan(boundaryMargin));
-      expect(translation.y, lessThan(boundaryMargin));
-      expect(translation.x, greaterThan(0.0));
-      expect(translation.y, greaterThan(0.0));
-      expect(translation.x, moreOrLessEquals(translation.y, epsilon: 1e-9));
+        // Zoom out so the entire child is visible. The child will also be
+        // translated in order to keep it inside the boundaries.
+        final Offset childCenter = tester.getCenter(find.byType(SizedBox));
+        Offset scaleStart1 = Offset(childCenter.dx - 40.0, childCenter.dy);
+        Offset scaleStart2 = Offset(childCenter.dx + 40.0, childCenter.dy);
+        Offset scaleEnd1 = Offset(childCenter.dx - 10.0, childCenter.dy);
+        Offset scaleEnd2 = Offset(childCenter.dx + 10.0, childCenter.dy);
+        TestGesture gesture = await tester.createGesture();
+        TestGesture gesture2 = await tester.createGesture();
+        await gesture.down(scaleStart1);
+        await gesture2.down(scaleStart2);
+        await tester.pump();
+        await gesture.moveTo(scaleEnd1);
+        await gesture2.moveTo(scaleEnd2);
+        await tester.pump();
+        await gesture.up();
+        await gesture2.up();
+        await tester.pumpAndSettle();
+        expect(transformationController.value.getMaxScaleOnAxis(), lessThan(1.0));
+        translation = transformationController.value.getTranslation();
+        expect(translation.x, lessThan(boundaryMargin));
+        expect(translation.y, lessThan(boundaryMargin));
+        expect(translation.x, greaterThan(0.0));
+        expect(translation.y, greaterThan(0.0));
+        expect(translation.x, moreOrLessEquals(translation.y, epsilon: 1e-9));
 
-      // Zoom in on a point that's not the center, and see that it remains at
-      // roughly the same location in the viewport after the zoom.
-      scaleStart1 = Offset(childCenter.dx - 50.0, childCenter.dy);
-      scaleStart2 = Offset(childCenter.dx - 30.0, childCenter.dy);
-      scaleEnd1 = Offset(childCenter.dx - 51.0, childCenter.dy);
-      scaleEnd2 = Offset(childCenter.dx - 29.0, childCenter.dy);
-      final Offset viewportFocalPoint = Offset(
-        childCenter.dx - 40.0 - childOffset1.dx,
-        childCenter.dy - childOffset1.dy,
-      );
-      final Offset sceneFocalPoint = transformationController.toScene(viewportFocalPoint);
-      gesture = await tester.createGesture();
-      gesture2 = await tester.createGesture();
-      await gesture.down(scaleStart1);
-      await gesture2.down(scaleStart2);
-      await tester.pump();
-      await gesture.moveTo(scaleEnd1);
-      await gesture2.moveTo(scaleEnd2);
-      await tester.pump();
-      await gesture.up();
-      await gesture2.up();
-      await tester.pumpAndSettle();
-      final Offset newSceneFocalPoint = transformationController.toScene(viewportFocalPoint);
-      expect(newSceneFocalPoint.dx, moreOrLessEquals(sceneFocalPoint.dx, epsilon: 1.0));
-      expect(newSceneFocalPoint.dy, moreOrLessEquals(sceneFocalPoint.dy, epsilon: 1.0));
-    });
+        // Zoom in on a point that's not the center, and see that it remains at
+        // roughly the same location in the viewport after the zoom.
+        scaleStart1 = Offset(childCenter.dx - 50.0, childCenter.dy);
+        scaleStart2 = Offset(childCenter.dx - 30.0, childCenter.dy);
+        scaleEnd1 = Offset(childCenter.dx - 51.0, childCenter.dy);
+        scaleEnd2 = Offset(childCenter.dx - 29.0, childCenter.dy);
+        final Offset viewportFocalPoint = Offset(
+          childCenter.dx - 40.0 - childOffset1.dx,
+          childCenter.dy - childOffset1.dy,
+        );
+        final Offset sceneFocalPoint = transformationController.toScene(viewportFocalPoint);
+        gesture = await tester.createGesture();
+        gesture2 = await tester.createGesture();
+        await gesture.down(scaleStart1);
+        await gesture2.down(scaleStart2);
+        await tester.pump();
+        await gesture.moveTo(scaleEnd1);
+        await gesture2.moveTo(scaleEnd2);
+        await tester.pump();
+        await gesture.up();
+        await gesture2.up();
+        await tester.pumpAndSettle();
+        final Offset newSceneFocalPoint = transformationController.toScene(viewportFocalPoint);
+        expect(newSceneFocalPoint.dx, moreOrLessEquals(sceneFocalPoint.dx, epsilon: 1.0));
+        expect(newSceneFocalPoint.dy, moreOrLessEquals(sceneFocalPoint.dy, epsilon: 1.0));
+      },
+    );
 
     testWidgets('Can scale with mouse', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       final Offset center = tester.getCenter(find.byType(InteractiveViewer));
       await scrollAt(center, tester, const Offset(0.0, -20.0));
@@ -898,19 +844,17 @@ void main() {
 
     testWidgets('Cannot scale with mouse when scale is disabled', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                transformationController: transformationController,
-                scaleEnabled: false,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              transformationController: transformationController,
+              scaleEnabled: false,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       final Offset center = tester.getCenter(find.byType(InteractiveViewer));
       await scrollAt(center, tester, const Offset(0.0, -20.0));
@@ -919,36 +863,34 @@ void main() {
       expect(transformationController.value.getMaxScaleOnAxis(), equals(1.0));
     });
 
-    testWidgets('Scale with mouse returns onInteraction properties', (WidgetTester tester) async{
+    testWidgets('Scale with mouse returns onInteraction properties', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       late Offset focalPoint;
       late Offset localFocalPoint;
       late double scaleChange;
       late Velocity currentVelocity;
       late bool calledStart;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                transformationController: transformationController,
-                onInteractionStart: (ScaleStartDetails details) {
-                  calledStart = true;
-                },
-                onInteractionUpdate: (ScaleUpdateDetails details) {
-                  scaleChange = details.scale;
-                  focalPoint = details.focalPoint;
-                  localFocalPoint = details.localFocalPoint;
-                },
-                onInteractionEnd: (ScaleEndDetails details) {
-                  currentVelocity = details.velocity;
-                },
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              transformationController: transformationController,
+              onInteractionStart: (ScaleStartDetails details) {
+                calledStart = true;
+              },
+              onInteractionUpdate: (ScaleUpdateDetails details) {
+                scaleChange = details.scale;
+                focalPoint = details.focalPoint;
+                localFocalPoint = details.localFocalPoint;
+              },
+              onInteractionEnd: (ScaleEndDetails details) {
+                currentVelocity = details.velocity;
+              },
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       final Offset center = tester.getCenter(find.byType(InteractiveViewer));
       await scrollAt(center, tester, const Offset(0.0, -20.0));
@@ -971,23 +913,21 @@ void main() {
       expect(scenePoint, const Offset(100, 100));
     });
 
-     testWidgets('Scaling amount is equal forth and back with a mouse scroll', (WidgetTester tester) async {
+    testWidgets('Scaling amount is equal forth and back with a mouse scroll', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                constrained: false,
-                maxScale: 100000,
-                minScale: 0.01,
-                transformationController: transformationController,
-                child: const SizedBox(width: 1000.0, height: 1000.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              constrained: false,
+              maxScale: 100000,
+              minScale: 0.01,
+              transformationController: transformationController,
+              child: const SizedBox(width: 1000.0, height: 1000.0),
             ),
           ),
         ),
-      );
+      ));
 
       final Offset center = tester.getCenter(find.byType(InteractiveViewer));
       await scrollAt(center, tester, const Offset(0.0, -200.0));
@@ -1003,36 +943,34 @@ void main() {
       expect(transformationController.value.getMaxScaleOnAxis(), 1.0);
     });
 
-    testWidgets('onInteraction can be used to get scene point', (WidgetTester tester) async{
+    testWidgets('onInteraction can be used to get scene point', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       late Offset focalPoint;
       late Offset localFocalPoint;
       late double scaleChange;
       late Velocity currentVelocity;
       late bool calledStart;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                transformationController: transformationController,
-                onInteractionStart: (ScaleStartDetails details) {
-                  calledStart = true;
-                },
-                onInteractionUpdate: (ScaleUpdateDetails details) {
-                  scaleChange = details.scale;
-                  focalPoint = details.focalPoint;
-                  localFocalPoint = details.localFocalPoint;
-                },
-                onInteractionEnd: (ScaleEndDetails details) {
-                  currentVelocity = details.velocity;
-                },
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              transformationController: transformationController,
+              onInteractionStart: (ScaleStartDetails details) {
+                calledStart = true;
+              },
+              onInteractionUpdate: (ScaleUpdateDetails details) {
+                scaleChange = details.scale;
+                focalPoint = details.focalPoint;
+                localFocalPoint = details.localFocalPoint;
+              },
+              onInteractionEnd: (ScaleEndDetails details) {
+                currentVelocity = details.velocity;
+              },
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       final Offset center = tester.getCenter(find.byType(InteractiveViewer));
       final Offset offCenter = Offset(center.dx - 20.0, center.dy - 20.0);
@@ -1062,34 +1000,29 @@ void main() {
       bool calledStart = false;
       bool calledUpdate = false;
       bool calledEnd = false;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                transformationController: transformationController,
-                scaleEnabled: false,
-                onInteractionStart: (ScaleStartDetails details) {
-                  calledStart = true;
-                },
-                onInteractionUpdate: (ScaleUpdateDetails details) {
-                  calledUpdate = true;
-                },
-                onInteractionEnd: (ScaleEndDetails details) {
-                  calledEnd = true;
-                },
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              transformationController: transformationController,
+              scaleEnabled: false,
+              onInteractionStart: (ScaleStartDetails details) {
+                calledStart = true;
+              },
+              onInteractionUpdate: (ScaleUpdateDetails details) {
+                calledUpdate = true;
+              },
+              onInteractionEnd: (ScaleEndDetails details) {
+                calledEnd = true;
+              },
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
+      final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
       TestGesture gesture = await tester.startGesture(childOffset);
 
       // Attempting to pan doesn't work because it's disabled, but the
@@ -1127,15 +1060,16 @@ void main() {
       expect(calledStart, isTrue);
       expect(calledUpdate, isTrue);
       expect(calledEnd, isTrue);
-    }, variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.android, TargetPlatform.iOS }));
+    }, variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.android, TargetPlatform.iOS}));
 
-    testWidgets('onInteraction is called even when disabled (mouse)', (WidgetTester tester) async {
-      final TransformationController transformationController = TransformationController();
-      bool calledStart = false;
-      bool calledUpdate = false;
-      bool calledEnd = false;
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'onInteraction is called even when disabled (mouse)',
+      (WidgetTester tester) async {
+        final TransformationController transformationController = TransformationController();
+        bool calledStart = false;
+        bool calledUpdate = false;
+        bool calledEnd = false;
+        await tester.pumpWidget(MaterialApp(
           home: Scaffold(
             body: Center(
               child: InteractiveViewer(
@@ -1154,67 +1088,60 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
-      final TestGesture gesture = await tester.startGesture(childOffset, kind: PointerDeviceKind.mouse);
+        final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
+        final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
+        final TestGesture gesture = await tester.startGesture(childOffset, kind: PointerDeviceKind.mouse);
 
-      // Attempting to pan doesn't work because it's disabled, but the
-      // interaction methods are still called.
-      await tester.pump();
-      await gesture.moveTo(childInterior);
-      await tester.pump();
-      await gesture.up();
-      await tester.pumpAndSettle();
-      expect(transformationController.value, equals(Matrix4.identity()));
-      expect(calledStart, isTrue);
-      expect(calledUpdate, isTrue);
-      expect(calledEnd, isTrue);
+        // Attempting to pan doesn't work because it's disabled, but the
+        // interaction methods are still called.
+        await tester.pump();
+        await gesture.moveTo(childInterior);
+        await tester.pump();
+        await gesture.up();
+        await tester.pumpAndSettle();
+        expect(transformationController.value, equals(Matrix4.identity()));
+        expect(calledStart, isTrue);
+        expect(calledUpdate, isTrue);
+        expect(calledEnd, isTrue);
 
-      // Attempting to scroll with a mouse to zoom doesn't work because it's
-      // disabled, but the interaction methods are still called.
-      calledStart = false;
-      calledUpdate = false;
-      calledEnd = false;
-      await scrollAt(childInterior, tester, const Offset(0.0, -20.0));
-      await tester.pumpAndSettle();
-      expect(transformationController.value, equals(Matrix4.identity()));
-      expect(calledStart, isTrue);
-      expect(calledUpdate, isTrue);
-      expect(calledEnd, isTrue);
-    }, variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.macOS, TargetPlatform.linux, TargetPlatform.windows }));
+        // Attempting to scroll with a mouse to zoom doesn't work because it's
+        // disabled, but the interaction methods are still called.
+        calledStart = false;
+        calledUpdate = false;
+        calledEnd = false;
+        await scrollAt(childInterior, tester, const Offset(0.0, -20.0));
+        await tester.pumpAndSettle();
+        expect(transformationController.value, equals(Matrix4.identity()));
+        expect(calledStart, isTrue);
+        expect(calledUpdate, isTrue);
+        expect(calledEnd, isTrue);
+      },
+      variant: const TargetPlatformVariant(<TargetPlatform>{
+        TargetPlatform.macOS,
+        TargetPlatform.linux,
+        TargetPlatform.windows,
+      }),
+    );
 
     testWidgets('viewport changes size', (WidgetTester tester) async {
       addTearDown(tester.view.reset);
 
       final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                transformationController: transformationController,
-                child: Container(),
-              ),
-            ),
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body:
+              Center(child: InteractiveViewer(transformationController: transformationController, child: Container())),
         ),
-      );
+      ));
 
       expect(transformationController.value, equals(Matrix4.identity()));
 
       // Attempting to drag to pan doesn't work because the child fits inside
       // the viewport and has a tight boundary.
       final Offset childOffset = tester.getTopLeft(find.byType(Container));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
+      final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
       TestGesture gesture = await tester.startGesture(childInterior);
       await tester.pump();
       await gesture.moveTo(childOffset);
@@ -1242,19 +1169,17 @@ void main() {
     testWidgets('gesture can start as pan and become scale', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       const double boundaryMargin = 50.0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(boundaryMargin),
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(boundaryMargin),
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       Vector3 translation = transformationController.value.getTranslation();
       expect(translation.x, 0.0);
@@ -1265,10 +1190,7 @@ void main() {
       final TestGesture gesture = await tester.createGesture();
       await gesture.down(childCenter);
       await tester.pump();
-      await gesture.moveTo(Offset(
-        childCenter.dx + 5.0,
-        childCenter.dy + 5.0,
-      ));
+      await gesture.moveTo(Offset(childCenter.dx + 5.0, childCenter.dy + 5.0));
       await tester.pump();
       translation = transformationController.value.getTranslation();
       expect(translation.x, greaterThan(0.0));
@@ -1276,19 +1198,10 @@ void main() {
 
       // Put another finger down and turn it into a scale gesture.
       final TestGesture gesture2 = await tester.createGesture();
-      await gesture2.down(Offset(
-        childCenter.dx - 5.0,
-        childCenter.dy - 5.0,
-      ));
+      await gesture2.down(Offset(childCenter.dx - 5.0, childCenter.dy - 5.0));
       await tester.pump();
-      await gesture.moveTo(Offset(
-        childCenter.dx + 25.0,
-        childCenter.dy + 25.0,
-      ));
-      await gesture2.moveTo(Offset(
-        childCenter.dx - 25.0,
-        childCenter.dy - 25.0,
-      ));
+      await gesture.moveTo(Offset(childCenter.dx + 25.0, childCenter.dy + 25.0));
+      await gesture2.moveTo(Offset(childCenter.dx - 25.0, childCenter.dy - 25.0));
       await tester.pump();
       await gesture.up();
       await gesture2.up();
@@ -1299,21 +1212,19 @@ void main() {
     // Regression test for https://github.com/flutter/flutter/issues/65304
     testWidgets('can view beyond boundary when necessary for a small child', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                constrained: false,
-                minScale: 1.0,
-                maxScale: 1.0,
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              constrained: false,
+              minScale: 1.0,
+              maxScale: 1.0,
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value, equals(Matrix4.identity()));
 
@@ -1341,25 +1252,23 @@ void main() {
       final TransformationController transformationController = TransformationController();
       double? initialScale;
       double? scale;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: GestureDetector(
-                onTapUp: (TapUpDetails details) {},
-                child: InteractiveViewer(
-                  onInteractionUpdate: (ScaleUpdateDetails details) {
-                    initialScale ??= details.scale;
-                    scale = details.scale;
-                  },
-                  transformationController: transformationController,
-                  child: const SizedBox(width: 200.0, height: 200.0),
-                ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: GestureDetector(
+              onTapUp: (TapUpDetails details) {},
+              child: InteractiveViewer(
+                onInteractionUpdate: (ScaleUpdateDetails details) {
+                  initialScale ??= details.scale;
+                  scale = details.scale;
+                },
+                transformationController: transformationController,
+                child: const SizedBox(width: 200.0, height: 200.0),
               ),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value, equals(Matrix4.identity()));
       expect(initialScale, null);
@@ -1368,10 +1277,7 @@ void main() {
       // Pinch to zoom isn't immediately detected for a small amount of
       // movement due to the GestureDetector.
       final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
-      final Offset childInterior = Offset(
-        childOffset.dx + 20.0,
-        childOffset.dy + 20.0,
-      );
+      final Offset childInterior = Offset(childOffset.dx + 20.0, childOffset.dy + 20.0);
       final Offset scaleStart1 = childInterior;
       final Offset scaleStart2 = Offset(childInterior.dx + 10.0, childInterior.dy);
       Offset scaleEnd1 = Offset(childInterior.dx - 10.0, childInterior.dy);
@@ -1414,83 +1320,69 @@ void main() {
     });
 
     testWidgets('Check if ClipRect is present in the tree', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                constrained: false,
-                clipBehavior: Clip.none,
-                minScale: 1.0,
-                maxScale: 1.0,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              constrained: false,
+              clipBehavior: Clip.none,
+              minScale: 1.0,
+              maxScale: 1.0,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       final RenderClipRect renderClip = tester.allRenderObjects.whereType<RenderClipRect>().first;
       expect(renderClip.clipBehavior, equals(Clip.none));
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                constrained: false,
-                minScale: 1.0,
-                maxScale: 1.0,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              constrained: false,
+              minScale: 1.0,
+              maxScale: 1.0,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
-      expect(
-        find.byType(ClipRect),
-        findsOneWidget,
-      );
+      expect(find.byType(ClipRect), findsOneWidget);
     });
 
     testWidgets('builder can change widgets that are off-screen', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       const double childHeight = 10.0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                height: 50.0,
-                child: InteractiveViewer.builder(
-                  transformationController: transformationController,
-                  scaleEnabled: false,
-                  boundaryMargin: const EdgeInsets.all(double.infinity),
-                  // Build visible children green, off-screen children red.
-                  builder: (BuildContext context, Quad viewportQuad) {
-                    final Rect viewport = _axisAlignedBoundingBox(viewportQuad);
-                    final List<Container> children = <Container>[];
-                    for (int i = 0; i < 10; i++) {
-                      final double childTop = i * childHeight;
-                      final double childBottom = childTop + childHeight;
-                      final bool visible = (childBottom >= viewport.top && childBottom <= viewport.bottom)
-                          || (childTop >= viewport.top && childTop <= viewport.bottom);
-                      children.add(Container(
-                        height: childHeight,
-                        color: visible ? Colors.green : Colors.red,
-                      ));
-                    }
-                    return Column(
-                      children: children,
-                    );
-                  },
-                ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              height: 50.0,
+              child: InteractiveViewer.builder(
+                transformationController: transformationController,
+                scaleEnabled: false,
+                boundaryMargin: const EdgeInsets.all(double.infinity),
+                // Build visible children green, off-screen children red.
+                builder: (BuildContext context, Quad viewportQuad) {
+                  final Rect viewport = _axisAlignedBoundingBox(viewportQuad);
+                  final List<Container> children = <Container>[];
+                  for (int i = 0; i < 10; i++) {
+                    final double childTop = i * childHeight;
+                    final double childBottom = childTop + childHeight;
+                    final bool visible = (childBottom >= viewport.top && childBottom <= viewport.bottom) ||
+                        (childTop >= viewport.top && childTop <= viewport.bottom);
+                    children.add(Container(height: childHeight, color: visible ? Colors.green : Colors.red));
+                  }
+                  return Column(children: children);
+                },
               ),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value, equals(Matrix4.identity()));
 
@@ -1509,10 +1401,7 @@ void main() {
       // Drag to pan down past the first child.
       final Offset childOffset = tester.getTopLeft(find.byType(SizedBox));
       const double translationY = 15.0;
-      final Offset childInterior = Offset(
-        childOffset.dx,
-        childOffset.dy + translationY,
-      );
+      final Offset childInterior = Offset(childOffset.dx, childOffset.dy + translationY);
       final TestGesture gesture = await tester.startGesture(childInterior);
       await tester.pump();
       await gesture.moveTo(childOffset);
@@ -1540,33 +1429,23 @@ void main() {
     // InteractiveViewer only uses a LayoutBuilder when it's needed by
     // InteractiveViewer.builder.
     testWidgets('LayoutBuilder is only used for InteractiveViewer.builder', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
-            ),
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(body: Center(child: InteractiveViewer(child: const SizedBox(width: 200.0, height: 200.0)))),
+      ));
 
       expect(find.byType(LayoutBuilder), findsNothing);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer.builder(
-                builder: (BuildContext context, Quad viewport) {
-                  return const SizedBox(width: 200.0, height: 200.0);
-                },
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer.builder(
+              builder: (BuildContext context, Quad viewport) {
+                return const SizedBox(width: 200.0, height: 200.0);
+              },
             ),
           ),
         ),
-      );
+      ));
 
       expect(find.byType(LayoutBuilder), findsOneWidget);
     });
@@ -1575,20 +1454,18 @@ void main() {
       const double scrollAmount = 30.0;
       final TransformationController transformationController = TransformationController();
       Future<void> pumpScaleFactor(double scaleFactor) {
-        return tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: Center(
-                child: InteractiveViewer(
-                  boundaryMargin: const EdgeInsets.all(double.infinity),
-                  transformationController: transformationController,
-                  scaleFactor: scaleFactor,
-                  child: const SizedBox(width: 200.0, height: 200.0),
-                ),
+        return tester.pumpWidget(MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: InteractiveViewer(
+                boundaryMargin: const EdgeInsets.all(double.infinity),
+                transformationController: transformationController,
+                scaleFactor: scaleFactor,
+                child: const SizedBox(width: 200.0, height: 200.0),
               ),
             ),
           ),
-        );
+        ));
       }
 
       // Start with the default scaleFactor.
@@ -1654,14 +1531,9 @@ void main() {
     testWidgets('alignment argument is used properly', (WidgetTester tester) async {
       const Alignment alignment = Alignment.center;
 
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: InteractiveViewer(
-            alignment: alignment,
-            child: Container(),
-          ),
-        ),
-      ));
+      await tester.pumpWidget(
+        MaterialApp(home: Scaffold(body: InteractiveViewer(alignment: alignment, child: Container()))),
+      );
 
       final Transform transform = tester.firstWidget(find.byType(Transform));
       expect(transform.alignment, alignment);
@@ -1670,21 +1542,19 @@ void main() {
     testWidgets('interactionEndFrictionCoefficient', (WidgetTester tester) async {
       // Use the default interactionEndFrictionCoefficient.
       final TransformationController transformationController1 = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 200,
-              height: 200,
-              child: InteractiveViewer(
-                constrained: false,
-                transformationController: transformationController1,
-                child: const SizedBox(width: 2000.0, height: 2000.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 200,
+            height: 200,
+            child: InteractiveViewer(
+              constrained: false,
+              transformationController: transformationController1,
+              child: const SizedBox(width: 2000.0, height: 2000.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController1.value, equals(Matrix4.identity()));
 
@@ -1695,22 +1565,20 @@ void main() {
 
       // Next try a custom interactionEndFrictionCoefficient.
       final TransformationController transformationController2 = TransformationController();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 200,
-              height: 200,
-              child: InteractiveViewer(
-                constrained: false,
-                interactionEndFrictionCoefficient: 0.01,
-                transformationController: transformationController2,
-                child: const SizedBox(width: 2000.0, height: 2000.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 200,
+            height: 200,
+            child: InteractiveViewer(
+              constrained: false,
+              interactionEndFrictionCoefficient: 0.01,
+              transformationController: transformationController2,
+              child: const SizedBox(width: 2000.0, height: 2000.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController2.value, equals(Matrix4.identity()));
 
@@ -1726,19 +1594,17 @@ void main() {
     testWidgets('discrete scroll pointer events', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       const double boundaryMargin = 50.0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(boundaryMargin),
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(boundaryMargin),
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value.getMaxScaleOnAxis(), 1.0);
       Vector3 translation = transformationController.value.getTranslation();
@@ -1770,19 +1636,17 @@ void main() {
     testWidgets('discrete scale pointer event', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       const double boundaryMargin = 50.0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(boundaryMargin),
-                transformationController: transformationController,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(boundaryMargin),
+              transformationController: transformationController,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value.getMaxScaleOnAxis(), 1.0);
 
@@ -1807,20 +1671,18 @@ void main() {
     testWidgets('trackpadScrollCausesScale', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       const double boundaryMargin = 50.0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(boundaryMargin),
-                transformationController: transformationController,
-                trackpadScrollCausesScale: true,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(boundaryMargin),
+              transformationController: transformationController,
+              trackpadScrollCausesScale: true,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value.getMaxScaleOnAxis(), 1.0);
 
@@ -1843,20 +1705,18 @@ void main() {
     testWidgets('trackpad pointer scroll events cause scale', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       const double boundaryMargin = 50.0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(boundaryMargin),
-                transformationController: transformationController,
-                trackpadScrollCausesScale: true,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(boundaryMargin),
+              transformationController: transformationController,
+              trackpadScrollCausesScale: true,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value.getMaxScaleOnAxis(), 1.0);
 
@@ -1894,29 +1754,23 @@ void main() {
     testWidgets('Scaling inertia', (WidgetTester tester) async {
       final TransformationController transformationController = TransformationController();
       const double boundaryMargin = 50.0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(boundaryMargin),
-                transformationController: transformationController,
-                trackpadScrollCausesScale: true,
-                child: const SizedBox(width: 200.0, height: 200.0),
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(boundaryMargin),
+              transformationController: transformationController,
+              trackpadScrollCausesScale: true,
+              child: const SizedBox(width: 200.0, height: 200.0),
             ),
           ),
         ),
-      );
+      ));
 
       expect(transformationController.value.getMaxScaleOnAxis(), 1.0);
 
       // Send a vertical scroll fling, which will cause inertia.
-      await tester.trackpadFling(
-        find.byType(InteractiveViewer),
-        const Offset(0, -100),
-        3000
-      );
+      await tester.trackpadFling(find.byType(InteractiveViewer), const Offset(0, -100), 3000);
       await tester.pump();
       expect(transformationController.value.getMaxScaleOnAxis(), moreOrLessEquals(1.6487212707001282));
       await tester.pump(const Duration(milliseconds: 80));
@@ -1934,7 +1788,7 @@ void main() {
       final Vector3 a = Vector3(0.0, 0.0, 0.0);
       final Vector3 b = Vector3(10.0, 0.0, 0.0);
 
-      final Vector3 closestPoint = InteractiveViewer.getNearestPointOnLine(point, a , b);
+      final Vector3 closestPoint = InteractiveViewer.getNearestPointOnLine(point, a, b);
 
       expect(closestPoint, Vector3(5.0, 0.0, 0.0));
       expect(point, Vector3(5.0, 5.0, 0.0));
@@ -1979,7 +1833,7 @@ void main() {
       final Vector3 a = Vector3(-1114.0, -60.3, 0.0);
       final Vector3 b = Vector3(288.8, 432.7, 0.0);
 
-      final Vector3 closestPoint = InteractiveViewer.getNearestPointOnLine(point, a , b);
+      final Vector3 closestPoint = InteractiveViewer.getNearestPointOnLine(point, a, b);
 
       expect(closestPoint.x, moreOrLessEquals(-356.8, epsilon: 0.1));
       expect(closestPoint.y, moreOrLessEquals(205.8, epsilon: 0.1));

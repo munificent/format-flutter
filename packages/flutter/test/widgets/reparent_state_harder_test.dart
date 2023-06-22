@@ -8,11 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 // This is a regression test for https://github.com/flutter/flutter/issues/5588.
 
 class OrderSwitcher extends StatefulWidget {
-  const OrderSwitcher({
-    super.key,
-    required this.a,
-    required this.b,
-  });
+  const OrderSwitcher({super.key, required this.a, required this.b});
 
   final Widget a;
   final Widget b;
@@ -22,7 +18,6 @@ class OrderSwitcher extends StatefulWidget {
 }
 
 class OrderSwitcherState extends State<OrderSwitcher> {
-
   bool _aFirst = true;
 
   void switchChildren() {
@@ -36,14 +31,8 @@ class OrderSwitcherState extends State<OrderSwitcher> {
     return Stack(
       textDirection: TextDirection.ltr,
       children: _aFirst
-        ? <Widget>[
-            KeyedSubtree(child: widget.a),
-            widget.b,
-          ]
-        : <Widget>[
-            KeyedSubtree(child: widget.b),
-            widget.a,
-          ],
+          ? <Widget>[KeyedSubtree(child: widget.a), widget.b]
+          : <Widget>[KeyedSubtree(child: widget.b), widget.a],
     );
   }
 }
@@ -61,11 +50,7 @@ class DummyStatefulWidgetState extends State<DummyStatefulWidget> {
 }
 
 class RekeyableDummyStatefulWidgetWrapper extends StatefulWidget {
-  const RekeyableDummyStatefulWidgetWrapper({
-    super.key,
-    this.child,
-    required this.initialKey,
-  });
+  const RekeyableDummyStatefulWidgetWrapper({super.key, this.child, required this.initialKey});
   final Widget? child;
   final GlobalKey initialKey;
   @override
@@ -95,7 +80,6 @@ class RekeyableDummyStatefulWidgetWrapperState extends State<RekeyableDummyState
 
 void main() {
   testWidgets('Handle GlobalKey reparenting in weird orders', (WidgetTester tester) async {
-
     // This is a bit of a weird test so let's try to explain it a bit.
     //
     // Basically what's happening here is that we have a complicated tree, and
@@ -125,12 +109,7 @@ void main() {
     final GlobalKey keyD = GlobalKey(debugLabel: 'D');
     await tester.pumpWidget(OrderSwitcher(
       key: keyRoot,
-      a: KeyedSubtree(
-        key: keyA,
-        child: RekeyableDummyStatefulWidgetWrapper(
-          initialKey: keyC,
-        ),
-      ),
+      a: KeyedSubtree(key: keyA, child: RekeyableDummyStatefulWidgetWrapper(initialKey: keyC)),
       b: KeyedSubtree(
         key: keyB,
         child: Builder(
@@ -141,9 +120,7 @@ void main() {
                   builder: (BuildContext context) {
                     return LayoutBuilder(
                       builder: (BuildContext context, BoxConstraints constraints) {
-                        return RekeyableDummyStatefulWidgetWrapper(
-                          initialKey: keyD,
-                        );
+                        return RekeyableDummyStatefulWidgetWrapper(initialKey: keyD);
                       },
                     );
                   },

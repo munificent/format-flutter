@@ -25,7 +25,6 @@ const CupertinoDynamicColor _kSystemFill = CupertinoDynamicColor(
 );
 
 void main() {
-
   Future<void> dragSlider(WidgetTester tester, Key sliderKey) {
     final Offset topLeft = tester.getTopLeft(find.byKey(sliderKey));
     const double unit = CupertinoThumbPainter.radius;
@@ -37,28 +36,28 @@ void main() {
     final Key sliderKey = UniqueKey();
     double value = 0.0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Directionality(
-          textDirection: TextDirection.ltr,
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Material(
-                child: Center(
-                  child: CupertinoSlider(
-                    key: sliderKey,
-                    value: value,
-                    onChanged: (double newValue) {
-                      setState(() { value = newValue; });
-                    },
-                  ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Directionality(
+        textDirection: TextDirection.ltr,
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Material(
+              child: Center(
+                child: CupertinoSlider(
+                  key: sliderKey,
+                  value: value,
+                  onChanged: (double newValue) {
+                    setState(() {
+                      value = newValue;
+                    });
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     expect(value, equals(0.0));
     await tester.tap(find.byKey(sliderKey), warnIfMissed: false);
@@ -73,28 +72,28 @@ void main() {
     final Key sliderKey = UniqueKey();
     double value = 0.0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Directionality(
-          textDirection: TextDirection.rtl,
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Material(
-                child: Center(
-                  child: CupertinoSlider(
-                    key: sliderKey,
-                    value: value,
-                    onChanged: (double newValue) {
-                      setState(() { value = newValue; });
-                    },
-                  ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Directionality(
+        textDirection: TextDirection.rtl,
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Material(
+              child: Center(
+                child: CupertinoSlider(
+                  key: sliderKey,
+                  value: value,
+                  onChanged: (double newValue) {
+                    setState(() {
+                      value = newValue;
+                    });
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     expect(value, equals(0.0));
     await tester.tap(find.byKey(sliderKey), warnIfMissed: false);
@@ -110,31 +109,31 @@ void main() {
     double value = 0.0;
     int numberOfTimesOnChangeStartIsCalled = 0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Directionality(
-          textDirection: TextDirection.ltr,
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Material(
-                child: Center(
-                  child: CupertinoSlider(
-                    key: sliderKey,
-                    value: value,
-                    onChanged: (double newValue) {
-                      setState(() { value = newValue; });
-                    },
-                    onChangeStart: (double value) {
-                      numberOfTimesOnChangeStartIsCalled++;
-                    },
-                  ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Directionality(
+        textDirection: TextDirection.ltr,
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Material(
+              child: Center(
+                child: CupertinoSlider(
+                  key: sliderKey,
+                  value: value,
+                  onChanged: (double newValue) {
+                    setState(() {
+                      value = newValue;
+                    });
+                  },
+                  onChangeStart: (double value) {
+                    numberOfTimesOnChangeStartIsCalled++;
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     await dragSlider(tester, sliderKey);
 
@@ -151,31 +150,31 @@ void main() {
     double value = 0.0;
     int numberOfTimesOnChangeEndIsCalled = 0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Directionality(
-          textDirection: TextDirection.ltr,
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Material(
-                child: Center(
-                  child: CupertinoSlider(
-                    key: sliderKey,
-                    value: value,
-                    onChanged: (double newValue) {
-                      setState(() { value = newValue; });
-                    },
-                    onChangeEnd: (double value) {
-                      numberOfTimesOnChangeEndIsCalled++;
-                    },
-                  ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Directionality(
+        textDirection: TextDirection.ltr,
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Material(
+              child: Center(
+                child: CupertinoSlider(
+                  key: sliderKey,
+                  value: value,
+                  onChanged: (double newValue) {
+                    setState(() {
+                      value = newValue;
+                    });
+                  },
+                  onChangeEnd: (double value) {
+                    numberOfTimesOnChangeEndIsCalled++;
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     await dragSlider(tester, sliderKey);
 
@@ -193,34 +192,34 @@ void main() {
     late double startValue;
     late double endValue;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Directionality(
-          textDirection: TextDirection.ltr,
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Material(
-                child: Center(
-                  child: CupertinoSlider(
-                    key: sliderKey,
-                    value: value,
-                    onChanged: (double newValue) {
-                      setState(() { value = newValue; });
-                    },
-                    onChangeStart: (double value) {
-                      startValue = value;
-                    },
-                    onChangeEnd: (double value) {
-                      endValue = value;
-                    },
-                  ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Directionality(
+        textDirection: TextDirection.ltr,
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Material(
+              child: Center(
+                child: CupertinoSlider(
+                  key: sliderKey,
+                  value: value,
+                  onChanged: (double newValue) {
+                    setState(() {
+                      value = newValue;
+                    });
+                  },
+                  onChangeStart: (double value) {
+                    startValue = value;
+                  },
+                  onChangeEnd: (double value) {
+                    endValue = value;
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     expect(value, equals(0.0));
 
@@ -247,34 +246,38 @@ void main() {
     late double startValue;
     late double endValue;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Directionality(
-          textDirection: TextDirection.rtl,
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Material(
-                child: Center(
-                  child: CupertinoSlider(
-                    key: sliderKey,
-                    value: value,
-                    onChanged: (double newValue) {
-                      setState(() { value = newValue; });
-                    },
-                    onChangeStart: (double value) {
-                      setState(() { startValue = value; });
-                    },
-                    onChangeEnd: (double value) {
-                      setState(() { endValue = value; });
-                    },
-                  ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Directionality(
+        textDirection: TextDirection.rtl,
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Material(
+              child: Center(
+                child: CupertinoSlider(
+                  key: sliderKey,
+                  value: value,
+                  onChanged: (double newValue) {
+                    setState(() {
+                      value = newValue;
+                    });
+                  },
+                  onChangeStart: (double value) {
+                    setState(() {
+                      startValue = value;
+                    });
+                  },
+                  onChangeEnd: (double value) {
+                    setState(() {
+                      endValue = value;
+                    });
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     expect(value, equals(0.0));
 
@@ -298,63 +301,41 @@ void main() {
   testWidgets('Slider Semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
-    await tester.pumpWidget(
-      MediaQuery(
-        data: const MediaQueryData(),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: CupertinoSlider(
-            value: 0.5,
-            onChanged: (double v) { },
-          ),
-        ),
+    await tester.pumpWidget(MediaQuery(
+      data: const MediaQueryData(),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: CupertinoSlider(value: 0.5, onChanged: (double v) {}),
       ),
-    );
-
-    expect(semantics, hasSemantics(
-      TestSemantics.root(
-        children: <TestSemantics>[
-          TestSemantics.rootChild(
-            id: 1,
-            value: '50%',
-            increasedValue: '60%',
-            decreasedValue: '40%',
-            textDirection: TextDirection.ltr,
-            flags: <SemanticsFlag>[SemanticsFlag.isSlider],
-            actions: SemanticsAction.decrease.index | SemanticsAction.increase.index,
-          ),
-        ],
-      ),
-      ignoreRect: true,
-      ignoreTransform: true,
     ));
+
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        TestSemantics.rootChild(
+          id: 1,
+          value: '50%',
+          increasedValue: '60%',
+          decreasedValue: '40%',
+          textDirection: TextDirection.ltr,
+          flags: <SemanticsFlag>[SemanticsFlag.isSlider],
+          actions: SemanticsAction.decrease.index | SemanticsAction.increase.index,
+        ),
+      ],
+    ), ignoreRect: true, ignoreTransform: true));
 
     // Disable slider
     await tester.pumpWidget(
       const MediaQuery(
         data: MediaQueryData(),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: CupertinoSlider(
-            value: 0.5,
-            onChanged: null,
-          ),
-        ),
+        child: Directionality(textDirection: TextDirection.ltr, child: CupertinoSlider(value: 0.5, onChanged: null)),
       ),
     );
 
-    expect(semantics, hasSemantics(
-      TestSemantics.root(
-        children: <TestSemantics>[
-          TestSemantics(
-            id: 1,
-            flags: <SemanticsFlag>[SemanticsFlag.isSlider],
-          ),
-        ],
-      ),
-      ignoreRect: true,
-      ignoreTransform: true,
-    ));
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        TestSemantics(id: 1, flags: <SemanticsFlag>[SemanticsFlag.isSlider]),
+      ],
+    ), ignoreRect: true, ignoreTransform: true));
 
     semantics.dispose();
   });
@@ -362,64 +343,53 @@ void main() {
   testWidgets('Slider Semantics can be updated', (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
     double value = 0.5;
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Directionality(
-          textDirection: TextDirection.ltr,
-          child: CupertinoSlider(
-            value: value,
-            onChanged: (double v) { },
-          ),
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Directionality(
+        textDirection: TextDirection.ltr,
+        child: CupertinoSlider(value: value, onChanged: (double v) {}),
+      ),
+    ));
+
+    expect(
+      tester.getSemantics(find.byType(CupertinoSlider)),
+      matchesSemantics(
+        isSlider: true,
+        hasIncreaseAction: true,
+        hasDecreaseAction: true,
+        value: '50%',
+        increasedValue: '60%',
+        decreasedValue: '40%',
+        textDirection: TextDirection.ltr,
       ),
     );
-
-    expect(tester.getSemantics(find.byType(CupertinoSlider)), matchesSemantics(
-      isSlider: true,
-      hasIncreaseAction: true,
-      hasDecreaseAction: true,
-      value: '50%',
-      increasedValue: '60%',
-      decreasedValue: '40%',
-      textDirection: TextDirection.ltr,
-    ));
 
     value = 0.6;
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Directionality(
-          textDirection: TextDirection.ltr,
-          child: CupertinoSlider(
-            value: value,
-            onChanged: (double v) { },
-          ),
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Directionality(
+        textDirection: TextDirection.ltr,
+        child: CupertinoSlider(value: value, onChanged: (double v) {}),
+      ),
+    ));
+
+    expect(
+      tester.getSemantics(find.byType(CupertinoSlider)),
+      matchesSemantics(
+        isSlider: true,
+        hasIncreaseAction: true,
+        hasDecreaseAction: true,
+        value: '60%',
+        increasedValue: '70%',
+        decreasedValue: '50%',
+        textDirection: TextDirection.ltr,
       ),
     );
-
-    expect(tester.getSemantics(find.byType(CupertinoSlider)), matchesSemantics(
-      isSlider: true,
-      hasIncreaseAction: true,
-      hasDecreaseAction: true,
-      value: '60%',
-      increasedValue: '70%',
-      decreasedValue: '50%',
-      textDirection: TextDirection.ltr,
-    ));
 
     handle.dispose();
   });
 
   testWidgets('Slider respects themes', (WidgetTester tester) async {
     await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoSlider(
-            onChanged: (double value) { },
-            value: 0.5,
-          ),
-        ),
-      ),
+      CupertinoApp(home: Center(child: CupertinoSlider(onChanged: (double value) {}, value: 0.5))),
     );
     expect(
       find.byType(CupertinoSlider),
@@ -427,41 +397,22 @@ void main() {
       paints..rrect(color: CupertinoColors.systemBlue.color),
     );
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        theme: const CupertinoThemeData(brightness: Brightness.dark),
-        home: Center(
-          child: CupertinoSlider(
-            onChanged: (double value) { },
-            value: 0.5,
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(CupertinoApp(
+      theme: const CupertinoThemeData(brightness: Brightness.dark),
+      home: Center(child: CupertinoSlider(onChanged: (double value) {}, value: 0.5)),
+    ));
 
-    expect(
-      find.byType(CupertinoSlider),
-      paints..rrect(color: CupertinoColors.systemBlue.darkColor),
-    );
+    expect(find.byType(CupertinoSlider), paints..rrect(color: CupertinoColors.systemBlue.darkColor));
   });
 
   testWidgets('Themes can be overridden', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        theme: const CupertinoThemeData(brightness: Brightness.dark),
-        home: Center(
-          child: CupertinoSlider(
-            activeColor: CupertinoColors.activeGreen,
-            onChanged: (double value) { },
-            value: 0.5,
-          ),
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      theme: const CupertinoThemeData(brightness: Brightness.dark),
+      home: Center(
+        child: CupertinoSlider(activeColor: CupertinoColors.activeGreen, onChanged: (double value) {}, value: 0.5),
       ),
-    );
-    expect(
-      find.byType(CupertinoSlider),
-      paints..rrect(color: CupertinoColors.systemGreen.darkColor),
-    );
+    ));
+    expect(find.byType(CupertinoSlider), paints..rrect(color: CupertinoColors.systemGreen.darkColor));
   });
 
   testWidgets('Themes can be overridden by dynamic colors', (WidgetTester tester) async {
@@ -483,136 +434,110 @@ void main() {
           data: level,
           child: MediaQuery(
             data: MediaQueryData(highContrast: highContrast),
-            child: Center(
-              child: CupertinoSlider(
-                activeColor: activeColor,
-                onChanged: (double value) { },
-                value: 0.5,
-              ),
-            ),
+            child: Center(child: CupertinoSlider(activeColor: activeColor, onChanged: (double value) {}, value: 0.5)),
           ),
         ),
       );
     }
 
-    await tester.pumpWidget(CupertinoApp(home: withTraits(Brightness.light, CupertinoUserInterfaceLevelData.base, false)));
+    await tester.pumpWidget(
+      CupertinoApp(home: withTraits(Brightness.light, CupertinoUserInterfaceLevelData.base, false)),
+    );
     expect(find.byType(CupertinoSlider), paints..rrect(color: activeColor.color));
 
-    await tester.pumpWidget(CupertinoApp(home: withTraits(Brightness.dark, CupertinoUserInterfaceLevelData.base, false)));
+    await tester.pumpWidget(
+      CupertinoApp(home: withTraits(Brightness.dark, CupertinoUserInterfaceLevelData.base, false)),
+    );
     expect(find.byType(CupertinoSlider), paints..rrect(color: activeColor.darkColor));
 
-    await tester.pumpWidget(CupertinoApp(home: withTraits(Brightness.dark, CupertinoUserInterfaceLevelData.elevated, false)));
+    await tester.pumpWidget(
+      CupertinoApp(home: withTraits(Brightness.dark, CupertinoUserInterfaceLevelData.elevated, false)),
+    );
     expect(find.byType(CupertinoSlider), paints..rrect(color: activeColor.darkElevatedColor));
 
-    await tester.pumpWidget(CupertinoApp(home: withTraits(Brightness.dark, CupertinoUserInterfaceLevelData.base, true)));
+    await tester.pumpWidget(
+      CupertinoApp(home: withTraits(Brightness.dark, CupertinoUserInterfaceLevelData.base, true)),
+    );
     expect(find.byType(CupertinoSlider), paints..rrect(color: activeColor.darkHighContrastColor));
 
-    await tester.pumpWidget(CupertinoApp(home: withTraits(Brightness.dark, CupertinoUserInterfaceLevelData.elevated, true)));
+    await tester.pumpWidget(
+      CupertinoApp(home: withTraits(Brightness.dark, CupertinoUserInterfaceLevelData.elevated, true)),
+    );
     expect(find.byType(CupertinoSlider), paints..rrect(color: activeColor.darkHighContrastElevatedColor));
 
-    await tester.pumpWidget(CupertinoApp(home: withTraits(Brightness.light, CupertinoUserInterfaceLevelData.base, true)));
+    await tester.pumpWidget(
+      CupertinoApp(home: withTraits(Brightness.light, CupertinoUserInterfaceLevelData.base, true)),
+    );
     expect(find.byType(CupertinoSlider), paints..rrect(color: activeColor.highContrastColor));
 
-    await tester.pumpWidget(CupertinoApp(home: withTraits(Brightness.light, CupertinoUserInterfaceLevelData.elevated, false)));
+    await tester.pumpWidget(
+      CupertinoApp(home: withTraits(Brightness.light, CupertinoUserInterfaceLevelData.elevated, false)),
+    );
     expect(find.byType(CupertinoSlider), paints..rrect(color: activeColor.elevatedColor));
 
-    await tester.pumpWidget(CupertinoApp(home: withTraits(Brightness.light, CupertinoUserInterfaceLevelData.elevated, true)));
+    await tester.pumpWidget(
+      CupertinoApp(home: withTraits(Brightness.light, CupertinoUserInterfaceLevelData.elevated, true)),
+    );
     expect(find.byType(CupertinoSlider), paints..rrect(color: activeColor.highContrastElevatedColor));
   });
 
   testWidgets('track color is dynamic', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        theme: const CupertinoThemeData(brightness: Brightness.light),
-        home: Center(
-          child: CupertinoSlider(
-            activeColor: CupertinoColors.activeGreen,
-            onChanged: (double value) { },
-            value: 0,
-          ),
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      theme: const CupertinoThemeData(brightness: Brightness.light),
+      home: Center(
+        child: CupertinoSlider(activeColor: CupertinoColors.activeGreen, onChanged: (double value) {}, value: 0),
       ),
-    );
+    ));
 
-    expect(
-      find.byType(CupertinoSlider),
-      paints..rrect(color: _kSystemFill.color),
-    );
+    expect(find.byType(CupertinoSlider), paints..rrect(color: _kSystemFill.color));
 
-    expect(
-      find.byType(CupertinoSlider),
-      isNot(paints..rrect(color: _kSystemFill.darkColor)),
-    );
+    expect(find.byType(CupertinoSlider), isNot(paints..rrect(color: _kSystemFill.darkColor)));
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        theme: const CupertinoThemeData(brightness: Brightness.dark),
-        home: Center(
-          child: CupertinoSlider(
-            activeColor: CupertinoColors.activeGreen,
-            onChanged: (double value) { },
-            value: 0,
-          ),
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      theme: const CupertinoThemeData(brightness: Brightness.dark),
+      home: Center(
+        child: CupertinoSlider(activeColor: CupertinoColors.activeGreen, onChanged: (double value) {}, value: 0),
       ),
-    );
+    ));
 
-    expect(
-      find.byType(CupertinoSlider),
-      paints..rrect(color: _kSystemFill.darkColor),
-    );
+    expect(find.byType(CupertinoSlider), paints..rrect(color: _kSystemFill.darkColor));
 
-    expect(
-      find.byType(CupertinoSlider),
-      isNot(paints..rrect(color: _kSystemFill.color)),
-    );
+    expect(find.byType(CupertinoSlider), isNot(paints..rrect(color: _kSystemFill.color)));
   });
 
   testWidgets('Thumb color can be overridden', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoSlider(
-            thumbColor: CupertinoColors.systemPurple,
-            onChanged: (double value) { },
-            value: 0,
-          ),
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoSlider(thumbColor: CupertinoColors.systemPurple, onChanged: (double value) {}, value: 0),
       ),
-    );
+    ));
 
     expect(
       find.byType(CupertinoSlider),
       paints
-      ..rrect()
-      ..rrect()
-      ..rrect()
-      ..rrect()
-      ..rrect()
-      ..rrect(color: CupertinoColors.systemPurple.color),
+        ..rrect()
+        ..rrect()
+        ..rrect()
+        ..rrect()
+        ..rrect()
+        ..rrect(color: CupertinoColors.systemPurple.color),
     );
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoSlider(
-            thumbColor: CupertinoColors.activeOrange,
-            onChanged: (double value) { },
-            value: 0,
-          ),
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoSlider(thumbColor: CupertinoColors.activeOrange, onChanged: (double value) {}, value: 0),
       ),
-    );
+    ));
 
     expect(
-        find.byType(CupertinoSlider),
-        paints
-          ..rrect()
-          ..rrect()
-          ..rrect()
-          ..rrect()
-          ..rrect()
-          ..rrect(color: CupertinoColors.activeOrange.color),
+      find.byType(CupertinoSlider),
+      paints
+        ..rrect()
+        ..rrect()
+        ..rrect()
+        ..rrect()
+        ..rrect()
+        ..rrect(color: CupertinoColors.activeOrange.color),
     );
   });
 
@@ -620,28 +545,28 @@ void main() {
     final Key sliderKey = UniqueKey();
     double value = 0.0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Directionality(
-          textDirection: TextDirection.ltr,
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Material(
-                child: Center(
-                  child: CupertinoSlider(
-                    key: sliderKey,
-                    value: value,
-                    onChanged: (double newValue) {
-                      setState(() { value = newValue; });
-                    },
-                  ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Directionality(
+        textDirection: TextDirection.ltr,
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Material(
+              child: Center(
+                child: CupertinoSlider(
+                  key: sliderKey,
+                  value: value,
+                  onChanged: (double newValue) {
+                    setState(() {
+                      value = newValue;
+                    });
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse, pointer: 1);
     await gesture.addPointer(location: const Offset(10, 10));

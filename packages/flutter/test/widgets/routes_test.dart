@@ -31,10 +31,7 @@ class TestRoute extends Route<String?> with LocalHistoryRoute<String?> {
   @override
   void install() {
     log('install');
-    final OverlayEntry entry = OverlayEntry(
-      builder: (BuildContext context) => Container(),
-      opaque: true,
-    );
+    final OverlayEntry entry = OverlayEntry(builder: (BuildContext context) => Container(), opaque: true);
     _entries.add(entry);
     routes.add(this);
     super.install();
@@ -93,7 +90,6 @@ class TestRoute extends Route<String?> with LocalHistoryRoute<String?> {
     routes.remove(this);
     super.dispose();
   }
-
 }
 
 Future<void> runNavigatorTest(
@@ -129,32 +125,26 @@ void main() {
 
   testWidgets('Route management - push, replace, pop sequence', (WidgetTester tester) async {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Navigator(
-          key: navigatorKey,
-          onGenerateRoute: (_) => TestRoute('initial'),
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Navigator(key: navigatorKey, onGenerateRoute: (_) => TestRoute('initial')),
+    ));
     final NavigatorState host = navigatorKey.currentState!;
     await runNavigatorTest(
       tester,
       host,
-      () { },
-      <String>[
-        'initial: install',
-        'initial: didAdd',
-        'initial: didChangeNext null',
-      ],
+      () {},
+      <String>['initial: install', 'initial: didAdd', 'initial: didChangeNext null'],
     );
     late TestRoute second;
     await runNavigatorTest(
       tester,
       host,
-      () { host.push(second = TestRoute('second')); },
-      <String>[ // stack is: initial, second
+      () {
+        host.push(second = TestRoute('second'));
+      },
+      <String>[
+        // stack is: initial, second
         'second: install',
         'second: didPush',
         'second: didChangeNext null',
@@ -164,8 +154,11 @@ void main() {
     await runNavigatorTest(
       tester,
       host,
-      () { host.push(TestRoute('third')); },
-      <String>[ // stack is: initial, second, third
+      () {
+        host.push(TestRoute('third'));
+      },
+      <String>[
+        // stack is: initial, second, third
         'third: install',
         'third: didPush',
         'third: didChangeNext null',
@@ -175,8 +168,11 @@ void main() {
     await runNavigatorTest(
       tester,
       host,
-      () { host.replace(oldRoute: second, newRoute: TestRoute('two')); },
-      <String>[ // stack is: initial, two, third
+      () {
+        host.replace(oldRoute: second, newRoute: TestRoute('two'));
+      },
+      <String>[
+        // stack is: initial, two, third
         'two: install',
         'two: didReplace second',
         'two: didChangeNext third',
@@ -187,26 +183,28 @@ void main() {
     await runNavigatorTest(
       tester,
       host,
-      () { host.pop('hello'); },
-      <String>[ // stack is: initial, two
+      () {
+        host.pop('hello');
+      },
+      <String>[
+        // stack is: initial, two
         'third: didPop hello',
         'two: didPopNext third',
       ],
-      <String>[
-        'third: dispose',
-      ],
+      <String>['third: dispose'],
     );
     await runNavigatorTest(
       tester,
       host,
-      () { host.pop('good bye'); },
-      <String>[ // stack is: initial
+      () {
+        host.pop('good bye');
+      },
+      <String>[
+        // stack is: initial
         'two: didPop good bye',
         'initial: didPopNext two',
       ],
-      <String>[
-        'two: dispose',
-      ],
+      <String>['two: dispose'],
     );
     await tester.pumpWidget(Container());
     expect(results, equals(<String>['initial: dispose']));
@@ -216,113 +214,43 @@ void main() {
 
   testWidgets('Route management - push, remove, pop', (WidgetTester tester) async {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Navigator(
-          key: navigatorKey,
-          onGenerateRoute: (_) => TestRoute('first'),
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Navigator(key: navigatorKey, onGenerateRoute: (_) => TestRoute('first')),
+    ));
     final NavigatorState host = navigatorKey.currentState!;
     await runNavigatorTest(
       tester,
       host,
-      () { },
-      <String>[
-        'first: install',
-        'first: didAdd',
-        'first: didChangeNext null',
-      ],
+      () {},
+      <String>['first: install', 'first: didAdd', 'first: didChangeNext null'],
     );
     late TestRoute second;
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.push(second = TestRoute('second')); },
-      <String>[
-        'second: install',
-        'second: didPush',
-        'second: didChangeNext null',
-        'first: didChangeNext second',
-      ],
-    );
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.push(TestRoute('third')); },
-      <String>[
-        'third: install',
-        'third: didPush',
-        'third: didChangeNext null',
-        'second: didChangeNext third',
-      ],
-    );
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.removeRouteBelow(second); },
-      <String>[
-        'first: dispose',
-      ],
-    );
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.pop('good bye'); },
-      <String>[
-        'third: didPop good bye',
-        'second: didPopNext third',
-      ],
-      <String>[
-        'third: dispose',
-      ],
-    );
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.push(TestRoute('three')); },
-      <String>[
-        'three: install',
-        'three: didPush',
-        'three: didChangeNext null',
-        'second: didChangeNext three',
-      ],
-    );
+    await runNavigatorTest(tester, host, () {
+      host.push(second = TestRoute('second'));
+    }, <String>['second: install', 'second: didPush', 'second: didChangeNext null', 'first: didChangeNext second']);
+    await runNavigatorTest(tester, host, () {
+      host.push(TestRoute('third'));
+    }, <String>['third: install', 'third: didPush', 'third: didChangeNext null', 'second: didChangeNext third']);
+    await runNavigatorTest(tester, host, () {
+      host.removeRouteBelow(second);
+    }, <String>['first: dispose']);
+    await runNavigatorTest(tester, host, () {
+      host.pop('good bye');
+    }, <String>['third: didPop good bye', 'second: didPopNext third'], <String>['third: dispose']);
+    await runNavigatorTest(tester, host, () {
+      host.push(TestRoute('three'));
+    }, <String>['three: install', 'three: didPush', 'three: didChangeNext null', 'second: didChangeNext three']);
     late TestRoute four;
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.push(four = TestRoute('four')); },
-      <String>[
-        'four: install',
-        'four: didPush',
-        'four: didChangeNext null',
-        'three: didChangeNext four',
-      ],
-    );
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.removeRouteBelow(four); },
-      <String>[
-        'second: didChangeNext four',
-        'three: dispose',
-      ],
-    );
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.pop('the end'); },
-      <String>[
-        'four: didPop the end',
-        'second: didPopNext four',
-      ],
-      <String>[
-        'four: dispose',
-      ],
-    );
+    await runNavigatorTest(tester, host, () {
+      host.push(four = TestRoute('four'));
+    }, <String>['four: install', 'four: didPush', 'four: didChangeNext null', 'three: didChangeNext four']);
+    await runNavigatorTest(tester, host, () {
+      host.removeRouteBelow(four);
+    }, <String>['second: didChangeNext four', 'three: dispose']);
+    await runNavigatorTest(tester, host, () {
+      host.pop('the end');
+    }, <String>['four: didPop the end', 'second: didPopNext four'], <String>['four: dispose']);
     await tester.pumpWidget(Container());
     expect(results, equals(<String>['second: dispose']));
     expect(routes.isEmpty, isTrue);
@@ -331,75 +259,27 @@ void main() {
 
   testWidgets('Route management - push, replace, popUntil', (WidgetTester tester) async {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Navigator(
-          key: navigatorKey,
-          onGenerateRoute: (_) => TestRoute('A'),
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Navigator(key: navigatorKey, onGenerateRoute: (_) => TestRoute('A')),
+    ));
     final NavigatorState host = navigatorKey.currentState!;
-    await runNavigatorTest(
-      tester,
-      host,
-      () { },
-      <String>[
-        'A: install',
-        'A: didAdd',
-        'A: didChangeNext null',
-      ],
-    );
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.push(TestRoute('B')); },
-      <String>[
-        'B: install',
-        'B: didPush',
-        'B: didChangeNext null',
-        'A: didChangeNext B',
-      ],
-    );
+    await runNavigatorTest(tester, host, () {}, <String>['A: install', 'A: didAdd', 'A: didChangeNext null']);
+    await runNavigatorTest(tester, host, () {
+      host.push(TestRoute('B'));
+    }, <String>['B: install', 'B: didPush', 'B: didChangeNext null', 'A: didChangeNext B']);
     late TestRoute routeC;
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.push(routeC = TestRoute('C')); },
-      <String>[
-        'C: install',
-        'C: didPush',
-        'C: didChangeNext null',
-        'B: didChangeNext C',
-      ],
-    );
+    await runNavigatorTest(tester, host, () {
+      host.push(routeC = TestRoute('C'));
+    }, <String>['C: install', 'C: didPush', 'C: didChangeNext null', 'B: didChangeNext C']);
     expect(routeC.isActive, isTrue);
     late TestRoute routeB;
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.replaceRouteBelow(anchorRoute: routeC, newRoute: routeB = TestRoute('b')); },
-      <String>[
-        'b: install',
-        'b: didReplace B',
-        'b: didChangeNext C',
-        'A: didChangeNext b',
-        'B: dispose',
-      ],
-    );
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.popUntil((Route<dynamic> route) => route == routeB); },
-      <String>[
-        'C: didPop null',
-        'b: didPopNext C',
-      ],
-      <String>[
-        'C: dispose',
-      ],
-    );
+    await runNavigatorTest(tester, host, () {
+      host.replaceRouteBelow(anchorRoute: routeC, newRoute: routeB = TestRoute('b'));
+    }, <String>['b: install', 'b: didReplace B', 'b: didChangeNext C', 'A: didChangeNext b', 'B: dispose']);
+    await runNavigatorTest(tester, host, () {
+      host.popUntil((Route<dynamic> route) => route == routeB);
+    }, <String>['C: didPop null', 'b: didPopNext C'], <String>['C: dispose']);
     await tester.pumpWidget(Container());
     expect(results, equals(<String>['b: dispose', 'A: dispose']));
     expect(routes.isEmpty, isTrue);
@@ -409,26 +289,27 @@ void main() {
   testWidgets('Route localHistory - popUntil', (WidgetTester tester) async {
     final TestRoute routeA = TestRoute('A');
     routeA.addLocalHistoryEntry(LocalHistoryEntry(
-      onRemove: () { routeA.log('onRemove 0'); },
+      onRemove: () {
+        routeA.log('onRemove 0');
+      },
     ));
     routeA.addLocalHistoryEntry(LocalHistoryEntry(
-      onRemove: () { routeA.log('onRemove 1'); },
+      onRemove: () {
+        routeA.log('onRemove 1');
+      },
     ));
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Navigator(
-          key: navigatorKey,
-          onGenerateRoute: (_) => routeA,
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Navigator(key: navigatorKey, onGenerateRoute: (_) => routeA),
+    ));
     final NavigatorState host = navigatorKey.currentState!;
     await runNavigatorTest(
       tester,
       host,
-      () { host.popUntil((Route<dynamic> route) => !route.willHandlePopInternally); },
+      () {
+        host.popUntil((Route<dynamic> route) => !route.willHandlePopInternally);
+      },
       <String>[
         'A: install',
         'A: didAdd',
@@ -440,13 +321,9 @@ void main() {
       ],
     );
 
-    await runNavigatorTest(
-      tester,
-      host,
-      () { host.popUntil((Route<dynamic> route) => !route.willHandlePopInternally); },
-      <String>[
-      ],
-    );
+    await runNavigatorTest(tester, host, () {
+      host.popUntil((Route<dynamic> route) => !route.willHandlePopInternally);
+    }, <String>[]);
     await tester.pumpWidget(Container());
     expect(routes.isEmpty, isTrue);
     results.clear();
@@ -547,26 +424,18 @@ void main() {
     final TextEditingController controller = TextEditingController();
 
     final FocusNode focusNode = FocusNode(debugLabel: 'Test Node');
-    await tester.pumpWidget(
-      Material(
-        child: MaterialApp(
-          onGenerateRoute: (RouteSettings settings) {
-            return PageRouteBuilder<void>(
-              settings: settings,
-              pageBuilder: (BuildContext context, Animation<double> input, Animation<double> out) {
-                return Focus(
-                  child: TextField(
-                    autofocus: true,
-                    focusNode: focusNode,
-                    controller: controller,
-                  ),
-                );
-              },
-            );
-          },
-        ),
+    await tester.pumpWidget(Material(
+      child: MaterialApp(
+        onGenerateRoute: (RouteSettings settings) {
+          return PageRouteBuilder<void>(
+            settings: settings,
+            pageBuilder: (BuildContext context, Animation<double> input, Animation<double> out) {
+              return Focus(child: TextField(autofocus: true, focusNode: focusNode, controller: controller));
+            },
+          );
+        },
       ),
-    );
+    ));
     await tester.pump();
 
     expect(focusNode.hasPrimaryFocus, isTrue);
@@ -575,29 +444,25 @@ void main() {
   group('PageRouteBuilder', () {
     testWidgets('reverseTransitionDuration defaults to 300ms', (WidgetTester tester) async {
       // Default PageRouteBuilder reverse transition duration should be 300ms.
-      await tester.pumpWidget(
-        MaterialApp(
-          onGenerateRoute: (RouteSettings settings) {
-            return MaterialPageRoute<dynamic>(
-              builder: (BuildContext context) {
-                return ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push<void>(
-                      PageRouteBuilder<void>(
-                        settings: settings,
-                        pageBuilder: (BuildContext context, Animation<double> input, Animation<double> out) {
-                          return const Text('Page Two');
-                        },
-                      ),
-                    );
-                  },
-                  child: const Text('Open page'),
-                );
-              },
-            );
-          },
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(
+        onGenerateRoute: (RouteSettings settings) {
+          return MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) {
+              return ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push<void>(PageRouteBuilder<void>(
+                    settings: settings,
+                    pageBuilder: (BuildContext context, Animation<double> input, Animation<double> out) {
+                      return const Text('Page Two');
+                    },
+                  ));
+                },
+                child: const Text('Open page'),
+              );
+            },
+          );
+        },
+      ));
 
       // Open the new route.
       await tester.tap(find.byType(ElevatedButton));
@@ -631,16 +496,14 @@ void main() {
             builder: (BuildContext context) {
               return ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push<void>(
-                    PageRouteBuilder<void>(
-                      settings: settings,
-                      pageBuilder: (BuildContext context, Animation<double> input, Animation<double> out) {
-                        return const Text('Page Two');
-                      },
-                      // modified value, default PageRouteBuilder reverse transition duration should be 300ms.
-                      reverseTransitionDuration: const Duration(milliseconds: 150),
-                    ),
-                  );
+                  Navigator.of(context).push<void>(PageRouteBuilder<void>(
+                    settings: settings,
+                    pageBuilder: (BuildContext context, Animation<double> input, Animation<double> out) {
+                      return const Text('Page Two');
+                    },
+                    // modified value, default PageRouteBuilder reverse transition duration should be 300ms.
+                    reverseTransitionDuration: const Duration(milliseconds: 150),
+                  ));
                 },
                 child: const Text('Open page'),
               );
@@ -678,25 +541,18 @@ void main() {
   group('TransitionRoute', () {
     testWidgets('secondary animation is kDismissed when next route finishes pop', (WidgetTester tester) async {
       final GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
-      await tester.pumpWidget(
-        MaterialApp(
-          navigatorKey: navigator,
-          home: const Text('home'),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(navigatorKey: navigator, home: const Text('home')));
 
       // Push page one, its secondary animation is kAlwaysDismissedAnimation.
       late ProxyAnimation secondaryAnimationProxyPageOne;
       late ProxyAnimation animationPageOne;
-      navigator.currentState!.push(
-        PageRouteBuilder<void>(
-          pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
-            secondaryAnimationProxyPageOne = secondaryAnimation as ProxyAnimation;
-            animationPageOne = animation as ProxyAnimation;
-            return const Text('Page One');
-          },
-        ),
-      );
+      navigator.currentState!.push(PageRouteBuilder<void>(
+        pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
+          secondaryAnimationProxyPageOne = secondaryAnimation as ProxyAnimation;
+          animationPageOne = animation as ProxyAnimation;
+          return const Text('Page One');
+        },
+      ));
       await tester.pump();
       await tester.pumpAndSettle();
       final ProxyAnimation secondaryAnimationPageOne = secondaryAnimationProxyPageOne.parent! as ProxyAnimation;
@@ -707,15 +563,13 @@ void main() {
       // animation of page two.
       late ProxyAnimation secondaryAnimationProxyPageTwo;
       late ProxyAnimation animationPageTwo;
-      navigator.currentState!.push(
-        PageRouteBuilder<void>(
-          pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
-            secondaryAnimationProxyPageTwo = secondaryAnimation as ProxyAnimation;
-            animationPageTwo = animation as ProxyAnimation;
-            return const Text('Page Two');
-          },
-        ),
-      );
+      navigator.currentState!.push(PageRouteBuilder<void>(
+        pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
+          secondaryAnimationProxyPageTwo = secondaryAnimation as ProxyAnimation;
+          animationPageTwo = animation as ProxyAnimation;
+          return const Text('Page Two');
+        },
+      ));
       await tester.pump();
       await tester.pumpAndSettle();
       final ProxyAnimation secondaryAnimationPageTwo = secondaryAnimationProxyPageTwo.parent! as ProxyAnimation;
@@ -736,25 +590,18 @@ void main() {
 
     testWidgets('secondary animation is kDismissed when next route is removed', (WidgetTester tester) async {
       final GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
-      await tester.pumpWidget(
-        MaterialApp(
-          navigatorKey: navigator,
-          home: const Text('home'),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(navigatorKey: navigator, home: const Text('home')));
 
       // Push page one, its secondary animation is kAlwaysDismissedAnimation.
       late ProxyAnimation secondaryAnimationProxyPageOne;
       late ProxyAnimation animationPageOne;
-      navigator.currentState!.push(
-        PageRouteBuilder<void>(
-          pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
-            secondaryAnimationProxyPageOne = secondaryAnimation as ProxyAnimation;
-            animationPageOne = animation as ProxyAnimation;
-            return const Text('Page One');
-          },
-        ),
-      );
+      navigator.currentState!.push(PageRouteBuilder<void>(
+        pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
+          secondaryAnimationProxyPageOne = secondaryAnimation as ProxyAnimation;
+          animationPageOne = animation as ProxyAnimation;
+          return const Text('Page One');
+        },
+      ));
       await tester.pump();
       await tester.pumpAndSettle();
       final ProxyAnimation secondaryAnimationPageOne = secondaryAnimationProxyPageOne.parent! as ProxyAnimation;
@@ -791,25 +638,18 @@ void main() {
 
     testWidgets('secondary animation is kDismissed after train hopping finishes and pop', (WidgetTester tester) async {
       final GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
-      await tester.pumpWidget(
-        MaterialApp(
-          navigatorKey: navigator,
-          home: const Text('home'),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(navigatorKey: navigator, home: const Text('home')));
 
       // Push page one, its secondary animation is kAlwaysDismissedAnimation.
       late ProxyAnimation secondaryAnimationProxyPageOne;
       late ProxyAnimation animationPageOne;
-      navigator.currentState!.push(
-        PageRouteBuilder<void>(
-          pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
-            secondaryAnimationProxyPageOne = secondaryAnimation as ProxyAnimation;
-            animationPageOne = animation as ProxyAnimation;
-            return const Text('Page One');
-          },
-        ),
-      );
+      navigator.currentState!.push(PageRouteBuilder<void>(
+        pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
+          secondaryAnimationProxyPageOne = secondaryAnimation as ProxyAnimation;
+          animationPageOne = animation as ProxyAnimation;
+          return const Text('Page One');
+        },
+      ));
       await tester.pump();
       await tester.pumpAndSettle();
       final ProxyAnimation secondaryAnimationPageOne = secondaryAnimationProxyPageOne.parent! as ProxyAnimation;
@@ -819,14 +659,12 @@ void main() {
       // Push page two, the secondary animation of page one is the primary
       // animation of page two.
       late ProxyAnimation animationPageTwo;
-      navigator.currentState!.push(
-        PageRouteBuilder<void>(
-          pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
-            animationPageTwo = animation as ProxyAnimation;
-            return const Text('Page Two');
-          },
-        ),
-      );
+      navigator.currentState!.push(PageRouteBuilder<void>(
+        pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
+          animationPageTwo = animation as ProxyAnimation;
+          return const Text('Page Two');
+        },
+      ));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
       expect(secondaryAnimationPageOne.parent, animationPageTwo.parent);
@@ -834,14 +672,12 @@ void main() {
       // Replace with a different route while push is ongoing to trigger
       // TrainHopping.
       late ProxyAnimation animationPageThree;
-      navigator.currentState!.pushReplacement(
-        TestPageRouteBuilder(
-          pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
-            animationPageThree = animation as ProxyAnimation;
-            return const Text('Page Three');
-          },
-        ),
-      );
+      navigator.currentState!.pushReplacement(TestPageRouteBuilder(
+        pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
+          animationPageThree = animation as ProxyAnimation;
+          return const Text('Page Three');
+        },
+      ));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 1));
       expect(secondaryAnimationPageOne.parent, isA<TrainHoppingAnimation>());
@@ -863,25 +699,18 @@ void main() {
 
     testWidgets('secondary animation is kDismissed when train hopping is interrupted', (WidgetTester tester) async {
       final GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
-      await tester.pumpWidget(
-        MaterialApp(
-          navigatorKey: navigator,
-          home: const Text('home'),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(navigatorKey: navigator, home: const Text('home')));
 
       // Push page one, its secondary animation is kAlwaysDismissedAnimation.
       late ProxyAnimation secondaryAnimationProxyPageOne;
       late ProxyAnimation animationPageOne;
-      navigator.currentState!.push(
-        PageRouteBuilder<void>(
-          pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
-            secondaryAnimationProxyPageOne = secondaryAnimation as ProxyAnimation;
-            animationPageOne = animation as ProxyAnimation;
-            return const Text('Page One');
-          },
-        ),
-      );
+      navigator.currentState!.push(PageRouteBuilder<void>(
+        pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
+          secondaryAnimationProxyPageOne = secondaryAnimation as ProxyAnimation;
+          animationPageOne = animation as ProxyAnimation;
+          return const Text('Page One');
+        },
+      ));
       await tester.pump();
       await tester.pumpAndSettle();
       final ProxyAnimation secondaryAnimationPageOne = secondaryAnimationProxyPageOne.parent! as ProxyAnimation;
@@ -891,27 +720,23 @@ void main() {
       // Push page two, the secondary animation of page one is the primary
       // animation of page two.
       late ProxyAnimation animationPageTwo;
-      navigator.currentState!.push(
-        PageRouteBuilder<void>(
-          pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
-            animationPageTwo = animation as ProxyAnimation;
-            return const Text('Page Two');
-          },
-        ),
-      );
+      navigator.currentState!.push(PageRouteBuilder<void>(
+        pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
+          animationPageTwo = animation as ProxyAnimation;
+          return const Text('Page Two');
+        },
+      ));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
       expect(secondaryAnimationPageOne.parent, animationPageTwo.parent);
 
       // Replace with a different route while push is ongoing to trigger
       // TrainHopping.
-      navigator.currentState!.pushReplacement(
-        TestPageRouteBuilder(
-          pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
-            return const Text('Page Three');
-          },
-        ),
-      );
+      navigator.currentState!.pushReplacement(TestPageRouteBuilder(
+        pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
+          return const Text('Page Three');
+        },
+      ));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 10));
       expect(secondaryAnimationPageOne.parent, isA<TrainHoppingAnimation>());
@@ -934,25 +759,23 @@ void main() {
       final GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
       late Animation<double> secondaryAnimationOfRouteOne;
       late Animation<double> primaryAnimationOfRouteTwo;
-      await tester.pumpWidget(
-        MaterialApp(
-          navigatorKey: navigator,
-          onGenerateRoute: (RouteSettings settings) {
-            return PageRouteBuilder<void>(
-              settings: settings,
-              pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
-                if (settings.name == '/') {
-                  secondaryAnimationOfRouteOne = secondaryAnimation;
-                } else {
-                  primaryAnimationOfRouteTwo = animation;
-                }
-                return const Text('Page');
-              },
-            );
-          },
-          initialRoute: '/a',
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(
+        navigatorKey: navigator,
+        onGenerateRoute: (RouteSettings settings) {
+          return PageRouteBuilder<void>(
+            settings: settings,
+            pageBuilder: (_, Animation<double> animation, Animation<double> secondaryAnimation) {
+              if (settings.name == '/') {
+                secondaryAnimationOfRouteOne = secondaryAnimation;
+              } else {
+                primaryAnimationOfRouteTwo = animation;
+              }
+              return const Text('Page');
+            },
+          );
+        },
+        initialRoute: '/a',
+      ));
       // The secondary animation of the bottom route should be chained with the
       // primary animation of top most route.
       expect(secondaryAnimationOfRouteOne.value, 1.0);
@@ -1002,40 +825,43 @@ void main() {
       expect(find.byType(ModalBarrier), findsNWidgets(1));
     });
 
-    testWidgets('showGeneralDialog adds non-dismissible barrier when barrierDismissible is false', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: Builder(
-          builder: (BuildContext context) {
-            return ElevatedButton(
-              onPressed: () {
-                showGeneralDialog<void>(
-                  context: context,
-                  transitionDuration: Duration.zero,
-                  pageBuilder: (BuildContext innerContext, _, __) {
-                    return const SizedBox();
-                  },
-                );
-              },
-              child: const Text('Show Dialog'),
-            );
-          },
-        ),
-      ));
+    testWidgets(
+      'showGeneralDialog adds non-dismissible barrier when barrierDismissible is false',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(MaterialApp(
+          home: Builder(
+            builder: (BuildContext context) {
+              return ElevatedButton(
+                onPressed: () {
+                  showGeneralDialog<void>(
+                    context: context,
+                    transitionDuration: Duration.zero,
+                    pageBuilder: (BuildContext innerContext, _, __) {
+                      return const SizedBox();
+                    },
+                  );
+                },
+                child: const Text('Show Dialog'),
+              );
+            },
+          ),
+        ));
 
-      // Open the dialog.
-      await tester.tap(find.byType(ElevatedButton));
-      await tester.pump();
-      expect(find.byType(ModalBarrier), findsNWidgets(2));
-      final ModalBarrier barrier = find.byType(ModalBarrier).evaluate().last.widget as ModalBarrier;
-      expect(barrier.dismissible, isFalse);
+        // Open the dialog.
+        await tester.tap(find.byType(ElevatedButton));
+        await tester.pump();
+        expect(find.byType(ModalBarrier), findsNWidgets(2));
+        final ModalBarrier barrier = find.byType(ModalBarrier).evaluate().last.widget as ModalBarrier;
+        expect(barrier.dismissible, isFalse);
 
-      // Close the dialog.
-      final StatefulElement navigatorElement = find.byType(Navigator).evaluate().last as StatefulElement;
-      final NavigatorState navigatorState = navigatorElement.state as NavigatorState;
-      navigatorState.pop();
-      await tester.pumpAndSettle();
-      expect(find.byType(ModalBarrier), findsNWidgets(1));
-    });
+        // Close the dialog.
+        final StatefulElement navigatorElement = find.byType(Navigator).evaluate().last as StatefulElement;
+        final NavigatorState navigatorState = navigatorElement.state as NavigatorState;
+        navigatorState.pop();
+        await tester.pumpAndSettle();
+        expect(find.byType(ModalBarrier), findsNWidgets(1));
+      },
+    );
 
     testWidgets('showGeneralDialog uses null as a barrierLabel by default', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
@@ -1182,27 +1008,25 @@ void main() {
 
     group('showGeneralDialog avoids overlapping display features', () {
       testWidgets('positioning with anchorPoint', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          MaterialApp(
-            builder: (BuildContext context, Widget? child) {
-              return MediaQuery(
-                // Display has a vertical hinge down the middle
-                data: const MediaQueryData(
-                  size: Size(800, 600),
-                  displayFeatures: <DisplayFeature>[
-                    DisplayFeature(
-                      bounds: Rect.fromLTRB(390, 0, 410, 600),
-                      type: DisplayFeatureType.hinge,
-                      state: DisplayFeatureState.unknown,
-                    ),
-                  ],
-                ),
-                child: child!,
-              );
-            },
-            home: const Center(child: Text('Test')),
-          ),
-        );
+        await tester.pumpWidget(MaterialApp(
+          builder: (BuildContext context, Widget? child) {
+            return MediaQuery(
+              // Display has a vertical hinge down the middle
+              data: const MediaQueryData(
+                size: Size(800, 600),
+                displayFeatures: <DisplayFeature>[
+                  DisplayFeature(
+                    bounds: Rect.fromLTRB(390, 0, 410, 600),
+                    type: DisplayFeatureType.hinge,
+                    state: DisplayFeatureState.unknown,
+                  ),
+                ],
+              ),
+              child: child!,
+            );
+          },
+          home: const Center(child: Text('Test')),
+        ));
         final BuildContext context = tester.element(find.text('Test'));
 
         showGeneralDialog<void>(
@@ -1220,30 +1044,25 @@ void main() {
       });
 
       testWidgets('positioning with Directionality', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          MaterialApp(
-            builder: (BuildContext context, Widget? child) {
-              return MediaQuery(
-                // Display has a vertical hinge down the middle
-                data: const MediaQueryData(
-                  size: Size(800, 600),
-                  displayFeatures: <DisplayFeature>[
-                    DisplayFeature(
-                      bounds: Rect.fromLTRB(390, 0, 410, 600),
-                      type: DisplayFeatureType.hinge,
-                      state: DisplayFeatureState.unknown,
-                    ),
-                  ],
-                ),
-                child: Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: child!,
-                ),
-              );
-            },
-            home: const Center(child: Text('Test')),
-          ),
-        );
+        await tester.pumpWidget(MaterialApp(
+          builder: (BuildContext context, Widget? child) {
+            return MediaQuery(
+              // Display has a vertical hinge down the middle
+              data: const MediaQueryData(
+                size: Size(800, 600),
+                displayFeatures: <DisplayFeature>[
+                  DisplayFeature(
+                    bounds: Rect.fromLTRB(390, 0, 410, 600),
+                    type: DisplayFeatureType.hinge,
+                    state: DisplayFeatureState.unknown,
+                  ),
+                ],
+              ),
+              child: Directionality(textDirection: TextDirection.rtl, child: child!),
+            );
+          },
+          home: const Center(child: Text('Test')),
+        ));
         final BuildContext context = tester.element(find.text('Test'));
 
         showGeneralDialog<void>(
@@ -1260,27 +1079,25 @@ void main() {
       });
 
       testWidgets('positioning by default', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          MaterialApp(
-            builder: (BuildContext context, Widget? child) {
-              return MediaQuery(
-                // Display has a vertical hinge down the middle
-                data: const MediaQueryData(
-                  size: Size(800, 600),
-                  displayFeatures: <DisplayFeature>[
-                    DisplayFeature(
-                      bounds: Rect.fromLTRB(390, 0, 410, 600),
-                      type: DisplayFeatureType.hinge,
-                      state: DisplayFeatureState.unknown,
-                    ),
-                  ],
-                ),
-                child: child!,
-              );
-            },
-            home: const Center(child: Text('Test')),
-          ),
-        );
+        await tester.pumpWidget(MaterialApp(
+          builder: (BuildContext context, Widget? child) {
+            return MediaQuery(
+              // Display has a vertical hinge down the middle
+              data: const MediaQueryData(
+                size: Size(800, 600),
+                displayFeatures: <DisplayFeature>[
+                  DisplayFeature(
+                    bounds: Rect.fromLTRB(390, 0, 410, 600),
+                    type: DisplayFeatureType.hinge,
+                    state: DisplayFeatureState.unknown,
+                  ),
+                ],
+              ),
+              child: child!,
+            );
+          },
+          home: const Center(child: Text('Test')),
+        ));
         final BuildContext context = tester.element(find.text('Test'));
 
         showGeneralDialog<void>(
@@ -1307,16 +1124,11 @@ void main() {
             builder: (BuildContext context) {
               return ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push<void>(
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext innerContext) {
-                        return Container(
-                          key: containerKey,
-                          color: Colors.green,
-                        );
-                      },
-                    ),
-                  );
+                  Navigator.of(context).push<void>(MaterialPageRoute<void>(
+                    builder: (BuildContext innerContext) {
+                      return Container(key: containerKey, color: Colors.green);
+                    },
+                  ));
                 },
                 child: const Text('Open page'),
               );
@@ -1357,18 +1169,13 @@ void main() {
             builder: (BuildContext context) {
               return ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push<void>(
-                    ModifiedReverseTransitionDurationRoute<void>(
-                      builder: (BuildContext innerContext) {
-                        return Container(
-                          key: containerKey,
-                          color: Colors.green,
-                        );
-                      },
-                      // modified value, default MaterialPageRoute transition duration should be 300ms.
-                      reverseTransitionDuration: const Duration(milliseconds: 150),
-                    ),
-                  );
+                  Navigator.of(context).push<void>(ModifiedReverseTransitionDurationRoute<void>(
+                    builder: (BuildContext innerContext) {
+                      return Container(key: containerKey, color: Colors.green);
+                    },
+                    // modified value, default MaterialPageRoute transition duration should be 300ms.
+                    reverseTransitionDuration: const Duration(milliseconds: 150),
+                  ));
                 },
                 child: const Text('Open page'),
               );
@@ -1401,71 +1208,69 @@ void main() {
       expect(find.byKey(containerKey), findsNothing);
     });
 
-    testWidgets('custom reverseTransitionDuration does not result in interrupted animations', (WidgetTester tester) async {
-      final GlobalKey containerKey = GlobalKey();
-      await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(
-          pageTransitionsTheme: const PageTransitionsTheme(
-            builders: <TargetPlatform, PageTransitionsBuilder>{
-              TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(), // use a fade transition
-            },
+    testWidgets(
+      'custom reverseTransitionDuration does not result in interrupted animations',
+      (WidgetTester tester) async {
+        final GlobalKey containerKey = GlobalKey();
+        await tester.pumpWidget(MaterialApp(
+          theme: ThemeData(
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: <TargetPlatform, PageTransitionsBuilder>{
+                TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(), // use a fade transition
+              },
+            ),
           ),
-        ),
-        onGenerateRoute: (RouteSettings settings) {
-          return MaterialPageRoute<dynamic>(
-            builder: (BuildContext context) {
-              return ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push<void>(
-                    ModifiedReverseTransitionDurationRoute<void>(
+          onGenerateRoute: (RouteSettings settings) {
+            return MaterialPageRoute<dynamic>(
+              builder: (BuildContext context) {
+                return ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push<void>(ModifiedReverseTransitionDurationRoute<void>(
                       builder: (BuildContext innerContext) {
-                        return Container(
-                          key: containerKey,
-                          color: Colors.green,
-                        );
+                        return Container(key: containerKey, color: Colors.green);
                       },
                       // modified value, default MaterialPageRoute transition duration should be 300ms.
                       reverseTransitionDuration: const Duration(milliseconds: 150),
-                    ),
-                  );
-                },
-                child: const Text('Open page'),
-              );
-            },
-          );
-        },
-      ));
+                    ));
+                  },
+                  child: const Text('Open page'),
+                );
+              },
+            );
+          },
+        ));
 
-      // Open the new route.
-      await tester.tap(find.byType(ElevatedButton));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200)); // jump partway through the forward transition
-      expect(find.byKey(containerKey), findsOneWidget);
+        // Open the new route.
+        await tester.tap(find.byType(ElevatedButton));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 200)); // jump partway through the forward transition
+        expect(find.byKey(containerKey), findsOneWidget);
 
-      // Gets the opacity of the fade transition while animating forwards.
-      final double topFadeTransitionOpacity = _getOpacity(containerKey, tester);
+        // Gets the opacity of the fade transition while animating forwards.
+        final double topFadeTransitionOpacity = _getOpacity(containerKey, tester);
 
-      // Pop the new route mid-transition.
-      tester.state<NavigatorState>(find.byType(Navigator)).pop();
-      await tester.pump();
+        // Pop the new route mid-transition.
+        tester.state<NavigatorState>(find.byType(Navigator)).pop();
+        await tester.pump();
 
-      // Transition should not jump. In other words, the fade transition
-      // opacity before and after animation changes directions should remain
-      // the same.
-      expect(_getOpacity(containerKey, tester), topFadeTransitionOpacity);
+        // Transition should not jump. In other words, the fade transition
+        // opacity before and after animation changes directions should remain
+        // the same.
+        expect(_getOpacity(containerKey, tester), topFadeTransitionOpacity);
 
-      // Reverse transition duration should be:
-      // Forward transition elapsed time: 200ms / 300ms = 2 / 3
-      // Reverse transition remaining time: 150ms * 2 / 3 = 100ms
+        // Reverse transition duration should be:
+        // Forward transition elapsed time: 200ms / 300ms = 2 / 3
+        // Reverse transition remaining time: 150ms * 2 / 3 = 100ms
 
-      // Container should be present at the very end of the transition.
-      await tester.pump(const Duration(milliseconds: 100));
-      expect(find.byKey(containerKey), findsOneWidget);
+        // Container should be present at the very end of the transition.
+        await tester.pump(const Duration(milliseconds: 100));
+        expect(find.byKey(containerKey), findsOneWidget);
 
-      // Container have transitioned out after 100ms.
-      await tester.pump(const Duration(milliseconds: 1));
-      expect(find.byKey(containerKey), findsNothing);
-    });
+        // Container have transitioned out after 100ms.
+        await tester.pump(const Duration(milliseconds: 1));
+        expect(find.byKey(containerKey), findsNothing);
+      },
+    );
   });
 
   group('ModalRoute', () {
@@ -1479,9 +1284,7 @@ void main() {
                   child: const Text('X'),
                   onPressed: () {
                     Navigator.of(context).push<void>(
-                      _TestDialogRouteWithCustomBarrierCurve<void>(
-                        child: const Text('Hello World'),
-                      ),
+                      _TestDialogRouteWithCustomBarrierCurve<void>(child: const Text('Hello World')),
                     );
                   },
                 ),
@@ -1507,24 +1310,15 @@ void main() {
 
       await tester.pump(const Duration(milliseconds: 25));
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
-      expect(
-        modalBarrierAnimation.value!.alpha,
-        closeTo(getExpectedBarrierTweenAlphaValue(0.25), 1),
-      );
+      expect(modalBarrierAnimation.value!.alpha, closeTo(getExpectedBarrierTweenAlphaValue(0.25), 1));
 
       await tester.pump(const Duration(milliseconds: 25));
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
-      expect(
-        modalBarrierAnimation.value!.alpha,
-        closeTo(getExpectedBarrierTweenAlphaValue(0.50), 1),
-      );
+      expect(modalBarrierAnimation.value!.alpha, closeTo(getExpectedBarrierTweenAlphaValue(0.50), 1));
 
       await tester.pump(const Duration(milliseconds: 25));
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
-      expect(
-        modalBarrierAnimation.value!.alpha,
-        closeTo(getExpectedBarrierTweenAlphaValue(0.75), 1),
-      );
+      expect(modalBarrierAnimation.value!.alpha, closeTo(getExpectedBarrierTweenAlphaValue(0.75), 1));
 
       await tester.pumpAndSettle();
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
@@ -1540,12 +1334,10 @@ void main() {
                 child: ElevatedButton(
                   child: const Text('X'),
                   onPressed: () {
-                    Navigator.of(context).push<void>(
-                      _TestDialogRouteWithCustomBarrierCurve<void>(
-                        child: const Text('Hello World'),
-                        barrierCurve: Curves.linear,
-                      ),
-                    );
+                    Navigator.of(context).push<void>(_TestDialogRouteWithCustomBarrierCurve<void>(
+                      child: const Text('Hello World'),
+                      barrierCurve: Curves.linear,
+                    ));
                   },
                 ),
               );
@@ -1570,24 +1362,15 @@ void main() {
 
       await tester.pump(const Duration(milliseconds: 25));
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
-      expect(
-        modalBarrierAnimation.value!.alpha,
-        closeTo(getExpectedBarrierTweenAlphaValue(0.25), 1),
-      );
+      expect(modalBarrierAnimation.value!.alpha, closeTo(getExpectedBarrierTweenAlphaValue(0.25), 1));
 
       await tester.pump(const Duration(milliseconds: 25));
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
-      expect(
-        modalBarrierAnimation.value!.alpha,
-        closeTo(getExpectedBarrierTweenAlphaValue(0.50), 1),
-      );
+      expect(modalBarrierAnimation.value!.alpha, closeTo(getExpectedBarrierTweenAlphaValue(0.50), 1));
 
       await tester.pump(const Duration(milliseconds: 25));
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
-      expect(
-        modalBarrierAnimation.value!.alpha,
-        closeTo(getExpectedBarrierTweenAlphaValue(0.75), 1),
-      );
+      expect(modalBarrierAnimation.value!.alpha, closeTo(getExpectedBarrierTweenAlphaValue(0.75), 1));
 
       await tester.pumpAndSettle();
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
@@ -1603,12 +1386,10 @@ void main() {
                 child: ElevatedButton(
                   child: const Text('X'),
                   onPressed: () {
-                    Navigator.of(context).push<void>(
-                      _TestDialogRouteWithCustomBarrierCurve<void>(
-                        child: const Text('Hello World'),
-                        barrierColor: Colors.white,
-                      ),
-                    );
+                    Navigator.of(context).push<void>(_TestDialogRouteWithCustomBarrierCurve<void>(
+                      child: const Text('Hello World'),
+                      barrierColor: Colors.white,
+                    ));
                   },
                 ),
               );
@@ -1633,24 +1414,15 @@ void main() {
 
       await tester.pump(const Duration(milliseconds: 25));
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
-      expect(
-        modalBarrierAnimation.value!.alpha,
-        closeTo(getExpectedBarrierTweenAlphaValue(0.25), 1),
-      );
+      expect(modalBarrierAnimation.value!.alpha, closeTo(getExpectedBarrierTweenAlphaValue(0.25), 1));
 
       await tester.pump(const Duration(milliseconds: 25));
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
-      expect(
-        modalBarrierAnimation.value!.alpha,
-        closeTo(getExpectedBarrierTweenAlphaValue(0.50), 1),
-      );
+      expect(modalBarrierAnimation.value!.alpha, closeTo(getExpectedBarrierTweenAlphaValue(0.50), 1));
 
       await tester.pump(const Duration(milliseconds: 25));
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
-      expect(
-        modalBarrierAnimation.value!.alpha,
-        closeTo(getExpectedBarrierTweenAlphaValue(0.75), 1),
-      );
+      expect(modalBarrierAnimation.value!.alpha, closeTo(getExpectedBarrierTweenAlphaValue(0.75), 1));
 
       await tester.pumpAndSettle();
       modalBarrierAnimation = tester.widget<AnimatedModalBarrier>(animatedModalBarrier).color;
@@ -1668,13 +1440,11 @@ void main() {
                 child: ElevatedButton(
                   child: const Text('X'),
                   onPressed: () {
-                    Navigator.of(context).push<void>(
-                      _TestDialogRouteWithCustomBarrierCurve<void>(
-                        child: const Text('Hello World'),
-                        barrierLabel: 'test label',
-                        barrierCurve: Curves.linear,
-                      ),
-                    );
+                    Navigator.of(context).push<void>(_TestDialogRouteWithCustomBarrierCurve<void>(
+                      child: const Text('Hello World'),
+                      barrierLabel: 'test label',
+                      barrierCurve: Curves.linear,
+                    ));
                   },
                 ),
               );
@@ -1723,8 +1493,7 @@ void main() {
             ],
           ),
         ],
-      )
-      ;
+      );
 
       expect(semantics, hasSemantics(expectedSemantics));
       semantics.dispose();
@@ -1733,19 +1502,14 @@ void main() {
     testWidgets('focus traverse correct when pop multiple page simultaneously', (WidgetTester tester) async {
       // Regression test: https://github.com/flutter/flutter/issues/48903
       final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-      await tester.pumpWidget(MaterialApp(
-        navigatorKey: navigatorKey,
-        home: const Text('dummy1'),
-      ));
+      await tester.pumpWidget(MaterialApp(navigatorKey: navigatorKey, home: const Text('dummy1')));
       final Element textOnPageOne = tester.element(find.text('dummy1'));
       final FocusScopeNode focusNodeOnPageOne = FocusScope.of(textOnPageOne);
       expect(focusNodeOnPageOne.hasFocus, isTrue);
 
       // Pushes one page.
       navigatorKey.currentState!.push<void>(
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) => const Text('dummy2'),
-        ),
+        MaterialPageRoute<void>(builder: (BuildContext context) => const Text('dummy2')),
       );
       await tester.pumpAndSettle();
 
@@ -1757,9 +1521,7 @@ void main() {
 
       // Pushes another page.
       navigatorKey.currentState!.push<void>(
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) => const Text('dummy3'),
-        ),
+        MaterialPageRoute<void>(builder: (BuildContext context) => const Text('dummy3')),
       );
       await tester.pumpAndSettle();
       final Element textOnPageThree = tester.element(find.text('dummy3'));
@@ -1776,63 +1538,57 @@ void main() {
       expect(focusNodeOnPageOne.hasFocus, isTrue);
     });
 
-    testWidgets('focus traversal is correct when popping multiple pages simultaneously - with focused children', (WidgetTester tester) async {
-      // Regression test: https://github.com/flutter/flutter/issues/48903
-      final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-      await tester.pumpWidget(MaterialApp(
-        navigatorKey: navigatorKey,
-        home: const Text('dummy1'),
-      ));
-      final Element textOnPageOne = tester.element(find.text('dummy1'));
-      final FocusScopeNode focusNodeOnPageOne = FocusScope.of(textOnPageOne);
-      expect(focusNodeOnPageOne.hasFocus, isTrue);
+    testWidgets(
+      'focus traversal is correct when popping multiple pages simultaneously - with focused children',
+      (WidgetTester tester) async {
+        // Regression test: https://github.com/flutter/flutter/issues/48903
+        final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+        await tester.pumpWidget(MaterialApp(navigatorKey: navigatorKey, home: const Text('dummy1')));
+        final Element textOnPageOne = tester.element(find.text('dummy1'));
+        final FocusScopeNode focusNodeOnPageOne = FocusScope.of(textOnPageOne);
+        expect(focusNodeOnPageOne.hasFocus, isTrue);
 
-      // Pushes one page.
-      navigatorKey.currentState!.push<void>(
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) => const Material(child: TextField()),
-        ),
-      );
-      await tester.pumpAndSettle();
+        // Pushes one page.
+        navigatorKey.currentState!.push<void>(
+          MaterialPageRoute<void>(builder: (BuildContext context) => const Material(child: TextField())),
+        );
+        await tester.pumpAndSettle();
 
-      final Element textOnPageTwo = tester.element(find.byType(TextField));
-      final FocusScopeNode focusNodeOnPageTwo = FocusScope.of(textOnPageTwo);
-      // The focus should be on second page.
-      expect(focusNodeOnPageOne.hasFocus, isFalse);
-      expect(focusNodeOnPageTwo.hasFocus, isTrue);
+        final Element textOnPageTwo = tester.element(find.byType(TextField));
+        final FocusScopeNode focusNodeOnPageTwo = FocusScope.of(textOnPageTwo);
+        // The focus should be on second page.
+        expect(focusNodeOnPageOne.hasFocus, isFalse);
+        expect(focusNodeOnPageTwo.hasFocus, isTrue);
 
-      // Move the focus to another node.
-      focusNodeOnPageTwo.nextFocus();
-      await tester.pumpAndSettle();
-      expect(focusNodeOnPageTwo.hasFocus, isTrue);
-      expect(focusNodeOnPageTwo.hasPrimaryFocus, isFalse);
+        // Move the focus to another node.
+        focusNodeOnPageTwo.nextFocus();
+        await tester.pumpAndSettle();
+        expect(focusNodeOnPageTwo.hasFocus, isTrue);
+        expect(focusNodeOnPageTwo.hasPrimaryFocus, isFalse);
 
-      // Pushes another page.
-      navigatorKey.currentState!.push<void>(
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) => const Text('dummy3'),
-        ),
-      );
-      await tester.pumpAndSettle();
-      final Element textOnPageThree = tester.element(find.text('dummy3'));
-      final FocusScopeNode focusNodeOnPageThree = FocusScope.of(textOnPageThree);
-      // The focus should be on third page.
-      expect(focusNodeOnPageOne.hasFocus, isFalse);
-      expect(focusNodeOnPageTwo.hasFocus, isFalse);
-      expect(focusNodeOnPageThree.hasFocus, isTrue);
+        // Pushes another page.
+        navigatorKey.currentState!.push<void>(
+          MaterialPageRoute<void>(builder: (BuildContext context) => const Text('dummy3')),
+        );
+        await tester.pumpAndSettle();
+        final Element textOnPageThree = tester.element(find.text('dummy3'));
+        final FocusScopeNode focusNodeOnPageThree = FocusScope.of(textOnPageThree);
+        // The focus should be on third page.
+        expect(focusNodeOnPageOne.hasFocus, isFalse);
+        expect(focusNodeOnPageTwo.hasFocus, isFalse);
+        expect(focusNodeOnPageThree.hasFocus, isTrue);
 
-      // Pops two pages simultaneously.
-      navigatorKey.currentState!.popUntil((Route<void> route) => route.isFirst);
-      await tester.pumpAndSettle();
-      // It should refocus page one after pops.
-      expect(focusNodeOnPageOne.hasFocus, isTrue);
-    });
+        // Pops two pages simultaneously.
+        navigatorKey.currentState!.popUntil((Route<void> route) => route.isFirst);
+        await tester.pumpAndSettle();
+        // It should refocus page one after pops.
+        expect(focusNodeOnPageOne.hasFocus, isTrue);
+      },
+    );
 
     testWidgets('child with local history can be disposed', (WidgetTester tester) async {
       // Regression test: https://github.com/flutter/flutter/issues/52478
-      await tester.pumpWidget(const MaterialApp(
-        home: WidgetWithLocalHistory(),
-      ));
+      await tester.pumpWidget(const MaterialApp(home: WidgetWithLocalHistory()));
 
       final WidgetWithLocalHistoryState state = tester.state(find.byType(WidgetWithLocalHistory));
       state.addLocalHistory();
@@ -1841,18 +1597,14 @@ void main() {
       // Pumps a new widget to dispose WidgetWithLocalHistory. This should cause
       // it to remove the local history entry from modal route during
       // finalizeTree.
-      await tester.pumpWidget(const MaterialApp(
-        home: Text('dummy'),
-      ));
+      await tester.pumpWidget(const MaterialApp(home: Text('dummy')));
       // Waits for modal route to update its internal state;
       await tester.pump();
       expect(tester.takeException(), null);
     });
 
     testWidgets('child with no local history can be disposed', (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: WidgetWithNoLocalHistory(),
-      ));
+      await tester.pumpWidget(const MaterialApp(home: WidgetWithNoLocalHistory()));
 
       final WidgetWithNoLocalHistoryState state = tester.state(find.byType(WidgetWithNoLocalHistory));
       state.addLocalHistory();
@@ -1861,9 +1613,7 @@ void main() {
       // Pumps a new widget to dispose WidgetWithNoLocalHistory. This should cause
       // it to remove the local history entry from modal route during
       // finalizeTree.
-      await tester.pumpWidget(const MaterialApp(
-        home: Text('dummy'),
-      ));
+      await tester.pumpWidget(const MaterialApp(home: Text('dummy')));
       await tester.pump();
       expect(tester.takeException(), null);
     });
@@ -1871,17 +1621,11 @@ void main() {
 
   testWidgets('can be dismissed with escape keyboard shortcut', (WidgetTester tester) async {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(MaterialApp(
-      navigatorKey: navigatorKey,
-      home: const Text('dummy1'),
-    ));
+    await tester.pumpWidget(MaterialApp(navigatorKey: navigatorKey, home: const Text('dummy1')));
     final Element textOnPageOne = tester.element(find.text('dummy1'));
 
     // Show a simple dialog
-    showDialog<void>(
-      context: textOnPageOne,
-      builder: (BuildContext context) => const Text('dialog1'),
-    );
+    showDialog<void>(context: textOnPageOne, builder: (BuildContext context) => const Text('dialog1'));
     await tester.pumpAndSettle();
     expect(find.text('dialog1'), findsOneWidget);
 
@@ -1891,35 +1635,32 @@ void main() {
     expect(find.text('dialog1'), findsNothing);
   });
 
-  testWidgets('can not be dismissed with escape keyboard shortcut if barrier not dismissible', (WidgetTester tester) async {
-    final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(MaterialApp(
-      navigatorKey: navigatorKey,
-      home: const Text('dummy1'),
-    ));
-    final Element textOnPageOne = tester.element(find.text('dummy1'));
+  testWidgets(
+    'can not be dismissed with escape keyboard shortcut if barrier not dismissible',
+    (WidgetTester tester) async {
+      final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+      await tester.pumpWidget(MaterialApp(navigatorKey: navigatorKey, home: const Text('dummy1')));
+      final Element textOnPageOne = tester.element(find.text('dummy1'));
 
-    // Show a simple dialog
-    showDialog<void>(
-      context: textOnPageOne,
-      barrierDismissible: false,
-      builder: (BuildContext context) => const Text('dialog1'),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('dialog1'), findsOneWidget);
+      // Show a simple dialog
+      showDialog<void>(
+        context: textOnPageOne,
+        barrierDismissible: false,
+        builder: (BuildContext context) => const Text('dialog1'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('dialog1'), findsOneWidget);
 
-    // Try to dismiss the dialog with the shortcut key
-    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-    await tester.pumpAndSettle();
-    expect(find.text('dialog1'), findsOneWidget);
-  });
+      // Try to dismiss the dialog with the shortcut key
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+      expect(find.text('dialog1'), findsOneWidget);
+    },
+  );
 
   testWidgets('ModalRoute.of works for void routes', (WidgetTester tester) async {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(MaterialApp(
-      navigatorKey: navigatorKey,
-      home: const Text('home'),
-    ));
+    await tester.pumpWidget(MaterialApp(navigatorKey: navigatorKey, home: const Text('home')));
     expect(find.text('page2'), findsNothing);
 
     navigatorKey.currentState!.push<void>(MaterialPageRoute<void>(
@@ -1937,12 +1678,7 @@ void main() {
   });
 
   testWidgets('RawDialogRoute is state restorable', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        restorationScopeId: 'app',
-        home: _RestorableDialogTestWidget(),
-      ),
-    );
+    await tester.pumpWidget(const MaterialApp(restorationScopeId: 'app', home: _RestorableDialogTestWidget()));
 
     expect(find.byType(AlertDialog), findsNothing);
 
@@ -1968,10 +1704,7 @@ void main() {
 }
 
 double _getOpacity(GlobalKey key, WidgetTester tester) {
-  final Finder finder = find.ancestor(
-    of: find.byKey(key),
-    matching: find.byType(FadeTransition),
-  );
+  final Finder finder = find.ancestor(of: find.byKey(key), matching: find.byType(FadeTransition));
   return tester.widgetList(finder).fold<double>(1.0, (double a, Widget widget) {
     final FadeTransition transition = widget as FadeTransition;
     return a * transition.opacity.value;
@@ -1990,9 +1723,9 @@ class ModifiedReverseTransitionDurationRoute<T> extends MaterialPageRoute<T> {
   final Duration reverseTransitionDuration;
 }
 
-class MockPageRoute extends Fake implements PageRoute<dynamic> { }
+class MockPageRoute extends Fake implements PageRoute<dynamic> {}
 
-class MockRoute extends Fake implements Route<dynamic> { }
+class MockRoute extends Fake implements Route<dynamic> {}
 
 class MockRouteAware extends Fake implements RouteAware {
   int didPushCount = 0;
@@ -2080,6 +1813,7 @@ class _TestDialogRouteWithCustomBarrierCurve<T> extends PopupRoute<T> {
     }
     return _barrierCurve!;
   }
+
   final Curve? _barrierCurve;
 
   @override
@@ -2087,11 +1821,7 @@ class _TestDialogRouteWithCustomBarrierCurve<T> extends PopupRoute<T> {
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-    return Semantics(
-      scopesRoute: true,
-      explicitChildNodes: true,
-      child: _child,
-    );
+    return Semantics(scopesRoute: true, explicitChildNodes: true, child: _child);
   }
 }
 
@@ -2156,11 +1886,7 @@ class _RestorableDialogTestWidget extends StatelessWidget {
   @pragma('vm:entry-point')
   static Route<Object?> _dialogBuilder(BuildContext context, Object? arguments) {
     return RawDialogRoute<void>(
-      pageBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-      ) {
+      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
         return const AlertDialog(title: Text('Alert!'));
       },
     );

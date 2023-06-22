@@ -37,12 +37,7 @@ void main() {
 
   DefaultTextStyle getLabelStyle(WidgetTester tester, String labelText) {
     return tester.widget<DefaultTextStyle>(
-      find
-          .ancestor(
-            of: find.text(labelText),
-            matching: find.byType(DefaultTextStyle),
-          )
-          .first,
+      find.ancestor(of: find.text(labelText), matching: find.byType(DefaultTextStyle)).first,
     );
   }
 
@@ -53,11 +48,11 @@ void main() {
   });
 
   testWidgets('theme is honored', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: Material(
-          child: Builder(builder: (BuildContext context) {
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: false),
+      home: Material(
+        child: Builder(
+          builder: (BuildContext context) {
             return MenuBarTheme(
               data: const MenuBarThemeData(
                 style: MenuStyle(
@@ -71,25 +66,21 @@ void main() {
                     backgroundColor: MaterialStatePropertyAll<Color?>(Colors.red),
                     elevation: MaterialStatePropertyAll<double?>(15.0),
                     shape: MaterialStatePropertyAll<OutlinedBorder?>(StadiumBorder()),
-                    padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(
-                      EdgeInsetsDirectional.all(10.0),
-                    ),
+                    padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsetsDirectional.all(10.0)),
                   ),
                 ),
                 child: Column(
                   children: <Widget>[
-                    MenuBar(
-                      children: createTestMenus(onPressed: onPressed),
-                    ),
+                    MenuBar(children: createTestMenus(onPressed: onPressed)),
                     const Expanded(child: Placeholder()),
                   ],
                 ),
               ),
             );
-          }),
+          },
         ),
       ),
-    );
+    ));
 
     // Open a test menu.
     await tester.tap(find.text(TestMenu.mainMenu1.label));
@@ -106,63 +97,57 @@ void main() {
   });
 
   testWidgets('Constructor parameters override theme parameters', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: Material(
-          child: Builder(
-            builder: (BuildContext context) {
-              return MenuBarTheme(
-                data: const MenuBarThemeData(
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: false),
+      home: Material(
+        child: Builder(
+          builder: (BuildContext context) {
+            return MenuBarTheme(
+              data: const MenuBarThemeData(
+                style: MenuStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color?>(Colors.green),
+                  elevation: MaterialStatePropertyAll<double?>(20.0),
+                ),
+              ),
+              child: MenuTheme(
+                data: const MenuThemeData(
                   style: MenuStyle(
-                    backgroundColor: MaterialStatePropertyAll<Color?>(Colors.green),
-                    elevation: MaterialStatePropertyAll<double?>(20.0),
+                    backgroundColor: MaterialStatePropertyAll<Color?>(Colors.red),
+                    elevation: MaterialStatePropertyAll<double?>(15.0),
+                    shape: MaterialStatePropertyAll<OutlinedBorder?>(StadiumBorder()),
+                    padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsetsDirectional.all(10.0)),
                   ),
                 ),
-                child: MenuTheme(
-                  data: const MenuThemeData(
-                    style: MenuStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color?>(Colors.red),
-                      elevation: MaterialStatePropertyAll<double?>(15.0),
-                      shape: MaterialStatePropertyAll<OutlinedBorder?>(StadiumBorder()),
-                      padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(
-                        EdgeInsetsDirectional.all(10.0),
+                child: Column(
+                  children: <Widget>[
+                    MenuBar(
+                      style: const MenuStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color?>(Colors.blue),
+                        elevation: MaterialStatePropertyAll<double?>(10.0),
+                        padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsetsDirectional.all(12.0)),
+                      ),
+                      children: createTestMenus(
+                        onPressed: onPressed,
+                        menuBackground: Colors.cyan,
+                        menuElevation: 18.0,
+                        menuPadding: const EdgeInsetsDirectional.all(14.0),
+                        menuShape: const BeveledRectangleBorder(),
+                        itemBackground: Colors.amber,
+                        itemForeground: Colors.grey,
+                        itemOverlay: Colors.blueGrey,
+                        itemPadding: const EdgeInsetsDirectional.all(11.0),
+                        itemShape: const StadiumBorder(),
                       ),
                     ),
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      MenuBar(
-                        style: const MenuStyle(
-                          backgroundColor: MaterialStatePropertyAll<Color?>(Colors.blue),
-                          elevation: MaterialStatePropertyAll<double?>(10.0),
-                          padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(
-                            EdgeInsetsDirectional.all(12.0),
-                          ),
-                        ),
-                        children: createTestMenus(
-                          onPressed: onPressed,
-                          menuBackground: Colors.cyan,
-                          menuElevation: 18.0,
-                          menuPadding: const EdgeInsetsDirectional.all(14.0),
-                          menuShape: const BeveledRectangleBorder(),
-                          itemBackground: Colors.amber,
-                          itemForeground: Colors.grey,
-                          itemOverlay: Colors.blueGrey,
-                          itemPadding: const EdgeInsetsDirectional.all(11.0),
-                          itemShape: const StadiumBorder(),
-                        ),
-                      ),
-                      const Expanded(child: Placeholder()),
-                    ],
-                  ),
+                    const Expanded(child: Placeholder()),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     // Open a test menu.
     await tester.tap(find.text(TestMenu.mainMenu1.label));
@@ -182,19 +167,15 @@ void main() {
     final Finder menuItem = findSubMenuItem();
     expect(tester.getRect(menuItem.first), equals(const Rect.fromLTRB(346.0, 74.0, 560.0, 122.0)));
     final Material menuItemMaterial = tester.widget<Material>(
-        find.ancestor(of: find.text(TestMenu.subMenu10.label), matching: find.byType(Material)).first);
+      find.ancestor(of: find.text(TestMenu.subMenu10.label), matching: find.byType(Material)).first,
+    );
     expect(menuItemMaterial.color, equals(Colors.amber));
     expect(menuItemMaterial.elevation, equals(0.0));
     expect(menuItemMaterial.shape, equals(const StadiumBorder()));
     expect(getLabelStyle(tester, TestMenu.subMenu10.label).style.color, equals(Colors.grey));
-    final ButtonStyle? textButtonStyle = tester
-        .widget<TextButton>(find
-            .ancestor(
-              of: find.text(TestMenu.subMenu10.label),
-              matching: find.byType(TextButton),
-            )
-            .first)
-        .style;
+    final ButtonStyle? textButtonStyle = tester.widget<TextButton>(
+      find.ancestor(of: find.text(TestMenu.subMenu10.label), matching: find.byType(TextButton)).first,
+    ).style;
     expect(textButtonStyle?.overlayColor?.resolve(<MaterialState>{MaterialState.hovered}), equals(Colors.blueGrey));
   });
 }

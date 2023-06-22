@@ -23,20 +23,13 @@ void main() {
     final RestorationBucket root = RestorationBucket.root(manager: manager, rawData: rawData);
     expect(rawData, isEmpty);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: UnmanagedRestorationScope(
-          bucket: root,
-          child: const RootRestorationScope(
-            restorationId: 'root-child',
-            child: BucketSpy(
-              child: Text('Hello'),
-            ),
-          ),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: UnmanagedRestorationScope(
+        bucket: root,
+        child: const RootRestorationScope(restorationId: 'root-child', child: BucketSpy(child: Text('Hello'))),
       ),
-    );
+    ));
     manager.doSerialization();
 
     expect(binding.restorationManager.rootBucketAccessed, 0);
@@ -54,12 +47,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: RootRestorationScope(
-          restorationId: 'root-child',
-          child: BucketSpy(
-            child: Text('Hello'),
-          ),
-        ),
+        child: RootRestorationScope(restorationId: 'root-child', child: BucketSpy(child: Text('Hello'))),
       ),
     );
 
@@ -91,12 +79,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: RootRestorationScope(
-          restorationId: 'root-child',
-          child: BucketSpy(
-            child: Text('Hello'),
-          ),
-        ),
+        child: RootRestorationScope(restorationId: 'root-child', child: BucketSpy(child: Text('Hello'))),
       ),
     );
 
@@ -113,12 +96,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: RootRestorationScope(
-          restorationId: null,
-          child: BucketSpy(
-            child: Text('Hello'),
-          ),
-        ),
+        child: RootRestorationScope(restorationId: null, child: BucketSpy(child: Text('Hello'))),
       ),
     );
 
@@ -135,12 +113,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: RootRestorationScope(
-          restorationId: 'root-child',
-          child: BucketSpy(
-            child: Text('Hello'),
-          ),
-        ),
+        child: RootRestorationScope(restorationId: 'root-child', child: BucketSpy(child: Text('Hello'))),
       ),
     );
 
@@ -149,7 +122,10 @@ void main() {
     expect(state.bucket, isNull); // root bucket future has not completed yet.
 
     // Complete the future.
-    final RestorationBucket root = RestorationBucket.root(manager: binding.restorationManager, rawData: <String, dynamic>{});
+    final RestorationBucket root = RestorationBucket.root(
+      manager: binding.restorationManager,
+      rawData: <String, dynamic>{},
+    );
     bucketCompleter.complete(root);
     await tester.pump(const Duration(milliseconds: 100));
 
@@ -161,12 +137,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: RootRestorationScope(
-          restorationId: null,
-          child: BucketSpy(
-            child: Text('Hello'),
-          ),
-        ),
+        child: RootRestorationScope(restorationId: null, child: BucketSpy(child: Text('Hello'))),
       ),
     );
 
@@ -181,21 +152,17 @@ void main() {
     final Map<String, dynamic> inScopeRawData = <String, dynamic>{};
     final RestorationBucket inScopeRootBucket = RestorationBucket.root(manager: manager, rawData: inScopeRawData);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: UnmanagedRestorationScope(
-          bucket: inScopeRootBucket,
-          child: RootRestorationScope(
-            key: rootScopeKey,
-            restorationId: 'root-child',
-            child: const BucketSpy(
-              child: Text('Hello'),
-            ),
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: UnmanagedRestorationScope(
+        bucket: inScopeRootBucket,
+        child: RootRestorationScope(
+          key: rootScopeKey,
+          restorationId: 'root-child',
+          child: const BucketSpy(child: Text('Hello')),
         ),
       ),
-    );
+    ));
 
     expect(binding.restorationManager.rootBucketAccessed, 0);
     expect(find.text('Hello'), findsOneWidget);
@@ -206,24 +173,23 @@ void main() {
     // Move out of scope.
     final Completer<RestorationBucket> bucketCompleter = Completer<RestorationBucket>();
     binding.restorationManager.rootBucket = bucketCompleter.future;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: RootRestorationScope(
-          key: rootScopeKey,
-          restorationId: 'root-child',
-          child: const BucketSpy(
-            child: Text('Hello'),
-          ),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: RootRestorationScope(
+        key: rootScopeKey,
+        restorationId: 'root-child',
+        child: const BucketSpy(child: Text('Hello')),
       ),
-    );
+    ));
 
     expect(binding.restorationManager.rootBucketAccessed, 1);
     expect(find.text('Hello'), findsOneWidget);
 
     final Map<String, dynamic> outOfScopeRawData = <String, dynamic>{};
-    final RestorationBucket outOfScopeRootBucket = RestorationBucket.root(manager: binding.restorationManager, rawData: outOfScopeRawData);
+    final RestorationBucket outOfScopeRootBucket = RestorationBucket.root(
+      manager: binding.restorationManager,
+      rawData: outOfScopeRawData,
+    );
     bucketCompleter.complete(outOfScopeRootBucket);
     await tester.pump(const Duration(milliseconds: 100));
 
@@ -234,21 +200,17 @@ void main() {
     expect(inScopeRawData, isEmpty);
 
     // Move into scope.
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: UnmanagedRestorationScope(
-          bucket: inScopeRootBucket,
-          child: RootRestorationScope(
-            key: rootScopeKey,
-            restorationId: 'root-child',
-            child: const BucketSpy(
-              child: Text('Hello'),
-            ),
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: UnmanagedRestorationScope(
+        bucket: inScopeRootBucket,
+        child: RootRestorationScope(
+          key: rootScopeKey,
+          restorationId: 'root-child',
+          child: const BucketSpy(child: Text('Hello')),
         ),
       ),
-    );
+    ));
 
     expect(binding.restorationManager.rootBucketAccessed, 1);
     expect(find.text('Hello'), findsOneWidget);
@@ -259,18 +221,16 @@ void main() {
 
   testWidgets('injects new root when old one is decommissioned', (WidgetTester tester) async {
     final Map<String, dynamic> firstRawData = <String, dynamic>{};
-    final RestorationBucket firstRoot = RestorationBucket.root(manager: binding.restorationManager, rawData: firstRawData);
+    final RestorationBucket firstRoot = RestorationBucket.root(
+      manager: binding.restorationManager,
+      rawData: firstRawData,
+    );
     binding.restorationManager.rootBucket = SynchronousFuture<RestorationBucket>(firstRoot);
 
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: RootRestorationScope(
-          restorationId: 'root-child',
-          child: BucketSpy(
-            child: Text('Hello'),
-          ),
-        ),
+        child: RootRestorationScope(restorationId: 'root-child', child: BucketSpy(child: Text('Hello'))),
       ),
     );
 
@@ -278,20 +238,25 @@ void main() {
     expect(find.text('Hello'), findsOneWidget);
     final BucketSpyState state = tester.state(find.byType(BucketSpy));
     state.bucket!.write('foo', 42);
-    expect((((firstRawData[childrenMapKey] as Map<Object?, Object?>)['root-child']! as Map<String, dynamic>)[valuesMapKey] as Map<Object?, Object?>)['foo'], 42);
+    expect(
+      (((firstRawData[childrenMapKey] as Map<Object?, Object?>)['root-child']! as Map<String, dynamic>)[valuesMapKey]
+          as Map<Object?, Object?>)['foo'],
+      42,
+    );
     final RestorationBucket firstBucket = state.bucket!;
 
     // Replace with new root.
     final Map<String, dynamic> secondRawData = <String, dynamic>{
       childrenMapKey: <String, dynamic>{
         'root-child': <String, dynamic>{
-          valuesMapKey: <String, dynamic>{
-            'foo': 22,
-          },
+          valuesMapKey: <String, dynamic>{'foo': 22},
         },
       },
     };
-    final RestorationBucket secondRoot = RestorationBucket.root(manager: binding.restorationManager, rawData: secondRawData);
+    final RestorationBucket secondRoot = RestorationBucket.root(
+      manager: binding.restorationManager,
+      rawData: secondRawData,
+    );
     binding.restorationManager.rootBucket = SynchronousFuture<RestorationBucket>(secondRoot);
     await tester.pump();
     firstRoot.dispose();
@@ -307,12 +272,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: RootRestorationScope(
-          restorationId: 'root-child',
-          child: BucketSpy(
-            child: Text('Hello'),
-          ),
-        ),
+        child: RootRestorationScope(restorationId: 'root-child', child: BucketSpy(child: Text('Hello'))),
       ),
     );
 
@@ -344,12 +304,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: RootRestorationScope(
-          restorationId: 'root-child',
-          child: BucketSpy(
-            child: Text('Hello'),
-          ),
-        ),
+        child: RootRestorationScope(restorationId: 'root-child', child: BucketSpy(child: Text('Hello'))),
       ),
     );
 

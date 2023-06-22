@@ -19,8 +19,9 @@ class _TestBinding extends BindingBase with SchedulerBinding, ServicesBinding {
   @override
   TestDefaultBinaryMessenger createBinaryMessenger() {
     Future<ByteData?> keyboardHandler(ByteData? message) async {
-      return const StandardMethodCodec().encodeSuccessEnvelope(<int, int>{1:1});
+      return const StandardMethodCodec().encodeSuccessEnvelope(<int, int>{1: 1});
     }
+
     return TestDefaultBinaryMessenger(
       super.createBinaryMessenger(),
       outboundHandlers: <String, MessageHandler>{'flutter/keyboard': keyboardHandler},

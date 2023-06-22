@@ -9,10 +9,7 @@ void main() {
   testWidgets("builder doesn't get called if app doesn't change", (WidgetTester tester) async {
     final List<String> log = <String>[];
     final Widget app = MaterialApp(
-      theme: ThemeData(
-        useMaterial3: false,
-        primarySwatch: Colors.green,
-      ),
+      theme: ThemeData(useMaterial3: false, primarySwatch: Colors.green),
       home: const Placeholder(),
       builder: (BuildContext context, Widget? child) {
         log.add('build');
@@ -22,46 +19,28 @@ void main() {
         return const Placeholder();
       },
     );
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.rtl,
-        child: app,
-      ),
-    );
+    await tester.pumpWidget(Directionality(textDirection: TextDirection.rtl, child: app));
     expect(log, <String>['build']);
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: app,
-      ),
-    );
+    await tester.pumpWidget(Directionality(textDirection: TextDirection.ltr, child: app));
     expect(log, <String>['build']);
   });
 
   testWidgets("builder doesn't get called if app doesn't change", (WidgetTester tester) async {
     final List<String> log = <String>[];
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          useMaterial3: false,
-          primarySwatch: Colors.yellow,
-        ),
-        home: Builder(
-          builder: (BuildContext context) {
-            log.add('build');
-            expect(Theme.of(context).primaryColor, Colors.yellow);
-            expect(Directionality.of(context), TextDirection.rtl);
-            return const Placeholder();
-          },
-        ),
-        builder: (BuildContext context, Widget? child) {
-          return Directionality(
-            textDirection: TextDirection.rtl,
-            child: child!,
-          );
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: false, primarySwatch: Colors.yellow),
+      home: Builder(
+        builder: (BuildContext context) {
+          log.add('build');
+          expect(Theme.of(context).primaryColor, Colors.yellow);
+          expect(Directionality.of(context), TextDirection.rtl);
+          return const Placeholder();
         },
       ),
-    );
+      builder: (BuildContext context, Widget? child) {
+        return Directionality(textDirection: TextDirection.rtl, child: child!);
+      },
+    ));
     expect(log, <String>['build']);
   });
 }

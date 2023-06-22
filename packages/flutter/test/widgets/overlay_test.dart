@@ -13,27 +13,23 @@ void main() {
   testWidgets('OverflowEntries context contains Overlay', (WidgetTester tester) async {
     final GlobalKey overlayKey = GlobalKey();
     bool didBuild = false;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) {
-                didBuild = true;
-                final Overlay overlay = context.findAncestorWidgetOfExactType<Overlay>()!;
-                expect(overlay.key, equals(overlayKey));
-                return Container();
-              },
-            ),
-            OverlayEntry(
-              builder: (BuildContext context) => Container(),
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (BuildContext context) {
+              didBuild = true;
+              final Overlay overlay = context.findAncestorWidgetOfExactType<Overlay>()!;
+              expect(overlay.key, equals(overlayKey));
+              return Container();
+            },
+          ),
+          OverlayEntry(builder: (BuildContext context) => Container()),
+        ],
       ),
-    );
+    ));
     expect(didBuild, isTrue);
     final RenderObject theater = overlayKey.currentContext!.findRenderObject()!;
 
@@ -83,31 +79,17 @@ void main() {
 
   testWidgets('Offstage overlay', (WidgetTester tester) async {
     final GlobalKey overlayKey = GlobalKey();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              opaque: true,
-              maintainState: true,
-              builder: (BuildContext context) => Container(),
-            ),
-            OverlayEntry(
-              opaque: true,
-              maintainState: true,
-              builder: (BuildContext context) => Container(),
-            ),
-            OverlayEntry(
-              opaque: true,
-              maintainState: true,
-              builder: (BuildContext context) => Container(),
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(opaque: true, maintainState: true, builder: (BuildContext context) => Container()),
+          OverlayEntry(opaque: true, maintainState: true, builder: (BuildContext context) => Container()),
+          OverlayEntry(opaque: true, maintainState: true, builder: (BuildContext context) => Container()),
+        ],
       ),
-    );
+    ));
     final RenderObject theater = overlayKey.currentContext!.findRenderObject()!;
 
     expect(theater, hasAGoodToStringDeep);
@@ -167,35 +149,31 @@ void main() {
   testWidgets('insert top', (WidgetTester tester) async {
     final GlobalKey overlayKey = GlobalKey();
     final List<String> buildOrder = <String>[];
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) {
-                buildOrder.add('Base');
-                return Container();
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (BuildContext context) {
+              buildOrder.add('Base');
+              return Container();
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(buildOrder, <String>['Base']);
 
     buildOrder.clear();
     final OverlayState overlay = overlayKey.currentState! as OverlayState;
-    overlay.insert(
-      OverlayEntry(
-        builder: (BuildContext context) {
-          buildOrder.add('New');
-          return Container();
-        },
-      ),
-    );
+    overlay.insert(OverlayEntry(
+      builder: (BuildContext context) {
+        buildOrder.add('New');
+        return Container();
+      },
+    ));
     await tester.pump();
 
     expect(buildOrder, <String>['Base', 'New']);
@@ -205,36 +183,31 @@ void main() {
     final GlobalKey overlayKey = GlobalKey();
     OverlayEntry base;
     final List<String> buildOrder = <String>[];
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            base = OverlayEntry(
-              builder: (BuildContext context) {
-                buildOrder.add('Base');
-                return Container();
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          base = OverlayEntry(
+            builder: (BuildContext context) {
+              buildOrder.add('Base');
+              return Container();
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(buildOrder, <String>['Base']);
 
     buildOrder.clear();
     final OverlayState overlay = overlayKey.currentState! as OverlayState;
-    overlay.insert(
-      OverlayEntry(
-        builder: (BuildContext context) {
-          buildOrder.add('New');
-          return Container();
-        },
-      ),
-      below: base,
-    );
+    overlay.insert(OverlayEntry(
+      builder: (BuildContext context) {
+        buildOrder.add('New');
+        return Container();
+      },
+    ), below: base);
     await tester.pump();
 
     expect(buildOrder, <String>['New', 'Base']);
@@ -244,42 +217,37 @@ void main() {
     final GlobalKey overlayKey = GlobalKey();
     OverlayEntry base;
     final List<String> buildOrder = <String>[];
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            base = OverlayEntry(
-              builder: (BuildContext context) {
-                buildOrder.add('Base');
-                return Container();
-              },
-            ),
-            OverlayEntry(
-              builder: (BuildContext context) {
-                buildOrder.add('Top');
-                return Container();
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          base = OverlayEntry(
+            builder: (BuildContext context) {
+              buildOrder.add('Base');
+              return Container();
+            },
+          ),
+          OverlayEntry(
+            builder: (BuildContext context) {
+              buildOrder.add('Top');
+              return Container();
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(buildOrder, <String>['Base', 'Top']);
 
     buildOrder.clear();
     final OverlayState overlay = overlayKey.currentState! as OverlayState;
-    overlay.insert(
-      OverlayEntry(
-        builder: (BuildContext context) {
-          buildOrder.add('New');
-          return Container();
-        },
-      ),
-      above: base,
-    );
+    overlay.insert(OverlayEntry(
+      builder: (BuildContext context) {
+        buildOrder.add('New');
+        return Container();
+      },
+    ), above: base);
     await tester.pump();
 
     expect(buildOrder, <String>['Base', 'New', 'Top']);
@@ -288,22 +256,20 @@ void main() {
   testWidgets('insertAll top', (WidgetTester tester) async {
     final GlobalKey overlayKey = GlobalKey();
     final List<String> buildOrder = <String>[];
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) {
-                buildOrder.add('Base');
-                return Container();
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (BuildContext context) {
+              buildOrder.add('Base');
+              return Container();
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(buildOrder, <String>['Base']);
 
@@ -334,22 +300,20 @@ void main() {
     final GlobalKey overlayKey = GlobalKey();
     OverlayEntry base;
     final List<String> buildOrder = <String>[];
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            base = OverlayEntry(
-              builder: (BuildContext context) {
-                buildOrder.add('Base');
-                return Container();
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          base = OverlayEntry(
+            builder: (BuildContext context) {
+              buildOrder.add('Base');
+              return Container();
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(buildOrder, <String>['Base']);
 
@@ -373,35 +337,33 @@ void main() {
     overlay.insertAll(entries, below: base);
     await tester.pump();
 
-    expect(buildOrder, <String>['New1', 'New2','Base']);
+    expect(buildOrder, <String>['New1', 'New2', 'Base']);
   });
 
   testWidgets('insertAll above', (WidgetTester tester) async {
     final GlobalKey overlayKey = GlobalKey();
     final List<String> buildOrder = <String>[];
     OverlayEntry base;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            base = OverlayEntry(
-              builder: (BuildContext context) {
-                buildOrder.add('Base');
-                return Container();
-              },
-            ),
-            OverlayEntry(
-              builder: (BuildContext context) {
-                buildOrder.add('Top');
-                return Container();
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          base = OverlayEntry(
+            builder: (BuildContext context) {
+              buildOrder.add('Base');
+              return Container();
+            },
+          ),
+          OverlayEntry(
+            builder: (BuildContext context) {
+              buildOrder.add('Top');
+              return Container();
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(buildOrder, <String>['Base', 'Top']);
 
@@ -459,13 +421,7 @@ void main() {
     ];
 
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: initialEntries,
-        ),
-      ),
+      Directionality(textDirection: TextDirection.ltr, child: Overlay(key: overlayKey, initialEntries: initialEntries)),
     );
 
     expect(buildOrder, <int>[0, 1, 2, 3]);
@@ -522,13 +478,7 @@ void main() {
     ];
 
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: initialEntries,
-        ),
-      ),
+      Directionality(textDirection: TextDirection.ltr, child: Overlay(key: overlayKey, initialEntries: initialEntries)),
     );
 
     expect(buildOrder, <int>[0, 1, 2, 3]);
@@ -585,13 +535,7 @@ void main() {
     ];
 
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: initialEntries,
-        ),
-      ),
+      Directionality(textDirection: TextDirection.ltr, child: Overlay(key: overlayKey, initialEntries: initialEntries)),
     );
 
     expect(buildOrder, <int>[0, 1, 2, 3]);
@@ -621,29 +565,29 @@ void main() {
     final GlobalKey overlayKey = GlobalKey();
     OverlayEntry base;
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            base = OverlayEntry(
-              builder: (BuildContext context) {
-                return Container();
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          base = OverlayEntry(
+            builder: (BuildContext context) {
+              return Container();
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     final OverlayState overlay = overlayKey.currentState! as OverlayState;
 
     try {
       overlay.insert(
-        OverlayEntry(builder: (BuildContext context) {
-          return Container();
-        }),
+        OverlayEntry(
+          builder: (BuildContext context) {
+            return Container();
+          },
+        ),
         above: OverlayEntry(
           builder: (BuildContext context) {
             return Container();
@@ -659,18 +603,22 @@ void main() {
       expect(e.message, 'Only one of `above` and `below` may be specified.');
     }
 
-    expect(() => overlay.insert(
-      OverlayEntry(builder: (BuildContext context) {
-        return Container();
-      }),
-      above: base,
-    ), isNot(throwsAssertionError));
+    expect(
+      () => overlay.insert(OverlayEntry(
+        builder: (BuildContext context) {
+          return Container();
+        },
+      ), above: base),
+      isNot(throwsAssertionError),
+    );
 
     try {
       overlay.insert(
-        OverlayEntry(builder: (BuildContext context) {
-          return Container();
-        }),
+        OverlayEntry(
+          builder: (BuildContext context) {
+            return Container();
+          },
+        ),
         above: OverlayEntry(
           builder: (BuildContext context) {
             return Container();
@@ -682,146 +630,141 @@ void main() {
     }
 
     try {
-      overlay.rearrange(<OverlayEntry>[base], above: OverlayEntry(
-        builder: (BuildContext context) {
-          return Container();
-        },
-      ));
-
+      overlay.rearrange(
+        <OverlayEntry>[base],
+        above: OverlayEntry(
+          builder: (BuildContext context) {
+            return Container();
+          },
+        ),
+      );
     } on AssertionError catch (e) {
-      expect(e.message, 'The provided entry used for `above` must be present in the Overlay and in the `newEntriesList`.');
+      expect(
+        e.message,
+        'The provided entry used for `above` must be present in the Overlay and in the `newEntriesList`.',
+      );
     }
 
     await tester.pump();
   });
 
   testWidgets('OverlayState.of() throws when called if an Overlay does not exist', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Builder(
-          builder: (BuildContext context) {
-            late FlutterError error;
-            final Widget debugRequiredFor = Container();
-            try {
-              Overlay.of(context, debugRequiredFor: debugRequiredFor);
-            } on FlutterError catch (e) {
-              error = e;
-            } finally {
-              expect(error, isNotNull);
-              expect(error.diagnostics.length, 5);
-              expect(error.diagnostics[2].level, DiagnosticLevel.hint);
-              expect(error.diagnostics[2].toStringDeep(), equalsIgnoringHashCodes(
-                'The most common way to add an Overlay to an application is to\n'
-                'include a MaterialApp, CupertinoApp or Navigator widget in the\n'
-                'runApp() call.\n'
-              ));
-              expect(error.diagnostics[3], isA<DiagnosticsProperty<Widget>>());
-              expect(error.diagnostics[3].value, debugRequiredFor);
-              expect(error.diagnostics[4], isA<DiagnosticsProperty<Element>>());
-              expect(error.toStringDeep(), equalsIgnoringHashCodes(
-                'FlutterError\n'
-                '   No Overlay widget found.\n'
-                '   Container widgets require an Overlay widget ancestor for correct\n'
-                '   operation.\n'
-                '   The most common way to add an Overlay to an application is to\n'
-                '   include a MaterialApp, CupertinoApp or Navigator widget in the\n'
-                '   runApp() call.\n'
-                '   The specific widget that failed to find an overlay was:\n'
-                '     Container\n'
-                '   The context from which that widget was searching for an overlay\n'
-                '   was:\n'
-                '     Builder\n'
-              ));
-            }
-            return Container();
-          },
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Builder(
+        builder: (BuildContext context) {
+          late FlutterError error;
+          final Widget debugRequiredFor = Container();
+          try {
+            Overlay.of(context, debugRequiredFor: debugRequiredFor);
+          } on FlutterError catch (e) {
+            error = e;
+          } finally {
+            expect(error, isNotNull);
+            expect(error.diagnostics.length, 5);
+            expect(error.diagnostics[2].level, DiagnosticLevel.hint);
+            expect(error.diagnostics[2].toStringDeep(), equalsIgnoringHashCodes(
+              'The most common way to add an Overlay to an application is to\n'
+              'include a MaterialApp, CupertinoApp or Navigator widget in the\n'
+              'runApp() call.\n',
+            ));
+            expect(error.diagnostics[3], isA<DiagnosticsProperty<Widget>>());
+            expect(error.diagnostics[3].value, debugRequiredFor);
+            expect(error.diagnostics[4], isA<DiagnosticsProperty<Element>>());
+            expect(error.toStringDeep(), equalsIgnoringHashCodes(
+              'FlutterError\n'
+              '   No Overlay widget found.\n'
+              '   Container widgets require an Overlay widget ancestor for correct\n'
+              '   operation.\n'
+              '   The most common way to add an Overlay to an application is to\n'
+              '   include a MaterialApp, CupertinoApp or Navigator widget in the\n'
+              '   runApp() call.\n'
+              '   The specific widget that failed to find an overlay was:\n'
+              '     Container\n'
+              '   The context from which that widget was searching for an overlay\n'
+              '   was:\n'
+              '     Builder\n',
+            ));
+          }
+          return Container();
+        },
       ),
-    );
+    ));
   });
 
   testWidgets("OverlayState.maybeOf() works when an Overlay does and doesn't exist", (WidgetTester tester) async {
     final GlobalKey overlayKey = GlobalKey();
     OverlayState? foundState;
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) {
-                foundState = Overlay.maybeOf(context);
-                return Container();
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (BuildContext context) {
+              foundState = Overlay.maybeOf(context);
+              return Container();
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(tester.takeException(), isNull);
     expect(foundState, isNotNull);
     foundState = null;
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Builder(
-          builder: (BuildContext context) {
-            foundState = Overlay.maybeOf(context);
-            return const SizedBox();
-          },
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Builder(
+        builder: (BuildContext context) {
+          foundState = Overlay.maybeOf(context);
+          return const SizedBox();
+        },
       ),
-    );
+    ));
 
     expect(tester.takeException(), isNull);
     expect(foundState, isNull);
   });
 
-  testWidgets('OverlayEntry.opaque can be changed when OverlayEntry is not part of an Overlay (yet)', (WidgetTester tester) async {
-    final GlobalKey<OverlayState> overlayKey = GlobalKey<OverlayState>();
-    final Key root = UniqueKey();
-    final Key top = UniqueKey();
-    final OverlayEntry rootEntry = OverlayEntry(
-      builder: (BuildContext context) {
-        return Container(key: root);
-      },
-    );
+  testWidgets(
+    'OverlayEntry.opaque can be changed when OverlayEntry is not part of an Overlay (yet)',
+    (WidgetTester tester) async {
+      final GlobalKey<OverlayState> overlayKey = GlobalKey<OverlayState>();
+      final Key root = UniqueKey();
+      final Key top = UniqueKey();
+      final OverlayEntry rootEntry = OverlayEntry(
+        builder: (BuildContext context) {
+          return Container(key: root);
+        },
+      );
 
-    await tester.pumpWidget(
-      Directionality(
+      await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            rootEntry,
-          ],
-        ),
-      ),
-    );
+        child: Overlay(key: overlayKey, initialEntries: <OverlayEntry>[rootEntry]),
+      ));
 
-    expect(find.byKey(root), findsOneWidget);
+      expect(find.byKey(root), findsOneWidget);
 
-    final OverlayEntry newEntry = OverlayEntry(
-      builder: (BuildContext context) {
-        return Container(key: top);
-      },
-    );
-    expect(newEntry.opaque, isFalse);
-    newEntry.opaque = true; // Does neither trigger an assert nor throw.
-    expect(newEntry.opaque, isTrue);
+      final OverlayEntry newEntry = OverlayEntry(
+        builder: (BuildContext context) {
+          return Container(key: top);
+        },
+      );
+      expect(newEntry.opaque, isFalse);
+      newEntry.opaque = true; // Does neither trigger an assert nor throw.
+      expect(newEntry.opaque, isTrue);
 
-    // The new opaqueness is honored when inserted into an overlay.
-    overlayKey.currentState!.insert(newEntry);
-    await tester.pumpAndSettle();
+      // The new opaqueness is honored when inserted into an overlay.
+      overlayKey.currentState!.insert(newEntry);
+      await tester.pumpAndSettle();
 
-    expect(find.byKey(root), findsNothing);
-    expect(find.byKey(top), findsOneWidget);
-  });
+      expect(find.byKey(root), findsNothing);
+      expect(find.byKey(top), findsOneWidget);
+    },
+  );
 
   testWidgets('OverlayEntries do not rebuild when opaqueness changes', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/45797.
@@ -853,19 +796,10 @@ void main() {
       },
     );
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            bottomEntry,
-            middleEntry,
-            topEntry,
-          ],
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(key: overlayKey, initialEntries: <OverlayEntry>[bottomEntry, middleEntry, topEntry]),
+    ));
 
     // All widgets are onstage.
     expect(tester.state<StatefulTestState>(find.byKey(bottom)).rebuildCount, 1);
@@ -913,26 +847,16 @@ void main() {
       },
     );
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            bottomEntry,
-            topEntry,
-          ],
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(key: overlayKey, initialEntries: <OverlayEntry>[bottomEntry, topEntry]),
+    ));
 
     // Both widgets are onstage.
     expect(tester.state<StatefulTestState>(find.byKey(bottom)).rebuildCount, 1);
     expect(tester.state<StatefulTestState>(find.byKey(top)).rebuildCount, 1);
 
-    overlayKey.currentState!.rearrange(<OverlayEntry>[
-      bottomEntry, middleEntry, topEntry,
-    ]);
+    overlayKey.currentState!.rearrange(<OverlayEntry>[bottomEntry, middleEntry, topEntry]);
     await tester.pump();
 
     // Bottom widget is offstage and did not rebuild.
@@ -945,29 +869,30 @@ void main() {
   testWidgets('entries below opaque entries are ignored for hit testing', (WidgetTester tester) async {
     final GlobalKey<OverlayState> overlayKey = GlobalKey<OverlayState>();
     int bottomTapCount = 0;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              maintainState: true,
-              builder: (BuildContext context) {
-                return GestureDetector(
-                  onTap: () {
-                    bottomTapCount++;
-                  },
-                );
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            maintainState: true,
+            builder: (BuildContext context) {
+              return GestureDetector(
+                onTap: () {
+                  bottomTapCount++;
+                },
+              );
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(bottomTapCount, 0);
-    await tester.tap(find.byKey(overlayKey), warnIfMissed: false); // gesture detector is translucent; no hit is registered between it and the render view
+    await tester.tap(
+      find.byKey(overlayKey),
+      warnIfMissed: false,
+    ); // gesture detector is translucent; no hit is registered between it and the render view
     expect(bottomTapCount, 1);
 
     overlayKey.currentState!.insert(OverlayEntry(
@@ -982,7 +907,10 @@ void main() {
     // Bottom is offstage and does not receive tap events.
     expect(find.byType(GestureDetector), findsNothing);
     expect(find.byType(GestureDetector, skipOffstage: false), findsOneWidget);
-    await tester.tap(find.byKey(overlayKey), warnIfMissed: false); // gesture detector is translucent; no hit is registered between it and the render view
+    await tester.tap(
+      find.byKey(overlayKey),
+      warnIfMissed: false,
+    ); // gesture detector is translucent; no hit is registered between it and the render view
     expect(bottomTapCount, 1);
 
     int topTapCount = 0;
@@ -1000,7 +928,10 @@ void main() {
     await tester.pump();
 
     expect(topTapCount, 0);
-    await tester.tap(find.byKey(overlayKey), warnIfMissed: false); // gesture detector is translucent; no hit is registered between it and the render view
+    await tester.tap(
+      find.byKey(overlayKey),
+      warnIfMissed: false,
+    ); // gesture detector is translucent; no hit is registered between it and the render view
     expect(topTapCount, 1);
     expect(bottomTapCount, 1);
   });
@@ -1008,29 +939,27 @@ void main() {
   testWidgets('Semantics of entries below opaque entries are ignored', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
     final GlobalKey<OverlayState> overlayKey = GlobalKey<OverlayState>();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              maintainState: true,
-              builder: (BuildContext context) {
-                return const Text('bottom');
-              },
-            ),
-            OverlayEntry(
-              maintainState: true,
-              opaque: true,
-              builder: (BuildContext context) {
-                return const Text('top');
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            maintainState: true,
+            builder: (BuildContext context) {
+              return const Text('bottom');
+            },
+          ),
+          OverlayEntry(
+            maintainState: true,
+            opaque: true,
+            builder: (BuildContext context) {
+              return const Text('top');
+            },
+          ),
+        ],
       ),
-    );
+    ));
     expect(find.text('bottom'), findsNothing);
     expect(find.text('bottom', skipOffstage: false), findsOneWidget);
     expect(find.text('top'), findsOneWidget);
@@ -1041,41 +970,31 @@ void main() {
   });
 
   testWidgets('Can use Positioned within OverlayEntry', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) {
-                return const Positioned(
-                  left: 145,
-                  top: 123,
-                  child: Text('positioned child'),
-                );
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (BuildContext context) {
+              return const Positioned(left: 145, top: 123, child: Text('positioned child'));
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(tester.getTopLeft(find.text('positioned child')), const Offset(145, 123));
   });
 
   testWidgets('Overlay can set and update clipBehavior', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) => Positioned(left: 2000, right: 2500, child: Container()),
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(builder: (BuildContext context) => Positioned(left: 2000, right: 2500, child: Container())),
+        ],
       ),
-    );
+    ));
 
     // By default, clipBehavior should be Clip.hardEdge
     final RenderObject renderObject = tester.renderObject(find.byType(Overlay));
@@ -1083,19 +1002,13 @@ void main() {
     expect((renderObject as dynamic).clipBehavior, equals(Clip.hardEdge));
 
     for (final Clip clip in Clip.values) {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(
-                builder: (BuildContext context) => Container(),
-              ),
-            ],
-            clipBehavior: clip,
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[OverlayEntry(builder: (BuildContext context) => Container())],
+          clipBehavior: clip,
         ),
-      );
+      ));
 
       // ignore: avoid_dynamic_calls
       expect((renderObject as dynamic).clipBehavior, clip);
@@ -1108,10 +1021,7 @@ void main() {
           case Clip.hardEdge:
           case Clip.antiAlias:
           case Clip.antiAliasWithSaveLayer:
-            expect(
-              renderObject.describeApproximatePaintClip(child),
-              const Rect.fromLTRB(0, 0, 800, 600),
-            );
+            expect(renderObject.describeApproximatePaintClip(child), const Rect.fromLTRB(0, 0, 800, 600));
         }
       });
       expect(visited, true);
@@ -1119,41 +1029,34 @@ void main() {
   });
 
   testWidgets('Overlay always applies clip', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) => Positioned(left: 10, right: 10, child: Container()),
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(builder: (BuildContext context) => Positioned(left: 10, right: 10, child: Container())),
+        ],
       ),
-    );
+    ));
     final RenderObject renderObject = tester.renderObject(find.byType(Overlay));
     // ignore: avoid_dynamic_calls
-    expect((renderObject as dynamic).paint, paints
-      ..save()
-      ..clipRect(rect: const Rect.fromLTWH(0.0, 0.0, 800.0, 600.0))
-      ..restore(),
+    expect(
+      (renderObject as dynamic).paint,
+      paints
+        ..save()
+        ..clipRect(rect: const Rect.fromLTWH(0.0, 0.0, 800.0, 600.0))
+        ..restore(),
     );
   });
 
   group('OverlayEntry listenable', () {
     final GlobalKey overlayKey = GlobalKey();
-    final Widget emptyOverlay = Directionality(
-      textDirection: TextDirection.ltr,
-      child: Overlay(key: overlayKey),
-    );
+    final Widget emptyOverlay = Directionality(textDirection: TextDirection.ltr, child: Overlay(key: overlayKey));
 
     testWidgets('mounted state can be listened', (WidgetTester tester) async {
       await tester.pumpWidget(emptyOverlay);
       final OverlayState overlay = overlayKey.currentState! as OverlayState;
       final List<bool> mountedLog = <bool>[];
-      final OverlayEntry entry = OverlayEntry(
-        builder: (BuildContext context) => Container(),
-      );
+      final OverlayEntry entry = OverlayEntry(builder: (BuildContext context) => Container());
 
       entry.addListener(() {
         mountedLog.add(entry.mounted);
@@ -1183,9 +1086,7 @@ void main() {
     testWidgets('throw if disposed before removal', (WidgetTester tester) async {
       await tester.pumpWidget(emptyOverlay);
       final OverlayState overlay = overlayKey.currentState! as OverlayState;
-      final OverlayEntry entry = OverlayEntry(
-        builder: (BuildContext context) => Container(),
-      );
+      final OverlayEntry entry = OverlayEntry(builder: (BuildContext context) => Container());
 
       overlay.insert(entry);
       Object? error;
@@ -1199,15 +1100,13 @@ void main() {
     });
 
     test('dispose works', () {
-      final OverlayEntry entry = OverlayEntry(
-        builder: (BuildContext context) => Container(),
-      );
+      final OverlayEntry entry = OverlayEntry(builder: (BuildContext context) => Container());
 
       entry.dispose();
 
       Object? error;
       try {
-        entry.addListener(() {  });
+        entry.addListener(() {});
       } catch (e) {
         error = e;
       }
@@ -1218,9 +1117,7 @@ void main() {
       await tester.pumpWidget(emptyOverlay);
       final OverlayState overlay = overlayKey.currentState! as OverlayState;
       final List<bool> mountedLog = <bool>[];
-      final OverlayEntry entry = OverlayEntry(
-        builder: (BuildContext context) => Container(),
-      );
+      final OverlayEntry entry = OverlayEntry(builder: (BuildContext context) => Container());
       entry.addListener(() {
         mountedLog.add(entry.mounted);
       });
@@ -1241,7 +1138,7 @@ void main() {
       // The entry is no longer usable.
       Object? error;
       try {
-        entry.addListener(() {  });
+        entry.addListener(() {});
       } catch (e) {
         error = e;
       }
@@ -1253,53 +1150,49 @@ void main() {
     testWidgets('hides Overlay from Overlay.maybeOf', (WidgetTester tester) async {
       OverlayState? overlay;
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(
-                builder: (BuildContext context) {
-                  return LookupBoundary(
-                    child: Builder(
-                      builder: (BuildContext context) {
-                        overlay = Overlay.maybeOf(context);
-                        return Container();
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[
+            OverlayEntry(
+              builder: (BuildContext context) {
+                return LookupBoundary(
+                  child: Builder(
+                    builder: (BuildContext context) {
+                      overlay = Overlay.maybeOf(context);
+                      return Container();
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-      );
+      ));
 
       expect(overlay, isNull);
     });
 
     testWidgets('hides Overlay from Overlay.of', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(
-                builder: (BuildContext context) {
-                  return LookupBoundary(
-                    child: Builder(
-                      builder: (BuildContext context) {
-                        Overlay.of(context);
-                        return Container();
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[
+            OverlayEntry(
+              builder: (BuildContext context) {
+                return LookupBoundary(
+                  child: Builder(
+                    builder: (BuildContext context) {
+                      Overlay.of(context);
+                      return Container();
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-      );
+      ));
       final Object? exception = tester.takeException();
       expect(exception, isFlutterError);
       final FlutterError error = exception! as FlutterError;
@@ -1317,54 +1210,50 @@ void main() {
         '   runApp() call.\n'
         '   The context from which that widget was searching for an overlay\n'
         '   was:\n'
-        '     Builder\n'
+        '     Builder\n',
       );
     });
 
     testWidgets('hides Overlay from debugCheckHasOverlay', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(
-                builder: (BuildContext context) {
-                  return LookupBoundary(
-                    child: Builder(
-                      builder: (BuildContext context) {
-                        debugCheckHasOverlay(context);
-                        return Container();
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[
+            OverlayEntry(
+              builder: (BuildContext context) {
+                return LookupBoundary(
+                  child: Builder(
+                    builder: (BuildContext context) {
+                      debugCheckHasOverlay(context);
+                      return Container();
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-      );
+      ));
       final Object? exception = tester.takeException();
       expect(exception, isFlutterError);
       final FlutterError error = exception! as FlutterError;
 
-      expect(
-        error.toStringDeep(), startsWith(
-          'FlutterError\n'
-          '   No Overlay widget found within the closest LookupBoundary.\n'
-          '   There is an ancestor Overlay widget, but it is hidden by a\n'
-          '   LookupBoundary.\n'
-          '   Builder widgets require an Overlay widget ancestor within the\n'
-          '   closest LookupBoundary.\n'
-          '   An overlay lets widgets float on top of other widget children.\n'
-          '   To introduce an Overlay widget, you can either directly include\n'
-          '   one, or use a widget that contains an Overlay itself, such as a\n'
-          '   Navigator, WidgetApp, MaterialApp, or CupertinoApp.\n'
-          '   The specific widget that could not find a Overlay ancestor was:\n'
-          '     Builder\n'
-          '   The ancestors of this widget were:\n'
-          '     LookupBoundary\n'
-        ),
-      );
+      expect(error.toStringDeep(), startsWith(
+        'FlutterError\n'
+        '   No Overlay widget found within the closest LookupBoundary.\n'
+        '   There is an ancestor Overlay widget, but it is hidden by a\n'
+        '   LookupBoundary.\n'
+        '   Builder widgets require an Overlay widget ancestor within the\n'
+        '   closest LookupBoundary.\n'
+        '   An overlay lets widgets float on top of other widget children.\n'
+        '   To introduce an Overlay widget, you can either directly include\n'
+        '   one, or use a widget that contains an Overlay itself, such as a\n'
+        '   Navigator, WidgetApp, MaterialApp, or CupertinoApp.\n'
+        '   The specific widget that could not find a Overlay ancestor was:\n'
+        '     Builder\n'
+        '   The ancestors of this widget were:\n'
+        '     LookupBoundary\n',
+      ));
     });
   });
 }

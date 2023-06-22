@@ -11,22 +11,25 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('Heroes work', (WidgetTester tester) async {
     await tester.pumpWidget(CupertinoApp(
-      home: ListView(children: <Widget>[
-        const Hero(tag: 'a', child: Text('foo')),
-        Builder(builder: (BuildContext context) {
-          return CupertinoButton(
-            child: const Text('next'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute<void>(builder: (BuildContext context) {
-                  return const Hero(tag: 'a', child: Text('foo'));
-                }),
+      home: ListView(
+        children: <Widget>[
+          const Hero(tag: 'a', child: Text('foo')),
+          Builder(
+            builder: (BuildContext context) {
+              return CupertinoButton(
+                child: const Text('next'),
+                onPressed: () {
+                  Navigator.push(context, CupertinoPageRoute<void>(
+                    builder: (BuildContext context) {
+                      return const Hero(tag: 'a', child: Text('foo'));
+                    },
+                  ));
+                },
               );
             },
-          );
-        }),
-      ]),
+          ),
+        ],
+      ),
     ));
 
     await tester.tap(find.text('next'));
@@ -40,22 +43,18 @@ void main() {
   });
 
   testWidgets('Has default cupertino localizations', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Builder(
-          builder: (BuildContext context) {
-            return Column(
-              children: <Widget>[
-                Text(CupertinoLocalizations.of(context).selectAllButtonLabel),
-                Text(CupertinoLocalizations.of(context).datePickerMediumDate(
-                  DateTime(2018, 10, 4),
-                )),
-              ],
-            );
-          },
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Builder(
+        builder: (BuildContext context) {
+          return Column(
+            children: <Widget>[
+              Text(CupertinoLocalizations.of(context).selectAllButtonLabel),
+              Text(CupertinoLocalizations.of(context).datePickerMediumDate(DateTime(2018, 10, 4))),
+            ],
+          );
+        },
       ),
-    );
+    ));
 
     expect(find.text('Select All'), findsOneWidget);
     expect(find.text('Thu Oct 4 '), findsOneWidget);
@@ -66,58 +65,52 @@ void main() {
       color: Color(0xFF000000),
       darkColor: Color(0xFF000001),
     );
-    await tester.pumpWidget(const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      color: dynamicColor,
-      home: Placeholder(),
-    ));
+    await tester.pumpWidget(
+      const CupertinoApp(
+        theme: CupertinoThemeData(brightness: Brightness.light),
+        color: dynamicColor,
+        home: Placeholder(),
+      ),
+    );
 
     expect(tester.widget<Title>(find.byType(Title)).color.value, 0xFF000000);
 
-    await tester.pumpWidget(const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.dark),
-      color: dynamicColor,
-      home: Placeholder(),
-    ));
+    await tester.pumpWidget(
+      const CupertinoApp(
+        theme: CupertinoThemeData(brightness: Brightness.dark),
+        color: dynamicColor,
+        home: Placeholder(),
+      ),
+    );
 
     expect(tester.widget<Title>(find.byType(Title)).color.value, 0xFF000001);
   });
 
   testWidgets('Can customize initial routes', (WidgetTester tester) async {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(
-      CupertinoApp(
-        navigatorKey: navigatorKey,
-        onGenerateInitialRoutes: (String initialRoute) {
-          expect(initialRoute, '/abc');
-          return <Route<void>>[
-            PageRouteBuilder<void>(
-              pageBuilder: (
-                BuildContext context,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation,
-              ) {
-                return const Text('non-regular page one');
-              },
-            ),
-            PageRouteBuilder<void>(
-              pageBuilder: (
-                BuildContext context,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation,
-              ) {
-                return const Text('non-regular page two');
-              },
-            ),
-          ];
-        },
-        initialRoute: '/abc',
-        routes: <String, WidgetBuilder>{
-          '/': (BuildContext context) => const Text('regular page one'),
-          '/abc': (BuildContext context) => const Text('regular page two'),
-        },
-      ),
-    );
+    await tester.pumpWidget(CupertinoApp(
+      navigatorKey: navigatorKey,
+      onGenerateInitialRoutes: (String initialRoute) {
+        expect(initialRoute, '/abc');
+        return <Route<void>>[
+          PageRouteBuilder<void>(
+            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+              return const Text('non-regular page one');
+            },
+          ),
+          PageRouteBuilder<void>(
+            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+              return const Text('non-regular page two');
+            },
+          ),
+        ];
+      },
+      initialRoute: '/abc',
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext context) => const Text('regular page one'),
+        '/abc': (BuildContext context) => const Text('regular page two'),
+      },
+    ));
     expect(find.text('non-regular page two'), findsOneWidget);
     expect(find.text('non-regular page one'), findsNothing);
     expect(find.text('regular page one'), findsNothing);
@@ -132,34 +125,24 @@ void main() {
 
   testWidgets('CupertinoApp.navigatorKey can be updated', (WidgetTester tester) async {
     final GlobalKey<NavigatorState> key1 = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(CupertinoApp(
-      navigatorKey: key1,
-      home: const Placeholder(),
-    ));
+    await tester.pumpWidget(CupertinoApp(navigatorKey: key1, home: const Placeholder()));
     expect(key1.currentState, isA<NavigatorState>());
     final GlobalKey<NavigatorState> key2 = GlobalKey<NavigatorState>();
-    await tester.pumpWidget(CupertinoApp(
-      navigatorKey: key2,
-      home: const Placeholder(),
-    ));
+    await tester.pumpWidget(CupertinoApp(navigatorKey: key2, home: const Placeholder()));
     expect(key2.currentState, isA<NavigatorState>());
     expect(key1.currentState, isNull);
   });
 
   testWidgets('CupertinoApp.router works', (WidgetTester tester) async {
     final PlatformRouteInformationProvider provider = PlatformRouteInformationProvider(
-      initialRouteInformation: RouteInformation(
-        uri: Uri.parse('initial'),
-      ),
+      initialRouteInformation: RouteInformation(uri: Uri.parse('initial')),
     );
     final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
       builder: (BuildContext context, RouteInformation information) {
         return Text(information.uri.toString());
       },
       onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
-        delegate.routeInformation = RouteInformation(
-          uri: Uri.parse('popped'),
-        );
+        delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
         return route.didPop(result);
       },
     );
@@ -172,7 +155,7 @@ void main() {
 
     // Simulate android back button intent.
     final ByteData message = const JSONMethodCodec().encodeMethodCall(const MethodCall('popRoute'));
-    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) { });
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) {});
     await tester.pumpAndSettle();
     expect(find.text('popped'), findsOneWidget);
   });
@@ -183,142 +166,122 @@ void main() {
         return Text(information.uri.toString());
       },
       onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
-        delegate.routeInformation = RouteInformation(
-          uri: Uri.parse('popped'),
-        );
+        delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
         return route.didPop(result);
       },
     );
     delegate.routeInformation = RouteInformation(uri: Uri.parse('initial'));
-    await tester.pumpWidget(CupertinoApp.router(
-      routerDelegate: delegate,
-    ));
+    await tester.pumpWidget(CupertinoApp.router(routerDelegate: delegate));
     expect(find.text('initial'), findsOneWidget);
 
     // Simulate android back button intent.
     final ByteData message = const JSONMethodCodec().encodeMethodCall(const MethodCall('popRoute'));
-    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) { });
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) {});
     await tester.pumpAndSettle();
     expect(find.text('popped'), findsOneWidget);
   });
 
-  testWidgets('CupertinoApp.router throw if route information provider is provided but no route information parser', (WidgetTester tester) async {
-    final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
-      builder: (BuildContext context, RouteInformation information) {
-        return Text(information.uri.toString());
-      },
-      onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
-        delegate.routeInformation = RouteInformation(
-          uri: Uri.parse('popped'),
-        );
-        return route.didPop(result);
-      },
-    );
-    delegate.routeInformation = RouteInformation(uri: Uri.parse('initial'));
-    final PlatformRouteInformationProvider provider = PlatformRouteInformationProvider(
-      initialRouteInformation: RouteInformation(
-        uri: Uri.parse('initial'),
-      ),
-    );
-    await tester.pumpWidget(CupertinoApp.router(
-      routeInformationProvider: provider,
-      routerDelegate: delegate,
-    ));
-    expect(tester.takeException(), isAssertionError);
-  });
+  testWidgets(
+    'CupertinoApp.router throw if route information provider is provided but no route information parser',
+    (WidgetTester tester) async {
+      final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
+        builder: (BuildContext context, RouteInformation information) {
+          return Text(information.uri.toString());
+        },
+        onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
+          delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
+          return route.didPop(result);
+        },
+      );
+      delegate.routeInformation = RouteInformation(uri: Uri.parse('initial'));
+      final PlatformRouteInformationProvider provider = PlatformRouteInformationProvider(
+        initialRouteInformation: RouteInformation(uri: Uri.parse('initial')),
+      );
+      await tester.pumpWidget(CupertinoApp.router(routeInformationProvider: provider, routerDelegate: delegate));
+      expect(tester.takeException(), isAssertionError);
+    },
+  );
 
-  testWidgets('CupertinoApp.router throw if route configuration is provided along with other delegate', (WidgetTester tester) async {
-    final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
-      builder: (BuildContext context, RouteInformation information) {
-        return Text(information.uri.toString());
-      },
-      onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
-        delegate.routeInformation = RouteInformation(
-          uri: Uri.parse('popped'),
-        );
-        return route.didPop(result);
-      },
-    );
-    delegate.routeInformation = RouteInformation(uri: Uri.parse('initial'));
-    final RouterConfig<RouteInformation> routerConfig = RouterConfig<RouteInformation>(routerDelegate: delegate);
-    await tester.pumpWidget(CupertinoApp.router(
-      routerDelegate: delegate,
-      routerConfig: routerConfig,
-    ));
-    expect(tester.takeException(), isAssertionError);
-  });
+  testWidgets(
+    'CupertinoApp.router throw if route configuration is provided along with other delegate',
+    (WidgetTester tester) async {
+      final SimpleNavigatorRouterDelegate delegate = SimpleNavigatorRouterDelegate(
+        builder: (BuildContext context, RouteInformation information) {
+          return Text(information.uri.toString());
+        },
+        onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
+          delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
+          return route.didPop(result);
+        },
+      );
+      delegate.routeInformation = RouteInformation(uri: Uri.parse('initial'));
+      final RouterConfig<RouteInformation> routerConfig = RouterConfig<RouteInformation>(routerDelegate: delegate);
+      await tester.pumpWidget(CupertinoApp.router(routerDelegate: delegate, routerConfig: routerConfig));
+      expect(tester.takeException(), isAssertionError);
+    },
+  );
 
   testWidgets('CupertinoApp.router router config works', (WidgetTester tester) async {
     final RouterConfig<RouteInformation> routerConfig = RouterConfig<RouteInformation>(
-        routeInformationProvider: PlatformRouteInformationProvider(
-          initialRouteInformation: RouteInformation(
-            uri: Uri.parse('initial'),
-          ),
-        ),
-        routeInformationParser: SimpleRouteInformationParser(),
-        routerDelegate: SimpleNavigatorRouterDelegate(
-          builder: (BuildContext context, RouteInformation information) {
-            return Text(information.uri.toString());
-          },
-          onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
-            delegate.routeInformation = RouteInformation(
-              uri: Uri.parse('popped'),
-            );
-            return route.didPop(result);
-          },
-        ),
-        backButtonDispatcher: RootBackButtonDispatcher()
+      routeInformationProvider:
+          PlatformRouteInformationProvider(initialRouteInformation: RouteInformation(uri: Uri.parse('initial'))),
+      routeInformationParser: SimpleRouteInformationParser(),
+      routerDelegate: SimpleNavigatorRouterDelegate(
+        builder: (BuildContext context, RouteInformation information) {
+          return Text(information.uri.toString());
+        },
+        onPopPage: (Route<void> route, void result, SimpleNavigatorRouterDelegate delegate) {
+          delegate.routeInformation = RouteInformation(uri: Uri.parse('popped'));
+          return route.didPop(result);
+        },
+      ),
+      backButtonDispatcher: RootBackButtonDispatcher(),
     );
-    await tester.pumpWidget(CupertinoApp.router(
-      routerConfig: routerConfig,
-    ));
+    await tester.pumpWidget(CupertinoApp.router(routerConfig: routerConfig));
     expect(find.text('initial'), findsOneWidget);
 
     // Simulate android back button intent.
     final ByteData message = const JSONMethodCodec().encodeMethodCall(const MethodCall('popRoute'));
-    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) { });
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) {});
     await tester.pumpAndSettle();
     expect(find.text('popped'), findsOneWidget);
   });
 
   testWidgets('CupertinoApp has correct default ScrollBehavior', (WidgetTester tester) async {
     late BuildContext capturedContext;
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Builder(
-          builder: (BuildContext context) {
-            capturedContext = context;
-            return const Placeholder();
-          },
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Builder(
+        builder: (BuildContext context) {
+          capturedContext = context;
+          return const Placeholder();
+        },
       ),
-    );
+    ));
     expect(ScrollConfiguration.of(capturedContext).runtimeType, CupertinoScrollBehavior);
   });
 
   testWidgets('A ScrollBehavior can be set for CupertinoApp', (WidgetTester tester) async {
     late BuildContext capturedContext;
-    await tester.pumpWidget(
-      CupertinoApp(
-        scrollBehavior: const MockScrollBehavior(),
-        home: Builder(
-          builder: (BuildContext context) {
-            capturedContext = context;
-            return const Placeholder();
-          },
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      scrollBehavior: const MockScrollBehavior(),
+      home: Builder(
+        builder: (BuildContext context) {
+          capturedContext = context;
+          return const Placeholder();
+        },
       ),
-    );
+    ));
     final ScrollBehavior scrollBehavior = ScrollConfiguration.of(capturedContext);
     expect(scrollBehavior.runtimeType, MockScrollBehavior);
     expect(scrollBehavior.getScrollPhysics(capturedContext).runtimeType, NeverScrollableScrollPhysics);
   });
 
-  testWidgets('When `useInheritedMediaQuery` is true an existing MediaQuery is used if one is available', (WidgetTester tester) async {
-    late BuildContext capturedContext;
-    final UniqueKey uniqueKey = UniqueKey();
-    await tester.pumpWidget(
-      MediaQuery(
+  testWidgets(
+    'When `useInheritedMediaQuery` is true an existing MediaQuery is used if one is available',
+    (WidgetTester tester) async {
+      late BuildContext capturedContext;
+      final UniqueKey uniqueKey = UniqueKey();
+      await tester.pumpWidget(MediaQuery(
         key: uniqueKey,
         data: const MediaQueryData(),
         child: CupertinoApp(
@@ -329,33 +292,26 @@ void main() {
           },
           color: const Color(0xFF123456),
         ),
-      ),
-    );
-    expect(capturedContext.dependOnInheritedWidgetOfExactType<MediaQuery>()?.key, uniqueKey);
-  });
+      ));
+      expect(capturedContext.dependOnInheritedWidgetOfExactType<MediaQuery>()?.key, uniqueKey);
+    },
+  );
 
-  testWidgets('Text color is correctly resolved when CupertinoThemeData.brightness is null', (WidgetTester tester) async {
-    debugBrightnessOverride = Brightness.dark;
+  testWidgets(
+    'Text color is correctly resolved when CupertinoThemeData.brightness is null',
+    (WidgetTester tester) async {
+      debugBrightnessOverride = Brightness.dark;
 
-    await tester.pumpWidget(
-      const CupertinoApp(
-        home: CupertinoPageScaffold(
-          child: Text('Hello'),
-        ),
-      ),
-    );
+      await tester.pumpWidget(const CupertinoApp(home: CupertinoPageScaffold(child: Text('Hello'))));
 
-    final RenderParagraph paragraph = tester.renderObject(find.text('Hello'));
-    final CupertinoDynamicColor textColor = paragraph.text.style!.color! as CupertinoDynamicColor;
+      final RenderParagraph paragraph = tester.renderObject(find.text('Hello'));
+      final CupertinoDynamicColor textColor = paragraph.text.style!.color! as CupertinoDynamicColor;
 
-    // App with non-null brightness, so resolving color
-    // doesn't depend on the MediaQuery.platformBrightness.
-    late BuildContext capturedContext;
-    await tester.pumpWidget(
-      CupertinoApp(
-        theme: const CupertinoThemeData(
-          brightness: Brightness.dark,
-        ),
+      // App with non-null brightness, so resolving color
+      // doesn't depend on the MediaQuery.platformBrightness.
+      late BuildContext capturedContext;
+      await tester.pumpWidget(CupertinoApp(
+        theme: const CupertinoThemeData(brightness: Brightness.dark),
         home: Builder(
           builder: (BuildContext context) {
             capturedContext = context;
@@ -363,15 +319,15 @@ void main() {
             return const Placeholder();
           },
         ),
-      ),
-    );
+      ));
 
-    // We expect the string representations of the colors to have darkColor indicated (*) as effective color.
-    // (color = Color(0xff000000), *darkColor = Color(0xffffffff)*, resolved by: Builder)
-    expect(textColor.toString(), CupertinoColors.label.resolveFrom(capturedContext).toString());
+      // We expect the string representations of the colors to have darkColor indicated (*) as effective color.
+      // (color = Color(0xff000000), *darkColor = Color(0xffffffff)*, resolved by: Builder)
+      expect(textColor.toString(), CupertinoColors.label.resolveFrom(capturedContext).toString());
 
-    debugBrightnessOverride = null;
-  });
+      debugBrightnessOverride = null;
+    },
+  );
 
   testWidgets('Cursor color is resolved when CupertinoThemeData.brightness is null', (WidgetTester tester) async {
     debugBrightnessOverride = Brightness.dark;
@@ -394,26 +350,22 @@ void main() {
       return renderEditable!;
     }
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        theme: const CupertinoThemeData(
-          primaryColor: CupertinoColors.activeOrange,
-        ),
-        home: CupertinoPageScaffold(
-          child: Builder(
-            builder: (BuildContext context) {
-              return EditableText(
-                backgroundCursorColor: DefaultSelectionStyle.of(context).selectionColor!,
-                cursorColor: DefaultSelectionStyle.of(context).cursorColor!,
-                controller: TextEditingController(),
-                focusNode: FocusNode(),
-                style: const TextStyle(),
-              );
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      theme: const CupertinoThemeData(primaryColor: CupertinoColors.activeOrange),
+      home: CupertinoPageScaffold(
+        child: Builder(
+          builder: (BuildContext context) {
+            return EditableText(
+              backgroundCursorColor: DefaultSelectionStyle.of(context).selectionColor!,
+              cursorColor: DefaultSelectionStyle.of(context).cursorColor!,
+              controller: TextEditingController(),
+              focusNode: FocusNode(),
+              style: const TextStyle(),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     final RenderEditable editableText = findRenderEditable(tester);
     final Color cursorColor = editableText.cursorColor!;
@@ -458,10 +410,11 @@ void main() {
           () {
             defaultBehavior.buildScrollbar(capturedContext, child, details);
           },
-          throwsA(
-            isA<AssertionError>().having((AssertionError error) => error.toString(),
-                'description', contains('details.controller != null')),
-          ),
+          throwsA(isA<AssertionError>().having(
+            (AssertionError error) => error.toString(),
+            'description',
+            contains('details.controller != null'),
+          )),
         );
     }
   }, variant: TargetPlatformVariant.all());
@@ -475,7 +428,11 @@ class MockScrollBehavior extends ScrollBehavior {
 }
 
 typedef SimpleRouterDelegateBuilder = Widget Function(BuildContext, RouteInformation);
-typedef SimpleNavigatorRouterDelegatePopPage<T> = bool Function(Route<T> route, T result, SimpleNavigatorRouterDelegate delegate);
+typedef SimpleNavigatorRouterDelegatePopPage<T> = bool Function(
+  Route<T> route,
+  T result,
+  SimpleNavigatorRouterDelegate delegate,
+);
 
 class SimpleRouteInformationParser extends RouteInformationParser<RouteInformation> {
   SimpleRouteInformationParser();
@@ -491,11 +448,9 @@ class SimpleRouteInformationParser extends RouteInformationParser<RouteInformati
   }
 }
 
-class SimpleNavigatorRouterDelegate extends RouterDelegate<RouteInformation> with PopNavigatorRouterDelegateMixin<RouteInformation>, ChangeNotifier {
-  SimpleNavigatorRouterDelegate({
-    required this.builder,
-    this.onPopPage,
-  });
+class SimpleNavigatorRouterDelegate extends RouterDelegate<RouteInformation>
+    with PopNavigatorRouterDelegateMixin<RouteInformation>, ChangeNotifier {
+  SimpleNavigatorRouterDelegate({required this.builder, this.onPopPage});
 
   @override
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -528,9 +483,7 @@ class SimpleNavigatorRouterDelegate extends RouterDelegate<RouteInformation> wit
       pages: <Page<void>>[
         // We need at least two pages for the pop to propagate through.
         // Otherwise, the navigator will bubble the pop to the system navigator.
-        const CupertinoPage<void>(
-          child:  Text('base'),
-        ),
+        const CupertinoPage<void>(child: Text('base')),
         CupertinoPage<void>(
           key: ValueKey<String?>(routeInformation.uri.toString()),
           child: builder(context, routeInformation),

@@ -9,9 +9,9 @@ void main() {
   testWidgets('StatefulWidget BuildContext.mounted', (WidgetTester tester) async {
     late BuildContext capturedContext;
     await tester.pumpWidget(TestStatefulWidget(
-        onBuild: (BuildContext context) {
-          capturedContext = context;
-        }
+      onBuild: (BuildContext context) {
+        capturedContext = context;
+      },
     ));
     expect(capturedContext.mounted, isTrue);
     await tester.pumpWidget(Container());
@@ -23,7 +23,7 @@ void main() {
     await tester.pumpWidget(TestStatelessWidget(
       onBuild: (BuildContext context) {
         capturedContext = context;
-      }
+      },
     ));
     expect(capturedContext.mounted, isTrue);
     await tester.pumpWidget(Container());

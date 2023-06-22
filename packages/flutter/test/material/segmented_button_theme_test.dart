@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-
   test('SegmentedButtonThemeData copyWith, ==, hashCode basics', () {
     expect(const SegmentedButtonThemeData(), const SegmentedButtonThemeData().copyWith());
     expect(const SegmentedButtonThemeData().hashCode, const SegmentedButtonThemeData().copyWith().hashCode);
@@ -34,33 +33,31 @@ void main() {
     const SegmentedButtonThemeData().debugFillProperties(builder);
 
     final List<String> description = builder.properties
-      .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
-      .map((DiagnosticsNode node) => node.toString())
-      .toList();
+        .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
+        .map((DiagnosticsNode node) => node.toString())
+        .toList();
 
     expect(description, <String>[]);
   });
 
   testWidgets('With no other configuration, defaults are used', (WidgetTester tester) async {
     final ThemeData theme = ThemeData(useMaterial3: true);
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: Scaffold(
-          body: Center(
-            child: SegmentedButton<int>(
-              segments: const <ButtonSegment<int>>[
-                ButtonSegment<int>(value: 1, label: Text('1')),
-                ButtonSegment<int>(value: 2, label: Text('2')),
-                ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
-              ],
-              selected: const <int>{2},
-              onSelectionChanged: (Set<int> selected) { },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: Scaffold(
+        body: Center(
+          child: SegmentedButton<int>(
+            segments: const <ButtonSegment<int>>[
+              ButtonSegment<int>(value: 1, label: Text('1')),
+              ButtonSegment<int>(value: 2, label: Text('2')),
+              ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
+            ],
+            selected: const <int>{2},
+            onSelectionChanged: (Set<int> selected) {},
           ),
         ),
       ),
-    );
+    ));
 
     // Test first segment, should be enabled
     {
@@ -136,24 +133,22 @@ void main() {
         selectedIcon: const Icon(Icons.error),
       ),
     );
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: Scaffold(
-          body: Center(
-            child: SegmentedButton<int>(
-              segments: const <ButtonSegment<int>>[
-                ButtonSegment<int>(value: 1, label: Text('1')),
-                ButtonSegment<int>(value: 2, label: Text('2')),
-                ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
-              ],
-              selected: const <int>{2},
-              onSelectionChanged: (Set<int> selected) { },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: Scaffold(
+        body: Center(
+          child: SegmentedButton<int>(
+            segments: const <ButtonSegment<int>>[
+              ButtonSegment<int>(value: 1, label: Text('1')),
+              ButtonSegment<int>(value: 2, label: Text('2')),
+              ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
+            ],
+            selected: const <int>{2},
+            onSelectionChanged: (Set<int> selected) {},
           ),
         ),
       ),
-    );
+    ));
 
     // Test first segment, should be enabled
     {
@@ -250,31 +245,26 @@ void main() {
       ),
       selectedIcon: const Icon(Icons.plus_one),
     );
-    final ThemeData theme = ThemeData(
-      useMaterial3: true,
-      segmentedButtonTheme: global,
-    );
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: SegmentedButtonTheme(
-          data: segmentedTheme,
-          child: Scaffold(
-            body: Center(
-              child: SegmentedButton<int>(
-                segments: const <ButtonSegment<int>>[
-                  ButtonSegment<int>(value: 1, label: Text('1')),
-                  ButtonSegment<int>(value: 2, label: Text('2')),
-                  ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
-                ],
-                selected: const <int>{2},
-                onSelectionChanged: (Set<int> selected) { },
-              ),
+    final ThemeData theme = ThemeData(useMaterial3: true, segmentedButtonTheme: global);
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: SegmentedButtonTheme(
+        data: segmentedTheme,
+        child: Scaffold(
+          body: Center(
+            child: SegmentedButton<int>(
+              segments: const <ButtonSegment<int>>[
+                ButtonSegment<int>(value: 1, label: Text('1')),
+                ButtonSegment<int>(value: 2, label: Text('2')),
+                ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
+              ],
+              selected: const <int>{2},
+              onSelectionChanged: (Set<int> selected) {},
             ),
           ),
         ),
       ),
-    );
+    ));
 
     // Test first segment, should be enabled
     {
@@ -377,53 +367,48 @@ void main() {
       ),
       selectedIcon: const Icon(Icons.plus_one),
     );
-    final ThemeData theme = ThemeData(
-      useMaterial3: true,
-      segmentedButtonTheme: global,
-    );
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: SegmentedButtonTheme(
-          data: segmentedTheme,
-          child: Scaffold(
-            body: Center(
-              child: SegmentedButton<int>(
-                segments: const <ButtonSegment<int>>[
-                  ButtonSegment<int>(value: 1, label: Text('1')),
-                  ButtonSegment<int>(value: 2, label: Text('2')),
-                  ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
-                ],
-                selected: const <int>{2},
-                onSelectionChanged: (Set<int> selected) { },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
-                    if (states.contains(MaterialState.disabled)) {
-                      return Colors.black12;
-                    }
-                    if (states.contains(MaterialState.selected)) {
-                      return Colors.grey;
-                    }
-                    return null;
-                  }),
-                  foregroundColor: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
-                    if (states.contains(MaterialState.disabled)) {
-                      return Colors.amberAccent;
-                    }
-                    if (states.contains(MaterialState.selected)) {
-                      return Colors.deepOrange;
-                    } else {
-                      return Colors.deepPurpleAccent;
-                    }
-                  }),
-                ),
-                selectedIcon: const Icon(Icons.alarm),
+    final ThemeData theme = ThemeData(useMaterial3: true, segmentedButtonTheme: global);
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: SegmentedButtonTheme(
+        data: segmentedTheme,
+        child: Scaffold(
+          body: Center(
+            child: SegmentedButton<int>(
+              segments: const <ButtonSegment<int>>[
+                ButtonSegment<int>(value: 1, label: Text('1')),
+                ButtonSegment<int>(value: 2, label: Text('2')),
+                ButtonSegment<int>(value: 3, label: Text('3'), enabled: false),
+              ],
+              selected: const <int>{2},
+              onSelectionChanged: (Set<int> selected) {},
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return Colors.black12;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Colors.grey;
+                  }
+                  return null;
+                }),
+                foregroundColor: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return Colors.amberAccent;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Colors.deepOrange;
+                  } else {
+                    return Colors.deepPurpleAccent;
+                  }
+                }),
               ),
+              selectedIcon: const Icon(Icons.alarm),
             ),
           ),
         ),
       ),
-    );
+    ));
 
     // Test first segment, should be enabled
     {

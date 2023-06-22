@@ -30,17 +30,12 @@ void main() {
     }
   });
   test('AppLifecycleState values are in the right order for the state machine to be correct', () {
-    expect(
-      AppLifecycleState.values,
-      equals(
-        <AppLifecycleState>[
-          AppLifecycleState.detached,
-          AppLifecycleState.resumed,
-          AppLifecycleState.inactive,
-          AppLifecycleState.hidden,
-          AppLifecycleState.paused,
-        ],
-      ),
-    );
+    expect(AppLifecycleState.values, equals(<AppLifecycleState>[
+      AppLifecycleState.detached,
+      AppLifecycleState.resumed,
+      AppLifecycleState.inactive,
+      AppLifecycleState.hidden,
+      AppLifecycleState.paused,
+    ]));
   });
 }

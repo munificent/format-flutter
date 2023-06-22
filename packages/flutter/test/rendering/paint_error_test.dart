@@ -17,15 +17,18 @@ void main() {
   test('reentrant paint error', () {
     late FlutterErrorDetails errorDetails;
     final RenderBox root = TestReentrantPaintingErrorRenderBox();
-    layout(root, onErrors: () {
-      errorDetails = TestRenderingFlutterBinding.instance.takeFlutterErrorDetails()!;
-    });
+    layout(
+      root,
+      onErrors: () {
+        errorDetails = TestRenderingFlutterBinding.instance.takeFlutterErrorDetails()!;
+      },
+    );
     pumpFrame(phase: EnginePhase.paint);
 
     expect(errorDetails, isNotNull);
     expect(errorDetails.stack, isNotNull);
     // Check the ErrorDetails without the stack trace
-    final List<String> lines =  errorDetails.toString().split('\n');
+    final List<String> lines = errorDetails.toString().split('\n');
     // The lines in the middle of the error message contain the stack trace
     // which will change depending on where the test is run.
     expect(lines.length, greaterThan(12));
@@ -74,28 +77,25 @@ void main() {
     expect(flutterError, isNotNull);
     // The lines in the middle of the error message contain the stack trace
     // which will change depending on where the test is run.
-    expect(
-      flutterError.toStringDeep(),
-      equalsIgnoringHashCodes(
-        'FlutterError\n'
-        '   Tried to paint a RenderObject before its compositing bits were\n'
-        '   updated.\n'
-        '   The following RenderObject was marked as having dirty compositing bits at the time that it was painted:\n'
-        '     RenderRepaintBoundary#00000 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE:\n'
-        '     needs compositing\n'
-        '     parentData: <none>\n'
-        '     constraints: BoxConstraints(w=800.0, h=600.0)\n'
-        '     layer: OffsetLayer#00000 DETACHED\n'
-        '     size: Size(800.0, 600.0)\n'
-        '     metrics: 0.0% useful (1 bad vs 0 good)\n'
-        '     diagnosis: insufficient data to draw conclusion (less than five\n'
-        '       repaints)\n'
-        '   A RenderObject that still has dirty compositing bits cannot be\n'
-        '   painted because this indicates that the tree has not yet been\n'
-        '   properly configured for creating the layer tree.\n'
-        '   This usually indicates an error in the Flutter framework itself.\n',
-      ),
-    );
+    expect(flutterError.toStringDeep(), equalsIgnoringHashCodes(
+      'FlutterError\n'
+      '   Tried to paint a RenderObject before its compositing bits were\n'
+      '   updated.\n'
+      '   The following RenderObject was marked as having dirty compositing bits at the time that it was painted:\n'
+      '     RenderRepaintBoundary#00000 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE:\n'
+      '     needs compositing\n'
+      '     parentData: <none>\n'
+      '     constraints: BoxConstraints(w=800.0, h=600.0)\n'
+      '     layer: OffsetLayer#00000 DETACHED\n'
+      '     size: Size(800.0, 600.0)\n'
+      '     metrics: 0.0% useful (1 bad vs 0 good)\n'
+      '     diagnosis: insufficient data to draw conclusion (less than five\n'
+      '       repaints)\n'
+      '   A RenderObject that still has dirty compositing bits cannot be\n'
+      '   painted because this indicates that the tree has not yet been\n'
+      '   properly configured for creating the layer tree.\n'
+      '   This usually indicates an error in the Flutter framework itself.\n',
+    ));
     expect(
       flutterError.diagnostics.singleWhere((DiagnosticsNode node) => node.level == DiagnosticLevel.hint).toString(),
       'This usually indicates an error in the Flutter framework itself.',

@@ -17,12 +17,18 @@ void main() {
   setUp(() async {
     // Fill the clipboard so that the Paste option is available in the text
     // selection menu.
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, mockClipboard.handleMethodCall);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      mockClipboard.handleMethodCall,
+    );
     await Clipboard.setData(const ClipboardData(text: 'Clipboard data'));
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      null,
+    );
   });
 
   testWidgets('Changing query moves cursor to the end of query', (WidgetTester tester) async {
@@ -39,10 +45,7 @@ void main() {
 
     expect(
       textField.controller!.selection,
-      TextSelection(
-        baseOffset: delegate.query.length,
-        extentOffset: delegate.query.length,
-      ),
+      TextSelection(baseOffset: delegate.query.length, extentOffset: delegate.query.length),
     );
   });
 
@@ -50,10 +53,7 @@ void main() {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
     final List<String> selectedResults = <String>[];
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      results: selectedResults,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, results: selectedResults));
 
     // We are on the homepage
     expect(find.text('HomeBody'), findsOneWidget);
@@ -88,10 +88,7 @@ void main() {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
     final List<String?> selectedResults = <String?>[];
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      results: selectedResults,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, results: selectedResults));
 
     // We are on the homepage
     expect(find.text('HomeBody'), findsOneWidget);
@@ -109,7 +106,7 @@ void main() {
 
     // Simulate system back button
     final ByteData message = const JSONMethodCodec().encodeMethodCall(const MethodCall('popRoute'));
-    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) { });
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage('flutter/navigation', message, (_) {});
     await tester.pumpAndSettle();
 
     expect(selectedResults, <String?>[null]);
@@ -132,9 +129,7 @@ void main() {
     const String searchHintText = 'Enter search terms';
     final _TestSearchDelegate delegate = _TestSearchDelegate(searchHint: searchHintText);
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
@@ -145,9 +140,7 @@ void main() {
   testWidgets('Requests suggestions', (WidgetTester tester) async {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
@@ -175,10 +168,7 @@ void main() {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
     final List<String> selectedResults = <String>[];
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      results: selectedResults,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, results: selectedResults));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Wow');
@@ -210,9 +200,7 @@ void main() {
   testWidgets('Can switch between results and suggestions', (WidgetTester tester) async {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
@@ -280,9 +268,7 @@ void main() {
   testWidgets('Fresh search always starts with empty query', (WidgetTester tester) async {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
@@ -302,11 +288,7 @@ void main() {
 
     expect(delegate.query, '');
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      passInInitialQuery: true,
-      initialQuery: 'Foo',
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, passInInitialQuery: true, initialQuery: 'Foo'));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
@@ -318,10 +300,7 @@ void main() {
 
     delegate.query = 'Foo';
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      passInInitialQuery: true,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, passInInitialQuery: true));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
@@ -331,10 +310,7 @@ void main() {
   testWidgets('Changing query shows up in search field', (WidgetTester tester) async {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      passInInitialQuery: true,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, passInInitialQuery: true));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
@@ -352,10 +328,7 @@ void main() {
   testWidgets('transitionAnimation runs while search fades in/out', (WidgetTester tester) async {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      passInInitialQuery: true,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, passInInitialQuery: true));
 
     // runs while search fades in
     expect(delegate.transitionAnimation.status, AnimationStatus.dismissed);
@@ -393,10 +366,7 @@ void main() {
               tooltip: 'Nested Search',
               icon: const Icon(Icons.search),
               onPressed: () async {
-                final String? result = await showSearch(
-                  context: context,
-                  delegate: nestedSearchDelegate,
-                );
+                final String? result = await showSearch(context: context, delegate: nestedSearchDelegate);
                 nestedSearchResults.add(result);
               },
             );
@@ -405,10 +375,7 @@ void main() {
       ],
     );
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      results: selectedResults,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, results: selectedResults));
     expect(find.text('HomeBody'), findsOneWidget);
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
@@ -471,10 +438,7 @@ void main() {
               tooltip: 'Nested Search',
               icon: const Icon(Icons.search),
               onPressed: () async {
-                final String? result = await showSearch(
-                  context: context,
-                  delegate: nestedSearchDelegate,
-                );
+                final String? result = await showSearch(context: context, delegate: nestedSearchDelegate);
                 nestedSearchResults.add(result);
               },
             );
@@ -483,10 +447,7 @@ void main() {
       ],
     );
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      results: selectedResults,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, results: selectedResults));
 
     expect(find.text('HomeBody'), findsOneWidget);
     await tester.tap(find.byTooltip('Search'));
@@ -519,9 +480,7 @@ void main() {
 
     final _TestSearchDelegate delegate = _TestSearchDelegate(searchHint: searchHint);
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
@@ -534,9 +493,7 @@ void main() {
 
     final _TestSearchDelegate delegate = _TestSearchDelegate();
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
@@ -547,7 +504,10 @@ void main() {
     const String searchHintText = 'Enter search terms';
     const TextStyle searchFieldStyle = TextStyle(color: Colors.red, fontSize: 3);
 
-    final _TestSearchDelegate delegate = _TestSearchDelegate(searchHint: searchHintText, searchFieldStyle: searchFieldStyle);
+    final _TestSearchDelegate delegate = _TestSearchDelegate(
+      searchHint: searchHintText,
+      searchFieldStyle: searchFieldStyle,
+    );
 
     await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
@@ -560,15 +520,12 @@ void main() {
     expect(hintText.style?.fontSize, delegate.searchFieldStyle?.fontSize);
     expect(textField.style?.color, delegate.searchFieldStyle?.color);
     expect(textField.style?.fontSize, delegate.searchFieldStyle?.fontSize);
-
   });
 
   testWidgets('keyboard show search button by default', (WidgetTester tester) async {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
@@ -580,9 +537,7 @@ void main() {
   testWidgets('Custom textInputAction results in keyboard with corresponding button', (WidgetTester tester) async {
     final _TestSearchDelegate delegate = _TestSearchDelegate(textInputAction: TextInputAction.done);
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
     await tester.showKeyboard(find.byType(TextField));
@@ -590,7 +545,7 @@ void main() {
   });
 
   group('contributes semantics', () {
-    TestSemantics buildExpected({ required String routeName }) {
+    TestSemantics buildExpected({required String routeName}) {
       return TestSemantics.root(
         children: <TestSemantics>[
           TestSemantics(
@@ -602,10 +557,7 @@ void main() {
                 children: <TestSemantics>[
                   TestSemantics(
                     id: 7,
-                    flags: <SemanticsFlag>[
-                      SemanticsFlag.scopesRoute,
-                      SemanticsFlag.namesRoute,
-                    ],
+                    flags: <SemanticsFlag>[SemanticsFlag.scopesRoute, SemanticsFlag.namesRoute],
                     label: routeName,
                     textDirection: TextDirection.ltr,
                     children: <TestSemantics>[
@@ -631,11 +583,12 @@ void main() {
                               SemanticsFlag.isFocused,
                               SemanticsFlag.isHeader,
                               if (debugDefaultTargetPlatformOverride != TargetPlatform.iOS &&
-                                debugDefaultTargetPlatformOverride != TargetPlatform.macOS) SemanticsFlag.namesRoute,
+                                  debugDefaultTargetPlatformOverride != TargetPlatform.macOS)
+                                SemanticsFlag.namesRoute,
                             ],
                             actions: <SemanticsAction>[
                               if (debugDefaultTargetPlatformOverride == TargetPlatform.macOS ||
-                                debugDefaultTargetPlatformOverride == TargetPlatform.windows)
+                                  debugDefaultTargetPlatformOverride == TargetPlatform.windows)
                                 SemanticsAction.didGainAccessibilityFocus,
                               SemanticsAction.tap,
                               SemanticsAction.setSelection,
@@ -646,11 +599,7 @@ void main() {
                             textDirection: TextDirection.ltr,
                             textSelection: const TextSelection(baseOffset: 0, extentOffset: 0),
                           ),
-                          TestSemantics(
-                            id: 14,
-                            label: 'Bottom',
-                            textDirection: TextDirection.ltr,
-                          ),
+                          TestSemantics(id: 14, label: 'Bottom', textDirection: TextDirection.ltr),
                         ],
                       ),
                       TestSemantics(
@@ -678,19 +627,15 @@ void main() {
     testWidgets('includes routeName on Android', (WidgetTester tester) async {
       final SemanticsTester semantics = SemanticsTester(tester);
       final _TestSearchDelegate delegate = _TestSearchDelegate();
-      await tester.pumpWidget(TestHomePage(
-        delegate: delegate,
-      ));
+      await tester.pumpWidget(TestHomePage(delegate: delegate));
 
       await tester.tap(find.byTooltip('Search'));
       await tester.pumpAndSettle();
 
-      expect(semantics, hasSemantics(
-        buildExpected(routeName: 'Search'),
-        ignoreId: true,
-        ignoreRect: true,
-        ignoreTransform: true,
-      ));
+      expect(
+        semantics,
+        hasSemantics(buildExpected(routeName: 'Search'), ignoreId: true, ignoreRect: true, ignoreTransform: true),
+      );
 
       semantics.dispose();
     });
@@ -698,31 +643,25 @@ void main() {
     testWidgets('does not include routeName', (WidgetTester tester) async {
       final SemanticsTester semantics = SemanticsTester(tester);
       final _TestSearchDelegate delegate = _TestSearchDelegate();
-      await tester.pumpWidget(TestHomePage(
-        delegate: delegate,
-      ));
+      await tester.pumpWidget(TestHomePage(delegate: delegate));
 
       await tester.tap(find.byTooltip('Search'));
       await tester.pumpAndSettle();
 
-      expect(semantics, hasSemantics(
-        buildExpected(routeName: ''),
-        ignoreId: true,
-        ignoreRect: true,
-        ignoreTransform: true,
-      ));
+      expect(
+        semantics,
+        hasSemantics(buildExpected(routeName: ''), ignoreId: true, ignoreRect: true, ignoreTransform: true),
+      );
 
       semantics.dispose();
-    }, variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.iOS,  TargetPlatform.macOS }));
+    }, variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.iOS, TargetPlatform.macOS}));
   });
 
   testWidgets('Custom searchFieldDecorationTheme value', (WidgetTester tester) async {
     const InputDecorationTheme searchFieldDecorationTheme = InputDecorationTheme(
       hintStyle: TextStyle(color: _TestSearchDelegate.hintTextColor),
     );
-    final _TestSearchDelegate delegate = _TestSearchDelegate(
-      searchFieldDecorationTheme: searchFieldDecorationTheme,
-    );
+    final _TestSearchDelegate delegate = _TestSearchDelegate(searchFieldDecorationTheme: searchFieldDecorationTheme);
 
     await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
@@ -735,24 +674,18 @@ void main() {
   // Regression test for: https://github.com/flutter/flutter/issues/66781
   testWidgets('text in search bar contrasts background (light mode)', (WidgetTester tester) async {
     final ThemeData themeData = ThemeData(useMaterial3: false);
-    final _TestSearchDelegate delegate = _TestSearchDelegate(
-      defaultAppBarTheme: true,
-    );
+    final _TestSearchDelegate delegate = _TestSearchDelegate(defaultAppBarTheme: true);
     const String query = 'search query';
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      passInInitialQuery: true,
-      initialQuery: query,
-      themeData: themeData,
-    ));
+    await tester.pumpWidget(
+      TestHomePage(delegate: delegate, passInInitialQuery: true, initialQuery: query, themeData: themeData),
+    );
 
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
-    final Material appBarBackground = tester.widget<Material>(find.descendant(
-      of: find.byType(AppBar),
-      matching: find.byType(Material),
-    ));
+    final Material appBarBackground = tester.widget<Material>(
+      find.descendant(of: find.byType(AppBar), matching: find.byType(Material)),
+    );
     expect(appBarBackground.color, Colors.white);
 
     final TextField textField = tester.widget<TextField>(find.byType(TextField));
@@ -763,24 +696,18 @@ void main() {
   // Regression test for: https://github.com/flutter/flutter/issues/66781
   testWidgets('text in search bar contrasts background (dark mode)', (WidgetTester tester) async {
     final ThemeData themeData = ThemeData.dark(useMaterial3: false);
-    final _TestSearchDelegate delegate = _TestSearchDelegate(
-      defaultAppBarTheme: true,
-    );
+    final _TestSearchDelegate delegate = _TestSearchDelegate(defaultAppBarTheme: true);
     const String query = 'search query';
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      passInInitialQuery: true,
-      initialQuery: query,
-      themeData: themeData,
-    ));
+    await tester.pumpWidget(
+      TestHomePage(delegate: delegate, passInInitialQuery: true, initialQuery: query, themeData: themeData),
+    );
 
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
-    final Material appBarBackground = tester.widget<Material>(find.descendant(
-      of: find.byType(AppBar),
-      matching: find.byType(Material),
-    ));
+    final Material appBarBackground = tester.widget<Material>(
+      find.descendant(of: find.byType(AppBar), matching: find.byType(Material)),
+    );
     expect(appBarBackground.color, themeData.primaryColor);
 
     final TextField textField = tester.widget<TextField>(find.byType(TextField));
@@ -795,10 +722,7 @@ void main() {
     final _TestEmptySearchDelegate delegate = _TestEmptySearchDelegate();
     final List<String> selectedResults = <String>[];
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      results: selectedResults,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, results: selectedResults));
 
     // We are on the homepage.
     expect(find.text('HomeBody'), findsOneWidget);
@@ -841,20 +765,22 @@ void main() {
           if (settings.name == 'nested') {
             return MaterialPageRoute<dynamic>(
               builder: (BuildContext context) => Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  TextButton(
-                      onPressed: () async {
-                        await showSearch(context: context, delegate: delegate, useRootNavigator: true);
-                      },
-                      child: const Text('showSearchRootNavigator')),
-                  TextButton(
-                      onPressed: () async {
-                        await showSearch(context: context, delegate: delegate);
-                      },
-                      child: const Text('showSearchLocalNavigator')),
-                ],
-              ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      TextButton(
+                        onPressed: () async {
+                          await showSearch(context: context, delegate: delegate, useRootNavigator: true);
+                        },
+                        child: const Text('showSearchRootNavigator'),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          await showSearch(context: context, delegate: delegate);
+                        },
+                        child: const Text('showSearchLocalNavigator'),
+                      ),
+                    ],
+                  ),
               settings: settings,
             );
           }
@@ -890,10 +816,7 @@ void main() {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
     final List<String> selectedResults = <String>[];
 
-    await tester.pumpWidget(TestHomePage(
-      delegate: delegate,
-      results: selectedResults,
-    ));
+    await tester.pumpWidget(TestHomePage(delegate: delegate, results: selectedResults));
 
     // Open search.
     await tester.tap(find.byTooltip('Search'));
@@ -903,12 +826,7 @@ void main() {
     final TextField textField = tester.widget<TextField>(textFieldFinder);
     expect(textField.controller!.text.length, 0);
 
-    mockClipboard.handleMethodCall(const MethodCall(
-      'Clipboard.setData',
-      <String, dynamic>{
-        'text': 'pasteablestring',
-      },
-    ));
+    mockClipboard.handleMethodCall(const MethodCall('Clipboard.setData', <String, dynamic>{'text': 'pasteablestring'}));
 
     // Long press shows toolbar.
     await tester.longPress(textFieldFinder);
@@ -941,36 +859,32 @@ class TestHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: themeData,
-      home: Builder(builder: (BuildContext context) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('HomeTitle'),
-            actions: <Widget>[
-              IconButton(
-                tooltip: 'Search',
-                icon: const Icon(Icons.search),
-                onPressed: () async {
-                  String? selectedResult;
-                  if (passInInitialQuery) {
-                    selectedResult = await showSearch<String>(
-                      context: context,
-                      delegate: delegate,
-                      query: initialQuery,
-                    );
-                  } else {
-                    selectedResult = await showSearch<String>(
-                      context: context,
-                      delegate: delegate,
-                    );
-                  }
-                  results?.add(selectedResult);
-                },
-              ),
-            ],
-          ),
-          body: const Text('HomeBody'),
-        );
-      }),
+      home: Builder(
+        builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('HomeTitle'),
+              actions: <Widget>[
+                IconButton(
+                  tooltip: 'Search',
+                  icon: const Icon(Icons.search),
+                  onPressed: () async {
+                    String? selectedResult;
+                    if (passInInitialQuery) {
+                      selectedResult =
+                          await showSearch<String>(context: context, delegate: delegate, query: initialQuery);
+                    } else {
+                      selectedResult = await showSearch<String>(context: context, delegate: delegate);
+                    }
+                    results?.add(selectedResult);
+                  },
+                ),
+              ],
+            ),
+            body: const Text('HomeBody'),
+          );
+        },
+      ),
     );
   }
 }
@@ -985,9 +899,7 @@ class _TestSearchDelegate extends SearchDelegate<String> {
     super.searchFieldStyle,
     String? searchHint,
     super.textInputAction,
-  }) : super(
-          searchFieldLabel: searchHint,
-        );
+  }) : super(searchFieldLabel: searchHint);
 
   final bool defaultAppBarTheme;
   final String suggestions;
@@ -1003,12 +915,7 @@ class _TestSearchDelegate extends SearchDelegate<String> {
     final ThemeData theme = Theme.of(context);
     return theme.copyWith(
       inputDecorationTheme: searchFieldDecorationTheme ??
-          InputDecorationTheme(
-            hintStyle: searchFieldStyle ??
-                const TextStyle(
-                  color: hintTextColor,
-                ),
-          ),
+          InputDecorationTheme(hintStyle: searchFieldStyle ?? const TextStyle(color: hintTextColor)),
     );
   }
 
@@ -1050,10 +957,7 @@ class _TestSearchDelegate extends SearchDelegate<String> {
 
   @override
   PreferredSizeWidget buildBottom(BuildContext context) {
-    return const PreferredSize(
-      preferredSize: Size.fromHeight(56.0),
-      child: Text('Bottom'),
-    );
+    return const PreferredSize(preferredSize: Size.fromHeight(56.0), child: Text('Bottom'));
   }
 }
 

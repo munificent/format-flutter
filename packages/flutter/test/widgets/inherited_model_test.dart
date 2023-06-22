@@ -9,14 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 // A simple "flat" InheritedModel: the data model is just 3 integer
 // valued fields: a, b, c.
 class ABCModel extends InheritedModel<String> {
-  const ABCModel({
-    super.key,
-    this.a,
-    this.b,
-    this.c,
-    this.aspects,
-    required super.child,
-  });
+  const ABCModel({super.key, this.a, this.b, this.c, this.aspects, required super.child});
 
   final int? a;
   final int? b;
@@ -41,19 +34,19 @@ class ABCModel extends InheritedModel<String> {
 
   @override
   bool updateShouldNotifyDependent(ABCModel old, Set<String> dependencies) {
-    return !setEquals<String>(aspects, old.aspects)
-        || (a != old.a && dependencies.contains('a'))
-        || (b != old.b && dependencies.contains('b'))
-        || (c != old.c && dependencies.contains('c'));
+    return !setEquals<String>(aspects, old.aspects) ||
+        (a != old.a && dependencies.contains('a')) ||
+        (b != old.b && dependencies.contains('b')) ||
+        (c != old.c && dependencies.contains('c'));
   }
 
-  static ABCModel? of(BuildContext context, { String? fieldName }) {
+  static ABCModel? of(BuildContext context, {String? fieldName}) {
     return InheritedModel.inheritFrom<ABCModel>(context, aspect: fieldName);
   }
 }
 
 class ShowABCField extends StatefulWidget {
-  const ShowABCField({ super.key, required this.fieldName });
+  const ShowABCField({super.key, required this.fieldName});
 
   final String fieldName;
 
@@ -114,7 +107,9 @@ void main() {
                           // Rebuilds the ABCModel which triggers a rebuild
                           // of showA because showA depends on the 'a' aspect
                           // of the ABCModel.
-                          setState(() { a += 1; });
+                          setState(() {
+                            a += 1;
+                          });
                         },
                       ),
                       ElevatedButton(
@@ -123,7 +118,9 @@ void main() {
                           // Rebuilds the ABCModel which triggers a rebuild
                           // of showB because showB depends on the 'b' aspect
                           // of the ABCModel.
-                          setState(() { b += 1; });
+                          setState(() {
+                            b += 1;
+                          });
                         },
                       ),
                       ElevatedButton(
@@ -132,7 +129,9 @@ void main() {
                           // Rebuilds the ABCModel which triggers a rebuild
                           // of showC because showC depends on the 'c' aspect
                           // of the ABCModel.
-                          setState(() { c += 1; });
+                          setState(() {
+                            c += 1;
+                          });
                         },
                       ),
                     ],
@@ -192,14 +191,12 @@ void main() {
   testWidgets('Looking up an non existent InheritedModel ancestor returns null', (WidgetTester tester) async {
     ABCModel? inheritedModel;
 
-    await tester.pumpWidget(
-      Builder(
-        builder: (BuildContext context) {
-          inheritedModel = InheritedModel.inheritFrom(context);
-          return Container();
-        },
-      ),
-    );
+    await tester.pumpWidget(Builder(
+      builder: (BuildContext context) {
+        inheritedModel = InheritedModel.inheritFrom(context);
+        return Container();
+      },
+    ));
     // Shouldn't crash first of all.
 
     expect(inheritedModel, null);
@@ -233,11 +230,13 @@ void main() {
         return Scaffold(
           body: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return ABCModel( // The "outer" model
+              return ABCModel(
+                // The "outer" model
                 a: a,
                 b: b,
                 c: c,
-                child: ABCModel( // The "inner" model
+                child: ABCModel(
+                  // The "inner" model
                   a: 100 + a,
                   b: 100 + b,
                   aspects: const <String>{'a'},
@@ -254,19 +253,25 @@ void main() {
                         ElevatedButton(
                           child: const Text('Increment a'),
                           onPressed: () {
-                            setState(() { a += 1; });
+                            setState(() {
+                              a += 1;
+                            });
                           },
                         ),
                         ElevatedButton(
                           child: const Text('Increment b'),
                           onPressed: () {
-                            setState(() { b += 1; });
+                            setState(() {
+                              b += 1;
+                            });
                           },
                         ),
                         ElevatedButton(
                           child: const Text('Increment c'),
                           onPressed: () {
-                            setState(() { c += 1; });
+                            setState(() {
+                              c += 1;
+                            });
                           },
                         ),
                       ],
@@ -350,11 +355,13 @@ void main() {
         return Scaffold(
           body: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return ABCModel( // The "outer" model
+              return ABCModel(
+                // The "outer" model
                 a: a,
                 b: b,
                 c: c,
-                child: ABCModel( // The "inner" model
+                child: ABCModel(
+                  // The "inner" model
                   a: 100 + a,
                   b: 100 + b,
                   aspects: innerModelAspects,
@@ -371,19 +378,25 @@ void main() {
                         ElevatedButton(
                           child: const Text('Increment a'),
                           onPressed: () {
-                            setState(() { a += 1; });
+                            setState(() {
+                              a += 1;
+                            });
                           },
                         ),
                         ElevatedButton(
                           child: const Text('Increment b'),
                           onPressed: () {
-                            setState(() { b += 1; });
+                            setState(() {
+                              b += 1;
+                            });
                           },
                         ),
                         ElevatedButton(
                           child: const Text('Increment c'),
                           onPressed: () {
-                            setState(() { c += 1; });
+                            setState(() {
+                              c += 1;
+                            });
                           },
                         ),
                         ElevatedButton(

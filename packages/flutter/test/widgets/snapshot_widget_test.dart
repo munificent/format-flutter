@@ -23,11 +23,7 @@ void main() {
       child: TestDependencies(
         child: SnapshotWidget(
           controller: controller,
-          child: Container(
-            width: 100,
-            height: 100,
-            color: const Color(0xFFAABB11),
-          ),
+          child: Container(width: 100, height: 100, color: const Color(0xFFAABB11)),
         ),
       ),
     ));
@@ -39,11 +35,7 @@ void main() {
       child: TestDependencies(
         child: SnapshotWidget(
           controller: controller,
-          child: Container(
-            width: 100,
-            height: 100,
-            color: const Color(0xFFAA0000),
-          ),
+          child: Container(width: 100, height: 100, color: const Color(0xFFAA0000)),
         ),
       ),
     ));
@@ -62,8 +54,8 @@ void main() {
     double devicePixelRatio = 1.0;
     late StateSetter localSetState;
 
-    await tester.pumpWidget(
-      StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+    await tester.pumpWidget(StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
         localSetState = setState;
         return Center(
           child: TestDependencies(
@@ -75,8 +67,8 @@ void main() {
             ),
           ),
         );
-      }),
-    );
+      },
+    ));
 
     expect(painter.count, 1);
 
@@ -95,8 +87,8 @@ void main() {
     double devicePixelRatio = 1.0;
     late StateSetter localSetState;
 
-    await tester.pumpWidget(
-      StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+    await tester.pumpWidget(StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
         localSetState = setState;
         return Center(
           child: TestDependencies(
@@ -108,8 +100,8 @@ void main() {
             ),
           ),
         );
-      }),
-    );
+      },
+    ));
     final ui.Image? raster = painter.lastImage;
 
     expect(raster, isNotNull);
@@ -133,11 +125,7 @@ void main() {
         child: TestDependencies(
           child: SnapshotWidget(
             controller: controller,
-            child: Container(
-              width: 100,
-              height: 100,
-              color: const Color(0xFFAABB11),
-            ),
+            child: Container(width: 100, height: 100, color: const Color(0xFFAABB11)),
           ),
         ),
       ),
@@ -155,113 +143,86 @@ void main() {
 
   testWidgets('SnapshotWidget can update the painter type', (WidgetTester tester) async {
     final SnapshotController controller = SnapshotController(allowSnapshotting: true);
-    await tester.pumpWidget(
-      Center(
-        child: TestDependencies(
-          child: SnapshotWidget(
-            controller: controller,
-            painter: TestPainter(),
-            child: const SizedBox(),
-          ),
-        ),
+    await tester.pumpWidget(Center(
+      child: TestDependencies(
+        child: SnapshotWidget(controller: controller, painter: TestPainter(), child: const SizedBox()),
       ),
-    );
+    ));
 
-    await tester.pumpWidget(
-      Center(
-        child: TestDependencies(
-          child: SnapshotWidget(
-            controller: controller,
-            painter: TestPainter2(),
-            child: const SizedBox(),
-          ),
-        ),
+    await tester.pumpWidget(Center(
+      child: TestDependencies(
+        child: SnapshotWidget(controller: controller, painter: TestPainter2(), child: const SizedBox()),
       ),
-    );
+    ));
 
     expect(tester.takeException(), isNull);
   }, skip: kIsWeb); // TODO(jonahwilliams): https://github.com/flutter/flutter/issues/106689
 
-  testWidgets('RenderSnapshotWidget does not error on rasterization of child with empty size', (WidgetTester tester) async {
-    final SnapshotController controller = SnapshotController(allowSnapshotting: true);
-    await tester.pumpWidget(
-      Center(
-        child: TestDependencies(
-          child: SnapshotWidget(
-            controller: controller,
-            child: const SizedBox(),
-          ),
-        ),
-      ),
-    );
+  testWidgets(
+    'RenderSnapshotWidget does not error on rasterization of child with empty size',
+    (WidgetTester tester) async {
+      final SnapshotController controller = SnapshotController(allowSnapshotting: true);
+      await tester.pumpWidget(
+        Center(child: TestDependencies(child: SnapshotWidget(controller: controller, child: const SizedBox()))),
+      );
 
-    expect(tester.takeException(), isNull);
-  }, skip: kIsWeb); // TODO(jonahwilliams): https://github.com/flutter/flutter/issues/106689
-
+      expect(tester.takeException(), isNull);
+    },
+    skip: kIsWeb,
+  ); // TODO(jonahwilliams): https://github.com/flutter/flutter/issues/106689
 
   testWidgets('RenderSnapshotWidget throws assertion if platform view is encountered', (WidgetTester tester) async {
     final SnapshotController controller = SnapshotController(allowSnapshotting: true);
-    await tester.pumpWidget(
-      Center(
-        child: TestDependencies(
-          child: SnapshotWidget(
-            controller: controller,
-            child: const SizedBox(
-              width: 100,
-              height: 100,
-              child: TestPlatformView(),
-            ),
-          ),
+    await tester.pumpWidget(Center(
+      child: TestDependencies(
+        child: SnapshotWidget(
+          controller: controller,
+          child: const SizedBox(width: 100, height: 100, child: TestPlatformView()),
         ),
       ),
-    );
+    ));
 
-    expect(tester.takeException(), isA<FlutterError>()
-      .having((FlutterError error) => error.message, 'message', contains('SnapshotWidget used with a child that contains a PlatformView')));
+    expect(tester.takeException(), isA<FlutterError>().having(
+      (FlutterError error) => error.message,
+      'message',
+      contains('SnapshotWidget used with a child that contains a PlatformView'),
+    ));
   }, skip: kIsWeb); // TODO(jonahwilliams): https://github.com/flutter/flutter/issues/106689
 
   testWidgets('RenderSnapshotWidget does not assert if SnapshotMode.forced', (WidgetTester tester) async {
     final SnapshotController controller = SnapshotController(allowSnapshotting: true);
-    await tester.pumpWidget(
-      Center(
-        child: TestDependencies(
-          child: SnapshotWidget(
-            controller: controller,
-            mode: SnapshotMode.forced,
-            child: const SizedBox(
-              width: 100,
-              height: 100,
-              child: TestPlatformView(),
-            ),
-          ),
+    await tester.pumpWidget(Center(
+      child: TestDependencies(
+        child: SnapshotWidget(
+          controller: controller,
+          mode: SnapshotMode.forced,
+          child: const SizedBox(width: 100, height: 100, child: TestPlatformView()),
         ),
       ),
-    );
+    ));
 
     expect(tester.takeException(), isNull);
   }, skip: kIsWeb); // TODO(jonahwilliams): https://github.com/flutter/flutter/issues/106689
 
-  testWidgets('RenderSnapshotWidget does not take a snapshot if a platform view is encountered with SnapshotMode.permissive', (WidgetTester tester) async {
-    final SnapshotController controller = SnapshotController(allowSnapshotting: true);
-    await tester.pumpWidget(
-      Center(
+  testWidgets(
+    'RenderSnapshotWidget does not take a snapshot if a platform view is encountered with SnapshotMode.permissive',
+    (WidgetTester tester) async {
+      final SnapshotController controller = SnapshotController(allowSnapshotting: true);
+      await tester.pumpWidget(Center(
         child: TestDependencies(
           child: SnapshotWidget(
             controller: controller,
             mode: SnapshotMode.permissive,
-            child: const SizedBox(
-              width: 100,
-              height: 100,
-              child: TestPlatformView(),
-            ),
+            child: const SizedBox(width: 100, height: 100, child: TestPlatformView()),
           ),
         ),
-      ),
-    );
+      ));
 
-    expect(tester.takeException(), isNull);
-    expect(tester.layers.last, isA<PlatformViewLayer>());
-  }, skip: kIsWeb); // TODO(jonahwilliams): https://github.com/flutter/flutter/issues/106689
+      expect(tester.takeException(), isNull);
+      expect(tester.layers.last, isA<PlatformViewLayer>());
+    },
+    skip: kIsWeb,
+  ); // TODO(jonahwilliams): https://github.com/flutter/flutter/issues/106689
 
   testWidgets('SnapshotWidget should have same result when enabled', (WidgetTester tester) async {
     addTearDown(tester.view.reset);
@@ -281,16 +242,14 @@ void main() {
           padding: const EdgeInsets.only(right: 0.6, bottom: 0.6),
           child: SnapshotWidget(
             controller: controller,
-            child: Container(
-              margin: const EdgeInsets.only(right: 0.4, bottom: 0.4),
-              color: Colors.blue,
-            ),
+            child: Container(margin: const EdgeInsets.only(right: 0.4, bottom: 0.4), color: Colors.blue),
           ),
         ),
       ),
     ));
 
-    final ui.Image imageWhenDisabled = (tester.renderObject(find.byKey(repaintBoundaryKey)) as RenderRepaintBoundary).toImageSync();
+    final ui.Image imageWhenDisabled =
+        (tester.renderObject(find.byKey(repaintBoundaryKey)) as RenderRepaintBoundary).toImageSync();
 
     controller.allowSnapshotting = true;
     await tester.pump();
@@ -340,7 +299,14 @@ class TestPainter extends SnapshotPainter {
   }
 
   @override
-  void paintSnapshot(PaintingContext context, Offset offset, Size size, ui.Image image, Size sourceSize, double pixelRatio) {
+  void paintSnapshot(
+    PaintingContext context,
+    Offset offset,
+    Size size,
+    ui.Image image,
+    Size sourceSize,
+    double pixelRatio,
+  ) {
     count += 1;
     lastImage = image;
   }
@@ -369,10 +335,7 @@ class TestDependencies extends StatelessWidget {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.ltr,
-      child: MediaQuery(
-        data: const MediaQueryData().copyWith(devicePixelRatio: devicePixelRatio),
-        child: child,
-      ),
+      child: MediaQuery(data: const MediaQueryData().copyWith(devicePixelRatio: devicePixelRatio), child: child),
     );
   }
 }

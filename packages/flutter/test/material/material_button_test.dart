@@ -16,24 +16,16 @@ void main() {
   });
 
   testWidgets('MaterialButton defaults', (WidgetTester tester) async {
-    final Finder rawButtonMaterial = find.descendant(
-      of: find.byType(MaterialButton),
-      matching: find.byType(Material),
-    );
+    final Finder rawButtonMaterial = find.descendant(of: find.byType(MaterialButton), matching: find.byType(Material));
 
     // Enabled MaterialButton
-    await tester.pumpWidget(
-      Theme(
-        data: ThemeData(useMaterial3: false),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: MaterialButton(
-            onPressed: () { },
-            child: const Text('button'),
-          ),
-        ),
+    await tester.pumpWidget(Theme(
+      data: ThemeData(useMaterial3: false),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: MaterialButton(onPressed: () {}, child: const Text('button')),
       ),
-    );
+    ));
     Material material = tester.widget<Material>(rawButtonMaterial);
     expect(material.animationDuration, const Duration(milliseconds: 200));
     expect(material.borderOnForeground, true);
@@ -70,18 +62,13 @@ void main() {
     expect(material.type, MaterialType.transparency);
 
     // Disabled MaterialButton
-    await tester.pumpWidget(
-      Theme(
-        data: ThemeData(useMaterial3: false),
-        child: const Directionality(
-          textDirection: TextDirection.ltr,
-          child: MaterialButton(
-            onPressed: null,
-            child: Text('button'),
-          ),
-        ),
+    await tester.pumpWidget(Theme(
+      data: ThemeData(useMaterial3: false),
+      child: const Directionality(
+        textDirection: TextDirection.ltr,
+        child: MaterialButton(onPressed: null, child: Text('button')),
       ),
-    );
+    ));
     material = tester.widget<Material>(rawButtonMaterial);
     expect(material.animationDuration, const Duration(milliseconds: 200));
     expect(material.borderOnForeground, true);
@@ -101,23 +88,19 @@ void main() {
   testWidgets('Does MaterialButton work with hover', (WidgetTester tester) async {
     const Color hoverColor = Color(0xff001122);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: MaterialButton(
-          hoverColor: hoverColor,
-          onPressed: () { },
-          child: const Text('button'),
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: MaterialButton(hoverColor: hoverColor, onPressed: () {}, child: const Text('button')),
+    ));
 
     final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer();
     await gesture.moveTo(tester.getCenter(find.byType(MaterialButton)));
     await tester.pumpAndSettle();
 
-    final RenderObject inkFeatures = tester.allRenderObjects.firstWhere((RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures');
+    final RenderObject inkFeatures = tester.allRenderObjects.firstWhere(
+      (RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures',
+    );
     expect(inkFeatures, paints..rect(color: hoverColor));
   });
 
@@ -125,23 +108,19 @@ void main() {
     const Color focusColor = Color(0xff001122);
 
     final FocusNode focusNode = FocusNode(debugLabel: 'MaterialButton Node');
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: MaterialButton(
-          focusColor: focusColor,
-          focusNode: focusNode,
-          onPressed: () { },
-          child: const Text('button'),
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child:
+          MaterialButton(focusColor: focusColor, focusNode: focusNode, onPressed: () {}, child: const Text('button')),
+    ));
 
     FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
     focusNode.requestFocus();
     await tester.pumpAndSettle();
 
-    final RenderObject inkFeatures = tester.allRenderObjects.firstWhere((RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures');
+    final RenderObject inkFeatures = tester.allRenderObjects.firstWhere(
+      (RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures',
+    );
     expect(inkFeatures, paints..rect(color: focusColor));
   });
 
@@ -154,29 +133,24 @@ void main() {
     const Color hoverColor = Color(0xff112233);
     const Color highlightColor = Color(0xff223344);
 
-    final Finder rawButtonMaterial = find.descendant(
-      of: find.byType(MaterialButton),
-      matching: find.byType(Material),
-    );
+    final Finder rawButtonMaterial = find.descendant(of: find.byType(MaterialButton), matching: find.byType(Material));
 
     final FocusNode focusNode = FocusNode(debugLabel: 'MaterialButton Node');
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: MaterialButton(
-          focusColor: focusColor,
-          hoverColor: hoverColor,
-          highlightColor: highlightColor,
-          elevation: elevation,
-          focusElevation: focusElevation,
-          hoverElevation: hoverElevation,
-          highlightElevation: highlightElevation,
-          focusNode: focusNode,
-          onPressed: () { },
-          child: const Text('button'),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: MaterialButton(
+        focusColor: focusColor,
+        hoverColor: hoverColor,
+        highlightColor: highlightColor,
+        elevation: elevation,
+        focusElevation: focusElevation,
+        hoverElevation: hoverElevation,
+        highlightElevation: highlightElevation,
+        focusNode: focusNode,
+        onPressed: () {},
+        child: const Text('button'),
       ),
-    );
+    ));
     await tester.pumpAndSettle();
     FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
 
@@ -188,7 +162,9 @@ void main() {
     focusNode.requestFocus();
     await tester.pumpAndSettle();
     material = tester.widget<Material>(rawButtonMaterial);
-    RenderObject inkFeatures = tester.allRenderObjects.firstWhere((RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures');
+    RenderObject inkFeatures = tester.allRenderObjects.firstWhere(
+      (RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures',
+    );
     expect(inkFeatures, paints..rect(color: focusColor));
     expect(focusNode.hasPrimaryFocus, isTrue);
     expect(material.elevation, equals(focusElevation));
@@ -200,8 +176,15 @@ void main() {
     await gesture.moveTo(tester.getCenter(find.byType(MaterialButton)));
     await tester.pumpAndSettle();
     material = tester.widget<Material>(rawButtonMaterial);
-    inkFeatures = tester.allRenderObjects.firstWhere((RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures');
-    expect(inkFeatures, paints..rect(color: focusColor)..rect(color: hoverColor));
+    inkFeatures = tester.allRenderObjects.firstWhere(
+      (RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures',
+    );
+    expect(
+      inkFeatures,
+      paints
+        ..rect(color: focusColor)
+        ..rect(color: hoverColor),
+    );
     expect(material.elevation, equals(hoverElevation));
     await gesture.removePointer();
     gesture = null;
@@ -211,28 +194,30 @@ void main() {
     addTearDown(gesture2.removePointer);
     await tester.pumpAndSettle();
     material = tester.widget<Material>(rawButtonMaterial);
-    inkFeatures = tester.allRenderObjects.firstWhere((RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures');
-    expect(inkFeatures, paints..rect(color: focusColor)..rect(color: highlightColor));
+    inkFeatures = tester.allRenderObjects.firstWhere(
+      (RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures',
+    );
+    expect(
+      inkFeatures,
+      paints
+        ..rect(color: focusColor)
+        ..rect(color: highlightColor),
+    );
     expect(material.elevation, equals(highlightElevation));
     await gesture2.up();
   });
 
-  testWidgets("MaterialButton's disabledColor takes precedence over its default disabled color.", (WidgetTester tester) async {
+  testWidgets("MaterialButton's disabledColor takes precedence over its default disabled color.", (
+    WidgetTester tester,
+  ) async {
     // Regression test for https://github.com/flutter/flutter/issues/30012.
 
-    final Finder rawButtonMaterial = find.descendant(
-      of: find.byType(MaterialButton),
-      matching: find.byType(Material),
-    );
+    final Finder rawButtonMaterial = find.descendant(of: find.byType(MaterialButton), matching: find.byType(Material));
 
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: MaterialButton(
-          disabledColor: Color(0xff00ff00),
-          onPressed: null,
-          child: Text('button'),
-        ),
+        child: MaterialButton(disabledColor: Color(0xff00ff00), onPressed: null, child: Text('button')),
       ),
     );
 
@@ -240,117 +225,107 @@ void main() {
     expect(material.color, const Color(0xff00ff00));
   });
 
-  testWidgets('Default MaterialButton meets a11y contrast guidelines', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: MaterialButton(
-              child: const Text('MaterialButton'),
-              onPressed: () { },
-            ),
-          ),
-        ),
-      ),
-    );
+  testWidgets(
+    'Default MaterialButton meets a11y contrast guidelines',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(body: Center(child: MaterialButton(child: const Text('MaterialButton'), onPressed: () {}))),
+      ));
 
-    // Default, not disabled.
-    await expectLater(tester, meetsGuideline(textContrastGuideline));
+      // Default, not disabled.
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
 
-    // Highlighted (pressed).
-    final Offset center = tester.getCenter(find.byType(MaterialButton));
-    await tester.startGesture(center);
-    await tester.pump(); // Start the splash and highlight animations.
-    await tester.pump(const Duration(milliseconds: 800)); // Wait for splash and highlight to be well under way.
-    await expectLater(tester, meetsGuideline(textContrastGuideline));
-  },
+      // Highlighted (pressed).
+      final Offset center = tester.getCenter(find.byType(MaterialButton));
+      await tester.startGesture(center);
+      await tester.pump(); // Start the splash and highlight animations.
+      await tester.pump(const Duration(milliseconds: 800)); // Wait for splash and highlight to be well under way.
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+    },
     skip: isBrowser, // https://github.com/flutter/flutter/issues/44115
   );
 
   testWidgets('MaterialButton gets focus when autofocus is set.', (WidgetTester tester) async {
     final FocusNode focusNode = FocusNode(debugLabel: 'MaterialButton');
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Center(
-          child: MaterialButton(
-            focusNode: focusNode,
-            onPressed: () {},
-            child: Container(width: 100, height: 100, color: const Color(0xffff0000)),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Center(
+        child: MaterialButton(
+          focusNode: focusNode,
+          onPressed: () {},
+          child: Container(width: 100, height: 100, color: const Color(0xffff0000)),
         ),
       ),
-    );
+    ));
 
     await tester.pump();
     expect(focusNode.hasPrimaryFocus, isFalse);
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Center(
-          child: MaterialButton(
-            autofocus: true,
-            focusNode: focusNode,
-            onPressed: () {},
-            child: Container(width: 100, height: 100, color: const Color(0xffff0000)),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Center(
+        child: MaterialButton(
+          autofocus: true,
+          focusNode: focusNode,
+          onPressed: () {},
+          child: Container(width: 100, height: 100, color: const Color(0xffff0000)),
         ),
       ),
-    );
+    ));
 
     await tester.pump();
     expect(focusNode.hasPrimaryFocus, isTrue);
   });
 
-  testWidgets('MaterialButton onPressed and onLongPress callbacks are correctly called when non-null', (WidgetTester tester) async {
+  testWidgets(
+    'MaterialButton onPressed and onLongPress callbacks are correctly called when non-null',
+    (WidgetTester tester) async {
+      bool wasPressed;
+      Finder materialButton;
 
-    bool wasPressed;
-    Finder materialButton;
+      Widget buildFrame({VoidCallback? onPressed, VoidCallback? onLongPress}) {
+        return Directionality(
+          textDirection: TextDirection.ltr,
+          child: MaterialButton(onPressed: onPressed, onLongPress: onLongPress, child: const Text('button')),
+        );
+      }
 
-    Widget buildFrame({ VoidCallback? onPressed, VoidCallback? onLongPress }) {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: MaterialButton(
-          onPressed: onPressed,
-          onLongPress: onLongPress,
-          child: const Text('button'),
-        ),
-      );
-    }
+      // onPressed not null, onLongPress null.
+      wasPressed = false;
+      await tester.pumpWidget(buildFrame(
+        onPressed: () {
+          wasPressed = true;
+        },
+      ));
+      materialButton = find.byType(MaterialButton);
+      expect(tester.widget<MaterialButton>(materialButton).enabled, true);
+      await tester.tap(materialButton);
+      expect(wasPressed, true);
 
-    // onPressed not null, onLongPress null.
-    wasPressed = false;
-    await tester.pumpWidget(
-      buildFrame(onPressed: () { wasPressed = true; }),
-    );
-    materialButton = find.byType(MaterialButton);
-    expect(tester.widget<MaterialButton>(materialButton).enabled, true);
-    await tester.tap(materialButton);
-    expect(wasPressed, true);
+      // onPressed null, onLongPress not null.
+      wasPressed = false;
+      await tester.pumpWidget(buildFrame(
+        onLongPress: () {
+          wasPressed = true;
+        },
+      ));
+      materialButton = find.byType(MaterialButton);
+      expect(tester.widget<MaterialButton>(materialButton).enabled, true);
+      await tester.longPress(materialButton);
+      expect(wasPressed, true);
 
-    // onPressed null, onLongPress not null.
-    wasPressed = false;
-    await tester.pumpWidget(
-      buildFrame(onLongPress: () { wasPressed = true; }),
-    );
-    materialButton = find.byType(MaterialButton);
-    expect(tester.widget<MaterialButton>(materialButton).enabled, true);
-    await tester.longPress(materialButton);
-    expect(wasPressed, true);
+      // onPressed null, onLongPress null.
+      await tester.pumpWidget(buildFrame());
+      materialButton = find.byType(MaterialButton);
+      expect(tester.widget<MaterialButton>(materialButton).enabled, false);
+    },
+  );
 
-    // onPressed null, onLongPress null.
-    await tester.pumpWidget(
-      buildFrame(),
-    );
-    materialButton = find.byType(MaterialButton);
-    expect(tester.widget<MaterialButton>(materialButton).enabled, false);
-  });
+  testWidgets(
+    'MaterialButton onPressed and onLongPress callbacks are distinctly recognized',
+    (WidgetTester tester) async {
+      bool didPressButton = false;
+      bool didLongPressButton = false;
 
-  testWidgets('MaterialButton onPressed and onLongPress callbacks are distinctly recognized', (WidgetTester tester) async {
-    bool didPressButton = false;
-    bool didLongPressButton = false;
-
-    await tester.pumpWidget(
-      Directionality(
+      await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: MaterialButton(
           onPressed: () {
@@ -361,34 +336,29 @@ void main() {
           },
           child: const Text('button'),
         ),
-      ),
-    );
+      ));
 
-    final Finder materialButton = find.byType(MaterialButton);
-    expect(tester.widget<MaterialButton>(materialButton).enabled, true);
+      final Finder materialButton = find.byType(MaterialButton);
+      expect(tester.widget<MaterialButton>(materialButton).enabled, true);
 
-    expect(didPressButton, isFalse);
-    await tester.tap(materialButton);
-    expect(didPressButton, isTrue);
+      expect(didPressButton, isFalse);
+      await tester.tap(materialButton);
+      expect(didPressButton, isTrue);
 
-    expect(didLongPressButton, isFalse);
-    await tester.longPress(materialButton);
-    expect(didLongPressButton, isTrue);
-  });
+      expect(didLongPressButton, isFalse);
+      await tester.longPress(materialButton);
+      expect(didLongPressButton, isTrue);
+    },
+  );
 
   testWidgets('MaterialButton changes mouse cursor when hovered', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.forbidden,
-          child: MaterialButton(
-            onPressed: () {},
-            mouseCursor: SystemMouseCursors.text,
-          ),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.forbidden,
+        child: MaterialButton(onPressed: () {}, mouseCursor: SystemMouseCursors.text),
       ),
-    );
+    ));
 
     final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse, pointer: 1);
     await gesture.addPointer(location: Offset.zero);
@@ -398,17 +368,10 @@ void main() {
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.text);
 
     // Test default cursor
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.forbidden,
-          child: MaterialButton(
-            onPressed: () {},
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: MouseRegion(cursor: SystemMouseCursors.forbidden, child: MaterialButton(onPressed: () {})),
+    ));
 
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.click);
 
@@ -416,12 +379,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.forbidden,
-          child: MaterialButton(
-            onPressed: null,
-          ),
-        ),
+        child: MouseRegion(cursor: SystemMouseCursors.forbidden, child: MaterialButton(onPressed: null)),
       ),
     );
 
@@ -438,23 +396,18 @@ void main() {
       child: MaterialButton(
         splashColor: directSplashColor,
         highlightColor: directHighlightColor,
-        onPressed: () { /* to make sure the button is enabled */ },
+        onPressed: () {/* to make sure the button is enabled */},
         clipBehavior: Clip.antiAlias,
       ),
     );
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Theme(
-          data: ThemeData(
-            useMaterial3: false,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          child: buttonWidget,
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Theme(
+        data: ThemeData(useMaterial3: false, materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
+        child: buttonWidget,
       ),
-    );
+    ));
 
     final Offset center = tester.getCenter(find.byType(MaterialButton));
     final TestGesture gesture = await tester.startGesture(center);
@@ -465,17 +418,11 @@ void main() {
     // the Material widget.
     const Rect expectedClipRect = Rect.fromLTRB(0.0, 0.0, 88.0, 36.0);
     final Path expectedClipPath = Path()
-      ..addRRect(RRect.fromRectAndRadius(
-          expectedClipRect,
-          const Radius.circular(2.0),
-      ));
+      ..addRRect(RRect.fromRectAndRadius(expectedClipRect, const Radius.circular(2.0)));
     expect(
       Material.of(tester.element(find.byType(InkWell))),
       paints
-        ..clipPath(pathMatcher: coversSameAreaAs(
-            expectedClipPath,
-            areaToCompare: expectedClipRect.inflate(10.0),
-        ))
+        ..clipPath(pathMatcher: coversSameAreaAs(expectedClipPath, areaToCompare: expectedClipRect.inflate(10.0)))
         ..circle(color: directSplashColor)
         ..rect(color: directHighlightColor),
     );
@@ -484,34 +431,26 @@ void main() {
     const Color themeHighlightColor1 = Color(0xFF001100);
 
     buttonWidget = Center(
-      child: MaterialButton(
-        onPressed: () { /* to make sure the button is enabled */ },
-        clipBehavior: Clip.antiAlias,
-      ),
+      child: MaterialButton(onPressed: () {/* to make sure the button is enabled */}, clipBehavior: Clip.antiAlias),
     );
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Theme(
-          data: ThemeData(
-            useMaterial3: false,
-            highlightColor: themeHighlightColor1,
-            splashColor: themeSplashColor1,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          child: buttonWidget,
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Theme(
+        data: ThemeData(
+          useMaterial3: false,
+          highlightColor: themeHighlightColor1,
+          splashColor: themeSplashColor1,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
+        child: buttonWidget,
       ),
-    );
+    ));
 
     expect(
       Material.of(tester.element(find.byType(InkWell))),
       paints
-        ..clipPath(pathMatcher: coversSameAreaAs(
-            expectedClipPath,
-            areaToCompare: expectedClipRect.inflate(10.0),
-        ))
+        ..clipPath(pathMatcher: coversSameAreaAs(expectedClipPath, areaToCompare: expectedClipRect.inflate(10.0)))
         ..circle(color: themeSplashColor1)
         ..rect(color: themeHighlightColor1),
     );
@@ -519,20 +458,18 @@ void main() {
     const Color themeSplashColor2 = Color(0xFF002200);
     const Color themeHighlightColor2 = Color(0xFF002200);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Theme(
-          data: ThemeData(
-            useMaterial3: false,
-            highlightColor: themeHighlightColor2,
-            splashColor: themeSplashColor2,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          child: buttonWidget, // same widget, so does not get updated because of us
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Theme(
+        data: ThemeData(
+          useMaterial3: false,
+          highlightColor: themeHighlightColor2,
+          splashColor: themeSplashColor2,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
+        child: buttonWidget, // same widget, so does not get updated because of us
       ),
-    );
+    ));
 
     expect(
       Material.of(tester.element(find.byType(InkWell))),
@@ -547,119 +484,85 @@ void main() {
   testWidgets('MaterialButton has no clip by default', (WidgetTester tester) async {
     final GlobalKey buttonKey = GlobalKey();
     final Widget buttonWidget = Center(
-      child: MaterialButton(
-        key: buttonKey,
-        onPressed: () { /* to make sure the button is enabled */ },
-      ),
+      child: MaterialButton(key: buttonKey, onPressed: () {/* to make sure the button is enabled */}),
     );
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Theme(
-          data: ThemeData(
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          child: buttonWidget,
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Theme(data: ThemeData(materialTapTargetSize: MaterialTapTargetSize.shrinkWrap), child: buttonWidget),
+    ));
 
-    expect(
-      tester.renderObject(find.byKey(buttonKey)),
-      paintsExactlyCountTimes(#clipPath, 0),
-    );
+    expect(tester.renderObject(find.byKey(buttonKey)), paintsExactlyCountTimes(#clipPath, 0));
   });
 
-  testWidgets('Disabled MaterialButton has same semantic size as enabled and exposes disabled semantics', (WidgetTester tester) async {
+  testWidgets('Disabled MaterialButton has same semantic size as enabled and exposes disabled semantics', (
+    WidgetTester tester,
+  ) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
     const Rect expectedButtonSize = Rect.fromLTRB(0.0, 0.0, 116.0, 48.0);
     // Button is in center of screen
     final Matrix4 expectedButtonTransform = Matrix4.identity()
       ..translate(
-        TestSemantics.fullScreen.width / 2 - expectedButtonSize.width /2,
-        TestSemantics.fullScreen.height / 2 - expectedButtonSize.height /2,
+        TestSemantics.fullScreen.width / 2 - expectedButtonSize.width / 2,
+        TestSemantics.fullScreen.height / 2 - expectedButtonSize.height / 2,
       );
 
     // enabled button
-    await tester.pumpWidget(
-      Theme(
-        data: ThemeData(useMaterial3: false),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Center(
-            child: MaterialButton(
-              child: const Text('Button'),
-              onPressed: () { /* to make sure the button is enabled */ },
-            ),
-          ),
+    await tester.pumpWidget(Theme(
+      data: ThemeData(useMaterial3: false),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: MaterialButton(child: const Text('Button'), onPressed: () {/* to make sure the button is enabled */}),
         ),
       ),
-    );
-
-    expect(semantics, hasSemantics(
-      TestSemantics.root(
-        children: <TestSemantics>[
-          TestSemantics.rootChild(
-            id: 1,
-            rect: expectedButtonSize,
-            transform: expectedButtonTransform,
-            label: 'Button',
-            actions: <SemanticsAction>[
-              SemanticsAction.tap,
-            ],
-            flags: <SemanticsFlag>[
-              SemanticsFlag.hasEnabledState,
-              SemanticsFlag.isButton,
-              SemanticsFlag.isEnabled,
-              SemanticsFlag.isFocusable,
-            ],
-          ),
-        ],
-      ),
     ));
+
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        TestSemantics.rootChild(
+          id: 1,
+          rect: expectedButtonSize,
+          transform: expectedButtonTransform,
+          label: 'Button',
+          actions: <SemanticsAction>[SemanticsAction.tap],
+          flags: <SemanticsFlag>[
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.isButton,
+            SemanticsFlag.isEnabled,
+            SemanticsFlag.isFocusable,
+          ],
+        ),
+      ],
+    )));
 
     // disabled button
-    await tester.pumpWidget(
-      Theme(
-        data: ThemeData(useMaterial3: false),
-        child: const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Center(
-            child: MaterialButton(
-              onPressed: null, // button is disabled
-              child: Text('Button'),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    expect(semantics, hasSemantics(
-      TestSemantics.root(
-        children: <TestSemantics>[
-          TestSemantics.rootChild(
-            id: 1,
-            rect: expectedButtonSize,
-            transform: expectedButtonTransform,
-            label: 'Button',
-            flags: <SemanticsFlag>[
-              SemanticsFlag.hasEnabledState,
-              SemanticsFlag.isButton,
-              SemanticsFlag.isFocusable,
-            ],
-          ),
-        ],
+    await tester.pumpWidget(Theme(
+      data: ThemeData(useMaterial3: false),
+      child: const Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(child: MaterialButton(onPressed: null, // button is disabled child: Text('Button'))),
       ),
     ));
 
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        TestSemantics.rootChild(
+          id: 1,
+          rect: expectedButtonSize,
+          transform: expectedButtonTransform,
+          label: 'Button',
+          flags: <SemanticsFlag>[SemanticsFlag.hasEnabledState, SemanticsFlag.isButton, SemanticsFlag.isFocusable],
+        ),
+      ],
+    )));
 
     semantics.dispose();
   });
 
   testWidgets('MaterialButton minWidth and height parameters', (WidgetTester tester) async {
-    Widget buildFrame({ double? minWidth, double? height, EdgeInsets padding = EdgeInsets.zero, Widget? child }) {
+    Widget buildFrame({double? minWidth, double? height, EdgeInsets padding = EdgeInsets.zero, Widget? child}) {
       return Directionality(
         textDirection: TextDirection.ltr,
         child: Center(
@@ -693,95 +596,62 @@ void main() {
     expect(tester.getSize(find.byType(MaterialButton)), const Size(88.0, 36.0));
 
     // Size is defined by the padding.
-    await tester.pumpWidget(
-      buildFrame(
-        minWidth: 0.0,
-        height: 0.0,
-        padding: const EdgeInsets.all(4.0),
-      ),
-    );
+    await tester.pumpWidget(buildFrame(minWidth: 0.0, height: 0.0, padding: const EdgeInsets.all(4.0)));
     expect(tester.getSize(find.byType(MaterialButton)), const Size(8.0, 8.0));
 
     // Size is defined by the padded child.
-    await tester.pumpWidget(
-      buildFrame(
-        minWidth: 0.0,
-        height: 0.0,
-        padding: const EdgeInsets.all(4.0),
-        child: const SizedBox(width: 8.0, height: 8.0),
-      ),
-    );
+    await tester.pumpWidget(buildFrame(
+      minWidth: 0.0,
+      height: 0.0,
+      padding: const EdgeInsets.all(4.0),
+      child: const SizedBox(width: 8.0, height: 8.0),
+    ));
     expect(tester.getSize(find.byType(MaterialButton)), const Size(16.0, 16.0));
 
     // Size is defined by the minWidth, height constraints.
-    await tester.pumpWidget(
-      buildFrame(
-        minWidth: 18.0,
-        height: 18.0,
-        padding: const EdgeInsets.all(4.0),
-        child: const SizedBox(width: 8.0, height: 8.0),
-      ),
-    );
+    await tester.pumpWidget(buildFrame(
+      minWidth: 18.0,
+      height: 18.0,
+      padding: const EdgeInsets.all(4.0),
+      child: const SizedBox(width: 8.0, height: 8.0),
+    ));
     expect(tester.getSize(find.byType(MaterialButton)), const Size(18.0, 18.0));
   });
 
   testWidgets('MaterialButton size is configurable by ThemeData.materialTapTargetSize', (WidgetTester tester) async {
     final Key key1 = UniqueKey();
-    await tester.pumpWidget(
-      Theme(
-        data: ThemeData(materialTapTargetSize: MaterialTapTargetSize.padded),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Center(
-            child: MaterialButton(
-              key: key1,
-              child: const SizedBox(width: 50.0, height: 8.0),
-              onPressed: () { },
-            ),
-          ),
-        ),
+    await tester.pumpWidget(Theme(
+      data: ThemeData(materialTapTargetSize: MaterialTapTargetSize.padded),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child:
+            Center(child: MaterialButton(key: key1, child: const SizedBox(width: 50.0, height: 8.0), onPressed: () {})),
       ),
-    );
+    ));
 
     expect(tester.getSize(find.byKey(key1)), const Size(88.0, 48.0));
 
     final Key key2 = UniqueKey();
-    await tester.pumpWidget(
-      Theme(
-        data: ThemeData(materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Center(
-            child: MaterialButton(
-              key: key2,
-              child: const SizedBox(width: 50.0, height: 8.0),
-              onPressed: () { },
-            ),
-          ),
-        ),
+    await tester.pumpWidget(Theme(
+      data: ThemeData(materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child:
+            Center(child: MaterialButton(key: key2, child: const SizedBox(width: 50.0, height: 8.0), onPressed: () {})),
       ),
-    );
+    ));
 
     expect(tester.getSize(find.byKey(key2)), const Size(88.0, 36.0));
   });
 
   testWidgets('MaterialButton shape overrides ButtonTheme shape', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/29146
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: MaterialButton(
-          onPressed: () { },
-          shape: const StadiumBorder(),
-          child: const Text('button'),
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: MaterialButton(onPressed: () {}, shape: const StadiumBorder(), child: const Text('button')),
+    ));
 
-    final Finder rawButtonMaterial = find.descendant(
-      of: find.byType(MaterialButton),
-      matching: find.byType(Material),
-    );
+    final Finder rawButtonMaterial = find.descendant(of: find.byType(MaterialButton), matching: find.byType(Material));
     expect(tester.widget<Material>(rawButtonMaterial).shape, const StadiumBorder());
   });
 
@@ -790,22 +660,22 @@ void main() {
     const Key childKey = Key('test child');
 
     Future<void> buildTest(VisualDensity visualDensity, {bool useText = false}) async {
-      return tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(useMaterial3: false),
-          home: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Center(
-              child: MaterialButton(
-                visualDensity: visualDensity,
-                key: key,
-                onPressed: () {},
-                child: useText ? const Text('Text', key: childKey) : Container(key: childKey, width: 100, height: 100, color: const Color(0xffff0000)),
-              ),
+      return tester.pumpWidget(MaterialApp(
+        theme: ThemeData(useMaterial3: false),
+        home: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Center(
+            child: MaterialButton(
+              visualDensity: visualDensity,
+              key: key,
+              onPressed: () {},
+              child: useText
+                  ? const Text('Text', key: childKey)
+                  : Container(key: childKey, width: 100, height: 100, color: const Color(0xffff0000)),
             ),
           ),
         ),
-      );
+      ));
     }
 
     await buildTest(VisualDensity.standard);
@@ -878,10 +748,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: MaterialButton(
-          onPressed: null, // disabled button
-          child: Text('button'),
-        ),
+        child: MaterialButton(onPressed: null, // disabled button child: Text('button')),
       ),
     );
 

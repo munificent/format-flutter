@@ -8,29 +8,23 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../rendering/mock_canvas.dart';
 
-
 void main() {
   testWidgets('Large Badge defaults', (WidgetTester tester) async {
     late final ThemeData theme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.light(useMaterial3: true),
-        home: Align(
-          alignment: Alignment.topLeft,
-          child: Builder(
-            builder: (BuildContext context) {
-              // theme.textTheme is updated when the MaterialApp is built.
-              theme = Theme.of(context);
-              return const Badge(
-                label: Text('0'),
-                child: Icon(Icons.add),
-              );
-            },
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData.light(useMaterial3: true),
+      home: Align(
+        alignment: Alignment.topLeft,
+        child: Builder(
+          builder: (BuildContext context) {
+            // theme.textTheme is updated when the MaterialApp is built.
+            theme = Theme.of(context);
+            return const Badge(label: Text('0'), child: Icon(Icons.add));
+          },
         ),
       ),
-    );
+    ));
 
     expect(
       tester.renderObject<RenderParagraph>(find.text('0')).text.style,
@@ -51,35 +45,30 @@ void main() {
 
     final RenderBox box = tester.renderObject(find.byType(Badge));
     final RRect rrect = const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK')
-      ? RRect.fromLTRBR(12, -4, 31.5, 12, const Radius.circular(8))
-      : RRect.fromLTRBR(12, -4, 32, 12, const Radius.circular(8));
+        ? RRect.fromLTRBR(12, -4, 31.5, 12, const Radius.circular(8))
+        : RRect.fromLTRBR(12, -4, 32, 12, const Radius.circular(8));
     expect(box, paints..rrect(rrect: rrect, color: theme.colorScheme.error));
   });
 
   testWidgets('Large Badge defaults with RTL', (WidgetTester tester) async {
     late final ThemeData theme;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.light(useMaterial3: true),
-        home: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Builder(
-              builder: (BuildContext context) {
-                // theme.textTheme is updated when the MaterialApp is built.
-                theme = Theme.of(context);
-                return const Badge(
-                  label: Text('0'),
-                  child: Icon(Icons.add),
-                );
-              },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData.light(useMaterial3: true),
+      home: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: Builder(
+            builder: (BuildContext context) {
+              // theme.textTheme is updated when the MaterialApp is built.
+              theme = Theme.of(context);
+              return const Badge(label: Text('0'), child: Icon(Icons.add));
+            },
           ),
         ),
       ),
-    );
+    ));
 
     expect(
       tester.renderObject<RenderParagraph>(find.text('0')).text.style,
@@ -93,8 +82,8 @@ void main() {
 
     final RenderBox box = tester.renderObject(find.byType(Badge));
     final RRect rrect = const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK')
-      ? RRect.fromLTRBR(-4, -4, 15.5, 12, const Radius.circular(8))
-      : RRect.fromLTRBR(-4, -4, 16, 12, const Radius.circular(8));
+        ? RRect.fromLTRBR(-4, -4, 15.5, 12, const Radius.circular(8))
+        : RRect.fromLTRBR(-4, -4, 16, 12, const Radius.circular(8));
     expect(box, paints..rrect(rrect: rrect, color: theme.colorScheme.error));
   });
 
@@ -113,10 +102,7 @@ void main() {
               if (count == 0) {
                 theme = Theme.of(context);
               }
-              return Badge.count(
-                count: count,
-                child: const Icon(Icons.add),
-              );
+              return Badge.count(count: count, child: const Icon(Icons.add));
             },
           ),
         ),
@@ -150,8 +136,8 @@ void main() {
     // R = L + '0'.width + padding.width
     // B = T + largeSize, R = largeSize/2
     final RRect rrect = const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK')
-      ? RRect.fromLTRBR(12, -4, 31.5, 12, const Radius.circular(8))
-      : RRect.fromLTRBR(12, -4, 32, 12, const Radius.circular(8));
+        ? RRect.fromLTRBR(12, -4, 31.5, 12, const Radius.circular(8))
+        : RRect.fromLTRBR(12, -4, 32, 12, const Radius.circular(8));
     expect(box, paints..rrect(rrect: rrect, color: theme.colorScheme.error));
 
     await tester.pumpWidget(buildFrame(1000));
@@ -162,15 +148,7 @@ void main() {
     final ThemeData theme = ThemeData.light(useMaterial3: true);
 
     await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Align(
-          alignment: Alignment.topLeft,
-          child: Badge(
-            child: Icon(Icons.add),
-          ),
-        ),
-      ),
+      MaterialApp(theme: theme, home: const Align(alignment: Alignment.topLeft, child: Badge(child: Icon(Icons.add)))),
     );
 
     // default badge location is end=0, top=0
@@ -186,26 +164,22 @@ void main() {
     // T = 0
     // R = icon.size.width
     // B = smallSize
-    expect(box, paints..rrect(rrect: RRect.fromLTRBR(18, 0, 24, 6, const Radius.circular(3)), color: theme.colorScheme.error));
+    expect(
+      box,
+      paints..rrect(rrect: RRect.fromLTRBR(18, 0, 24, 6, const Radius.circular(3)), color: theme.colorScheme.error),
+    );
   });
 
   testWidgets('Small Badge RTL defaults', (WidgetTester tester) async {
     final ThemeData theme = ThemeData.light(useMaterial3: true);
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Directionality(
-          textDirection: TextDirection.rtl,
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Badge(
-              child: Icon(Icons.add),
-            ),
-          ),
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: const Directionality(
+        textDirection: TextDirection.rtl,
+        child: Align(alignment: Alignment.topLeft, child: Badge(child: Icon(Icons.add))),
       ),
-    );
+    ));
 
     // default badge location is end=0, top=0
     // default smallSize = 6
@@ -219,7 +193,10 @@ void main() {
     // T = 0
     // R = smallSize
     // B = smallSize
-    expect(box, paints..rrect(rrect: RRect.fromLTRBR(0, 0, 6, 6, const Radius.circular(3)), color: theme.colorScheme.error));
+    expect(
+      box,
+      paints..rrect(rrect: RRect.fromLTRBR(0, 0, 6, 6, const Radius.circular(3)), color: theme.colorScheme.error),
+    );
   });
 
   testWidgets('Large Badge textStyle and colors', (WidgetTester tester) async {
@@ -227,21 +204,19 @@ void main() {
     const Color green = Color(0xff00ff00);
     const Color black = Color(0xff000000);
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Align(
-          alignment: Alignment.topLeft,
-          child: Badge(
-            textColor: green,
-            backgroundColor: black,
-            textStyle: TextStyle(fontSize: 10),
-            label: Text('0'),
-            child: Icon(Icons.add),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: const Align(
+        alignment: Alignment.topLeft,
+        child: Badge(
+          textColor: green,
+          backgroundColor: black,
+          textStyle: TextStyle(fontSize: 10),
+          label: Text('0'),
+          child: Icon(Icons.add),
         ),
       ),
-    );
+    ));
 
     final TextStyle textStyle = tester.renderObject<RenderParagraph>(find.text('0')).text.style!;
     expect(textStyle.fontSize, 10);
@@ -250,19 +225,13 @@ void main() {
   });
 
   testWidgets('isLabelVisible', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.light(useMaterial3: true),
-        home: const Align(
-          alignment: Alignment.topLeft,
-          child: Badge(
-            label: Text('0'),
-            isLabelVisible: false,
-            child: Icon(Icons.add),
-          ),
-        ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData.light(useMaterial3: true),
+      home: const Align(
+        alignment: Alignment.topLeft,
+        child: Badge(label: Text('0'), isLabelVisible: false, child: Icon(Icons.add)),
       ),
-    );
+    ));
 
     expect(find.text('0'), findsNothing);
     expect(find.byType(Icon), findsOneWidget);
@@ -286,11 +255,7 @@ void main() {
             label: Container(width: 8, height: 8, color: Colors.blue),
             alignment: alignment,
             offset: offset,
-            child: Container(
-              color: const Color(0xFF00FF00),
-              width: 200,
-              height: 200,
-            ),
+            child: Container(color: const Color(0xFF00FF00), width: 200, height: 200),
           ),
         ),
       );
@@ -360,11 +325,7 @@ void main() {
             // Default smallSize = 6, badge without label is "small".
             alignment: alignment,
             offset: offset, // Not used for smallSize badges.
-            child: Container(
-              color: const Color(0xFF00FF00),
-              width: 200,
-              height: 200,
-            ),
+            child: Container(color: const Color(0xFF00FF00), width: 200, height: 200),
           ),
         ),
       );

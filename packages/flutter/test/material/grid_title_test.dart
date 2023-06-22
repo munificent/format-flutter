@@ -19,32 +19,18 @@ void main() {
           subtitle: const Text('Subtitle'),
           trailing: const Icon(Icons.thumb_up),
         ),
-        footer: GridTileBar(
-          key: footerKey,
-          title: const Text('Footer'),
-          backgroundColor: Colors.black38,
-        ),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Colors.green[500],
-          ),
-        ),
+        footer: GridTileBar(key: footerKey, title: const Text('Footer'), backgroundColor: Colors.black38),
+        child: DecoratedBox(decoration: BoxDecoration(color: Colors.green[500])),
       ),
     ));
 
     expect(find.text('Header'), findsOneWidget);
     expect(find.text('Footer'), findsOneWidget);
 
-    expect(
-      tester.getBottomLeft(find.byKey(headerKey)).dy,
-      lessThan(tester.getTopLeft(find.byKey(footerKey)).dy),
-    );
+    expect(tester.getBottomLeft(find.byKey(headerKey)).dy, lessThan(tester.getTopLeft(find.byKey(footerKey)).dy));
 
     await tester.pumpWidget(
-      const Directionality(
-        textDirection: TextDirection.ltr,
-        child: GridTile(child: Text('Simple')),
-      ),
+      const Directionality(textDirection: TextDirection.ltr, child: GridTile(child: Text('Simple'))),
     );
 
     expect(find.text('Simple'), findsOneWidget);

@@ -116,7 +116,6 @@ void main() {
     root.adoptChild(child);
     root.attach(manifold);
 
-
     root.flushLayout();
     expect(childLayoutExecuted, isTrue);
   });
@@ -214,8 +213,7 @@ void main() {
   });
 
   test("parent's render objects do semantics before child's render objects", () {
-    final TestPipelineManifold manifold = TestPipelineManifold()
-      ..semanticsEnabled = true;
+    final TestPipelineManifold manifold = TestPipelineManifold()..semanticsEnabled = true;
     final List<String> log = <String>[];
 
     final TestRenderObject rootRenderObject = TestRenderObject(
@@ -227,7 +225,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         rootRenderObject.scheduleInitialSemantics();
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
     );
     root.rootNode = rootRenderObject;
 
@@ -240,7 +238,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         childRenderObject.scheduleInitialSemantics();
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
     );
     child.rootNode = childRenderObject;
 
@@ -255,15 +253,14 @@ void main() {
   });
 
   test("child cannot mark parent's render object dirty during flushSemantics", () {
-    final TestPipelineManifold manifold = TestPipelineManifold()
-      ..semanticsEnabled = true;
+    final TestPipelineManifold manifold = TestPipelineManifold()..semanticsEnabled = true;
 
     final TestRenderObject rootRenderObject = TestRenderObject();
     final PipelineOwner root = PipelineOwner(
       onSemanticsOwnerCreated: () {
         rootRenderObject.scheduleInitialSemantics();
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
     );
     root.rootNode = rootRenderObject;
 
@@ -278,7 +275,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         childRenderObject.scheduleInitialSemantics();
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
     );
     child.rootNode = childRenderObject;
 
@@ -300,7 +297,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         rootOnSemanticsOwnerCreatedCount++;
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
       onSemanticsOwnerDisposed: () {
         rootOnSemanticsOwnerDisposed++;
       },
@@ -312,7 +309,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         childOnSemanticsOwnerCreatedCount++;
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
       onSemanticsOwnerDisposed: () {
         childOnSemanticsOwnerDisposed++;
       },
@@ -355,7 +352,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         rootOnSemanticsOwnerCreatedCount++;
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
       onSemanticsOwnerDisposed: () {
         rootOnSemanticsOwnerDisposed++;
       },
@@ -367,7 +364,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         childOnSemanticsOwnerCreatedCount++;
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
       onSemanticsOwnerDisposed: () {
         childOnSemanticsOwnerDisposed++;
       },
@@ -421,7 +418,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         rootOnSemanticsOwnerCreatedCount++;
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
       onSemanticsOwnerDisposed: () {
         rootOnSemanticsOwnerDisposed++;
       },
@@ -433,7 +430,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         childOnSemanticsOwnerCreatedCount++;
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
       onSemanticsOwnerDisposed: () {
         childOnSemanticsOwnerDisposed++;
       },
@@ -487,7 +484,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         rootOnSemanticsOwnerCreatedCount++;
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
       onSemanticsOwnerDisposed: () {
         rootOnSemanticsOwnerDisposed++;
       },
@@ -499,7 +496,7 @@ void main() {
       onSemanticsOwnerCreated: () {
         childOnSemanticsOwnerCreatedCount++;
       },
-      onSemanticsUpdate: (SemanticsUpdate update) { },
+      onSemanticsUpdate: (SemanticsUpdate update) {},
       onSemanticsOwnerDisposed: () {
         childOnSemanticsOwnerDisposed++;
       },
@@ -561,11 +558,8 @@ void main() {
   });
 
   test('attach update semanticsOwner', () {
-    final TestPipelineManifold manifold = TestPipelineManifold()
-      ..semanticsEnabled = true;
-    final PipelineOwner owner = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
+    final TestPipelineManifold manifold = TestPipelineManifold()..semanticsEnabled = true;
+    final PipelineOwner owner = PipelineOwner(onSemanticsUpdate: (_) {});
 
     expect(owner.semanticsOwner, isNull);
     owner.attach(manifold);
@@ -606,15 +600,9 @@ void main() {
 
   test('adopting creates semantics owner if necessary', () {
     final TestPipelineManifold manifold = TestPipelineManifold();
-    final PipelineOwner root = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
-    final PipelineOwner child = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
-    final PipelineOwner childOfChild = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
+    final PipelineOwner root = PipelineOwner(onSemanticsUpdate: (_) {});
+    final PipelineOwner child = PipelineOwner(onSemanticsUpdate: (_) {});
+    final PipelineOwner childOfChild = PipelineOwner(onSemanticsUpdate: (_) {});
     root.attach(manifold);
 
     expect(root.semanticsOwner, isNull);
@@ -655,17 +643,10 @@ void main() {
   });
 
   test('dropping destroys semantics owner if necessary', () {
-    final TestPipelineManifold manifold = TestPipelineManifold()
-      ..semanticsEnabled = true;
-    final PipelineOwner root = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
-    final PipelineOwner child = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
-    final PipelineOwner childOfChild = PipelineOwner(
-      onSemanticsUpdate: (_) { },
-    );
+    final TestPipelineManifold manifold = TestPipelineManifold()..semanticsEnabled = true;
+    final PipelineOwner root = PipelineOwner(onSemanticsUpdate: (_) {});
+    final PipelineOwner child = PipelineOwner(onSemanticsUpdate: (_) {});
+    final PipelineOwner childOfChild = PipelineOwner(onSemanticsUpdate: (_) {});
     root.attach(manifold);
     root.adoptChild(child);
     child.adoptChild(childOfChild);
@@ -761,8 +742,16 @@ void main() {
 
     root.flushLayout();
 
-    expect(adoptingError, isAssertionError.having((AssertionError e) => e.message, 'message', contains('Cannot modify child list after layout.')));
-    expect(droppingError, isAssertionError.having((AssertionError e) => e.message, 'message', contains('Cannot modify child list after layout.')));
+    expect(adoptingError, isAssertionError.having(
+      (AssertionError e) => e.message,
+      'message',
+      contains('Cannot modify child list after layout.'),
+    ));
+    expect(droppingError, isAssertionError.having(
+      (AssertionError e) => e.message,
+      'message',
+      contains('Cannot modify child list after layout.'),
+    ));
   });
 
   test('visitChildren visits all children', () {
@@ -822,7 +811,7 @@ class TestRenderObject extends RenderObject {
   bool get isRepaintBoundary => true;
 
   @override
-  void debugAssertDoesMeetConstraints() { }
+  void debugAssertDoesMeetConstraints() {}
 
   @override
   Rect get paintBounds => Rect.zero;
@@ -843,7 +832,7 @@ class TestRenderObject extends RenderObject {
   }
 
   @override
-  void performResize() { }
+  void performResize() {}
 
   @override
   Rect get semanticBounds => Rect.zero;

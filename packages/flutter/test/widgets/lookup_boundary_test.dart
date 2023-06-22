@@ -21,7 +21,9 @@ void main() {
           child: Builder(
             builder: (BuildContext context) {
               containerThroughBoundary = context.dependOnInheritedWidgetOfExactType<MyInheritedWidget>();
-              containerStoppedAtBoundary = LookupBoundary.dependOnInheritedWidgetOfExactType<MyInheritedWidget>(context);
+              containerStoppedAtBoundary = LookupBoundary.dependOnInheritedWidgetOfExactType<MyInheritedWidget>(
+                context,
+              );
               return const SizedBox.expand();
             },
           ),
@@ -68,7 +70,9 @@ void main() {
             child: Builder(
               builder: (BuildContext context) {
                 containerThroughBoundary = context.dependOnInheritedWidgetOfExactType<MyInheritedWidget>();
-                containerStoppedAtBoundary = LookupBoundary.dependOnInheritedWidgetOfExactType<MyInheritedWidget>(context);
+                containerStoppedAtBoundary = LookupBoundary.dependOnInheritedWidgetOfExactType<MyInheritedWidget>(
+                  context,
+                );
                 return const SizedBox.expand();
               },
             ),
@@ -89,126 +93,106 @@ void main() {
         },
       );
 
-      await tester.pumpWidget(
-        MyInheritedWidget(
-          value: 1,
-          child: widgetTree,
-        ),
-      );
+      await tester.pumpWidget(MyInheritedWidget(value: 1, child: widgetTree));
       expect(inheritedWidget!.value, 1);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
-
-      await tester.pumpWidget(
-        MyInheritedWidget(
-          value: 2,
-          child: widgetTree,
-        ),
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
+
+      await tester.pumpWidget(MyInheritedWidget(value: 2, child: widgetTree));
       expect(inheritedWidget!.value, 2);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 2);
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        2,
+      );
     });
 
-    testWidgets('causes didChangeDependencies to be called on move even if dependency was not fulfilled due to boundary', (WidgetTester tester) async {
-      MyInheritedWidget? inheritedWidget;
-      final Key globalKey = GlobalKey();
+    testWidgets(
+      'causes didChangeDependencies to be called on move even if dependency was not fulfilled due to boundary',
+      (WidgetTester tester) async {
+        MyInheritedWidget? inheritedWidget;
+        final Key globalKey = GlobalKey();
 
-      final Widget widgetTree = DidChangeDependencySpy(
-        key: globalKey,
-        onDidChangeDependencies: (BuildContext context) {
-          inheritedWidget = LookupBoundary.dependOnInheritedWidgetOfExactType<MyInheritedWidget>(context);
-        },
-      );
+        final Widget widgetTree = DidChangeDependencySpy(
+          key: globalKey,
+          onDidChangeDependencies: (BuildContext context) {
+            inheritedWidget = LookupBoundary.dependOnInheritedWidgetOfExactType<MyInheritedWidget>(context);
+          },
+        );
 
-      await tester.pumpWidget(
-        MyInheritedWidget(
-          value: 1,
-          child: LookupBoundary(
-            child: widgetTree,
-          ),
-        ),
-      );
-      expect(inheritedWidget, isNull);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
+        await tester.pumpWidget(MyInheritedWidget(value: 1, child: LookupBoundary(child: widgetTree)));
+        expect(inheritedWidget, isNull);
+        expect(
+          tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+          1,
+        );
 
-      // Value of inherited widget changes, but there should be no dependency due to boundary.
-      await tester.pumpWidget(
-        MyInheritedWidget(
-          value: 2,
-          child: LookupBoundary(
-            child: widgetTree,
-          ),
-        ),
-      );
-      expect(inheritedWidget, isNull);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
+        // Value of inherited widget changes, but there should be no dependency due to boundary.
+        await tester.pumpWidget(MyInheritedWidget(value: 2, child: LookupBoundary(child: widgetTree)));
+        expect(inheritedWidget, isNull);
+        expect(
+          tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+          1,
+        );
 
-      // Widget is moved, didChangeDependencies is called, but dependency is still not found due to boundary.
-      await tester.pumpWidget(
-        SizedBox(
-          child: MyInheritedWidget(
-            value: 2,
-            child: LookupBoundary(
-              child: widgetTree,
-            ),
-          ),
-        ),
-      );
-      expect(inheritedWidget, isNull);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 2);
+        // Widget is moved, didChangeDependencies is called, but dependency is still not found due to boundary.
+        await tester.pumpWidget(SizedBox(child: MyInheritedWidget(value: 2, child: LookupBoundary(child: widgetTree))));
+        expect(inheritedWidget, isNull);
+        expect(
+          tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+          2,
+        );
 
-      await tester.pumpWidget(
-        SizedBox(
-          child: MyInheritedWidget(
-            value: 2,
-            child: LookupBoundary(
-              child: MyInheritedWidget(
-                value: 4,
-                child: widgetTree,
-              ),
-            ),
-          ),
-        ),
-      );
-      expect(inheritedWidget!.value, 4);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 3);
-    });
+        await tester.pumpWidget(SizedBox(
+          child:
+              MyInheritedWidget(value: 2, child: LookupBoundary(child: MyInheritedWidget(value: 4, child: widgetTree))),
+        ));
+        expect(inheritedWidget!.value, 4);
+        expect(
+          tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+          3,
+        );
+      },
+    );
 
-    testWidgets('causes didChangeDependencies to be called on move even if dependency was non-existant', (WidgetTester tester) async {
-      MyInheritedWidget? inheritedWidget;
-      final Key globalKey = GlobalKey();
+    testWidgets(
+      'causes didChangeDependencies to be called on move even if dependency was non-existant',
+      (WidgetTester tester) async {
+        MyInheritedWidget? inheritedWidget;
+        final Key globalKey = GlobalKey();
 
-      final Widget widgetTree = DidChangeDependencySpy(
-        key: globalKey,
-        onDidChangeDependencies: (BuildContext context) {
-          inheritedWidget = LookupBoundary.dependOnInheritedWidgetOfExactType<MyInheritedWidget>(context);
-        },
-      );
+        final Widget widgetTree = DidChangeDependencySpy(
+          key: globalKey,
+          onDidChangeDependencies: (BuildContext context) {
+            inheritedWidget = LookupBoundary.dependOnInheritedWidgetOfExactType<MyInheritedWidget>(context);
+          },
+        );
 
-      await tester.pumpWidget(widgetTree);
-      expect(inheritedWidget, isNull);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
+        await tester.pumpWidget(widgetTree);
+        expect(inheritedWidget, isNull);
+        expect(
+          tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+          1,
+        );
 
-      // Widget moved, didChangeDependencies must be called.
-      await tester.pumpWidget(
-        SizedBox(
-          child: widgetTree,
-        ),
-      );
-      expect(inheritedWidget, isNull);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 2);
+        // Widget moved, didChangeDependencies must be called.
+        await tester.pumpWidget(SizedBox(child: widgetTree));
+        expect(inheritedWidget, isNull);
+        expect(
+          tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+          2,
+        );
 
-      // Widget moved, didChangeDependencies must be called.
-      await tester.pumpWidget(
-        MyInheritedWidget(
-          value: 6,
-          child: SizedBox(
-            child: widgetTree,
-          ),
-        ),
-      );
-      expect(inheritedWidget!.value, 6);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 3);
-    });
+        // Widget moved, didChangeDependencies must be called.
+        await tester.pumpWidget(MyInheritedWidget(value: 6, child: SizedBox(child: widgetTree)));
+        expect(inheritedWidget!.value, 6);
+        expect(
+          tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+          3,
+        );
+      },
+    );
   });
 
   group('LookupBoundary.getElementForInheritedWidgetOfExactType', () {
@@ -225,7 +209,9 @@ void main() {
           child: Builder(
             builder: (BuildContext context) {
               containerThroughBoundary = context.getElementForInheritedWidgetOfExactType<MyInheritedWidget>();
-              containerStoppedAtBoundary = LookupBoundary.getElementForInheritedWidgetOfExactType<MyInheritedWidget>(context);
+              containerStoppedAtBoundary = LookupBoundary.getElementForInheritedWidgetOfExactType<MyInheritedWidget>(
+                context,
+              );
               return const SizedBox.expand();
             },
           ),
@@ -272,7 +258,9 @@ void main() {
             child: Builder(
               builder: (BuildContext context) {
                 containerThroughBoundary = context.getElementForInheritedWidgetOfExactType<MyInheritedWidget>();
-                containerStoppedAtBoundary = LookupBoundary.getElementForInheritedWidgetOfExactType<MyInheritedWidget>(context);
+                containerStoppedAtBoundary = LookupBoundary.getElementForInheritedWidgetOfExactType<MyInheritedWidget>(
+                  context,
+                );
                 return const SizedBox.expand();
               },
             ),
@@ -285,28 +273,23 @@ void main() {
     });
 
     testWidgets('does not creates dependency', (WidgetTester tester) async {
-
       final Widget widgetTree = DidChangeDependencySpy(
         onDidChangeDependencies: (BuildContext context) {
           LookupBoundary.getElementForInheritedWidgetOfExactType<MyInheritedWidget>(context);
         },
       );
 
-      await tester.pumpWidget(
-        MyInheritedWidget(
-          value: 1,
-          child: widgetTree,
-        ),
+      await tester.pumpWidget(MyInheritedWidget(value: 1, child: widgetTree));
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
 
-      await tester.pumpWidget(
-        MyInheritedWidget(
-          value: 2,
-          child: widgetTree,
-        ),
+      await tester.pumpWidget(MyInheritedWidget(value: 2, child: widgetTree));
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
     });
 
     testWidgets('does not cause didChangeDependencies to be called on move when found', (WidgetTester tester) async {
@@ -319,88 +302,69 @@ void main() {
         },
       );
 
-      await tester.pumpWidget(
-        MyInheritedWidget(
-          value: 1,
-          child: LookupBoundary(
-            child: widgetTree,
-          ),
-        ),
+      await tester.pumpWidget(MyInheritedWidget(value: 1, child: LookupBoundary(child: widgetTree)));
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
 
       // Value of inherited widget changes, but there should be no dependency due to boundary.
-      await tester.pumpWidget(
-        MyInheritedWidget(
-          value: 2,
-          child: LookupBoundary(
-            child: widgetTree,
-          ),
-        ),
+      await tester.pumpWidget(MyInheritedWidget(value: 2, child: LookupBoundary(child: widgetTree)));
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
 
       // Widget is moved, didChangeDependencies is called, but dependency is still not found due to boundary.
-      await tester.pumpWidget(
-        SizedBox(
-          child: MyInheritedWidget(
-            value: 2,
-            child: LookupBoundary(
-              child: widgetTree,
-            ),
-          ),
-        ),
+      await tester.pumpWidget(SizedBox(child: MyInheritedWidget(value: 2, child: LookupBoundary(child: widgetTree))));
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
 
-      await tester.pumpWidget(
-        SizedBox(
-          child: MyInheritedWidget(
-            value: 2,
-            child: LookupBoundary(
-              child: MyInheritedWidget(
-                value: 4,
-                child: widgetTree,
-              ),
-            ),
-          ),
-        ),
+      await tester.pumpWidget(SizedBox(
+        child:
+            MyInheritedWidget(value: 2, child: LookupBoundary(child: MyInheritedWidget(value: 4, child: widgetTree))),
+      ));
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
     });
 
-    testWidgets('does not cause didChangeDependencies to be called on move when nothing was found', (WidgetTester tester) async {
-      final Key globalKey = GlobalKey();
+    testWidgets(
+      'does not cause didChangeDependencies to be called on move when nothing was found',
+      (WidgetTester tester) async {
+        final Key globalKey = GlobalKey();
 
-      final Widget widgetTree = DidChangeDependencySpy(
-        key: globalKey,
-        onDidChangeDependencies: (BuildContext context) {
-          LookupBoundary.getElementForInheritedWidgetOfExactType<MyInheritedWidget>(context);
-        },
-      );
+        final Widget widgetTree = DidChangeDependencySpy(
+          key: globalKey,
+          onDidChangeDependencies: (BuildContext context) {
+            LookupBoundary.getElementForInheritedWidgetOfExactType<MyInheritedWidget>(context);
+          },
+        );
 
-      await tester.pumpWidget(widgetTree);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
+        await tester.pumpWidget(widgetTree);
+        expect(
+          tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+          1,
+        );
 
-      // Widget moved, didChangeDependencies must be called.
-      await tester.pumpWidget(
-        SizedBox(
-          child: widgetTree,
-        ),
-      );
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
+        // Widget moved, didChangeDependencies must be called.
+        await tester.pumpWidget(SizedBox(child: widgetTree));
+        expect(
+          tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+          1,
+        );
 
-      // Widget moved, didChangeDependencies must be called.
-      await tester.pumpWidget(
-        MyInheritedWidget(
-          value: 6,
-          child: SizedBox(
-            child: widgetTree,
-          ),
-        ),
-      );
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
-    });
+        // Widget moved, didChangeDependencies must be called.
+        await tester.pumpWidget(MyInheritedWidget(value: 6, child: SizedBox(child: widgetTree)));
+        expect(
+          tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+          1,
+        );
+      },
+    );
   });
 
   group('LookupBoundary.findAncestorWidgetOfExactType', () {
@@ -506,16 +470,21 @@ void main() {
       expect(containerThroughBoundary, equals(tester.widget(find.byKey(innerContainerKey))));
       expect(containerStoppedAtBoundary, equals(tester.widget(find.byKey(innerContainerKey))));
       expect(containerStoppedAtBoundaryUnfulfilled, isNull);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
-
-      await tester.pumpWidget(
-        SizedBox( // Changes tree structure, triggers global key move of DidChangeDependencySpy.
-          child: widgetTree,
-        ),
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
 
+      await tester.pumpWidget(SizedBox(
+        // Changes tree structure, triggers global key move of DidChangeDependencySpy.
+        child: widgetTree,
+      ));
+
       // Tree restructuring above would have called didChangeDependencies if dependency had been established.
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
+      );
     });
   });
 
@@ -559,7 +528,9 @@ void main() {
               child: Builder(
                 builder: (BuildContext context) {
                   containerThroughBoundary = context.findAncestorStateOfType<MyStatefulContainerState>();
-                  containerStoppedAtBoundary = LookupBoundary.findAncestorStateOfType<MyStatefulContainerState>(context);
+                  containerStoppedAtBoundary = LookupBoundary.findAncestorStateOfType<MyStatefulContainerState>(
+                    context,
+                  );
                   return const SizedBox.expand();
                 },
               ),
@@ -601,7 +572,8 @@ void main() {
             onDidChangeDependencies: (BuildContext context) {
               containerThroughBoundary = context.findAncestorStateOfType<MyStatefulContainerState>();
               containerStoppedAtBoundary = LookupBoundary.findAncestorStateOfType<MyStatefulContainerState>(context);
-              containerStoppedAtBoundaryUnfulfilled = LookupBoundary.findAncestorStateOfType<MyOtherStatefulContainerState>(context);
+              containerStoppedAtBoundaryUnfulfilled =
+                  LookupBoundary.findAncestorStateOfType<MyOtherStatefulContainerState>(context);
             },
           ),
         ),
@@ -612,16 +584,21 @@ void main() {
       expect(containerThroughBoundary, equals(tester.state(find.byKey(innerContainerKey))));
       expect(containerStoppedAtBoundary, equals(tester.state(find.byKey(innerContainerKey))));
       expect(containerStoppedAtBoundaryUnfulfilled, isNull);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
-
-      await tester.pumpWidget(
-        SizedBox( // Changes tree structure, triggers global key move of DidChangeDependencySpy.
-          child: widgetTree,
-        ),
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
 
+      await tester.pumpWidget(SizedBox(
+        // Changes tree structure, triggers global key move of DidChangeDependencySpy.
+        child: widgetTree,
+      ));
+
       // Tree restructuring above would have called didChangeDependencies if dependency had been established.
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
+      );
     });
   });
 
@@ -638,7 +615,9 @@ void main() {
           child: Builder(
             builder: (BuildContext context) {
               containerThroughBoundary = context.findRootAncestorStateOfType<MyStatefulContainerState>();
-              containerStoppedAtBoundary = LookupBoundary.findRootAncestorStateOfType<MyStatefulContainerState>(context);
+              containerStoppedAtBoundary = LookupBoundary.findRootAncestorStateOfType<MyStatefulContainerState>(
+                context,
+              );
               return const SizedBox.expand();
             },
           ),
@@ -665,7 +644,9 @@ void main() {
               child: Builder(
                 builder: (BuildContext context) {
                   containerThroughBoundary = context.findRootAncestorStateOfType<MyStatefulContainerState>();
-                  containerStoppedAtBoundary = LookupBoundary.findRootAncestorStateOfType<MyStatefulContainerState>(context);
+                  containerStoppedAtBoundary = LookupBoundary.findRootAncestorStateOfType<MyStatefulContainerState>(
+                    context,
+                  );
                   return const SizedBox.expand();
                 },
               ),
@@ -706,8 +687,11 @@ void main() {
             key: globalKey,
             onDidChangeDependencies: (BuildContext context) {
               containerThroughBoundary = context.findRootAncestorStateOfType<MyStatefulContainerState>();
-              containerStoppedAtBoundary = LookupBoundary.findRootAncestorStateOfType<MyStatefulContainerState>(context);
-              containerStoppedAtBoundaryUnfulfilled = LookupBoundary.findRootAncestorStateOfType<MyOtherStatefulContainerState>(context);
+              containerStoppedAtBoundary = LookupBoundary.findRootAncestorStateOfType<MyStatefulContainerState>(
+                context,
+              );
+              containerStoppedAtBoundaryUnfulfilled =
+                  LookupBoundary.findRootAncestorStateOfType<MyOtherStatefulContainerState>(context);
             },
           ),
         ),
@@ -718,16 +702,21 @@ void main() {
       expect(containerThroughBoundary, equals(tester.state(find.byKey(innerContainerKey))));
       expect(containerStoppedAtBoundary, equals(tester.state(find.byKey(innerContainerKey))));
       expect(containerStoppedAtBoundaryUnfulfilled, isNull);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
-
-      await tester.pumpWidget(
-        SizedBox( // Changes tree structure, triggers global key move of DidChangeDependencySpy.
-          child: widgetTree,
-        ),
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
 
+      await tester.pumpWidget(SizedBox(
+        // Changes tree structure, triggers global key move of DidChangeDependencySpy.
+        child: widgetTree,
+      ));
+
       // Tree restructuring above would have called didChangeDependencies if dependency had been established.
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
+      );
     });
   });
 
@@ -829,16 +818,21 @@ void main() {
       expect(paddingThroughBoundary, equals(tester.renderObject(find.byKey(innerPaddingKey))));
       expect(paddingStoppedAtBoundary, equals(tester.renderObject(find.byKey(innerPaddingKey))));
       expect(wrapStoppedAtBoundaryUnfulfilled, isNull);
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
-
-      await tester.pumpWidget(
-        SizedBox( // Changes tree structure, triggers global key move of DidChangeDependencySpy.
-          child: widgetTree,
-        ),
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
       );
 
+      await tester.pumpWidget(SizedBox(
+        // Changes tree structure, triggers global key move of DidChangeDependencySpy.
+        child: widgetTree,
+      ));
+
       // Tree restructuring above would have called didChangeDependencies if dependency had been established.
-      expect(tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount, 1);
+      expect(
+        tester.state<_DidChangeDependencySpyState>(find.byType(DidChangeDependencySpy)).didChangeDependenciesCount,
+        1,
+      );
     });
   });
 
@@ -879,11 +873,11 @@ void main() {
                       return element.widget.key != level3;
                     });
                     return const SizedBox();
-                  }
-                )
-              )
-            )
-          )
+                  },
+                ),
+              ),
+            ),
+          ),
         ),
       ));
 
@@ -918,19 +912,9 @@ void main() {
       await tester.pumpWidget(Column(
         key: root,
         children: <Widget>[
-          LookupBoundary(
-            key: child1,
-            child: Container(),
-          ),
-          Container(
-            key: child2,
-            child: LookupBoundary(
-              child: Container(),
-            ),
-          ),
-          Container(
-            key: child3,
-          ),
+          LookupBoundary(key: child1, child: Container()),
+          Container(key: child2, child: LookupBoundary(child: Container())),
+          Container(key: child3),
         ],
       ));
 
@@ -952,11 +936,7 @@ void main() {
         tester.element(find.byKey(child3)),
       ]);
 
-      expect(stoppedAtBoundary, <Element>[
-        tester.element(find.byKey(child2)),
-        tester.element(find.byKey(child3)),
-      ]);
-
+      expect(stoppedAtBoundary, <Element>[tester.element(find.byKey(child2)), tester.element(find.byKey(child3))]);
     });
   });
 

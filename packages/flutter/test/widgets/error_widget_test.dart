@@ -11,18 +11,16 @@ void main() {
     final Key container = UniqueKey();
     const String errorText = 'Oh no, there was a crash!!1';
 
-    await tester.pumpWidget(
-      Container(
-        key: container,
-        color: Colors.red,
-        padding: const EdgeInsets.all(10),
-        child: Builder(
-          builder: (BuildContext context) {
-            throw UnsupportedError(errorText);
-          },
-        ),
+    await tester.pumpWidget(Container(
+      key: container,
+      color: Colors.red,
+      padding: const EdgeInsets.all(10),
+      child: Builder(
+        builder: (BuildContext context) {
+          throw UnsupportedError(errorText);
+        },
       ),
-    );
+    ));
 
     expect(
       tester.takeException(),
@@ -37,10 +35,11 @@ void main() {
     expect(find.byKey(container), findsOneWidget);
   });
 
-  testWidgets('when constructing an ErrorWidget due to a build failure throws an error, fail gracefully', (WidgetTester tester) async {
-    final Key container = UniqueKey();
-    await tester.pumpWidget(
-      Container(
+  testWidgets(
+    'when constructing an ErrorWidget due to a build failure throws an error, fail gracefully',
+    (WidgetTester tester) async {
+      final Key container = UniqueKey();
+      await tester.pumpWidget(Container(
         key: container,
         color: Colors.red,
         padding: const EdgeInsets.all(10),
@@ -48,21 +47,22 @@ void main() {
         // ErrorWidget with the build error. However, during construction of
         // that ErrorWidget, another error is thrown.
         child: const MyDoubleThrowingWidget(),
-      ),
-    );
+      ));
 
-    expect(
-      tester.takeException(),
-      isA<UnsupportedError>().having((UnsupportedError error) => error.message, 'message', contains(MyThrowingElement.debugFillPropertiesErrorMessage)),
-    );
+      expect(tester.takeException(), isA<UnsupportedError>().having(
+        (UnsupportedError error) => error.message,
+        'message',
+        contains(MyThrowingElement.debugFillPropertiesErrorMessage),
+      ));
 
-    final ErrorWidget errorWidget = tester.widget(find.byType(ErrorWidget));
-    expect(errorWidget.message, contains(MyThrowingElement.debugFillPropertiesErrorMessage));
+      final ErrorWidget errorWidget = tester.widget(find.byType(ErrorWidget));
+      expect(errorWidget.message, contains(MyThrowingElement.debugFillPropertiesErrorMessage));
 
-    // Failure in one widget shouldn't ripple through the entire tree and effect
-    // ancestors. Those should still be in the tree.
-    expect(find.byKey(container), findsOneWidget);
-  });
+      // Failure in one widget shouldn't ripple through the entire tree and effect
+      // ancestors. Those should still be in the tree.
+      expect(find.byKey(container), findsOneWidget);
+    },
+  );
 }
 
 // This widget throws during its regular build and then again when the

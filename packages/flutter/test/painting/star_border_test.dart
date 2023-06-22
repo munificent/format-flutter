@@ -9,8 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  Future<void> testBorder(WidgetTester tester, String name, StarBorder border,
-      {ShapeBorder? lerpTo, ShapeBorder? lerpFrom, double lerpAmount = 0}) async {
+  Future<void> testBorder(
+    WidgetTester tester,
+    String name,
+    StarBorder border, {
+    ShapeBorder? lerpTo,
+    ShapeBorder? lerpFrom,
+    double lerpAmount = 0,
+  }) async {
     assert(lerpTo == null || lerpFrom == null); // They can't both be set.
     ShapeBorder shape;
     if (lerpTo != null) {
@@ -20,21 +26,13 @@ void main() {
     } else {
       shape = border;
     }
-    await tester.pumpWidget(
-      Container(
-        alignment: Alignment.center,
-        width: 200,
-        height: 100,
-        decoration: ShapeDecoration(
-          color: const Color(0xff000000),
-          shape: shape,
-        ),
-      ),
-    );
-    await expectLater(
-      find.byType(Container),
-      matchesGoldenFile('painting.star_border.$name.png'),
-    );
+    await tester.pumpWidget(Container(
+      alignment: Alignment.center,
+      width: 200,
+      height: 100,
+      decoration: ShapeDecoration(color: const Color(0xff000000), shape: shape),
+    ));
+    await expectLater(find.byType(Container), matchesGoldenFile('painting.star_border.$name.png'));
   }
 
   test('StarBorder defaults', () {
@@ -86,21 +84,8 @@ void main() {
     // constructor compare as different (which they are, because
     // _innerRadiusRatio is null on the polygon).
     expect(
-      const StarBorder(
-        points: 3,
-        innerRadiusRatio: 1,
-        pointRounding: 0.2,
-        rotation: 180,
-        squash: 0.4,
-      ),
-      isNot(equals(
-        const StarBorder.polygon(
-          sides: 3,
-          pointRounding: 0.2,
-          rotation: 180,
-          squash: 0.4,
-        ),
-      )),
+      const StarBorder(points: 3, innerRadiusRatio: 1, pointRounding: 0.2, rotation: 180, squash: 0.4),
+      isNot(equals(const StarBorder.polygon(sides: 3, pointRounding: 0.2, rotation: 180, squash: 0.4))),
     );
 
     // Test that copies are unequal whenever any one of the properties changes.
@@ -140,8 +125,16 @@ void main() {
     await testBorder(tester, 'side_none', const StarBorder(side: BorderSide(style: BorderStyle.none)));
     await testBorder(tester, 'side_1', const StarBorder(side: BorderSide(color: Color(0xffff0000))));
     await testBorder(tester, 'side_10', const StarBorder(side: BorderSide(color: Color(0xffff0000), width: 10)));
-    await testBorder(tester, 'side_align_center', const StarBorder(side: BorderSide(color: Color(0xffff0000), strokeAlign: BorderSide.strokeAlignCenter)));
-    await testBorder(tester, 'side_align_outside', const StarBorder(side: BorderSide(color: Color(0xffff0000), strokeAlign: BorderSide.strokeAlignOutside)));
+    await testBorder(
+      tester,
+      'side_align_center',
+      const StarBorder(side: BorderSide(color: Color(0xffff0000), strokeAlign: BorderSide.strokeAlignCenter)),
+    );
+    await testBorder(
+      tester,
+      'side_align_outside',
+      const StarBorder(side: BorderSide(color: Color(0xffff0000), strokeAlign: BorderSide.strokeAlignOutside)),
+    );
   });
 
   testWidgets('StarBorder.polygon parameters', (WidgetTester tester) async {
@@ -158,36 +151,41 @@ void main() {
     await testBorder(tester, 'poly_rotate_360', const StarBorder.polygon(rotation: 360));
     await testBorder(tester, 'poly_side_none', const StarBorder.polygon(side: BorderSide(style: BorderStyle.none)));
     await testBorder(tester, 'poly_side_1', const StarBorder.polygon(side: BorderSide(color: Color(0xffff0000))));
-    await testBorder(tester, 'poly_side_10', const StarBorder.polygon(side: BorderSide(color: Color(0xffff0000), width: 10)));
-    await testBorder(tester, 'poly_side_align_center', const StarBorder.polygon(side: BorderSide(color: Color(0xffff0000), strokeAlign: BorderSide.strokeAlignCenter)));
-    await testBorder(tester, 'poly_side_align_outside', const StarBorder.polygon(side: BorderSide(color: Color(0xffff0000), strokeAlign: BorderSide.strokeAlignOutside)));
+    await testBorder(
+      tester,
+      'poly_side_10',
+      const StarBorder.polygon(side: BorderSide(color: Color(0xffff0000), width: 10)),
+    );
+    await testBorder(
+      tester,
+      'poly_side_align_center',
+      const StarBorder.polygon(side: BorderSide(color: Color(0xffff0000), strokeAlign: BorderSide.strokeAlignCenter)),
+    );
+    await testBorder(
+      tester,
+      'poly_side_align_outside',
+      const StarBorder.polygon(side: BorderSide(color: Color(0xffff0000), strokeAlign: BorderSide.strokeAlignOutside)),
+    );
   });
 
   testWidgets("StarBorder doesn't try to scale an infinite scale matrix", (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: SizedBox(
-            width: 100,
-            height: 100,
-            child: Stack(
-              children: <Widget>[
-                Positioned.fromRelativeRect(
-                  rect: const RelativeRect.fromLTRB(100, 100, 100, 100),
-                  child: Container(
-                    decoration: const ShapeDecoration(
-                      color: Colors.green,
-                      shape: StarBorder(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: SizedBox(
+          width: 100,
+          height: 100,
+          child: Stack(
+            children: <Widget>[
+              Positioned.fromRelativeRect(
+                rect: const RelativeRect.fromLTRB(100, 100, 100, 100),
+                child: Container(decoration: const ShapeDecoration(color: Colors.green, shape: StarBorder())),
+              ),
+            ],
           ),
         ),
       ),
-    );
+    ));
     expect(tester.takeException(), isNull);
   });
 
@@ -237,10 +235,7 @@ void main() {
     await testBorder(tester, 'from_rect_border_100', from, lerpFrom: rectangleBorder, lerpAmount: 1.0);
 
     const RoundedRectangleBorder roundedRectBorder = RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        bottomLeft: Radius.circular(10.0),
-        bottomRight: Radius.circular(10.0),
-      ),
+      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
     );
     await testBorder(tester, 'to_rrect_border_20', from, lerpTo: roundedRectBorder, lerpAmount: 0.2);
     await testBorder(tester, 'to_rrect_border_70', from, lerpTo: roundedRectBorder, lerpAmount: 0.7);

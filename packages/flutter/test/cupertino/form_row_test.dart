@@ -12,14 +12,7 @@ void main() {
     const Widget prefix = Text('Enter Value');
 
     await tester.pumpWidget(
-      const CupertinoApp(
-        home: Center(
-          child: CupertinoFormRow(
-            prefix: prefix,
-            child: CupertinoTextField(),
-          ),
-        ),
-      ),
+      const CupertinoApp(home: Center(child: CupertinoFormRow(prefix: prefix, child: CupertinoTextField()))),
     );
 
     expect(prefix, tester.widget(find.byType(Text)));
@@ -28,15 +21,7 @@ void main() {
   testWidgets('Shows child', (WidgetTester tester) async {
     const Widget child = CupertinoTextField();
 
-    await tester.pumpWidget(
-      const CupertinoApp(
-        home: Center(
-          child: CupertinoFormRow(
-            child: child,
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(const CupertinoApp(home: Center(child: CupertinoFormRow(child: child))));
 
     expect(child, tester.widget(find.byType(CupertinoTextField)));
   });
@@ -48,13 +33,8 @@ void main() {
     await tester.pumpWidget(
       const CupertinoApp(
         home: Center(
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: CupertinoFormRow(
-              prefix: prefix,
-              child: child,
-            ),
-          ),
+          child:
+              Directionality(textDirection: TextDirection.rtl, child: CupertinoFormRow(prefix: prefix, child: child)),
         ),
       ),
     );
@@ -69,13 +49,8 @@ void main() {
     await tester.pumpWidget(
       const CupertinoApp(
         home: Center(
-          child: Directionality(
-            textDirection: TextDirection.ltr,
-            child: CupertinoFormRow(
-              prefix: prefix,
-              child: child,
-            ),
-          ),
+          child:
+              Directionality(textDirection: TextDirection.ltr, child: CupertinoFormRow(prefix: prefix, child: child)),
         ),
       ),
     );
@@ -87,14 +62,7 @@ void main() {
     const Widget error = Text('Error');
 
     await tester.pumpWidget(
-      const CupertinoApp(
-        home: Center(
-          child: CupertinoFormRow(
-            error: error,
-            child: CupertinoTextField(),
-          ),
-        ),
-      ),
+      const CupertinoApp(home: Center(child: CupertinoFormRow(error: error, child: CupertinoTextField()))),
     );
 
     expect(error, tester.widget(find.byType(Text)));
@@ -104,14 +72,7 @@ void main() {
     const Widget helper = Text('Helper');
 
     await tester.pumpWidget(
-      const CupertinoApp(
-        home: Center(
-          child: CupertinoFormRow(
-            helper: helper,
-            child: CupertinoTextField(),
-          ),
-        ),
-      ),
+      const CupertinoApp(home: Center(child: CupertinoFormRow(helper: helper, child: CupertinoTextField()))),
     );
 
     expect(helper, tester.widget(find.byType(Text)));
@@ -123,13 +84,7 @@ void main() {
 
     await tester.pumpWidget(
       const CupertinoApp(
-        home: Center(
-          child: CupertinoFormRow(
-            helper: helper,
-            error: error,
-            child: CupertinoTextField(),
-          ),
-        ),
+        home: Center(child: CupertinoFormRow(helper: helper, error: error, child: CupertinoTextField())),
       ),
     );
 
@@ -145,23 +100,15 @@ void main() {
 
     await tester.pumpWidget(
       const CupertinoApp(
-        home: Center(
-          child: CupertinoFormRow(
-            helper: helper,
-            error: error,
-            child: CupertinoTextField(),
-          ),
-        ),
+        home: Center(child: CupertinoFormRow(helper: helper, error: error, child: CupertinoTextField())),
       ),
     );
 
-    final DefaultTextStyle helperTextStyle =
-        tester.widget(find.byType(DefaultTextStyle).first);
+    final DefaultTextStyle helperTextStyle = tester.widget(find.byType(DefaultTextStyle).first);
 
     expect(helperTextStyle.style.color, CupertinoColors.label);
 
-    final DefaultTextStyle errorTextStyle =
-        tester.widget(find.byType(DefaultTextStyle).last);
+    final DefaultTextStyle errorTextStyle = tester.widget(find.byType(DefaultTextStyle).last);
 
     expect(errorTextStyle.style.color, CupertinoColors.destructiveRed);
   });
@@ -173,13 +120,7 @@ void main() {
     Widget buildFormRow(Brightness brightness) {
       return MaterialApp(
         theme: ThemeData(brightness: brightness),
-        home: const Center(
-          child: CupertinoFormRow(
-            prefix: prefix,
-            helper: helper,
-            child: CupertinoTextField(),
-          ),
-        ),
+        home: const Center(child: CupertinoFormRow(prefix: prefix, helper: helper, child: CupertinoTextField())),
       );
     }
 

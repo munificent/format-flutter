@@ -8,7 +8,13 @@ import 'package:flutter_test/flutter_test.dart';
 const Color kSelectedColor = Color(0xFF00FF00);
 const Color kUnselectedColor = Colors.transparent;
 
-Widget buildFrame(TabController tabController, { Color? color, Color? selectedColor, double indicatorSize = 12.0, BorderStyle? borderStyle }) {
+Widget buildFrame(
+  TabController tabController, {
+  Color? color,
+  Color? selectedColor,
+  double indicatorSize = 12.0,
+  BorderStyle? borderStyle,
+}) {
   return Localizations(
     locale: const Locale('en', 'US'),
     delegates: const <LocalizationsDelegate<dynamic>>[
@@ -55,20 +61,14 @@ Widget buildFrame(TabController tabController, { Color? color, Color? selectedCo
 
 List<Color> indicatorColors(WidgetTester tester) {
   final Iterable<TabPageSelectorIndicator> indicators = tester.widgetList(
-    find.descendant(
-      of: find.byType(TabPageSelector),
-      matching: find.byType(TabPageSelectorIndicator),
-    ),
+    find.descendant(of: find.byType(TabPageSelector), matching: find.byType(TabPageSelectorIndicator)),
   );
   return indicators.map<Color>((TabPageSelectorIndicator indicator) => indicator.backgroundColor).toList();
 }
 
 void main() {
   testWidgets('PageSelector responds correctly to setting the TabController index', (WidgetTester tester) async {
-    final TabController tabController = TabController(
-      vsync: const TestVSync(),
-      length: 3,
-    );
+    final TabController tabController = TabController(vsync: const TestVSync(), length: 3);
     await tester.pumpWidget(buildFrame(tabController));
 
     expect(tabController.index, 0);
@@ -86,10 +86,7 @@ void main() {
   });
 
   testWidgets('PageSelector responds correctly to TabController.animateTo()', (WidgetTester tester) async {
-    final TabController tabController = TabController(
-      vsync: const TestVSync(),
-      length: 3,
-    );
+    final TabController tabController = TabController(vsync: const TestVSync(), length: 3);
     await tester.pumpWidget(buildFrame(tabController));
 
     expect(tabController.index, 0);
@@ -129,11 +126,7 @@ void main() {
   });
 
   testWidgets('PageSelector responds correctly to TabBarView drags', (WidgetTester tester) async {
-    final TabController tabController = TabController(
-      vsync: const TestVSync(),
-      initialIndex: 1,
-      length: 3,
-    );
+    final TabController tabController = TabController(vsync: const TestVSync(), initialIndex: 1, length: 3);
     await tester.pumpWidget(buildFrame(tabController));
 
     expect(tabController.index, 1);
@@ -184,18 +177,13 @@ void main() {
     await tester.fling(find.byType(TabBarView), const Offset(100.0, 0.0), 1000.0);
     await tester.pumpAndSettle();
     expect(indicatorColors(tester), const <Color>[kUnselectedColor, kSelectedColor, kUnselectedColor]);
-
   });
 
   testWidgets('PageSelector indicatorColors', (WidgetTester tester) async {
     const Color kRed = Color(0xFFFF0000);
     const Color kBlue = Color(0xFF0000FF);
 
-    final TabController tabController = TabController(
-      vsync: const TestVSync(),
-      initialIndex: 1,
-      length: 3,
-    );
+    final TabController tabController = TabController(vsync: const TestVSync(), initialIndex: 1, length: 3);
     await tester.pumpWidget(buildFrame(tabController, color: kRed, selectedColor: kBlue));
 
     expect(tabController.index, 1);
@@ -207,17 +195,11 @@ void main() {
   });
 
   testWidgets('PageSelector indicatorSize', (WidgetTester tester) async {
-    final TabController tabController = TabController(
-      vsync: const TestVSync(),
-      initialIndex: 1,
-      length: 3,
-    );
+    final TabController tabController = TabController(vsync: const TestVSync(), initialIndex: 1, length: 3);
     await tester.pumpWidget(buildFrame(tabController, indicatorSize: 16.0));
 
-    final Iterable<Element> indicatorElements = find.descendant(
-      of: find.byType(TabPageSelector),
-      matching: find.byType(TabPageSelectorIndicator),
-    ).evaluate();
+    final Iterable<Element> indicatorElements =
+        find.descendant(of: find.byType(TabPageSelector), matching: find.byType(TabPageSelectorIndicator)).evaluate();
 
     // Indicators get an 8 pixel margin, 16 + 8 = 24.
     for (final Element indicatorElement in indicatorElements) {
@@ -227,22 +209,15 @@ void main() {
     expect(tester.getSize(find.byType(TabPageSelector)).height, 24.0);
   });
 
-    testWidgets('PageSelector circle border', (WidgetTester tester) async {
-    final TabController tabController = TabController(
-      vsync: const TestVSync(),
-      initialIndex: 1,
-      length: 3,
-    );
+  testWidgets('PageSelector circle border', (WidgetTester tester) async {
+    final TabController tabController = TabController(vsync: const TestVSync(), initialIndex: 1, length: 3);
 
     Iterable<TabPageSelectorIndicator> indicators;
 
     // Default border
     await tester.pumpWidget(buildFrame(tabController));
     indicators = tester.widgetList(
-      find.descendant(
-        of: find.byType(TabPageSelector),
-        matching: find.byType(TabPageSelectorIndicator),
-      ),
+      find.descendant(of: find.byType(TabPageSelector), matching: find.byType(TabPageSelectorIndicator)),
     );
     for (final TabPageSelectorIndicator indicator in indicators) {
       expect(indicator.borderStyle, BorderStyle.solid);
@@ -251,10 +226,7 @@ void main() {
     // No border
     await tester.pumpWidget(buildFrame(tabController, borderStyle: BorderStyle.none));
     indicators = tester.widgetList(
-      find.descendant(
-        of: find.byType(TabPageSelector),
-        matching: find.byType(TabPageSelectorIndicator),
-      ),
+      find.descendant(of: find.byType(TabPageSelector), matching: find.byType(TabPageSelectorIndicator)),
     );
     for (final TabPageSelectorIndicator indicator in indicators) {
       expect(indicator.borderStyle, BorderStyle.none);
@@ -263,10 +235,7 @@ void main() {
     // Solid border
     await tester.pumpWidget(buildFrame(tabController, borderStyle: BorderStyle.solid));
     indicators = tester.widgetList(
-      find.descendant(
-        of: find.byType(TabPageSelector),
-        matching: find.byType(TabPageSelectorIndicator),
-      ),
+      find.descendant(of: find.byType(TabPageSelector), matching: find.byType(TabPageSelectorIndicator)),
     );
     for (final TabPageSelectorIndicator indicator in indicators) {
       expect(indicator.borderStyle, BorderStyle.solid);

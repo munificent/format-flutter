@@ -291,8 +291,12 @@ void main() {
       });
 
       testWidgets('Widgets have correct label capitalization in input mode', (WidgetTester tester) async {
-        await startPicker(tester, (TimeOfDay? time) {},
-            entryMode: TimePickerEntryMode.input, materialType: materialType);
+        await startPicker(
+          tester,
+          (TimeOfDay? time) {},
+          entryMode: TimePickerEntryMode.input,
+          materialType: materialType,
+        );
         expect(find.text(enterTimeString), findsOneWidget);
         expect(find.text(cancelString), findsOneWidget);
       });
@@ -319,7 +323,7 @@ void main() {
           testWidgets('Dialog size - dial mode', (WidgetTester tester) async {
             addTearDown(tester.view.reset);
 
-            const Size timePickerPortraitSize =  Size(310, 468);
+            const Size timePickerPortraitSize = Size(310, 468);
             const Size timePickerLandscapeSize = Size(524, 342);
             const Size timePickerLandscapeSizeM2 = Size(508, 300);
             const EdgeInsets padding = EdgeInsets.fromLTRB(8, 18, 8, 8);
@@ -333,10 +337,7 @@ void main() {
 
             width = timePickerPortraitSize.width + padding.horizontal;
             height = timePickerPortraitSize.height + padding.vertical;
-            expect(
-              tester.getSize(find.byWidget(getMaterialFromDialog(tester))),
-              Size(width, height),
-            );
+            expect(tester.getSize(find.byWidget(getMaterialFromDialog(tester))), Size(width, height));
 
             await tester.tap(find.text(okString)); // dismiss the dialog
             await tester.pumpAndSettle();
@@ -344,18 +345,11 @@ void main() {
             // landscape
             tester.view.physicalSize = const Size(800.5, 800);
             tester.view.devicePixelRatio = 1;
-            await mediaQueryBoilerplate(
-              tester,
-              alwaysUse24HourFormat: true,
-              materialType: materialType,
-            );
+            await mediaQueryBoilerplate(tester, alwaysUse24HourFormat: true, materialType: materialType);
 
-            width =  timePickerLandscapeSize.width + padding.horizontal;
+            width = timePickerLandscapeSize.width + padding.horizontal;
             height = timePickerLandscapeSizeM2.height + padding.vertical;
-            expect(
-              tester.getSize(find.byWidget(getMaterialFromDialog(tester))),
-              Size(width, height),
-            );
+            expect(tester.getSize(find.byWidget(getMaterialFromDialog(tester))), Size(width, height));
           });
 
           testWidgets('Dialog size - input mode', (WidgetTester tester) async {
@@ -366,17 +360,10 @@ void main() {
             final double height = timePickerInputSize.height + padding.vertical;
             double width;
 
-            await mediaQueryBoilerplate(
-              tester,
-              entryMode: entryMode,
-              materialType: materialType,
-            );
+            await mediaQueryBoilerplate(tester, entryMode: entryMode, materialType: materialType);
 
             width = timePickerInputSize.width + padding.horizontal;
-            expect(
-              tester.getSize(find.byWidget(getMaterialFromDialog(tester))),
-              Size(width, height),
-            );
+            expect(tester.getSize(find.byWidget(getMaterialFromDialog(tester))), Size(width, height));
 
             await tester.tap(find.text(okString)); // dismiss the dialog
             await tester.pumpAndSettle();
@@ -388,10 +375,7 @@ void main() {
               materialType: materialType,
             );
             width = timePickerInputSize.width - dayPeriodPortraitSize.width - 12 + padding.horizontal + 16;
-            expect(
-              tester.getSize(find.byWidget(getMaterialFromDialog(tester))),
-              Size(width, height),
-            );
+            expect(tester.getSize(find.byWidget(getMaterialFromDialog(tester))), Size(width, height));
           });
 
           testWidgets('respects MediaQueryData.alwaysUse24HourFormat == true', (WidgetTester tester) async {
@@ -416,7 +400,7 @@ void main() {
           testWidgets('Dialog size - dial mode', (WidgetTester tester) async {
             addTearDown(tester.view.reset);
 
-            const Size timePickerPortraitSize =  Size(310, 468);
+            const Size timePickerPortraitSize = Size(310, 468);
             const Size timePickerLandscapeSize = Size(524, 342);
             const EdgeInsets padding = EdgeInsets.all(24.0);
             double width;
@@ -429,10 +413,7 @@ void main() {
 
             width = timePickerPortraitSize.width + padding.horizontal;
             height = timePickerPortraitSize.height + padding.vertical;
-            expect(
-              tester.getSize(find.byWidget(getMaterialFromDialog(tester))),
-              Size(width, height),
-            );
+            expect(tester.getSize(find.byWidget(getMaterialFromDialog(tester))), Size(width, height));
 
             await tester.tap(find.text(okString)); // dismiss the dialog
             await tester.pumpAndSettle();
@@ -440,18 +421,11 @@ void main() {
             // landscape
             tester.view.physicalSize = const Size(800.5, 800);
             tester.view.devicePixelRatio = 1;
-            await mediaQueryBoilerplate(
-              tester,
-              alwaysUse24HourFormat: true,
-              materialType: materialType,
-            );
+            await mediaQueryBoilerplate(tester, alwaysUse24HourFormat: true, materialType: materialType);
 
-            width =  timePickerLandscapeSize.width + padding.horizontal;
+            width = timePickerLandscapeSize.width + padding.horizontal;
             height = timePickerLandscapeSize.height + padding.vertical;
-            expect(
-              tester.getSize(find.byWidget(getMaterialFromDialog(tester))),
-              Size(width, height),
-            );
+            expect(tester.getSize(find.byWidget(getMaterialFromDialog(tester))), Size(width, height));
           });
 
           testWidgets('Dialog size - input mode', (WidgetTester tester) async {
@@ -464,17 +438,10 @@ void main() {
             final double height = timePickerMinInputSize.height * textScaleFactor + padding.vertical;
             double width;
 
-            await mediaQueryBoilerplate(
-              tester,
-              entryMode: entryMode,
-              materialType: materialType,
-            );
+            await mediaQueryBoilerplate(tester, entryMode: entryMode, materialType: materialType);
 
             width = timePickerMinInputSize.width - (theme.useMaterial3 ? 32 : 0) + padding.horizontal;
-            expect(
-              tester.getSize(find.byWidget(getMaterialFromDialog(tester))),
-              Size(width, height),
-            );
+            expect(tester.getSize(find.byWidget(getMaterialFromDialog(tester))), Size(width, height));
 
             await tester.tap(find.text(okString)); // dismiss the dialog
             await tester.pumpAndSettle();
@@ -487,10 +454,7 @@ void main() {
             );
 
             width = timePickerMinInputSize.width - dayPeriodPortraitSize.width - 12 + padding.horizontal;
-            expect(
-              tester.getSize(find.byWidget(getMaterialFromDialog(tester))),
-              Size(width, height),
-            );
+            expect(tester.getSize(find.byWidget(getMaterialFromDialog(tester))), Size(width, height));
           });
 
           testWidgets('respects MediaQueryData.alwaysUse24HourFormat == true', (WidgetTester tester) async {
@@ -571,10 +535,7 @@ void main() {
                           context: context,
                           initialTime: const TimeOfDay(hour: 7, minute: 0),
                           builder: (BuildContext context, Widget? child) {
-                            return Directionality(
-                              textDirection: textDirection,
-                              child: child!,
-                            );
+                            return Directionality(textDirection: textDirection, child: child!);
                           },
                         );
                       },
@@ -618,10 +579,7 @@ void main() {
                 builder: (BuildContext context) {
                   return ElevatedButton(
                     onPressed: () {
-                      showTimePicker(
-                        context: context,
-                        initialTime: const TimeOfDay(hour: 7, minute: 0),
-                      );
+                      showTimePicker(context: context, initialTime: const TimeOfDay(hour: 7, minute: 0));
                     },
                     child: const Text('Show Picker'),
                   );
@@ -723,10 +681,7 @@ void main() {
                           context: context,
                           initialTime: const TimeOfDay(hour: 7, minute: 0),
                           builder: (BuildContext context, Widget? child) {
-                            return Directionality(
-                              textDirection: textDirection,
-                              child: child!,
-                            );
+                            return Directionality(textDirection: textDirection, child: child!);
                           },
                         );
                       },
@@ -745,9 +700,14 @@ void main() {
         switch (materialType) {
           case MaterialType.material2:
             expect(tester.getTopLeft(find.text(selectTimeString)), equals(const Offset(154, 155)));
-            expect(tester.getBottomRight(find.text(selectTimeString)), equals(
-              const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? const Offset(280.5, 165) : const Offset(281, 165),
-            ));
+            expect(
+              tester.getBottomRight(find.text(selectTimeString)),
+              equals(
+                const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK')
+                    ? const Offset(280.5, 165)
+                    : const Offset(281, 165),
+              ),
+            );
             expect(tester.getBottomRight(find.text(okString)).dx, 644);
             expect(tester.getBottomLeft(find.text(okString)).dx, 616);
             expect(tester.getBottomRight(find.text(cancelString)).dx, 582);
@@ -767,9 +727,14 @@ void main() {
 
         switch (materialType) {
           case MaterialType.material2:
-            expect(tester.getTopLeft(find.text(selectTimeString)), equals(
-              const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? const Offset(519.5, 155) : const Offset(519, 155),
-            ));
+            expect(
+              tester.getTopLeft(find.text(selectTimeString)),
+              equals(
+                const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK')
+                    ? const Offset(519.5, 155)
+                    : const Offset(519, 155),
+              ),
+            );
             expect(tester.getBottomRight(find.text(selectTimeString)), equals(const Offset(646, 165)));
             expect(tester.getBottomLeft(find.text(okString)).dx, 156);
             expect(tester.getBottomRight(find.text(okString)).dx, 184);
@@ -828,27 +793,25 @@ void main() {
 
       group('showTimePicker avoids overlapping display features', () {
         testWidgets('positioning with anchorPoint', (WidgetTester tester) async {
-          await tester.pumpWidget(
-            MaterialApp(
-              builder: (BuildContext context, Widget? child) {
-                return MediaQuery(
-                  // Display has a vertical hinge down the middle
-                  data: const MediaQueryData(
-                    size: Size(800, 600),
-                    displayFeatures: <DisplayFeature>[
-                      DisplayFeature(
-                        bounds: Rect.fromLTRB(390, 0, 410, 600),
-                        type: DisplayFeatureType.hinge,
-                        state: DisplayFeatureState.unknown,
-                      ),
-                    ],
-                  ),
-                  child: child!,
-                );
-              },
-              home: const Center(child: Text('Test')),
-            ),
-          );
+          await tester.pumpWidget(MaterialApp(
+            builder: (BuildContext context, Widget? child) {
+              return MediaQuery(
+                // Display has a vertical hinge down the middle
+                data: const MediaQueryData(
+                  size: Size(800, 600),
+                  displayFeatures: <DisplayFeature>[
+                    DisplayFeature(
+                      bounds: Rect.fromLTRB(390, 0, 410, 600),
+                      type: DisplayFeatureType.hinge,
+                      state: DisplayFeatureState.unknown,
+                    ),
+                  ],
+                ),
+                child: child!,
+              );
+            },
+            home: const Center(child: Text('Test')),
+          ));
           final BuildContext context = tester.element(find.text('Test'));
 
           showTimePicker(
@@ -864,37 +827,29 @@ void main() {
         });
 
         testWidgets('positioning with Directionality', (WidgetTester tester) async {
-          await tester.pumpWidget(
-            MaterialApp(
-              builder: (BuildContext context, Widget? child) {
-                return MediaQuery(
-                  // Display has a vertical hinge down the middle
-                  data: const MediaQueryData(
-                    size: Size(800, 600),
-                    displayFeatures: <DisplayFeature>[
-                      DisplayFeature(
-                        bounds: Rect.fromLTRB(390, 0, 410, 600),
-                        type: DisplayFeatureType.hinge,
-                        state: DisplayFeatureState.unknown,
-                      ),
-                    ],
-                  ),
-                  child: Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: child!,
-                  ),
-                );
-              },
-              home: const Center(child: Text('Test')),
-            ),
-          );
+          await tester.pumpWidget(MaterialApp(
+            builder: (BuildContext context, Widget? child) {
+              return MediaQuery(
+                // Display has a vertical hinge down the middle
+                data: const MediaQueryData(
+                  size: Size(800, 600),
+                  displayFeatures: <DisplayFeature>[
+                    DisplayFeature(
+                      bounds: Rect.fromLTRB(390, 0, 410, 600),
+                      type: DisplayFeatureType.hinge,
+                      state: DisplayFeatureState.unknown,
+                    ),
+                  ],
+                ),
+                child: Directionality(textDirection: TextDirection.rtl, child: child!),
+              );
+            },
+            home: const Center(child: Text('Test')),
+          ));
           final BuildContext context = tester.element(find.text('Test'));
 
           // By default it should place the dialog on the right screen
-          showTimePicker(
-            context: context,
-            initialTime: const TimeOfDay(hour: 7, minute: 0),
-          );
+          showTimePicker(context: context, initialTime: const TimeOfDay(hour: 7, minute: 0));
 
           await tester.pumpAndSettle();
           expect(tester.getTopLeft(find.byType(TimePickerDialog)), const Offset(410, 0));
@@ -902,34 +857,29 @@ void main() {
         });
 
         testWidgets('positioning with defaults', (WidgetTester tester) async {
-          await tester.pumpWidget(
-            MaterialApp(
-              builder: (BuildContext context, Widget? child) {
-                return MediaQuery(
-                  // Display has a vertical hinge down the middle
-                  data: const MediaQueryData(
-                    size: Size(800, 600),
-                    displayFeatures: <DisplayFeature>[
-                      DisplayFeature(
-                        bounds: Rect.fromLTRB(390, 0, 410, 600),
-                        type: DisplayFeatureType.hinge,
-                        state: DisplayFeatureState.unknown,
-                      ),
-                    ],
-                  ),
-                  child: child!,
-                );
-              },
-              home: const Center(child: Text('Test')),
-            ),
-          );
+          await tester.pumpWidget(MaterialApp(
+            builder: (BuildContext context, Widget? child) {
+              return MediaQuery(
+                // Display has a vertical hinge down the middle
+                data: const MediaQueryData(
+                  size: Size(800, 600),
+                  displayFeatures: <DisplayFeature>[
+                    DisplayFeature(
+                      bounds: Rect.fromLTRB(390, 0, 410, 600),
+                      type: DisplayFeatureType.hinge,
+                      state: DisplayFeatureState.unknown,
+                    ),
+                  ],
+                ),
+                child: child!,
+              );
+            },
+            home: const Center(child: Text('Test')),
+          ));
           final BuildContext context = tester.element(find.text('Test'));
 
           // By default it should place the dialog on the left screen
-          showTimePicker(
-            context: context,
-            initialTime: const TimeOfDay(hour: 7, minute: 0),
-          );
+          showTimePicker(context: context, initialTime: const TimeOfDay(hour: 7, minute: 0));
 
           await tester.pumpAndSettle();
           expect(tester.getTopLeft(find.byType(TimePickerDialog)), Offset.zero);
@@ -965,33 +915,27 @@ void main() {
         final SemanticsTester semantics = SemanticsTester(tester);
         await mediaQueryBoilerplate(tester, materialType: materialType);
 
-        expect(
-          semantics,
-          includesNodeWith(
-            label: amString,
-            actions: <SemanticsAction>[SemanticsAction.tap],
-            flags: <SemanticsFlag>[
-              SemanticsFlag.isButton,
-              SemanticsFlag.isChecked,
-              SemanticsFlag.isInMutuallyExclusiveGroup,
-              SemanticsFlag.hasCheckedState,
-              SemanticsFlag.isFocusable,
-            ],
-          ),
-        );
-        expect(
-          semantics,
-          includesNodeWith(
-            label: pmString,
-            actions: <SemanticsAction>[SemanticsAction.tap],
-            flags: <SemanticsFlag>[
-              SemanticsFlag.isButton,
-              SemanticsFlag.isInMutuallyExclusiveGroup,
-              SemanticsFlag.hasCheckedState,
-              SemanticsFlag.isFocusable,
-            ],
-          ),
-        );
+        expect(semantics, includesNodeWith(
+          label: amString,
+          actions: <SemanticsAction>[SemanticsAction.tap],
+          flags: <SemanticsFlag>[
+            SemanticsFlag.isButton,
+            SemanticsFlag.isChecked,
+            SemanticsFlag.isInMutuallyExclusiveGroup,
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.isFocusable,
+          ],
+        ));
+        expect(semantics, includesNodeWith(
+          label: pmString,
+          actions: <SemanticsAction>[SemanticsAction.tap],
+          flags: <SemanticsFlag>[
+            SemanticsFlag.isButton,
+            SemanticsFlag.isInMutuallyExclusiveGroup,
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.isFocusable,
+          ],
+        ));
 
         semantics.dispose();
       });
@@ -1001,16 +945,8 @@ void main() {
         await mediaQueryBoilerplate(tester, alwaysUse24HourFormat: true, materialType: materialType);
 
         expect(semantics, isNot(includesNodeWith(label: ':')));
-        expect(
-          semantics.nodesWith(value: 'Select minutes 00'),
-          hasLength(1),
-          reason: '00 appears once in the header',
-        );
-        expect(
-          semantics.nodesWith(value: 'Select hours 07'),
-          hasLength(1),
-          reason: '07 appears once in the header',
-        );
+        expect(semantics.nodesWith(value: 'Select minutes 00'), hasLength(1), reason: '00 appears once in the header');
+        expect(semantics.nodesWith(value: 'Select hours 07'), hasLength(1), reason: '07 appears once in the header');
         expect(semantics, includesNodeWith(label: cancelString));
         expect(semantics, includesNodeWith(label: okString));
 
@@ -1031,24 +967,18 @@ void main() {
           materialType: materialType,
         );
 
-        expect(
-          semantics,
-          includesNodeWith(
-            label: 'Hour',
-            value: '07',
-            actions: <SemanticsAction>[SemanticsAction.tap],
-            flags: <SemanticsFlag>[SemanticsFlag.isTextField, SemanticsFlag.isMultiline],
-          ),
-        );
-        expect(
-          semantics,
-          includesNodeWith(
-            label: 'Minute',
-            value: '00',
-            actions: <SemanticsAction>[SemanticsAction.tap],
-            flags: <SemanticsFlag>[SemanticsFlag.isTextField, SemanticsFlag.isMultiline],
-          ),
-        );
+        expect(semantics, includesNodeWith(
+          label: 'Hour',
+          value: '07',
+          actions: <SemanticsAction>[SemanticsAction.tap],
+          flags: <SemanticsFlag>[SemanticsFlag.isTextField, SemanticsFlag.isMultiline],
+        ));
+        expect(semantics, includesNodeWith(
+          label: 'Minute',
+          value: '00',
+          actions: <SemanticsAction>[SemanticsAction.tap],
+          flags: <SemanticsFlag>[SemanticsFlag.isTextField, SemanticsFlag.isMultiline],
+        ));
 
         semantics.dispose();
       });
@@ -1061,18 +991,13 @@ void main() {
           required SemanticsAction action,
           required String finalValue,
         }) async {
-          final SemanticsNode elevenHours = semantics
-              .nodesWith(
-                value: 'Select hours $initialValue',
-                ancestor: tester.renderObject(_hourControl).debugSemantics,
-              )
-              .single;
+          final SemanticsNode elevenHours = semantics.nodesWith(
+            value: 'Select hours $initialValue',
+            ancestor: tester.renderObject(_hourControl).debugSemantics,
+          ).single;
           tester.binding.pipelineOwner.semanticsOwner!.performAction(elevenHours.id, action);
           await tester.pumpAndSettle();
-          expect(
-            find.descendant(of: _hourControl, matching: find.text(finalValue)),
-            findsOneWidget,
-          );
+          expect(find.descendant(of: _hourControl, matching: find.text(finalValue)), findsOneWidget);
         }
 
         // 12-hour format
@@ -1081,27 +1006,15 @@ void main() {
           initialTime: const TimeOfDay(hour: 11, minute: 0),
           materialType: materialType,
         );
-        await actAndExpect(
-          initialValue: '11',
-          action: SemanticsAction.increase,
-          finalValue: '12',
-        );
-        await actAndExpect(
-          initialValue: '12',
-          action: SemanticsAction.increase,
-          finalValue: '1',
-        );
+        await actAndExpect(initialValue: '11', action: SemanticsAction.increase, finalValue: '12');
+        await actAndExpect(initialValue: '12', action: SemanticsAction.increase, finalValue: '1');
 
         // Ensure we preserve day period as we roll over.
         final dynamic pickerState = tester.state(_timePicker);
         // ignore: avoid_dynamic_calls
         expect(pickerState.selectedTime.value, const TimeOfDay(hour: 1, minute: 0));
 
-        await actAndExpect(
-          initialValue: '1',
-          action: SemanticsAction.decrease,
-          finalValue: '12',
-        );
+        await actAndExpect(initialValue: '1', action: SemanticsAction.decrease, finalValue: '12');
         await tester.pumpWidget(Container()); // clear old boilerplate
 
         // 24-hour format
@@ -1111,26 +1024,10 @@ void main() {
           initialTime: const TimeOfDay(hour: 23, minute: 0),
           materialType: materialType,
         );
-        await actAndExpect(
-          initialValue: '23',
-          action: SemanticsAction.increase,
-          finalValue: '00',
-        );
-        await actAndExpect(
-          initialValue: '00',
-          action: SemanticsAction.increase,
-          finalValue: '01',
-        );
-        await actAndExpect(
-          initialValue: '01',
-          action: SemanticsAction.decrease,
-          finalValue: '00',
-        );
-        await actAndExpect(
-          initialValue: '00',
-          action: SemanticsAction.decrease,
-          finalValue: '23',
-        );
+        await actAndExpect(initialValue: '23', action: SemanticsAction.increase, finalValue: '00');
+        await actAndExpect(initialValue: '00', action: SemanticsAction.increase, finalValue: '01');
+        await actAndExpect(initialValue: '01', action: SemanticsAction.decrease, finalValue: '00');
+        await actAndExpect(initialValue: '00', action: SemanticsAction.decrease, finalValue: '23');
 
         semantics.dispose();
       });
@@ -1143,18 +1040,13 @@ void main() {
           required SemanticsAction action,
           required String finalValue,
         }) async {
-          final SemanticsNode elevenHours = semantics
-              .nodesWith(
-                value: 'Select minutes $initialValue',
-                ancestor: tester.renderObject(_minuteControl).debugSemantics,
-              )
-              .single;
+          final SemanticsNode elevenHours = semantics.nodesWith(
+            value: 'Select minutes $initialValue',
+            ancestor: tester.renderObject(_minuteControl).debugSemantics,
+          ).single;
           tester.binding.pipelineOwner.semanticsOwner!.performAction(elevenHours.id, action);
           await tester.pumpAndSettle();
-          expect(
-            find.descendant(of: _minuteControl, matching: find.text(finalValue)),
-            findsOneWidget,
-          );
+          expect(find.descendant(of: _minuteControl, matching: find.text(finalValue)), findsOneWidget);
         }
 
         await mediaQueryBoilerplate(
@@ -1162,32 +1054,16 @@ void main() {
           initialTime: const TimeOfDay(hour: 11, minute: 58),
           materialType: materialType,
         );
-        await actAndExpect(
-          initialValue: '58',
-          action: SemanticsAction.increase,
-          finalValue: '59',
-        );
-        await actAndExpect(
-          initialValue: '59',
-          action: SemanticsAction.increase,
-          finalValue: '00',
-        );
+        await actAndExpect(initialValue: '58', action: SemanticsAction.increase, finalValue: '59');
+        await actAndExpect(initialValue: '59', action: SemanticsAction.increase, finalValue: '00');
 
         // Ensure we preserve hour period as we roll over.
         final dynamic pickerState = tester.state(_timePicker);
         // ignore: avoid_dynamic_calls
         expect(pickerState.selectedTime.value, const TimeOfDay(hour: 11, minute: 0));
 
-        await actAndExpect(
-          initialValue: '00',
-          action: SemanticsAction.decrease,
-          finalValue: '59',
-        );
-        await actAndExpect(
-          initialValue: '59',
-          action: SemanticsAction.decrease,
-          finalValue: '58',
-        );
+        await actAndExpect(initialValue: '00', action: SemanticsAction.decrease, finalValue: '59');
+        await actAndExpect(initialValue: '59', action: SemanticsAction.decrease, finalValue: '58');
 
         semantics.dispose();
       });
@@ -1206,17 +1082,11 @@ void main() {
         expect(dayPeriodControlSize.width, greaterThanOrEqualTo(48));
         expect(dayPeriodControlSize.height, greaterThanOrEqualTo(80));
 
-        final Size hourSize = tester.getSize(find.ancestor(
-          of: find.text('7'),
-          matching: find.byType(InkWell),
-        ));
+        final Size hourSize = tester.getSize(find.ancestor(of: find.text('7'), matching: find.byType(InkWell)));
         expect(hourSize.width, greaterThanOrEqualTo(48));
         expect(hourSize.height, greaterThanOrEqualTo(48));
 
-        final Size minuteSize = tester.getSize(find.ancestor(
-          of: find.text('00'),
-          matching: find.byType(InkWell),
-        ));
+        final Size minuteSize = tester.getSize(find.ancestor(of: find.text('00'), matching: find.byType(InkWell)));
         expect(minuteSize.width, greaterThanOrEqualTo(48));
         expect(minuteSize.height, greaterThanOrEqualTo(48));
       });
@@ -1374,11 +1244,16 @@ void main() {
       testWidgets('Switching to input entry mode triggers entry callback', (WidgetTester tester) async {
         bool triggeredCallback = false;
 
-        await mediaQueryBoilerplate(tester, alwaysUse24HourFormat: true, onEntryModeChange: (TimePickerEntryMode mode) {
-          if (mode == TimePickerEntryMode.input) {
-            triggeredCallback = true;
-          }
-        }, materialType: materialType);
+        await mediaQueryBoilerplate(
+          tester,
+          alwaysUse24HourFormat: true,
+          onEntryModeChange: (TimePickerEntryMode mode) {
+            if (mode == TimePickerEntryMode.input) {
+              triggeredCallback = true;
+            }
+          },
+          materialType: materialType,
+        );
 
         await tester.tap(find.byIcon(Icons.keyboard_outlined));
         await tester.pumpAndSettle();
@@ -1387,10 +1262,7 @@ void main() {
 
       testWidgets('Can double tap hours (when selected) to enter input mode', (WidgetTester tester) async {
         await mediaQueryBoilerplate(tester, materialType: materialType);
-        final Finder hourFinder = find.ancestor(
-          of: find.text('7'),
-          matching: find.byType(InkWell),
-        );
+        final Finder hourFinder = find.ancestor(of: find.text('7'), matching: find.byType(InkWell));
 
         expect(find.byType(TextField), findsNothing);
 
@@ -1405,14 +1277,8 @@ void main() {
 
       testWidgets('Can not double tap hours (when not selected) to enter input mode', (WidgetTester tester) async {
         await mediaQueryBoilerplate(tester, materialType: materialType);
-        final Finder hourFinder = find.ancestor(
-          of: find.text('7'),
-          matching: find.byType(InkWell),
-        );
-        final Finder minuteFinder = find.ancestor(
-          of: find.text('00'),
-          matching: find.byType(InkWell),
-        );
+        final Finder hourFinder = find.ancestor(of: find.text('7'), matching: find.byType(InkWell));
+        final Finder minuteFinder = find.ancestor(of: find.text('00'), matching: find.byType(InkWell));
 
         expect(find.byType(TextField), findsNothing);
 
@@ -1431,10 +1297,7 @@ void main() {
 
       testWidgets('Can double tap minutes (when selected) to enter input mode', (WidgetTester tester) async {
         await mediaQueryBoilerplate(tester, materialType: materialType);
-        final Finder minuteFinder = find.ancestor(
-          of: find.text('00'),
-          matching: find.byType(InkWell),
-        );
+        final Finder minuteFinder = find.ancestor(of: find.text('00'), matching: find.byType(InkWell));
 
         expect(find.byType(TextField), findsNothing);
 
@@ -1453,10 +1316,7 @@ void main() {
 
       testWidgets('Can not double tap minutes (when not selected) to enter input mode', (WidgetTester tester) async {
         await mediaQueryBoilerplate(tester, materialType: materialType);
-        final Finder minuteFinder = find.ancestor(
-          of: find.text('00'),
-          matching: find.byType(InkWell),
-        );
+        final Finder minuteFinder = find.ancestor(of: find.text('00'), matching: find.byType(InkWell));
 
         expect(find.byType(TextField), findsNothing);
 
@@ -1518,8 +1378,12 @@ void main() {
 
       // Fixes regression that was reverted in https://github.com/flutter/flutter/pull/64094#pullrequestreview-469836378.
       testWidgets('Ensure hour/minute fields are top-aligned with the separator', (WidgetTester tester) async {
-        await startPicker(tester, (TimeOfDay? time) {},
-            entryMode: TimePickerEntryMode.input, materialType: materialType);
+        await startPicker(
+          tester,
+          (TimeOfDay? time) {},
+          entryMode: TimePickerEntryMode.input,
+          materialType: materialType,
+        );
         final double hourFieldTop =
             tester.getTopLeft(find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_HourTextField')).dy;
         final double minuteFieldTop =
@@ -1531,8 +1395,12 @@ void main() {
       });
 
       testWidgets('Can switch between hour/minute fields using keyboard input action', (WidgetTester tester) async {
-        await startPicker(tester, (TimeOfDay? time) {},
-            entryMode: TimePickerEntryMode.input, materialType: materialType);
+        await startPicker(
+          tester,
+          (TimeOfDay? time) {},
+          entryMode: TimePickerEntryMode.input,
+          materialType: materialType,
+        );
 
         final Finder hourFinder = find.byType(TextField).first;
         final TextField hourField = tester.widget(hourFinder);
@@ -1555,14 +1423,9 @@ void main() {
     group('Time picker - Restoration (${materialType.name})', () {
       testWidgets('Time Picker state restoration test - dial mode', (WidgetTester tester) async {
         TimeOfDay? result;
-        final Offset center = (await startPicker(
-          tester,
-          (TimeOfDay? time) {
-            result = time;
-          },
-          restorationId: 'restorable_time_picker',
-          materialType: materialType,
-        ))!;
+        final Offset center = (await startPicker(tester, (TimeOfDay? time) {
+          result = time;
+        }, restorationId: 'restorable_time_picker', materialType: materialType))!;
         final Offset hour6 = Offset(center.dx, center.dy + 50); // 6:00
         final Offset min45 = Offset(center.dx - 50, center.dy); // 45 mins (or 9:00 hours)
 
@@ -1588,15 +1451,9 @@ void main() {
 
       testWidgets('Time Picker state restoration test - input mode', (WidgetTester tester) async {
         TimeOfDay? result;
-        await startPicker(
-          tester,
-          (TimeOfDay? time) {
-            result = time;
-          },
-          entryMode: TimePickerEntryMode.input,
-          restorationId: 'restorable_time_picker',
-          materialType: materialType,
-        );
+        await startPicker(tester, (TimeOfDay? time) {
+          result = time;
+        }, entryMode: TimePickerEntryMode.input, restorationId: 'restorable_time_picker', materialType: materialType);
         await tester.enterText(find.byType(TextField).first, '9');
         await tester.pump(const Duration(milliseconds: 50));
         await tester.restartAndRestore();
@@ -1622,14 +1479,9 @@ void main() {
 
       testWidgets('Time Picker state restoration test - switching modes', (WidgetTester tester) async {
         TimeOfDay? result;
-        final Offset center = (await startPicker(
-          tester,
-          (TimeOfDay? time) {
-            result = time;
-          },
-          restorationId: 'restorable_time_picker',
-          materialType: materialType,
-        ))!;
+        final Offset center = (await startPicker(tester, (TimeOfDay? time) {
+          result = time;
+        }, restorationId: 'restorable_time_picker', materialType: materialType))!;
 
         final TestRestorationData restorationData = await tester.getRestorationData();
         // Switch to input mode from dial mode.
@@ -1694,29 +1546,29 @@ Future<void> mediaQueryBoilerplate(
   required MaterialType materialType,
   Orientation? orientation,
 }) async {
-  await tester.pumpWidget(
-    Theme(
-      data: ThemeData(useMaterial3: materialType == MaterialType.material3),
-      child: Localizations(
-        locale: const Locale('en', 'US'),
-        delegates: const <LocalizationsDelegate<dynamic>>[
-          DefaultMaterialLocalizations.delegate,
-          DefaultWidgetsLocalizations.delegate,
-        ],
-        child: MediaQuery(
-          data: MediaQueryData(
-            alwaysUse24HourFormat: alwaysUse24HourFormat,
-            textScaleFactor: textScaleFactor,
-            accessibleNavigation: accessibleNavigation,
-            size: tester.view.physicalSize / tester.view.devicePixelRatio,
-          ),
-          child: Material(
-            child: Center(
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: Navigator(
-                  onGenerateRoute: (RouteSettings settings) {
-                    return MaterialPageRoute<void>(builder: (BuildContext context) {
+  await tester.pumpWidget(Theme(
+    data: ThemeData(useMaterial3: materialType == MaterialType.material3),
+    child: Localizations(
+      locale: const Locale('en', 'US'),
+      delegates: const <LocalizationsDelegate<dynamic>>[
+        DefaultMaterialLocalizations.delegate,
+        DefaultWidgetsLocalizations.delegate,
+      ],
+      child: MediaQuery(
+        data: MediaQueryData(
+          alwaysUse24HourFormat: alwaysUse24HourFormat,
+          textScaleFactor: textScaleFactor,
+          accessibleNavigation: accessibleNavigation,
+          size: tester.view.physicalSize / tester.view.devicePixelRatio,
+        ),
+        child: Material(
+          child: Center(
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: Navigator(
+                onGenerateRoute: (RouteSettings settings) {
+                  return MaterialPageRoute<void>(
+                    builder: (BuildContext context) {
                       return TextButton(
                         onPressed: () {
                           showTimePicker(
@@ -1733,16 +1585,16 @@ Future<void> mediaQueryBoilerplate(
                         },
                         child: const Text('X'),
                       );
-                    });
-                  },
-                ),
+                    },
+                  );
+                },
               ),
             ),
           ),
         ),
       ),
     ),
-  );
+  ));
   if (tapButton) {
     await tester.tap(find.text('X'));
   }
@@ -1754,11 +1606,7 @@ final Finder _minuteControl = find.byWidgetPredicate((Widget widget) => '${widge
 final Finder _timePicker = find.byWidgetPredicate((Widget widget) => '${widget.runtimeType}' == '_TimePicker');
 
 class _TimePickerLauncher extends StatefulWidget {
-  const _TimePickerLauncher({
-    required this.onChanged,
-    this.entryMode = TimePickerEntryMode.dial,
-    this.restorationId,
-  });
+  const _TimePickerLauncher({required this.onChanged, this.entryMode = TimePickerEntryMode.dial, this.restorationId});
 
   final ValueChanged<TimeOfDay?> onChanged;
   final TimePickerEntryMode entryMode;
@@ -1777,18 +1625,13 @@ class _TimePickerLauncherState extends State<_TimePickerLauncher> with Restorati
     onPresent: (NavigatorState navigator, Object? arguments) {
       return navigator.restorablePush(
         _timePickerRoute,
-        arguments: <String, String>{
-          'entry_mode': widget.entryMode.name,
-        },
+        arguments: <String, String>{'entry_mode': widget.entryMode.name},
       );
     },
   );
 
   @pragma('vm:entry-point')
-  static Route<TimeOfDay> _timePickerRoute(
-    BuildContext context,
-    Object? arguments,
-  ) {
+  static Route<TimeOfDay> _timePickerRoute(BuildContext context, Object? arguments) {
     final Map<dynamic, dynamic> args = arguments! as Map<dynamic, dynamic>;
     final TimePickerEntryMode entryMode = TimePickerEntryMode.values.firstWhere(
       (TimePickerEntryMode element) => element.name == args['entry_mode'],
@@ -1824,11 +1667,13 @@ class _TimePickerLauncherState extends State<_TimePickerLauncher> with Restorati
               child: const Text('X'),
               onPressed: () async {
                 if (widget.restorationId == null) {
-                  widget.onChanged(await showTimePicker(
-                    context: context,
-                    initialTime: const TimeOfDay(hour: 7, minute: 0),
-                    initialEntryMode: widget.entryMode,
-                  ));
+                  widget.onChanged(
+                    await showTimePicker(
+                      context: context,
+                      initialTime: const TimeOfDay(hour: 7, minute: 0),
+                      initialEntryMode: widget.entryMode,
+                    ),
+                  );
                 } else {
                   _restorableTimePickerRouteFuture.present();
                 }
@@ -1845,10 +1690,7 @@ class _TimePickerLauncherState extends State<_TimePickerLauncher> with Restorati
 // useMaterial3 true/false in the ThemeData, but used an enum here so that it
 // wasn't just a boolean, for easier identification of the name of the mode in
 // tests.
-enum MaterialType {
-  material2,
-  material3,
-}
+enum MaterialType { material2, material3 }
 
 Future<Offset?> startPicker(
   WidgetTester tester,
@@ -1861,11 +1703,7 @@ Future<Offset?> startPicker(
     theme: ThemeData(useMaterial3: materialType == MaterialType.material3),
     restorationScopeId: 'app',
     locale: const Locale('en', 'US'),
-    home: _TimePickerLauncher(
-      onChanged: onChanged,
-      entryMode: entryMode,
-      restorationId: restorationId,
-    ),
+    home: _TimePickerLauncher(onChanged: onChanged, entryMode: entryMode, restorationId: restorationId),
   ));
   await tester.tap(find.text('X'));
   await tester.pumpAndSettle(const Duration(seconds: 1));

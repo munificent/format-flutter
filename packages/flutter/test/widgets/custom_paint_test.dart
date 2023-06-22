@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class TestCustomPainter extends CustomPainter {
-  TestCustomPainter({ required this.log, this.name });
+  TestCustomPainter({required this.log, this.name});
 
   final List<String?> log;
   final String? name;
@@ -31,7 +31,7 @@ class MockCanvas extends Fake implements Canvas {
   }
 
   @override
-  void save() { }
+  void save() {}
 }
 
 class MockPaintingContext extends Fake implements PaintingContext {
@@ -43,20 +43,9 @@ void main() {
   testWidgets('Control test for custom painting', (WidgetTester tester) async {
     final List<String?> log = <String?>[];
     await tester.pumpWidget(CustomPaint(
-      painter: TestCustomPainter(
-        log: log,
-        name: 'background',
-      ),
-      foregroundPainter: TestCustomPainter(
-        log: log,
-        name: 'foreground',
-      ),
-      child: CustomPaint(
-        painter: TestCustomPainter(
-          log: log,
-          name: 'child',
-        ),
-      ),
+      painter: TestCustomPainter(log: log, name: 'background'),
+      foregroundPainter: TestCustomPainter(log: log, name: 'foreground'),
+      child: CustomPaint(painter: TestCustomPainter(log: log, name: 'child')),
     ));
 
     expect(log, equals(<String>['background', 'child', 'foreground']));
@@ -65,11 +54,7 @@ void main() {
   testWidgets('Throws FlutterError on custom painter incorrect restore/save calls', (WidgetTester tester) async {
     final GlobalKey target = GlobalKey();
     final List<String?> log = <String?>[];
-    await tester.pumpWidget(CustomPaint(
-      key: target,
-      isComplex: true,
-      painter: TestCustomPainter(log: log),
-    ));
+    await tester.pumpWidget(CustomPaint(key: target, isComplex: true, painter: TestCustomPainter(log: log)));
     final RenderCustomPaint renderCustom = target.currentContext!.findRenderObject()! as RenderCustomPaint;
     final MockPaintingContext paintingContext = MockPaintingContext();
     final MockCanvas canvas = paintingContext.canvas;
@@ -121,56 +106,35 @@ void main() {
   testWidgets('CustomPaint sizing', (WidgetTester tester) async {
     final GlobalKey target = GlobalKey();
 
-    await tester.pumpWidget(Center(
-      child: CustomPaint(key: target),
-    ));
+    await tester.pumpWidget(Center(child: CustomPaint(key: target)));
     expect(target.currentContext!.size, Size.zero);
 
-    await tester.pumpWidget(Center(
-      child: CustomPaint(key: target, child: Container()),
-    ));
+    await tester.pumpWidget(Center(child: CustomPaint(key: target, child: Container())));
     expect(target.currentContext!.size, const Size(800.0, 600.0));
 
-    await tester.pumpWidget(Center(
-      child: CustomPaint(key: target, size: const Size(20.0, 20.0)),
-    ));
+    await tester.pumpWidget(Center(child: CustomPaint(key: target, size: const Size(20.0, 20.0))));
     expect(target.currentContext!.size, const Size(20.0, 20.0));
 
-    await tester.pumpWidget(Center(
-      child: CustomPaint(key: target, size: const Size(2000.0, 100.0)),
-    ));
+    await tester.pumpWidget(Center(child: CustomPaint(key: target, size: const Size(2000.0, 100.0))));
     expect(target.currentContext!.size, const Size(800.0, 100.0));
 
-    await tester.pumpWidget(Center(
-      child: CustomPaint(key: target, child: Container()),
-    ));
+    await tester.pumpWidget(Center(child: CustomPaint(key: target, child: Container())));
     expect(target.currentContext!.size, const Size(800.0, 600.0));
 
-    await tester.pumpWidget(Center(
-      child: CustomPaint(key: target, child: const SizedBox.shrink()),
-    ));
+    await tester.pumpWidget(Center(child: CustomPaint(key: target, child: const SizedBox.shrink())));
     expect(target.currentContext!.size, Size.zero);
-
   });
 
   testWidgets('Raster cache hints', (WidgetTester tester) async {
     final GlobalKey target = GlobalKey();
 
     final List<String?> log = <String?>[];
-    await tester.pumpWidget(CustomPaint(
-      key: target,
-      isComplex: true,
-      painter: TestCustomPainter(log: log),
-    ));
+    await tester.pumpWidget(CustomPaint(key: target, isComplex: true, painter: TestCustomPainter(log: log)));
     RenderCustomPaint renderCustom = target.currentContext!.findRenderObject()! as RenderCustomPaint;
     expect(renderCustom.isComplex, true);
     expect(renderCustom.willChange, false);
 
-    await tester.pumpWidget(CustomPaint(
-      key: target,
-      willChange: true,
-      foregroundPainter: TestCustomPainter(log: log),
-    ));
+    await tester.pumpWidget(CustomPaint(key: target, willChange: true, foregroundPainter: TestCustomPainter(log: log)));
     renderCustom = target.currentContext!.findRenderObject()! as RenderCustomPaint;
     expect(renderCustom.isComplex, false);
     expect(renderCustom.willChange, true);

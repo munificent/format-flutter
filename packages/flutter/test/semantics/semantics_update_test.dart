@@ -26,23 +26,17 @@ void main() {
     SemanticsUpdateBuilderSpy.observations.clear();
 
     // Builds the real widget tree.
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: MergeSemantics(
-          child: Semantics(
-            label: 'outer',
-            // This semantics node should not be part of the semantics update
-            // because it is under another semantics container.
-            child: Semantics(
-              label: 'inner',
-              container: true,
-              child: const Text('text'),
-            ),
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: MergeSemantics(
+        child: Semantics(
+          label: 'outer',
+          // This semantics node should not be part of the semantics update
+          // because it is under another semantics container.
+          child: Semantics(label: 'inner', container: true, child: const Text('text')),
         ),
       ),
-    );
+    ));
 
     expect(SemanticsUpdateBuilderSpy.observations.length, 2);
 
@@ -58,23 +52,17 @@ void main() {
 
     // Updates the inner semantics label and verifies it only sends update for
     // the merged parent.
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: MergeSemantics(
-          child: Semantics(
-            label: 'outer',
-            // This semantics node should not be part of the semantics update
-            // because it is under another semantics container.
-            child: Semantics(
-              label: 'inner-updated',
-              container: true,
-              child: const Text('text'),
-            ),
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: MergeSemantics(
+        child: Semantics(
+          label: 'outer',
+          // This semantics node should not be part of the semantics update
+          // because it is under another semantics container.
+          child: Semantics(label: 'inner-updated', container: true, child: const Text('text')),
         ),
       ),
-    );
+    ));
     expect(SemanticsUpdateBuilderSpy.observations.length, 1);
 
     expect(SemanticsUpdateBuilderSpy.observations.containsKey(1), isTrue);
@@ -99,32 +87,26 @@ void main() {
     SemanticsUpdateBuilderSpy.observations.clear();
 
     // Builds the real widget tree.
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Semantics(
-          attributedLabel: AttributedString(
-            'label',
-            attributes: <StringAttribute>[
-              SpellOutStringAttribute(range: const TextRange(start: 0, end: 5)),
-            ],
-          ),
-          attributedValue: AttributedString(
-            'value',
-            attributes: <StringAttribute>[
-              LocaleStringAttribute(range: const TextRange(start: 0, end: 5), locale: const Locale('en', 'MX')),
-            ],
-          ),
-          attributedHint: AttributedString(
-            'hint',
-            attributes: <StringAttribute>[
-              SpellOutStringAttribute(range: const TextRange(start: 1, end: 2)),
-            ],
-          ),
-          child: const Placeholder(),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Semantics(
+        attributedLabel: AttributedString(
+          'label',
+          attributes: <StringAttribute>[SpellOutStringAttribute(range: const TextRange(start: 0, end: 5))],
         ),
+        attributedValue: AttributedString(
+          'value',
+          attributes: <StringAttribute>[
+            LocaleStringAttribute(range: const TextRange(start: 0, end: 5), locale: const Locale('en', 'MX')),
+          ],
+        ),
+        attributedHint: AttributedString(
+          'hint',
+          attributes: <StringAttribute>[SpellOutStringAttribute(range: const TextRange(start: 1, end: 2))],
+        ),
+        child: const Placeholder(),
       ),
-    );
+    ));
 
     expect(SemanticsUpdateBuilderSpy.observations.length, 2);
 
@@ -142,7 +124,8 @@ void main() {
     expect(SemanticsUpdateBuilderSpy.observations[1]!.value, 'value');
     expect(SemanticsUpdateBuilderSpy.observations[1]!.valueAttributes!.length, 1);
     expect(SemanticsUpdateBuilderSpy.observations[1]!.valueAttributes![0] is LocaleStringAttribute, isTrue);
-    final LocaleStringAttribute localeAttribute = SemanticsUpdateBuilderSpy.observations[1]!.valueAttributes![0] as LocaleStringAttribute;
+    final LocaleStringAttribute localeAttribute =
+        SemanticsUpdateBuilderSpy.observations[1]!.valueAttributes![0] as LocaleStringAttribute;
     expect(localeAttribute.range, const TextRange(start: 0, end: 5));
     expect(localeAttribute.locale, const Locale('en', 'MX'));
 
@@ -154,12 +137,12 @@ void main() {
     expect(
       tester.widget(find.byType(Semantics)).toString(),
       'Semantics('
-        'container: false, '
-        'properties: SemanticsProperties, '
-        'attributedLabel: "label" [SpellOutStringAttribute(TextRange(start: 0, end: 5))], '
-        'attributedValue: "value" [LocaleStringAttribute(TextRange(start: 0, end: 5), en-MX)], '
-        'attributedHint: "hint" [SpellOutStringAttribute(TextRange(start: 1, end: 2))], '
-        'tooltip: null'// ignore: missing_whitespace_between_adjacent_strings
+      'container: false, '
+      'properties: SemanticsProperties, '
+      'attributedLabel: "label" [SpellOutStringAttribute(TextRange(start: 0, end: 5))], '
+      'attributedValue: "value" [LocaleStringAttribute(TextRange(start: 0, end: 5), en-MX)], '
+      'attributedHint: "hint" [SpellOutStringAttribute(TextRange(start: 1, end: 2))], '
+      'tooltip: null' // ignore: missing_whitespace_between_adjacent_strings
       ')',
     );
 
@@ -253,8 +236,8 @@ class SemanticsUpdateBuilderSpy extends Fake implements ui.SemanticsUpdateBuilde
   }
 
   @override
-  void updateCustomAction({required int id, String? label, String? hint, int overrideId = -1}) =>
-    _builder.updateCustomAction(id: id, label: label, hint: hint, overrideId: overrideId);
+  void updateCustomAction({required int id, String? label, String? hint, int overrideId = -1}) => _builder
+      .updateCustomAction(id: id, label: label, hint: hint, overrideId: overrideId);
 
   @override
   ui.SemanticsUpdate build() => _builder.build();

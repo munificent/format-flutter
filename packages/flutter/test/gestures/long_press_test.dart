@@ -8,38 +8,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'gesture_tester.dart';
 
 // Down/move/up pair 1: normal tap sequence
-const PointerDownEvent down = PointerDownEvent(
-  pointer: 5,
-  position: Offset(10, 10),
-);
+const PointerDownEvent down = PointerDownEvent(pointer: 5, position: Offset(10, 10));
 
-const PointerUpEvent up = PointerUpEvent(
-  pointer: 5,
-  position: Offset(11, 9),
-);
+const PointerUpEvent up = PointerUpEvent(pointer: 5, position: Offset(11, 9));
 
-const PointerMoveEvent move = PointerMoveEvent(
-  pointer: 5,
-  position: Offset(100, 200),
-);
+const PointerMoveEvent move = PointerMoveEvent(pointer: 5, position: Offset(100, 200));
 
 // Down/up pair 2: normal tap sequence far away from pair 1
-const PointerDownEvent down2 = PointerDownEvent(
-  pointer: 6,
-  position: Offset(10, 10),
-);
+const PointerDownEvent down2 = PointerDownEvent(pointer: 6, position: Offset(10, 10));
 
-const PointerUpEvent up2 = PointerUpEvent(
-  pointer: 6,
-  position: Offset(11, 9),
-);
+const PointerUpEvent up2 = PointerUpEvent(pointer: 6, position: Offset(11, 9));
 
 // Down/up pair 3: tap sequence with secondary button
-const PointerDownEvent down3 = PointerDownEvent(
-  pointer: 7,
-  position: Offset(30, 30),
-  buttons: kSecondaryButton,
-);
+const PointerDownEvent down3 = PointerDownEvent(pointer: 7, position: Offset(30, 30), buttons: kSecondaryButton);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -217,12 +198,14 @@ void main() {
     });
 
     testGesture('Should not recognize long press with more than one buttons', (GestureTester tester) {
-      gesture.addPointer(const PointerDownEvent(
-        pointer: 5,
-        kind: PointerDeviceKind.mouse,
-        buttons: kSecondaryMouseButton | kTertiaryButton,
-        position: Offset(10, 10),
-      ));
+      gesture.addPointer(
+        const PointerDownEvent(
+          pointer: 5,
+          kind: PointerDeviceKind.mouse,
+          buttons: kSecondaryMouseButton | kTertiaryButton,
+          position: Offset(10, 10),
+        ),
+      );
       tester.closeArena(5);
       expect(recognized, const <String>[]);
       tester.route(down);
@@ -243,12 +226,14 @@ void main() {
       expect(recognized, const <String>['down']);
       tester.async.elapse(const Duration(milliseconds: 300));
       expect(recognized, const <String>['down']);
-      tester.route(const PointerMoveEvent(
-        pointer: 5,
-        kind: PointerDeviceKind.mouse,
-        buttons: kTertiaryButton,
-        position: Offset(10, 10),
-      ));
+      tester.route(
+        const PointerMoveEvent(
+          pointer: 5,
+          kind: PointerDeviceKind.mouse,
+          buttons: kTertiaryButton,
+          position: Offset(10, 10),
+        ),
+      );
       expect(recognized, const <String>['down', 'cancel']);
       tester.async.elapse(const Duration(milliseconds: 700));
       expect(recognized, const <String>['down', 'cancel']);
@@ -259,9 +244,7 @@ void main() {
     });
 
     testGesture('non-allowed pointer does not inadvertently reset the recognizer', (GestureTester tester) {
-      gesture = LongPressGestureRecognizer(
-        supportedDevices: <PointerDeviceKind>{ PointerDeviceKind.touch },
-      );
+      gesture = LongPressGestureRecognizer(supportedDevices: <PointerDeviceKind>{PointerDeviceKind.touch});
       setUpHandlers();
 
       // Accept a long-press gesture
@@ -272,18 +255,11 @@ void main() {
       expect(recognized, const <String>['down', 'start']);
 
       // Add a non-allowed pointer (doesn't match the kind filter)
-      gesture.addPointer(const PointerDownEvent(
-        pointer: 101,
-        kind: PointerDeviceKind.mouse,
-        position: Offset(10, 10),
-      ));
+      gesture.addPointer(const PointerDownEvent(pointer: 101, kind: PointerDeviceKind.mouse, position: Offset(10, 10)));
       expect(recognized, const <String>['down', 'start']);
 
       // Moving the primary pointer should result in a normal event
-      tester.route(const PointerMoveEvent(
-        pointer: 5,
-        position: Offset(15, 15),
-      ));
+      tester.route(const PointerMoveEvent(pointer: 5, position: Offset(15, 15)));
       expect(recognized, const <String>['down', 'start', 'move']);
       gesture.dispose();
     });
@@ -389,11 +365,7 @@ void main() {
 
   group('Enforce consistent-button restriction:', () {
     // In sequence between `down` and `up` but with buttons changed
-    const PointerMoveEvent moveR = PointerMoveEvent(
-      pointer: 5,
-      buttons: kSecondaryButton,
-      position: Offset(10, 10),
-    );
+    const PointerMoveEvent moveR = PointerMoveEvent(pointer: 5, buttons: kSecondaryButton, position: Offset(10, 10));
 
     late LongPressGestureRecognizer gesture;
     final List<String> recognized = <String>[];
@@ -498,7 +470,7 @@ void main() {
 
   testGesture('Can filter long press based on device kind', (GestureTester tester) {
     final LongPressGestureRecognizer mouseLongPress = LongPressGestureRecognizer(
-      supportedDevices: <PointerDeviceKind>{ PointerDeviceKind.mouse },
+      supportedDevices: <PointerDeviceKind>{PointerDeviceKind.mouse},
     );
 
     bool mouseLongPressDown = false;
@@ -511,10 +483,7 @@ void main() {
       position: Offset(10, 10),
       kind: PointerDeviceKind.mouse,
     );
-    const PointerDownEvent touchDown = PointerDownEvent(
-      pointer: 5,
-      position: Offset(10, 10),
-    );
+    const PointerDownEvent touchDown = PointerDownEvent(pointer: 5, position: Offset(10, 10));
 
     // Touch events shouldn't be recognized.
     mouseLongPress.addPointer(touchDown);
@@ -571,26 +540,32 @@ void main() {
       longPress.dispose();
     });
 
-    testGesture('A primary long press recognizer does not form competition with a secondary tap recognizer', (GestureTester tester) {
-      longPress.addPointer(down3);
-      tapSecondary.addPointer(down3);
-      tester.closeArena(down3.pointer);
+    testGesture(
+      'A primary long press recognizer does not form competition with a secondary tap recognizer',
+      (GestureTester tester) {
+        longPress.addPointer(down3);
+        tapSecondary.addPointer(down3);
+        tester.closeArena(down3.pointer);
 
-      tester.route(down3);
-      expect(recognized, <String>['tapSecondary']);
-    });
+        tester.route(down3);
+        expect(recognized, <String>['tapSecondary']);
+      },
+    );
 
-    testGesture('A primary long press recognizer forms competition with a primary tap recognizer', (GestureTester tester) {
-      longPress.addPointer(down);
-      tapPrimary.addPointer(down);
-      tester.closeArena(down.pointer);
+    testGesture(
+      'A primary long press recognizer forms competition with a primary tap recognizer',
+      (GestureTester tester) {
+        longPress.addPointer(down);
+        tapPrimary.addPointer(down);
+        tester.closeArena(down.pointer);
 
-      tester.route(down);
-      expect(recognized, <String>[]);
+        tester.route(down);
+        expect(recognized, <String>[]);
 
-      tester.route(up);
-      expect(recognized, <String>['tapPrimary']);
-    });
+        tester.route(up);
+        expect(recognized, <String>['tapPrimary']);
+      },
+    );
   });
 
   testGesture('A secondary long press should not trigger primary', (GestureTester tester) {
@@ -618,16 +593,9 @@ void main() {
       position: Offset(30.0, 30.0),
     );
 
-    const PointerMoveEvent move2 = PointerMoveEvent(
-      pointer: 2,
-      buttons: kSecondaryButton,
-      position: Offset(100, 200),
-    );
+    const PointerMoveEvent move2 = PointerMoveEvent(pointer: 2, buttons: kSecondaryButton, position: Offset(100, 200));
 
-    const PointerUpEvent up2 = PointerUpEvent(
-      pointer: 2,
-      position: Offset(100, 201),
-    );
+    const PointerUpEvent up2 = PointerUpEvent(pointer: 2, position: Offset(100, 201));
 
     longPress.addPointer(down2);
     tester.closeArena(2);
@@ -674,22 +642,11 @@ void main() {
         recognized.add('secondaryUp');
       };
 
-    const PointerDownEvent down2 = PointerDownEvent(
-      pointer: 2,
-      buttons: kTertiaryButton,
-      position: Offset(30.0, 30.0),
-    );
+    const PointerDownEvent down2 = PointerDownEvent(pointer: 2, buttons: kTertiaryButton, position: Offset(30.0, 30.0));
 
-    const PointerMoveEvent move2 = PointerMoveEvent(
-      pointer: 2,
-      buttons: kTertiaryButton,
-      position: Offset(100, 200),
-    );
+    const PointerMoveEvent move2 = PointerMoveEvent(pointer: 2, buttons: kTertiaryButton, position: Offset(100, 200));
 
-    const PointerUpEvent up2 = PointerUpEvent(
-      pointer: 2,
-      position: Offset(100, 201),
-    );
+    const PointerUpEvent up2 = PointerUpEvent(pointer: 2, position: Offset(100, 201));
 
     longPress.addPointer(down2);
     tester.closeArena(2);

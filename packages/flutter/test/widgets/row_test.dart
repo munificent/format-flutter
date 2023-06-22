@@ -284,27 +284,22 @@ void main() {
     OrderPainter.log.clear();
     const Key childKey = Key('childKey');
 
-    await tester.pumpWidget(const Center(
-      child: SizedBox.shrink(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              key: childKey,
-              width: 100.0,
-              height: 100.0,
-            ),
-          ],
+    await tester.pumpWidget(
+      const Center(
+        child: SizedBox.shrink(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[SizedBox(key: childKey, width: 100.0, height: 100.0)],
+          ),
         ),
       ),
-    ));
+    );
 
     final RenderBox renderBox = tester.renderObject(find.byKey(childKey));
     expect(renderBox.size.width, equals(100.0));
     expect(renderBox.size.height, equals(0.0));
   });
-
 
   // LTR
 
@@ -704,28 +699,23 @@ void main() {
     OrderPainter.log.clear();
     const Key childKey = Key('childKey');
 
-    await tester.pumpWidget(const Center(
-      child: SizedBox.shrink(
-        child: Row(
-          textDirection: TextDirection.ltr,
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              key: childKey,
-              width: 100.0,
-              height: 100.0,
-            ),
-          ],
+    await tester.pumpWidget(
+      const Center(
+        child: SizedBox.shrink(
+          child: Row(
+            textDirection: TextDirection.ltr,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[SizedBox(key: childKey, width: 100.0, height: 100.0)],
+          ),
         ),
       ),
-    ));
+    );
 
     final RenderBox renderBox = tester.renderObject(find.byKey(childKey));
     expect(renderBox.size.width, equals(100.0));
     expect(renderBox.size.height, equals(0.0));
   });
-
 
   // RTL
 
@@ -1125,22 +1115,18 @@ void main() {
     OrderPainter.log.clear();
     const Key childKey = Key('childKey');
 
-    await tester.pumpWidget(const Center(
-      child: SizedBox.shrink(
-        child: Row(
-          textDirection: TextDirection.rtl,
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              key: childKey,
-              width: 100.0,
-              height: 100.0,
-            ),
-          ],
+    await tester.pumpWidget(
+      const Center(
+        child: SizedBox.shrink(
+          child: Row(
+            textDirection: TextDirection.rtl,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[SizedBox(key: childKey, width: 100.0, height: 100.0)],
+          ),
         ),
       ),
-    ));
+    );
 
     final RenderBox renderBox = tester.renderObject(find.byKey(childKey));
     expect(renderBox.size.width, equals(100.0));

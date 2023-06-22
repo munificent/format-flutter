@@ -10,31 +10,13 @@ void main() {
     final Key keyA = GlobalKey();
     final Key keyB = GlobalKey();
 
-    await tester.pumpWidget(
-      Stack(
-        textDirection: TextDirection.ltr,
-        children: <Widget>[
-          Positioned(
-            top: 100.0,
-            left: 100.0,
-            child: SizedBox(
-              key: keyA,
-              width: 10.0,
-              height: 10.0,
-            ),
-          ),
-          Positioned(
-            left: 100.0,
-            top: 200.0,
-            child: SizedBox(
-              key: keyB,
-              width: 20.0,
-              height: 10.0,
-            ),
-          ),
-        ],
-      ),
-    );
+    await tester.pumpWidget(Stack(
+      textDirection: TextDirection.ltr,
+      children: <Widget>[
+        Positioned(top: 100.0, left: 100.0, child: SizedBox(key: keyA, width: 10.0, height: 10.0)),
+        Positioned(left: 100.0, top: 200.0, child: SizedBox(key: keyB, width: 20.0, height: 10.0)),
+      ],
+    ));
 
     final RenderBox boxA = tester.renderObject(find.byKey(keyA));
     expect(boxA.localToGlobal(Offset.zero), equals(const Offset(100.0, 100.0)));

@@ -7,51 +7,37 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('shows header', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoListSection(
-            header: const Text('Header'),
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoListSection(
+          header: const Text('Header'),
+          children: const <Widget>[CupertinoListTile(title: Text('CupertinoListTile'))],
         ),
       ),
-    );
+    ));
 
     expect(find.text('Header'), findsOneWidget);
   });
 
   testWidgets('shows footer', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoListSection(
-            footer: const Text('Footer'),
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoListSection(
+          footer: const Text('Footer'),
+          children: const <Widget>[CupertinoListTile(title: Text('CupertinoListTile'))],
         ),
       ),
-    );
+    ));
 
     expect(find.text('Footer'), findsOneWidget);
   });
 
   testWidgets('shows long dividers in edge-to-edge section part 1', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoListSection(
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoListSection(children: const <Widget>[CupertinoListTile(title: Text('CupertinoListTile'))]),
       ),
-    );
+    ));
 
     // Since the children list is reconstructed with dividers in it, the column
     // retrieved should have 3 items for an input [children] param with 1 child.
@@ -60,18 +46,16 @@ void main() {
   });
 
   testWidgets('shows long dividers in edge-to-edge section part 2', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoListSection(
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoListSection(
+          children: const <Widget>[
+            CupertinoListTile(title: Text('CupertinoListTile')),
+            CupertinoListTile(title: Text('CupertinoListTile')),
+          ],
         ),
       ),
-    );
+    ));
 
     // Since the children list is reconstructed with dividers in it, the column
     // retrieved should have 5 items for an input [children] param with 2
@@ -81,17 +65,13 @@ void main() {
   });
 
   testWidgets('does not show long dividers in insetGrouped section part 1', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoListSection.insetGrouped(
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoListSection.insetGrouped(
+          children: const <Widget>[CupertinoListTile(title: Text('CupertinoListTile'))],
         ),
       ),
-    );
+    ));
 
     // Since the children list is reconstructed without long dividers in it, the
     // column retrieved should have 1 item for an input [children] param with 1
@@ -101,18 +81,16 @@ void main() {
   });
 
   testWidgets('does not show long dividers in insetGrouped section part 2', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoListSection.insetGrouped(
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoListSection.insetGrouped(
+          children: const <Widget>[
+            CupertinoListTile(title: Text('CupertinoListTile')),
+            CupertinoListTile(title: Text('CupertinoListTile')),
+          ],
         ),
       ),
-    );
+    ));
 
     // Since the children list is reconstructed with short dividers in it, the
     // column retrieved should have 3 items for an input [children] param with 2
@@ -124,20 +102,16 @@ void main() {
   testWidgets('sets background color for section', (WidgetTester tester) async {
     const Color backgroundColor = CupertinoColors.systemBlue;
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: MediaQuery(
-          data: const MediaQueryData(),
-          child: CupertinoListSection(
-            backgroundColor: backgroundColor,
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: MediaQuery(
+        data: const MediaQueryData(),
+        child: CupertinoListSection(
+          backgroundColor: backgroundColor,
+          children: const <Widget>[CupertinoListTile(title: Text('CupertinoListTile'))],
         ),
       ),
-    );
+    ));
 
     final DecoratedBox decoratedBox = tester.widget(find.byType(DecoratedBox).first);
     final BoxDecoration boxDecoration = decoratedBox.decoration as BoxDecoration;
@@ -145,52 +119,40 @@ void main() {
   });
 
   testWidgets('setting clipBehavior clips children section', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoListSection(
-            clipBehavior: Clip.antiAlias,
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoListSection(
+          clipBehavior: Clip.antiAlias,
+          children: const <Widget>[CupertinoListTile(title: Text('CupertinoListTile'))],
         ),
       ),
-    );
+    ));
 
     expect(find.byType(ClipRRect), findsOneWidget);
   });
 
   testWidgets('not setting clipBehavior does not clip children section', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoListSection(
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoListSection(children: const <Widget>[CupertinoListTile(title: Text('CupertinoListTile'))]),
       ),
-    );
+    ));
 
     expect(find.byType(ClipRRect), findsNothing);
   });
 
   testWidgets('CupertinoListSection respects separatorColor', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoListSection(
-            separatorColor: const Color.fromARGB(255, 143, 193, 51),
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoListSection(
+          separatorColor: const Color.fromARGB(255, 143, 193, 51),
+          children: const <Widget>[
+            CupertinoListTile(title: Text('CupertinoListTile')),
+            CupertinoListTile(title: Text('CupertinoListTile')),
+          ],
         ),
       ),
-    );
+    ));
 
     final Column childrenColumn = tester.widget(find.byType(Column).at(1));
     for (final Widget e in childrenColumn.children) {
@@ -201,18 +163,16 @@ void main() {
   });
 
   testWidgets('CupertinoListSection.separatorColor defaults CupertinoColors.separator', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoListSection(
-            children: const <Widget>[
-              CupertinoListTile(title: Text('CupertinoListTile')),
-              CupertinoListTile(title: Text('CupertinoListTile')),
-            ],
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoListSection(
+          children: const <Widget>[
+            CupertinoListTile(title: Text('CupertinoListTile')),
+            CupertinoListTile(title: Text('CupertinoListTile')),
+          ],
         ),
       ),
-    );
+    ));
 
     final BuildContext context = tester.element(find.byType(CupertinoListSection));
     final Column childrenColumn = tester.widget(find.byType(Column).at(1));

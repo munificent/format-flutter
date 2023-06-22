@@ -11,20 +11,16 @@ void main() {
     late StateSetter setState;
     int storedValue = 0;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: StatefulBuilder(
-          key: builderKey,
-          builder: (BuildContext context, StateSetter setter) {
-            PageStorage.of(context).writeState(context, storedValue);
-            setState = setter;
-            return Center(
-              child: Text('storedValue: $storedValue'),
-            );
-          },
-        ),
+    await tester.pumpWidget(MaterialApp(
+      home: StatefulBuilder(
+        key: builderKey,
+        builder: (BuildContext context, StateSetter setter) {
+          PageStorage.of(context).writeState(context, storedValue);
+          setState = setter;
+          return Center(child: Text('storedValue: $storedValue'));
+        },
       ),
-    );
+    ));
 
     final Element builderElement = tester.element(find.byKey(builderKey));
     expect(PageStorage.of(builderElement), isNotNull);
@@ -48,9 +44,7 @@ void main() {
           builder: (BuildContext context, StateSetter setter) {
             PageStorage.of(context).writeState(context, storedValue, identifier: 123);
             setState = setter;
-            return Center(
-              child: Text('storedValue: $storedValue'),
-            );
+            return Center(child: Text('storedValue: $storedValue'));
           },
         ),
       );
@@ -78,5 +72,4 @@ void main() {
     await tester.pump();
     expect(PageStorage.of(builderElement).readState(builderElement, identifier: 123), equals(storedValue));
   });
-
 }

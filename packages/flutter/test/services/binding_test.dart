@@ -47,8 +47,9 @@ class TestBinding extends BindingBase with SchedulerBinding, ServicesBinding {
   @override
   TestDefaultBinaryMessenger createBinaryMessenger() {
     Future<ByteData?> keyboardHandler(ByteData? message) async {
-      return const StandardMethodCodec().encodeSuccessEnvelope(<int, int>{1:1});
+      return const StandardMethodCodec().encodeSuccessEnvelope(<int, int>{1: 1});
     }
+
     return TestDefaultBinaryMessenger(
       super.createBinaryMessenger(),
       outboundHandlers: <String, MessageHandler>{'flutter/keyboard': keyboardHandler},
@@ -102,7 +103,7 @@ void main() {
     expect(flutterAssetsCallCount, 2);
 
     final ByteData message = const JSONMessageCodec().encodeMessage(<String, dynamic>{'type': 'memoryPressure'})!;
-    await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/system', message, (_) { });
+    await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/system', message, (_) {});
 
     await rootBundle.loadString('test_asset');
     expect(flutterAssetsCallCount, 3);
@@ -115,10 +116,11 @@ void main() {
   });
 
   test('initInstances sets a default method call handler for SystemChannels.textInput', () async {
-    final ByteData message = const JSONMessageCodec().encodeMessage(<String, dynamic>{'method': 'TextInput.requestElementsInRect', 'args': null})!;
+    final ByteData message = const JSONMessageCodec()
+        .encodeMessage(<String, dynamic>{'method': 'TextInput.requestElementsInRect', 'args': null})!;
     await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', message, (ByteData? data) {
       expect(data, isNotNull);
-     });
+    });
   });
 
   test('Calling exitApplication sends a method call to the engine', () async {
@@ -137,10 +139,14 @@ void main() {
   });
 
   test('Default handleRequestAppExit returns exit', () async {
-    const MethodCall incomingCall = MethodCall('System.requestAppExit', <dynamic>[<String, dynamic>{'type': 'cancelable'}]);
+    const MethodCall incomingCall = MethodCall('System.requestAppExit', <dynamic>[
+      <String, dynamic>{'type': 'cancelable'},
+    ]);
     bool receivedReply = false;
     Map<String, dynamic>? result;
-    await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/platform', const JSONMethodCodec().encodeMethodCall(incomingCall),
+    await binding.defaultBinaryMessenger.handlePlatformMessage(
+      'flutter/platform',
+      const JSONMethodCodec().encodeMethodCall(incomingCall),
       (ByteData? message) async {
         result = (const JSONMessageCodec().decodeMessage(message) as List<dynamic>)[0] as Map<String, dynamic>;
         receivedReply = true;

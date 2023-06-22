@@ -16,10 +16,7 @@ import 'feedback_tester.dart';
 Widget wrap({Widget? child}) {
   return MediaQuery(
     data: const MediaQueryData(),
-    child: Directionality(
-      textDirection: TextDirection.ltr,
-      child: Material(child: child),
-    ),
+    child: Directionality(textDirection: TextDirection.ltr, child: Material(child: child)),
   );
 }
 
@@ -29,19 +26,12 @@ void main() {
     int? selectedValue;
     // Constructor parameters are required for [RadioListTile], but they are
     // irrelevant when searching with [find.byType].
-    final Type radioListTileType = const RadioListTile<int>(
-      value: 0,
-      groupValue: 0,
-      onChanged: null,
-    ).runtimeType;
+    final Type radioListTileType = const RadioListTile<int>(value: 0, groupValue: 0, onChanged: null).runtimeType;
 
     List<RadioListTile<int>> generatedRadioListTiles;
-    List<RadioListTile<int>> findTiles() => find
-        .byType(radioListTileType)
-        .evaluate()
-        .map<Widget>((Element element) => element.widget)
-        .cast<RadioListTile<int>>()
-        .toList();
+    List<RadioListTile<int>> findTiles() => find.byType(radioListTileType).evaluate().map<Widget>(
+      (Element element) => element.widget,
+    ).cast<RadioListTile<int>>().toList();
 
     Widget buildFrame() {
       return wrap(
@@ -51,15 +41,15 @@ void main() {
               body: ListView.builder(
                 itemCount: values.length,
                 itemBuilder: (BuildContext context, int index) => RadioListTile<int>(
-                  onChanged: (int? value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                  value: values[index],
-                  groupValue: selectedValue,
-                  title: Text(values[index].toString()),
-                ),
+                      onChanged: (int? value) {
+                        setState(() {
+                          selectedValue = value;
+                        });
+                      },
+                      value: values[index],
+                      groupValue: selectedValue,
+                      title: Text(values[index].toString()),
+                    ),
               ),
             );
           },
@@ -89,67 +79,54 @@ void main() {
     final Key titleKey = UniqueKey();
     final List<int?> log = <int?>[];
 
-    await tester.pumpWidget(
-      wrap(
-        child: RadioListTile<int>(
-          key: key,
-          value: 1,
-          groupValue: 2,
-          onChanged: log.add,
-          title: Text('Title', key: titleKey),
-        ),
+    await tester.pumpWidget(wrap(
+      child: RadioListTile<int>(
+        key: key,
+        value: 1,
+        groupValue: 2,
+        onChanged: log.add,
+        title: Text('Title', key: titleKey),
       ),
-    );
+    ));
 
     await tester.tap(find.byKey(key));
 
     expect(log, equals(<int>[1]));
     log.clear();
 
-    await tester.pumpWidget(
-      wrap(
-        child: RadioListTile<int>(
-          key: key,
-          value: 1,
-          groupValue: 1,
-          onChanged: log.add,
-          activeColor: Colors.green[500],
-          title: Text('Title', key: titleKey),
-        ),
+    await tester.pumpWidget(wrap(
+      child: RadioListTile<int>(
+        key: key,
+        value: 1,
+        groupValue: 1,
+        onChanged: log.add,
+        activeColor: Colors.green[500],
+        title: Text('Title', key: titleKey),
       ),
-    );
+    ));
 
     await tester.tap(find.byKey(key));
 
     expect(log, isEmpty);
 
-    await tester.pumpWidget(
-      wrap(
-        child: RadioListTile<int>(
-          key: key,
-          value: 1,
-          groupValue: 2,
-          onChanged: null,
-          title: Text('Title', key: titleKey),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrap(
+      child:
+          RadioListTile<int>(key: key, value: 1, groupValue: 2, onChanged: null, title: Text('Title', key: titleKey)),
+    ));
 
     await tester.tap(find.byKey(key));
 
     expect(log, isEmpty);
 
-    await tester.pumpWidget(
-      wrap(
-        child: RadioListTile<int>(
-          key: key,
-          value: 1,
-          groupValue: 2,
-          onChanged: log.add,
-          title: Text('Title', key: titleKey),
-        ),
+    await tester.pumpWidget(wrap(
+      child: RadioListTile<int>(
+        key: key,
+        value: 1,
+        groupValue: 2,
+        onChanged: log.add,
+        title: Text('Title', key: titleKey),
       ),
-    );
+    ));
 
     await tester.tap(find.byKey(titleKey));
 
@@ -161,11 +138,7 @@ void main() {
     int? selectedValue;
     // Constructor parameters are required for [Radio], but they are irrelevant
     // when searching with [find.byType].
-    final Type radioType = const Radio<int>(
-      value: 0,
-      groupValue: 0,
-      onChanged: null,
-    ).runtimeType;
+    final Type radioType = const Radio<int>(value: 0, groupValue: 0, onChanged: null).runtimeType;
     final List<dynamic> log = <dynamic>[];
 
     Widget buildFrame() {
@@ -176,16 +149,16 @@ void main() {
               body: ListView.builder(
                 itemCount: values.length,
                 itemBuilder: (BuildContext context, int index) => RadioListTile<int>(
-                  onChanged: (int? value) {
-                    log.add(value);
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                  value: values[index],
-                  groupValue: selectedValue,
-                  title: Text(values[index].toString()),
-                ),
+                      onChanged: (int? value) {
+                        log.add(value);
+                        setState(() {
+                          selectedValue = value;
+                        });
+                      },
+                      value: values[index],
+                      groupValue: selectedValue,
+                      title: Text(values[index].toString()),
+                    ),
               ),
             );
           },
@@ -229,11 +202,7 @@ void main() {
     int? selectedValue;
     // Constructor parameters are required for [Radio], but they are irrelevant
     // when searching with [find.byType].
-    final Type radioType = const Radio<int>(
-      value: 0,
-      groupValue: 0,
-      onChanged: null,
-    ).runtimeType;
+    final Type radioType = const Radio<int>(value: 0, groupValue: 0, onChanged: null).runtimeType;
     final List<dynamic> log = <dynamic>[];
 
     Widget buildFrame() {
@@ -244,16 +213,16 @@ void main() {
               body: ListView.builder(
                 itemCount: values.length,
                 itemBuilder: (BuildContext context, int index) => RadioListTile<int>(
-                  onChanged: (int? value) {
-                    log.add(value);
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                  value: values[index],
-                  groupValue: selectedValue,
-                  title: Text(values[index].toString()),
-                ),
+                      onChanged: (int? value) {
+                        log.add(value);
+                        setState(() {
+                          selectedValue = value;
+                        });
+                      },
+                      value: values[index],
+                      groupValue: selectedValue,
+                      title: Text(values[index].toString()),
+                    ),
               ),
             );
           },
@@ -280,11 +249,7 @@ void main() {
     int? selectedValue;
     // Constructor parameters are required for [Radio], but they are irrelevant
     // when searching with [find.byType].
-    final Type radioType = const Radio<int>(
-      value: 0,
-      groupValue: 0,
-      onChanged: null,
-    ).runtimeType;
+    final Type radioType = const Radio<int>(value: 0, groupValue: 0, onChanged: null).runtimeType;
     final List<dynamic> log = <dynamic>[];
 
     Widget buildFrame() {
@@ -334,15 +299,7 @@ void main() {
     final List<int?> log = <int?>[];
 
     await tester.pumpWidget(Material(
-      child: Center(
-        child: Radio<int>(
-          key: key,
-          value: 1,
-          groupValue: 2,
-          onChanged: log.add,
-          toggleable: true,
-        ),
-      ),
+      child: Center(child: Radio<int>(key: key, value: 1, groupValue: 2, onChanged: log.add, toggleable: true)),
     ));
 
     await tester.tap(find.byKey(key));
@@ -351,15 +308,7 @@ void main() {
     log.clear();
 
     await tester.pumpWidget(Material(
-      child: Center(
-        child: Radio<int>(
-          key: key,
-          value: 1,
-          groupValue: 1,
-          onChanged: log.add,
-          toggleable: true,
-        ),
-      ),
+      child: Center(child: Radio<int>(key: key, value: 1, groupValue: 1, onChanged: log.add, toggleable: true)),
     ));
 
     await tester.tap(find.byKey(key));
@@ -368,15 +317,7 @@ void main() {
     log.clear();
 
     await tester.pumpWidget(Material(
-      child: Center(
-        child: Radio<int>(
-          key: key,
-          value: 1,
-          groupValue: null,
-          onChanged: log.add,
-          toggleable: true,
-        ),
-      ),
+      child: Center(child: Radio<int>(key: key, value: 1, groupValue: null, onChanged: log.add, toggleable: true)),
     ));
 
     await tester.tap(find.byKey(key));
@@ -388,147 +329,89 @@ void main() {
     final SemanticsTester semantics = SemanticsTester(tester);
 
     await tester.pumpWidget(
-      wrap(
-        child: RadioListTile<int>(
-          value: 1,
-          groupValue: 2,
-          onChanged: (int? i) {},
-          title: const Text('Title'),
-        ),
-      ),
+      wrap(child: RadioListTile<int>(value: 1, groupValue: 2, onChanged: (int? i) {}, title: const Text('Title'))),
     );
 
-    expect(
-      semantics,
-      hasSemantics(
-        TestSemantics.root(
-          children: <TestSemantics>[
-            TestSemantics(
-              id: 1,
-              flags: <SemanticsFlag>[
-                SemanticsFlag.hasCheckedState,
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.isEnabled,
-                SemanticsFlag.isInMutuallyExclusiveGroup,
-                SemanticsFlag.isFocusable,
-              ],
-              actions: <SemanticsAction>[SemanticsAction.tap],
-              label: 'Title',
-              textDirection: TextDirection.ltr,
-            ),
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        TestSemantics(
+          id: 1,
+          flags: <SemanticsFlag>[
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.isEnabled,
+            SemanticsFlag.isInMutuallyExclusiveGroup,
+            SemanticsFlag.isFocusable,
           ],
+          actions: <SemanticsAction>[SemanticsAction.tap],
+          label: 'Title',
+          textDirection: TextDirection.ltr,
         ),
-        ignoreRect: true,
-        ignoreTransform: true,
-      ),
-    );
+      ],
+    ), ignoreRect: true, ignoreTransform: true));
 
     await tester.pumpWidget(
-      wrap(
-        child: RadioListTile<int>(
-          value: 2,
-          groupValue: 2,
-          onChanged: (int? i) {},
-          title: const Text('Title'),
-        ),
-      ),
+      wrap(child: RadioListTile<int>(value: 2, groupValue: 2, onChanged: (int? i) {}, title: const Text('Title'))),
     );
 
-    expect(
-      semantics,
-      hasSemantics(
-        TestSemantics.root(
-          children: <TestSemantics>[
-            TestSemantics(
-              id: 1,
-              flags: <SemanticsFlag>[
-                SemanticsFlag.hasCheckedState,
-                SemanticsFlag.isChecked,
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.isEnabled,
-                SemanticsFlag.isInMutuallyExclusiveGroup,
-                SemanticsFlag.isFocusable,
-              ],
-              actions: <SemanticsAction>[SemanticsAction.tap],
-              label: 'Title',
-              textDirection: TextDirection.ltr,
-            ),
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        TestSemantics(
+          id: 1,
+          flags: <SemanticsFlag>[
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.isChecked,
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.isEnabled,
+            SemanticsFlag.isInMutuallyExclusiveGroup,
+            SemanticsFlag.isFocusable,
           ],
+          actions: <SemanticsAction>[SemanticsAction.tap],
+          label: 'Title',
+          textDirection: TextDirection.ltr,
         ),
-        ignoreRect: true,
-        ignoreTransform: true,
-      ),
-    );
+      ],
+    ), ignoreRect: true, ignoreTransform: true));
 
     await tester.pumpWidget(
-      wrap(
-        child: const RadioListTile<int>(
-          value: 1,
-          groupValue: 2,
-          onChanged: null,
-          title: Text('Title'),
-        ),
-      ),
+      wrap(child: const RadioListTile<int>(value: 1, groupValue: 2, onChanged: null, title: Text('Title'))),
     );
 
-    expect(
-      semantics,
-      hasSemantics(
-        TestSemantics.root(
-          children: <TestSemantics>[
-            TestSemantics(
-              id: 1,
-              flags: <SemanticsFlag>[
-                SemanticsFlag.hasCheckedState,
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.isInMutuallyExclusiveGroup,
-                SemanticsFlag.isFocusable,
-              ],
-              label: 'Title',
-              textDirection: TextDirection.ltr,
-            ),
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        TestSemantics(
+          id: 1,
+          flags: <SemanticsFlag>[
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.isInMutuallyExclusiveGroup,
+            SemanticsFlag.isFocusable,
           ],
+          label: 'Title',
+          textDirection: TextDirection.ltr,
         ),
-        ignoreId: true,
-        ignoreRect: true,
-        ignoreTransform: true,
-      ),
-    );
+      ],
+    ), ignoreId: true, ignoreRect: true, ignoreTransform: true));
 
     await tester.pumpWidget(
-      wrap(
-        child: const RadioListTile<int>(
-          value: 2,
-          groupValue: 2,
-          onChanged: null,
-          title: Text('Title'),
-        ),
-      ),
+      wrap(child: const RadioListTile<int>(value: 2, groupValue: 2, onChanged: null, title: Text('Title'))),
     );
 
-    expect(
-      semantics,
-      hasSemantics(
-        TestSemantics.root(
-          children: <TestSemantics>[
-            TestSemantics(
-              id: 1,
-              flags: <SemanticsFlag>[
-                SemanticsFlag.hasCheckedState,
-                SemanticsFlag.isChecked,
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.isInMutuallyExclusiveGroup,
-              ],
-              label: 'Title',
-              textDirection: TextDirection.ltr,
-            ),
+    expect(semantics, hasSemantics(TestSemantics.root(
+      children: <TestSemantics>[
+        TestSemantics(
+          id: 1,
+          flags: <SemanticsFlag>[
+            SemanticsFlag.hasCheckedState,
+            SemanticsFlag.isChecked,
+            SemanticsFlag.hasEnabledState,
+            SemanticsFlag.isInMutuallyExclusiveGroup,
           ],
+          label: 'Title',
+          textDirection: TextDirection.ltr,
         ),
-        ignoreId: true,
-        ignoreRect: true,
-        ignoreTransform: true,
-      ),
-    );
+      ],
+    ), ignoreId: true, ignoreRect: true, ignoreTransform: true));
 
     semantics.dispose();
   });
@@ -538,23 +421,24 @@ void main() {
     final Key key = UniqueKey();
     dynamic semanticEvent;
     int? radioValue = 2;
-    tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(SystemChannels.accessibility, (dynamic message) async {
-      semanticEvent = message;
-    });
-
-    await tester.pumpWidget(
-      wrap(
-        child: RadioListTile<int>(
-          key: key,
-          value: 1,
-          groupValue: radioValue,
-          onChanged: (int? i) {
-            radioValue = i;
-          },
-          title: const Text('Title'),
-        ),
-      ),
+    tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(
+      SystemChannels.accessibility,
+      (dynamic message) async {
+        semanticEvent = message;
+      },
     );
+
+    await tester.pumpWidget(wrap(
+      child: RadioListTile<int>(
+        key: key,
+        value: 1,
+        groupValue: radioValue,
+        onChanged: (int? i) {
+          radioValue = i;
+        },
+        title: const Text('Title'),
+      ),
+    ));
 
     await tester.tap(find.byKey(key));
     await tester.pump();
@@ -575,57 +459,47 @@ void main() {
   testWidgets('RadioListTile can autofocus unless disabled.', (WidgetTester tester) async {
     final GlobalKey childKey = GlobalKey();
 
-    await tester.pumpWidget(
-      wrap(
-        child: RadioListTile<int>(
-          value: 1,
-          groupValue: 2,
-          onChanged: (_) {},
-          title: Text('Title', key: childKey),
-          autofocus: true,
-        ),
+    await tester.pumpWidget(wrap(
+      child: RadioListTile<int>(
+        value: 1,
+        groupValue: 2,
+        onChanged: (_) {},
+        title: Text('Title', key: childKey),
+        autofocus: true,
       ),
-    );
+    ));
 
     await tester.pump();
     expect(Focus.of(childKey.currentContext!).hasPrimaryFocus, isTrue);
 
-    await tester.pumpWidget(
-      wrap(
-        child: RadioListTile<int>(
-          value: 1,
-          groupValue: 2,
-          onChanged: null,
-          title: Text('Title', key: childKey),
-          autofocus: true,
-        ),
+    await tester.pumpWidget(wrap(
+      child: RadioListTile<int>(
+        value: 1,
+        groupValue: 2,
+        onChanged: null,
+        title: Text('Title', key: childKey),
+        autofocus: true,
       ),
-    );
+    ));
 
     await tester.pump();
     expect(Focus.of(childKey.currentContext!).hasPrimaryFocus, isFalse);
   });
 
   testWidgets('RadioListTile contentPadding test', (WidgetTester tester) async {
-    final Type radioType = const Radio<bool>(
-      groupValue: true,
-      value: true,
-      onChanged: null,
-    ).runtimeType;
+    final Type radioType = const Radio<bool>(groupValue: true, value: true, onChanged: null).runtimeType;
 
-    await tester.pumpWidget(
-      wrap(
-        child: Center(
-          child: RadioListTile<bool>(
-            groupValue: true,
-            value: true,
-            title: const Text('Title'),
-            onChanged: (_){},
-            contentPadding: const EdgeInsets.fromLTRB(8, 10, 15, 20),
-          ),
+    await tester.pumpWidget(wrap(
+      child: Center(
+        child: RadioListTile<bool>(
+          groupValue: true,
+          value: true,
+          title: const Text('Title'),
+          onChanged: (_) {},
+          contentPadding: const EdgeInsets.fromLTRB(8, 10, 15, 20),
         ),
       ),
-    );
+    ));
 
     final Rect paddingRect = tester.getRect(find.byType(SafeArea));
     final Rect radioRect = tester.getRect(find.byType(radioType));
@@ -651,17 +525,19 @@ void main() {
       borderRadius: BorderRadius.horizontal(right: Radius.circular(100)),
     );
 
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: RadioListTile<bool>(
-          value: true,
-          groupValue: true,
-          onChanged: null,
-          title: Text('Title'),
-          shape: shapeBorder,
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: RadioListTile<bool>(
+            value: true,
+            groupValue: true,
+            onChanged: null,
+            title: Text('Title'),
+            shape: shapeBorder,
+          ),
         ),
       ),
-    ));
+    );
 
     expect(tester.widget<InkWell>(find.byType(InkWell)).customBorder, shapeBorder);
   });
@@ -669,19 +545,17 @@ void main() {
   testWidgets('RadioListTile respects tileColor', (WidgetTester tester) async {
     final Color tileColor = Colors.red.shade500;
 
-    await tester.pumpWidget(
-      wrap(
-        child: Center(
-          child: RadioListTile<bool>(
-            value: false,
-            groupValue: true,
-            onChanged: null,
-            title: const Text('Title'),
-            tileColor: tileColor,
-          ),
+    await tester.pumpWidget(wrap(
+      child: Center(
+        child: RadioListTile<bool>(
+          value: false,
+          groupValue: true,
+          onChanged: null,
+          title: const Text('Title'),
+          tileColor: tileColor,
         ),
       ),
-    );
+    ));
 
     expect(find.byType(Material), paints..rect(color: tileColor));
   });
@@ -689,20 +563,18 @@ void main() {
   testWidgets('RadioListTile respects selectedTileColor', (WidgetTester tester) async {
     final Color selectedTileColor = Colors.green.shade500;
 
-    await tester.pumpWidget(
-      wrap(
-        child: Center(
-          child: RadioListTile<bool>(
-            value: false,
-            groupValue: true,
-            onChanged: null,
-            title: const Text('Title'),
-            selected: true,
-            selectedTileColor: selectedTileColor,
-          ),
+    await tester.pumpWidget(wrap(
+      child: Center(
+        child: RadioListTile<bool>(
+          value: false,
+          groupValue: true,
+          onChanged: null,
+          title: const Text('Title'),
+          selected: true,
+          selectedTileColor: selectedTileColor,
         ),
       ),
-    );
+    ));
 
     expect(find.byType(Material), paints..rect(color: selectedTileColor));
   });
@@ -712,7 +584,7 @@ void main() {
 
     const Color activeColor = Color(0xff00ff00);
 
-    Widget buildFrame({ Color? activeColor, Color? fillColor }) {
+    Widget buildFrame({Color? activeColor, Color? fillColor}) {
       return MaterialApp(
         theme: ThemeData.light().copyWith(
           radioTheme: RadioThemeData(
@@ -729,7 +601,7 @@ void main() {
               title: const Text('title'),
               value: false,
               groupValue: true,
-              onChanged: (bool? newValue) { },
+              onChanged: (bool? newValue) {},
             ),
           ),
         ),
@@ -750,20 +622,18 @@ void main() {
   testWidgets('RadioListTile respects visualDensity', (WidgetTester tester) async {
     const Key key = Key('test');
     Future<void> buildTest(VisualDensity visualDensity) async {
-      return tester.pumpWidget(
-        wrap(
-          child: Center(
-            child: RadioListTile<bool>(
-              key: key,
-              value: false,
-              groupValue: true,
-              onChanged: (bool? value) {},
-              autofocus: true,
-              visualDensity: visualDensity,
-            ),
+      return tester.pumpWidget(wrap(
+        child: Center(
+          child: RadioListTile<bool>(
+            key: key,
+            value: false,
+            groupValue: true,
+            onChanged: (bool? value) {},
+            autofocus: true,
+            visualDensity: visualDensity,
           ),
         ),
-      );
+      ));
     }
 
     await buildTest(VisualDensity.standard);
@@ -774,18 +644,16 @@ void main() {
 
   testWidgets('RadioListTile respects focusNode', (WidgetTester tester) async {
     final GlobalKey childKey = GlobalKey();
-    await tester.pumpWidget(
-      wrap(
-        child: Center(
-          child: RadioListTile<bool>(
-            value: false,
-            groupValue: true,
-            title: Text('A', key: childKey),
-            onChanged: (bool? value) {},
-          ),
+    await tester.pumpWidget(wrap(
+      child: Center(
+        child: RadioListTile<bool>(
+          value: false,
+          groupValue: true,
+          title: Text('A', key: childKey),
+          onChanged: (bool? value) {},
         ),
       ),
-    );
+    ));
 
     await tester.pump();
     final FocusNode tileNode = Focus.of(childKey.currentContext!);
@@ -798,21 +666,19 @@ void main() {
   testWidgets('RadioListTile onFocusChange callback', (WidgetTester tester) async {
     final FocusNode node = FocusNode(debugLabel: 'RadioListTile onFocusChange');
     bool gotFocus = false;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: RadioListTile<bool>(
-            value: true,
-            focusNode: node,
-            onFocusChange: (bool focused) {
-              gotFocus = focused;
-            },
-            onChanged: (bool? value) {},
-            groupValue: true,
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: RadioListTile<bool>(
+          value: true,
+          focusNode: node,
+          onFocusChange: (bool focused) {
+            gotFocus = focused;
+          },
+          onChanged: (bool? value) {},
+          groupValue: true,
         ),
       ),
-    );
+    ));
 
     node.requestFocus();
     await tester.pump();
@@ -827,17 +693,13 @@ void main() {
 
   testWidgets('Radio changes mouse cursor when hovered', (WidgetTester tester) async {
     // Test Radio() constructor
-    await tester.pumpWidget(
-      wrap(child: MouseRegion(
+    await tester.pumpWidget(wrap(
+      child: MouseRegion(
         cursor: SystemMouseCursors.forbidden,
-        child: RadioListTile<int>(
-          mouseCursor: SystemMouseCursors.text,
-          value: 1,
-          onChanged: (int? v) {},
-          groupValue: 2,
-        ),
-      )),
-    );
+        child:
+            RadioListTile<int>(mouseCursor: SystemMouseCursors.text, value: 1, onChanged: (int? v) {}, groupValue: 2),
+      ),
+    ));
 
     final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse, pointer: 1);
     await gesture.addPointer(location: tester.getCenter(find.byType(Radio<int>)));
@@ -846,18 +708,13 @@ void main() {
 
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.text);
 
-
     // Test default cursor
-    await tester.pumpWidget(
-      wrap(child: MouseRegion(
+    await tester.pumpWidget(wrap(
+      child: MouseRegion(
         cursor: SystemMouseCursors.forbidden,
-        child: RadioListTile<int>(
-          value: 1,
-          onChanged: (int? v) {},
-          groupValue: 2,
-        ),
-      )),
-    );
+        child: RadioListTile<int>(value: 1, onChanged: (int? v) {}, groupValue: 2),
+      ),
+    ));
 
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.click);
 
@@ -865,13 +722,9 @@ void main() {
     await tester.pumpWidget(wrap(
       child: const MouseRegion(
         cursor: SystemMouseCursors.forbidden,
-        child: RadioListTile<int>(
-          value: 1,
-          onChanged: null,
-          groupValue: 2,
-        ),
+        child: RadioListTile<int>(value: 1, onChanged: null, groupValue: 2),
       ),
-    ),);
+    ));
 
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.basic);
   });
@@ -895,24 +748,27 @@ void main() {
       return inactiveEnabledFillColor;
     }
 
-    final MaterialStateProperty<Color> fillColor =
-    MaterialStateColor.resolveWith(getFillColor);
+    final MaterialStateProperty<Color> fillColor = MaterialStateColor.resolveWith(getFillColor);
 
     int? groupValue = 0;
     Widget buildApp({required bool enabled}) {
       return wrap(
-        child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-          return RadioListTile<int>(
-            value: 0,
-            fillColor: fillColor,
-            onChanged: enabled ? (int? newValue) {
-              setState(() {
-                groupValue = newValue;
-              });
-            } : null,
-            groupValue: groupValue,
-          );
-        })
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return RadioListTile<int>(
+              value: 0,
+              fillColor: fillColor,
+              onChanged: enabled
+                  ? (int? newValue) {
+                      setState(() {
+                        groupValue = newValue;
+                      });
+                    }
+                  : null,
+              groupValue: groupValue,
+            );
+          },
+        ),
       );
     }
 
@@ -974,24 +830,25 @@ void main() {
       return Colors.transparent;
     }
 
-    final MaterialStateProperty<Color> fillColor =
-    MaterialStateColor.resolveWith(getFillColor);
+    final MaterialStateProperty<Color> fillColor = MaterialStateColor.resolveWith(getFillColor);
 
     int? groupValue = 0;
     Widget buildApp() {
       return wrap(
-        child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-          return RadioListTile<int>(
-            value: 0,
-            fillColor: fillColor,
-            onChanged: (int? newValue) {
-              setState(() {
-                groupValue = newValue;
-              });
-            },
-            groupValue: groupValue,
-          );
-        }),
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return RadioListTile<int>(
+              value: 0,
+              fillColor: fillColor,
+              onChanged: (int? newValue) {
+                setState(() {
+                  groupValue = newValue;
+                });
+              },
+              groupValue: groupValue,
+            );
+          },
+        ),
       );
     }
 
@@ -1007,7 +864,8 @@ void main() {
     expect(
       Material.of(tester.element(find.byType(Radio<int>))),
       paints
-        ..rect()..circle()
+        ..rect()
+        ..circle()
         ..circle(color: hoveredFillColor),
     );
   });
@@ -1022,21 +880,26 @@ void main() {
       return wrap(
         child: MaterialApp(
           theme: theme,
-          home: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-            return RadioListTile<int>(
-              value: 0,
-              onChanged: enabled ? (int? newValue) {
-                setState(() {
-                  groupValue = newValue;
-                });
-              } : null,
-              hoverColor: hoverColor,
-              groupValue: groupValue,
-            );
-          }),
+          home: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return RadioListTile<int>(
+                value: 0,
+                onChanged: enabled
+                    ? (int? newValue) {
+                        setState(() {
+                          groupValue = newValue;
+                        });
+                      }
+                    : null,
+                hoverColor: hoverColor,
+                groupValue: groupValue,
+              );
+            },
+          ),
         ),
       );
     }
+
     await tester.pumpWidget(buildApp());
 
     await tester.pump();
@@ -1062,7 +925,7 @@ void main() {
       Material.of(tester.element(find.byType(Radio<int>))),
       paints
         ..rect()
-        ..circle(color: hoverColor)
+        ..circle(color: hoverColor),
     );
 
     // Check when the radio is selected, but disabled.
@@ -1110,7 +973,7 @@ void main() {
           home: RadioListTile<bool>(
             value: active,
             groupValue: true,
-            onChanged: (_) { },
+            onChanged: (_) {},
             fillColor: const MaterialStatePropertyAll<Color>(fillColor),
             overlayColor: useOverlay ? MaterialStateProperty.resolveWith(getOverlayColor) : null,
             hoverColor: hoverColor,
@@ -1125,13 +988,11 @@ void main() {
 
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
-      material3 ? (paints..circle(
-        color: fillColor.withAlpha(kRadialReactionAlpha),
-        radius: 20,
-      )) : (paints..circle()..circle(
-        color: fillColor.withAlpha(kRadialReactionAlpha),
-        radius: 20,
-      )),
+      material3
+          ? (paints..circle(color: fillColor.withAlpha(kRadialReactionAlpha), radius: 20))
+          : (paints
+              ..circle()
+              ..circle(color: fillColor.withAlpha(kRadialReactionAlpha), radius: 20)),
       reason: 'Default inactive pressed Radio should have overlay color from fillColor',
     );
 
@@ -1141,13 +1002,11 @@ void main() {
 
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
-      material3 ? (paints..circle(
-        color: fillColor.withAlpha(kRadialReactionAlpha),
-        radius: 20,
-      )) : (paints..circle()..circle(
-        color: fillColor.withAlpha(kRadialReactionAlpha),
-        radius: 20,
-      )),
+      material3
+          ? (paints..circle(color: fillColor.withAlpha(kRadialReactionAlpha), radius: 20))
+          : (paints
+              ..circle()
+              ..circle(color: fillColor.withAlpha(kRadialReactionAlpha), radius: 20)),
       reason: 'Default active pressed Radio should have overlay color from fillColor',
     );
 
@@ -1157,13 +1016,11 @@ void main() {
 
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
-      material3 ? (paints..circle(
-        color: inactivePressedOverlayColor,
-        radius: 20,
-      )) : (paints..circle()..circle(
-        color: inactivePressedOverlayColor,
-        radius: 20,
-      )),
+      material3
+          ? (paints..circle(color: inactivePressedOverlayColor, radius: 20))
+          : (paints
+              ..circle()
+              ..circle(color: inactivePressedOverlayColor, radius: 20)),
       reason: 'Inactive pressed Radio should have overlay color: $inactivePressedOverlayColor',
     );
 
@@ -1173,13 +1030,11 @@ void main() {
 
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
-      material3 ? (paints..circle(
-        color: activePressedOverlayColor,
-        radius: 20,
-      )) : (paints..circle()..circle(
-        color: activePressedOverlayColor,
-        radius: 20,
-      )),
+      material3
+          ? (paints..circle(color: activePressedOverlayColor, radius: 20))
+          : (paints
+              ..circle()
+              ..circle(color: activePressedOverlayColor, radius: 20)),
       reason: 'Active pressed Radio should have overlay color: $activePressedOverlayColor',
     );
 
@@ -1195,13 +1050,9 @@ void main() {
 
     expect(
       Material.of(tester.element(find.byType(Radio<bool>))),
-      material3 ? (paints..circle(
-        color: hoverOverlayColor,
-        radius: 20,
-      )) : (paints..circle(
-        color: hoverOverlayColor,
-        radius: 20,
-      )),
+      material3
+          ? (paints..circle(color: hoverOverlayColor, radius: 20))
+          : (paints..circle(color: hoverOverlayColor, radius: 20)),
       reason: 'Hovered Radio should use overlay color $hoverOverlayColor over $hoverColor',
     );
   });
@@ -1211,17 +1062,20 @@ void main() {
     const double splashRadius = 30;
     Widget buildApp() {
       return wrap(
-        child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-          return RadioListTile<int>(
-            value: 0,
-            onChanged: (_) {},
-            hoverColor: Colors.orange[500],
-            groupValue: 0,
-            splashRadius: splashRadius,
-          );
-        }),
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return RadioListTile<int>(
+              value: 0,
+              onChanged: (_) {},
+              hoverColor: Colors.orange[500],
+              groupValue: 0,
+              splashRadius: splashRadius,
+            );
+          },
+        ),
       );
     }
+
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
@@ -1231,33 +1085,27 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      Material.of(tester.element(
-        find.byWidgetPredicate((Widget widget) => widget is Radio<int>),
-      )),
+      Material.of(tester.element(find.byWidgetPredicate((Widget widget) => widget is Radio<int>))),
       paints..circle(color: Colors.orange[500], radius: splashRadius),
     );
   });
 
   testWidgets('Radio respects materialTapTargetSize', (WidgetTester tester) async {
     await tester.pumpWidget(
-      wrap(child: RadioListTile<bool>(
-        groupValue: true,
-        value: true,
-        onChanged: (bool? newValue) { },
-      )),
+      wrap(child: RadioListTile<bool>(groupValue: true, value: true, onChanged: (bool? newValue) {})),
     );
 
     // default test
     expect(tester.getSize(find.byType(Radio<bool>)), const Size(40.0, 40.0));
 
-    await tester.pumpWidget(
-      wrap(child: RadioListTile<bool>(
+    await tester.pumpWidget(wrap(
+      child: RadioListTile<bool>(
         materialTapTargetSize: MaterialTapTargetSize.padded,
         groupValue: true,
         value: true,
-        onChanged: (bool? newValue) { },
-      )),
-    );
+        onChanged: (bool? newValue) {},
+      ),
+    ));
 
     expect(tester.getSize(find.byType(Radio<bool>)), const Size(48.0, 48.0));
   });
@@ -1266,26 +1114,23 @@ void main() {
     Widget buildApp(TargetPlatform platform) {
       return MaterialApp(
         theme: ThemeData(platform: platform),
-        home: Material(
-          child: Center(
-            child: RadioListTile<int>.adaptive(
-              value: 1,
-              groupValue: 2,
-              onChanged: (_) {},
-            ),
-          ),
-        ),
+        home: Material(child: Center(child: RadioListTile<int>.adaptive(value: 1, groupValue: 2, onChanged: (_) {}))),
       );
     }
 
-    for (final TargetPlatform platform in <TargetPlatform>[ TargetPlatform.iOS, TargetPlatform.macOS ]) {
+    for (final TargetPlatform platform in <TargetPlatform>[TargetPlatform.iOS, TargetPlatform.macOS]) {
       await tester.pumpWidget(buildApp(platform));
       await tester.pumpAndSettle();
 
       expect(find.byType(CupertinoRadio<int>), findsOneWidget);
     }
 
-    for (final TargetPlatform platform in <TargetPlatform>[ TargetPlatform.android, TargetPlatform.fuchsia, TargetPlatform.linux, TargetPlatform.windows ]) {
+    for (final TargetPlatform platform in <TargetPlatform>[
+          TargetPlatform.android,
+          TargetPlatform.fuchsia,
+          TargetPlatform.linux,
+          TargetPlatform.windows,
+        ]) {
       await tester.pumpWidget(buildApp(platform));
       await tester.pumpAndSettle();
 
@@ -1307,20 +1152,18 @@ void main() {
     testWidgets('RadioListTile respects enableFeedback', (WidgetTester tester) async {
       const Key key = Key('test');
       Future<void> buildTest(bool enableFeedback) async {
-        return tester.pumpWidget(
-          wrap(
-            child: Center(
-              child: RadioListTile<bool>(
-                key: key,
-                value: false,
-                groupValue: true,
-                selected: true,
-                onChanged: (bool? value) {},
-                enableFeedback: enableFeedback,
-              ),
+        return tester.pumpWidget(wrap(
+          child: Center(
+            child: RadioListTile<bool>(
+              key: key,
+              value: false,
+              groupValue: true,
+              selected: true,
+              onChanged: (bool? value) {},
+              enableFeedback: enableFeedback,
             ),
           ),
-        );
+        ));
       }
 
       await buildTest(false);

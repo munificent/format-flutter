@@ -24,9 +24,7 @@ class _CustomMaterialTextSelectionControls extends MaterialTextSelectionControls
     Offset? lastSecondaryTapDownPosition,
   ) {
     final TextSelectionPoint startTextSelectionPoint = endpoints[0];
-    final TextSelectionPoint endTextSelectionPoint = endpoints.length > 1
-      ? endpoints[1]
-      : endpoints[0];
+    final TextSelectionPoint endTextSelectionPoint = endpoints.length > 1 ? endpoints[1] : endpoints[0];
     final Offset anchorAbove = Offset(
       globalEditableRegion.left + selectionMidpoint.dx,
       globalEditableRegion.top + startTextSelectionPoint.point.dy - textLineHeight - _kToolbarContentDistance,
@@ -79,22 +77,20 @@ void main() {
     late StateSetter setState;
     final List<Widget> children = List<Widget>.generate(7, (int i) => const TestBox());
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setter) {
-              setState = setter;
-              return TextSelectionToolbar(
-                anchorAbove: const Offset(50.0, 100.0),
-                anchorBelow: const Offset(50.0, 200.0),
-                children: children,
-              );
-            },
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setter) {
+            setState = setter;
+            return TextSelectionToolbar(
+              anchorAbove: const Offset(50.0, 100.0),
+              anchorBelow: const Offset(50.0, 200.0),
+              children: children,
+            );
+          },
         ),
       ),
-    );
+    ));
 
     // All children fit on the screen, so they are all rendered.
     expect(find.byType(TestBox), findsNWidgets(children.length));
@@ -102,9 +98,7 @@ void main() {
 
     // Adding one more child makes the children overflow.
     setState(() {
-      children.add(
-        const TestBox(),
-      );
+      children.add(const TestBox());
     });
     await tester.pumpAndSettle();
     expect(find.byType(TestBox), findsNWidgets(children.length - 1));
@@ -129,26 +123,24 @@ void main() {
     const double anchorBelowY = 500.0;
     double anchorAboveY = 0.0;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setter) {
-              setState = setter;
-              return TextSelectionToolbar(
-                anchorAbove: Offset(50.0, anchorAboveY),
-                anchorBelow: const Offset(50.0, anchorBelowY),
-                children: <Widget>[
-                  Container(color: Colors.red, width: 50.0, height: height),
-                  Container(color: Colors.green, width: 50.0, height: height),
-                  Container(color: Colors.blue, width: 50.0, height: height),
-                ],
-              );
-            },
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setter) {
+            setState = setter;
+            return TextSelectionToolbar(
+              anchorAbove: Offset(50.0, anchorAboveY),
+              anchorBelow: const Offset(50.0, anchorBelowY),
+              children: <Widget>[
+                Container(color: Colors.red, width: 50.0, height: height),
+                Container(color: Colors.green, width: 50.0, height: height),
+                Container(color: Colors.blue, width: 50.0, height: height),
+              ],
+            );
+          },
         ),
       ),
-    );
+    ));
 
     // When the toolbar doesn't fit above aboveAnchor, it positions itself below
     // belowAnchor.
@@ -173,18 +165,13 @@ void main() {
   });
 
   testWidgets('can create and use a custom toolbar', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: SelectableText(
-              'Select me custom menu',
-              selectionControls: _CustomMaterialTextSelectionControls(),
-            ),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: SelectableText('Select me custom menu', selectionControls: _CustomMaterialTextSelectionControls()),
         ),
       ),
-    );
+    ));
 
     // The selection menu is not initially shown.
     expect(find.text('Custom button'), findsNothing);

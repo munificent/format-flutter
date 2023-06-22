@@ -14,12 +14,10 @@ void main() {
   test('Overconstrained flex', () {
     final RenderDecoratedBox box = RenderDecoratedBox(decoration: const BoxDecoration());
     final RenderFlex flex = RenderFlex(textDirection: TextDirection.ltr, children: <RenderBox>[box]);
-    layout(flex, constraints: const BoxConstraints(
-      minWidth: 200.0,
-      maxWidth: 200.0,
-      minHeight: 200.0,
-      maxHeight: 200.0,
-    ));
+    layout(
+      flex,
+      constraints: const BoxConstraints(minWidth: 200.0, maxWidth: 200.0, minHeight: 200.0, maxHeight: 200.0),
+    );
 
     expect(flex.size.width, equals(200.0), reason: 'flex width');
     expect(flex.size.height, equals(200.0), reason: 'flex height');
@@ -37,10 +35,7 @@ void main() {
     };
     const BoxConstraints square = BoxConstraints.tightFor(width: slightlyLarger, height: 100.0);
     final RenderConstrainedBox box1 = RenderConstrainedBox(additionalConstraints: square);
-    final RenderFlex flex = RenderFlex(
-      textDirection: TextDirection.ltr,
-      mainAxisSize: MainAxisSize.min,
-    );
+    final RenderFlex flex = RenderFlex(textDirection: TextDirection.ltr, mainAxisSize: MainAxisSize.min);
     final RenderConstrainedOverflowBox parent = RenderConstrainedOverflowBox(
       minWidth: 0.0,
       maxWidth: slightlySmaller,
@@ -73,10 +68,15 @@ void main() {
         case null:
           flex = RenderFlex(direction: Axis.vertical, children: <RenderBox>[box200x200]);
       }
-      layout(flex, constraints: viewport, phase: EnginePhase.composite, onErrors: () {
-        absorbOverflowedErrors();
-        hadErrors = true;
-      });
+      layout(
+        flex,
+        constraints: viewport,
+        phase: EnginePhase.composite,
+        onErrors: () {
+          absorbOverflowedErrors();
+          hadErrors = true;
+        },
+      );
       context.paintChild(flex, Offset.zero);
       // By default, clipBehavior should be Clip.none
       expect(context.clipBehavior, equals(clip ?? Clip.none));
@@ -86,9 +86,7 @@ void main() {
   });
 
   test('Vertical Overflow', () {
-    final RenderConstrainedBox flexible = RenderConstrainedBox(
-      additionalConstraints: const BoxConstraints.expand(),
-    );
+    final RenderConstrainedBox flexible = RenderConstrainedBox(additionalConstraints: const BoxConstraints.expand());
     final RenderFlex flex = RenderFlex(
       direction: Axis.vertical,
       children: <RenderBox>[
@@ -108,9 +106,7 @@ void main() {
   });
 
   test('Horizontal Overflow', () {
-    final RenderConstrainedBox flexible = RenderConstrainedBox(
-      additionalConstraints: const BoxConstraints.expand(),
-    );
+    final RenderConstrainedBox flexible = RenderConstrainedBox(additionalConstraints: const BoxConstraints.expand());
     final RenderFlex flex = RenderFlex(
       textDirection: TextDirection.ltr,
       children: <RenderBox>[
@@ -132,9 +128,7 @@ void main() {
   test('Vertical Flipped Constraints', () {
     final RenderFlex flex = RenderFlex(
       direction: Axis.vertical,
-      children: <RenderBox>[
-        RenderAspectRatio(aspectRatio: 1.0),
-      ],
+      children: <RenderBox>[RenderAspectRatio(aspectRatio: 1.0)],
     );
     const BoxConstraints viewport = BoxConstraints(maxHeight: 200.0, maxWidth: 1000.0);
     layout(flex, constraints: viewport);
@@ -169,10 +163,7 @@ void main() {
     final RenderDecoratedBox box1 = RenderDecoratedBox(decoration: const BoxDecoration());
     final RenderDecoratedBox box2 = RenderDecoratedBox(decoration: const BoxDecoration());
     final RenderFlex flex = RenderFlex(textDirection: TextDirection.ltr, children: <RenderBox>[box1, box2]);
-    layout(flex, constraints: const BoxConstraints(
-      maxWidth: 100.0,
-      maxHeight: 100.0,
-    ));
+    layout(flex, constraints: const BoxConstraints(maxWidth: 100.0, maxHeight: 100.0));
     expect(box1.size.width, equals(0.0));
     expect(box1.size.height, equals(0.0));
     expect(box2.size.width, equals(0.0));
@@ -196,10 +187,7 @@ void main() {
     final FlexParentData box2ParentData = box2.parentData! as FlexParentData;
     box2ParentData.flex = 2;
     flex.addAll(<RenderBox>[box1, box2]);
-    layout(flex, constraints: const BoxConstraints(
-      maxWidth: 100.0,
-      maxHeight: 100.0,
-    ));
+    layout(flex, constraints: const BoxConstraints(maxWidth: 100.0, maxHeight: 100.0));
     expect(box1.size.width, equals(0.0));
     expect(box1.size.height, equals(0.0));
     expect(box2.size.width, equals(100.0));
@@ -221,19 +209,26 @@ void main() {
   });
 
   test('Space evenly', () {
-    final RenderConstrainedBox box1 = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0));
-    final RenderConstrainedBox box2 = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0));
-    final RenderConstrainedBox box3 = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0));
-    final RenderFlex flex = RenderFlex(textDirection: TextDirection.ltr, mainAxisAlignment: MainAxisAlignment.spaceEvenly);
+    final RenderConstrainedBox box1 = RenderConstrainedBox(
+      additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0),
+    );
+    final RenderConstrainedBox box2 = RenderConstrainedBox(
+      additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0),
+    );
+    final RenderConstrainedBox box3 = RenderConstrainedBox(
+      additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0),
+    );
+    final RenderFlex flex = RenderFlex(
+      textDirection: TextDirection.ltr,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    );
     flex.addAll(<RenderBox>[box1, box2, box3]);
-    layout(flex, constraints: const BoxConstraints(
-      maxWidth: 500.0,
-      maxHeight: 400.0,
-    ));
+    layout(flex, constraints: const BoxConstraints(maxWidth: 500.0, maxHeight: 400.0));
     Offset getOffset(RenderBox box) {
       final FlexParentData parentData = box.parentData! as FlexParentData;
       return parentData.offset;
     }
+
     expect(getOffset(box1).dx, equals(50.0));
     expect(box1.size.width, equals(100.0));
     expect(getOffset(box2).dx, equals(200.0));
@@ -252,19 +247,26 @@ void main() {
   });
 
   test('Fit.loose', () {
-    final RenderConstrainedBox box1 = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0));
-    final RenderConstrainedBox box2 = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0));
-    final RenderConstrainedBox box3 = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0));
-    final RenderFlex flex = RenderFlex(textDirection: TextDirection.ltr, mainAxisAlignment: MainAxisAlignment.spaceBetween);
+    final RenderConstrainedBox box1 = RenderConstrainedBox(
+      additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0),
+    );
+    final RenderConstrainedBox box2 = RenderConstrainedBox(
+      additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0),
+    );
+    final RenderConstrainedBox box3 = RenderConstrainedBox(
+      additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0),
+    );
+    final RenderFlex flex = RenderFlex(
+      textDirection: TextDirection.ltr,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    );
     flex.addAll(<RenderBox>[box1, box2, box3]);
-    layout(flex, constraints: const BoxConstraints(
-      maxWidth: 500.0,
-      maxHeight: 400.0,
-    ));
+    layout(flex, constraints: const BoxConstraints(maxWidth: 500.0, maxHeight: 400.0));
     Offset getOffset(RenderBox box) {
       final FlexParentData parentData = box.parentData! as FlexParentData;
       return parentData.offset;
     }
+
     expect(getOffset(box1).dx, equals(0.0));
     expect(box1.size.width, equals(100.0));
     expect(getOffset(box2).dx, equals(200.0));
@@ -301,23 +303,27 @@ void main() {
   });
 
   test('Flexible with MainAxisSize.min', () {
-    final RenderConstrainedBox box1 = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0));
-    final RenderConstrainedBox box2 = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0));
-    final RenderConstrainedBox box3 = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0));
+    final RenderConstrainedBox box1 = RenderConstrainedBox(
+      additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0),
+    );
+    final RenderConstrainedBox box2 = RenderConstrainedBox(
+      additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0),
+    );
+    final RenderConstrainedBox box3 = RenderConstrainedBox(
+      additionalConstraints: const BoxConstraints.tightFor(width: 100.0, height: 100.0),
+    );
     final RenderFlex flex = RenderFlex(
       textDirection: TextDirection.ltr,
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
     );
     flex.addAll(<RenderBox>[box1, box2, box3]);
-    layout(flex, constraints: const BoxConstraints(
-      maxWidth: 500.0,
-      maxHeight: 400.0,
-    ));
+    layout(flex, constraints: const BoxConstraints(maxWidth: 500.0, maxHeight: 400.0));
     Offset getOffset(RenderBox box) {
       final FlexParentData parentData = box.parentData! as FlexParentData;
       return parentData.offset;
     }
+
     expect(getOffset(box1).dx, equals(0.0));
     expect(box1.size.width, equals(100.0));
     expect(getOffset(box2).dx, equals(100.0));
@@ -363,10 +369,7 @@ void main() {
     final RenderConstrainedBox box1 = RenderConstrainedBox(additionalConstraints: square);
     final RenderConstrainedBox box2 = RenderConstrainedBox(additionalConstraints: square);
     final RenderConstrainedBox box3 = RenderConstrainedBox(additionalConstraints: square);
-    final RenderFlex flex = RenderFlex(
-      textDirection: TextDirection.ltr,
-      mainAxisSize: MainAxisSize.min,
-    );
+    final RenderFlex flex = RenderFlex(textDirection: TextDirection.ltr, mainAxisSize: MainAxisSize.min);
     final RenderConstrainedOverflowBox parent = RenderConstrainedOverflowBox(
       minWidth: 0.0,
       maxWidth: double.infinity,
@@ -404,10 +407,7 @@ void main() {
     final RenderConstrainedBox box1 = RenderConstrainedBox(additionalConstraints: square);
     final RenderConstrainedBox box2 = RenderConstrainedBox(additionalConstraints: square);
     final RenderConstrainedBox box3 = RenderConstrainedBox(additionalConstraints: square);
-    final RenderFlex flex = RenderFlex(
-      textDirection: TextDirection.ltr,
-      mainAxisSize: MainAxisSize.min,
-    );
+    final RenderFlex flex = RenderFlex(textDirection: TextDirection.ltr, mainAxisSize: MainAxisSize.min);
     final RenderConstrainedOverflowBox parent = RenderConstrainedOverflowBox(
       minWidth: 0.0,
       maxWidth: double.infinity,
@@ -419,9 +419,12 @@ void main() {
     final FlexParentData box2ParentData = box2.parentData! as FlexParentData;
     box2ParentData.flex = 1;
     final List<dynamic> exceptions = <dynamic>[];
-    layout(parent, onErrors: () {
-      exceptions.addAll(TestRenderingFlutterBinding.instance.takeAllFlutterExceptions());
-    });
+    layout(
+      parent,
+      onErrors: () {
+        exceptions.addAll(TestRenderingFlutterBinding.instance.takeAllFlutterExceptions());
+      },
+    );
     expect(exceptions, isNotEmpty);
     expect(exceptions.first, isFlutterError);
   });
@@ -431,9 +434,7 @@ void main() {
     final RenderConstrainedBox box1 = RenderConstrainedBox(additionalConstraints: square);
     final RenderConstrainedBox box2 = RenderConstrainedBox(additionalConstraints: square);
     final RenderConstrainedBox box3 = RenderConstrainedBox(additionalConstraints: square);
-    final RenderFlex flex = RenderFlex(
-      textDirection: TextDirection.ltr,
-    );
+    final RenderFlex flex = RenderFlex(textDirection: TextDirection.ltr);
     final RenderConstrainedOverflowBox parent = RenderConstrainedOverflowBox(
       minWidth: 0.0,
       maxWidth: double.infinity,
@@ -446,9 +447,12 @@ void main() {
     box2ParentData.flex = 1;
     box2ParentData.fit = FlexFit.loose;
     final List<dynamic> exceptions = <dynamic>[];
-    layout(parent, onErrors: () {
-      exceptions.addAll(TestRenderingFlutterBinding.instance.takeAllFlutterExceptions());
-    });
+    layout(
+      parent,
+      onErrors: () {
+        exceptions.addAll(TestRenderingFlutterBinding.instance.takeAllFlutterExceptions());
+      },
+    );
     expect(exceptions, isNotEmpty);
     expect(exceptions.first, isFlutterError);
   });
@@ -458,10 +462,7 @@ void main() {
     final RenderConstrainedBox box1 = RenderConstrainedBox(additionalConstraints: square);
     final RenderConstrainedBox box2 = RenderConstrainedBox(additionalConstraints: square);
     final RenderConstrainedBox box3 = RenderConstrainedBox(additionalConstraints: square);
-    final RenderFlex flex = RenderFlex(
-      textDirection: TextDirection.rtl,
-      mainAxisSize: MainAxisSize.min,
-    );
+    final RenderFlex flex = RenderFlex(textDirection: TextDirection.rtl, mainAxisSize: MainAxisSize.min);
     flex.addAll(<RenderBox>[box1, box2, box3]);
     layout(flex);
     expect(flex.constraints.hasTightWidth, isTrue);
@@ -624,18 +625,17 @@ void main() {
   });
 
   test('Intrinsics throw if alignment is baseline', () {
-    final RenderDecoratedBox box = RenderDecoratedBox(
-      decoration: const BoxDecoration(),
-    );
+    final RenderDecoratedBox box = RenderDecoratedBox(decoration: const BoxDecoration());
     final RenderFlex flex = RenderFlex(
       textDirection: TextDirection.ltr,
       children: <RenderBox>[box],
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
     );
-    layout(flex, constraints: const BoxConstraints(
-      minWidth: 200.0, maxWidth: 200.0, minHeight: 200.0, maxHeight: 200.0,
-    ));
+    layout(
+      flex,
+      constraints: const BoxConstraints(minWidth: 200.0, maxWidth: 200.0, minHeight: 200.0, maxHeight: 200.0),
+    );
 
     final Matcher cannotCalculateIntrinsics = throwsA(isAssertionError.having(
       (AssertionError e) => e.message,
@@ -654,9 +654,13 @@ void main() {
     final RenderFlex flex = RenderFlex(children: const <RenderBox>[]);
     // This forces a check for _hasOverflow
     expect(flex.toStringShort(), isNot(contains('OVERFLOWING')));
-    layout(flex, phase: EnginePhase.paint, onErrors: () {
-      exceptions.addAll(TestRenderingFlutterBinding.instance.takeAllFlutterExceptions());
-    });
+    layout(
+      flex,
+      phase: EnginePhase.paint,
+      onErrors: () {
+        exceptions.addAll(TestRenderingFlutterBinding.instance.takeAllFlutterExceptions());
+      },
+    );
     // We expect the RenderFlex to throw during performLayout() for not having
     // a text direction, thus leaving it with a null overflow value. It'll then
     // try to paint(), which also checks _hasOverflow, and it should be able to

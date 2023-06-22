@@ -12,40 +12,38 @@ void main() {
     int child2BuildCount = 0;
     late void Function(BuildContext context) setSharedAppDataValue;
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SharedAppData(
-          child: Builder(
-            builder: (BuildContext context) {
-              columnBuildCount += 1;
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  setSharedAppDataValue.call(context);
-                },
-                child: Column(
-                  children: <Widget>[
-                    Builder(
-                      builder: (BuildContext context) {
-                        child1BuildCount += 1;
-                        return Text(SharedAppData.getValue<String, String>(context, 'child1Text', () => 'null'));
-                      },
-                    ),
-                    Builder(
-                      builder: (BuildContext context) {
-                        child2BuildCount += 1;
-                        return Text(SharedAppData.getValue<String, String>(context, 'child2Text', () => 'null'));
-                      }
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: SharedAppData(
+        child: Builder(
+          builder: (BuildContext context) {
+            columnBuildCount += 1;
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                setSharedAppDataValue.call(context);
+              },
+              child: Column(
+                children: <Widget>[
+                  Builder(
+                    builder: (BuildContext context) {
+                      child1BuildCount += 1;
+                      return Text(SharedAppData.getValue<String, String>(context, 'child1Text', () => 'null'));
+                    },
+                  ),
+                  Builder(
+                    builder: (BuildContext context) {
+                      child2BuildCount += 1;
+                      return Text(SharedAppData.getValue<String, String>(context, 'child2Text', () => 'null'));
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     expect(columnBuildCount, 1);
     expect(child1BuildCount, 1);
@@ -120,28 +118,26 @@ void main() {
     int parentBuildCount = 0;
     int childBuildCount = 0;
 
-    await tester.pumpWidget(
-      WidgetsApp(
-        color: const Color(0xff00ff00),
-        builder: (BuildContext context, Widget? child) {
-          parentBuildCount += 1;
-          return GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              SharedAppData.setValue<String, String>(context, 'childText', 'child');
-            },
-            child: Center(
-              child: Builder(
-                builder: (BuildContext context) {
-                  childBuildCount += 1;
-                  return Text(SharedAppData.getValue<String, String>(context, 'childText', () => 'null'));
-                },
-              ),
+    await tester.pumpWidget(WidgetsApp(
+      color: const Color(0xff00ff00),
+      builder: (BuildContext context, Widget? child) {
+        parentBuildCount += 1;
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            SharedAppData.setValue<String, String>(context, 'childText', 'child');
+          },
+          child: Center(
+            child: Builder(
+              builder: (BuildContext context) {
+                childBuildCount += 1;
+                return Text(SharedAppData.getValue<String, String>(context, 'childText', () => 'null'));
+              },
             ),
-          );
-        },
-      ),
-    );
+          ),
+        );
+      },
+    ));
 
     expect(find.text('null'), findsOneWidget);
     expect(parentBuildCount, 1);
@@ -158,35 +154,33 @@ void main() {
     int innerTapCount = 0;
     int outerTapCount = 0;
 
-    await tester.pumpWidget(
-      WidgetsApp(
-        color: const Color(0xff00ff00),
-        builder: (BuildContext context, Widget? child) {
-          return GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              outerTapCount += 1;
-              SharedAppData.setValue<String, String>(context, 'childText', 'child');
-            },
-            child: Center(
-              child: SharedAppData(
-                child: Builder(
-                  builder: (BuildContext context) {
-                    return GestureDetector(
-                      onTap: () {
-                        innerTapCount += 1;
-                        SharedAppData.setValue<String, String>(context, 'childText', 'child');
-                      },
-                      child: Text(SharedAppData.getValue<String, String>(context, 'childText', () => 'null')),
-                    );
-                  },
-                ),
+    await tester.pumpWidget(WidgetsApp(
+      color: const Color(0xff00ff00),
+      builder: (BuildContext context, Widget? child) {
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            outerTapCount += 1;
+            SharedAppData.setValue<String, String>(context, 'childText', 'child');
+          },
+          child: Center(
+            child: SharedAppData(
+              child: Builder(
+                builder: (BuildContext context) {
+                  return GestureDetector(
+                    onTap: () {
+                      innerTapCount += 1;
+                      SharedAppData.setValue<String, String>(context, 'childText', 'child');
+                    },
+                    child: Text(SharedAppData.getValue<String, String>(context, 'childText', () => 'null')),
+                  );
+                },
               ),
             ),
-          );
-        },
-      ),
-    );
+          ),
+        );
+      },
+    ));
 
     expect(find.text('null'), findsOneWidget);
 

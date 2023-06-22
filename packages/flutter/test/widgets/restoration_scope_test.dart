@@ -10,41 +10,21 @@ import 'restoration.dart';
 void main() {
   group('UnmanagedRestorationScope', () {
     testWidgets('makes bucket available to descendants', (WidgetTester tester) async {
-      final RestorationBucket bucket1 = RestorationBucket.empty(
-        restorationId: 'foo',
-        debugOwner: 'owner',
-      );
+      final RestorationBucket bucket1 = RestorationBucket.empty(restorationId: 'foo', debugOwner: 'owner');
 
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: bucket1,
-          child: const BucketSpy(),
-        ),
-      );
+      await tester.pumpWidget(UnmanagedRestorationScope(bucket: bucket1, child: const BucketSpy()));
 
       final BucketSpyState state = tester.state(find.byType(BucketSpy));
       expect(state.bucket, bucket1);
 
       // Notifies when bucket changes.
-      final RestorationBucket bucket2 = RestorationBucket.empty(
-        restorationId: 'foo2',
-        debugOwner: 'owner',
-      );
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: bucket2,
-          child: const BucketSpy(),
-        ),
-      );
+      final RestorationBucket bucket2 = RestorationBucket.empty(restorationId: 'foo2', debugOwner: 'owner');
+      await tester.pumpWidget(UnmanagedRestorationScope(bucket: bucket2, child: const BucketSpy()));
       expect(state.bucket, bucket2);
     });
 
     testWidgets('null bucket disables restoration', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const UnmanagedRestorationScope(
-          child: BucketSpy(),
-        ),
-      );
+      await tester.pumpWidget(const UnmanagedRestorationScope(child: BucketSpy()));
       final BucketSpyState state = tester.state(find.byType(BucketSpy));
       expect(state.bucket, isNull);
     });
@@ -62,8 +42,8 @@ void main() {
               builder: (BuildContext context) {
                 capturedContext = context;
                 return Container();
-              }
-            )
+              },
+            ),
           );
         },
       ));
@@ -88,8 +68,8 @@ void main() {
               builder: (BuildContext context) {
                 capturedContext = context;
                 return Container();
-              }
-            )
+              },
+            ),
           );
         },
       ));
@@ -105,13 +85,7 @@ void main() {
       expect(rawData, isEmpty);
 
       await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: const RestorationScope(
-            restorationId: id,
-            child: BucketSpy(),
-          ),
-        ),
+        UnmanagedRestorationScope(bucket: root, child: const RestorationScope(restorationId: id, child: BucketSpy())),
       );
       manager.doSerialization();
 
@@ -124,15 +98,10 @@ void main() {
       final MockRestorationManager manager = MockRestorationManager();
       final RestorationBucket root = RestorationBucket.root(manager: manager, rawData: _createRawDataSet());
 
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: const RestorationScope(
-            restorationId: 'child1',
-            child: BucketSpy(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(UnmanagedRestorationScope(
+        bucket: root,
+        child: const RestorationScope(restorationId: 'child1', child: BucketSpy()),
+      ));
       manager.doSerialization();
 
       final BucketSpyState state = tester.state(find.byType(BucketSpy));
@@ -144,15 +113,10 @@ void main() {
       final MockRestorationManager manager = MockRestorationManager();
       final RestorationBucket root = RestorationBucket.root(manager: manager, rawData: _createRawDataSet());
 
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: const RestorationScope(
-            restorationId: 'child1',
-            child: BucketSpy(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(UnmanagedRestorationScope(
+        bucket: root,
+        child: const RestorationScope(restorationId: 'child1', child: BucketSpy()),
+      ));
       manager.doSerialization();
 
       // Claimed existing bucket with data.
@@ -162,15 +126,10 @@ void main() {
       final RestorationBucket bucket = state.bucket!;
 
       // Rename the existing bucket.
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: const RestorationScope(
-            restorationId: 'something else',
-            child: BucketSpy(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(UnmanagedRestorationScope(
+        bucket: root,
+        child: const RestorationScope(restorationId: 'something else', child: BucketSpy()),
+      ));
       manager.doSerialization();
 
       expect(state.bucket!.restorationId, 'something else');
@@ -184,24 +143,14 @@ void main() {
       final RestorationBucket root = RestorationBucket.root(manager: manager, rawData: rawData);
 
       expect((rawData[childrenMapKey] as Map<String, dynamic>).containsKey('child1'), isTrue);
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: const RestorationScope(
-            restorationId: 'child1',
-            child: BucketSpy(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(UnmanagedRestorationScope(
+        bucket: root,
+        child: const RestorationScope(restorationId: 'child1', child: BucketSpy()),
+      ));
       manager.doSerialization();
       expect((rawData[childrenMapKey] as Map<String, dynamic>).containsKey('child1'), isTrue);
 
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: Container(),
-        ),
-      );
+      await tester.pumpWidget(UnmanagedRestorationScope(bucket: root, child: Container()));
       manager.doSerialization();
 
       expect((rawData[childrenMapKey] as Map<String, dynamic>).containsKey('child1'), isFalse);
@@ -212,40 +161,23 @@ void main() {
       final RestorationBucket root = RestorationBucket.root(manager: manager, rawData: <String, dynamic>{});
 
       await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: const RestorationScope(
-            restorationId: null,
-            child: BucketSpy(),
-          ),
-        ),
+        UnmanagedRestorationScope(bucket: root, child: const RestorationScope(restorationId: null, child: BucketSpy())),
       );
       final BucketSpyState state = tester.state(find.byType(BucketSpy));
       expect(state.bucket, isNull);
 
       // Change id to non-null.
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: const RestorationScope(
-            restorationId: 'foo',
-            child: BucketSpy(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(UnmanagedRestorationScope(
+        bucket: root,
+        child: const RestorationScope(restorationId: 'foo', child: BucketSpy()),
+      ));
       manager.doSerialization();
       expect(state.bucket, isNotNull);
       expect(state.bucket!.restorationId, 'foo');
 
       // Change id back to null.
       await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: const RestorationScope(
-            restorationId: null,
-            child: BucketSpy(),
-          ),
-        ),
+        UnmanagedRestorationScope(bucket: root, child: const RestorationScope(restorationId: null, child: BucketSpy())),
       );
       manager.doSerialization();
       expect(state.bucket, isNull);
@@ -254,52 +186,29 @@ void main() {
     testWidgets('no bucket for descendants when scope is null', (WidgetTester tester) async {
       final Key scopeKey = GlobalKey();
 
-      await tester.pumpWidget(
-        RestorationScope(
-          key: scopeKey,
-          restorationId: 'foo',
-          child: const BucketSpy(),
-        ),
-      );
+      await tester.pumpWidget(RestorationScope(key: scopeKey, restorationId: 'foo', child: const BucketSpy()));
       final BucketSpyState state = tester.state(find.byType(BucketSpy));
       expect(state.bucket, isNull);
 
       // Move it under a valid scope.
       final MockRestorationManager manager = MockRestorationManager();
       final RestorationBucket root = RestorationBucket.root(manager: manager, rawData: <String, dynamic>{});
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: RestorationScope(
-            key: scopeKey,
-            restorationId: 'foo',
-            child: const BucketSpy(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(UnmanagedRestorationScope(
+        bucket: root,
+        child: RestorationScope(key: scopeKey, restorationId: 'foo', child: const BucketSpy()),
+      ));
       manager.doSerialization();
       expect(state.bucket, isNotNull);
       expect(state.bucket!.restorationId, 'foo');
 
       // Move out of scope again.
-      await tester.pumpWidget(
-        RestorationScope(
-          key: scopeKey,
-          restorationId: 'foo',
-          child: const BucketSpy(),
-        ),
-      );
+      await tester.pumpWidget(RestorationScope(key: scopeKey, restorationId: 'foo', child: const BucketSpy()));
       manager.doSerialization();
       expect(state.bucket, isNull);
     });
 
     testWidgets('no bucket for descendants when scope and id are null', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const RestorationScope(
-          restorationId: null,
-          child: BucketSpy(),
-        ),
-      );
+      await tester.pumpWidget(const RestorationScope(restorationId: null, child: BucketSpy()));
       final BucketSpyState state = tester.state(find.byType(BucketSpy));
       expect(state.bucket, isNull);
     });
@@ -310,53 +219,40 @@ void main() {
       final RestorationBucket root = RestorationBucket.root(manager: manager, rawData: rawData);
       final Key scopeKey = GlobalKey();
 
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: Row(
-            textDirection: TextDirection.ltr,
-            children: <Widget>[
-              RestorationScope(
-                restorationId: 'fixed',
-                child: RestorationScope(
-                  key: scopeKey,
-                  restorationId: 'moving-child',
-                  child: const BucketSpy(),
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(UnmanagedRestorationScope(
+        bucket: root,
+        child: Row(
+          textDirection: TextDirection.ltr,
+          children: <Widget>[
+            RestorationScope(
+              restorationId: 'fixed',
+              child: RestorationScope(key: scopeKey, restorationId: 'moving-child', child: const BucketSpy()),
+            ),
+          ],
         ),
-      );
+      ));
       manager.doSerialization();
       final BucketSpyState state = tester.state(find.byType(BucketSpy));
       expect(state.bucket!.restorationId, 'moving-child');
-      expect((((rawData[childrenMapKey] as Map<Object?, Object?>)['fixed']! as Map<String, dynamic>)[childrenMapKey] as Map<Object?, Object?>).containsKey('moving-child'), isTrue);
+      expect((((rawData[childrenMapKey] as Map<Object?, Object?>)['fixed']! as Map<String, dynamic>)[childrenMapKey]
+              as Map<Object?, Object?>)
+          .containsKey('moving-child'), isTrue);
       final RestorationBucket bucket = state.bucket!;
 
       state.bucket!.write('value', 11);
       manager.doSerialization();
 
       // Move scope.
-      await tester.pumpWidget(
-        UnmanagedRestorationScope(
-          bucket: root,
-          child: Row(
-            textDirection: TextDirection.ltr,
-            children: <Widget>[
-              RestorationScope(
-                restorationId: 'fixed',
-                child: Container(),
-              ),
-              RestorationScope(
-                key: scopeKey,
-                restorationId: 'moving-child',
-                child: const BucketSpy(),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(UnmanagedRestorationScope(
+        bucket: root,
+        child: Row(
+          textDirection: TextDirection.ltr,
+          children: <Widget>[
+            RestorationScope(restorationId: 'fixed', child: Container()),
+            RestorationScope(key: scopeKey, restorationId: 'moving-child', child: const BucketSpy()),
+          ],
         ),
-      );
+      ));
       manager.doSerialization();
       expect(state.bucket!.restorationId, 'moving-child');
       expect(state.bucket, same(bucket));
@@ -370,20 +266,13 @@ void main() {
 
 Map<String, dynamic> _createRawDataSet() {
   return <String, dynamic>{
-    valuesMapKey: <String, dynamic>{
-      'value1' : 10,
-      'value2' : 'Hello',
-    },
+    valuesMapKey: <String, dynamic>{'value1': 10, 'value2': 'Hello'},
     childrenMapKey: <String, dynamic>{
-      'child1' : <String, dynamic>{
-        valuesMapKey : <String, dynamic>{
-          'foo': 22,
-        },
+      'child1': <String, dynamic>{
+        valuesMapKey: <String, dynamic>{'foo': 22},
       },
-      'child2' : <String, dynamic>{
-        valuesMapKey : <String, dynamic>{
-          'bar': 33,
-        },
+      'child2': <String, dynamic>{
+        valuesMapKey: <String, dynamic>{'bar': 33},
       },
     },
   };

@@ -9,9 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'rendering_tester.dart';
 
 class TestRenderSliverBoxChildManager extends RenderSliverBoxChildManager {
-  TestRenderSliverBoxChildManager({
-    required this.children,
-  });
+  TestRenderSliverBoxChildManager({required this.children});
 
   late RenderSliverList _renderObject;
   List<RenderBox> children;
@@ -24,7 +22,7 @@ class TestRenderSliverBoxChildManager extends RenderSliverBoxChildManager {
   int? _currentlyUpdatingChildIndex;
 
   @override
-  void createChild(int index, { required RenderBox? after }) {
+  void createChild(int index, {required RenderBox? after}) {
     if (index < 0 || index >= children.length) {
       return;
     }
@@ -64,7 +62,7 @@ class TestRenderSliverBoxChildManager extends RenderSliverBoxChildManager {
   }
 
   @override
-  void setDidUnderflow(bool value) { }
+  void setDidUnderflow(bool value) {}
 }
 
 class ViewportOffsetSpy extends ViewportOffset {
@@ -98,11 +96,7 @@ class ViewportOffsetSpy extends ViewportOffset {
   }
 
   @override
-  Future<void> animateTo(
-    double to, {
-    required Duration duration,
-    required Curve curve,
-  }) async {
+  Future<void> animateTo(double to, {required Duration duration, required Curve curve}) async {
     // Do nothing, not required in test.
   }
 
@@ -132,9 +126,7 @@ void main() {
       crossAxisDirection: AxisDirection.right,
       offset: ViewportOffset.zero(),
       cacheExtent: 0.0,
-      children: <RenderSliver>[
-        inner = childManager.createRenderObject(),
-      ],
+      children: <RenderSliver>[inner = childManager.createRenderObject()],
     );
     layout(root);
 
@@ -207,9 +199,7 @@ void main() {
       axisDirection: AxisDirection.up,
       crossAxisDirection: AxisDirection.right,
       offset: ViewportOffset.zero(),
-      children: <RenderSliver>[
-        inner = childManager.createRenderObject(),
-      ],
+      children: <RenderSliver>[inner = childManager.createRenderObject()],
       cacheExtent: 0.0,
     );
     layout(root);
@@ -282,9 +272,7 @@ void main() {
     final RenderViewport root = RenderViewport(
       crossAxisDirection: AxisDirection.right,
       offset: ViewportOffset.zero(),
-      children: <RenderSliver>[
-        inner = childManager.createRenderObject(),
-      ],
+      children: <RenderSliver>[inner = childManager.createRenderObject()],
     );
     layout(root);
 
@@ -316,9 +304,7 @@ void main() {
     final RenderViewport root = RenderViewport(
       crossAxisDirection: AxisDirection.right,
       offset: ViewportOffset.zero(),
-      children: <RenderSliver>[
-        inner,
-      ],
+      children: <RenderSliver>[inner],
     );
     layout(root);
 

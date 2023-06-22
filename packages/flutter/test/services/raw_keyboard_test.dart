@@ -23,6 +23,7 @@ void main() {
         void handleKey(RawKeyEvent event) {
           expect(event.character, equals(character), reason: 'on $platform');
         }
+
         RawKeyboard.instance.addListener(handleKey);
         character = 'a';
         await simulateKeyDownEvent(LogicalKeyboardKey.keyA, platform: platform);
@@ -37,6 +38,7 @@ void main() {
         void handleKey(RawKeyEvent event) {
           expect(event.character, isNull, reason: 'on $platform');
         }
+
         RawKeyboard.instance.addListener(handleKey);
         await simulateKeyDownEvent(LogicalKeyboardKey.shiftLeft, platform: platform);
         RawKeyboard.instance.removeListener(handleKey);
@@ -48,68 +50,39 @@ void main() {
         RawKeyboard.instance.clearKeysPressed();
         expect(RawKeyboard.instance.keysPressed, isEmpty, reason: 'on $platform');
         await simulateKeyDownEvent(LogicalKeyboardKey.shiftLeft, platform: platform);
-        expect(
-          RawKeyboard.instance.keysPressed,
-          equals(
-            <LogicalKeyboardKey>{ LogicalKeyboardKey.shiftLeft,
-            // Linux doesn't have a concept of left/right keys, so they're all
-            // shown as down when either is pressed.
-            if (platform == 'linux') LogicalKeyboardKey.shiftRight,
-          },
-        ),
-          reason: 'on $platform',
-        );
+        expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+          LogicalKeyboardKey.shiftLeft,
+          // Linux doesn't have a concept of left/right keys, so they're all
+          // shown as down when either is pressed.
+          if (platform == 'linux') LogicalKeyboardKey.shiftRight,
+        }), reason: 'on $platform');
         await simulateKeyDownEvent(LogicalKeyboardKey.controlLeft, platform: platform);
-        expect(
-          RawKeyboard.instance.keysPressed,
-          equals(
-            <LogicalKeyboardKey>{
-              LogicalKeyboardKey.shiftLeft,
-              if (platform == 'linux') LogicalKeyboardKey.shiftRight,
-              LogicalKeyboardKey.controlLeft,
-              if (platform == 'linux') LogicalKeyboardKey.controlRight,
-            },
-          ),
-          reason: 'on $platform',
-        );
+        expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+          LogicalKeyboardKey.shiftLeft,
+          if (platform == 'linux') LogicalKeyboardKey.shiftRight,
+          LogicalKeyboardKey.controlLeft,
+          if (platform == 'linux') LogicalKeyboardKey.controlRight,
+        }), reason: 'on $platform');
         await simulateKeyDownEvent(LogicalKeyboardKey.keyA, platform: platform);
-        expect(
-          RawKeyboard.instance.keysPressed,
-          equals(
-            <LogicalKeyboardKey>{
-              LogicalKeyboardKey.shiftLeft,
-              if (platform == 'linux') LogicalKeyboardKey.shiftRight,
-              LogicalKeyboardKey.controlLeft,
-              if (platform == 'linux') LogicalKeyboardKey.controlRight,
-              LogicalKeyboardKey.keyA,
-            },
-          ),
-          reason: 'on $platform',
-        );
+        expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+          LogicalKeyboardKey.shiftLeft,
+          if (platform == 'linux') LogicalKeyboardKey.shiftRight,
+          LogicalKeyboardKey.controlLeft,
+          if (platform == 'linux') LogicalKeyboardKey.controlRight,
+          LogicalKeyboardKey.keyA,
+        }), reason: 'on $platform');
         await simulateKeyUpEvent(LogicalKeyboardKey.keyA, platform: platform);
-        expect(
-          RawKeyboard.instance.keysPressed,
-          equals(
-            <LogicalKeyboardKey>{
-              LogicalKeyboardKey.shiftLeft,
-              if (platform == 'linux') LogicalKeyboardKey.shiftRight,
-              LogicalKeyboardKey.controlLeft,
-              if (platform == 'linux') LogicalKeyboardKey.controlRight,
-            },
-          ),
-          reason: 'on $platform',
-        );
+        expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+          LogicalKeyboardKey.shiftLeft,
+          if (platform == 'linux') LogicalKeyboardKey.shiftRight,
+          LogicalKeyboardKey.controlLeft,
+          if (platform == 'linux') LogicalKeyboardKey.controlRight,
+        }), reason: 'on $platform');
         await simulateKeyUpEvent(LogicalKeyboardKey.controlLeft, platform: platform);
-        expect(
-          RawKeyboard.instance.keysPressed,
-          equals(
-            <LogicalKeyboardKey>{
-              LogicalKeyboardKey.shiftLeft,
-              if (platform == 'linux') LogicalKeyboardKey.shiftRight,
-            },
-          ),
-          reason: 'on $platform',
-        );
+        expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+          LogicalKeyboardKey.shiftLeft,
+          if (platform == 'linux') LogicalKeyboardKey.shiftRight,
+        }), reason: 'on $platform');
         await simulateKeyUpEvent(LogicalKeyboardKey.shiftLeft, platform: platform);
         expect(RawKeyboard.instance.keysPressed, isEmpty, reason: 'on $platform');
         // The Fn key isn't mapped on linux or Windows.
@@ -117,30 +90,19 @@ void main() {
           await simulateKeyDownEvent(LogicalKeyboardKey.fn, platform: platform);
           expect(
             RawKeyboard.instance.keysPressed,
-            equals(
-              <LogicalKeyboardKey>{
-                if (platform != 'macos') LogicalKeyboardKey.fn,
-              },
-            ),
+            equals(<LogicalKeyboardKey>{if (platform != 'macos') LogicalKeyboardKey.fn}),
             reason: 'on $platform',
           );
           await simulateKeyDownEvent(LogicalKeyboardKey.f12, platform: platform);
           expect(
             RawKeyboard.instance.keysPressed,
-            equals(
-              <LogicalKeyboardKey>{
-                if (platform != 'macos') LogicalKeyboardKey.fn,
-                LogicalKeyboardKey.f12,
-              },
-            ),
+            equals(<LogicalKeyboardKey>{if (platform != 'macos') LogicalKeyboardKey.fn, LogicalKeyboardKey.f12}),
             reason: 'on $platform',
           );
           await simulateKeyUpEvent(LogicalKeyboardKey.fn, platform: platform);
           expect(
             RawKeyboard.instance.keysPressed,
-            equals(
-              <LogicalKeyboardKey>{ LogicalKeyboardKey.f12 },
-            ),
+            equals(<LogicalKeyboardKey>{LogicalKeyboardKey.f12}),
             reason: 'on $platform',
           );
           await simulateKeyUpEvent(LogicalKeyboardKey.f12, platform: platform);
@@ -153,19 +115,17 @@ void main() {
       for (final String platform in <String>['linux', 'android', 'macos', 'fuchsia', 'windows', 'ios']) {
         RawKeyboard.instance.clearKeysPressed();
         expect(RawKeyboard.instance.keysPressed, isEmpty, reason: 'on $platform');
-        await simulateKeyDownEvent(LogicalKeyboardKey.shiftLeft, platform: platform, physicalKey: PhysicalKeyboardKey.shiftLeft);
-        expect(
-          RawKeyboard.instance.keysPressed,
-          equals(
-            <LogicalKeyboardKey>{
-              LogicalKeyboardKey.shiftLeft,
-              // Linux doesn't have a concept of left/right keys, so they're all
-              // shown as down when either is pressed.
-              if (platform == 'linux') LogicalKeyboardKey.shiftRight,
-            },
-          ),
-          reason: 'on $platform',
+        await simulateKeyDownEvent(
+          LogicalKeyboardKey.shiftLeft,
+          platform: platform,
+          physicalKey: PhysicalKeyboardKey.shiftLeft,
         );
+        expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+          LogicalKeyboardKey.shiftLeft,
+          // Linux doesn't have a concept of left/right keys, so they're all
+          // shown as down when either is pressed.
+          if (platform == 'linux') LogicalKeyboardKey.shiftRight,
+        }), reason: 'on $platform');
         // TODO(gspencergoog): Switch to capital A when the new key event code
         // is finished that can simulate real keys.
         // https://github.com/flutter/flutter/issues/33521
@@ -174,25 +134,19 @@ void main() {
         // simulate events that appear in the key maps (and capital letters
         // don't appear there).
         await simulateKeyDownEvent(LogicalKeyboardKey.keyA, platform: platform, physicalKey: PhysicalKeyboardKey.keyA);
-        expect(
-          RawKeyboard.instance.keysPressed,
-          equals(
-            <LogicalKeyboardKey>{
-              LogicalKeyboardKey.shiftLeft,
-              if (platform == 'linux') LogicalKeyboardKey.shiftRight,
-              LogicalKeyboardKey.keyA,
-            },
-          ),
-          reason: 'on $platform',
+        expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+          LogicalKeyboardKey.shiftLeft,
+          if (platform == 'linux') LogicalKeyboardKey.shiftRight,
+          LogicalKeyboardKey.keyA,
+        }), reason: 'on $platform');
+        await simulateKeyUpEvent(
+          LogicalKeyboardKey.shiftLeft,
+          platform: platform,
+          physicalKey: PhysicalKeyboardKey.shiftLeft,
         );
-        await simulateKeyUpEvent(LogicalKeyboardKey.shiftLeft, platform: platform, physicalKey: PhysicalKeyboardKey.shiftLeft);
         expect(
           RawKeyboard.instance.keysPressed,
-          equals(
-            <LogicalKeyboardKey>{
-              LogicalKeyboardKey.keyA,
-            },
-          ),
+          equals(<LogicalKeyboardKey>{LogicalKeyboardKey.keyA}),
           reason: 'on $platform',
         );
         await simulateKeyUpEvent(LogicalKeyboardKey.keyA, platform: platform, physicalKey: PhysicalKeyboardKey.keyA);
@@ -203,13 +157,11 @@ void main() {
     testWidgets('keysPressed modifiers are synchronized with key events on macOS', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'macos',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'macos');
       // Change the modifiers so that they show the shift key as already down
       // when this event is received, but it's not in keysPressed yet.
-      data['modifiers'] = (data['modifiers'] as int) | RawKeyEventDataMacOs.modifierLeftShift | RawKeyEventDataMacOs.modifierShift;
+      data['modifiers'] =
+          (data['modifiers'] as int) | RawKeyEventDataMacOs.modifierLeftShift | RawKeyEventDataMacOs.modifierShift;
       // dispatch the modified data.
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
@@ -218,22 +170,18 @@ void main() {
       );
       expect(
         RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA},
-        ),
+        equals(<LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA}),
       );
     }, skip: isBrowser); // [intended] This is a macOS-specific test.
 
     testWidgets('keysPressed modifiers are synchronized with key events on iOS', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'ios',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'ios');
       // Change the modifiers so that they show the shift key as already down
       // when this event is received, but it's not in keysPressed yet.
-      data['modifiers'] = (data['modifiers'] as int) | RawKeyEventDataMacOs.modifierLeftShift | RawKeyEventDataMacOs.modifierShift;
+      data['modifiers'] =
+          (data['modifiers'] as int) | RawKeyEventDataMacOs.modifierLeftShift | RawKeyEventDataMacOs.modifierShift;
       // dispatch the modified data.
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
@@ -242,22 +190,18 @@ void main() {
       );
       expect(
         RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA},
-        ),
+        equals(<LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA}),
       );
     }, skip: isBrowser); // [intended] This is an iOS-specific test.
 
     testWidgets('keysPressed modifiers are synchronized with key events on Windows', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'windows',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'windows');
       // Change the modifiers so that they show the shift key as already down
       // when this event is received, but it's not in keysPressed yet.
-      data['modifiers'] = (data['modifiers'] as int) | RawKeyEventDataWindows.modifierLeftShift | RawKeyEventDataWindows.modifierShift;
+      data['modifiers'] =
+          (data['modifiers'] as int) | RawKeyEventDataWindows.modifierLeftShift | RawKeyEventDataWindows.modifierShift;
       // dispatch the modified data.
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
@@ -266,22 +210,18 @@ void main() {
       );
       expect(
         RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA},
-        ),
+        equals(<LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA}),
       );
     }, skip: isBrowser); // [intended] This is a Windows-specific test.
 
     testWidgets('keysPressed modifiers are synchronized with key events on android', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'android',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'android');
       // Change the modifiers so that they show the shift key as already down
       // when this event is received, but it's not in keysPressed yet.
-      data['metaState'] = (data['metaState'] as int) | RawKeyEventDataAndroid.modifierLeftShift | RawKeyEventDataAndroid.modifierShift;
+      data['metaState'] =
+          (data['metaState'] as int) | RawKeyEventDataAndroid.modifierLeftShift | RawKeyEventDataAndroid.modifierShift;
       // dispatch the modified data.
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
@@ -290,19 +230,14 @@ void main() {
       );
       expect(
         RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA},
-        ),
+        equals(<LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA}),
       );
     }, skip: isBrowser); // [intended] This is an Android-specific test.
 
     testWidgets('keysPressed modifiers are synchronized with key events on fuchsia', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'fuchsia',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'fuchsia');
       // Change the modifiers so that they show the shift key as already down
       // when this event is received, but it's not in keysPressed yet.
       data['modifiers'] = (data['modifiers'] as int) | RawKeyEventDataFuchsia.modifierLeftShift;
@@ -314,19 +249,14 @@ void main() {
       );
       expect(
         RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA},
-        ),
+        equals(<LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA}),
       );
     }, skip: isBrowser); // [intended] This is a Fuchsia-specific test.
 
     testWidgets('keysPressed modifiers are synchronized with key events on Linux GLFW', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'linux',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'linux');
       // Change the modifiers so that they show the shift key as already down
       // when this event is received, but it's not in keysPressed yet.
       data['modifiers'] = (data['modifiers'] as int) | GLFWKeyHelper.modifierShift;
@@ -336,41 +266,38 @@ void main() {
         SystemChannels.keyEvent.codec.encodeMessage(data),
         (ByteData? data) {},
       );
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.shiftLeft,
-            // Linux doesn't have a concept of left/right keys, so they're all
-            // shown as down when either is pressed.
-            LogicalKeyboardKey.shiftRight,
-            LogicalKeyboardKey.keyA,
-          },
-        ),
-      );
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+        LogicalKeyboardKey.shiftLeft,
+        // Linux doesn't have a concept of left/right keys, so they're all
+        // shown as down when either is pressed.
+        LogicalKeyboardKey.shiftRight,
+        LogicalKeyboardKey.keyA,
+      }));
     }, skip: isBrowser); // [intended] This is a GLFW-specific test.
 
     Future<void> simulateGTKKeyEvent(bool keyDown, int scancode, int keycode, int modifiers) async {
       final Map<String, dynamic> data = <String, dynamic>{
-          'type': keyDown ? 'keydown' : 'keyup',
-          'keymap': 'linux',
-          'toolkit': 'gtk',
-          'scanCode': scancode,
-          'keyCode': keycode,
-          'modifiers': modifiers,
-        };
+        'type': keyDown ? 'keydown' : 'keyup',
+        'keymap': 'linux',
+        'toolkit': 'gtk',
+        'scanCode': scancode,
+        'keyCode': keycode,
+        'modifiers': modifiers,
+      };
       // Dispatch an empty key data to disable HardwareKeyboard sanity check,
       // since we're only testing if the raw keyboard can handle the message.
       // In a real application, the embedder responder will send the correct key data
       // (which is tested in the engine).
-      TestDefaultBinaryMessengerBinding.instance.keyEventManager.handleKeyData(const ui.KeyData(
-        type: ui.KeyEventType.down,
-        timeStamp: Duration.zero,
-        logical: 0,
-        physical: 0,
-        character: null,
-        synthesized: false,
-      ));
+      TestDefaultBinaryMessengerBinding.instance.keyEventManager.handleKeyData(
+        const ui.KeyData(
+          type: ui.KeyEventType.down,
+          timeStamp: Duration.zero,
+          logical: 0,
+          physical: 0,
+          character: null,
+          synthesized: false,
+        ),
+      );
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
         SystemChannels.keyEvent.codec.encodeMessage(data),
@@ -382,22 +309,19 @@ void main() {
     //
     // GTK has some weird behavior where the tested key event sequence will
     // result in a AltRight down event without Alt bitmask.
-    testWidgets('keysPressed modifiers are synchronized with key events on Linux GTK (down events)', (WidgetTester tester) async {
-      expect(RawKeyboard.instance.keysPressed, isEmpty);
+    testWidgets(
+      'keysPressed modifiers are synchronized with key events on Linux GTK (down events)',
+      (WidgetTester tester) async {
+        expect(RawKeyboard.instance.keysPressed, isEmpty);
 
-      await simulateGTKKeyEvent(true,  0x6c/*AltRight*/,  0xffea/*AltRight*/,  0x2000000);
-      await simulateGTKKeyEvent(true,  0x32/*ShiftLeft*/, 0xfe08/*NextGroup*/, 0x2000008/*MOD3*/);
-      await simulateGTKKeyEvent(false, 0x6c/*AltRight*/,  0xfe03/*AltRight*/,  0x2002008/*MOD3|Reserve14*/);
-      await simulateGTKKeyEvent(true,  0x6c/*AltRight*/,  0xfe03/*AltRight*/,  0x2002000/*Reserve14*/);
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.altRight,
-          },
-        ),
-      );
-    }, skip: isBrowser); // [intended] This is a GTK-specific test.
+        await simulateGTKKeyEvent(true, 0x6c /*AltRight*/, 0xffea /*AltRight*/, 0x2000000);
+        await simulateGTKKeyEvent(true, 0x32 /*ShiftLeft*/, 0xfe08 /*NextGroup*/, 0x2000008 /*MOD3*/);
+        await simulateGTKKeyEvent(false, 0x6c /*AltRight*/, 0xfe03 /*AltRight*/, 0x2002008 /*MOD3|Reserve14*/);
+        await simulateGTKKeyEvent(true, 0x6c /*AltRight*/, 0xfe03 /*AltRight*/, 0x2002000 /*Reserve14*/);
+        expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{LogicalKeyboardKey.altRight}));
+      },
+      skip: isBrowser,
+    ); // [intended] This is a GTK-specific test.
 
     // Regression test for https://github.com/flutter/flutter/issues/114591 .
     //
@@ -405,15 +329,8 @@ void main() {
     testWidgets('CapsLock should not be release when remapped on Linux', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
 
-      await simulateGTKKeyEvent(true,  0x42/*CapsLock*/,  0xff08/*Backspace*/,  0x2000000);
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.backspace,
-          },
-        ),
-      );
+      await simulateGTKKeyEvent(true, 0x42 /*CapsLock*/, 0xff08 /*Backspace*/, 0x2000000);
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{LogicalKeyboardKey.backspace}));
     }, skip: isBrowser); // [intended] This is a GTK-specific test.
 
     // Regression test for https://github.com/flutter/flutter/issues/114591 .
@@ -436,17 +353,10 @@ void main() {
           'metaState': 0,
           'keyCode': 8,
         }),
-        (ByteData? data) { },
+        (ByteData? data) {},
       );
 
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.backspace,
-          },
-        ),
-      );
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{LogicalKeyboardKey.backspace}));
     }, skip: !isBrowser); // [intended] This is a Browser-specific test.
 
     testWidgets('keysPressed modifiers are synchronized with key events on web', (WidgetTester tester) async {
@@ -454,10 +364,7 @@ void main() {
       // Generate the data for a regular key down event. Change the modifiers so
       // that they show the shift key as already down when this event is
       // received, but it's not in keysPressed yet.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'web',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'web');
       data['metaState'] = (data['metaState'] as int) | RawKeyEventDataWeb.modifierShift;
       // Dispatch the modified data.
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
@@ -467,40 +374,24 @@ void main() {
       );
       expect(
         RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.shiftLeft,
-            LogicalKeyboardKey.keyA,
-          },
-        ),
+        equals(<LogicalKeyboardKey>{LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyA}),
       );
 
       // Generate the data for a regular key up event. Don't set the modifiers
       // for shift so that they show the shift key as already up when this event
       // is received, and it's in keysPressed.
-      final Map<String, dynamic> data2 = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'web',
-        isDown: false,
-      )..['metaState'] = 0;
+      final Map<String, dynamic> data2 =
+          KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'web', isDown: false)..['metaState'] = 0;
       // Dispatch the modified data.
       await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
         SystemChannels.keyEvent.codec.encodeMessage(data2),
         (ByteData? data) {},
       );
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{},
-        ),
-      );
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{}));
 
       // Press right modifier key
-      final Map<String, dynamic> data3 = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.shiftRight,
-        platform: 'web',
-      );
+      final Map<String, dynamic> data3 = KeyEventSimulator.getKeyData(LogicalKeyboardKey.shiftRight, platform: 'web');
       data['metaState'] = (data['metaState'] as int) | RawKeyEventDataWeb.modifierShift;
       // Dispatch the modified data.
       await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
@@ -508,14 +399,7 @@ void main() {
         SystemChannels.keyEvent.codec.encodeMessage(data3),
         (ByteData? data) {},
       );
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.shiftRight,
-          },
-        ),
-      );
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{LogicalKeyboardKey.shiftRight}));
 
       // Release the key
       final Map<String, dynamic> data4 = KeyEventSimulator.getKeyData(
@@ -529,58 +413,42 @@ void main() {
         SystemChannels.keyEvent.codec.encodeMessage(data4),
         (ByteData? data) {},
       );
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{},
-        ),
-      );
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{}));
     });
 
     testWidgets('sided modifiers without a side set return all sides on Android', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'android',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'android');
       // Set only the generic "down" modifier, without setting a side.
       data['metaState'] = (data['metaState'] as int) |
-        RawKeyEventDataAndroid.modifierShift |
-        RawKeyEventDataAndroid.modifierAlt |
-        RawKeyEventDataAndroid.modifierControl |
-        RawKeyEventDataAndroid.modifierMeta;
+          RawKeyEventDataAndroid.modifierShift |
+          RawKeyEventDataAndroid.modifierAlt |
+          RawKeyEventDataAndroid.modifierControl |
+          RawKeyEventDataAndroid.modifierMeta;
       // dispatch the modified data.
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
         SystemChannels.keyEvent.codec.encodeMessage(data),
-            (ByteData? data) {},
+        (ByteData? data) {},
       );
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.shiftLeft,
-            LogicalKeyboardKey.shiftRight,
-            LogicalKeyboardKey.altLeft,
-            LogicalKeyboardKey.altRight,
-            LogicalKeyboardKey.controlLeft,
-            LogicalKeyboardKey.controlRight,
-            LogicalKeyboardKey.metaLeft,
-            LogicalKeyboardKey.metaRight,
-            LogicalKeyboardKey.keyA,
-          },
-        ),
-      );
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+        LogicalKeyboardKey.shiftLeft,
+        LogicalKeyboardKey.shiftRight,
+        LogicalKeyboardKey.altLeft,
+        LogicalKeyboardKey.altRight,
+        LogicalKeyboardKey.controlLeft,
+        LogicalKeyboardKey.controlRight,
+        LogicalKeyboardKey.metaLeft,
+        LogicalKeyboardKey.metaRight,
+        LogicalKeyboardKey.keyA,
+      }));
     }, skip: isBrowser); // [intended] This is an Android-specific test.
 
     testWidgets('sided modifiers without a side set return all sides on macOS', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'macos',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'macos');
       // Set only the generic "shift down" modifier, without setting a side.
       data['modifiers'] = (data['modifiers'] as int) |
           RawKeyEventDataMacOs.modifierShift |
@@ -591,33 +459,25 @@ void main() {
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
         SystemChannels.keyEvent.codec.encodeMessage(data),
-            (ByteData? data) {},
+        (ByteData? data) {},
       );
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.shiftLeft,
-            LogicalKeyboardKey.shiftRight,
-            LogicalKeyboardKey.altLeft,
-            LogicalKeyboardKey.altRight,
-            LogicalKeyboardKey.controlLeft,
-            LogicalKeyboardKey.controlRight,
-            LogicalKeyboardKey.metaLeft,
-            LogicalKeyboardKey.metaRight,
-            LogicalKeyboardKey.keyA,
-          },
-        ),
-      );
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+        LogicalKeyboardKey.shiftLeft,
+        LogicalKeyboardKey.shiftRight,
+        LogicalKeyboardKey.altLeft,
+        LogicalKeyboardKey.altRight,
+        LogicalKeyboardKey.controlLeft,
+        LogicalKeyboardKey.controlRight,
+        LogicalKeyboardKey.metaLeft,
+        LogicalKeyboardKey.metaRight,
+        LogicalKeyboardKey.keyA,
+      }));
     }, skip: isBrowser); // [intended] This is a macOS-specific test.
 
     testWidgets('sided modifiers without a side set return all sides on iOS', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'ios',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'ios');
       // Set only the generic "shift down" modifier, without setting a side.
       data['modifiers'] = (data['modifiers'] as int) |
           RawKeyEventDataIos.modifierShift |
@@ -628,24 +488,19 @@ void main() {
       await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
         SystemChannels.keyEvent.codec.encodeMessage(data),
-            (ByteData? data) {},
+        (ByteData? data) {},
       );
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.shiftLeft,
-            LogicalKeyboardKey.shiftRight,
-            LogicalKeyboardKey.altLeft,
-            LogicalKeyboardKey.altRight,
-            LogicalKeyboardKey.controlLeft,
-            LogicalKeyboardKey.controlRight,
-            LogicalKeyboardKey.metaLeft,
-            LogicalKeyboardKey.metaRight,
-            LogicalKeyboardKey.keyA,
-          },
-        ),
-      );
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+        LogicalKeyboardKey.shiftLeft,
+        LogicalKeyboardKey.shiftRight,
+        LogicalKeyboardKey.altLeft,
+        LogicalKeyboardKey.altRight,
+        LogicalKeyboardKey.controlLeft,
+        LogicalKeyboardKey.controlRight,
+        LogicalKeyboardKey.metaLeft,
+        LogicalKeyboardKey.metaRight,
+        LogicalKeyboardKey.keyA,
+      }));
     }, skip: isBrowser); // [intended] This is an iOS-specific test.
 
     testWidgets('repeat events', (WidgetTester tester) async {
@@ -657,10 +512,7 @@ void main() {
       };
 
       // Dispatch a down event.
-      final Map<String, dynamic> downData = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'windows',
-      );
+      final Map<String, dynamic> downData = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'windows');
       await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
         SystemChannels.keyEvent.codec.encodeMessage(downData),
@@ -679,11 +531,9 @@ void main() {
       // Dispatch an up event.
       await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
-        SystemChannels.keyEvent.codec.encodeMessage(KeyEventSimulator.getKeyData(
-          LogicalKeyboardKey.keyA,
-          isDown: false,
-          platform: 'windows',
-        )),
+        SystemChannels.keyEvent.codec.encodeMessage(
+          KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, isDown: false, platform: 'windows'),
+        ),
         (ByteData? data) {},
       );
       expect(receivedEvent.repeat, false);
@@ -694,10 +544,7 @@ void main() {
     testWidgets('sided modifiers without a side set return all sides on Windows', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'windows',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'windows');
       // Set only the generic "shift down" modifier, without setting a side.
       // Windows doesn't have a concept of "either" for the Windows (meta) key.
       data['modifiers'] = (data['modifiers'] as int) |
@@ -708,130 +555,112 @@ void main() {
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
         SystemChannels.keyEvent.codec.encodeMessage(data),
-            (ByteData? data) {},
+        (ByteData? data) {},
       );
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.shiftLeft,
-            LogicalKeyboardKey.shiftRight,
-            LogicalKeyboardKey.altLeft,
-            LogicalKeyboardKey.altRight,
-            LogicalKeyboardKey.controlLeft,
-            LogicalKeyboardKey.controlRight,
-            LogicalKeyboardKey.keyA,
-          },
-        ),
-      );
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+        LogicalKeyboardKey.shiftLeft,
+        LogicalKeyboardKey.shiftRight,
+        LogicalKeyboardKey.altLeft,
+        LogicalKeyboardKey.altRight,
+        LogicalKeyboardKey.controlLeft,
+        LogicalKeyboardKey.controlRight,
+        LogicalKeyboardKey.keyA,
+      }));
     }, skip: isBrowser); // [intended] This is a Windows-specific test.
 
     testWidgets('sided modifiers without a side set return all sides on Linux GLFW', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'linux',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'linux');
       // Set only the generic "shift down" modifier, without setting a side.
       // Windows doesn't have a concept of "either" for the Windows (meta) key.
       data['modifiers'] = (data['modifiers'] as int) |
-        GLFWKeyHelper.modifierShift |
-        GLFWKeyHelper.modifierAlt |
-        GLFWKeyHelper.modifierControl |
-        GLFWKeyHelper.modifierMeta;
+          GLFWKeyHelper.modifierShift |
+          GLFWKeyHelper.modifierAlt |
+          GLFWKeyHelper.modifierControl |
+          GLFWKeyHelper.modifierMeta;
       // dispatch the modified data.
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
         SystemChannels.keyEvent.codec.encodeMessage(data),
-            (ByteData? data) {},
+        (ByteData? data) {},
       );
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.shiftLeft,
-            LogicalKeyboardKey.shiftRight,
-            LogicalKeyboardKey.altLeft,
-            LogicalKeyboardKey.altRight,
-            LogicalKeyboardKey.controlLeft,
-            LogicalKeyboardKey.controlRight,
-            LogicalKeyboardKey.metaLeft,
-            LogicalKeyboardKey.metaRight,
-            LogicalKeyboardKey.keyA,
-          },
-        ),
-      );
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+        LogicalKeyboardKey.shiftLeft,
+        LogicalKeyboardKey.shiftRight,
+        LogicalKeyboardKey.altLeft,
+        LogicalKeyboardKey.altRight,
+        LogicalKeyboardKey.controlLeft,
+        LogicalKeyboardKey.controlRight,
+        LogicalKeyboardKey.metaLeft,
+        LogicalKeyboardKey.metaRight,
+        LogicalKeyboardKey.keyA,
+      }));
     }, skip: isBrowser); // [intended] This is a GLFW-specific test.
 
     testWidgets('sided modifiers without a side set return left sides on web', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'web',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'web');
       // Set only the generic "shift down" modifier, without setting a side.
       data['metaState'] = (data['metaState'] as int) |
-        RawKeyEventDataWeb.modifierShift |
-        RawKeyEventDataWeb.modifierAlt |
-        RawKeyEventDataWeb.modifierControl |
-        RawKeyEventDataWeb.modifierMeta;
+          RawKeyEventDataWeb.modifierShift |
+          RawKeyEventDataWeb.modifierAlt |
+          RawKeyEventDataWeb.modifierControl |
+          RawKeyEventDataWeb.modifierMeta;
       // dispatch the modified data.
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
         SystemChannels.keyEvent.codec.encodeMessage(data),
-            (ByteData? data) {},
+        (ByteData? data) {},
       );
-      expect(
-        RawKeyboard.instance.keysPressed,
-        equals(
-          <LogicalKeyboardKey>{
-            LogicalKeyboardKey.shiftLeft,
-            LogicalKeyboardKey.altLeft,
-            LogicalKeyboardKey.controlLeft,
-            LogicalKeyboardKey.metaLeft,
-            LogicalKeyboardKey.keyA,
+      expect(RawKeyboard.instance.keysPressed, equals(<LogicalKeyboardKey>{
+        LogicalKeyboardKey.shiftLeft,
+        LogicalKeyboardKey.altLeft,
+        LogicalKeyboardKey.controlLeft,
+        LogicalKeyboardKey.metaLeft,
+        LogicalKeyboardKey.keyA,
+      }));
+    });
+
+    testWidgets(
+      'RawKeyboard asserts if no keys are in keysPressed after receiving a key down event',
+      (WidgetTester tester) async {
+        final Map<String, dynamic> keyEventMessage;
+        if (kIsWeb) {
+          keyEventMessage = const <String, dynamic>{
+            'type': 'keydown',
+            'keymap': 'web',
+            'code': 'ShiftLeft', // Left shift code
+            'metaState': 0x0, // No shift key metaState set!
+          };
+        } else {
+          keyEventMessage = const <String, dynamic>{
+            'type': 'keydown',
+            'keymap': 'windows',
+            'keyCode': 16, // Left shift key keyCode
+            'characterCodePoint': 0,
+            'scanCode': 42,
+            'modifiers': 0x0, // No shift key metaState set!
+          };
+        }
+
+        expect(
+          () async {
+            await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
+              SystemChannels.keyEvent.name,
+              SystemChannels.keyEvent.codec.encodeMessage(keyEventMessage),
+              (ByteData? data) {},
+            );
           },
-        ),
-      );
-    });
-
-    testWidgets('RawKeyboard asserts if no keys are in keysPressed after receiving a key down event', (WidgetTester tester) async {
-      final Map<String, dynamic> keyEventMessage;
-      if (kIsWeb) {
-        keyEventMessage = const <String, dynamic>{
-          'type': 'keydown',
-          'keymap': 'web',
-          'code': 'ShiftLeft', // Left shift code
-          'metaState': 0x0, // No shift key metaState set!
-        };
-      } else {
-        keyEventMessage = const <String, dynamic>{
-          'type': 'keydown',
-          'keymap': 'windows',
-          'keyCode': 16, // Left shift key keyCode
-          'characterCodePoint': 0,
-          'scanCode': 42,
-          'modifiers': 0x0, // No shift key metaState set!
-        };
-      }
-
-      expect(
-        () async {
-          await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
-            SystemChannels.keyEvent.name,
-            SystemChannels.keyEvent.codec.encodeMessage(keyEventMessage),
-            (ByteData? data) { },
-          );
-        },
-        throwsA(isA<AssertionError>().having(
-          (AssertionError error) => error.toString(),
-          '.toString()',
-          contains('Attempted to send a key down event when no keys are in keysPressed'),
-        )),
-      );
-    });
+          throwsA(isA<AssertionError>().having(
+            (AssertionError error) => error.toString(),
+            '.toString()',
+            contains('Attempted to send a key down event when no keys are in keysPressed'),
+          )),
+        );
+      },
+    );
 
     testWidgets('Allows inconsistent modifier for iOS', (WidgetTester _) async {
       // Use `testWidgets` for clean-ups.
@@ -850,7 +679,7 @@ void main() {
           'charactersIgnoringModifiers': '',
           'modifiers': 0,
         }),
-        (ByteData? data) { },
+        (ByteData? data) {},
       );
 
       expect(events, hasLength(1));
@@ -881,7 +710,7 @@ void main() {
           'source': 0x101,
           'deviceId': 1,
         }),
-        (ByteData? data) { },
+        (ByteData? data) {},
       );
 
       expect(events, hasLength(1));
@@ -910,7 +739,7 @@ void main() {
           'metaState': 0,
           'keyCode': 225,
         }),
-        (ByteData? data) { },
+        (ByteData? data) {},
       );
 
       expect(events, hasLength(1));
@@ -939,7 +768,7 @@ void main() {
           'metaState': 0,
           'keyCode': 225,
         }),
-        (ByteData? data) { },
+        (ByteData? data) {},
       );
 
       expect(events, hasLength(1));
@@ -954,21 +783,18 @@ void main() {
       final FocusNode focusNode = FocusNode();
       final List<int> logs = <int>[];
 
-      await tester.pumpWidget(
-        RawKeyboardListener(
-          autofocus: true,
-          focusNode: focusNode,
-          child: Container(),
-          onKey: (RawKeyEvent event) {
-            logs.add(1);
-          },
-        ),
-      );
+      await tester.pumpWidget(RawKeyboardListener(
+        autofocus: true,
+        focusNode: focusNode,
+        child: Container(),
+        onKey: (RawKeyEvent event) {
+          logs.add(1);
+        },
+      ));
 
       // Only the Service binding handler.
 
-      expect(await simulateKeyDownEvent(LogicalKeyboardKey.keyA),
-        false);
+      expect(await simulateKeyDownEvent(LogicalKeyboardKey.keyA), false);
       expect(logs, <int>[1]);
       logs.clear();
 
@@ -977,10 +803,10 @@ void main() {
       void handler2(RawKeyEvent event) {
         logs.add(2);
       }
+
       RawKeyboard.instance.addListener(handler2);
 
-      expect(await simulateKeyUpEvent(LogicalKeyboardKey.keyA),
-        false);
+      expect(await simulateKeyUpEvent(LogicalKeyboardKey.keyA), false);
       expect(logs, <int>[1, 2]);
       logs.clear();
 
@@ -989,10 +815,10 @@ void main() {
       void handler3(RawKeyEvent event) {
         logs.add(3);
       }
+
       RawKeyboard.instance.addListener(handler3);
 
-      expect(await simulateKeyDownEvent(LogicalKeyboardKey.keyA),
-        false);
+      expect(await simulateKeyDownEvent(LogicalKeyboardKey.keyA), false);
       expect(logs, <int>[1, 2, 3]);
       logs.clear();
 
@@ -1000,16 +826,14 @@ void main() {
 
       RawKeyboard.instance.addListener(handler2);
 
-      expect(await simulateKeyUpEvent(LogicalKeyboardKey.keyA),
-        false);
+      expect(await simulateKeyUpEvent(LogicalKeyboardKey.keyA), false);
       expect(logs, <int>[1, 2, 3, 2]);
       logs.clear();
 
       // Remove handler2 once.
 
       RawKeyboard.instance.removeListener(handler2);
-      expect(await simulateKeyDownEvent(LogicalKeyboardKey.keyA),
-        false);
+      expect(await simulateKeyDownEvent(LogicalKeyboardKey.keyA), false);
       expect(logs, <int>[1, 3, 2]);
       logs.clear();
     }, variant: KeySimulatorTransitModeVariant.all());
@@ -1028,7 +852,7 @@ void main() {
         () => simulateKeyDownEvent(LogicalKeyboardKey.keyA),
         onError: (FlutterErrorDetails details) {
           record = details;
-        }
+        },
       );
 
       // ... the error should be caught.
@@ -1047,7 +871,7 @@ void main() {
         () => simulateKeyUpEvent(LogicalKeyboardKey.keyA),
         onError: (FlutterErrorDetails details) {
           record = details;
-        }
+        },
       );
       // If the previous state (key down) wasn't recorded, this key up event will
       // trigger assertions.
@@ -1057,16 +881,24 @@ void main() {
 
   group('RawKeyEventDataAndroid', () {
     const Map<int, _ModifierCheck> modifierTests = <int, _ModifierCheck>{
-      RawKeyEventDataAndroid.modifierAlt | RawKeyEventDataAndroid.modifierLeftAlt: _ModifierCheck(ModifierKey.altModifier, KeyboardSide.left),
-      RawKeyEventDataAndroid.modifierAlt | RawKeyEventDataAndroid.modifierRightAlt: _ModifierCheck(ModifierKey.altModifier, KeyboardSide.right),
-      RawKeyEventDataAndroid.modifierShift | RawKeyEventDataAndroid.modifierLeftShift: _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.left),
-      RawKeyEventDataAndroid.modifierShift | RawKeyEventDataAndroid.modifierRightShift: _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.right),
+      RawKeyEventDataAndroid.modifierAlt | RawKeyEventDataAndroid.modifierLeftAlt:
+          _ModifierCheck(ModifierKey.altModifier, KeyboardSide.left),
+      RawKeyEventDataAndroid.modifierAlt | RawKeyEventDataAndroid.modifierRightAlt:
+          _ModifierCheck(ModifierKey.altModifier, KeyboardSide.right),
+      RawKeyEventDataAndroid.modifierShift | RawKeyEventDataAndroid.modifierLeftShift:
+          _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.left),
+      RawKeyEventDataAndroid.modifierShift | RawKeyEventDataAndroid.modifierRightShift:
+          _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.right),
       RawKeyEventDataAndroid.modifierSym: _ModifierCheck(ModifierKey.symbolModifier, KeyboardSide.all),
       RawKeyEventDataAndroid.modifierFunction: _ModifierCheck(ModifierKey.functionModifier, KeyboardSide.all),
-      RawKeyEventDataAndroid.modifierControl | RawKeyEventDataAndroid.modifierLeftControl: _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.left),
-      RawKeyEventDataAndroid.modifierControl | RawKeyEventDataAndroid.modifierRightControl: _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.right),
-      RawKeyEventDataAndroid.modifierMeta | RawKeyEventDataAndroid.modifierLeftMeta: _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.left),
-      RawKeyEventDataAndroid.modifierMeta | RawKeyEventDataAndroid.modifierRightMeta: _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.right),
+      RawKeyEventDataAndroid.modifierControl | RawKeyEventDataAndroid.modifierLeftControl:
+          _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.left),
+      RawKeyEventDataAndroid.modifierControl | RawKeyEventDataAndroid.modifierRightControl:
+          _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.right),
+      RawKeyEventDataAndroid.modifierMeta | RawKeyEventDataAndroid.modifierLeftMeta:
+          _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.left),
+      RawKeyEventDataAndroid.modifierMeta | RawKeyEventDataAndroid.modifierRightMeta:
+          _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.right),
       RawKeyEventDataAndroid.modifierCapsLock: _ModifierCheck(ModifierKey.capsLockModifier, KeyboardSide.all),
       RawKeyEventDataAndroid.modifierNumLock: _ModifierCheck(ModifierKey.numLockModifier, KeyboardSide.all),
       RawKeyEventDataAndroid.modifierScrollLock: _ModifierCheck(ModifierKey.scrollLockModifier, KeyboardSide.all),
@@ -1291,10 +1123,7 @@ void main() {
     testWidgets('Key events are responded to correctly.', (WidgetTester tester) async {
       expect(RawKeyboard.instance.keysPressed, isEmpty);
       // Generate the data for a regular key down event.
-      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(
-        LogicalKeyboardKey.keyA,
-        platform: 'android',
-      );
+      final Map<String, dynamic> data = KeyEventSimulator.getKeyData(LogicalKeyboardKey.keyA, platform: 'android');
       Map<String, Object?>? message;
       await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         SystemChannels.keyEvent.name,
@@ -1303,20 +1132,18 @@ void main() {
           message = SystemChannels.keyEvent.codec.decodeMessage(data) as Map<String, Object?>?;
         },
       );
-      expect(message, equals(<String, Object?>{ 'handled': false }));
+      expect(message, equals(<String, Object?>{'handled': false}));
       message = null;
 
       // Set up a widget that will receive focused text events.
       final FocusNode focusNode = FocusNode(debugLabel: 'Test Node');
-      await tester.pumpWidget(
-        Focus(
-          focusNode: focusNode,
-          onKey: (FocusNode node, RawKeyEvent event) {
-            return KeyEventResult.handled; // handle all events.
-          },
-          child: const SizedBox(),
-        ),
-      );
+      await tester.pumpWidget(Focus(
+        focusNode: focusNode,
+        onKey: (FocusNode node, RawKeyEvent event) {
+          return KeyEventResult.handled; // handle all events.
+        },
+        child: const SizedBox(),
+      ));
       focusNode.requestFocus();
       await tester.pump();
 
@@ -1327,59 +1154,64 @@ void main() {
           message = SystemChannels.keyEvent.codec.decodeMessage(data) as Map<String, Object?>?;
         },
       );
-      expect(message, equals(<String, Object?>{ 'handled': true }));
+      expect(message, equals(<String, Object?>{'handled': true}));
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(SystemChannels.keyEvent.name, null);
     });
 
     test('data.toString', () {
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'android',
-        'keyCode': 29,
-        'plainCodePoint': 97,
-        'codePoint': 65,
-        'character': 'A',
-        'scanCode': 30,
-        'metaState': 0x0,
-        'source': 0x101, // Keyboard source.
-        'repeatCount': 42,
-      }).data.toString(), equalsIgnoringHashCodes(
-        'RawKeyEventDataAndroid#00000('
-        'flags: 0, codePoint: 65, plainCodePoint: 97, keyCode: 29, '
-        'scanCode: 30, metaState: 0)'));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'android',
+          'keyCode': 29,
+          'plainCodePoint': 97,
+          'codePoint': 65,
+          'character': 'A',
+          'scanCode': 30,
+          'metaState': 0x0,
+          'source': 0x101, // Keyboard source.
+          'repeatCount': 42,
+        }).data.toString(),
+        equalsIgnoringHashCodes(
+          'RawKeyEventDataAndroid#00000('
+          'flags: 0, codePoint: 65, plainCodePoint: 97, keyCode: 29, '
+          'scanCode: 30, metaState: 0)',
+        ),
+      );
     });
 
     test('data.equality', () {
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'android',
-        'keyCode': 29,
-        'plainCodePoint': 97,
-        'codePoint': 65,
-        'character': 'A',
-        'scanCode': 30,
-        'metaState': 0x0,
-        'source': 0x101, // Keyboard source.
-        'repeatCount': 42,
-      }).data, const RawKeyEventDataAndroid(
-        codePoint: 65,
-        plainCodePoint: 97,
-        keyCode: 29,
-        scanCode: 30,
-      ));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'android',
+          'keyCode': 29,
+          'plainCodePoint': 97,
+          'codePoint': 65,
+          'character': 'A',
+          'scanCode': 30,
+          'metaState': 0x0,
+          'source': 0x101, // Keyboard source.
+          'repeatCount': 42,
+        }).data,
+        const RawKeyEventDataAndroid(codePoint: 65, plainCodePoint: 97, keyCode: 29, scanCode: 30),
+      );
 
-      expect(RawKeyEvent.fromMessage(const <String, dynamic>{
-        'type': 'keydown',
-        'keymap': 'android',
-        'keyCode': 29,
-        'plainCodePoint': 97,
-        'codePoint': 65,
-        'character': 'A',
-        'scanCode': 30,
-        'metaState': 0x0,
-        'source': 0x101, // Keyboard source.
-        'repeatCount': 42,
-      }).data, isNot(equals(const RawKeyEventDataAndroid())));
+      expect(
+        RawKeyEvent.fromMessage(const <String, dynamic>{
+          'type': 'keydown',
+          'keymap': 'android',
+          'keyCode': 29,
+          'plainCodePoint': 97,
+          'codePoint': 65,
+          'character': 'A',
+          'scanCode': 30,
+          'metaState': 0x0,
+          'source': 0x101, // Keyboard source.
+          'repeatCount': 42,
+        }).data,
+        isNot(equals(const RawKeyEventDataAndroid())),
+      );
     });
   }, skip: isBrowser); // [intended] This is an Android-specific group.
 
@@ -1501,52 +1333,64 @@ void main() {
     });
 
     test('data.toString', () {
-      expect(RawKeyEvent.fromMessage(const <String, dynamic>{
-        'type': 'keydown',
-        'keymap': 'fuchsia',
-        'hidUsage': 0x00070004,
-        'codePoint': 97,
-        'character': 'a',
-        'modifiers': 0x10,
-      }).data.toString(), equalsIgnoringHashCodes(
-        'RawKeyEventDataFuchsia#00000(hidUsage: 458756, codePoint: 97, modifiers: 16)'));
+      expect(
+        RawKeyEvent.fromMessage(const <String, dynamic>{
+          'type': 'keydown',
+          'keymap': 'fuchsia',
+          'hidUsage': 0x00070004,
+          'codePoint': 97,
+          'character': 'a',
+          'modifiers': 0x10,
+        }).data.toString(),
+        equalsIgnoringHashCodes('RawKeyEventDataFuchsia#00000(hidUsage: 458756, codePoint: 97, modifiers: 16)'),
+      );
     });
 
     test('data.equality', () {
-      expect(RawKeyEvent.fromMessage(const <String, dynamic>{
-        'type': 'keydown',
-        'keymap': 'fuchsia',
-        'hidUsage': 0x00070004,
-        'codePoint': 97,
-        'character': 'a',
-        'modifiers': 0x10,
-      }).data, const RawKeyEventDataFuchsia(
-        hidUsage: 0x00070004,
-        codePoint: 97,
-        modifiers: 0x10,
-      ));
+      expect(
+        RawKeyEvent.fromMessage(const <String, dynamic>{
+          'type': 'keydown',
+          'keymap': 'fuchsia',
+          'hidUsage': 0x00070004,
+          'codePoint': 97,
+          'character': 'a',
+          'modifiers': 0x10,
+        }).data,
+        const RawKeyEventDataFuchsia(hidUsage: 0x00070004, codePoint: 97, modifiers: 0x10),
+      );
 
-      expect(RawKeyEvent.fromMessage(const <String, dynamic>{
-        'type': 'keydown',
-        'keymap': 'fuchsia',
-        'hidUsage': 0x00070004,
-        'codePoint': 97,
-        'character': 'a',
-        'modifiers': 0x10,
-      }).data, isNot(equals(const RawKeyEventDataFuchsia())));
+      expect(
+        RawKeyEvent.fromMessage(const <String, dynamic>{
+          'type': 'keydown',
+          'keymap': 'fuchsia',
+          'hidUsage': 0x00070004,
+          'codePoint': 97,
+          'character': 'a',
+          'modifiers': 0x10,
+        }).data,
+        isNot(equals(const RawKeyEventDataFuchsia())),
+      );
     });
   }, skip: isBrowser); // [intended] This is a Fuchsia-specific group.
 
   group('RawKeyEventDataMacOs', () {
     const Map<int, _ModifierCheck> modifierTests = <int, _ModifierCheck>{
-      RawKeyEventDataMacOs.modifierOption | RawKeyEventDataMacOs.modifierLeftOption: _ModifierCheck(ModifierKey.altModifier, KeyboardSide.left),
-      RawKeyEventDataMacOs.modifierOption | RawKeyEventDataMacOs.modifierRightOption: _ModifierCheck(ModifierKey.altModifier, KeyboardSide.right),
-      RawKeyEventDataMacOs.modifierShift | RawKeyEventDataMacOs.modifierLeftShift: _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.left),
-      RawKeyEventDataMacOs.modifierShift | RawKeyEventDataMacOs.modifierRightShift: _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.right),
-      RawKeyEventDataMacOs.modifierControl | RawKeyEventDataMacOs.modifierLeftControl: _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.left),
-      RawKeyEventDataMacOs.modifierControl | RawKeyEventDataMacOs.modifierRightControl: _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.right),
-      RawKeyEventDataMacOs.modifierCommand | RawKeyEventDataMacOs.modifierLeftCommand: _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.left),
-      RawKeyEventDataMacOs.modifierCommand | RawKeyEventDataMacOs.modifierRightCommand: _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.right),
+      RawKeyEventDataMacOs.modifierOption | RawKeyEventDataMacOs.modifierLeftOption:
+          _ModifierCheck(ModifierKey.altModifier, KeyboardSide.left),
+      RawKeyEventDataMacOs.modifierOption | RawKeyEventDataMacOs.modifierRightOption:
+          _ModifierCheck(ModifierKey.altModifier, KeyboardSide.right),
+      RawKeyEventDataMacOs.modifierShift | RawKeyEventDataMacOs.modifierLeftShift:
+          _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.left),
+      RawKeyEventDataMacOs.modifierShift | RawKeyEventDataMacOs.modifierRightShift:
+          _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.right),
+      RawKeyEventDataMacOs.modifierControl | RawKeyEventDataMacOs.modifierLeftControl:
+          _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.left),
+      RawKeyEventDataMacOs.modifierControl | RawKeyEventDataMacOs.modifierRightControl:
+          _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.right),
+      RawKeyEventDataMacOs.modifierCommand | RawKeyEventDataMacOs.modifierLeftCommand:
+          _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.left),
+      RawKeyEventDataMacOs.modifierCommand | RawKeyEventDataMacOs.modifierRightCommand:
+          _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.right),
       RawKeyEventDataMacOs.modifierOption: _ModifierCheck(ModifierKey.altModifier, KeyboardSide.all),
       RawKeyEventDataMacOs.modifierShift: _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.all),
       RawKeyEventDataMacOs.modifierControl: _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.all),
@@ -1728,53 +1572,71 @@ void main() {
     });
 
     test('data.toString', () {
-      expect(RawKeyEvent.fromMessage(const <String, dynamic>{
-        'type': 'keydown',
-        'keymap': 'macos',
-        'keyCode': 0x00000060,
-        'characters': 'A',
-        'charactersIgnoringModifiers': 'a',
-        'modifiers': 0x10,
-      }).data.toString(), equalsIgnoringHashCodes(
-        'RawKeyEventDataMacOs#00000(characters: A, charactersIgnoringModifiers: a, keyCode: 96, modifiers: 16)'));
+      expect(
+        RawKeyEvent.fromMessage(const <String, dynamic>{
+          'type': 'keydown',
+          'keymap': 'macos',
+          'keyCode': 0x00000060,
+          'characters': 'A',
+          'charactersIgnoringModifiers': 'a',
+          'modifiers': 0x10,
+        }).data.toString(),
+        equalsIgnoringHashCodes(
+          'RawKeyEventDataMacOs#00000(characters: A, charactersIgnoringModifiers: a, keyCode: 96, modifiers: 16)',
+        ),
+      );
     });
 
     test('data.equality', () {
-      expect(RawKeyEvent.fromMessage(const <String, dynamic>{
-        'type': 'keydown',
-        'keymap': 'macos',
-        'keyCode': 0x00000060,
-        'characters': 'A',
-        'charactersIgnoringModifiers': 'a',
-        'modifiers': 0x10,
-      }).data, const RawKeyEventDataMacOs(
-        keyCode: 0x00000060,
-        characters: 'A',
-        charactersIgnoringModifiers: 'a',
-        modifiers: 0x10,
-      ));
+      expect(
+        RawKeyEvent.fromMessage(const <String, dynamic>{
+          'type': 'keydown',
+          'keymap': 'macos',
+          'keyCode': 0x00000060,
+          'characters': 'A',
+          'charactersIgnoringModifiers': 'a',
+          'modifiers': 0x10,
+        }).data,
+        const RawKeyEventDataMacOs(
+          keyCode: 0x00000060,
+          characters: 'A',
+          charactersIgnoringModifiers: 'a',
+          modifiers: 0x10,
+        ),
+      );
 
-      expect(RawKeyEvent.fromMessage(const <String, dynamic>{
-        'type': 'keydown',
-        'keymap': 'macos',
-        'keyCode': 0x00000060,
-        'characters': 'A',
-        'charactersIgnoringModifiers': 'a',
-        'modifiers': 0x10,
-      }).data, isNot(equals(const RawKeyEventDataMacOs())));
+      expect(
+        RawKeyEvent.fromMessage(const <String, dynamic>{
+          'type': 'keydown',
+          'keymap': 'macos',
+          'keyCode': 0x00000060,
+          'characters': 'A',
+          'charactersIgnoringModifiers': 'a',
+          'modifiers': 0x10,
+        }).data,
+        isNot(equals(const RawKeyEventDataMacOs())),
+      );
     });
   }, skip: isBrowser); // [intended] This is a macOS-specific group.
 
   group('RawKeyEventDataIos', () {
     const Map<int, _ModifierCheck> modifierTests = <int, _ModifierCheck>{
-      RawKeyEventDataIos.modifierOption | RawKeyEventDataIos.modifierLeftOption: _ModifierCheck(ModifierKey.altModifier, KeyboardSide.left),
-      RawKeyEventDataIos.modifierOption | RawKeyEventDataIos.modifierRightOption: _ModifierCheck(ModifierKey.altModifier, KeyboardSide.right),
-      RawKeyEventDataIos.modifierShift | RawKeyEventDataIos.modifierLeftShift: _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.left),
-      RawKeyEventDataIos.modifierShift | RawKeyEventDataIos.modifierRightShift: _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.right),
-      RawKeyEventDataIos.modifierControl | RawKeyEventDataIos.modifierLeftControl: _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.left),
-      RawKeyEventDataIos.modifierControl | RawKeyEventDataIos.modifierRightControl: _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.right),
-      RawKeyEventDataIos.modifierCommand | RawKeyEventDataIos.modifierLeftCommand: _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.left),
-      RawKeyEventDataIos.modifierCommand | RawKeyEventDataIos.modifierRightCommand: _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.right),
+      RawKeyEventDataIos.modifierOption | RawKeyEventDataIos.modifierLeftOption:
+          _ModifierCheck(ModifierKey.altModifier, KeyboardSide.left),
+      RawKeyEventDataIos.modifierOption | RawKeyEventDataIos.modifierRightOption:
+          _ModifierCheck(ModifierKey.altModifier, KeyboardSide.right),
+      RawKeyEventDataIos.modifierShift | RawKeyEventDataIos.modifierLeftShift:
+          _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.left),
+      RawKeyEventDataIos.modifierShift | RawKeyEventDataIos.modifierRightShift:
+          _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.right),
+      RawKeyEventDataIos.modifierControl | RawKeyEventDataIos.modifierLeftControl:
+          _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.left),
+      RawKeyEventDataIos.modifierControl | RawKeyEventDataIos.modifierRightControl:
+          _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.right),
+      RawKeyEventDataIos.modifierCommand | RawKeyEventDataIos.modifierLeftCommand:
+          _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.left),
+      RawKeyEventDataIos.modifierCommand | RawKeyEventDataIos.modifierRightCommand:
+          _ModifierCheck(ModifierKey.metaModifier, KeyboardSide.right),
       RawKeyEventDataIos.modifierOption: _ModifierCheck(ModifierKey.altModifier, KeyboardSide.all),
       RawKeyEventDataIos.modifierShift: _ModifierCheck(ModifierKey.shiftModifier, KeyboardSide.all),
       RawKeyEventDataIos.modifierControl: _ModifierCheck(ModifierKey.controlModifier, KeyboardSide.all),
@@ -1913,40 +1775,50 @@ void main() {
     });
 
     test('data.toString', () {
-      expect(RawKeyEvent.fromMessage(const <String, dynamic>{
-        'type': 'keydown',
-        'keymap': 'ios',
-        'keyCode': 0x00000004,
-        'characters': 'A',
-        'charactersIgnoringModifiers': 'a',
-        'modifiers': 0x10,
-      }).data.toString(), equalsIgnoringHashCodes(
-        'RawKeyEventDataIos#00000(characters: A, charactersIgnoringModifiers: a, keyCode: 4, modifiers: 16)'));
+      expect(
+        RawKeyEvent.fromMessage(const <String, dynamic>{
+          'type': 'keydown',
+          'keymap': 'ios',
+          'keyCode': 0x00000004,
+          'characters': 'A',
+          'charactersIgnoringModifiers': 'a',
+          'modifiers': 0x10,
+        }).data.toString(),
+        equalsIgnoringHashCodes(
+          'RawKeyEventDataIos#00000(characters: A, charactersIgnoringModifiers: a, keyCode: 4, modifiers: 16)',
+        ),
+      );
     });
 
     test('data.equality', () {
-      expect(RawKeyEvent.fromMessage(const <String, dynamic>{
-        'type': 'keydown',
-        'keymap': 'ios',
-        'keyCode': 0x00000004,
-        'characters': 'A',
-        'charactersIgnoringModifiers': 'a',
-        'modifiers': 0x10,
-      }).data, const RawKeyEventDataIos(
-        keyCode: 0x00000004,
-        characters: 'A',
-        charactersIgnoringModifiers: 'a',
-        modifiers: 0x10,
-      ));
+      expect(
+        RawKeyEvent.fromMessage(const <String, dynamic>{
+          'type': 'keydown',
+          'keymap': 'ios',
+          'keyCode': 0x00000004,
+          'characters': 'A',
+          'charactersIgnoringModifiers': 'a',
+          'modifiers': 0x10,
+        }).data,
+        const RawKeyEventDataIos(
+          keyCode: 0x00000004,
+          characters: 'A',
+          charactersIgnoringModifiers: 'a',
+          modifiers: 0x10,
+        ),
+      );
 
-      expect(RawKeyEvent.fromMessage(const <String, dynamic>{
-        'type': 'keydown',
-        'keymap': 'ios',
-        'keyCode': 0x00000004,
-        'characters': 'A',
-        'charactersIgnoringModifiers': 'a',
-        'modifiers': 0x10,
-      }).data, isNot(equals(const RawKeyEventDataIos())));
+      expect(
+        RawKeyEvent.fromMessage(const <String, dynamic>{
+          'type': 'keydown',
+          'keymap': 'ios',
+          'keyCode': 0x00000004,
+          'characters': 'A',
+          'charactersIgnoringModifiers': 'a',
+          'modifiers': 0x10,
+        }).data,
+        isNot(equals(const RawKeyEventDataIos())),
+      );
     });
   }, skip: isBrowser); // [intended] This is an iOS-specific group.
 
@@ -2074,7 +1946,7 @@ void main() {
         'type': 'keydown',
         'keymap': 'windows',
         'keyCode': 160, // keyCode for left shift.
-        'scanCode': 0x0000002a,  // scanCode for left shift.
+        'scanCode': 0x0000002a, // scanCode for left shift.
         'characterCodePoint': 0,
         'modifiers': RawKeyEventDataWindows.modifierLeftShift,
       });
@@ -2099,7 +1971,7 @@ void main() {
     });
 
     testWidgets('Win32 VK_PROCESSKEY events are skipped', (WidgetTester tester) async {
-      const  String platform = 'windows';
+      const String platform = 'windows';
       bool lastHandled = true;
       final List<RawKeyEvent> events = <RawKeyEvent>[];
 
@@ -2111,10 +1983,7 @@ void main() {
           return KeyEventResult.ignored;
         },
       );
-      await tester.pumpWidget(RawKeyboardListener(
-        focusNode: node,
-        child: Container(),
-      ));
+      await tester.pumpWidget(RawKeyboardListener(focusNode: node, child: Container()));
       node.requestFocus();
       await tester.pumpAndSettle();
 
@@ -2136,7 +2005,8 @@ void main() {
             'modifiers': 0,
           }),
           (ByteData? data) {
-            final Map<String, Object?> decoded = SystemChannels.keyEvent.codec.decodeMessage(data)! as Map<String, Object?>;
+            final Map<String, Object?> decoded =
+                SystemChannels.keyEvent.codec.decodeMessage(data)! as Map<String, Object?>;
             lastHandled = decoded['handled']! as bool;
           },
         );
@@ -2153,40 +2023,45 @@ void main() {
     }, variant: KeySimulatorTransitModeVariant.keyDataThenRawKeyData());
 
     test('data.toString', () {
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'windows',
-        'keyCode': 0x00000010,
-        'characterCodePoint': 10,
-        'scanCode': 0x0000001e,
-        'modifiers': 0x20,
-      }).data.toString(), equalsIgnoringHashCodes(
-        'RawKeyEventDataWindows#00000(keyCode: 16, scanCode: 30, characterCodePoint: 10, modifiers: 32)'));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'windows',
+          'keyCode': 0x00000010,
+          'characterCodePoint': 10,
+          'scanCode': 0x0000001e,
+          'modifiers': 0x20,
+        }).data.toString(),
+        equalsIgnoringHashCodes(
+          'RawKeyEventDataWindows#00000(keyCode: 16, scanCode: 30, characterCodePoint: 10, modifiers: 32)',
+        ),
+      );
     });
 
     test('data.equality', () {
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'windows',
-        'keyCode': 0x00000010,
-        'characterCodePoint': 10,
-        'scanCode': 0x0000001e,
-        'modifiers': 0x20,
-      }).data, const RawKeyEventDataWindows(
-        keyCode: 0x00000010,
-        scanCode: 0x1e,
-        modifiers: 0x20,
-        characterCodePoint: 10,
-      ));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'windows',
+          'keyCode': 0x00000010,
+          'characterCodePoint': 10,
+          'scanCode': 0x0000001e,
+          'modifiers': 0x20,
+        }).data,
+        const RawKeyEventDataWindows(keyCode: 0x00000010, scanCode: 0x1e, modifiers: 0x20, characterCodePoint: 10),
+      );
 
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'windows',
-        'keyCode': 0x00000010,
-        'characterCodePoint': 10,
-        'scanCode': 0x0000001e,
-        'modifiers': 0x20,
-      }).data, isNot(equals(const RawKeyEventDataWindows())));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'windows',
+          'keyCode': 0x00000010,
+          'characterCodePoint': 10,
+          'scanCode': 0x0000001e,
+          'modifiers': 0x20,
+        }).data,
+        isNot(equals(const RawKeyEventDataWindows())),
+      );
     });
   }, skip: isBrowser); // [intended] This is a Windows-specific group.
 
@@ -2240,14 +2115,16 @@ void main() {
                 expect(
                   data.isModifierPressed(key, side: modifierTests[modifier]!.side),
                   isDown ? isTrue : isFalse,
-                  reason: "${isLeft ? 'left' : 'right'} $key ${isDown ? 'should' : 'should not'} be pressed with metaState $modifier, when key is ${isDown ? 'down' : 'up'}, but isn't.",
+                  reason:
+                      "${isLeft ? 'left' : 'right'} $key ${isDown ? 'should' : 'should not'} be pressed with metaState $modifier, when key is ${isDown ? 'down' : 'up'}, but isn't.",
                 );
                 expect(data.getModifierSide(key), equals(modifierTests[modifier]!.side));
               } else {
                 expect(
                   data.isModifierPressed(key, side: modifierTests[modifier]!.side),
                   isFalse,
-                  reason: "${isLeft ? 'left' : 'right'} $key should not be pressed with metaState $modifier, when key is ${isDown ? 'down' : 'up'}, but is.",
+                  reason:
+                      "${isLeft ? 'left' : 'right'} $key should not be pressed with metaState $modifier, when key is ${isDown ? 'down' : 'up'}, but is.",
                 );
               }
             }
@@ -2378,47 +2255,55 @@ void main() {
     });
 
     test('data.toString', () {
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'linux',
-        'toolkit': 'glfw',
-        'keyCode': 65,
-        'scanCode': 0x00000026,
-        'unicodeScalarValues': 0x10FFFF,
-        'modifiers': 0x10,
-      }).data.toString(), equalsIgnoringHashCodes(
-       'RawKeyEventDataLinux#00000(toolkit: GLFW, unicodeScalarValues: 1114111, scanCode: 38, keyCode: 65, modifiers: 16, isDown: true)'));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'linux',
+          'toolkit': 'glfw',
+          'keyCode': 65,
+          'scanCode': 0x00000026,
+          'unicodeScalarValues': 0x10FFFF,
+          'modifiers': 0x10,
+        }).data.toString(),
+        equalsIgnoringHashCodes(
+          'RawKeyEventDataLinux#00000(toolkit: GLFW, unicodeScalarValues: 1114111, scanCode: 38, keyCode: 65, modifiers: 16, isDown: true)',
+        ),
+      );
     });
 
     test('data.equality', () {
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'linux',
-        'toolkit': 'glfw',
-        'keyCode': 65,
-        'scanCode': 0x00000026,
-        'unicodeScalarValues': 0x10FFFF,
-        'modifiers': 0x10,
-      }).data, RawKeyEventDataLinux(
-        keyHelper: KeyHelper('glfw'),
-        unicodeScalarValues: 0x10FFFF,
-        keyCode: 65,
-        scanCode: 0x26,
-        modifiers: 0x10,
-        isDown: true,
-      ));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'linux',
+          'toolkit': 'glfw',
+          'keyCode': 65,
+          'scanCode': 0x00000026,
+          'unicodeScalarValues': 0x10FFFF,
+          'modifiers': 0x10,
+        }).data,
+        RawKeyEventDataLinux(
+          keyHelper: KeyHelper('glfw'),
+          unicodeScalarValues: 0x10FFFF,
+          keyCode: 65,
+          scanCode: 0x26,
+          modifiers: 0x10,
+          isDown: true,
+        ),
+      );
 
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'linux',
-        'toolkit': 'glfw',
-        'keyCode': 65,
-        'scanCode': 0x00000026,
-        'unicodeScalarValues': 0x10FFFF,
-        'modifiers': 0x10,
-      }).data, isNot(equals(RawKeyEventDataLinux(
-        keyHelper: KeyHelper('glfw'), isDown: true)),
-      ));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'linux',
+          'toolkit': 'glfw',
+          'keyCode': 65,
+          'scanCode': 0x00000026,
+          'unicodeScalarValues': 0x10FFFF,
+          'modifiers': 0x10,
+        }).data,
+        isNot(equals(RawKeyEventDataLinux(keyHelper: KeyHelper('glfw'), isDown: true))),
+      );
     });
   }, skip: isBrowser); // [intended] This is a GLFW-specific group.
 
@@ -2472,14 +2357,16 @@ void main() {
                 expect(
                   data.isModifierPressed(key, side: modifierTests[modifier]!.side),
                   isDown ? isTrue : isFalse,
-                  reason: "${isLeft ? 'left' : 'right'} $key ${isDown ? 'should' : 'should not'} be pressed with metaState $modifier, when key is ${isDown ? 'down' : 'up'}, but isn't.",
+                  reason:
+                      "${isLeft ? 'left' : 'right'} $key ${isDown ? 'should' : 'should not'} be pressed with metaState $modifier, when key is ${isDown ? 'down' : 'up'}, but isn't.",
                 );
                 expect(data.getModifierSide(key), equals(modifierTests[modifier]!.side));
               } else {
                 expect(
                   data.isModifierPressed(key, side: modifierTests[modifier]!.side),
                   isFalse,
-                  reason: "${isLeft ? 'left' : 'right'} $key should not be pressed with metaState $modifier, when key is ${isDown ? 'down' : 'up'}, but is.",
+                  reason:
+                      "${isLeft ? 'left' : 'right'} $key should not be pressed with metaState $modifier, when key is ${isDown ? 'down' : 'up'}, but is.",
                 );
               }
             }
@@ -2625,64 +2512,75 @@ void main() {
     });
 
     test('data.toString', () {
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'linux',
-        'toolkit': 'gtk',
-        'keyCode': 65,
-        'scanCode': 0x00000026,
-        'unicodeScalarValues': 113,
-        'modifiers': 0x10,
-      }).data.toString(), equalsIgnoringHashCodes(
-        'RawKeyEventDataLinux#00000(toolkit: GTK, unicodeScalarValues: 113, scanCode: 38, keyCode: 65, modifiers: 16, isDown: true)'));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'linux',
+          'toolkit': 'gtk',
+          'keyCode': 65,
+          'scanCode': 0x00000026,
+          'unicodeScalarValues': 113,
+          'modifiers': 0x10,
+        }).data.toString(),
+        equalsIgnoringHashCodes(
+          'RawKeyEventDataLinux#00000(toolkit: GTK, unicodeScalarValues: 113, scanCode: 38, keyCode: 65, modifiers: 16, isDown: true)',
+        ),
+      );
     });
 
     test('data.equality', () {
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'linux',
-        'toolkit': 'gtk',
-        'keyCode': 65,
-        'scanCode': 0x00000026,
-        'unicodeScalarValues': 113,
-        'modifiers': 0x10,
-      }).data, RawKeyEventDataLinux(
-        keyHelper: KeyHelper('gtk'),
-        unicodeScalarValues: 113,
-        keyCode: 65,
-        scanCode: 0x26,
-        modifiers: 0x10,
-        isDown: true,
-      ));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'linux',
+          'toolkit': 'gtk',
+          'keyCode': 65,
+          'scanCode': 0x00000026,
+          'unicodeScalarValues': 113,
+          'modifiers': 0x10,
+        }).data,
+        RawKeyEventDataLinux(
+          keyHelper: KeyHelper('gtk'),
+          unicodeScalarValues: 113,
+          keyCode: 65,
+          scanCode: 0x26,
+          modifiers: 0x10,
+          isDown: true,
+        ),
+      );
 
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'linux',
-        'toolkit': 'gtk',
-        'keyCode': 65,
-        'scanCode': 0x00000026,
-        'unicodeScalarValues': 113,
-        'modifiers': 0x10,
-      }).data, isNot(equals(RawKeyEventDataLinux(
-        keyHelper: KeyHelper('glfw'),
-        unicodeScalarValues: 113,
-        keyCode: 65,
-        scanCode: 0x26,
-        modifiers: 0x10,
-        isDown: true,
-      ))));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'linux',
+          'toolkit': 'gtk',
+          'keyCode': 65,
+          'scanCode': 0x00000026,
+          'unicodeScalarValues': 113,
+          'modifiers': 0x10,
+        }).data,
+        isNot(equals(RawKeyEventDataLinux(
+          keyHelper: KeyHelper('glfw'),
+          unicodeScalarValues: 113,
+          keyCode: 65,
+          scanCode: 0x26,
+          modifiers: 0x10,
+          isDown: true,
+        ))),
+      );
 
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'linux',
-        'toolkit': 'gtk',
-        'keyCode': 65,
-        'scanCode': 0x00000026,
-        'unicodeScalarValues': 113,
-        'modifiers': 0x10,
-      }).data, isNot(equals(RawKeyEventDataLinux(
-        keyHelper: KeyHelper('gtk'), isDown: true)),
-      ));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'linux',
+          'toolkit': 'gtk',
+          'keyCode': 65,
+          'scanCode': 0x00000026,
+          'unicodeScalarValues': 113,
+          'modifiers': 0x10,
+        }).data,
+        isNot(equals(RawKeyEventDataLinux(keyHelper: KeyHelper('gtk'), isDown: true))),
+      );
     });
   }, skip: isBrowser); // [intended] This is a GTK-specific group.
 
@@ -2697,8 +2595,7 @@ void main() {
       RawKeyEventDataWeb.modifierScrollLock: ModifierKey.scrollLockModifier,
     };
 
-    const Map<String, LogicalKeyboardKey> modifierTestsWithNoLocation =
-        <String, LogicalKeyboardKey>{
+    const Map<String, LogicalKeyboardKey> modifierTestsWithNoLocation = <String, LogicalKeyboardKey>{
       'Alt': LogicalKeyboardKey.altLeft,
       'Shift': LogicalKeyboardKey.shiftLeft,
       'Control': LogicalKeyboardKey.controlLeft,
@@ -2901,55 +2798,63 @@ void main() {
     });
 
     test('data.toString', () {
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'web',
-        'code': 'KeyA',
-        'key': 'a',
-        'location': 2,
-        'metaState': 0x10,
-        'keyCode': 0x41,
-      }).data.toString(), equalsIgnoringHashCodes(
-        'RawKeyEventDataWeb#00000(code: KeyA, key: a, location: 2, metaState: 16, keyCode: 65)'));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'web',
+          'code': 'KeyA',
+          'key': 'a',
+          'location': 2,
+          'metaState': 0x10,
+          'keyCode': 0x41,
+        }).data.toString(),
+        equalsIgnoringHashCodes(
+          'RawKeyEventDataWeb#00000(code: KeyA, key: a, location: 2, metaState: 16, keyCode: 65)',
+        ),
+      );
 
       // Without location
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'web',
-        'code': 'KeyA',
-        'key': 'a',
-        'metaState': 0x10,
-        'keyCode': 0x41,
-      }).data.toString(), equalsIgnoringHashCodes(
-        'RawKeyEventDataWeb#00000(code: KeyA, key: a, location: 0, metaState: 16, keyCode: 65)'));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'web',
+          'code': 'KeyA',
+          'key': 'a',
+          'metaState': 0x10,
+          'keyCode': 0x41,
+        }).data.toString(),
+        equalsIgnoringHashCodes(
+          'RawKeyEventDataWeb#00000(code: KeyA, key: a, location: 0, metaState: 16, keyCode: 65)',
+        ),
+      );
     });
 
     test('data.equality', () {
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'web',
-        'code': 'KeyA',
-        'key': 'a',
-        'location': 2,
-        'metaState': 0x10,
-        'keyCode': 0x41,
-      }).data, const RawKeyEventDataWeb(
-        key: 'a',
-        code: 'KeyA',
-        location: 2,
-        metaState: 0x10,
-        keyCode: 0x41
-      ));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'web',
+          'code': 'KeyA',
+          'key': 'a',
+          'location': 2,
+          'metaState': 0x10,
+          'keyCode': 0x41,
+        }).data,
+        const RawKeyEventDataWeb(key: 'a', code: 'KeyA', location: 2, metaState: 0x10, keyCode: 0x41),
+      );
 
-      expect(RawKeyEvent.fromMessage(const <String, Object?>{
-        'type': 'keydown',
-        'keymap': 'web',
-        'code': 'KeyA',
-        'key': 'a',
-        'location': 2,
-        'metaState': 0x10,
-        'keyCode': 0x41,
-      }).data, isNot(equals(const RawKeyEventDataWeb(code: 'KeyA', key: 'a'))));
+      expect(
+        RawKeyEvent.fromMessage(const <String, Object?>{
+          'type': 'keydown',
+          'keymap': 'web',
+          'code': 'KeyA',
+          'key': 'a',
+          'location': 2,
+          'metaState': 0x10,
+          'keyCode': 0x41,
+        }).data,
+        isNot(equals(const RawKeyEventDataWeb(code: 'KeyA', key: 'a'))),
+      );
     });
   });
 }
@@ -2966,8 +2871,5 @@ Future<void> _runWhileOverridingOnError(AsyncCallback body, {required FlutterExc
 }
 
 Map<String, DiagnosticsNode> _groupDiagnosticsByName(Iterable<DiagnosticsNode> infos) {
-  return Map<String, DiagnosticsNode>.fromIterable(
-    infos,
-    key: (Object? node) => (node! as DiagnosticsNode).name ?? '',
-  );
+  return Map<String, DiagnosticsNode>.fromIterable(infos, key: (Object? node) => (node! as DiagnosticsNode).name ?? '');
 }

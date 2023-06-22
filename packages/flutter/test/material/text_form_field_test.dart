@@ -19,7 +19,10 @@ import '../widgets/editable_text_utils.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final MockClipboard mockClipboard = MockClipboard();
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, mockClipboard.handleMethodCall);
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    SystemChannels.platform,
+    mockClipboard.handleMethodCall,
+  );
 
   setUp(() async {
     // Fill the clipboard so that the Paste option is available in the text
@@ -27,350 +30,280 @@ void main() {
     await Clipboard.setData(const ClipboardData(text: 'Clipboard data'));
   });
 
-  testWidgets('can use the desktop cut/copy/paste buttons on Mac', (WidgetTester tester) async {
-    final TextEditingController controller = TextEditingController(
-      text: 'blah1 blah2',
-    );
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              controller: controller,
-            ),
-          ),
-        ),
-      ),
-    );
+  testWidgets(
+    'can use the desktop cut/copy/paste buttons on Mac',
+    (WidgetTester tester) async {
+      final TextEditingController controller = TextEditingController(text: 'blah1 blah2');
+      await tester.pumpWidget(MaterialApp(home: Material(child: Center(child: TextFormField(controller: controller)))));
 
-    // Initially, the menu is not shown and there is no selection.
-    expect(find.byType(CupertinoButton), findsNothing);
-    expect(controller.selection, const TextSelection(baseOffset: -1, extentOffset: -1));
+      // Initially, the menu is not shown and there is no selection.
+      expect(find.byType(CupertinoButton), findsNothing);
+      expect(controller.selection, const TextSelection(baseOffset: -1, extentOffset: -1));
 
-    final Offset midBlah1 = textOffsetToPosition(tester, 2);
+      final Offset midBlah1 = textOffsetToPosition(tester, 2);
 
-    // Right clicking shows the menu.
-    final TestGesture gesture = await tester.startGesture(
-      midBlah1,
-      kind: PointerDeviceKind.mouse,
-      buttons: kSecondaryMouseButton,
-    );
-    await tester.pump();
-    await gesture.up();
-    await tester.pumpAndSettle();
-    expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
-    expect(find.text('Copy'), findsOneWidget);
-    expect(find.text('Cut'), findsOneWidget);
-    expect(find.text('Paste'), findsOneWidget);
+      // Right clicking shows the menu.
+      final TestGesture gesture =
+          await tester.startGesture(midBlah1, kind: PointerDeviceKind.mouse, buttons: kSecondaryMouseButton);
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
+      expect(find.text('Copy'), findsOneWidget);
+      expect(find.text('Cut'), findsOneWidget);
+      expect(find.text('Paste'), findsOneWidget);
 
-    // Copy the first word.
-    await tester.tap(find.text('Copy'));
-    await tester.pumpAndSettle();
-    expect(controller.text, 'blah1 blah2');
-    expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
-    expect(find.byType(CupertinoButton), findsNothing);
+      // Copy the first word.
+      await tester.tap(find.text('Copy'));
+      await tester.pumpAndSettle();
+      expect(controller.text, 'blah1 blah2');
+      expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
+      expect(find.byType(CupertinoButton), findsNothing);
 
-    // Paste it at the end.
-    await gesture.down(textOffsetToPosition(tester, controller.text.length));
-    await tester.pump();
-    await gesture.up();
-    await tester.pumpAndSettle();
-    expect(controller.selection, const TextSelection.collapsed(offset: 11, affinity: TextAffinity.upstream));
-    expect(find.text('Cut'), findsNothing);
-    expect(find.text('Copy'), findsNothing);
-    expect(find.text('Paste'), findsOneWidget);
-    await tester.tap(find.text('Paste'));
-    await tester.pumpAndSettle();
-    expect(controller.text, 'blah1 blah2blah1');
-    expect(controller.selection, const TextSelection.collapsed(offset: 16));
+      // Paste it at the end.
+      await gesture.down(textOffsetToPosition(tester, controller.text.length));
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(controller.selection, const TextSelection.collapsed(offset: 11, affinity: TextAffinity.upstream));
+      expect(find.text('Cut'), findsNothing);
+      expect(find.text('Copy'), findsNothing);
+      expect(find.text('Paste'), findsOneWidget);
+      await tester.tap(find.text('Paste'));
+      await tester.pumpAndSettle();
+      expect(controller.text, 'blah1 blah2blah1');
+      expect(controller.selection, const TextSelection.collapsed(offset: 16));
 
-    // Cut the first word.
-    await gesture.down(midBlah1);
-    await tester.pump();
-    await gesture.up();
-    await tester.pumpAndSettle();
-    expect(find.text('Cut'), findsOneWidget);
-    expect(find.text('Copy'), findsOneWidget);
-    expect(find.text('Paste'), findsOneWidget);
-    expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
-    await tester.tap(find.text('Cut'));
-    await tester.pumpAndSettle();
-    expect(controller.text, ' blah2blah1');
-    expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 0));
-    expect(find.byType(CupertinoButton), findsNothing);
-  },
-    variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.macOS }),
+      // Cut the first word.
+      await gesture.down(midBlah1);
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(find.text('Cut'), findsOneWidget);
+      expect(find.text('Copy'), findsOneWidget);
+      expect(find.text('Paste'), findsOneWidget);
+      expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
+      await tester.tap(find.text('Cut'));
+      await tester.pumpAndSettle();
+      expect(controller.text, ' blah2blah1');
+      expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 0));
+      expect(find.byType(CupertinoButton), findsNothing);
+    },
+    variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.macOS}),
     skip: kIsWeb, // [intended] we don't supply the cut/copy/paste buttons on the web.
   );
 
-  testWidgets('can use the desktop cut/copy/paste buttons on Windows and Linux', (WidgetTester tester) async {
-    final TextEditingController controller = TextEditingController(
-      text: 'blah1 blah2',
-    );
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              controller: controller,
-            ),
-          ),
-        ),
-      ),
-    );
+  testWidgets(
+    'can use the desktop cut/copy/paste buttons on Windows and Linux',
+    (WidgetTester tester) async {
+      final TextEditingController controller = TextEditingController(text: 'blah1 blah2');
+      await tester.pumpWidget(MaterialApp(home: Material(child: Center(child: TextFormField(controller: controller)))));
 
-    // Initially, the menu is not shown and there is no selection.
-    expect(find.byType(CupertinoButton), findsNothing);
-    expect(controller.selection, const TextSelection(baseOffset: -1, extentOffset: -1));
+      // Initially, the menu is not shown and there is no selection.
+      expect(find.byType(CupertinoButton), findsNothing);
+      expect(controller.selection, const TextSelection(baseOffset: -1, extentOffset: -1));
 
-    final Offset midBlah1 = textOffsetToPosition(tester, 2);
+      final Offset midBlah1 = textOffsetToPosition(tester, 2);
 
-    // Right clicking shows the menu.
-    TestGesture gesture = await tester.startGesture(
-      midBlah1,
-      kind: PointerDeviceKind.mouse,
-      buttons: kSecondaryMouseButton,
-    );
-    await tester.pump();
-    await gesture.up();
-    await gesture.removePointer();
-    await tester.pumpAndSettle();
-    expect(controller.selection, const TextSelection.collapsed(offset: 2));
-    expect(find.text('Cut'), findsNothing);
-    expect(find.text('Copy'), findsNothing);
-    expect(find.text('Paste'), findsOneWidget);
-    expect(find.text('Select all'), findsOneWidget);
+      // Right clicking shows the menu.
+      TestGesture gesture =
+          await tester.startGesture(midBlah1, kind: PointerDeviceKind.mouse, buttons: kSecondaryMouseButton);
+      await tester.pump();
+      await gesture.up();
+      await gesture.removePointer();
+      await tester.pumpAndSettle();
+      expect(controller.selection, const TextSelection.collapsed(offset: 2));
+      expect(find.text('Cut'), findsNothing);
+      expect(find.text('Copy'), findsNothing);
+      expect(find.text('Paste'), findsOneWidget);
+      expect(find.text('Select all'), findsOneWidget);
 
-    // Double tap to select the first word, then right click to show the menu.
-    final Offset startBlah1 = textOffsetToPosition(tester, 0);
-    gesture = await tester.startGesture(
-      startBlah1,
-      kind: PointerDeviceKind.mouse,
-    );
-    await tester.pump();
-    await gesture.up();
-    await tester.pump(const Duration(milliseconds: 100));
-    await gesture.down(startBlah1);
-    await tester.pump();
-    await gesture.up();
-    await gesture.removePointer();
-    await tester.pumpAndSettle();
-    expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
-    expect(find.text('Cut'), findsNothing);
-    expect(find.text('Copy'), findsNothing);
-    expect(find.text('Paste'), findsNothing);
-    expect(find.text('Select all'), findsNothing);
-    gesture = await tester.startGesture(
-      midBlah1,
-      kind: PointerDeviceKind.mouse,
-      buttons: kSecondaryMouseButton,
-    );
-    await tester.pump();
-    await gesture.up();
-    await gesture.removePointer();
-    await tester.pumpAndSettle();
-    expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
-    expect(find.text('Cut'), findsOneWidget);
-    expect(find.text('Copy'), findsOneWidget);
-    expect(find.text('Paste'), findsOneWidget);
+      // Double tap to select the first word, then right click to show the menu.
+      final Offset startBlah1 = textOffsetToPosition(tester, 0);
+      gesture = await tester.startGesture(startBlah1, kind: PointerDeviceKind.mouse);
+      await tester.pump();
+      await gesture.up();
+      await tester.pump(const Duration(milliseconds: 100));
+      await gesture.down(startBlah1);
+      await tester.pump();
+      await gesture.up();
+      await gesture.removePointer();
+      await tester.pumpAndSettle();
+      expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
+      expect(find.text('Cut'), findsNothing);
+      expect(find.text('Copy'), findsNothing);
+      expect(find.text('Paste'), findsNothing);
+      expect(find.text('Select all'), findsNothing);
+      gesture = await tester.startGesture(midBlah1, kind: PointerDeviceKind.mouse, buttons: kSecondaryMouseButton);
+      await tester.pump();
+      await gesture.up();
+      await gesture.removePointer();
+      await tester.pumpAndSettle();
+      expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
+      expect(find.text('Cut'), findsOneWidget);
+      expect(find.text('Copy'), findsOneWidget);
+      expect(find.text('Paste'), findsOneWidget);
 
-    // Copy the first word.
-    await tester.tap(find.text('Copy'));
-    await tester.pumpAndSettle();
-    expect(controller.text, 'blah1 blah2');
-    expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
-    expect(find.byType(CupertinoButton), findsNothing);
+      // Copy the first word.
+      await tester.tap(find.text('Copy'));
+      await tester.pumpAndSettle();
+      expect(controller.text, 'blah1 blah2');
+      expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
+      expect(find.byType(CupertinoButton), findsNothing);
 
-    // Paste it at the end.
-    gesture = await tester.startGesture(
-      textOffsetToPosition(tester, controller.text.length),
-      kind: PointerDeviceKind.mouse,
-    );
-    await tester.pump();
-    await gesture.up();
-    await gesture.removePointer();
-    expect(controller.selection, const TextSelection.collapsed(offset: 11, affinity: TextAffinity.upstream));
-    gesture = await tester.startGesture(
-      textOffsetToPosition(tester, controller.text.length),
-      kind: PointerDeviceKind.mouse,
-      buttons: kSecondaryMouseButton,
-    );
-    await tester.pump();
-    await gesture.up();
-    await gesture.removePointer();
-    await tester.pumpAndSettle();
-    expect(controller.selection, const TextSelection.collapsed(offset: 11, affinity: TextAffinity.upstream));
-    expect(find.text('Cut'), findsNothing);
-    expect(find.text('Copy'), findsNothing);
-    expect(find.text('Paste'), findsOneWidget);
-    await tester.tap(find.text('Paste'));
-    await tester.pumpAndSettle();
-    expect(controller.text, 'blah1 blah2blah1');
-    expect(controller.selection, const TextSelection.collapsed(offset: 16));
-
-    // Cut the first word.
-    gesture = await tester.startGesture(
-      midBlah1,
-      kind: PointerDeviceKind.mouse,
-    );
-    await tester.pump();
-    await gesture.up();
-    await tester.pump(const Duration(milliseconds: 100));
-    await gesture.down(startBlah1);
-    await tester.pump();
-    await gesture.up();
-    await gesture.removePointer();
-    await tester.pumpAndSettle();
-    expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
-    expect(find.text('Cut'), findsNothing);
-    expect(find.text('Copy'), findsNothing);
-    expect(find.text('Paste'), findsNothing);
-    expect(find.text('Select all'), findsNothing);
-    gesture = await tester.startGesture(
-      textOffsetToPosition(tester, controller.text.length),
-      kind: PointerDeviceKind.mouse,
-      buttons: kSecondaryMouseButton,
-    );
-    await tester.pump();
-    await gesture.up();
-    await gesture.removePointer();
-    await tester.pumpAndSettle();
-    expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
-    expect(find.text('Cut'), findsOneWidget);
-    expect(find.text('Copy'), findsOneWidget);
-    expect(find.text('Paste'), findsOneWidget);
-    await tester.tap(find.text('Cut'));
-    await tester.pumpAndSettle();
-    expect(controller.text, ' blah2blah1');
-    expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 0));
-    expect(find.byType(CupertinoButton), findsNothing);
-  },
-    variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.linux, TargetPlatform.windows }),
-    skip: kIsWeb, // [intended] we don't supply the cut/copy/paste buttons on the web.
-  );
-
-  testWidgets('the desktop cut/copy/paste buttons are disabled for read-only obscured form fields', (WidgetTester tester) async {
-    final TextEditingController controller = TextEditingController(
-      text: 'blah1 blah2',
-    );
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              readOnly: true,
-              obscureText: true,
-              controller: controller,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    // Initially, the menu is not shown and there is no selection.
-    expect(find.byType(CupertinoButton), findsNothing);
-    const TextSelection invalidSelection = TextSelection(baseOffset: -1, extentOffset: -1);
-    expect(controller.selection, invalidSelection);
-
-    final Offset midBlah1 = textOffsetToPosition(tester, 2);
-
-    // Right clicking shows the menu.
-    final TestGesture gesture = await tester.startGesture(
-      midBlah1,
-      kind: PointerDeviceKind.mouse,
-      buttons: kSecondaryMouseButton,
-    );
-    await tester.pump();
-    await gesture.up();
-    await tester.pumpAndSettle();
-    expect(controller.selection, invalidSelection);
-    expect(find.text('Copy'), findsNothing);
-    expect(find.text('Cut'), findsNothing);
-    expect(find.text('Paste'), findsNothing);
-    expect(find.byType(CupertinoButton), findsNothing);
-  },
-    variant: TargetPlatformVariant.desktop(),
-    skip: kIsWeb, // [intended] we don't supply the cut/copy/paste buttons on the web.
-  );
-
-  testWidgets('the desktop cut/copy buttons are disabled for obscured form fields', (WidgetTester tester) async {
-    final TextEditingController controller = TextEditingController(
-      text: 'blah1 blah2',
-    );
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              obscureText: true,
-              controller: controller,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    // Initially, the menu is not shown and there is no selection.
-    expect(find.byType(CupertinoButton), findsNothing);
-    const TextSelection invalidSelection = TextSelection(baseOffset: -1, extentOffset: -1);
-    expect(controller.selection, invalidSelection);
-
-    final Offset midBlah1 = textOffsetToPosition(tester, 2);
-
-    // Make a selection.
-    await tester.tapAt(midBlah1);
-    await tester.pump();
-    await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
-    await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
-    await tester.pump();
-    expect(controller.selection, const TextSelection(baseOffset: 2, extentOffset: 0));
-
-    // Right clicking shows the menu.
-    final TestGesture gesture = await tester.startGesture(
-      midBlah1,
-      kind: PointerDeviceKind.mouse,
-      buttons: kSecondaryMouseButton,
-    );
-    await tester.pump();
-    await gesture.up();
-    await tester.pumpAndSettle();
-    expect(find.text('Copy'), findsNothing);
-    expect(find.text('Cut'), findsNothing);
-    expect(find.text('Paste'), findsOneWidget);
-  },
-    variant: TargetPlatformVariant.desktop(),
-    skip: kIsWeb, // [intended] we don't supply the cut/copy/paste buttons on the web.
-  );
-
-  testWidgets('TextFormField accepts TextField.noMaxLength as value to maxLength parameter', (WidgetTester tester) async {
-    bool asserted;
-    try {
-      TextFormField(
-        maxLength: TextField.noMaxLength,
+      // Paste it at the end.
+      gesture = await tester.startGesture(
+        textOffsetToPosition(tester, controller.text.length),
+        kind: PointerDeviceKind.mouse,
       );
-      asserted = false;
-    } catch (e) {
-      asserted = true;
-    }
-    expect(asserted, false);
-  });
+      await tester.pump();
+      await gesture.up();
+      await gesture.removePointer();
+      expect(controller.selection, const TextSelection.collapsed(offset: 11, affinity: TextAffinity.upstream));
+      gesture = await tester.startGesture(
+        textOffsetToPosition(tester, controller.text.length),
+        kind: PointerDeviceKind.mouse,
+        buttons: kSecondaryMouseButton,
+      );
+      await tester.pump();
+      await gesture.up();
+      await gesture.removePointer();
+      await tester.pumpAndSettle();
+      expect(controller.selection, const TextSelection.collapsed(offset: 11, affinity: TextAffinity.upstream));
+      expect(find.text('Cut'), findsNothing);
+      expect(find.text('Copy'), findsNothing);
+      expect(find.text('Paste'), findsOneWidget);
+      await tester.tap(find.text('Paste'));
+      await tester.pumpAndSettle();
+      expect(controller.text, 'blah1 blah2blah1');
+      expect(controller.selection, const TextSelection.collapsed(offset: 16));
+
+      // Cut the first word.
+      gesture = await tester.startGesture(midBlah1, kind: PointerDeviceKind.mouse);
+      await tester.pump();
+      await gesture.up();
+      await tester.pump(const Duration(milliseconds: 100));
+      await gesture.down(startBlah1);
+      await tester.pump();
+      await gesture.up();
+      await gesture.removePointer();
+      await tester.pumpAndSettle();
+      expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
+      expect(find.text('Cut'), findsNothing);
+      expect(find.text('Copy'), findsNothing);
+      expect(find.text('Paste'), findsNothing);
+      expect(find.text('Select all'), findsNothing);
+      gesture = await tester.startGesture(
+        textOffsetToPosition(tester, controller.text.length),
+        kind: PointerDeviceKind.mouse,
+        buttons: kSecondaryMouseButton,
+      );
+      await tester.pump();
+      await gesture.up();
+      await gesture.removePointer();
+      await tester.pumpAndSettle();
+      expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
+      expect(find.text('Cut'), findsOneWidget);
+      expect(find.text('Copy'), findsOneWidget);
+      expect(find.text('Paste'), findsOneWidget);
+      await tester.tap(find.text('Cut'));
+      await tester.pumpAndSettle();
+      expect(controller.text, ' blah2blah1');
+      expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 0));
+      expect(find.byType(CupertinoButton), findsNothing);
+    },
+    variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.linux, TargetPlatform.windows}),
+    skip: kIsWeb, // [intended] we don't supply the cut/copy/paste buttons on the web.
+  );
+
+  testWidgets(
+    'the desktop cut/copy/paste buttons are disabled for read-only obscured form fields',
+    (WidgetTester tester) async {
+      final TextEditingController controller = TextEditingController(text: 'blah1 blah2');
+      await tester.pumpWidget(MaterialApp(
+        home: Material(child: Center(child: TextFormField(readOnly: true, obscureText: true, controller: controller))),
+      ));
+
+      // Initially, the menu is not shown and there is no selection.
+      expect(find.byType(CupertinoButton), findsNothing);
+      const TextSelection invalidSelection = TextSelection(baseOffset: -1, extentOffset: -1);
+      expect(controller.selection, invalidSelection);
+
+      final Offset midBlah1 = textOffsetToPosition(tester, 2);
+
+      // Right clicking shows the menu.
+      final TestGesture gesture =
+          await tester.startGesture(midBlah1, kind: PointerDeviceKind.mouse, buttons: kSecondaryMouseButton);
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(controller.selection, invalidSelection);
+      expect(find.text('Copy'), findsNothing);
+      expect(find.text('Cut'), findsNothing);
+      expect(find.text('Paste'), findsNothing);
+      expect(find.byType(CupertinoButton), findsNothing);
+    },
+    variant: TargetPlatformVariant.desktop(),
+    skip: kIsWeb, // [intended] we don't supply the cut/copy/paste buttons on the web.
+  );
+
+  testWidgets(
+    'the desktop cut/copy buttons are disabled for obscured form fields',
+    (WidgetTester tester) async {
+      final TextEditingController controller = TextEditingController(text: 'blah1 blah2');
+      await tester.pumpWidget(
+        MaterialApp(home: Material(child: Center(child: TextFormField(obscureText: true, controller: controller)))),
+      );
+
+      // Initially, the menu is not shown and there is no selection.
+      expect(find.byType(CupertinoButton), findsNothing);
+      const TextSelection invalidSelection = TextSelection(baseOffset: -1, extentOffset: -1);
+      expect(controller.selection, invalidSelection);
+
+      final Offset midBlah1 = textOffsetToPosition(tester, 2);
+
+      // Make a selection.
+      await tester.tapAt(midBlah1);
+      await tester.pump();
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
+      await tester.pump();
+      expect(controller.selection, const TextSelection(baseOffset: 2, extentOffset: 0));
+
+      // Right clicking shows the menu.
+      final TestGesture gesture =
+          await tester.startGesture(midBlah1, kind: PointerDeviceKind.mouse, buttons: kSecondaryMouseButton);
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(find.text('Copy'), findsNothing);
+      expect(find.text('Cut'), findsNothing);
+      expect(find.text('Paste'), findsOneWidget);
+    },
+    variant: TargetPlatformVariant.desktop(),
+    skip: kIsWeb, // [intended] we don't supply the cut/copy/paste buttons on the web.
+  );
+
+  testWidgets(
+    'TextFormField accepts TextField.noMaxLength as value to maxLength parameter',
+    (WidgetTester tester) async {
+      bool asserted;
+      try {
+        TextFormField(maxLength: TextField.noMaxLength);
+        asserted = false;
+      } catch (e) {
+        asserted = true;
+      }
+      expect(asserted, false);
+    },
+  );
 
   testWidgets('Passes textAlign to underlying TextField', (WidgetTester tester) async {
     const TextAlign alignment = TextAlign.center;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              textAlign: alignment,
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(home: Material(child: Center(child: TextFormField(textAlign: alignment)))));
 
     final Finder textFieldFinder = find.byType(TextField);
     expect(textFieldFinder, findsOneWidget);
@@ -383,15 +316,7 @@ void main() {
     const ScrollPhysics scrollPhysics = ScrollPhysics();
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              scrollPhysics: scrollPhysics,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(scrollPhysics: scrollPhysics)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -405,15 +330,7 @@ void main() {
     const TextAlignVertical textAlignVertical = TextAlignVertical.bottom;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              textAlignVertical: textAlignVertical,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(textAlignVertical: textAlignVertical)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -425,15 +342,7 @@ void main() {
 
   testWidgets('Passes textInputAction to underlying TextField', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              textInputAction: TextInputAction.next,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(textInputAction: TextInputAction.next)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -444,18 +353,10 @@ void main() {
   });
 
   testWidgets('Passes onEditingComplete to underlying TextField', (WidgetTester tester) async {
-    void onEditingComplete() { }
+    void onEditingComplete() {}
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              onEditingComplete: onEditingComplete,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(onEditingComplete: onEditingComplete)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -471,20 +372,18 @@ void main() {
     const Radius cursorRadius = Radius.circular(4);
     const Color cursorColor = Colors.purple;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              cursorWidth: cursorWidth,
-              cursorHeight: cursorHeight,
-              cursorRadius: cursorRadius,
-              cursorColor: cursorColor,
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Center(
+          child: TextFormField(
+            cursorWidth: cursorWidth,
+            cursorHeight: cursorHeight,
+            cursorRadius: cursorRadius,
+            cursorColor: cursorColor,
           ),
         ),
       ),
-    );
+    ));
 
     final Finder textFieldFinder = find.byType(TextField);
     expect(textFieldFinder, findsOneWidget);
@@ -499,17 +398,17 @@ void main() {
   testWidgets('onFieldSubmit callbacks are called', (WidgetTester tester) async {
     bool called = false;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              onFieldSubmitted: (String value) { called = true; },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Center(
+          child: TextFormField(
+            onFieldSubmitted: (String value) {
+              called = true;
+            },
           ),
         ),
       ),
-    );
+    ));
 
     await tester.showKeyboard(find.byType(TextField));
     await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -520,19 +419,17 @@ void main() {
   testWidgets('onChanged callbacks are called', (WidgetTester tester) async {
     late String value;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              onChanged: (String v) {
-                value = v;
-              },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Center(
+          child: TextFormField(
+            onChanged: (String v) {
+              value = v;
+            },
           ),
         ),
       ),
-    );
+    ));
 
     await tester.enterText(find.byType(TextField), 'Soup');
     await tester.pump();
@@ -542,21 +439,19 @@ void main() {
   testWidgets('autovalidateMode is passed to super', (WidgetTester tester) async {
     int validateCalled = 0;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              autovalidateMode: AutovalidateMode.always,
-              validator: (String? value) {
-                validateCalled++;
-                return null;
-              },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Center(
+          child: TextFormField(
+            autovalidateMode: AutovalidateMode.always,
+            validator: (String? value) {
+              validateCalled++;
+              return null;
+            },
           ),
         ),
       ),
-    );
+    ));
 
     expect(validateCalled, 1);
     await tester.enterText(find.byType(TextField), 'a');
@@ -567,29 +462,26 @@ void main() {
   testWidgets('validate is called if widget is enabled', (WidgetTester tester) async {
     int validateCalled = 0;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              enabled: true,
-              autovalidateMode: AutovalidateMode.always,
-              validator: (String? value) {
-                validateCalled += 1;
-                return null;
-              },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Center(
+          child: TextFormField(
+            enabled: true,
+            autovalidateMode: AutovalidateMode.always,
+            validator: (String? value) {
+              validateCalled += 1;
+              return null;
+            },
           ),
         ),
       ),
-    );
+    ));
 
     expect(validateCalled, 1);
     await tester.enterText(find.byType(TextField), 'a');
     await tester.pump();
     expect(validateCalled, 2);
   });
-
 
   testWidgets('Disabled field hides helper and counter in M2', (WidgetTester tester) async {
     const String helperText = 'helper text';
@@ -643,16 +535,15 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: Material(
         child: Center(
-            child: TextFormField(
-              buildCounter: (BuildContext context, { int? currentLength, int? maxLength, bool? isFocused }) {
-                return Text('$currentLength of $maxLength');
-              },
-              maxLength: 10,
-            ),
+          child: TextFormField(
+            buildCounter: (BuildContext context, {int? currentLength, int? maxLength, bool? isFocused}) {
+              return Text('$currentLength of $maxLength');
+            },
+            maxLength: 10,
           ),
         ),
       ),
-    );
+    ));
 
     expect(find.text('0 of 10'), findsOneWidget);
 
@@ -664,16 +555,7 @@ void main() {
 
   testWidgets('readonly text form field will hide cursor by default', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              initialValue: 'readonly',
-              readOnly: true,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(initialValue: 'readonly', readOnly: true)))),
     );
 
     await tester.showKeyboard(find.byType(TextFormField));
@@ -706,19 +588,17 @@ void main() {
 
   testWidgets('onTap is called upon tap', (WidgetTester tester) async {
     int tapCount = 0;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              onTap: () {
-                tapCount += 1;
-              },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Center(
+          child: TextFormField(
+            onTap: () {
+              tapCount += 1;
+            },
           ),
         ),
       ),
-    );
+    ));
 
     expect(tapCount, 0);
     await tester.tap(find.byType(TextField));
@@ -733,24 +613,22 @@ void main() {
 
   testWidgets('onTapOutside is called upon tap outside', (WidgetTester tester) async {
     int tapOutsideCount = 0;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                const Text('Outside'),
-                TextFormField(
-                  onTapOutside: (PointerEvent event) {
-                    tapOutsideCount += 1;
-                  },
-                ),
-              ],
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              const Text('Outside'),
+              TextFormField(
+                onTapOutside: (PointerEvent event) {
+                  tapOutsideCount += 1;
+                },
+              ),
+            ],
           ),
         ),
       ),
-    );
+    ));
     await tester.pump(); // Wait for autofocus to take effect.
 
     expect(tapOutsideCount, 0);
@@ -764,15 +642,7 @@ void main() {
   // Regression test for https://github.com/flutter/flutter/issues/54472.
   testWidgets('reset resets the text fields value to the initialValue', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              initialValue: 'initialValue',
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(initialValue: 'initialValue')))),
     );
 
     await tester.enterText(find.byType(TextFormField), 'changedValue');
@@ -786,15 +656,7 @@ void main() {
 
   // Regression test for https://github.com/flutter/flutter/issues/34847.
   testWidgets("didChange resets the text field's value to empty when passed null", (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(home: Material(child: Center(child: TextFormField()))));
 
     await tester.enterText(find.byType(TextFormField), 'changedValue');
     await tester.pump();
@@ -809,15 +671,7 @@ void main() {
 
   // Regression test for https://github.com/flutter/flutter/issues/34847.
   testWidgets("reset resets the text field's value to empty when initialValue is null", (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(home: Material(child: Center(child: TextFormField()))));
 
     await tester.enterText(find.byType(TextFormField), 'changedValue');
     await tester.pump();
@@ -833,15 +687,7 @@ void main() {
   // Regression test for https://github.com/flutter/flutter/issues/54472.
   testWidgets('didChange changes text fields value', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              initialValue: 'initialValue',
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(initialValue: 'initialValue')))),
     );
 
     expect(find.text('initialValue'), findsOneWidget);
@@ -858,20 +704,18 @@ void main() {
 
     late FormFieldState<String> state;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              onChanged: (String value) {
-                called = true;
-                expect(value, state.value);
-              },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Center(
+          child: TextFormField(
+            onChanged: (String value) {
+              called = true;
+              expect(value, state.value);
+            },
           ),
         ),
       ),
-    );
+    ));
 
     state = tester.state<FormFieldState<String>>(find.byType(TextFormField));
 
@@ -881,17 +725,9 @@ void main() {
   });
 
   testWidgets('autofillHints is passed to super', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              autofillHints: const <String>[AutofillHints.countryName],
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      home: Material(child: Center(child: TextFormField(autofillHints: const <String>[AutofillHints.countryName]))),
+    ));
 
     final TextField widget = tester.widget(find.byType(TextField));
     expect(widget.autofillHints, equals(const <String>[AutofillHints.countryName]));
@@ -900,21 +736,19 @@ void main() {
   testWidgets('autovalidateMode is passed to super', (WidgetTester tester) async {
     int validateCalled = 0;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Scaffold(
-            body: TextFormField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (String? value) {
-                validateCalled++;
-                return null;
-              },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Scaffold(
+          body: TextFormField(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (String? value) {
+              validateCalled++;
+              return null;
+            },
           ),
         ),
       ),
-    );
+    ));
 
     expect(validateCalled, 0);
     await tester.enterText(find.byType(TextField), 'a');
@@ -923,17 +757,9 @@ void main() {
   });
 
   testWidgets('textSelectionControls is passed to super', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Scaffold(
-            body: TextFormField(
-              selectionControls: materialTextSelectionControls,
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      home: Material(child: Scaffold(body: TextFormField(selectionControls: materialTextSelectionControls))),
+    ));
 
     final TextField widget = tester.widget(find.byType(TextField));
     expect(widget.selectionControls, equals(materialTextSelectionControls));
@@ -966,11 +792,8 @@ void main() {
         child: Directionality(
           textDirection: TextDirection.rtl,
           child: TextFormField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Some Label',
-              hintText: 'Some Hint',
-            ),
+            decoration:
+                const InputDecoration(border: OutlineInputBorder(), labelText: 'Some Label', hintText: 'Some Hint'),
           ),
         ),
       ),
@@ -985,15 +808,7 @@ void main() {
     final ScrollController scrollController = ScrollController();
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              scrollController: scrollController,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(scrollController: scrollController)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -1004,18 +819,14 @@ void main() {
   });
 
   testWidgets('TextFormField changes mouse cursor when hovered', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: MouseRegion(
-            cursor: SystemMouseCursors.forbidden,
-            child: TextFormField(
-              mouseCursor: SystemMouseCursors.grab,
-            ),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: MouseRegion(
+          cursor: SystemMouseCursors.forbidden,
+          child: TextFormField(mouseCursor: SystemMouseCursors.grab),
         ),
       ),
-    );
+    ));
 
     // Center, which is within the area
     final Offset center = tester.getCenter(find.byType(TextFormField));
@@ -1031,14 +842,7 @@ void main() {
 
     // Test default cursor
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: MouseRegion(
-            cursor: SystemMouseCursors.forbidden,
-            child: TextFormField(),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: MouseRegion(cursor: SystemMouseCursors.forbidden, child: TextFormField()))),
     );
 
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.text);
@@ -1047,18 +851,9 @@ void main() {
     await gesture.moveTo(center);
 
     // Test default cursor when disabled
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: MouseRegion(
-            cursor: SystemMouseCursors.forbidden,
-            child: TextFormField(
-              enabled: false,
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      home: Material(child: MouseRegion(cursor: SystemMouseCursors.forbidden, child: TextFormField(enabled: false))),
+    ));
 
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.basic);
     await gesture.moveTo(edge);
@@ -1067,100 +862,83 @@ void main() {
   });
 
   // Regression test for https://github.com/flutter/flutter/issues/101587.
-  testWidgets('Right clicking menu behavior', (WidgetTester tester) async {
-    final TextEditingController controller = TextEditingController(
-      text: 'blah1 blah2',
-    );
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              controller: controller,
-            ),
-          ),
-        ),
-      ),
-    );
+  testWidgets(
+    'Right clicking menu behavior',
+    (WidgetTester tester) async {
+      final TextEditingController controller = TextEditingController(text: 'blah1 blah2');
+      await tester.pumpWidget(MaterialApp(home: Material(child: Center(child: TextFormField(controller: controller)))));
 
-    // Initially, the menu is not shown and there is no selection.
-    expect(find.byType(CupertinoButton), findsNothing);
-    expect(controller.selection, const TextSelection(baseOffset: -1, extentOffset: -1));
+      // Initially, the menu is not shown and there is no selection.
+      expect(find.byType(CupertinoButton), findsNothing);
+      expect(controller.selection, const TextSelection(baseOffset: -1, extentOffset: -1));
 
-    final Offset midBlah1 = textOffsetToPosition(tester, 2);
-    final Offset midBlah2 = textOffsetToPosition(tester, 8);
+      final Offset midBlah1 = textOffsetToPosition(tester, 2);
+      final Offset midBlah2 = textOffsetToPosition(tester, 8);
 
-    // Right click the second word.
-    final TestGesture gesture = await tester.startGesture(
-      midBlah2,
-      kind: PointerDeviceKind.mouse,
-      buttons: kSecondaryMouseButton,
-    );
-    await tester.pump();
-    await gesture.up();
-    await tester.pumpAndSettle();
+      // Right click the second word.
+      final TestGesture gesture =
+          await tester.startGesture(midBlah2, kind: PointerDeviceKind.mouse, buttons: kSecondaryMouseButton);
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
 
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.iOS:
-      case TargetPlatform.macOS:
-        expect(controller.selection, const TextSelection(baseOffset: 6, extentOffset: 11));
-        expect(find.text('Cut'), findsOneWidget);
-        expect(find.text('Copy'), findsOneWidget);
-        expect(find.text('Paste'), findsOneWidget);
+      switch (defaultTargetPlatform) {
+        case TargetPlatform.iOS:
+        case TargetPlatform.macOS:
+          expect(controller.selection, const TextSelection(baseOffset: 6, extentOffset: 11));
+          expect(find.text('Cut'), findsOneWidget);
+          expect(find.text('Copy'), findsOneWidget);
+          expect(find.text('Paste'), findsOneWidget);
 
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.linux:
-      case TargetPlatform.windows:
-        expect(controller.selection, const TextSelection.collapsed(offset: 8));
-        expect(find.text('Cut'), findsNothing);
-        expect(find.text('Copy'), findsNothing);
-        expect(find.text('Paste'), findsOneWidget);
-        expect(find.text('Select all'), findsOneWidget);
-    }
+        case TargetPlatform.android:
+        case TargetPlatform.fuchsia:
+        case TargetPlatform.linux:
+        case TargetPlatform.windows:
+          expect(controller.selection, const TextSelection.collapsed(offset: 8));
+          expect(find.text('Cut'), findsNothing);
+          expect(find.text('Copy'), findsNothing);
+          expect(find.text('Paste'), findsOneWidget);
+          expect(find.text('Select all'), findsOneWidget);
+      }
 
-    // Right click the first word.
-    await gesture.down(midBlah1);
-    await tester.pump();
-    await gesture.up();
-    await tester.pumpAndSettle();
+      // Right click the first word.
+      await gesture.down(midBlah1);
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
 
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.iOS:
-      case TargetPlatform.macOS:
-        expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
-        expect(find.text('Cut'), findsOneWidget);
-        expect(find.text('Copy'), findsOneWidget);
-        expect(find.text('Paste'), findsOneWidget);
+      switch (defaultTargetPlatform) {
+        case TargetPlatform.iOS:
+        case TargetPlatform.macOS:
+          expect(controller.selection, const TextSelection(baseOffset: 0, extentOffset: 5));
+          expect(find.text('Cut'), findsOneWidget);
+          expect(find.text('Copy'), findsOneWidget);
+          expect(find.text('Paste'), findsOneWidget);
 
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.linux:
-      case TargetPlatform.windows:
-        expect(controller.selection, const TextSelection.collapsed(offset: 8));
-        expect(find.text('Cut'), findsNothing);
-        expect(find.text('Copy'), findsNothing);
-        expect(find.text('Paste'), findsNothing);
-        expect(find.text('Select all'), findsNothing);
-    }
-  },
+        case TargetPlatform.android:
+        case TargetPlatform.fuchsia:
+        case TargetPlatform.linux:
+        case TargetPlatform.windows:
+          expect(controller.selection, const TextSelection.collapsed(offset: 8));
+          expect(find.text('Cut'), findsNothing);
+          expect(find.text('Copy'), findsNothing);
+          expect(find.text('Paste'), findsNothing);
+          expect(find.text('Select all'), findsNothing);
+      }
+    },
     variant: TargetPlatformVariant.all(),
     skip: kIsWeb, // [intended] we don't supply the cut/copy/paste buttons on the web.
   );
 
   testWidgets('spellCheckConfiguration passes through to EditableText', (WidgetTester tester) async {
     final SpellCheckConfiguration mySpellCheckConfiguration = SpellCheckConfiguration(
-        spellCheckService: DefaultSpellCheckService(),
-        misspelledTextStyle: TextField.materialMisspelledTextStyle,
-      );
+      spellCheckService: DefaultSpellCheckService(),
+      misspelledTextStyle: TextField.materialMisspelledTextStyle,
+    );
 
-    await tester.pumpWidget(MaterialApp(
-      home: Scaffold(
-        body: TextFormField(
-          spellCheckConfiguration: mySpellCheckConfiguration,
-        ),
-      ),
-    ));
+    await tester.pumpWidget(
+      MaterialApp(home: Scaffold(body: TextFormField(spellCheckConfiguration: mySpellCheckConfiguration))),
+    );
 
     expect(find.byType(EditableText), findsOneWidget);
 
@@ -1185,13 +963,9 @@ void main() {
       },
     );
 
-    await tester.pumpWidget(MaterialApp(
-      home: Scaffold(
-        body: TextFormField(
-          magnifierConfiguration: myTextMagnifierConfiguration,
-        ),
-      ),
-    ));
+    await tester.pumpWidget(
+      MaterialApp(home: Scaffold(body: TextFormField(magnifierConfiguration: myTextMagnifierConfiguration))),
+    );
 
     expect(find.byType(EditableText), findsOneWidget);
 
@@ -1203,15 +977,7 @@ void main() {
     final UndoHistoryController undoController = UndoHistoryController(value: UndoHistoryValue.empty);
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              undoController: undoController,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(undoController: undoController)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -1225,15 +991,7 @@ void main() {
     const bool cursorOpacityAnimates = true;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              cursorOpacityAnimates: cursorOpacityAnimates,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(cursorOpacityAnimates: cursorOpacityAnimates)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -1243,21 +1001,16 @@ void main() {
     expect(textFieldWidget.cursorOpacityAnimates, cursorOpacityAnimates);
   });
 
-  testWidgets('Passes contentInsertionConfiguration to contentInsertionConfiguration TextField', (WidgetTester tester) async {
-    final ContentInsertionConfiguration contentInsertionConfiguration =
-        ContentInsertionConfiguration(onContentInserted: (KeyboardInsertedContent value) {});
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              contentInsertionConfiguration: contentInsertionConfiguration,
-            ),
-          ),
-        ),
-      ),
+  testWidgets('Passes contentInsertionConfiguration to contentInsertionConfiguration TextField', (
+    WidgetTester tester,
+  ) async {
+    final ContentInsertionConfiguration contentInsertionConfiguration = ContentInsertionConfiguration(
+      onContentInserted: (KeyboardInsertedContent value) {},
     );
+
+    await tester.pumpWidget(MaterialApp(
+      home: Material(child: Center(child: TextFormField(contentInsertionConfiguration: contentInsertionConfiguration))),
+    ));
 
     final Finder textFieldFinder = find.byType(TextField);
     expect(textFieldFinder, findsOneWidget);
@@ -1270,15 +1023,7 @@ void main() {
     const Clip clipBehavior = Clip.antiAlias;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              clipBehavior: clipBehavior,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(clipBehavior: clipBehavior)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -1292,15 +1037,7 @@ void main() {
     const bool scribbleEnabled = false;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              scribbleEnabled: scribbleEnabled,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(scribbleEnabled: scribbleEnabled)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -1314,15 +1051,7 @@ void main() {
     const bool canRequestFocus = false;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              canRequestFocus: canRequestFocus,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(canRequestFocus: canRequestFocus)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -1336,15 +1065,7 @@ void main() {
     void onAppPrivateCommand(String p0, Map<String, dynamic> p1) {}
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              onAppPrivateCommand: onAppPrivateCommand,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(onAppPrivateCommand: onAppPrivateCommand)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -1358,15 +1079,7 @@ void main() {
     const BoxHeightStyle selectionHeightStyle = BoxHeightStyle.max;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              selectionHeightStyle: selectionHeightStyle,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(selectionHeightStyle: selectionHeightStyle)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -1380,15 +1093,7 @@ void main() {
     const BoxWidthStyle selectionWidthStyle = BoxWidthStyle.max;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              selectionWidthStyle: selectionWidthStyle,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(selectionWidthStyle: selectionWidthStyle)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -1402,15 +1107,7 @@ void main() {
     const DragStartBehavior dragStartBehavior = DragStartBehavior.down;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Center(
-            child: TextFormField(
-              dragStartBehavior: dragStartBehavior,
-            ),
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Center(child: TextFormField(dragStartBehavior: dragStartBehavior)))),
     );
 
     final Finder textFieldFinder = find.byType(TextField);
@@ -1423,9 +1120,7 @@ void main() {
   testWidgets('Error color for cursor while validating', (WidgetTester tester) async {
     const Color errorColor = Color(0xff123456);
     await tester.pumpWidget(MaterialApp(
-      theme: ThemeData(
-        colorScheme: const ColorScheme.light(error: errorColor),
-      ),
+      theme: ThemeData(colorScheme: const ColorScheme.light(error: errorColor)),
       home: Material(
         child: Center(
           child: TextFormField(

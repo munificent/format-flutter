@@ -14,10 +14,7 @@ void main() {
     final FakeLocalizationsDelegate delegate = FakeLocalizationsDelegate();
     await tester.pumpWidget(Localizations(
       locale: const Locale('fo'),
-      delegates: <LocalizationsDelegate<dynamic>>[
-        WidgetsLocalizationsDelegate(),
-        delegate,
-      ],
+      delegates: <LocalizationsDelegate<dynamic>>[WidgetsLocalizationsDelegate(), delegate],
       child: const Text('loaded'),
     ));
     final dynamic state = tester.state(find.byType(Localizations));
@@ -42,7 +39,7 @@ void main() {
     await tester.pumpWidget(Container(key: contextKey));
 
     expect(() => Localizations.localeOf(contextKey.currentContext!), throwsA(isAssertionError.having(
-          (AssertionError e) => e.message,
+      (AssertionError e) => e.message,
       'message',
       contains('does not include a Localizations ancestor'),
     )));
@@ -70,7 +67,6 @@ class FakeLocalizationsDelegate extends LocalizationsDelegate<String> {
 }
 
 class TestAutomatedTestWidgetsFlutterBinding extends AutomatedTestWidgetsFlutterBinding {
-
   VoidCallback? onAllowFrame;
 
   @override

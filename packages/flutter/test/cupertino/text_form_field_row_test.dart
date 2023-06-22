@@ -12,15 +12,7 @@ void main() {
   testWidgets('Passes textAlign to underlying CupertinoTextField', (WidgetTester tester) async {
     const TextAlign alignment = TextAlign.center;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            textAlign: alignment,
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(textAlign: alignment))));
 
     final Finder textFieldFinder = find.byType(CupertinoTextField);
     expect(textFieldFinder, findsOneWidget);
@@ -32,15 +24,7 @@ void main() {
   testWidgets('Passes scrollPhysics to underlying TextField', (WidgetTester tester) async {
     const ScrollPhysics scrollPhysics = ScrollPhysics();
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            scrollPhysics: scrollPhysics,
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(scrollPhysics: scrollPhysics))));
 
     final Finder textFieldFinder = find.byType(CupertinoTextField);
     expect(textFieldFinder, findsOneWidget);
@@ -53,13 +37,7 @@ void main() {
     const TextAlignVertical textAlignVertical = TextAlignVertical.bottom;
 
     await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            textAlignVertical: textAlignVertical,
-          ),
-        ),
-      ),
+      CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(textAlignVertical: textAlignVertical))),
     );
 
     final Finder textFieldFinder = find.byType(CupertinoTextField);
@@ -71,13 +49,7 @@ void main() {
 
   testWidgets('Passes textInputAction to underlying CupertinoTextField', (WidgetTester tester) async {
     await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            textInputAction: TextInputAction.next,
-          ),
-        ),
-      ),
+      CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(textInputAction: TextInputAction.next))),
     );
 
     final Finder textFieldFinder = find.byType(CupertinoTextField);
@@ -91,13 +63,7 @@ void main() {
     void onEditingComplete() {}
 
     await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            onEditingComplete: onEditingComplete,
-          ),
-        ),
-      ),
+      CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(onEditingComplete: onEditingComplete))),
     );
 
     final Finder textFieldFinder = find.byType(CupertinoTextField);
@@ -113,17 +79,12 @@ void main() {
     const Radius cursorRadius = Radius.circular(2);
     const Color cursorColor = CupertinoColors.systemPurple;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            cursorWidth: cursorWidth,
-            cursorHeight: cursorHeight,
-            cursorColor: cursorColor,
-          ),
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child:
+            CupertinoTextFormFieldRow(cursorWidth: cursorWidth, cursorHeight: cursorHeight, cursorColor: cursorColor),
       ),
-    );
+    ));
 
     final Finder textFieldFinder = find.byType(CupertinoTextField);
     expect(textFieldFinder, findsOneWidget);
@@ -138,17 +99,15 @@ void main() {
   testWidgets('onFieldSubmit callbacks are called', (WidgetTester tester) async {
     bool called = false;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            onFieldSubmitted: (String value) {
-              called = true;
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextFormFieldRow(
+          onFieldSubmitted: (String value) {
+            called = true;
+          },
         ),
       ),
-    );
+    ));
 
     await tester.showKeyboard(find.byType(CupertinoTextField));
     await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -159,17 +118,15 @@ void main() {
   testWidgets('onChanged callbacks are called', (WidgetTester tester) async {
     late String value;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            onChanged: (String v) {
-              value = v;
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextFormFieldRow(
+          onChanged: (String v) {
+            value = v;
+          },
         ),
       ),
-    );
+    ));
 
     await tester.enterText(find.byType(CupertinoTextField), 'Soup');
     await tester.pump();
@@ -179,19 +136,17 @@ void main() {
   testWidgets('autovalidateMode is passed to super', (WidgetTester tester) async {
     int validateCalled = 0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            autovalidateMode: AutovalidateMode.always,
-            validator: (String? value) {
-              validateCalled++;
-              return null;
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextFormFieldRow(
+          autovalidateMode: AutovalidateMode.always,
+          validator: (String? value) {
+            validateCalled++;
+            return null;
+          },
         ),
       ),
-    );
+    ));
 
     expect(validateCalled, 1);
     await tester.enterText(find.byType(CupertinoTextField), 'a');
@@ -202,20 +157,18 @@ void main() {
   testWidgets('validate is called if widget is enabled', (WidgetTester tester) async {
     int validateCalled = 0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            enabled: true,
-            autovalidateMode: AutovalidateMode.always,
-            validator: (String? value) {
-              validateCalled += 1;
-              return null;
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextFormFieldRow(
+          enabled: true,
+          autovalidateMode: AutovalidateMode.always,
+          validator: (String? value) {
+            validateCalled += 1;
+            return null;
+          },
         ),
       ),
-    );
+    ));
 
     expect(validateCalled, 1);
     await tester.enterText(find.byType(CupertinoTextField), 'a');
@@ -225,14 +178,7 @@ void main() {
 
   testWidgets('readonly text form field will hide cursor by default', (WidgetTester tester) async {
     await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            initialValue: 'readonly',
-            readOnly: true,
-          ),
-        ),
-      ),
+      CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(initialValue: 'readonly', readOnly: true))),
     );
 
     await tester.showKeyboard(find.byType(CupertinoTextFormFieldRow));
@@ -249,8 +195,7 @@ void main() {
     expect(find.byType(CupertinoTextSelectionToolbar), findsOneWidget);
     expect(find.text('Paste'), findsNothing);
 
-    final EditableTextState editableTextState =
-        tester.firstState(find.byType(EditableText));
+    final EditableTextState editableTextState = tester.firstState(find.byType(EditableText));
     final RenderEditable renderEditable = editableTextState.renderEditable;
 
     // Make sure it does not paint caret for a period of time.
@@ -266,17 +211,15 @@ void main() {
 
   testWidgets('onTap is called upon tap', (WidgetTester tester) async {
     int tapCount = 0;
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            onTap: () {
-              tapCount += 1;
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextFormFieldRow(
+          onTap: () {
+            tapCount += 1;
+          },
         ),
       ),
-    );
+    ));
 
     expect(tapCount, 0);
     await tester.tap(find.byType(CupertinoTextField));
@@ -291,13 +234,7 @@ void main() {
 
   // Regression test for https://github.com/flutter/flutter/issues/54472.
   testWidgets('reset resets the text fields value to the initialValue', (WidgetTester tester) async {
-    await tester.pumpWidget(CupertinoApp(
-      home: Center(
-        child: CupertinoTextFormFieldRow(
-          initialValue: 'initialValue',
-        ),
-      ),
-    ));
+    await tester.pumpWidget(CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(initialValue: 'initialValue'))));
 
     await tester.enterText(find.byType(CupertinoTextFormFieldRow), 'changedValue');
 
@@ -310,18 +247,11 @@ void main() {
 
   // Regression test for https://github.com/flutter/flutter/issues/54472.
   testWidgets('didChange changes text fields value', (WidgetTester tester) async {
-    await tester.pumpWidget(CupertinoApp(
-      home: Center(
-        child: CupertinoTextFormFieldRow(
-          initialValue: 'initialValue',
-        ),
-      ),
-    ));
+    await tester.pumpWidget(CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(initialValue: 'initialValue'))));
 
     expect(find.text('initialValue'), findsOneWidget);
 
-    final FormFieldState<String> state = tester
-        .state<FormFieldState<String>>(find.byType(CupertinoTextFormFieldRow));
+    final FormFieldState<String> state = tester.state<FormFieldState<String>>(find.byType(CupertinoTextFormFieldRow));
     state.didChange('changedValue');
 
     expect(find.text('initialValue'), findsNothing);
@@ -333,21 +263,18 @@ void main() {
 
     late FormFieldState<String> state;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            onChanged: (String value) {
-              called = true;
-              expect(value, state.value);
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextFormFieldRow(
+          onChanged: (String value) {
+            called = true;
+            expect(value, state.value);
+          },
         ),
       ),
-    );
+    ));
 
-    state = tester
-        .state<FormFieldState<String>>(find.byType(CupertinoTextFormFieldRow));
+    state = tester.state<FormFieldState<String>>(find.byType(CupertinoTextFormFieldRow));
 
     await tester.enterText(find.byType(CupertinoTextField), 'Soup');
 
@@ -355,37 +282,28 @@ void main() {
   });
 
   testWidgets('autofillHints is passed to super', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            autofillHints: const <String>[AutofillHints.countryName],
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(child: CupertinoTextFormFieldRow(autofillHints: const <String>[AutofillHints.countryName])),
+    ));
 
-    final CupertinoTextField widget =
-        tester.widget(find.byType(CupertinoTextField));
+    final CupertinoTextField widget = tester.widget(find.byType(CupertinoTextField));
     expect(widget.autofillHints, equals(const <String>[AutofillHints.countryName]));
   });
 
   testWidgets('autovalidateMode is passed to super', (WidgetTester tester) async {
     int validateCalled = 0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: CupertinoPageScaffold(
-          child: CupertinoTextFormFieldRow(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (String? value) {
-              validateCalled++;
-              return null;
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: CupertinoPageScaffold(
+        child: CupertinoTextFormFieldRow(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (String? value) {
+            validateCalled++;
+            return null;
+          },
         ),
       ),
-    );
+    ));
 
     expect(validateCalled, 0);
     await tester.enterText(find.byType(CupertinoTextField), 'a');
@@ -394,17 +312,15 @@ void main() {
   });
 
   testWidgets('AutovalidateMode.always mode shows error from the start', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            initialValue: 'Value',
-            autovalidateMode: AutovalidateMode.always,
-            validator: (String? value) => 'Error',
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextFormFieldRow(
+          initialValue: 'Value',
+          autovalidateMode: AutovalidateMode.always,
+          validator: (String? value) => 'Error',
         ),
       ),
-    );
+    ));
 
     final Finder errorTextFinder = find.byType(Text);
     expect(errorTextFinder, findsOneWidget);
@@ -416,17 +332,15 @@ void main() {
   testWidgets('Shows error text upon invalid input', (WidgetTester tester) async {
     final TextEditingController controller = TextEditingController(text: '');
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            controller: controller,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (String? value) => 'Error',
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextFormFieldRow(
+          controller: controller,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (String? value) => 'Error',
         ),
       ),
-    );
+    ));
 
     expect(find.byType(Text), findsNothing);
 
@@ -443,13 +357,7 @@ void main() {
 
   testWidgets('Shows prefix', (WidgetTester tester) async {
     await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            prefix: const Text('Enter Value'),
-          ),
-        ),
-      ),
+      CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(prefix: const Text('Enter Value')))),
     );
 
     final Finder errorTextFinder = find.byType(Text);
@@ -461,13 +369,7 @@ void main() {
 
   testWidgets('Passes textDirection to underlying CupertinoTextField', (WidgetTester tester) async {
     await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            textDirection: TextDirection.ltr,
-          ),
-        ),
-      ),
+      CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(textDirection: TextDirection.ltr))),
     );
 
     final Finder ltrTextFieldFinder = find.byType(CupertinoTextField);
@@ -477,13 +379,7 @@ void main() {
     expect(ltrTextFieldWidget.textDirection, TextDirection.ltr);
 
     await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextFormFieldRow(
-            textDirection: TextDirection.rtl,
-          ),
-        ),
-      ),
+      CupertinoApp(home: Center(child: CupertinoTextFormFieldRow(textDirection: TextDirection.rtl))),
     );
 
     final Finder rtlTextFieldFinder = find.byType(CupertinoTextField);

@@ -10,10 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'keyboard_utils.dart';
 
 void main() {
-  Widget buildSpyAboveEditableText({
-    required FocusNode editableFocusNode,
-    required FocusNode spyFocusNode,
-  }) {
+  Widget buildSpyAboveEditableText({required FocusNode editableFocusNode, required FocusNode spyFocusNode}) {
     return MaterialApp(
       home: Align(
         alignment: Alignment.topLeft,
@@ -54,12 +51,7 @@ void main() {
       tester.binding.testTextInput.unregister();
       addTearDown(tester.binding.testTextInput.register);
 
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       editable.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -78,12 +70,7 @@ void main() {
       tester.binding.testTextInput.unregister();
       addTearDown(tester.binding.testTextInput.register);
 
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       editable.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -102,12 +89,7 @@ void main() {
       tester.binding.testTextInput.unregister();
       addTearDown(tester.binding.testTextInput.register);
 
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       editable.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -130,17 +112,12 @@ void main() {
 
     testWidgets('word modifier + arrowLeft', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       editable.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -153,17 +130,12 @@ void main() {
 
     testWidgets('word modifier + arrowRight', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       editable.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -176,17 +148,12 @@ void main() {
 
     testWidgets('line modifier + arrowLeft', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       editable.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -199,17 +166,12 @@ void main() {
 
     testWidgets('line modifier + arrowRight', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       editable.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -222,17 +184,12 @@ void main() {
 
     testWidgets('word modifier + arrow key movement', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       editable.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -257,17 +214,12 @@ void main() {
 
     testWidgets('line modifier + arrow key movement', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       editable.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -295,17 +247,12 @@ void main() {
 
     testWidgets('word modifier + arrowLeft', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       spy.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -318,17 +265,12 @@ void main() {
 
     testWidgets('word modifier + arrowRight', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       spy.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -341,17 +283,12 @@ void main() {
 
     testWidgets('line modifier + arrowLeft', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       spy.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -364,17 +301,12 @@ void main() {
 
     testWidgets('line modifier + arrowRight', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       spy.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -387,17 +319,12 @@ void main() {
 
     testWidgets('word modifier + arrow key movement', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       spy.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -424,17 +351,12 @@ void main() {
 
     testWidgets('line modifier + arrow key movement', (WidgetTester tester) async {
       tester.binding.testTextInput.unregister();
-      addTearDown((){
+      addTearDown(() {
         tester.binding.testTextInput.register();
       });
       final FocusNode editable = FocusNode();
       final FocusNode spy = FocusNode();
-      await tester.pumpWidget(
-        buildSpyAboveEditableText(
-          editableFocusNode: editable,
-          spyFocusNode: spy,
-        ),
-      );
+      await tester.pumpWidget(buildSpyAboveEditableText(editableFocusNode: editable, spyFocusNode: spy));
       spy.requestFocus();
       await tester.pump();
       final ActionSpyState state = tester.state<ActionSpyState>(find.byType(ActionSpy));
@@ -474,14 +396,18 @@ class ActionSpyState extends State<ActionSpy> {
   Intent? lastIntent;
   late final Map<Type, Action<Intent>> _actions = <Type, Action<Intent>>{
     ExtendSelectionByCharacterIntent: CallbackAction<ExtendSelectionByCharacterIntent>(onInvoke: _captureIntent),
-    ExtendSelectionToNextWordBoundaryIntent: CallbackAction<ExtendSelectionToNextWordBoundaryIntent>(onInvoke: _captureIntent),
+    ExtendSelectionToNextWordBoundaryIntent:
+        CallbackAction<ExtendSelectionToNextWordBoundaryIntent>(onInvoke: _captureIntent),
     ExtendSelectionToLineBreakIntent: CallbackAction<ExtendSelectionToLineBreakIntent>(onInvoke: _captureIntent),
     ExpandSelectionToLineBreakIntent: CallbackAction<ExpandSelectionToLineBreakIntent>(onInvoke: _captureIntent),
-    ExpandSelectionToDocumentBoundaryIntent: CallbackAction<ExpandSelectionToDocumentBoundaryIntent>(onInvoke: _captureIntent),
-    ExtendSelectionVerticallyToAdjacentLineIntent: CallbackAction<ExtendSelectionVerticallyToAdjacentLineIntent>(onInvoke: _captureIntent),
-    ExtendSelectionToDocumentBoundaryIntent: CallbackAction<ExtendSelectionToDocumentBoundaryIntent>(onInvoke: _captureIntent),
-    ExtendSelectionToNextWordBoundaryOrCaretLocationIntent: CallbackAction<ExtendSelectionToNextWordBoundaryOrCaretLocationIntent>(onInvoke: _captureIntent),
-
+    ExpandSelectionToDocumentBoundaryIntent:
+        CallbackAction<ExpandSelectionToDocumentBoundaryIntent>(onInvoke: _captureIntent),
+    ExtendSelectionVerticallyToAdjacentLineIntent:
+        CallbackAction<ExtendSelectionVerticallyToAdjacentLineIntent>(onInvoke: _captureIntent),
+    ExtendSelectionToDocumentBoundaryIntent:
+        CallbackAction<ExtendSelectionToDocumentBoundaryIntent>(onInvoke: _captureIntent),
+    ExtendSelectionToNextWordBoundaryOrCaretLocationIntent:
+        CallbackAction<ExtendSelectionToNextWordBoundaryOrCaretLocationIntent>(onInvoke: _captureIntent),
     DeleteToLineBreakIntent: CallbackAction<DeleteToLineBreakIntent>(onInvoke: _captureIntent),
     DeleteToNextWordBoundaryIntent: CallbackAction<DeleteToNextWordBoundaryIntent>(onInvoke: _captureIntent),
     DeleteCharacterIntent: CallbackAction<DeleteCharacterIntent>(onInvoke: _captureIntent),
@@ -494,12 +420,6 @@ class ActionSpyState extends State<ActionSpy> {
 
   @override
   Widget build(BuildContext context) {
-    return Actions(
-      actions: _actions,
-      child: Focus(
-        focusNode: widget.focusNode,
-        child: widget.child,
-      ),
-    );
+    return Actions(actions: _actions, child: Focus(focusNode: widget.focusNode, child: widget.child));
   }
 }

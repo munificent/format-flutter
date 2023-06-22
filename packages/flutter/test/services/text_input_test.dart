@@ -15,12 +15,9 @@ void main() {
 
   group('TextSelection', () {
     test('The invalid selection is a singleton', () {
-      const TextSelection invalidSelection1 = TextSelection(
-        baseOffset: -1,
-        extentOffset: 0,
-        isDirectional: true,
-      );
-      const TextSelection invalidSelection2 = TextSelection(baseOffset: 123,
+      const TextSelection invalidSelection1 = TextSelection(baseOffset: -1, extentOffset: 0, isDirectional: true);
+      const TextSelection invalidSelection2 = TextSelection(
+        baseOffset: 123,
         extentOffset: -1,
         affinity: TextAffinity.upstream,
       );
@@ -29,15 +26,8 @@ void main() {
     });
 
     test('TextAffinity does not affect equivalence when the selection is not collapsed', () {
-      const TextSelection selection1 = TextSelection(
-        baseOffset: 1,
-        extentOffset: 2,
-      );
-      const TextSelection selection2 = TextSelection(
-        baseOffset: 1,
-        extentOffset: 2,
-        affinity: TextAffinity.upstream,
-      );
+      const TextSelection selection1 = TextSelection(baseOffset: 1, extentOffset: 2);
+      const TextSelection selection2 = TextSelection(baseOffset: 1, extentOffset: 2, affinity: TextAffinity.upstream);
       expect(selection1, selection2);
       expect(selection1.hashCode, selection2.hashCode);
     });
@@ -51,7 +41,10 @@ void main() {
         const TextSelection selection = TextSelection(baseOffset: 5, extentOffset: 13);
         expect(
           const TextEditingValue(text: testText, selection: selection).replaced(selection, ''),
-          const TextEditingValue(text:  'From proposition, anything follows.', selection: TextSelection.collapsed(offset: 5)),
+          const TextEditingValue(
+            text: 'From proposition, anything follows.',
+            selection: TextSelection.collapsed(offset: 5),
+          ),
         );
       });
 
@@ -59,7 +52,10 @@ void main() {
         const TextSelection selection = TextSelection(baseOffset: 13, extentOffset: 5);
         expect(
           const TextEditingValue(text: testText, selection: selection).replaced(selection, ''),
-          const TextEditingValue(text:  'From proposition, anything follows.', selection: TextSelection.collapsed(offset: 5)),
+          const TextEditingValue(
+            text: 'From proposition, anything follows.',
+            selection: TextSelection.collapsed(offset: 5),
+          ),
         );
       });
 
@@ -68,7 +64,7 @@ void main() {
         expect(
           const TextEditingValue(text: testText, selection: selection).replaced(selection, 'AA'),
           const TextEditingValue(
-            text:  'From AAa false proposition, anything follows.',
+            text: 'From AAa false proposition, anything follows.',
             // The caret moves to the end of the text inserted.
             selection: TextSelection.collapsed(offset: 7),
           ),
@@ -80,8 +76,14 @@ void main() {
         expect(
           // From |a false |proposition, anything follows.
           // Replace the first whitespace with "AA".
-          const TextEditingValue(text: testText, selection: selection).replaced(const TextRange(start: 4, end: 5), 'AA'),
-          const TextEditingValue(text:  'FromAAa false proposition, anything follows.', selection: TextSelection(baseOffset: 14, extentOffset: 6)),
+          const TextEditingValue(text: testText, selection: selection).replaced(
+            const TextRange(start: 4, end: 5),
+            'AA',
+          ),
+          const TextEditingValue(
+            text: 'FromAAa false proposition, anything follows.',
+            selection: TextSelection(baseOffset: 14, extentOffset: 6),
+          ),
         );
       });
 
@@ -90,8 +92,11 @@ void main() {
         expect(
           // From |a false |proposition, anything follows.
           // replace the first "p" with "AA".
-          const TextEditingValue(text: testText, selection: selection).replaced(const TextRange(start: 13, end: 14), 'AA'),
-          const TextEditingValue(text:  'From a false AAroposition, anything follows.', selection: selection),
+          const TextEditingValue(text: testText, selection: selection).replaced(
+            const TextRange(start: 13, end: 14),
+            'AA',
+          ),
+          const TextEditingValue(text: 'From a false AAroposition, anything follows.', selection: selection),
         );
       });
 
@@ -100,8 +105,14 @@ void main() {
         expect(
           // From |a false |proposition, anything follows.
           // replace the first "a" with "AA".
-          const TextEditingValue(text: testText, selection: selection).replaced(const TextRange(start: 5, end: 6), 'AA'),
-          const TextEditingValue(text:  'From AA false proposition, anything follows.', selection: TextSelection(baseOffset: 14, extentOffset: 5)),
+          const TextEditingValue(text: testText, selection: selection).replaced(
+            const TextRange(start: 5, end: 6),
+            'AA',
+          ),
+          const TextEditingValue(
+            text: 'From AA false proposition, anything follows.',
+            selection: TextSelection(baseOffset: 14, extentOffset: 5),
+          ),
         );
       });
 
@@ -110,8 +121,14 @@ void main() {
         expect(
           // From |a false |proposition, anything follows.
           // replace the second whitespace with "AA".
-          const TextEditingValue(text: testText, selection: selection).replaced(const TextRange(start: 12, end: 13), 'AA'),
-          const TextEditingValue(text:  'From a falseAAproposition, anything follows.', selection: TextSelection(baseOffset: 14, extentOffset: 5)),
+          const TextEditingValue(text: testText, selection: selection).replaced(
+            const TextRange(start: 12, end: 13),
+            'AA',
+          ),
+          const TextEditingValue(
+            text: 'From a falseAAproposition, anything follows.',
+            selection: TextSelection(baseOffset: 14, extentOffset: 5),
+          ),
         );
       });
 
@@ -120,8 +137,11 @@ void main() {
         expect(
           // From |a false |proposition, anything follows.
           // Delete the first "p".
-          const TextEditingValue(text: testText, selection: selection).replaced(const TextRange(start: 13, end: 14), ''),
-          const TextEditingValue(text:  'From a false roposition, anything follows.', selection: selection),
+          const TextEditingValue(text: testText, selection: selection).replaced(
+            const TextRange(start: 13, end: 14),
+            '',
+          ),
+          const TextEditingValue(text: 'From a false roposition, anything follows.', selection: selection),
         );
       });
 
@@ -131,7 +151,10 @@ void main() {
           // From |a false |proposition, anything follows.
           // Delete the first "a".
           const TextEditingValue(text: testText, selection: selection).replaced(const TextRange(start: 5, end: 6), ''),
-          const TextEditingValue(text:  'From  false proposition, anything follows.', selection: TextSelection(baseOffset: 12, extentOffset: 5)),
+          const TextEditingValue(
+            text: 'From  false proposition, anything follows.',
+            selection: TextSelection(baseOffset: 12, extentOffset: 5),
+          ),
         );
       });
 
@@ -140,8 +163,14 @@ void main() {
         expect(
           // From |a false |proposition, anything follows.
           // Delete the second whitespace.
-          const TextEditingValue(text: testText, selection: selection).replaced(const TextRange(start: 12, end: 13), ''),
-          const TextEditingValue(text:  'From a falseproposition, anything follows.', selection: TextSelection(baseOffset: 12, extentOffset: 5)),
+          const TextEditingValue(text: testText, selection: selection).replaced(
+            const TextRange(start: 12, end: 13),
+            '',
+          ),
+          const TextEditingValue(
+            text: 'From a falseproposition, anything follows.',
+            selection: TextSelection(baseOffset: 12, extentOffset: 5),
+          ),
         );
       });
     });
@@ -195,18 +224,15 @@ void main() {
         // From original attach
         MethodCall('TextInput.setClient', <dynamic>[1, client.configuration.toJson()]),
         // From requestExistingInputState
-        const MethodCall(
-          'TextInput.setEditingState',
-          <String, dynamic>{
-            'text': '',
-            'selectionBase': -1,
-            'selectionExtent': -1,
-            'selectionAffinity': 'TextAffinity.downstream',
-            'selectionIsDirectional': false,
-            'composingBase': -1,
-            'composingExtent': -1,
-          },
-        ),
+        const MethodCall('TextInput.setEditingState', <String, dynamic>{
+          'text': '',
+          'selectionBase': -1,
+          'selectionExtent': -1,
+          'selectionAffinity': 'TextAffinity.downstream',
+          'selectionIsDirectional': false,
+          'composingBase': -1,
+          'composingExtent': -1,
+        }),
       ]);
     });
 
@@ -222,18 +248,13 @@ void main() {
 
       final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
         'method': 'TextInputClient.updateEditingState',
-        'args': <dynamic>[-1, <String, dynamic>{
-          'text': '1',
-          'selectionBase': 2,
-          'selectionExtent': 3,
-        }],
+        'args': <dynamic>[
+          -1,
+          <String, dynamic>{'text': '1', 'selectionBase': 2, 'selectionExtent': 3},
+        ],
       });
 
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
       expect(record.length, 1);
       // Verify the error message in parts because Web formats the message
       // differently from others.
@@ -255,15 +276,11 @@ void main() {
         'args': <dynamic>[
           -1,
           'FloatingCursorDragState.update',
-          <String, dynamic>{ 'X': 2, 'Y': 3 },
+          <String, dynamic>{'X': 2, 'Y': 3},
         ],
       });
 
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(errors, isEmpty);
     });
@@ -294,11 +311,7 @@ void main() {
         actionLabel: 'xyzzy',
       );
       final Map<String, dynamic> json = configuration.toJson();
-      expect(json['inputType'], <String, dynamic>{
-        'name': 'TextInputType.text',
-        'signed': null,
-        'decimal': null,
-      });
+      expect(json['inputType'], <String, dynamic>{'name': 'TextInputType.text', 'signed': null, 'decimal': null});
       expect(json['readOnly'], true);
       expect(json['obscureText'], true);
       expect(json['autocorrect'], false);
@@ -313,11 +326,7 @@ void main() {
         actionLabel: 'xyzzy',
       );
       final Map<String, dynamic> json = configuration.toJson();
-      expect(json['inputType'], <String, dynamic>{
-        'name': 'TextInputType.number',
-        'signed': false,
-        'decimal': true,
-      });
+      expect(json['inputType'], <String, dynamic>{'name': 'TextInputType.number', 'signed': false, 'decimal': true});
       expect(json['readOnly'], false);
       expect(json['obscureText'], true);
       expect(json['autocorrect'], false);
@@ -331,22 +340,36 @@ void main() {
       const TextInputType signed = TextInputType.numberWithOptions(signed: true);
       const TextInputType signed2 = TextInputType.numberWithOptions(signed: true);
       const TextInputType decimal = TextInputType.numberWithOptions(decimal: true);
-      const TextInputType signedDecimal =
-        TextInputType.numberWithOptions(signed: true, decimal: true);
+      const TextInputType signedDecimal = TextInputType.numberWithOptions(signed: true, decimal: true);
 
       expect(text.toString(), 'TextInputType(name: TextInputType.text, signed: null, decimal: null)');
       expect(number.toString(), 'TextInputType(name: TextInputType.number, signed: false, decimal: false)');
       expect(signed.toString(), 'TextInputType(name: TextInputType.number, signed: true, decimal: false)');
       expect(decimal.toString(), 'TextInputType(name: TextInputType.number, signed: false, decimal: true)');
       expect(signedDecimal.toString(), 'TextInputType(name: TextInputType.number, signed: true, decimal: true)');
-      expect(TextInputType.multiline.toString(), 'TextInputType(name: TextInputType.multiline, signed: null, decimal: null)');
+      expect(
+        TextInputType.multiline.toString(),
+        'TextInputType(name: TextInputType.multiline, signed: null, decimal: null)',
+      );
       expect(TextInputType.phone.toString(), 'TextInputType(name: TextInputType.phone, signed: null, decimal: null)');
-      expect(TextInputType.datetime.toString(), 'TextInputType(name: TextInputType.datetime, signed: null, decimal: null)');
-      expect(TextInputType.emailAddress.toString(), 'TextInputType(name: TextInputType.emailAddress, signed: null, decimal: null)');
+      expect(
+        TextInputType.datetime.toString(),
+        'TextInputType(name: TextInputType.datetime, signed: null, decimal: null)',
+      );
+      expect(
+        TextInputType.emailAddress.toString(),
+        'TextInputType(name: TextInputType.emailAddress, signed: null, decimal: null)',
+      );
       expect(TextInputType.url.toString(), 'TextInputType(name: TextInputType.url, signed: null, decimal: null)');
-      expect(TextInputType.visiblePassword.toString(), 'TextInputType(name: TextInputType.visiblePassword, signed: null, decimal: null)');
+      expect(
+        TextInputType.visiblePassword.toString(),
+        'TextInputType(name: TextInputType.visiblePassword, signed: null, decimal: null)',
+      );
       expect(TextInputType.name.toString(), 'TextInputType(name: TextInputType.name, signed: null, decimal: null)');
-      expect(TextInputType.streetAddress.toString(), 'TextInputType(name: TextInputType.address, signed: null, decimal: null)');
+      expect(
+        TextInputType.streetAddress.toString(),
+        'TextInputType(name: TextInputType.address, signed: null, decimal: null)',
+      );
       expect(TextInputType.none.toString(), 'TextInputType(name: TextInputType.none, signed: null, decimal: null)');
 
       expect(text == number, false);
@@ -377,10 +400,18 @@ void main() {
       expect(TextInputType.streetAddress.index, 9);
       expect(TextInputType.none.index, 10);
 
-      expect(TextEditingValue.empty.toString(),
-          'TextEditingValue(text: \u2524\u251C, selection: ${const TextSelection.collapsed(offset: -1)}, composing: ${TextRange.empty})');
-      expect(const TextEditingValue(text: 'Sample Text').toString(),
-          'TextEditingValue(text: \u2524Sample Text\u251C, selection: ${const TextSelection.collapsed(offset: -1)}, composing: ${TextRange.empty})');
+      expect(
+        TextEditingValue.empty.toString(),
+        'TextEditingValue(text: \u2524\u251C, selection: ${const TextSelection.collapsed(
+          offset: -1,
+        )}, composing: ${TextRange.empty})',
+      );
+      expect(
+        const TextEditingValue(text: 'Sample Text').toString(),
+        'TextEditingValue(text: \u2524Sample Text\u251C, selection: ${const TextSelection.collapsed(
+          offset: -1,
+        )}, composing: ${TextRange.empty})',
+      );
     });
 
     test('TextInputClient onConnectionClosed method is called', () async {
@@ -396,11 +427,7 @@ void main() {
         'args': <dynamic>[1],
         'method': 'TextInputClient.onConnectionClosed',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'connectionClosed');
     });
@@ -417,15 +444,13 @@ void main() {
         'args': <dynamic>[
           1,
           'TextInputAction.commitContent',
-          jsonDecode('{"mimeType": "image/gif", "data": [0,1,0,1,0,1,0,0,0], "uri": "content://com.google.android.inputmethod.latin.fileprovider/test.gif"}'),
+          jsonDecode(
+            '{"mimeType": "image/gif", "data": [0,1,0,1,0,1,0,0,0], "uri": "content://com.google.android.inputmethod.latin.fileprovider/test.gif"}',
+          ),
         ],
         'method': 'TextInputClient.performAction',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-            (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'commitContent');
     });
@@ -442,18 +467,11 @@ void main() {
       final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
         'args': <dynamic>[
           1,
-          <dynamic>[
-            'selector1',
-            'selector2',
-          ]
+          <dynamic>['selector1', 'selector2'],
         ],
         'method': 'TextInputClient.performSelectors',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'performSelector');
       expect(client.performedSelectors, <String>['selector1', 'selector2']);
@@ -469,17 +487,10 @@ void main() {
 
       // Send performPrivateCommand message.
       final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
-        'args': <dynamic>[
-          1,
-          jsonDecode('{"action": "actionCommand", "data": {"input_context" : "abcdefg"}}'),
-        ],
+        'args': <dynamic>[1, jsonDecode('{"action": "actionCommand", "data": {"input_context" : "abcdefg"}}')],
         'method': 'TextInputClient.performPrivateCommand',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'performPrivateCommand');
     });
@@ -494,17 +505,10 @@ void main() {
 
       // Send performPrivateCommand message.
       final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
-        'args': <dynamic>[
-          1,
-          jsonDecode('{"action": "actionCommand", "data": {"input_context" : 0.5}}'),
-        ],
+        'args': <dynamic>[1, jsonDecode('{"action": "actionCommand", "data": {"input_context" : 0.5}}')],
         'method': 'TextInputClient.performPrivateCommand',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'performPrivateCommand');
     });
@@ -519,17 +523,10 @@ void main() {
 
       // Send performPrivateCommand message.
       final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
-        'args': <dynamic>[
-          1,
-          jsonDecode('{"action": "actionCommand", "data": {"input_context" : ["abc", "efg"]}}'),
-        ],
+        'args': <dynamic>[1, jsonDecode('{"action": "actionCommand", "data": {"input_context" : ["abc", "efg"]}}')],
         'method': 'TextInputClient.performPrivateCommand',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'performPrivateCommand');
     });
@@ -543,19 +540,11 @@ void main() {
       expect(client.latestMethodCall, isEmpty);
 
       // Send performPrivateCommand message.
-      final ByteData? messageBytes =
-          const JSONMessageCodec().encodeMessage(<String, dynamic>{
-        'args': <dynamic>[
-          1,
-          jsonDecode('{"action": "actionCommand", "data": {"input_context" : "abc"}}'),
-        ],
+      final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
+        'args': <dynamic>[1, jsonDecode('{"action": "actionCommand", "data": {"input_context" : "abc"}}')],
         'method': 'TextInputClient.performPrivateCommand',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'performPrivateCommand');
     });
@@ -569,19 +558,11 @@ void main() {
       expect(client.latestMethodCall, isEmpty);
 
       // Send performPrivateCommand message.
-      final ByteData? messageBytes =
-          const JSONMessageCodec().encodeMessage(<String, dynamic>{
-        'args': <dynamic>[
-          1,
-          jsonDecode('{"action": "actionCommand", "data": {"input_context" : [0.5, 0.8]}}'),
-        ],
+      final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
+        'args': <dynamic>[1, jsonDecode('{"action": "actionCommand", "data": {"input_context" : [0.5, 0.8]}}')],
         'method': 'TextInputClient.performPrivateCommand',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'performPrivateCommand');
     });
@@ -602,11 +583,7 @@ void main() {
         ],
         'method': 'TextInputClient.performPrivateCommand',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'performPrivateCommand');
       expect(client.latestPrivateCommandData, <String, dynamic>{});
@@ -621,16 +598,11 @@ void main() {
       expect(client.latestMethodCall, isEmpty);
 
       // Send onConnectionClosed message.
-      final ByteData? messageBytes =
-          const JSONMessageCodec().encodeMessage(<String, dynamic>{
+      final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
         'args': <dynamic>[1, 0, 1],
         'method': 'TextInputClient.showAutocorrectionPromptRect',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'showAutocorrectionPromptRect');
     });
@@ -644,16 +616,11 @@ void main() {
       expect(client.latestMethodCall, isEmpty);
 
       // Send showToolbar message.
-      final ByteData? messageBytes =
-          const JSONMessageCodec().encodeMessage(<String, dynamic>{
+      final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
         'args': <dynamic>[1, 0, 1],
         'method': 'TextInputClient.showToolbar',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'showToolbar');
     });
@@ -673,30 +640,20 @@ void main() {
       expect(connection.scribbleInProgress, false);
 
       // Send scribbleInteractionBegan message.
-      ByteData? messageBytes =
-          const JSONMessageCodec().encodeMessage(<String, dynamic>{
+      ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
         'args': <dynamic>[1, 0, 1],
         'method': 'TextInputClient.scribbleInteractionBegan',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(connection.scribbleInProgress, true);
 
       // Send scribbleInteractionFinished message.
-      messageBytes =
-          const JSONMessageCodec().encodeMessage(<String, dynamic>{
+      messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
         'args': <dynamic>[1, 0, 1],
         'method': 'TextInputClient.scribbleInteractionFinished',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       expect(connection.scribbleInProgress, false);
     });
@@ -716,16 +673,11 @@ void main() {
       expect(otherElement.latestMethodCall, isEmpty);
 
       // Send focusElement message.
-      final ByteData? messageBytes =
-          const JSONMessageCodec().encodeMessage(<String, dynamic>{
+      final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
         'args': <dynamic>[targetElement.elementIdentifier, 0.0, 0.0],
         'method': 'TextInputClient.focusElement',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
       TextInput.unregisterScribbleElement(targetElement.elementIdentifier);
       TextInput.unregisterScribbleElement(otherElement.elementIdentifier);
@@ -749,14 +701,18 @@ void main() {
         FakeScribbleElement(elementIdentifier: 'other2', bounds: const Rect.fromLTWH(100.0, 100.0, 100.0, 100.0)),
       ];
 
-      void registerElements(FakeScribbleElement element) => TextInput.registerScribbleElement(element.elementIdentifier, element);
-      void unregisterElements(FakeScribbleElement element) => TextInput.unregisterScribbleElement(element.elementIdentifier);
+      void registerElements(FakeScribbleElement element) => TextInput.registerScribbleElement(
+        element.elementIdentifier,
+        element,
+      );
+      void unregisterElements(FakeScribbleElement element) => TextInput.unregisterScribbleElement(
+        element.elementIdentifier,
+      );
 
       <FakeScribbleElement>[...targetElements, ...otherElements].forEach(registerElements);
 
       // Send requestElementsInRect message.
-      final ByteData? messageBytes =
-          const JSONMessageCodec().encodeMessage(<String, dynamic>{
+      final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
         'args': <dynamic>[0.0, 50.0, 50.0, 100.0],
         'method': 'TextInputClient.requestElementsInRect',
       });
@@ -771,10 +727,17 @@ void main() {
 
       <FakeScribbleElement>[...targetElements, ...otherElements].forEach(unregisterElements);
 
-      final List<List<dynamic>> responses = (const JSONMessageCodec().decodeMessage(responseBytes) as List<dynamic>).cast<List<dynamic>>();
+      final List<List<dynamic>> responses =
+          (const JSONMessageCodec().decodeMessage(responseBytes) as List<dynamic>).cast<List<dynamic>>();
       expect(responses.first.length, 2);
-      expect(responses.first.first, containsAllInOrder(<dynamic>[targetElements.first.elementIdentifier, 0.0, 0.0, 100.0, 100.0]));
-      expect(responses.first.last, containsAllInOrder(<dynamic>[targetElements.last.elementIdentifier, 0.0, 100.0, 100.0, 100.0]));
+      expect(
+        responses.first.first,
+        containsAllInOrder(<dynamic>[targetElements.first.elementIdentifier, 0.0, 0.0, 100.0, 100.0]),
+      );
+      expect(
+        responses.first.last,
+        containsAllInOrder(<dynamic>[targetElements.last.elementIdentifier, 0.0, 100.0, 100.0, 100.0]),
+      );
     });
   });
 
@@ -782,16 +745,10 @@ void main() {
     // The composing range is empty.
     expect(TextEditingValue.empty.isComposingRangeValid, isFalse);
 
-    expect(
-      const TextEditingValue(text: 'test', composing: TextRange(start: 1, end: 0)).isComposingRangeValid,
-      isFalse,
-    );
+    expect(const TextEditingValue(text: 'test', composing: TextRange(start: 1, end: 0)).isComposingRangeValid, isFalse);
 
     // The composing range is out of range for the text.
-    expect(
-      const TextEditingValue(text: 'test', composing: TextRange(start: 1, end: 5)).isComposingRangeValid,
-      isFalse,
-    );
+    expect(const TextEditingValue(text: 'test', composing: TextRange(start: 1, end: 5)).isComposingRangeValid, isFalse);
 
     // The composing range is out of range for the text.
     expect(
@@ -799,10 +756,7 @@ void main() {
       isFalse,
     );
 
-    expect(
-      const TextEditingValue(text: 'test', composing: TextRange(start: 1, end: 4)).isComposingRangeValid,
-      isTrue,
-    );
+    expect(const TextEditingValue(text: 'test', composing: TextRange(start: 1, end: 4)).isComposingRangeValid, isTrue);
   });
 
   group('TextInputControl', () {
@@ -866,7 +820,9 @@ void main() {
 
       fakeTextChannel.outgoingCalls.clear();
 
-      fakeTextChannel.incoming!(MethodCall('TextInputClient.updateEditingState', <dynamic>[1, TextEditingValue.empty.toJSON()]));
+      fakeTextChannel.incoming!(
+        MethodCall('TextInputClient.updateEditingState', <dynamic>[1, TextEditingValue.empty.toJSON()]),
+      );
 
       expect(client.latestMethodCall, 'updateEditingValue');
       expect(control.methodCalls, <String>['attach', 'setEditingState']);
@@ -930,7 +886,9 @@ void main() {
       expect(fakeTextChannel.outgoingCalls.length, 6);
       expect(fakeTextChannel.outgoingCalls.last.method, 'TextInput.setEditableSizeAndTransform');
 
-      connection.setSelectionRects(const <SelectionRect>[SelectionRect(position: 1, bounds: Rect.fromLTWH(2, 3, 4, 5), direction: TextDirection.rtl)]);
+      connection.setSelectionRects(const <SelectionRect>[
+        SelectionRect(position: 1, bounds: Rect.fromLTWH(2, 3, 4, 5), direction: TextDirection.rtl),
+      ]);
       expectedMethodCalls.add('setSelectionRects');
       expect(control.methodCalls, expectedMethodCalls);
       expect(fakeTextChannel.outgoingCalls.length, 7);

@@ -27,9 +27,7 @@ class DispatchedEventKey {
 
   @override
   bool operator ==(Object other) {
-    return other is DispatchedEventKey &&
-        stream == other.stream &&
-        eventKind == other.eventKind;
+    return other is DispatchedEventKey && stream == other.stream && eventKind == other.eventKind;
   }
 
   @override
@@ -41,23 +39,16 @@ class TestWidgetInspectorService extends Object with WidgetInspectorService {
 
   final Map<DispatchedEventKey, List<Map<Object, Object?>>> eventsDispatched =
       <DispatchedEventKey, List<Map<Object, Object?>>>{};
-  final  List<Object?> objectsInspected = <Object?>[];
+  final List<Object?> objectsInspected = <Object?>[];
 
   @override
-  void registerServiceExtension({
-    required String name,
-    required ServiceExtensionCallback callback,
-  }) {
+  void registerServiceExtension({required String name, required ServiceExtensionCallback callback}) {
     assert(!extensions.containsKey(name));
     extensions[name] = callback;
   }
 
   @override
-  void postEvent(
-    String eventKind,
-    Map<Object, Object?> eventData, {
-    String stream = 'Extension',
-  }) {
+  void postEvent(String eventKind, Map<Object, Object?> eventData, {String stream = 'Extension'}) {
     dispatchedEvents(eventKind, stream: stream).add(eventData);
   }
 
@@ -66,23 +57,21 @@ class TestWidgetInspectorService extends Object with WidgetInspectorService {
     objectsInspected.add(object);
   }
 
-  List<Map<Object, Object?>> dispatchedEvents(
-    String eventKind, {
-    String stream = 'Extension',
-  }) {
+  List<Map<Object, Object?>> dispatchedEvents(String eventKind, {String stream = 'Extension'}) {
     return eventsDispatched.putIfAbsent(
       DispatchedEventKey(stream: stream, eventKind: eventKind),
       () => <Map<Object, Object?>>[],
     );
   }
 
-  List<Object?> inspectedObjects(){
+  List<Object?> inspectedObjects() {
     return objectsInspected;
   }
 
   Iterable<Map<Object, Object?>> getServiceExtensionStateChangedEvents(String extensionName) {
-    return dispatchedEvents('Flutter.ServiceExtensionStateChanged')
-      .where((Map<Object, Object?> event) => event['extension'] == extensionName);
+    return dispatchedEvents('Flutter.ServiceExtensionStateChanged').where(
+      (Map<Object, Object?> event) => event['extension'] == extensionName,
+    );
   }
 
   Future<Object?> testExtension(String name, Map<String, String> arguments) async {

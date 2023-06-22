@@ -11,27 +11,19 @@ void main() {
   }
 
   Material getMenuBarMaterial(WidgetTester tester) {
-    return tester.widget<Material>(
-      find.descendant(of: findMenuPanels(), matching: find.byType(Material)).first,
-    );
+    return tester.widget<Material>(find.descendant(of: findMenuPanels(), matching: find.byType(Material)).first);
   }
 
   Padding getMenuBarPadding(WidgetTester tester) {
-    return tester.widget<Padding>(
-      find.descendant(of: findMenuPanels(), matching: find.byType(Padding)).first,
-    );
+    return tester.widget<Padding>(find.descendant(of: findMenuPanels(), matching: find.byType(Padding)).first);
   }
 
   Material getMenuMaterial(WidgetTester tester) {
-    return tester.widget<Material>(
-      find.descendant(of: findMenuPanels().at(1), matching: find.byType(Material)).first,
-    );
+    return tester.widget<Material>(find.descendant(of: findMenuPanels().at(1), matching: find.byType(Material)).first);
   }
 
   Padding getMenuPadding(WidgetTester tester) {
-    return tester.widget<Padding>(
-      find.descendant(of: findMenuPanels().at(1), matching: find.byType(Padding)).first,
-    );
+    return tester.widget<Padding>(find.descendant(of: findMenuPanels().at(1), matching: find.byType(Padding)).first);
   }
 
   group('MenuStyle', () {
@@ -42,34 +34,24 @@ void main() {
     });
 
     testWidgets('fixedSize affects geometry', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: Column(
-              children: <Widget>[
-                MenuBarTheme(
-                  data: const MenuBarThemeData(
-                    style: MenuStyle(
-                      fixedSize: MaterialStatePropertyAll<Size>(Size(600, 60)),
-                    ),
-                  ),
-                  child: MenuTheme(
-                    data: const MenuThemeData(
-                      style: MenuStyle(
-                        fixedSize: MaterialStatePropertyAll<Size>(Size(100, 100)),
-                      ),
-                    ),
-                    child: MenuBar(
-                      children: createTestMenus(onPressed: (TestMenu menu) {}),
-                    ),
-                  ),
+      await tester.pumpWidget(MaterialApp(
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              MenuBarTheme(
+                data:
+                    const MenuBarThemeData(style: MenuStyle(fixedSize: MaterialStatePropertyAll<Size>(Size(600, 60)))),
+                child: MenuTheme(
+                  data:
+                      const MenuThemeData(style: MenuStyle(fixedSize: MaterialStatePropertyAll<Size>(Size(100, 100)))),
+                  child: MenuBar(children: createTestMenus(onPressed: (TestMenu menu) {})),
                 ),
-                const Expanded(child: Placeholder()),
-              ],
-            ),
+              ),
+              const Expanded(child: Placeholder()),
+            ],
           ),
         ),
-      );
+      ));
 
       // Have to open a menu initially to start things going.
       await tester.tap(find.text(TestMenu.mainMenu0.label));
@@ -85,34 +67,26 @@ void main() {
     });
 
     testWidgets('maximumSize affects geometry', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: Column(
-              children: <Widget>[
-                MenuBarTheme(
-                  data: const MenuBarThemeData(
-                    style: MenuStyle(
-                      maximumSize: MaterialStatePropertyAll<Size>(Size(250, 40)),
-                    ),
-                  ),
-                  child: MenuTheme(
-                    data: const MenuThemeData(
-                      style: MenuStyle(
-                        maximumSize: MaterialStatePropertyAll<Size>(Size(100, 100)),
-                      ),
-                    ),
-                    child: MenuBar(
-                      children: createTestMenus(onPressed: (TestMenu menu) {}),
-                    ),
-                  ),
+      await tester.pumpWidget(MaterialApp(
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              MenuBarTheme(
+                data: const MenuBarThemeData(
+                  style: MenuStyle(maximumSize: MaterialStatePropertyAll<Size>(Size(250, 40))),
                 ),
-                const Expanded(child: Placeholder()),
-              ],
-            ),
+                child: MenuTheme(
+                  data: const MenuThemeData(
+                    style: MenuStyle(maximumSize: MaterialStatePropertyAll<Size>(Size(100, 100))),
+                  ),
+                  child: MenuBar(children: createTestMenus(onPressed: (TestMenu menu) {})),
+                ),
+              ),
+              const Expanded(child: Placeholder()),
+            ],
           ),
         ),
-      );
+      ));
 
       // Have to open a menu initially to start things going.
       await tester.tap(find.text(TestMenu.mainMenu0.label));
@@ -128,34 +102,26 @@ void main() {
     });
 
     testWidgets('minimumSize affects geometry', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: Column(
-              children: <Widget>[
-                MenuBarTheme(
-                  data: const MenuBarThemeData(
-                    style: MenuStyle(
-                      minimumSize: MaterialStatePropertyAll<Size>(Size(400, 60)),
-                    ),
-                  ),
-                  child: MenuTheme(
-                    data: const MenuThemeData(
-                      style: MenuStyle(
-                        minimumSize: MaterialStatePropertyAll<Size>(Size(300, 300)),
-                      ),
-                    ),
-                    child: MenuBar(
-                      children: createTestMenus(onPressed: (TestMenu menu) {}),
-                    ),
-                  ),
+      await tester.pumpWidget(MaterialApp(
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              MenuBarTheme(
+                data: const MenuBarThemeData(
+                  style: MenuStyle(minimumSize: MaterialStatePropertyAll<Size>(Size(400, 60))),
                 ),
-                const Expanded(child: Placeholder()),
-              ],
-            ),
+                child: MenuTheme(
+                  data: const MenuThemeData(
+                    style: MenuStyle(minimumSize: MaterialStatePropertyAll<Size>(Size(300, 300))),
+                  ),
+                  child: MenuBar(children: createTestMenus(onPressed: (TestMenu menu) {})),
+                ),
+              ),
+              const Expanded(child: Placeholder()),
+            ],
           ),
         ),
-      );
+      ));
 
       // Have to open a menu initially to start things going.
       await tester.tap(find.text(TestMenu.mainMenu0.label));
@@ -171,46 +137,42 @@ void main() {
     });
 
     testWidgets('Material parameters are honored', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: Column(
-              children: <Widget>[
-                MenuBarTheme(
-                  data: const MenuBarThemeData(
-                    style: MenuStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.red),
-                      shadowColor: MaterialStatePropertyAll<Color>(Colors.green),
-                      surfaceTintColor: MaterialStatePropertyAll<Color>(Colors.blue),
-                      padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(10)),
-                      elevation: MaterialStatePropertyAll<double>(10),
-                      side: MaterialStatePropertyAll<BorderSide>(BorderSide(color: Colors.redAccent)),
-                      shape: MaterialStatePropertyAll<OutlinedBorder>(StadiumBorder()),
-                    ),
-                  ),
-                  child: MenuTheme(
-                    data: const MenuThemeData(
-                      style: MenuStyle(
-                        backgroundColor: MaterialStatePropertyAll<Color>(Colors.cyan),
-                        shadowColor: MaterialStatePropertyAll<Color>(Colors.purple),
-                        surfaceTintColor: MaterialStatePropertyAll<Color>(Colors.yellow),
-                        padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(20)),
-                        elevation: MaterialStatePropertyAll<double>(20),
-                        side: MaterialStatePropertyAll<BorderSide>(BorderSide(color: Colors.cyanAccent)),
-                        shape: MaterialStatePropertyAll<OutlinedBorder>(StarBorder()),
-                      ),
-                    ),
-                    child: MenuBar(
-                      children: createTestMenus(onPressed: (TestMenu menu) {}),
-                    ),
+      await tester.pumpWidget(MaterialApp(
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              MenuBarTheme(
+                data: const MenuBarThemeData(
+                  style: MenuStyle(
+                    backgroundColor: MaterialStatePropertyAll<Color>(Colors.red),
+                    shadowColor: MaterialStatePropertyAll<Color>(Colors.green),
+                    surfaceTintColor: MaterialStatePropertyAll<Color>(Colors.blue),
+                    padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(10)),
+                    elevation: MaterialStatePropertyAll<double>(10),
+                    side: MaterialStatePropertyAll<BorderSide>(BorderSide(color: Colors.redAccent)),
+                    shape: MaterialStatePropertyAll<OutlinedBorder>(StadiumBorder()),
                   ),
                 ),
-                const Expanded(child: Placeholder()),
-              ],
-            ),
+                child: MenuTheme(
+                  data: const MenuThemeData(
+                    style: MenuStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.cyan),
+                      shadowColor: MaterialStatePropertyAll<Color>(Colors.purple),
+                      surfaceTintColor: MaterialStatePropertyAll<Color>(Colors.yellow),
+                      padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(20)),
+                      elevation: MaterialStatePropertyAll<double>(20),
+                      side: MaterialStatePropertyAll<BorderSide>(BorderSide(color: Colors.cyanAccent)),
+                      shape: MaterialStatePropertyAll<OutlinedBorder>(StarBorder()),
+                    ),
+                  ),
+                  child: MenuBar(children: createTestMenus(onPressed: (TestMenu menu) {})),
+                ),
+              ),
+              const Expanded(child: Placeholder()),
+            ],
           ),
         ),
-      );
+      ));
 
       // Have to open a menu initially to start things going.
       await tester.tap(find.text(TestMenu.mainMenu0.label));
@@ -237,35 +199,27 @@ void main() {
     });
 
     testWidgets('visual density', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(useMaterial3: false),
-          home: Material(
-            child: Column(
-              children: <Widget>[
-                MenuBarTheme(
-                  data: const MenuBarThemeData(
-                    style: MenuStyle(
-                      visualDensity: VisualDensity(horizontal: 1.5, vertical: -1.5),
-                    ),
-                  ),
-                  child: MenuTheme(
-                    data: const MenuThemeData(
-                      style: MenuStyle(
-                        visualDensity: VisualDensity(horizontal: 0.5, vertical: -0.5),
-                      ),
-                    ),
-                    child: MenuBar(
-                      children: createTestMenus(onPressed: (TestMenu menu) {}),
-                    ),
-                  ),
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(useMaterial3: false),
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              MenuBarTheme(
+                data: const MenuBarThemeData(
+                  style: MenuStyle(visualDensity: VisualDensity(horizontal: 1.5, vertical: -1.5)),
                 ),
-                const Expanded(child: Placeholder()),
-              ],
-            ),
+                child: MenuTheme(
+                  data: const MenuThemeData(
+                    style: MenuStyle(visualDensity: VisualDensity(horizontal: 0.5, vertical: -0.5)),
+                  ),
+                  child: MenuBar(children: createTestMenus(onPressed: (TestMenu menu) {})),
+                ),
+              ),
+              const Expanded(child: Placeholder()),
+            ],
           ),
         ),
-      );
+      ));
       await tester.pump();
 
       expect(tester.getRect(find.byType(MenuBar)), equals(const Rect.fromLTRB(228.0, 0.0, 572.0, 48.0)));

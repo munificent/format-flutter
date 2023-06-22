@@ -5,7 +5,6 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-
 void main() {
   const Rect rect = Rect.fromLTWH(100, 100, 200, 500);
   const Offset outsideTopLeft = Offset(50, 50);
@@ -20,42 +19,15 @@ void main() {
 
   group('selection utils', () {
     test('selectionBasedOnRect works', () {
-      expect(
-        SelectionUtils.getResultBasedOnRect(rect, outsideTopLeft),
-        SelectionResult.previous,
-      );
-      expect(
-        SelectionUtils.getResultBasedOnRect(rect, outsideLeft),
-        SelectionResult.previous,
-      );
-      expect(
-        SelectionUtils.getResultBasedOnRect(rect, outsideBottomLeft),
-        SelectionResult.next,
-      );
-      expect(
-        SelectionUtils.getResultBasedOnRect(rect, outsideTop),
-        SelectionResult.previous,
-      );
-      expect(
-        SelectionUtils.getResultBasedOnRect(rect, outsideTopRight),
-        SelectionResult.previous,
-      );
-      expect(
-        SelectionUtils.getResultBasedOnRect(rect, outsideRight),
-        SelectionResult.next,
-      );
-      expect(
-        SelectionUtils.getResultBasedOnRect(rect, outsideBottomRight),
-        SelectionResult.next,
-      );
-      expect(
-        SelectionUtils.getResultBasedOnRect(rect, outsideBottom),
-        SelectionResult.next,
-      );
-      expect(
-        SelectionUtils.getResultBasedOnRect(rect, center),
-        SelectionResult.end,
-      );
+      expect(SelectionUtils.getResultBasedOnRect(rect, outsideTopLeft), SelectionResult.previous);
+      expect(SelectionUtils.getResultBasedOnRect(rect, outsideLeft), SelectionResult.previous);
+      expect(SelectionUtils.getResultBasedOnRect(rect, outsideBottomLeft), SelectionResult.next);
+      expect(SelectionUtils.getResultBasedOnRect(rect, outsideTop), SelectionResult.previous);
+      expect(SelectionUtils.getResultBasedOnRect(rect, outsideTopRight), SelectionResult.previous);
+      expect(SelectionUtils.getResultBasedOnRect(rect, outsideRight), SelectionResult.next);
+      expect(SelectionUtils.getResultBasedOnRect(rect, outsideBottomRight), SelectionResult.next);
+      expect(SelectionUtils.getResultBasedOnRect(rect, outsideBottom), SelectionResult.next);
+      expect(SelectionUtils.getResultBasedOnRect(rect, center), SelectionResult.end);
     });
 
     test('adjustDragOffset works', () {

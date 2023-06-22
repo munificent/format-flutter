@@ -9,7 +9,7 @@ import 'package:flutter/rendering.dart';
 /// Used by [TestRecordingCanvas] to trace canvas calls.
 class RecordedInvocation {
   /// Create a record for an invocation list.
-  const RecordedInvocation(this.invocation, { required this.stack });
+  const RecordedInvocation(this.invocation, {required this.stack});
 
   /// The method that was called and its arguments.
   ///
@@ -27,10 +27,8 @@ class RecordedInvocation {
   String toString() => _describeInvocation(invocation);
 
   /// Converts [stack] to a string using the [FlutterError.defaultStackFilter] logic.
-  String stackToString({ String indent = '' }) {
-    return indent + FlutterError.defaultStackFilter(
-      stack.toString().trimRight().split('\n'),
-    ).join('\n$indent');
+  String stackToString({String indent = ''}) {
+    return indent + FlutterError.defaultStackFilter(stack.toString().trimRight().split('\n')).join('\n$indent');
   }
 }
 
@@ -157,12 +155,7 @@ class TestRecordingPaintingContext extends ClipContext implements PaintingContex
   }
 
   @override
-  OpacityLayer pushOpacity(
-    Offset offset,
-    int alpha,
-    PaintingContextCallback painter, {
-    OpacityLayer? oldLayer,
-  }) {
+  OpacityLayer pushOpacity(Offset offset, int alpha, PaintingContextCallback painter, {OpacityLayer? oldLayer}) {
     canvas.saveLayer(null, Paint()); // TODO(ianh): Expose the alpha somewhere.
     painter(this, offset);
     canvas.restore();
@@ -170,12 +163,7 @@ class TestRecordingPaintingContext extends ClipContext implements PaintingContex
   }
 
   @override
-  void pushLayer(
-    Layer childLayer,
-    PaintingContextCallback painter,
-    Offset offset, {
-    Rect? childPaintBounds,
-  }) {
+  void pushLayer(Layer childLayer, PaintingContextCallback painter, Offset offset, {Rect? childPaintBounds}) {
     painter(this, offset);
   }
 
@@ -183,11 +171,11 @@ class TestRecordingPaintingContext extends ClipContext implements PaintingContex
   VoidCallback addCompositionCallback(CompositionCallback callback) => () {};
 
   @override
-  void noSuchMethod(Invocation invocation) { }
+  void noSuchMethod(Invocation invocation) {}
 }
 
 class _MethodCall implements Invocation {
-  _MethodCall(this._name, [ this._arguments = const <dynamic>[]]);
+  _MethodCall(this._name, [this._arguments = const <dynamic>[]]);
   final Symbol _name;
   final List<dynamic> _arguments;
   @override
@@ -205,7 +193,7 @@ class _MethodCall implements Invocation {
   @override
   List<dynamic> get positionalArguments => _arguments;
   @override
-  List<Type> get typeArguments => const <Type> [];
+  List<Type> get typeArguments => const <Type>[];
 }
 
 String _valueName(Object? value) {

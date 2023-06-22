@@ -11,10 +11,16 @@ import 'leak_tracking.dart';
 
 final String _leakTrackedClassName = '$_LeakTrackedClass';
 
-Leaks _leaksOfAllTypes() => Leaks(<LeakType, List<LeakReport>> {
-  LeakType.notDisposed: <LeakReport>[LeakReport(code: 1, context: <String, dynamic>{}, type:'myNotDisposedClass', trackedClass: 'myTrackedClass')],
-  LeakType.notGCed: <LeakReport>[LeakReport(code: 2, context: <String, dynamic>{}, type:'myNotGCedClass', trackedClass: 'myTrackedClass')],
-  LeakType.gcedLate: <LeakReport>[LeakReport(code: 3, context: <String, dynamic>{}, type:'myGCedLateClass', trackedClass: 'myTrackedClass')],
+Leaks _leaksOfAllTypes() => Leaks(<LeakType, List<LeakReport>>{
+  LeakType.notDisposed: <LeakReport>[
+    LeakReport(code: 1, context: <String, dynamic>{}, type: 'myNotDisposedClass', trackedClass: 'myTrackedClass'),
+  ],
+  LeakType.notGCed: <LeakReport>[
+    LeakReport(code: 2, context: <String, dynamic>{}, type: 'myNotGCedClass', trackedClass: 'myTrackedClass'),
+  ],
+  LeakType.gcedLate: <LeakReport>[
+    LeakReport(code: 3, context: <String, dynamic>{}, type: 'myGCedLateClass', trackedClass: 'myTrackedClass'),
+  ],
 });
 
 Future<void> main() async {
@@ -34,9 +40,7 @@ Future<void> main() async {
     final LeakReport leak = leaks.notDisposed.first;
     leaks.notDisposed.add(leak);
 
-    final LeakTrackingTestConfig config = LeakTrackingTestConfig(
-      notDisposedAllowList: <String, int?>{leak.type: 1},
-    );
+    final LeakTrackingTestConfig config = LeakTrackingTestConfig(notDisposedAllowList: <String, int?>{leak.type: 1});
     leaks = LeakCleaner(config).clean(leaks);
 
     expect(leaks.notDisposed, hasLength(2));
@@ -130,33 +134,26 @@ Future<void> main() async {
 
       tearDown(() => _verifyLeaks(leaks, expectedNotDisposed: 1));
     });
-  },
-  skip: isBrowser); // [intended] Leak detection is off for web.
+  }, skip: isBrowser); // [intended] Leak detection is off for web.
 
   testWidgetsWithLeakTracking('Leak tracking is no-op for web', (WidgetTester tester) async {
     await tester.pumpWidget(_StatelessLeakingWidget());
-  },
-  skip: !isBrowser); // [intended] Leaks detection is off for web.
+  }, skip: !isBrowser); // [intended] Leaks detection is off for web.
 }
 
 /// Verifies [leaks] contains expected number of leaks for [_LeakTrackedClass].
-void _verifyLeaks(Leaks leaks, { int expectedNotDisposed = 0,  int expectedNotGCed = 0 }) {
+void _verifyLeaks(Leaks leaks, {int expectedNotDisposed = 0, int expectedNotGCed = 0}) {
   const String linkToLeakTracker = 'https://github.com/dart-lang/leak_tracker';
 
-  expect(
-    () => expect(leaks, isLeakFree),
-    throwsA(
-      predicate((Object? e) {
-        return e is TestFailure && e.toString().contains(linkToLeakTracker);
-      }),
-    ),
-  );
+  expect(() => expect(leaks, isLeakFree), throwsA(predicate((Object? e) {
+    return e is TestFailure && e.toString().contains(linkToLeakTracker);
+  })));
 
   _verifyLeakList(leaks.notDisposed, expectedNotDisposed);
   _verifyLeakList(leaks.notGCed, expectedNotGCed);
 }
 
-void _verifyLeakList(List<LeakReport> list, int expectedCount){
+void _verifyLeakList(List<LeakReport> list, int expectedCount) {
   expect(list.length, expectedCount);
 
   for (final LeakReport leak in list) {
@@ -183,11 +180,7 @@ class _StatelessLeakingWidget extends StatelessWidget {
 
 class _LeakTrackedClass {
   _LeakTrackedClass() {
-    dispatchObjectCreated(
-      library: library,
-      className: '$_LeakTrackedClass',
-      object: this,
-    );
+    dispatchObjectCreated(library: library, className: '$_LeakTrackedClass', object: this);
   }
 
   static const String library = 'package:my_package/lib/src/my_lib.dart';

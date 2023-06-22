@@ -9,7 +9,6 @@ import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ViewportOffset;
 
-
 // BUILDER DELEGATE ---
 
 final TwoDimensionalChildBuilderDelegate builderDelegate = TwoDimensionalChildBuilderDelegate(
@@ -18,15 +17,13 @@ final TwoDimensionalChildBuilderDelegate builderDelegate = TwoDimensionalChildBu
   builder: (BuildContext context, ChildVicinity vicinity) {
     return Container(
       color: vicinity.xIndex.isEven && vicinity.yIndex.isEven
-        ? Colors.amber[100]
-        : (vicinity.xIndex.isOdd && vicinity.yIndex.isOdd
-        ? Colors.blueAccent[100]
-        : null),
+          ? Colors.amber[100]
+          : (vicinity.xIndex.isOdd && vicinity.yIndex.isOdd ? Colors.blueAccent[100] : null),
       height: 200,
       width: 200,
       child: Center(child: Text('R${vicinity.xIndex}:C${vicinity.yIndex}')),
     );
-  }
+  },
 );
 
 // Creates a simple 2D table of 200x200 squares with a builder delegate.
@@ -208,14 +205,8 @@ class RenderSimpleBuilderTableViewport extends RenderTwoDimensionalViewport {
 
     final int leadingColumn = math.max((horizontalPixels / 200).floor(), 0);
     final int leadingRow = math.max((verticalPixels / 200).floor(), 0);
-    final int trailingColumn = math.min(
-      ((horizontalPixels + viewportWidth) / 200).ceil(),
-      maxColumnIndex,
-    );
-    final int trailingRow = math.min(
-      ((verticalPixels + viewportHeight) / 200).ceil(),
-      maxRowIndex,
-    );
+    final int trailingColumn = math.min(((horizontalPixels + viewportWidth) / 200).ceil(), maxColumnIndex);
+    final int trailingRow = math.min(((verticalPixels + viewportHeight) / 200).ceil(), maxRowIndex);
 
     double xLayoutOffset = (leadingColumn * 200) - horizontalOffset.pixels;
     for (int column = leadingColumn; column <= trailingColumn; column++) {
@@ -250,26 +241,18 @@ class RenderSimpleBuilderTableViewport extends RenderTwoDimensionalViewport {
 }
 
 // LIST DELEGATE ---
-final List<List<Widget>> children = List<List<Widget>>.generate(
-  100,
-  (int xIndex) {
-    return List<Widget>.generate(
-      100,
-      (int yIndex) {
-        return Container(
-          color: xIndex.isEven && yIndex.isEven
-            ? Colors.amber[100]
-            : (xIndex.isOdd && yIndex.isOdd
-              ? Colors.blueAccent[100]
-              : null),
-          height: 200,
-          width: 200,
-          child: Center(child: Text('R$xIndex:C$yIndex')),
-        );
-      },
+final List<List<Widget>> children = List<List<Widget>>.generate(100, (int xIndex) {
+  return List<Widget>.generate(100, (int yIndex) {
+    return Container(
+      color: xIndex.isEven && yIndex.isEven
+          ? Colors.amber[100]
+          : (xIndex.isOdd && yIndex.isOdd ? Colors.blueAccent[100] : null),
+      height: 200,
+      width: 200,
+      child: Center(child: Text('R$xIndex:C$yIndex')),
     );
-  },
-);
+  });
+});
 
 // Builds a simple 2D table of 200x200 squares with a list delegate.
 Widget simpleListTest({
@@ -397,14 +380,8 @@ class RenderSimpleListTableViewport extends RenderTwoDimensionalViewport {
 
     final int leadingColumn = math.max((horizontalPixels / 200).floor(), 0);
     final int leadingRow = math.max((verticalPixels / 200).floor(), 0);
-    final int trailingColumn = math.min(
-      ((horizontalPixels + viewportDimension.width) / 200).ceil(),
-      columnCount,
-    );
-    final int trailingRow = math.min(
-      ((verticalPixels + viewportDimension.height) / 200).ceil(),
-      rowCount,
-    );
+    final int trailingColumn = math.min(((horizontalPixels + viewportDimension.width) / 200).ceil(), columnCount);
+    final int trailingRow = math.min(((verticalPixels + viewportDimension.height) / 200).ceil(), rowCount);
 
     double xLayoutOffset = (leadingColumn * 200) - horizontalOffset.pixels;
     for (int column = leadingColumn; column <= trailingColumn; column++) {

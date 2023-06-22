@@ -26,13 +26,7 @@ void main() {
       maintainState: true,
       opaque: true,
       builder: (BuildContext context) {
-        return TabBar(
-          isScrollable: true,
-          controller: controller,
-          tabs: const <Tab>[
-            Tab(text: 'Main'),
-          ],
-        );
+        return TabBar(isScrollable: true, controller: controller, tabs: const <Tab>[Tab(text: 'Main')]);
       },
     );
     final OverlayEntry entry2 = OverlayEntry(
@@ -44,16 +38,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              entry1,
-              entry2,
-            ],
-          ),
-        ),
-      ),
+      MaterialApp(home: Material(child: Overlay(initialEntries: <OverlayEntry>[entry1, entry2]))),
     );
 
     entry2.remove();

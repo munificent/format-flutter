@@ -21,13 +21,15 @@ void main() {
         home: Scaffold(
           body: AutofillGroup(
             key: outerKey,
-            child: Column(children: <Widget>[
-              client1,
-              AutofillGroup(
-                key: innerKey,
-                child: Column(children: <Widget>[client2, TextField(autofillHints: null)]),
-              ),
-            ]),
+            child: Column(
+              children: <Widget>[
+                client1,
+                AutofillGroup(
+                  key: innerKey,
+                  child: Column(children: <Widget>[client2, TextField(autofillHints: null)]),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -52,21 +54,19 @@ void main() {
 
     late StateSetter setState;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: AutofillGroup(
-            key: scopeKey,
-            child: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setter) {
-                setState = setter;
-                return Column(children: <Widget>[client1, client2]);
-              },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: AutofillGroup(
+          key: scopeKey,
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setter) {
+              setState = setter;
+              return Column(children: <Widget>[client1, client2]);
+            },
           ),
         ),
       ),
-    );
+    ));
 
     final AutofillGroupState scopeState = tester.state<AutofillGroupState>(find.byKey(scopeKey));
 
@@ -76,7 +76,9 @@ void main() {
     expect(scopeState.autofillClients.toList(), <State<TextField>>[clientState1]);
 
     // Add to scope.
-    setState(() { client2 = const TextField(autofillHints: <String>['2']); });
+    setState(() {
+      client2 = const TextField(autofillHints: <String>['2']);
+    });
 
     await tester.pump();
 
@@ -85,7 +87,9 @@ void main() {
     expect(scopeState.autofillClients.length, 2);
 
     // Remove from scope again.
-    setState(() { client2 = const TextField(autofillHints: null); });
+    setState(() {
+      client2 = const TextField(autofillHints: null);
+    });
 
     await tester.pump();
 
@@ -100,25 +104,27 @@ void main() {
     const TextField client1 = TextField(autofillHints: <String>['1']);
     const TextField client2 = TextField(autofillHints: <String>['2']);
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: AutofillGroup(
-            key: outerKey,
-            child: Column(children: <Widget>[
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: AutofillGroup(
+          key: outerKey,
+          child: Column(
+            children: <Widget>[
               client1,
               AutofillGroup(
                 key: innerKey,
-                child: Column(children: <Widget>[
-                  client2,
-                  TextField(key: keyClient3, autofillHints: const <String>['3']),
-                ]),
+                child: Column(
+                  children: <Widget>[
+                    client2,
+                    TextField(key: keyClient3, autofillHints: const <String>['3']),
+                  ],
+                ),
               ),
-            ]),
+            ],
           ),
         ),
       ),
-    );
+    ));
 
     final AutofillGroupState innerState = tester.state<AutofillGroupState>(find.byKey(innerKey));
     final AutofillGroupState outerState = tester.state<AutofillGroupState>(find.byKey(outerKey));
@@ -127,23 +133,20 @@ void main() {
     final State<TextField> clientState2 = tester.state<State<TextField>>(find.byWidget(client2));
     final State<TextField> clientState3 = tester.state<State<TextField>>(find.byKey(keyClient3));
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: AutofillGroup(
-            key: outerKey,
-            child: Column(children: <Widget>[
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: AutofillGroup(
+          key: outerKey,
+          child: Column(
+            children: <Widget>[
               client1,
               TextField(key: keyClient3, autofillHints: const <String>['3']),
-              const AutofillGroup(
-                key: innerKey,
-                child: Column(children: <Widget>[client2]),
-              ),
-            ]),
+              const AutofillGroup(key: innerKey, child: Column(children: <Widget>[client2])),
+            ],
           ),
         ),
       ),
-    );
+    ));
 
     expect(outerState.autofillClients.length, 2);
     expect(outerState.autofillClients, contains(clientState1));
@@ -158,106 +161,70 @@ void main() {
     const Key group3 = Key('group3');
     const TextField placeholder = TextField(autofillHints: <String>[AutofillHints.name]);
 
-    List<Widget> children = const <Widget> [
-      AutofillGroup(
-        key: group1,
-        child: AutofillGroup(child: placeholder),
-      ),
+    List<Widget> children = const <Widget>[
+      AutofillGroup(key: group1, child: AutofillGroup(child: placeholder)),
       AutofillGroup(key: group2, onDisposeAction: AutofillContextAction.cancel, child: placeholder),
-      AutofillGroup(
-        key: group3,
-        child: AutofillGroup(child: placeholder),
-      ),
+      AutofillGroup(key: group3, child: AutofillGroup(child: placeholder)),
     ];
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setter) {
-              setState = setter;
-              return Column(children: children);
-            },
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setter) {
+            setState = setter;
+            return Column(children: children);
+          },
         ),
       ),
-    );
+    ));
 
-    expect(
-      tester.testTextInput.log,
-      isNot(contains(_matchesCommit)),
-    );
+    expect(tester.testTextInput.log, isNot(contains(_matchesCommit)));
 
     tester.testTextInput.log.clear();
 
     // Remove the first topmost group group1. Should commit.
     setState(() {
-      children = const <Widget> [
+      children = const <Widget>[
         AutofillGroup(key: group2, onDisposeAction: AutofillContextAction.cancel, child: placeholder),
-        AutofillGroup(
-          key: group3,
-          child: AutofillGroup(child: placeholder),
-        ),
+        AutofillGroup(key: group3, child: AutofillGroup(child: placeholder)),
       ];
     });
 
     await tester.pump();
 
-    expect(
-      tester.testTextInput.log.single,
-      _matchesCommit,
-    );
+    expect(tester.testTextInput.log.single, _matchesCommit);
 
     tester.testTextInput.log.clear();
 
     // Remove the topmost group group2. Should cancel.
     setState(() {
-      children = const <Widget> [
-        AutofillGroup(
-          key: group3,
-          child: AutofillGroup(child: placeholder),
-        ),
-      ];
+      children = const <Widget>[AutofillGroup(key: group3, child: AutofillGroup(child: placeholder))];
     });
 
     await tester.pump();
 
-    expect(
-      tester.testTextInput.log.single,
-      _matchesCancel,
-    );
+    expect(tester.testTextInput.log.single, _matchesCancel);
 
     tester.testTextInput.log.clear();
 
     // Remove the inner group within group3. No action.
     setState(() {
-      children = const <Widget> [
-        AutofillGroup(
-          key: group3,
-          child: placeholder,
-        ),
-      ];
+      children = const <Widget>[AutofillGroup(key: group3, child: placeholder)];
     });
 
     await tester.pump();
 
-    expect(
-      tester.testTextInput.log,
-      isNot(contains('TextInput.finishAutofillContext')),
-    );
+    expect(tester.testTextInput.log, isNot(contains('TextInput.finishAutofillContext')));
 
     tester.testTextInput.log.clear();
 
     // Remove the topmosts group group3. Should commit.
     setState(() {
-      children = const <Widget> [];
+      children = const <Widget>[];
     });
 
     await tester.pump();
 
-    expect(
-      tester.testTextInput.log.single,
-      _matchesCommit,
-    );
+    expect(tester.testTextInput.log.single, _matchesCommit);
   });
 }

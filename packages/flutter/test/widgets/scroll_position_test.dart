@@ -5,15 +5,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-ScrollController _controller = ScrollController(
-  initialScrollOffset: 110.0,
-);
+ScrollController _controller = ScrollController(initialScrollOffset: 110.0);
 
 class ThePositiveNumbers extends StatelessWidget {
-  const ThePositiveNumbers({
-    super.key,
-    required this.from,
-  });
+  const ThePositiveNumbers({super.key, required this.from});
   final int from;
   @override
   Widget build(BuildContext context) {
@@ -30,33 +25,31 @@ class ThePositiveNumbers extends StatelessWidget {
 
 Future<void> performTest(WidgetTester tester, bool maintainState) async {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-  await tester.pumpWidget(
-    Directionality(
-      textDirection: TextDirection.ltr,
-      child: MediaQuery(
-        data: MediaQueryData.fromView(tester.view),
-        child: Navigator(
-          key: navigatorKey,
-          onGenerateRoute: (RouteSettings settings) {
-            if (settings.name == '/') {
-              return MaterialPageRoute<void>(
-                settings: settings,
-                builder: (_) => const ThePositiveNumbers(from: 0),
-                maintainState: maintainState,
-              );
-            } else if (settings.name == '/second') {
-              return MaterialPageRoute<void>(
-                settings: settings,
-                builder: (_) => const ThePositiveNumbers(from: 10000),
-                maintainState: maintainState,
-              );
-            }
-            return null;
-          },
-        ),
+  await tester.pumpWidget(Directionality(
+    textDirection: TextDirection.ltr,
+    child: MediaQuery(
+      data: MediaQueryData.fromView(tester.view),
+      child: Navigator(
+        key: navigatorKey,
+        onGenerateRoute: (RouteSettings settings) {
+          if (settings.name == '/') {
+            return MaterialPageRoute<void>(
+              settings: settings,
+              builder: (_) => const ThePositiveNumbers(from: 0),
+              maintainState: maintainState,
+            );
+          } else if (settings.name == '/second') {
+            return MaterialPageRoute<void>(
+              settings: settings,
+              builder: (_) => const ThePositiveNumbers(from: 10000),
+              maintainState: maintainState,
+            );
+          }
+          return null;
+        },
       ),
     ),
-  );
+  ));
 
   // we're 600 pixels high, each item is 100 pixels high, scroll position is
   // 110.0, so we should have 7 items, 1..7.
@@ -166,22 +159,17 @@ void main() {
 
   testWidgets('scroll alignment is honored by ensureVisible', (WidgetTester tester) async {
     final List<int> items = List<int>.generate(11, (int index) => index).toList();
-    final List<FocusNode> nodes = List<FocusNode>.generate(11, (int index) => FocusNode(debugLabel: 'Item ${index + 1}')).toList();
+    final List<FocusNode> nodes =
+        List<FocusNode>.generate(11, (int index) => FocusNode(debugLabel: 'Item ${index + 1}')).toList();
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: ListView(
-          controller: controller,
-          children: items.map<Widget>((int item) {
-            return Focus(
-              key: ValueKey<int>(item),
-              focusNode: nodes[item],
-              child: Container(height: 110),
-            );
-          }).toList(),
-        ),
+    await tester.pumpWidget(MaterialApp(
+      home: ListView(
+        controller: controller,
+        children: items.map<Widget>((int item) {
+          return Focus(key: ValueKey<int>(item), focusNode: nodes[item], child: Container(height: 110));
+        }).toList(),
       ),
-    );
+    ));
 
     controller.position.ensureVisible(
       tester.renderObject(find.byKey(const ValueKey<int>(0))),

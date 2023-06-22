@@ -13,12 +13,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Button Border Test')),
-        body: Center(
-          child: ElevatedButton(
-            child: const Text('Test'),
-            onPressed: () { },
-          ),
-        ),
+        body: Center(child: ElevatedButton(child: const Text('Test'), onPressed: () {})),
       ),
     ));
     await tester.tap(find.text('Test'));
@@ -28,18 +23,12 @@ void main() {
   });
 
   testWidgets('InkWell with NoSplash splashFactory paints nothing', (WidgetTester tester) async {
-    Widget buildFrame({ InteractiveInkFeatureFactory? splashFactory }) {
+    Widget buildFrame({InteractiveInkFeatureFactory? splashFactory}) {
       return MaterialApp(
         theme: ThemeData(useMaterial3: false),
         home: Scaffold(
           body: Center(
-            child: Material(
-              child: InkWell(
-                splashFactory: splashFactory,
-                onTap: () { },
-                child: const Text('test'),
-              ),
-            ),
+            child: Material(child: InkWell(splashFactory: splashFactory, onTap: () {}, child: const Text('test'))),
           ),
         ),
       );

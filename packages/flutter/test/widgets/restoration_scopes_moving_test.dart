@@ -7,13 +7,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('widget moves scopes during restore', (WidgetTester tester) async {
-    await tester.pumpWidget(const RootRestorationScope(
-      restorationId: 'root',
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: TestWidgetWithCounterChild(),
+    await tester.pumpWidget(
+      const RootRestorationScope(
+        restorationId: 'root',
+        child: Directionality(textDirection: TextDirection.ltr, child: TestWidgetWithCounterChild()),
       ),
-    ));
+    );
 
     expect(tester.state<TestWidgetWithCounterChildState>(find.byType(TestWidgetWithCounterChild)).restoreChild, true);
     expect(find.text('Counter: 0'), findsOneWidget);
@@ -70,15 +69,12 @@ void main() {
 
   testWidgets('restoration is turned on later', (WidgetTester tester) async {
     tester.binding.restorationManager.disableRestoration();
-    await tester.pumpWidget(const RootRestorationScope(
-      restorationId: 'root-child',
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: TestWidget(
-          restorationId: 'foo',
-        ),
+    await tester.pumpWidget(
+      const RootRestorationScope(
+        restorationId: 'root-child',
+        child: Directionality(textDirection: TextDirection.ltr, child: TestWidget(restorationId: 'foo')),
       ),
-    ));
+    );
 
     final TestWidgetState state = tester.state<TestWidgetState>(find.byType(TestWidget));
     expect(find.text('hello'), findsOneWidget);
@@ -91,15 +87,12 @@ void main() {
 
     await tester.restoreFrom(TestRestorationData.empty);
 
-    await tester.pumpWidget(const RootRestorationScope(
-      restorationId: 'root-child',
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: TestWidget(
-          restorationId: 'foo',
-        ),
+    await tester.pumpWidget(
+      const RootRestorationScope(
+        restorationId: 'root-child',
+        child: Directionality(textDirection: TextDirection.ltr, child: TestWidget(restorationId: 'foo')),
       ),
-    ));
+    );
 
     expect(find.text('hello'), findsOneWidget);
     expect(state.buckets.single, isNull);
@@ -151,9 +144,7 @@ class TestWidgetWithCounterChildState extends State<TestWidgetWithCounterChild> 
 
   @override
   Widget build(BuildContext context) {
-    return Counter(
-      restorationId: restoreChild ? 'counter' : null,
-    );
+    return Counter(restorationId: restoreChild ? 'counter' : null);
   }
 
   @override
@@ -194,9 +185,7 @@ class CounterState extends State<Counter> with RestorationMixin {
           count.value++;
         });
       },
-      child: Text(
-        'Counter: ${count.value}',
-      ),
+      child: Text('Counter: ${count.value}'),
     );
   }
 }

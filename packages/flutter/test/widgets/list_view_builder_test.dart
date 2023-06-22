@@ -22,11 +22,7 @@ void main() {
             itemExtent: 100.0,
             itemBuilder: (BuildContext context, int index) {
               callbackTracker.add(index);
-              return SizedBox(
-                key: ValueKey<int>(index),
-                height: 100.0,
-                child: Text('$index'),
-              );
+              return SizedBox(key: ValueKey<int>(index), height: 100.0, child: Text('$index'));
             },
           ),
           right: const Text('Not Today'),
@@ -42,7 +38,7 @@ void main() {
       0, 1, 2, 3, 4, 5, // visible in viewport
       6, 7, 8, // in caching area
     ]));
-    check(visible: <int>[0, 1, 2, 3, 4, 5], hidden: <int>[ 6, 7, 8]);
+    check(visible: <int>[0, 1, 2, 3, 4, 5], hidden: <int>[6, 7, 8]);
 
     callbackTracker.clear();
     testWidget.flip();
@@ -58,7 +54,7 @@ void main() {
       0, 1, 2, 3, 4, 5,
       6, 7, 8, // in caching area
     ]));
-    check(visible: <int>[0, 1, 2, 3, 4, 5], hidden: <int>[ 6, 7, 8]);
+    check(visible: <int>[0, 1, 2, 3, 4, 5], hidden: <int>[6, 7, 8]);
   });
 
   testWidgets('ListView.builder vertical', (WidgetTester tester) async {
@@ -222,11 +218,7 @@ void main() {
 
     final Widget testWidget = Directionality(
       textDirection: TextDirection.ltr,
-      child: ListView.builder(
-        itemBuilder: itemBuilder,
-        itemExtent: 300.0,
-        itemCount: 10,
-      ),
+      child: ListView.builder(itemBuilder: itemBuilder, itemExtent: 300.0, itemCount: 10),
     );
 
     void jumpTo(double newScrollOffset) {
@@ -277,10 +269,7 @@ void main() {
       textDirection: TextDirection.ltr,
       child: ListView.builder(
         itemBuilder: itemBuilder,
-        prototypeItem: const SizedBox(
-          width: 800,
-          height: 300,
-        ),
+        prototypeItem: const SizedBox(width: 800, height: 300),
         itemCount: 30,
       ),
     );
@@ -310,22 +299,16 @@ void main() {
   });
 
   testWidgets('ListView.separated', (WidgetTester tester) async {
-    Widget buildFrame({ required int itemCount }) {
+    Widget buildFrame({required int itemCount}) {
       return Directionality(
         textDirection: TextDirection.ltr,
         child: ListView.separated(
           itemCount: itemCount,
           itemBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 100.0,
-              child: Text('i$index'),
-            );
+            return SizedBox(height: 100.0, child: Text('i$index'));
           },
           separatorBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 10.0,
-              child: Text('s$index'),
-            );
+            return SizedBox(height: 10.0, child: Text('s$index'));
           },
         ),
       );
@@ -354,36 +337,24 @@ void main() {
     expect(find.text('i6'), findsNothing);
   });
 
-
   testWidgets('ListView.separated uses correct semanticChildCount', (WidgetTester tester) async {
-    Widget buildFrame({ required int itemCount}) {
+    Widget buildFrame({required int itemCount}) {
       return Directionality(
         textDirection: TextDirection.ltr,
         child: ListView.separated(
           itemCount: itemCount,
           itemBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 100.0,
-              child: Text('i$index'),
-            );
+            return SizedBox(height: 100.0, child: Text('i$index'));
           },
           separatorBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 10.0,
-              child: Text('s$index'),
-            );
+            return SizedBox(height: 10.0, child: Text('s$index'));
           },
         ),
       );
     }
 
     Scrollable scrollable() {
-      return tester.widget<Scrollable>(
-        find.descendant(
-          of: find.byType(ListView),
-          matching: find.byType(Scrollable),
-        ),
-      );
+      return tester.widget<Scrollable>(find.descendant(of: find.byType(ListView), matching: find.byType(Scrollable)));
     }
 
     await tester.pumpWidget(buildFrame(itemCount: 0));
@@ -426,7 +397,7 @@ void main() {
   });
 }
 
-void check({ List<int> visible = const <int>[], List<int> hidden = const <int>[] }) {
+void check({List<int> visible = const <int>[], List<int> hidden = const <int>[]}) {
   for (final int i in visible) {
     expect(find.text('$i'), findsOneWidget);
   }

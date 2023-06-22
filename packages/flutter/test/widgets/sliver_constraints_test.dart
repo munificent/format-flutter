@@ -8,29 +8,24 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('precedingScrollExtent is reported as infinity for Sliver of unknown size', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: CustomScrollView(
-          slivers: <Widget>[
-            const SliverToBoxAdapter(child: SizedBox(width: double.infinity, height: 150.0)),
-            const SliverToBoxAdapter(child: SizedBox(width: double.infinity, height: 150.0)),
-            SliverList(
-              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                if (index < 100) {
-                  return const SizedBox(width: double.infinity, height: 150.0);
-                } else {
-                  return null;
-                }
-              }),
-            ),
-            const SliverToBoxAdapter(
-              key: Key('final_sliver'),
-              child: SizedBox(width: double.infinity, height: 150.0),
-            ),
-          ],
-        ),
+    await tester.pumpWidget(MaterialApp(
+      home: CustomScrollView(
+        slivers: <Widget>[
+          const SliverToBoxAdapter(child: SizedBox(width: double.infinity, height: 150.0)),
+          const SliverToBoxAdapter(child: SizedBox(width: double.infinity, height: 150.0)),
+          SliverList(
+            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+              if (index < 100) {
+                return const SizedBox(width: double.infinity, height: 150.0);
+              } else {
+                return null;
+              }
+            }),
+          ),
+          const SliverToBoxAdapter(key: Key('final_sliver'), child: SizedBox(width: double.infinity, height: 150.0)),
+        ],
       ),
-    );
+    ));
 
     // The last Sliver comes after a SliverList that has many more items than
     // can fit in the viewport, and the SliverList doesn't report a child count,

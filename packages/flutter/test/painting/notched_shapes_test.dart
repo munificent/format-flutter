@@ -17,14 +17,7 @@ void main() {
       final Path actualPath = shape.getOuterPath(host, guest);
       final Path expectedPath = Path()..addRect(host);
 
-      expect(
-        actualPath,
-        coversSameAreaAs(
-          expectedPath,
-          areaToCompare: host.inflate(5.0),
-          sampleSize: 40,
-        ),
-      );
+      expect(actualPath, coversSameAreaAs(expectedPath, areaToCompare: host.inflate(5.0), sampleSize: 40));
     });
 
     test('guest center above host', () {
@@ -51,20 +44,13 @@ void main() {
       const Rect host = Rect.fromLTRB(0.0, 100.0, 300.0, 300.0);
       expect(
         const CircularNotchedRectangle().getOuterPath(host, null),
-        coversSameAreaAs(
-          Path()..addRect(host),
-          areaToCompare: host.inflate(800.0),
-          sampleSize: 100,
-        ),
+        coversSameAreaAs(Path()..addRect(host), areaToCompare: host.inflate(800.0), sampleSize: 100),
       );
     });
 
     test('AutomaticNotchedShape - with guest', () {
       expect(
-        const AutomaticNotchedShape(
-          RoundedRectangleBorder(),
-          RoundedRectangleBorder(),
-        ).getOuterPath(
+        const AutomaticNotchedShape(RoundedRectangleBorder(), RoundedRectangleBorder()).getOuterPath(
           const Rect.fromLTWH(-200.0, -100.0, 50.0, 100.0),
           const Rect.fromLTWH(-175.0, -110.0, 100.0, 100.0),
         ),
@@ -85,10 +71,7 @@ void main() {
 
     test('AutomaticNotchedShape - no guest', () {
       expect(
-        const AutomaticNotchedShape(
-          RoundedRectangleBorder(),
-          RoundedRectangleBorder(),
-        ).getOuterPath(
+        const AutomaticNotchedShape(RoundedRectangleBorder(), RoundedRectangleBorder()).getOuterPath(
           const Rect.fromLTWH(-200.0, -100.0, 50.0, 100.0),
           null,
         ),
@@ -115,7 +98,7 @@ bool pathDoesNotContainCircle(Path path, Rect circleBounds) {
     for (double i = 0.0; i < 1; i += 0.01) {
       final double x = i * radius * math.cos(theta);
       final double y = i * radius * math.sin(theta);
-      if (path.contains(Offset(x,y) + circleBounds.center)) {
+      if (path.contains(Offset(x, y) + circleBounds.center)) {
         return false;
       }
     }

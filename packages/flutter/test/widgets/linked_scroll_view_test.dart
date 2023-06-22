@@ -16,7 +16,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class LinkedScrollController extends ScrollController {
-  LinkedScrollController({ this.before, this.after });
+  LinkedScrollController({this.before, this.after});
 
   LinkedScrollController? before;
   LinkedScrollController? after;
@@ -101,7 +101,6 @@ class LinkedScrollController extends ScrollController {
       description.add('links: none');
     }
   }
-
 }
 
 class LinkedScrollPosition extends ScrollPositionWithSingleContext {
@@ -209,9 +208,7 @@ class LinkedScrollPosition extends ScrollPositionWithSingleContext {
 }
 
 class LinkedScrollActivity extends ScrollActivity {
-  LinkedScrollActivity(
-    LinkedScrollPosition super.delegate,
-  );
+  LinkedScrollActivity(LinkedScrollPosition super.delegate);
 
   @override
   LinkedScrollPosition get delegate => super.delegate as LinkedScrollPosition;
@@ -266,7 +263,7 @@ class LinkedScrollActivity extends ScrollActivity {
 }
 
 class Test extends StatefulWidget {
-  const Test({ super.key });
+  const Test({super.key});
   @override
   State<Test> createState() => _TestState();
 }

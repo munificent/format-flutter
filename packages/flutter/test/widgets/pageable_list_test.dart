@@ -11,22 +11,15 @@ final List<GlobalKey> globalKeys = defaultPages.map<GlobalKey>((_) => GlobalKey(
 int? currentPage;
 
 Widget buildPage(int page) {
-  return SizedBox(
-    key: globalKeys[page],
-    width: pageSize.width,
-    height: pageSize.height,
-    child: Text(page.toString()),
-  );
+  return SizedBox(key: globalKeys[page], width: pageSize.width, height: pageSize.height, child: Text(page.toString()));
 }
 
-Widget buildFrame({
-  bool reverse = false,
-  List<int> pages = defaultPages,
-  required TextDirection textDirection,
-}) {
+Widget buildFrame({bool reverse = false, List<int> pages = defaultPages, required TextDirection textDirection}) {
   final PageView child = PageView(
     reverse: reverse,
-    onPageChanged: (int page) { currentPage = page; },
+    onPageChanged: (int page) {
+      currentPage = page;
+    },
     children: pages.map<Widget>(buildPage).toList(),
   );
 
@@ -34,11 +27,7 @@ Widget buildFrame({
   // an outer container where we can change the size.
   return Directionality(
     textDirection: textDirection,
-    child: Center(
-      child: SizedBox(
-        width: pageSize.width, height: pageSize.height, child: child,
-      ),
-    ),
+    child: Center(child: SizedBox(width: pageSize.width, height: pageSize.height, child: child)),
   );
 }
 
@@ -60,14 +49,7 @@ Future<void> pageRight(WidgetTester tester) {
 
 void main() {
   testWidgets('PageView default control', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: PageView(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(textDirection: TextDirection.ltr, child: Center(child: PageView())));
   });
 
   testWidgets('PageView control test (LTR)', (WidgetTester tester) async {

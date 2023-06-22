@@ -55,10 +55,7 @@ class _DartUiTextStyleToStringMatcher extends Matcher {
       return false;
     }
 
-    final String propertyDescription = description.substring(
-      prefix.length,
-      description.length - suffix.length,
-    );
+    final String propertyDescription = description.substring(prefix.length, description.length - suffix.length);
     int startIndex = 0;
     for (final String property in propertiesInOrder) {
       startIndex = propertyDescription.indexOf(property, startIndex);
@@ -72,7 +69,12 @@ class _DartUiTextStyleToStringMatcher extends Matcher {
   }
 
   @override
-  Description describeMismatch(dynamic item, Description mismatchDescription, Map<dynamic, dynamic> matchState, bool verbose) {
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map<dynamic, dynamic> matchState,
+    bool verbose,
+  ) {
     final Description description = super.describeMismatch(item, mismatchDescription, matchState, verbose);
     final String? property = matchState['missingProperty'] as String?;
     if (property != null) {
@@ -91,29 +93,16 @@ Matcher matchesToStringOf(TextStyle textStyle) => _DartUiTextStyleToStringMatche
 
 void main() {
   test('TextStyle control test', () {
-    expect(
-      const TextStyle(inherit: false).toString(),
-      equals('TextStyle(inherit: false, <no style specified>)'),
-    );
-    expect(
-      const TextStyle().toString(),
-      equals('TextStyle(<all styles inherited>)'),
-    );
+    expect(const TextStyle(inherit: false).toString(), equals('TextStyle(inherit: false, <no style specified>)'));
+    expect(const TextStyle().toString(), equals('TextStyle(<all styles inherited>)'));
 
-    const TextStyle s1 = TextStyle(
-      fontSize: 10.0,
-      fontWeight: FontWeight.w800,
-      height: 123.0,
-    );
+    const TextStyle s1 = TextStyle(fontSize: 10.0, fontWeight: FontWeight.w800, height: 123.0);
     expect(s1.fontFamily, isNull);
     expect(s1.fontSize, 10.0);
     expect(s1.fontWeight, FontWeight.w800);
     expect(s1.height, 123.0);
     expect(s1, equals(s1));
-    expect(
-      s1.toString(),
-      equals('TextStyle(inherit: true, size: 10.0, weight: 800, height: 123.0x)'),
-    );
+    expect(s1.toString(), equals('TextStyle(inherit: true, size: 10.0, weight: 800, height: 123.0x)'));
 
     // Check that the inherit flag can be set with copyWith().
     expect(
@@ -138,12 +127,9 @@ void main() {
     expect(s2.color, const Color(0xFF00FF00));
     expect(s2.leadingDistribution, TextLeadingDistribution.even);
     expect(s2, isNot(equals(s1)));
-    expect(
-      s2.toString(),
-      equals(
-        'TextStyle(inherit: true, color: Color(0xff00ff00), size: 10.0, weight: 800, height: 100.0x, leadingDistribution: even)',
-      ),
-    );
+    expect(s2.toString(), equals(
+      'TextStyle(inherit: true, color: Color(0xff00ff00), size: 10.0, weight: 800, height: 100.0x, leadingDistribution: even)',
+    ));
 
     final TextStyle s3 = s1.apply(fontSizeFactor: 2.0, fontSizeDelta: -2.0, fontWeightDelta: -4);
     expect(s1.fontFamily, isNull);
@@ -260,19 +246,25 @@ void main() {
     expect(ts5, equals(ui.TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, height: 123.0)));
     expect(ts5, matchesToStringOf(s5));
     final ui.TextStyle ts2 = s2.getTextStyle();
-    expect(ts2, equals(ui.TextStyle(color: const Color(0xFF00FF00), fontWeight: FontWeight.w800, fontSize: 10.0, height: 100.0, leadingDistribution: TextLeadingDistribution.even)));
+    expect(ts2, equals(ui.TextStyle(
+      color: const Color(0xFF00FF00),
+      fontWeight: FontWeight.w800,
+      fontSize: 10.0,
+      height: 100.0,
+      leadingDistribution: TextLeadingDistribution.even,
+    )));
     expect(ts2, matchesToStringOf(s2));
 
     final ui.ParagraphStyle ps2 = s2.getParagraphStyle(textAlign: TextAlign.center);
-    expect(
-      ps2,
-      equals(ui.ParagraphStyle(textAlign: TextAlign.center, fontWeight: FontWeight.w800, fontSize: 10.0, height: 100.0, textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even))),
-    );
+    expect(ps2, equals(ui.ParagraphStyle(
+      textAlign: TextAlign.center,
+      fontWeight: FontWeight.w800,
+      fontSize: 10.0,
+      height: 100.0,
+      textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even),
+    )));
     final ui.ParagraphStyle ps5 = s5.getParagraphStyle();
-    expect(
-      ps5,
-      equals(ui.ParagraphStyle(fontWeight: FontWeight.w700, fontSize: 12.0, height: 123.0)),
-    );
+    expect(ps5, equals(ui.ParagraphStyle(fontWeight: FontWeight.w700, fontSize: 12.0, height: 123.0)));
   });
 
   test('TextStyle with text direction', () {
@@ -383,21 +375,24 @@ void main() {
     expect(foo.copyWith().debugLabel, '(foo).copyWith');
     expect(foo.apply().debugLabel, '(foo).apply');
     expect(TextStyle.lerp(foo, bar, 0.5)!.debugLabel, 'lerp(foo ⎯0.5→ bar)');
-    expect(TextStyle.lerp(foo.merge(bar), baz, 0.51)!.copyWith().debugLabel, '(lerp((foo).merge(bar) ⎯0.5→ baz)).copyWith');
+    expect(
+      TextStyle.lerp(foo.merge(bar), baz, 0.51)!.copyWith().debugLabel,
+      '(lerp((foo).merge(bar) ⎯0.5→ baz)).copyWith',
+    );
   });
 
   test('TextStyle.hashCode', () {
     const TextStyle a = TextStyle(
-        fontFamilyFallback: <String>['Roboto'],
-        shadows: <ui.Shadow>[ui.Shadow()],
-        fontFeatures: <ui.FontFeature>[ui.FontFeature('abcd')],
-        fontVariations: <ui.FontVariation>[ui.FontVariation('wght', 123.0)],
+      fontFamilyFallback: <String>['Roboto'],
+      shadows: <ui.Shadow>[ui.Shadow()],
+      fontFeatures: <ui.FontFeature>[ui.FontFeature('abcd')],
+      fontVariations: <ui.FontVariation>[ui.FontVariation('wght', 123.0)],
     );
     const TextStyle b = TextStyle(
-        fontFamilyFallback: <String>['Noto'],
-        shadows: <ui.Shadow>[ui.Shadow()],
-        fontFeatures: <ui.FontFeature>[ui.FontFeature('abcd')],
-        fontVariations: <ui.FontVariation>[ui.FontVariation('wght', 123.0)],
+      fontFamilyFallback: <String>['Noto'],
+      shadows: <ui.Shadow>[ui.Shadow()],
+      fontFeatures: <ui.FontFeature>[ui.FontFeature('abcd')],
+      fontVariations: <ui.FontVariation>[ui.FontVariation('wght', 123.0)],
     );
     expect(a.hashCode, a.hashCode);
     expect(a.hashCode, isNot(equals(b.hashCode)));
@@ -524,15 +519,26 @@ void main() {
       leadingDistribution: TextLeadingDistribution.even,
     );
     expect(style.apply().shadows, const <ui.Shadow>[]);
-    expect(style.apply(shadows: const <ui.Shadow>[ui.Shadow(blurRadius: 2.0)]).shadows, const <ui.Shadow>[ui.Shadow(blurRadius: 2.0)]);
+    expect(style.apply(shadows: const <ui.Shadow>[ui.Shadow(blurRadius: 2.0)]).shadows, const <ui.Shadow>[
+      ui.Shadow(blurRadius: 2.0),
+    ]);
     expect(style.apply().fontStyle, FontStyle.normal);
     expect(style.apply(fontStyle: FontStyle.italic).fontStyle, FontStyle.italic);
     expect(style.apply().locale, isNull);
-    expect(style.apply(locale: const Locale.fromSubtags(languageCode: 'es')).locale, const Locale.fromSubtags(languageCode: 'es'));
+    expect(
+      style.apply(locale: const Locale.fromSubtags(languageCode: 'es')).locale,
+      const Locale.fromSubtags(languageCode: 'es'),
+    );
     expect(style.apply().fontFeatures, const <ui.FontFeature>[]);
-    expect(style.apply(fontFeatures: const <ui.FontFeature>[ui.FontFeature.enable('test')]).fontFeatures, const <ui.FontFeature>[ui.FontFeature.enable('test')]);
+    expect(
+      style.apply(fontFeatures: const <ui.FontFeature>[ui.FontFeature.enable('test')]).fontFeatures,
+      const <ui.FontFeature>[ui.FontFeature.enable('test')],
+    );
     expect(style.apply().fontVariations, const <ui.FontVariation>[]);
-    expect(style.apply(fontVariations: const <ui.FontVariation>[ui.FontVariation('test', 100.0)]).fontVariations, const <ui.FontVariation>[ui.FontVariation('test', 100.0)]);
+    expect(
+      style.apply(fontVariations: const <ui.FontVariation>[ui.FontVariation('test', 100.0)]).fontVariations,
+      const <ui.FontVariation>[ui.FontVariation('test', 100.0)],
+    );
     expect(style.apply().textBaseline, TextBaseline.alphabetic);
     expect(style.apply(textBaseline: TextBaseline.ideographic).textBaseline, TextBaseline.ideographic);
     expect(style.apply().leadingDistribution, TextLeadingDistribution.even);
@@ -543,16 +549,36 @@ void main() {
   });
 
   test('TextStyle fontFamily and package', () {
-    expect(const TextStyle(fontFamily: 'fontFamily', package: 'foo') != const TextStyle(fontFamily: 'fontFamily', package: 'bar'), true);
-    expect(const TextStyle(fontFamily: 'fontFamily', package: 'foo').hashCode != const TextStyle(package: 'bar', fontFamily: 'fontFamily').hashCode, true);
+    expect(
+      const TextStyle(fontFamily: 'fontFamily', package: 'foo') !=
+          const TextStyle(fontFamily: 'fontFamily', package: 'bar'),
+      true,
+    );
+    expect(
+      const TextStyle(fontFamily: 'fontFamily', package: 'foo').hashCode !=
+          const TextStyle(package: 'bar', fontFamily: 'fontFamily').hashCode,
+      true,
+    );
     expect(const TextStyle(fontFamily: 'fontFamily').fontFamily, 'fontFamily');
     expect(const TextStyle(fontFamily: 'fontFamily').fontFamily, 'fontFamily');
     expect(const TextStyle(fontFamily: 'fontFamily').copyWith(package: 'bar').fontFamily, 'packages/bar/fontFamily');
     expect(const TextStyle(fontFamily: 'fontFamily', package: 'foo').fontFamily, 'packages/foo/fontFamily');
-    expect(const TextStyle(fontFamily: 'fontFamily', package: 'foo').copyWith(package: 'bar').fontFamily, 'packages/bar/fontFamily');
-    expect(const TextStyle().merge(const TextStyle(fontFamily: 'fontFamily', package: 'bar')).fontFamily, 'packages/bar/fontFamily');
+    expect(
+      const TextStyle(fontFamily: 'fontFamily', package: 'foo').copyWith(package: 'bar').fontFamily,
+      'packages/bar/fontFamily',
+    );
+    expect(
+      const TextStyle().merge(const TextStyle(fontFamily: 'fontFamily', package: 'bar')).fontFamily,
+      'packages/bar/fontFamily',
+    );
     expect(const TextStyle().apply(fontFamily: 'fontFamily', package: 'foo').fontFamily, 'packages/foo/fontFamily');
-    expect(const TextStyle(fontFamily: 'fontFamily', package: 'foo').apply(fontFamily: 'fontFamily', package: 'bar').fontFamily, 'packages/bar/fontFamily');
+    expect(
+      const TextStyle(fontFamily: 'fontFamily', package: 'foo').apply(
+        fontFamily: 'fontFamily',
+        package: 'bar',
+      ).fontFamily,
+      'packages/bar/fontFamily',
+    );
   });
 
   test('TextStyle.lerp identical a,b', () {
@@ -564,10 +590,7 @@ void main() {
   test('Throws when lerping between inherit:true and inherit:false with unspecified fields', () {
     const TextStyle fromStyle = TextStyle();
     const TextStyle toStyle = TextStyle(inherit: false);
-    expect(
-      () => TextStyle.lerp(fromStyle, toStyle, 0.5),
-      throwsFlutterError,
-    );
+    expect(() => TextStyle.lerp(fromStyle, toStyle, 0.5), throwsFlutterError);
     expect(TextStyle.lerp(fromStyle, fromStyle, 0.5), fromStyle);
   });
 
@@ -586,5 +609,4 @@ void main() {
     );
     expect(TextStyle.lerp(fromStyle, toStyle, 1), toStyle);
   });
-
 }

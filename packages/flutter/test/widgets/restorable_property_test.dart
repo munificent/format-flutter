@@ -90,10 +90,7 @@ void main() {
   });
 
   testWidgets('restart and restore', (WidgetTester tester) async {
-    await tester.pumpWidget(const RootRestorationScope(
-      restorationId: 'root-child',
-      child: _RestorableWidget(),
-    ));
+    await tester.pumpWidget(const RootRestorationScope(restorationId: 'root-child', child: _RestorableWidget()));
 
     expect(find.text('hello world'), findsOneWidget);
     _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
@@ -181,10 +178,7 @@ void main() {
   });
 
   testWidgets('restore to older state', (WidgetTester tester) async {
-    await tester.pumpWidget(const RootRestorationScope(
-      restorationId: 'root-child',
-      child: _RestorableWidget(),
-    ));
+    await tester.pumpWidget(const RootRestorationScope(restorationId: 'root-child', child: _RestorableWidget()));
 
     expect(find.text('hello world'), findsOneWidget);
     final _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
@@ -279,10 +273,7 @@ void main() {
   });
 
   testWidgets('call notifiers when value changes', (WidgetTester tester) async {
-    await tester.pumpWidget(const RootRestorationScope(
-      restorationId: 'root-child',
-      child: _RestorableWidget(),
-    ));
+    await tester.pumpWidget(const RootRestorationScope(restorationId: 'root-child', child: _RestorableWidget()));
 
     expect(find.text('hello world'), findsOneWidget);
     final _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
@@ -461,10 +452,7 @@ void main() {
   });
 
   testWidgets('RestorableValue calls didUpdateValue', (WidgetTester tester) async {
-    await tester.pumpWidget(const RootRestorationScope(
-      restorationId: 'root-child',
-      child: _RestorableWidget(),
-    ));
+    await tester.pumpWidget(const RootRestorationScope(restorationId: 'root-child', child: _RestorableWidget()));
 
     expect(find.text('hello world'), findsOneWidget);
     final _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
@@ -485,12 +473,20 @@ void main() {
   });
 
   testWidgets('RestorableEnum and RestorableEnumN assert if default value is not in enum', (WidgetTester tester) async {
-    expect(() => RestorableEnum<TestEnum>(
-      TestEnum.four,
-      values: TestEnum.values.toSet().difference(<TestEnum>{TestEnum.four})), throwsAssertionError);
-    expect(() => RestorableEnumN<TestEnum>(
-      TestEnum.four,
-      values: TestEnum.values.toSet().difference(<TestEnum>{TestEnum.four})), throwsAssertionError);
+    expect(
+      () => RestorableEnum<TestEnum>(
+        TestEnum.four,
+        values: TestEnum.values.toSet().difference(<TestEnum>{TestEnum.four}),
+      ),
+      throwsAssertionError,
+    );
+    expect(
+      () => RestorableEnumN<TestEnum>(
+        TestEnum.four,
+        values: TestEnum.values.toSet().difference(<TestEnum>{TestEnum.four}),
+      ),
+      throwsAssertionError,
+    );
   });
 
   testWidgets('RestorableEnum and RestorableEnumN assert if unknown values are set', (WidgetTester tester) async {
@@ -520,10 +516,7 @@ void main() {
   });
 
   testWidgets('RestorableN types are properly defined', (WidgetTester tester) async {
-    await tester.pumpWidget(const RootRestorationScope(
-      restorationId: 'root-child',
-      child: _RestorableWidget(),
-    ));
+    await tester.pumpWidget(const RootRestorationScope(restorationId: 'root-child', child: _RestorableWidget()));
 
     expect(find.text('hello world'), findsOneWidget);
     final _RestorableWidgetState state = tester.state(find.byType(_RestorableWidget));
@@ -639,9 +632,4 @@ class _RestorableWidgetState extends State<_RestorableWidget> with RestorationMi
   String get restorationId => 'widget';
 }
 
-enum TestEnum {
-  one,
-  two,
-  three,
-  four,
-}
+enum TestEnum { one, two, three, four }

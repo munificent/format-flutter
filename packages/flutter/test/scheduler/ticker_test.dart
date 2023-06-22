@@ -9,10 +9,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Future<void> setAppLifeCycleState(AppLifecycleState state) async {
-    final ByteData? message =
-        const StringCodec().encodeMessage(state.toString());
-    await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .handlePlatformMessage('flutter/lifecycle', message, (_) {});
+    final ByteData? message = const StringCodec().encodeMessage(state.toString());
+    await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
+      'flutter/lifecycle',
+      message,
+      (_) {},
+    );
   }
 
   testWidgets('Ticker mute control test', (WidgetTester tester) async {
@@ -41,17 +43,14 @@ void main() {
     expect(error, isNotNull);
     expect(error!.diagnostics.length, 3);
     expect(error.diagnostics.last, isA<DiagnosticsProperty<Ticker>>());
-    expect(
-      error.toStringDeep(),
-      startsWith(
-        'FlutterError\n'
-        '   A ticker was started twice.\n'
-        '   A ticker that is already active cannot be started again without\n'
-        '   first stopping it.\n'
-        '   The affected ticker was:\n'
-        '     Ticker()\n',
-      ),
-    );
+    expect(error.toStringDeep(), startsWith(
+      'FlutterError\n'
+      '   A ticker was started twice.\n'
+      '   A ticker that is already active cannot be started again without\n'
+      '   first stopping it.\n'
+      '   The affected ticker was:\n'
+      '     Ticker()\n',
+    ));
 
     await tester.pump(const Duration(milliseconds: 10));
 
@@ -101,7 +100,7 @@ void main() {
     late Ticker ticker;
 
     void testFunction() {
-      ticker = Ticker((Duration _) { });
+      ticker = Ticker((Duration _) {});
     }
 
     testFunction();

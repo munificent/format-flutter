@@ -15,11 +15,10 @@ void main() {
           events.add(value);
           return false;
         },
-        child: SingleChildScrollView(
-          child: SizedBox(height: height),
-        ),
+        child: SingleChildScrollView(child: SizedBox(height: height)),
       );
     }
+
     await tester.pumpWidget(buildFrame(1200.0));
     expect(events.length, 1);
 
@@ -72,9 +71,7 @@ void main() {
         }
         return false;
       },
-      child: const SingleChildScrollView(
-        child: SizedBox(height: 1200.0),
-      ),
+      child: const SingleChildScrollView(child: SizedBox(height: 1200.0)),
     ));
 
     final TestGesture gesture = await tester.startGesture(const Offset(100.0, 100.0));
@@ -161,25 +158,23 @@ void main() {
   testWidgets('ScrollNotifications bubble past Scaffold Material', (WidgetTester tester) async {
     final List<Type> notificationTypes = <Type>[];
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification value) {
-            notificationTypes.add(value.runtimeType);
-            return false;
-          },
-          child: Scaffold(
-            body: SizedBox.expand(
-              child: SingleChildScrollView(
-                dragStartBehavior: DragStartBehavior.down,
-                child: SizedBox(
-                  height: 1200.0,
-                  child: Container(
-                    padding: const EdgeInsets.all(50.0),
-                    child: const SingleChildScrollView(
-                      dragStartBehavior: DragStartBehavior.down,
-                      child: SizedBox(height: 1200.0),
-                    ),
+    await tester.pumpWidget(MaterialApp(
+      home: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification value) {
+          notificationTypes.add(value.runtimeType);
+          return false;
+        },
+        child: Scaffold(
+          body: SizedBox.expand(
+            child: SingleChildScrollView(
+              dragStartBehavior: DragStartBehavior.down,
+              child: SizedBox(
+                height: 1200.0,
+                child: Container(
+                  padding: const EdgeInsets.all(50.0),
+                  child: const SingleChildScrollView(
+                    dragStartBehavior: DragStartBehavior.down,
+                    child: SizedBox(height: 1200.0),
                   ),
                 ),
               ),
@@ -187,7 +182,7 @@ void main() {
           ),
         ),
       ),
-    );
+    ));
 
     final TestGesture gesture = await tester.startGesture(const Offset(100.0, 100.0));
     await tester.pump(const Duration(seconds: 1));
@@ -216,18 +211,14 @@ void main() {
       }
     }
 
-    await tester.pumpWidget(
-      ScrollNotificationObserver(
-        child: Builder(
-          builder: (BuildContext context) {
-            observer = ScrollNotificationObserver.of(context);
-            return const SingleChildScrollView(
-              child: SizedBox(height: 1200.0),
-            );
-          },
-        ),
+    await tester.pumpWidget(ScrollNotificationObserver(
+      child: Builder(
+        builder: (BuildContext context) {
+          observer = ScrollNotificationObserver.of(context);
+          return const SingleChildScrollView(child: SizedBox(height: 1200.0));
+        },
       ),
-    );
+    ));
 
     observer.addListener(handleNotification);
 

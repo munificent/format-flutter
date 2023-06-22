@@ -21,11 +21,7 @@ void main() {
         'args': <dynamic>['undo'],
         'method': 'UndoManagerClient.handleUndo',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/undomanager',
-        messageBytes,
-        null,
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/undomanager', messageBytes, null);
 
       expect(client.latestMethodCall, 'handlePlatformUndo(${UndoDirection.undo})');
 
@@ -34,11 +30,7 @@ void main() {
         'args': <dynamic>['redo'],
         'method': 'UndoManagerClient.handleUndo',
       });
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/undomanager',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/undomanager', messageBytes, (ByteData? _) {});
 
       expect(client.latestMethodCall, 'handlePlatformUndo(${UndoDirection.redo})');
     });

@@ -14,18 +14,14 @@ void main() {
     final FlutterError error = exception as FlutterError;
     expect(error.diagnostics.length, 5);
     expect(error.diagnostics[2].level, DiagnosticLevel.hint);
-    expect(
-      error.diagnostics[2].toStringDeep(),
-      equalsIgnoringHashCodes(
-        'To introduce a Material widget, you can either directly include\n'
-        'one, or use a widget that contains Material itself, such as a\n'
-        'Card, Dialog, Drawer, or Scaffold.\n',
-      ),
-    );
+    expect(error.diagnostics[2].toStringDeep(), equalsIgnoringHashCodes(
+      'To introduce a Material widget, you can either directly include\n'
+      'one, or use a widget that contains Material itself, such as a\n'
+      'Card, Dialog, Drawer, or Scaffold.\n',
+    ));
     expect(error.diagnostics[3], isA<DiagnosticsProperty<Element>>());
     expect(error.diagnostics[4], isA<DiagnosticsBlock>());
-    expect(
-      error.toStringDeep(), startsWith(
+    expect(error.toStringDeep(), startsWith(
       'FlutterError\n'
       '   No Material widget found.\n'
       '   Chip widgets require a Material widget ancestor within the\n'
@@ -42,7 +38,7 @@ void main() {
       '   The specific widget that could not find a Material ancestor was:\n'
       '     Chip\n'
       '   The ancestors of this widget were:\n'
-      '     Center\n'
+      '     Center\n',
       // End of ancestor chain omitted, not relevant for test.
     ));
   });
@@ -54,18 +50,14 @@ void main() {
     final FlutterError error = exception as FlutterError;
     expect(error.diagnostics.length, 6);
     expect(error.diagnostics[3].level, DiagnosticLevel.hint);
-    expect(
-      error.diagnostics[3].toStringDeep(),
-      equalsIgnoringHashCodes(
-        'To introduce a MaterialLocalizations, either use a MaterialApp at\n'
-        'the root of your application to include them automatically, or\n'
-        'add a Localization widget with a MaterialLocalizations delegate.\n',
-      ),
-    );
+    expect(error.diagnostics[3].toStringDeep(), equalsIgnoringHashCodes(
+      'To introduce a MaterialLocalizations, either use a MaterialApp at\n'
+      'the root of your application to include them automatically, or\n'
+      'add a Localization widget with a MaterialLocalizations delegate.\n',
+    ));
     expect(error.diagnostics[4], isA<DiagnosticsProperty<Element>>());
     expect(error.diagnostics[5], isA<DiagnosticsBlock>());
-    expect(
-      error.toStringDeep(), startsWith(
+    expect(error.toStringDeep(), startsWith(
       'FlutterError\n'
       '   No MaterialLocalizations found.\n'
       '   BackButton widgets require MaterialLocalizations to be provided\n'
@@ -79,32 +71,27 @@ void main() {
       '   ancestor was:\n'
       '     BackButton\n'
       '   The ancestors of this widget were:\n'
-      '     Center\n'
+      '     Center\n',
       // End of ancestor chain omitted, not relevant for test.
     ));
   });
 
   testWidgets('debugCheckHasScaffold control test', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          pageTransitionsTheme: const PageTransitionsTheme(
-            builders: <TargetPlatform, PageTransitionsBuilder>{
-              TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-            },
-          ),
-        ),
-        home: Builder(
-          builder: (BuildContext context) {
-            showBottomSheet<void>(
-              context: context,
-              builder: (BuildContext context) => Container(),
-            );
-            return Container();
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: <TargetPlatform, PageTransitionsBuilder>{
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
           },
         ),
       ),
-    );
+      home: Builder(
+        builder: (BuildContext context) {
+          showBottomSheet<void>(context: context, builder: (BuildContext context) => Container());
+          return Container();
+        },
+      ),
+    ));
     final dynamic exception = tester.takeException();
     expect(exception, isFlutterError);
     final FlutterError error = exception as FlutterError;
@@ -112,13 +99,10 @@ void main() {
     expect(error.diagnostics[2], isA<DiagnosticsProperty<Element>>());
     expect(error.diagnostics[3], isA<DiagnosticsBlock>());
     expect(error.diagnostics[4].level, DiagnosticLevel.hint);
-    expect(
-      error.diagnostics[4].toStringDeep(),
-      equalsIgnoringHashCodes(
-        'Typically, the Scaffold widget is introduced by the MaterialApp\n'
-        'or WidgetsApp widget at the top of your application widget tree.\n',
-      ),
-    );
+    expect(error.diagnostics[4].toStringDeep(), equalsIgnoringHashCodes(
+      'Typically, the Scaffold widget is introduced by the MaterialApp\n'
+      'or WidgetsApp widget at the top of your application widget tree.\n',
+    ));
     expect(error.toStringDeep(), startsWith(
       'FlutterError\n'
       '   No Scaffold widget found.\n'
@@ -127,12 +111,12 @@ void main() {
       '     Builder\n'
       '   The ancestors of this widget were:\n'
       '     Semantics\n'
-      '     Builder\n'
+      '     Builder\n',
     ));
     expect(error.toStringDeep(), endsWith(
       '     [root]\n'
       '   Typically, the Scaffold widget is introduced by the MaterialApp\n'
-      '   or WidgetsApp widget at the top of your application widget tree.\n'
+      '   or WidgetsApp widget at the top of your application widget tree.\n',
     ));
   });
 
@@ -149,10 +133,7 @@ void main() {
         key: scaffoldMessengerKey,
         child: Builder(
           builder: (BuildContext context) {
-            return Scaffold(
-              key: scaffoldKey,
-              body: Container(),
-            );
+            return Scaffold(key: scaffoldKey, body: Container());
           },
         ),
       ),
@@ -167,13 +148,9 @@ void main() {
     await tester.pumpAndSettle();
 
     // Pump widget to rebuild without ScaffoldMessenger
-    await tester.pumpWidget(Directionality(
-      textDirection: TextDirection.ltr,
-      child: Scaffold(
-        key: scaffoldKey,
-        body: Container(),
-      ),
-    ));
+    await tester.pumpWidget(
+      Directionality(textDirection: TextDirection.ltr, child: Scaffold(key: scaffoldKey, body: Container())),
+    );
     // Tap SnackBarAction to dismiss.
     // The SnackBarAction should assert we still have an ancestor
     // ScaffoldMessenger in order to dismiss the SnackBar from the
@@ -189,13 +166,10 @@ void main() {
     expect(error.diagnostics[2], isA<DiagnosticsProperty<Element>>());
     expect(error.diagnostics[3], isA<DiagnosticsBlock>());
     expect(error.diagnostics[4].level, DiagnosticLevel.hint);
-    expect(
-      error.diagnostics[4].toStringDeep(),
-      equalsIgnoringHashCodes(
-        'Typically, the ScaffoldMessenger widget is introduced by the\n'
-        'MaterialApp at the top of your application widget tree.\n',
-      ),
-    );
+    expect(error.diagnostics[4].toStringDeep(), equalsIgnoringHashCodes(
+      'Typically, the ScaffoldMessenger widget is introduced by the\n'
+      'MaterialApp at the top of your application widget tree.\n',
+    ));
     expect(error.toStringDeep(), startsWith(
       'FlutterError\n'
       '   No ScaffoldMessenger widget found.\n'
@@ -207,12 +181,12 @@ void main() {
       '   The ancestors of this widget were:\n'
       '     TextButtonTheme\n'
       '     Padding\n'
-      '     Row\n'
+      '     Row\n',
     ));
     expect(error.toStringDeep(), endsWith(
       '     [root]\n'
       '   Typically, the ScaffoldMessenger widget is introduced by the\n'
-      '   MaterialApp at the top of your application widget tree.\n'
+      '   MaterialApp at the top of your application widget tree.\n',
     ));
   });
 }

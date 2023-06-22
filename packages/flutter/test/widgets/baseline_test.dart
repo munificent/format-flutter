@@ -9,12 +9,7 @@ void main() {
   testWidgets('Baseline - control test', (WidgetTester tester) async {
     await tester.pumpWidget(
       const Center(
-        child: DefaultTextStyle(
-          style: TextStyle(
-            fontSize: 100.0,
-          ),
-          child: Text('X', textDirection: TextDirection.ltr),
-        ),
+        child: DefaultTextStyle(style: TextStyle(fontSize: 100.0), child: Text('X', textDirection: TextDirection.ltr)),
       ),
     );
     expect(tester.renderObject<RenderBox>(find.text('X')).size, const Size(100.0, 100.0));
@@ -27,39 +22,31 @@ void main() {
           baseline: 175.0,
           baselineType: TextBaseline.alphabetic,
           child: DefaultTextStyle(
-            style: TextStyle(
-              fontFamily: 'FlutterTest',
-              fontSize: 100.0,
-            ),
+            style: TextStyle(fontFamily: 'FlutterTest', fontSize: 100.0),
             child: Text('X', textDirection: TextDirection.ltr),
           ),
         ),
       ),
     );
     expect(tester.renderObject<RenderBox>(find.text('X')).size, const Size(100.0, 100.0));
-    expect(
-      tester.renderObject<RenderBox>(find.byType(Baseline)).size,
-      const Size(100.0, 200),
-    );
+    expect(tester.renderObject<RenderBox>(find.byType(Baseline)).size, const Size(100.0, 200));
   });
 
   testWidgets('Chip caches baseline', (WidgetTester tester) async {
     int calls = 0;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Baseline(
-            baseline: 100.0,
-            baselineType: TextBaseline.alphabetic,
-            child: Chip(
-              label: BaselineDetector(() {
-                calls += 1;
-              }),
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Baseline(
+          baseline: 100.0,
+          baselineType: TextBaseline.alphabetic,
+          child: Chip(
+            label: BaselineDetector(() {
+              calls += 1;
+            }),
           ),
         ),
       ),
-    );
+    ));
     expect(calls, 1);
     await tester.pump();
     expect(calls, 1);
@@ -70,21 +57,19 @@ void main() {
 
   testWidgets('ListTile caches baseline', (WidgetTester tester) async {
     int calls = 0;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Baseline(
-            baseline: 100.0,
-            baselineType: TextBaseline.alphabetic,
-            child: ListTile(
-              title: BaselineDetector(() {
-                calls += 1;
-              }),
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Baseline(
+          baseline: 100.0,
+          baselineType: TextBaseline.alphabetic,
+          child: ListTile(
+            title: BaselineDetector(() {
+              calls += 1;
+            }),
           ),
         ),
       ),
-    );
+    ));
     expect(calls, 1);
     await tester.pump();
     expect(calls, 1);
@@ -94,28 +79,26 @@ void main() {
   });
 
   testWidgets("LayoutBuilder returns child's baseline", (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Material(
-          child: Baseline(
-            baseline: 180.0,
-            baselineType: TextBaseline.alphabetic,
-            child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return BaselineDetector(() {});
-              },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: Baseline(
+          baseline: 180.0,
+          baselineType: TextBaseline.alphabetic,
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return BaselineDetector(() {});
+            },
           ),
         ),
       ),
-    );
+    ));
 
     expect(tester.getRect(find.byType(BaselineDetector)).top, 160.0);
   });
 }
 
 class BaselineDetector extends LeafRenderObjectWidget {
-  const BaselineDetector(this.callback, { super.key });
+  const BaselineDetector(this.callback, {super.key});
 
   final VoidCallback callback;
 
@@ -164,5 +147,5 @@ class RenderBaselineDetector extends RenderBox {
   }
 
   @override
-  void paint(PaintingContext context, Offset offset) { }
+  void paint(PaintingContext context, Offset offset) {}
 }

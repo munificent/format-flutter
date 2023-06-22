@@ -13,23 +13,21 @@ void main() {
     int index = 1;
     int total = 3;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setter) {
-                setState = setter;
-                return TextSelectionToolbarTextButton(
-                  padding: TextSelectionToolbarTextButton.getPadding(index, total),
-                  child: const Text('button'),
-                );
-              },
-            ),
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setter) {
+              setState = setter;
+              return TextSelectionToolbarTextButton(
+                padding: TextSelectionToolbarTextButton.getPadding(index, total),
+                child: const Text('button'),
+              );
+            },
           ),
         ),
       ),
-    );
+    ));
 
     final Size middleSize = tester.getSize(find.byType(TextSelectionToolbarTextButton));
 

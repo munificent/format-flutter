@@ -7,18 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class TestScrollPhysics extends ScrollPhysics {
-  const TestScrollPhysics({
-    required this.name,
-    super.parent,
-  });
+  const TestScrollPhysics({required this.name, super.parent});
   final String name;
 
   @override
   TestScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return TestScrollPhysics(
-      name: name,
-      parent: parent?.applyTo(ancestor) ?? ancestor!,
-    );
+    return TestScrollPhysics(name: name, parent: parent?.applyTo(ancestor) ?? ancestor!);
   }
 
   TestScrollPhysics get namedParent => parent! as TestScrollPhysics;
@@ -32,7 +26,6 @@ class TestScrollPhysics extends ScrollPhysics {
     return '${objectRuntimeType(this, 'TestScrollPhysics')}($name) -> $parent';
   }
 }
-
 
 void main() {
   test('ScrollPhysics applyTo()', () {
@@ -67,7 +60,8 @@ void main() {
     const ScrollPhysics page = PageScrollPhysics();
     const ScrollPhysics bounceDesktop = BouncingScrollPhysics(decelerationRate: ScrollDecelerationRate.fast);
 
-    String types(ScrollPhysics? value) => value!.parent == null ? '${value.runtimeType}' : '${value.runtimeType} ${types(value.parent)}';
+    String types(ScrollPhysics? value) =>
+        value!.parent == null ? '${value.runtimeType}' : '${value.runtimeType} ${types(value.parent)}';
 
     expect(
       types(bounce.applyTo(clamp.applyTo(never.applyTo(always.applyTo(page))))),
@@ -96,7 +90,7 @@ void main() {
 
     expect(
       bounceDesktop.applyTo(always),
-      (BouncingScrollPhysics x) => x.decelerationRate == ScrollDecelerationRate.fast
+      (BouncingScrollPhysics x) => x.decelerationRate == ScrollDecelerationRate.fast,
     );
   });
 
@@ -147,11 +141,9 @@ void main() {
         devicePixelRatio: 3.0,
       );
 
-      final double lessOverscrollApplied =
-          physicsUnderTest.applyPhysicsToUserOffset(lessOverscrolledPosition, 10.0);
+      final double lessOverscrollApplied = physicsUnderTest.applyPhysicsToUserOffset(lessOverscrolledPosition, 10.0);
 
-      final double moreOverscrollApplied =
-          physicsUnderTest.applyPhysicsToUserOffset(moreOverscrolledPosition, 10.0);
+      final double moreOverscrollApplied = physicsUnderTest.applyPhysicsToUserOffset(moreOverscrolledPosition, 10.0);
 
       expect(lessOverscrollApplied, greaterThan(1.0));
       expect(lessOverscrollApplied, lessThan(20.0));
@@ -160,10 +152,7 @@ void main() {
       expect(moreOverscrollApplied, lessThan(20.0));
 
       // Scrolling from a more overscrolled position meets more resistance.
-      expect(
-        lessOverscrollApplied.abs(),
-        greaterThan(moreOverscrollApplied.abs()),
-      );
+      expect(lessOverscrollApplied.abs(), greaterThan(moreOverscrollApplied.abs()));
     });
 
     test('easing an overscroll still has resistance', () {
@@ -176,8 +165,7 @@ void main() {
         devicePixelRatio: 3.0,
       );
 
-      final double easingApplied =
-          physicsUnderTest.applyPhysicsToUserOffset(overscrolledPosition, -10.0);
+      final double easingApplied = physicsUnderTest.applyPhysicsToUserOffset(overscrolledPosition, -10.0);
 
       expect(easingApplied, lessThan(-1.0));
       expect(easingApplied, greaterThan(-10.0));
@@ -193,14 +181,8 @@ void main() {
         devicePixelRatio: 3.0,
       );
 
-      expect(
-        physicsUnderTest.applyPhysicsToUserOffset(scrollPosition, 10.0),
-        10.0,
-      );
-      expect(
-        physicsUnderTest.applyPhysicsToUserOffset(scrollPosition, -10.0),
-        -10.0,
-      );
+      expect(physicsUnderTest.applyPhysicsToUserOffset(scrollPosition, 10.0), 10.0);
+      expect(physicsUnderTest.applyPhysicsToUserOffset(scrollPosition, -10.0), -10.0);
     });
 
     test('easing an overscroll meets less resistance than tensioning', () {
@@ -213,10 +195,8 @@ void main() {
         devicePixelRatio: 3.0,
       );
 
-      final double easingApplied =
-          physicsUnderTest.applyPhysicsToUserOffset(overscrolledPosition, -10.0);
-      final double tensioningApplied =
-          physicsUnderTest.applyPhysicsToUserOffset(overscrolledPosition, 10.0);
+      final double easingApplied = physicsUnderTest.applyPhysicsToUserOffset(overscrolledPosition, -10.0);
+      final double tensioningApplied = physicsUnderTest.applyPhysicsToUserOffset(overscrolledPosition, 10.0);
 
       expect(easingApplied.abs(), greaterThan(tensioningApplied.abs()));
     });
@@ -232,10 +212,8 @@ void main() {
         devicePixelRatio: 3.0,
       );
 
-      final double easingApplied =
-          desktop.applyPhysicsToUserOffset(overscrolledPosition, -10.0);
-      final double tensioningApplied =
-          desktop.applyPhysicsToUserOffset(overscrolledPosition, 10.0);
+      final double easingApplied = desktop.applyPhysicsToUserOffset(overscrolledPosition, -10.0);
+      final double tensioningApplied = desktop.applyPhysicsToUserOffset(overscrolledPosition, 10.0);
 
       expect(tensioningApplied.abs(), lessThan(easingApplied.abs()));
       expect(easingApplied, -10);
@@ -260,11 +238,15 @@ void main() {
         devicePixelRatio: 3.0,
       );
 
-      final double smallListOverscrollApplied =
-          physicsUnderTest.applyPhysicsToUserOffset(smallListOverscrolledPosition, 10.0);
+      final double smallListOverscrollApplied = physicsUnderTest.applyPhysicsToUserOffset(
+        smallListOverscrolledPosition,
+        10.0,
+      );
 
-      final double bigListOverscrollApplied =
-          physicsUnderTest.applyPhysicsToUserOffset(bigListOverscrolledPosition, 10.0);
+      final double bigListOverscrollApplied = physicsUnderTest.applyPhysicsToUserOffset(
+        bigListOverscrolledPosition,
+        10.0,
+      );
 
       expect(smallListOverscrollApplied, equals(bigListOverscrollApplied));
 
@@ -316,10 +298,7 @@ void main() {
       // RegExp matcher is required here due to flutter web and flutter mobile generating
       // slightly different floating point numbers
       // in Flutter web 0.0 sometimes just appears as 0. or 0
-      expect(
-        error.toStringDeep(),
-        matches(RegExp(
-          r'''
+      expect(error.toStringDeep(), matches(RegExp(r'''
 FlutterError
    ClampingScrollPhysics\.applyBoundaryConditions\(\) was called
    redundantly\.
@@ -332,10 +311,7 @@ FlutterError
      ClampingScrollPhysics
    The position object in question was\:
      FixedScrollMetrics\(500(\.\d*)?..\[0(\.\d*)?\]..500(\.\d*)?\)
-''',
-          multiLine: true,
-        )),
-      );
+''', multiLine: true)));
     }
   });
 
@@ -347,9 +323,7 @@ FlutterError
         child: NestedScrollView(
           physics: const PageScrollPhysics(),
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverToBoxAdapter(child: Container(height: 300, color: Colors.blue)),
-            ];
+            return <Widget>[SliverToBoxAdapter(child: Container(height: 300, color: Colors.blue))];
           },
           body: ListView.builder(
             itemBuilder: (BuildContext context, int index) {

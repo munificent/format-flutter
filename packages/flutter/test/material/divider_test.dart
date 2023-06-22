@@ -8,14 +8,7 @@ import '../rendering/mock_canvas.dart';
 
 void main() {
   testWidgets('Divider control test', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: const Center(
-          child: Divider(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(theme: ThemeData(useMaterial3: false), home: const Center(child: Divider())));
     final RenderBox box = tester.firstRenderObject(find.byType(Divider));
     expect(box.size.height, 16.0);
     final Container container = tester.widget(find.byType(Container));
@@ -25,14 +18,7 @@ void main() {
 
   testWidgets('Divider custom thickness', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: Divider(
-            thickness: 5.0,
-          ),
-        ),
-      ),
+      const Directionality(textDirection: TextDirection.ltr, child: Center(child: Divider(thickness: 5.0))),
     );
     final Container container = tester.widget(find.byType(Container));
     final BoxDecoration decoration = container.decoration! as BoxDecoration;
@@ -45,14 +31,7 @@ void main() {
     Rect lineRect;
 
     await tester.pumpWidget(
-      const Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: Divider(
-            indent: customIndent,
-          ),
-        ),
-      ),
+      const Directionality(textDirection: TextDirection.ltr, child: Center(child: Divider(indent: customIndent))),
     );
     // The divider line is drawn with a DecoratedBox with a border
     dividerRect = tester.getRect(find.byType(Divider));
@@ -61,14 +40,7 @@ void main() {
     expect(lineRect.right, dividerRect.right);
 
     await tester.pumpWidget(
-      const Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: Divider(
-            endIndent: customIndent,
-          ),
-        ),
-      ),
+      const Directionality(textDirection: TextDirection.ltr, child: Center(child: Divider(endIndent: customIndent))),
     );
     dividerRect = tester.getRect(find.byType(Divider));
     lineRect = tester.getRect(find.byType(DecoratedBox));
@@ -78,12 +50,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: Center(
-          child: Divider(
-            indent: customIndent,
-            endIndent: customIndent,
-          ),
-        ),
+        child: Center(child: Divider(indent: customIndent, endIndent: customIndent)),
       ),
     );
     dividerRect = tester.getRect(find.byType(Divider));
@@ -94,12 +61,7 @@ void main() {
 
   testWidgets('Vertical Divider Test', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: const Center(
-          child: VerticalDivider(),
-        ),
-      ),
+      MaterialApp(theme: ThemeData(useMaterial3: false), home: const Center(child: VerticalDivider())),
     );
     final RenderBox box = tester.firstRenderObject(find.byType(VerticalDivider));
     expect(box.size.width, 16.0);
@@ -111,14 +73,7 @@ void main() {
 
   testWidgets('Divider custom thickness', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: VerticalDivider(
-            thickness: 5.0,
-          ),
-        ),
-      ),
+      const Directionality(textDirection: TextDirection.ltr, child: Center(child: VerticalDivider(thickness: 5.0))),
     );
     final Container container = tester.widget(find.byType(Container));
     final BoxDecoration decoration = container.decoration! as BoxDecoration;
@@ -129,17 +84,7 @@ void main() {
   testWidgets('Vertical Divider Test 2', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Material(
-          child: SizedBox(
-            height: 24.0,
-            child: Row(
-              children: <Widget>[
-                Text('Hey.'),
-                VerticalDivider(),
-              ],
-            ),
-          ),
-        ),
+        home: Material(child: SizedBox(height: 24.0, child: Row(children: <Widget>[Text('Hey.'), VerticalDivider()]))),
       ),
     );
     final RenderBox box = tester.firstRenderObject(find.byType(VerticalDivider));
@@ -158,11 +103,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: Center(
-          child: VerticalDivider(
-            indent: customIndent,
-          ),
-        ),
+        child: Center(child: VerticalDivider(indent: customIndent)),
       ),
     );
     // The divider line is drawn with a DecoratedBox with a border
@@ -174,11 +115,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: Center(
-          child: VerticalDivider(
-            endIndent: customIndent,
-          ),
-        ),
+        child: Center(child: VerticalDivider(endIndent: customIndent)),
       ),
     );
     dividerRect = tester.getRect(find.byType(VerticalDivider));
@@ -189,12 +126,7 @@ void main() {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
-        child: Center(
-          child: VerticalDivider(
-            indent: customIndent,
-            endIndent: customIndent,
-          ),
-        ),
+        child: Center(child: VerticalDivider(indent: customIndent, endIndent: customIndent)),
       ),
     );
     dividerRect = tester.getRect(find.byType(VerticalDivider));

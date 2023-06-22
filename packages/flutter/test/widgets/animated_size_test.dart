@@ -20,13 +20,7 @@ void main() {
     testWidgets('animates forwards then backwards with stable-sized children', (WidgetTester tester) async {
       await tester.pumpWidget(
         const Center(
-          child: AnimatedSize(
-            duration: Duration(milliseconds: 200),
-            child: SizedBox(
-              width: 100.0,
-              height: 100.0,
-            ),
-          ),
+          child: AnimatedSize(duration: Duration(milliseconds: 200), child: SizedBox(width: 100.0, height: 100.0)),
         ),
       );
 
@@ -36,13 +30,7 @@ void main() {
 
       await tester.pumpWidget(
         const Center(
-          child: AnimatedSize(
-            duration: Duration(milliseconds: 200),
-            child: SizedBox(
-              width: 200.0,
-              height: 200.0,
-            ),
-          ),
+          child: AnimatedSize(duration: Duration(milliseconds: 200), child: SizedBox(width: 200.0, height: 200.0)),
         ),
       );
 
@@ -62,13 +50,7 @@ void main() {
 
       await tester.pumpWidget(
         const Center(
-          child: AnimatedSize(
-            duration: Duration(milliseconds: 200),
-            child: SizedBox(
-              width: 100.0,
-              height: 100.0,
-            ),
-          ),
+          child: AnimatedSize(duration: Duration(milliseconds: 200), child: SizedBox(width: 100.0, height: 100.0)),
         ),
       );
 
@@ -90,16 +72,10 @@ void main() {
     testWidgets('clamps animated size to constraints', (WidgetTester tester) async {
       await tester.pumpWidget(
         const Center(
-          child: SizedBox (
+          child: SizedBox(
             width: 100.0,
             height: 100.0,
-            child: AnimatedSize(
-              duration: Duration(milliseconds: 200),
-              child: SizedBox(
-                width: 100.0,
-                height: 100.0,
-              ),
-            ),
+            child: AnimatedSize(duration: Duration(milliseconds: 200), child: SizedBox(width: 100.0, height: 100.0)),
           ),
         ),
       );
@@ -111,16 +87,10 @@ void main() {
       // Attempt to animate beyond the outer SizedBox.
       await tester.pumpWidget(
         const Center(
-          child: SizedBox (
+          child: SizedBox(
             width: 100.0,
             height: 100.0,
-            child: AnimatedSize(
-              duration: Duration(milliseconds: 200),
-              child: SizedBox(
-                width: 200.0,
-                height: 200.0,
-              ),
-            ),
+            child: AnimatedSize(duration: Duration(milliseconds: 200), child: SizedBox(width: 200.0, height: 200.0)),
           ),
         ),
       );
@@ -137,7 +107,7 @@ void main() {
         await tester.pump(Duration(milliseconds: millis));
       }
 
-      void verify({ double? size, RenderAnimatedSizeState? state }) {
+      void verify({double? size, RenderAnimatedSizeState? state}) {
         assert(size != null || state != null);
         final RenderAnimatedSize box = tester.renderObject(find.byType(AnimatedSize));
         if (size != null) {
@@ -149,34 +119,22 @@ void main() {
         }
       }
 
-      await tester.pumpWidget(
-        Center(
-          child: AnimatedSize(
-            duration: const Duration(milliseconds: 200),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 100),
-              width: 100.0,
-              height: 100.0,
-            ),
-          ),
+      await tester.pumpWidget(Center(
+        child: AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          child: AnimatedContainer(duration: const Duration(milliseconds: 100), width: 100.0, height: 100.0),
         ),
-      );
+      ));
 
       verify(size: 100.0, state: RenderAnimatedSizeState.stable);
 
       // Animate child size from 100 to 200 slowly (100ms).
-      await tester.pumpWidget(
-        Center(
-          child: AnimatedSize(
-            duration: const Duration(milliseconds: 200),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 100),
-              width: 200.0,
-              height: 200.0,
-            ),
-          ),
+      await tester.pumpWidget(Center(
+        child: AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          child: AnimatedContainer(duration: const Duration(milliseconds: 100), width: 200.0, height: 200.0),
         ),
-      );
+      ));
 
       // Make sure animation proceeds at child's pace, with AnimatedSize
       // tightly tracking the child's size.
@@ -193,18 +151,12 @@ void main() {
       verify(size: 200.0, state: RenderAnimatedSizeState.stable);
 
       // Quickly (in 1ms) change size back to 100
-      await tester.pumpWidget(
-        Center(
-          child: AnimatedSize(
-            duration: const Duration(milliseconds: 200),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 1),
-              width: 100.0,
-              height: 100.0,
-            ),
-          ),
+      await tester.pumpWidget(Center(
+        child: AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          child: AnimatedContainer(duration: const Duration(milliseconds: 1), width: 100.0, height: 100.0),
         ),
-      );
+      ));
 
       verify(size: 200.0, state: RenderAnimatedSizeState.stable);
       await pumpMillis(1); // register change
@@ -218,25 +170,13 @@ void main() {
     testWidgets('resyncs its animation controller', (WidgetTester tester) async {
       await tester.pumpWidget(
         const Center(
-          child: AnimatedSize(
-            duration: Duration(milliseconds: 200),
-            child: SizedBox(
-              width: 100.0,
-              height: 100.0,
-            ),
-          ),
+          child: AnimatedSize(duration: Duration(milliseconds: 200), child: SizedBox(width: 100.0, height: 100.0)),
         ),
       );
 
       await tester.pumpWidget(
         const Center(
-          child: AnimatedSize(
-            duration: Duration(milliseconds: 200),
-            child: SizedBox(
-              width: 200.0,
-              height: 100.0,
-            ),
-          ),
+          child: AnimatedSize(duration: Duration(milliseconds: 200), child: SizedBox(width: 200.0, height: 100.0)),
         ),
       );
 
@@ -249,13 +189,7 @@ void main() {
     testWidgets('does not run animation unnecessarily', (WidgetTester tester) async {
       await tester.pumpWidget(
         const Center(
-          child: AnimatedSize(
-            duration: Duration(milliseconds: 200),
-            child: SizedBox(
-              width: 100.0,
-              height: 100.0,
-            ),
-          ),
+          child: AnimatedSize(duration: Duration(milliseconds: 200), child: SizedBox(width: 100.0, height: 100.0)),
         ),
       );
 
@@ -272,13 +206,7 @@ void main() {
     testWidgets('can set and update clipBehavior', (WidgetTester tester) async {
       await tester.pumpWidget(
         const Center(
-          child: AnimatedSize(
-            duration: Duration(milliseconds: 200),
-            child: SizedBox(
-              width: 100.0,
-              height: 100.0,
-            ),
-          ),
+          child: AnimatedSize(duration: Duration(milliseconds: 200), child: SizedBox(width: 100.0, height: 100.0)),
         ),
       );
 
@@ -287,44 +215,33 @@ void main() {
       expect(renderObject.clipBehavior, equals(Clip.hardEdge));
 
       for (final Clip clip in Clip.values) {
-        await tester.pumpWidget(
-          Center(
-            child: AnimatedSize(
-              duration: const Duration(milliseconds: 200),
-              clipBehavior: clip,
-              child: const SizedBox(
-                width: 100.0,
-                height: 100.0,
-              ),
-            ),
+        await tester.pumpWidget(Center(
+          child: AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            clipBehavior: clip,
+            child: const SizedBox(width: 100.0, height: 100.0),
           ),
-        );
+        ));
         expect(renderObject.clipBehavior, clip);
       }
     });
 
     testWidgets('works wrapped in IntrinsicHeight and Wrap', (WidgetTester tester) async {
       Future<void> pumpWidget(Size size, [Duration? duration]) async {
-        return tester.pumpWidget(
-          Center(
-            child: IntrinsicHeight(
-              child: Wrap(
-                textDirection: TextDirection.ltr,
-                children: <Widget>[
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeInOutBack,
-                    child: SizedBox(
-                      width: size.width,
-                      height: size.height,
-                    ),
-                  ),
-                ],
-              ),
+        return tester.pumpWidget(Center(
+          child: IntrinsicHeight(
+            child: Wrap(
+              textDirection: TextDirection.ltr,
+              children: <Widget>[
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOutBack,
+                  child: SizedBox(width: size.width, height: size.height),
+                ),
+              ],
             ),
           ),
-          duration,
-        );
+        ), duration);
       }
 
       await pumpWidget(const Size(100, 100));
@@ -376,24 +293,15 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Row(
-            children: <Widget>[
-              SizedBox(
-                key: key1,
-                height: 200,
-                child: animatedSize,
-              ),
-              const SizedBox(
-                key: key2,
-                height: 200,
-              ),
-            ],
-          ),
-        )
-      );
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Row(
+          children: <Widget>[
+            SizedBox(key: key1, height: 200, child: animatedSize),
+            const SizedBox(key: key2, height: 200),
+          ],
+        ),
+      ));
 
       setState(() {
         childSize = const Size.square(150);
@@ -403,35 +311,20 @@ void main() {
 
       // Immediately reparent the AnimatedSize subtree to a different parent
       // with the same incoming constraints.
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Row(
-            children: <Widget>[
-              const SizedBox(
-                key: key1,
-                height: 200,
-              ),
-              SizedBox(
-                key: key2,
-                height: 200,
-                child: animatedSize,
-              ),
-            ],
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Row(
+          children: <Widget>[
+            const SizedBox(key: key1, height: 200),
+            SizedBox(key: key2, height: 200, child: animatedSize),
+          ],
         ),
-      );
+      ));
 
-      expect(
-        tester.renderObject<RenderBox>(find.byType(AnimatedSize)).size,
-        const Size.square(100),
-      );
+      expect(tester.renderObject<RenderBox>(find.byType(AnimatedSize)).size, const Size.square(100));
       await tester.pumpAndSettle();
       // The animatedSize widget animates to the right size.
-      expect(
-        tester.renderObject<RenderBox>(find.byType(AnimatedSize)).size,
-        const Size.square(150),
-      );
+      expect(tester.renderObject<RenderBox>(find.byType(AnimatedSize)).size, const Size.square(150));
     });
   });
 }

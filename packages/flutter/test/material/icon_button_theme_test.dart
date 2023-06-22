@@ -14,24 +14,12 @@ void main() {
 
   testWidgets('Passing no IconButtonTheme returns defaults', (WidgetTester tester) async {
     const ColorScheme colorScheme = ColorScheme.light();
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.from(colorScheme: colorScheme, useMaterial3: true),
-        home: Scaffold(
-          body: Center(
-            child: IconButton(
-              onPressed: () { },
-              icon: const Icon(Icons.ac_unit),
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData.from(colorScheme: colorScheme, useMaterial3: true),
+      home: Scaffold(body: Center(child: IconButton(onPressed: () {}, icon: const Icon(Icons.ac_unit)))),
+    ));
 
-    final Finder buttonMaterial = find.descendant(
-      of: find.byType(IconButton),
-      matching: find.byType(Material),
-    );
+    final Finder buttonMaterial = find.descendant(of: find.byType(IconButton), matching: find.byType(Material));
 
     final Material material = tester.widget<Material>(buttonMaterial);
     expect(material.animationDuration, const Duration(milliseconds: 200));
@@ -43,7 +31,9 @@ void main() {
     expect(material.textStyle, null);
     expect(material.type, MaterialType.button);
 
-    final Align align = tester.firstWidget<Align>(find.ancestor(of: find.byIcon(Icons.ac_unit), matching: find.byType(Align)));
+    final Align align = tester.firstWidget<Align>(
+      find.ancestor(of: find.byIcon(Icons.ac_unit), matching: find.byType(Align)),
+    );
     expect(align.alignment, Alignment.center);
   });
 
@@ -82,14 +72,10 @@ void main() {
       alignment: alignment,
     );
 
-    Widget buildFrame({ ButtonStyle? buttonStyle, ButtonStyle? themeStyle, ButtonStyle? overallStyle }) {
+    Widget buildFrame({ButtonStyle? buttonStyle, ButtonStyle? themeStyle, ButtonStyle? overallStyle}) {
       final Widget child = Builder(
         builder: (BuildContext context) {
-          return IconButton(
-            style: buttonStyle,
-            onPressed: () { },
-            icon: const Icon(Icons.ac_unit),
-          );
+          return IconButton(style: buttonStyle, onPressed: () {}, icon: const Icon(Icons.ac_unit));
         },
       );
       return MaterialApp(
@@ -100,30 +86,23 @@ void main() {
           body: Center(
             // If the IconButtonTheme widget is present, it's used
             // instead of the Theme's ThemeData.iconButtonTheme.
-            child: themeStyle == null ? child : IconButtonTheme(
-              data: IconButtonThemeData(style: themeStyle),
-              child: child,
-            ),
+            child: themeStyle == null
+                ? child
+                : IconButtonTheme(data: IconButtonThemeData(style: themeStyle), child: child),
           ),
         ),
       );
     }
 
-    final Finder findMaterial = find.descendant(
-      of: find.byType(IconButton),
-      matching: find.byType(Material),
-    );
+    final Finder findMaterial = find.descendant(of: find.byType(IconButton), matching: find.byType(Material));
 
-    final Finder findInkWell = find.descendant(
-      of: find.byType(IconButton),
-      matching: find.byType(InkWell),
-    );
+    final Finder findInkWell = find.descendant(of: find.byType(IconButton), matching: find.byType(InkWell));
 
     const Set<MaterialState> enabled = <MaterialState>{};
-    const Set<MaterialState> disabled = <MaterialState>{ MaterialState.disabled };
-    const Set<MaterialState> hovered = <MaterialState>{ MaterialState.hovered };
-    const Set<MaterialState> focused = <MaterialState>{ MaterialState.focused };
-    const Set<MaterialState> pressed = <MaterialState>{ MaterialState.pressed };
+    const Set<MaterialState> disabled = <MaterialState>{MaterialState.disabled};
+    const Set<MaterialState> hovered = <MaterialState>{MaterialState.hovered};
+    const Set<MaterialState> focused = <MaterialState>{MaterialState.focused};
+    const Set<MaterialState> pressed = <MaterialState>{MaterialState.pressed};
 
     void checkButton(WidgetTester tester) {
       final Material material = tester.widget<Material>(findMaterial);
@@ -142,7 +121,9 @@ void main() {
       expect(material.shape, shape);
       expect(material.animationDuration, animationDuration);
       expect(tester.getSize(find.byType(IconButton)), const Size(200, 200));
-      final Align align = tester.firstWidget<Align>(find.ancestor(of: find.byIcon(Icons.ac_unit), matching: find.byType(Align)));
+      final Align align = tester.firstWidget<Align>(
+        find.ancestor(of: find.byIcon(Icons.ac_unit), matching: find.byType(Align)),
+      );
       expect(align.alignment, alignment);
     }
 
@@ -167,22 +148,29 @@ void main() {
     // Same as the previous tests with empty ButtonStyle's instead of null.
 
     testWidgets('Button style overrides defaults, empty theme and overall styles', (WidgetTester tester) async {
-      await tester.pumpWidget(buildFrame(buttonStyle: style, themeStyle: const ButtonStyle(), overallStyle: const ButtonStyle()));
+      await tester.pumpWidget(
+        buildFrame(buttonStyle: style, themeStyle: const ButtonStyle(), overallStyle: const ButtonStyle()),
+      );
       await tester.pumpAndSettle(); // allow the animations to finish
       checkButton(tester);
     });
 
     testWidgets('Button theme style overrides defaults, empty button and overall styles', (WidgetTester tester) async {
-      await tester.pumpWidget(buildFrame(buttonStyle: const ButtonStyle(), themeStyle: style, overallStyle: const ButtonStyle()));
+      await tester.pumpWidget(
+        buildFrame(buttonStyle: const ButtonStyle(), themeStyle: style, overallStyle: const ButtonStyle()),
+      );
       await tester.pumpAndSettle(); // allow the animations to finish
       checkButton(tester);
     });
 
-    testWidgets('Overall Theme button theme style overrides defaults, null theme and empty overall style', (WidgetTester tester) async {
-      await tester.pumpWidget(buildFrame(buttonStyle: const ButtonStyle(), overallStyle: style));
-      await tester.pumpAndSettle(); // allow the animations to finish
-      checkButton(tester);
-    });
+    testWidgets(
+      'Overall Theme button theme style overrides defaults, null theme and empty overall style',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildFrame(buttonStyle: const ButtonStyle(), overallStyle: style));
+        await tester.pumpAndSettle(); // allow the animations to finish
+        checkButton(tester);
+      },
+    );
   });
 
   testWidgets('Theme shadowColor', (WidgetTester tester) async {
@@ -190,26 +178,18 @@ void main() {
     const Color shadowColor = Color(0xff000001);
     const Color overriddenColor = Color(0xff000002);
 
-    Widget buildFrame({ Color? overallShadowColor, Color? themeShadowColor, Color? shadowColor }) {
+    Widget buildFrame({Color? overallShadowColor, Color? themeShadowColor, Color? shadowColor}) {
       return MaterialApp(
-        theme: ThemeData.from(colorScheme: colorScheme, useMaterial3: true).copyWith(
-          shadowColor: overallShadowColor,
-        ),
+        theme: ThemeData.from(colorScheme: colorScheme, useMaterial3: true).copyWith(shadowColor: overallShadowColor),
         home: Scaffold(
           body: Center(
             child: IconButtonTheme(
-              data: IconButtonThemeData(
-                style: IconButton.styleFrom(
-                  shadowColor: themeShadowColor,
-                ),
-              ),
+              data: IconButtonThemeData(style: IconButton.styleFrom(shadowColor: themeShadowColor)),
               child: Builder(
                 builder: (BuildContext context) {
                   return IconButton(
-                    style: IconButton.styleFrom(
-                      shadowColor: shadowColor,
-                    ),
-                    onPressed: () { },
+                    style: IconButton.styleFrom(shadowColor: shadowColor),
+                    onPressed: () {},
                     icon: const Icon(Icons.add),
                   );
                 },
@@ -220,10 +200,7 @@ void main() {
       );
     }
 
-    final Finder buttonMaterialFinder = find.descendant(
-      of: find.byType(IconButton),
-      matching: find.byType(Material),
-    );
+    final Finder buttonMaterialFinder = find.descendant(of: find.byType(IconButton), matching: find.byType(Material));
 
     await tester.pumpWidget(buildFrame());
     Material material = tester.widget<Material>(buttonMaterialFinder);

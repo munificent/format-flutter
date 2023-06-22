@@ -7,10 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _ManyRelayoutBoundaries extends StatelessWidget {
-  const _ManyRelayoutBoundaries({
-    required this.levels,
-    required this.child,
-  });
+  const _ManyRelayoutBoundaries({required this.levels, required this.child});
 
   final Widget child;
 
@@ -18,9 +15,7 @@ class _ManyRelayoutBoundaries extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget result = levels <= 1
-      ? child
-      : _ManyRelayoutBoundaries(levels: levels - 1, child: child);
+    final Widget result = levels <= 1 ? child : _ManyRelayoutBoundaries(levels: levels - 1, child: child);
     return SizedBox.square(dimension: 50, child: result);
   }
 }
@@ -41,25 +36,23 @@ void rebuildLayoutBuilderSubtree(RenderBox descendant) {
 }
 
 void verifyTreeIsClean() {
-   final RenderObject renderObject = RendererBinding.instance.renderView;
-   bool hasDirtyNode = renderObject.debugNeedsLayout;
+  final RenderObject renderObject = RendererBinding.instance.renderView;
+  bool hasDirtyNode = renderObject.debugNeedsLayout;
 
-   void visitor(RenderObject renderObject) {
-     expect(renderObject.debugNeedsLayout, false, reason: '$renderObject is dirty');
-     hasDirtyNode = hasDirtyNode || renderObject.debugNeedsLayout;
-     if (!hasDirtyNode) {
-       renderObject.visitChildren(visitor);
-     }
-   }
-   visitor(renderObject);
+  void visitor(RenderObject renderObject) {
+    expect(renderObject.debugNeedsLayout, false, reason: '$renderObject is dirty');
+    hasDirtyNode = hasDirtyNode || renderObject.debugNeedsLayout;
+    if (!hasDirtyNode) {
+      renderObject.visitChildren(visitor);
+    }
+  }
+
+  visitor(renderObject);
 }
 
 void verifyOverlayChildReadyForLayout(GlobalKey overlayWidgetKey) {
   final RenderBox layoutSurrogate = overlayWidgetKey.currentContext!.findRenderObject()! as RenderBox;
-  assert(
-    layoutSurrogate.runtimeType.toString() == '_RenderLayoutSurrogateProxyBox',
-    layoutSurrogate.runtimeType,
-  );
+  assert(layoutSurrogate.runtimeType.toString() == '_RenderLayoutSurrogateProxyBox', layoutSurrogate.runtimeType);
   if (layoutSurrogate.debugNeedsLayout) {
     assert(layoutSurrogate.debugDoingThisLayout);
   }
@@ -74,11 +67,10 @@ List<RenderObject> _ancestorRenderTheaters(RenderObject child) {
       results.add(node);
     }
     final RenderObject? parent = node.parent;
-    node = parent is RenderObject? parent : null;
+    node = parent is RenderObject ? parent : null;
   }
   return results;
 }
-
 
 void main() {
   final OverlayPortalController controller1 = OverlayPortalController(debugLabel: 'controller1');
@@ -100,36 +92,34 @@ void main() {
     TextDirection textDirection = TextDirection.rtl;
     late StateSetter setState;
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) {
-                return StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setter) {
-                    setState = setter;
-                    return Directionality(
-                      textDirection: textDirection,
-                      child: OverlayPortal(
-                        controller: controller1,
-                        overlayChildBuilder: (BuildContext context) {
-                          buildCount += 1;
-                          directionSeenByOverlayChild = Directionality.maybeOf(context);
-                          return const SizedBox();
-                        },
-                        child: const SizedBox(),
-                      ),
-                    );
-                  }
-                );
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                builder: (BuildContext context, StateSetter setter) {
+                  setState = setter;
+                  return Directionality(
+                    textDirection: textDirection,
+                    child: OverlayPortal(
+                      controller: controller1,
+                      overlayChildBuilder: (BuildContext context) {
+                        buildCount += 1;
+                        directionSeenByOverlayChild = Directionality.maybeOf(context);
+                        return const SizedBox();
+                      },
+                      child: const SizedBox(),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
-    );
+    ));
     expect(buildCount, 1);
     expect(directionSeenByOverlayChild, textDirection);
 
@@ -195,7 +185,7 @@ void main() {
     await tester.pumpWidget(widget);
     expect(
       tester.takeException().toString(),
-      stringContainsInOrder(<String>['Failed to attach' ,'It is already attached to']),
+      stringContainsInOrder(<String>['Failed to attach', 'It is already attached to']),
     );
   });
 
@@ -208,10 +198,7 @@ void main() {
         initialEntries: <OverlayEntry>[
           OverlayEntry(
             builder: (BuildContext context) {
-              return OverlayPortal(
-                controller: controller,
-                overlayChildBuilder: (BuildContext context) => target,
-              );
+              return OverlayPortal(controller: controller, overlayChildBuilder: (BuildContext context) => target);
             },
           ),
         ],
@@ -264,46 +251,39 @@ void main() {
     double dimensions = 30;
     late StateSetter setState;
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) {
-                return StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setter) {
-                    setState = setter;
-                    return OverlayPortal(
-                      controller: controller1,
-                      overlayChildBuilder: (BuildContext context) {
-                        return Positioned(
-                          width: dimensions,
-                          height: dimensions,
-                          child: const Placeholder(),
-                        );
-                      },
-                      child: const SizedBox(),
-                    );
-                  }
-                );
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                builder: (BuildContext context, StateSetter setter) {
+                  setState = setter;
+                  return OverlayPortal(
+                    controller: controller1,
+                    overlayChildBuilder: (BuildContext context) {
+                      return Positioned(width: dimensions, height: dimensions, child: const Placeholder());
+                    },
+                    child: const SizedBox(),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
-    expect(tester.getTopLeft(find.byType(Placeholder)), Offset.zero) ;
-    expect(tester.getSize(find.byType(Placeholder)), const Size(30, 30)) ;
-
+    expect(tester.getTopLeft(find.byType(Placeholder)), Offset.zero);
+    expect(tester.getSize(find.byType(Placeholder)), const Size(30, 30));
 
     setState(() {
       dimensions = 50;
     });
     await tester.pump();
-    expect(tester.getTopLeft(find.byType(Placeholder)), Offset.zero) ;
-    expect(tester.getSize(find.byType(Placeholder)), const Size(50, 50)) ;
+    expect(tester.getTopLeft(find.byType(Placeholder)), Offset.zero);
+    expect(tester.getSize(find.byType(Placeholder)), const Size(50, 50));
   });
 
   testWidgets('overlay child can be hit tested', (WidgetTester tester) async {
@@ -311,37 +291,39 @@ void main() {
     late StateSetter setState;
     bool isHit = false;
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) {
-                return StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setter) {
-                    setState = setter;
-                    return OverlayPortal(
-                      controller: controller1,
-                      overlayChildBuilder: (BuildContext context) {
-                        return Positioned(
-                          left: offset,
-                          top: offset,
-                          width: 1.0,
-                          height: 1.0,
-                          child: GestureDetector(onTap: () { isHit = true; }),
-                        );
-                      },
-                      child: const SizedBox(),
-                    );
-                  }
-                );
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                builder: (BuildContext context, StateSetter setter) {
+                  setState = setter;
+                  return OverlayPortal(
+                    controller: controller1,
+                    overlayChildBuilder: (BuildContext context) {
+                      return Positioned(
+                        left: offset,
+                        top: offset,
+                        width: 1.0,
+                        height: 1.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            isHit = true;
+                          },
+                        ),
+                      );
+                    },
+                    child: const SizedBox(),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
-    );
+    ));
     assert(!isHit);
     await tester.tapAt(const Offset(0.5, 0.5));
     expect(isHit, true);
@@ -362,28 +344,26 @@ void main() {
   });
 
   testWidgets('works in a LayoutBuilder', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) {
-                return LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    return OverlayPortal(
-                      controller: controller1,
-                      overlayChildBuilder: (BuildContext context) => const SizedBox(),
-                      child: const SizedBox(),
-                    );
-                  }
-                );
-              },
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (BuildContext context) {
+              return LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return OverlayPortal(
+                    controller: controller1,
+                    overlayChildBuilder: (BuildContext context) => const SizedBox(),
+                    child: const SizedBox(),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(tester.takeException(), isNull);
   });
@@ -400,57 +380,54 @@ void main() {
       );
     }
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          initialEntries: <OverlayEntry>[
-            OverlayStatefulEntry(builder: (BuildContext context, StateSetter setter) {
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        initialEntries: <OverlayEntry>[
+          OverlayStatefulEntry(
+            builder: (BuildContext context, StateSetter setter) {
               setState = setter;
               return OverlayPortal(
                 controller: controller1,
                 overlayChildBuilder: (BuildContext context) => const SizedBox(),
                 child: shouldShowChild ? LayoutBuilder(builder: layoutBuilder) : null,
               );
-            }),
-          ],
-        ),
+            },
+          ),
+        ],
       ),
-    );
+    ));
 
     expect(tester.takeException(), isNull);
-    setState(() { shouldShowChild = true; });
+    setState(() {
+      shouldShowChild = true;
+    });
 
     await tester.pump();
     expect(tester.takeException(), isNull);
   });
 
   testWidgets('throws when no Overlay', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox.square(
-          dimension: 50,
-          child: OverlayPortal(
-            controller: controller1,
-            overlayChildBuilder: (BuildContext context) => const SizedBox(),
-            child: const SizedBox(),
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: SizedBox.square(
+        dimension: 50,
+        child: OverlayPortal(
+          controller: controller1,
+          overlayChildBuilder: (BuildContext context) => const SizedBox(),
+          child: const SizedBox(),
         ),
       ),
-    );
+    ));
 
-    expect(
-      tester.takeException().toString(),
-      startsWith(
-        'No Overlay widget found.\n'
-        'OverlayPortal widgets require an Overlay widget ancestor.\n'
-        'An overlay lets widgets float on top of other widget children.\n'
-        'To introduce an Overlay widget, you can either directly include one, or use a widget '
-        'that contains an Overlay itself, such as a Navigator, WidgetApp, MaterialApp, or CupertinoApp.\n'
-        'The specific widget that could not find a Overlay ancestor was:\n'
-      ),
-    );
+    expect(tester.takeException().toString(), startsWith(
+      'No Overlay widget found.\n'
+      'OverlayPortal widgets require an Overlay widget ancestor.\n'
+      'An overlay lets widgets float on top of other widget children.\n'
+      'To introduce an Overlay widget, you can either directly include one, or use a widget '
+      'that contains an Overlay itself, such as a Navigator, WidgetApp, MaterialApp, or CupertinoApp.\n'
+      'The specific widget that could not find a Overlay ancestor was:\n',
+    ));
   });
 
   testWidgets('widget is laid out before overlay child', (WidgetTester tester) async {
@@ -459,33 +436,38 @@ void main() {
     final RenderBox overlayChildBox = RenderConstrainedBox(additionalConstraints: const BoxConstraints());
     int layoutCount = 0;
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          initialEntries: <OverlayEntry>[
-            OverlayEntry(
-              builder: (BuildContext context) {
-                return _ManyRelayoutBoundaries(levels: 50, child: Builder(builder: (BuildContext context) {
-                  return OverlayPortal(
-                    key: widgetKey,
-                    controller: controller1,
-                    overlayChildBuilder: (BuildContext context) {
-                      return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                        verifyOverlayChildReadyForLayout(widgetKey);
-                        layoutCount += 1;
-                        return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
-                      });
-                    },
-                    child: WidgetToRenderBoxAdapter(renderBox: childBox),
-                  );
-                }));
-              }
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (BuildContext context) {
+              return _ManyRelayoutBoundaries(
+                levels: 50,
+                child: Builder(
+                  builder: (BuildContext context) {
+                    return OverlayPortal(
+                      key: widgetKey,
+                      controller: controller1,
+                      overlayChildBuilder: (BuildContext context) {
+                        return LayoutBuilder(
+                          builder: (BuildContext context, BoxConstraints constraints) {
+                            verifyOverlayChildReadyForLayout(widgetKey);
+                            layoutCount += 1;
+                            return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
+                          },
+                        );
+                      },
+                      child: WidgetToRenderBoxAdapter(renderBox: childBox),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
-    );
+    ));
     expect(layoutCount, 1);
 
     // Make the widget's render object dirty and verifies in the LayoutBuilder's
@@ -515,36 +497,41 @@ void main() {
     int layoutCount = 0;
     controller1.hide();
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Overlay(
-          key: overlayKey,
-          initialEntries: <OverlayEntry>[
-            // Overlay.performLayout will call layoutCounter.layout.
-            OverlayEntry(builder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: overlayLayoutCounter)),
-            OverlayEntry(
-              builder: (BuildContext context) {
-                return _ManyRelayoutBoundaries(levels: 50, child: Builder(builder: (BuildContext context) {
-                  return OverlayPortal(
-                    key: widgetKey,
-                    controller: controller1,
-                    overlayChildBuilder: (BuildContext context) {
-                      return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                        layoutCount += 1;
-                        expect(tester.renderObject(find.byType(Overlay)).debugNeedsLayout, false);
-                        return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
-                      });
-                    },
-                    child: WidgetToRenderBoxAdapter(renderBox: childBox),
-                  );
-                }));
-              }
-            ),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: overlayKey,
+        initialEntries: <OverlayEntry>[
+          // Overlay.performLayout will call layoutCounter.layout.
+          OverlayEntry(builder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: overlayLayoutCounter)),
+          OverlayEntry(
+            builder: (BuildContext context) {
+              return _ManyRelayoutBoundaries(
+                levels: 50,
+                child: Builder(
+                  builder: (BuildContext context) {
+                    return OverlayPortal(
+                      key: widgetKey,
+                      controller: controller1,
+                      overlayChildBuilder: (BuildContext context) {
+                        return LayoutBuilder(
+                          builder: (BuildContext context, BoxConstraints constraints) {
+                            layoutCount += 1;
+                            expect(tester.renderObject(find.byType(Overlay)).debugNeedsLayout, false);
+                            return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
+                          },
+                        );
+                      },
+                      child: WidgetToRenderBoxAdapter(renderBox: childBox),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
-    );
+    ));
     expect(layoutCount, 0);
     expect(overlayLayoutCounter.layoutCount, 1);
     verifyTreeIsClean();
@@ -574,55 +561,62 @@ void main() {
     late StateSetter setState;
     double dimension = 100;
 
-    await tester.pumpWidget(
-      StatefulBuilder(
-        builder: (BuildContext context, StateSetter stateSetter) {
-          setState = stateSetter;
-          return Center(
-            child: Directionality(
-              textDirection: TextDirection.ltr,
-              child: SizedBox.square(
-                dimension: dimension,
-                child: Overlay(
-                  key: overlayKey,
-                  initialEntries: <OverlayEntry>[
-                    // Overlay.performLayout calls layoutCounter.layout.
-                    OverlayEntry(builder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: overlayLayoutCounter)),
-                    OverlayEntry(
-                      builder: (BuildContext outerEntryContext) {
-                        return Center(
-                          child: _ManyRelayoutBoundaries(
-                            levels: 50,
-                            child: Builder(builder: (BuildContext context) {
+    await tester.pumpWidget(StatefulBuilder(
+      builder: (BuildContext context, StateSetter stateSetter) {
+        setState = stateSetter;
+        return Center(
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: SizedBox.square(
+              dimension: dimension,
+              child: Overlay(
+                key: overlayKey,
+                initialEntries: <OverlayEntry>[
+                  // Overlay.performLayout calls layoutCounter.layout.
+                  OverlayEntry(
+                    builder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: overlayLayoutCounter),
+                  ),
+                  OverlayEntry(
+                    builder: (BuildContext outerEntryContext) {
+                      return Center(
+                        child: _ManyRelayoutBoundaries(
+                          levels: 50,
+                          child: Builder(
+                            builder: (BuildContext context) {
                               return OverlayPortal(
                                 key: widgetKey,
                                 controller: controller1,
                                 overlayChildBuilder: (BuildContext context) {
-                                  return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                                    layoutCount += 1;
-                                    // Both overlays need to be clean at this point.
-                                    expect(
-                                      tester.renderObjectList(find.byType(Overlay)),
-                                      everyElement(wrapMatcher((RenderObject object) => !object.debugNeedsLayout || object.debugDoingThisLayout)),
-                                    );
-                                    return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
-                                  });
+                                  return LayoutBuilder(
+                                    builder: (BuildContext context, BoxConstraints constraints) {
+                                      layoutCount += 1;
+                                      // Both overlays need to be clean at this point.
+                                      expect(
+                                        tester.renderObjectList(find.byType(Overlay)),
+                                        everyElement(wrapMatcher(
+                                          (RenderObject object) =>
+                                              !object.debugNeedsLayout || object.debugDoingThisLayout,
+                                        )),
+                                      );
+                                      return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
+                                    },
+                                  );
                                 },
                                 child: WidgetToRenderBoxAdapter(renderBox: childBox),
                               );
-                            }),
+                            },
                           ),
-                        );
-                      }
-                    ),
-                  ],
-                ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
-          );
-        }
-      ),
-    );
+          ),
+        );
+      },
+    ));
 
     expect(layoutCount, 1);
     expect(overlayLayoutCounter.layoutCount, 1);
@@ -651,64 +645,84 @@ void main() {
     final RenderBox overlayChildBox = RenderConstrainedBox(additionalConstraints: const BoxConstraints());
     final _RenderLayoutCounter overlayLayoutCounter = _RenderLayoutCounter();
     int layoutCount = 0;
-    OverlayPortal Function({ Widget? child, required OverlayPortalController controller, Key? key, required WidgetBuilder overlayChildBuilder, }) constructorToUse = OverlayPortal.new;
+    OverlayPortal Function({
+      Widget? child,
+      required OverlayPortalController controller,
+      Key? key,
+      required WidgetBuilder overlayChildBuilder,
+    }) constructorToUse = OverlayPortal.new;
     late StateSetter setState;
 
     // This tree has 3 nested Overlays.
-    await tester.pumpWidget(
-      StatefulBuilder(
-        builder: (BuildContext context, StateSetter stateSetter) {
-          setState = stateSetter;
-          return Center(
-            child: Directionality(
-              textDirection: TextDirection.ltr,
-              child: Overlay(
-                key: rootOverlayKey,
-                initialEntries: <OverlayEntry>[
-                  OverlayEntry(builder: (BuildContext context) {
+    await tester.pumpWidget(StatefulBuilder(
+      builder: (BuildContext context, StateSetter stateSetter) {
+        setState = stateSetter;
+        return Center(
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: Overlay(
+              key: rootOverlayKey,
+              initialEntries: <OverlayEntry>[
+                OverlayEntry(
+                  builder: (BuildContext context) {
                     return Overlay(
                       initialEntries: <OverlayEntry>[
-                        OverlayEntry(builder: (BuildContext context) {
-                          return Overlay(
-                            key: localOverlayKey,
-                            initialEntries: <OverlayEntry>[
-                              // Overlay.performLayout calls layoutCounter.layout.
-                              OverlayEntry(builder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: overlayLayoutCounter)),
-                              OverlayEntry(builder: (BuildContext outerEntryContext) {
-                                return Center(
-                                  child: Builder(builder: (BuildContext context) {
-                                    return constructorToUse(
-                                      key: widgetKey,
-                                      controller: controller1,
-                                      overlayChildBuilder: (BuildContext context) {
-                                        return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                                          layoutCount += 1;
-                                          // Both overlays need to be clean at this point.
-                                          expect(
-                                            tester.renderObjectList(find.byType(Overlay)),
-                                            everyElement(wrapMatcher((RenderObject object) => !object.debugNeedsLayout || object.debugDoingThisLayout)),
+                        OverlayEntry(
+                          builder: (BuildContext context) {
+                            return Overlay(
+                              key: localOverlayKey,
+                              initialEntries: <OverlayEntry>[
+                                // Overlay.performLayout calls layoutCounter.layout.
+                                OverlayEntry(
+                                  builder: (BuildContext context) => WidgetToRenderBoxAdapter(
+                                        renderBox: overlayLayoutCounter,
+                                      ),
+                                ),
+                                OverlayEntry(
+                                  builder: (BuildContext outerEntryContext) {
+                                    return Center(
+                                      child: Builder(
+                                        builder: (BuildContext context) {
+                                          return constructorToUse(
+                                            key: widgetKey,
+                                            controller: controller1,
+                                            overlayChildBuilder: (BuildContext context) {
+                                              return LayoutBuilder(
+                                                builder: (BuildContext context, BoxConstraints constraints) {
+                                                  layoutCount += 1;
+                                                  // Both overlays need to be clean at this point.
+                                                  expect(
+                                                    tester.renderObjectList(find.byType(Overlay)),
+                                                    everyElement(wrapMatcher(
+                                                      (RenderObject object) =>
+                                                          !object.debugNeedsLayout || object.debugDoingThisLayout,
+                                                    )),
+                                                  );
+                                                  return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
+                                                },
+                                              );
+                                            },
+                                            child: WidgetToRenderBoxAdapter(renderBox: childBox),
                                           );
-                                          return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
-                                        });
-                                      },
-                                      child: WidgetToRenderBoxAdapter(renderBox: childBox),
+                                        },
+                                      ),
                                     );
-                                  }),
-                                );
-                              }),
-                            ],
-                          );
-                        }),
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ],
                     );
-                  }),
-                ],
-              ),
+                  },
+                ),
+              ],
             ),
-          );
-        }
-      ),
-    );
+          ),
+        );
+      },
+    ));
 
     expect(layoutCount, 1);
     expect(overlayLayoutCounter.layoutCount, 1);
@@ -717,7 +731,9 @@ void main() {
     verifyTreeIsClean();
 
     // Now targets the root overlay.
-    setState(() { constructorToUse = OverlayPortal.targetsRootOverlay; });
+    setState(() {
+      constructorToUse = OverlayPortal.targetsRootOverlay;
+    });
     await tester.pump();
 
     expect(layoutCount, 2);
@@ -733,36 +749,38 @@ void main() {
       final GlobalKey widgetKey = GlobalKey(debugLabel: 'widget');
       final RenderBox childBox = RenderConstrainedBox(additionalConstraints: const BoxConstraints());
       final RenderBox overlayChildBox = RenderConstrainedBox(additionalConstraints: const BoxConstraints());
-      final OverlayEntry overlayEntry1 = OverlayEntry(builder: (BuildContext context) {
-        return _ManyRelayoutBoundaries(
-          levels: 50,
-          child: Builder(builder: (BuildContext context) {
-            return OverlayPortal(
-              key: widgetKey,
-              controller: controller1,
-              overlayChildBuilder: (BuildContext context) {
-                return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                  layoutCount += 1;
-                  verifyOverlayChildReadyForLayout(widgetKey);
-                  return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
-                });
+      final OverlayEntry overlayEntry1 = OverlayEntry(
+        builder: (BuildContext context) {
+          return _ManyRelayoutBoundaries(
+            levels: 50,
+            child: Builder(
+              builder: (BuildContext context) {
+                return OverlayPortal(
+                  key: widgetKey,
+                  controller: controller1,
+                  overlayChildBuilder: (BuildContext context) {
+                    return LayoutBuilder(
+                      builder: (BuildContext context, BoxConstraints constraints) {
+                        layoutCount += 1;
+                        verifyOverlayChildReadyForLayout(widgetKey);
+                        return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
+                      },
+                    );
+                  },
+                  child: WidgetToRenderBoxAdapter(renderBox: childBox),
+                );
               },
-              child: WidgetToRenderBoxAdapter(renderBox: childBox),
-            );
-          }),
-        );
-      });
+            ),
+          );
+        },
+      );
       final OverlayEntry overlayEntry2 = OverlayEntry(builder: (BuildContext context) => const Placeholder());
       final OverlayEntry overlayEntry3 = OverlayEntry(builder: (BuildContext context) => const Placeholder());
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[overlayEntry1, overlayEntry2, overlayEntry3],
-          ),
-        ),
-      );
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(initialEntries: <OverlayEntry>[overlayEntry1, overlayEntry2, overlayEntry3]),
+      ));
       expect(layoutCount, 1);
       verifyTreeIsClean();
 
@@ -770,12 +788,11 @@ void main() {
       childBox.markNeedsLayout();
       rebuildLayoutBuilderSubtree(overlayChildBox);
       // Make sure childBox's depth is greater than that of the overlay child.
-      expect(
-        widgetKey.currentContext!.findRenderObject()!.depth,
-        lessThan(overlayChildBox.depth),
-      );
+      expect(widgetKey.currentContext!.findRenderObject()!.depth, lessThan(overlayChildBox.depth));
 
-      tester.state<OverlayState>(find.byType(Overlay)).rearrange(<OverlayEntry>[overlayEntry3, overlayEntry2, overlayEntry1]);
+      tester.state<OverlayState>(
+        find.byType(Overlay),
+      ).rearrange(<OverlayEntry>[overlayEntry3, overlayEntry2, overlayEntry1]);
       await tester.pump();
       expect(layoutCount, 2);
       expect(widgetKey.currentContext!.findRenderObject()!.depth, lessThan(overlayChildBox.depth));
@@ -793,55 +810,69 @@ void main() {
       int layoutCount1 = 0;
       int layoutCount2 = 0;
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(builder: (BuildContext context) {
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[
+            OverlayEntry(
+              builder: (BuildContext context) {
                 return _ManyRelayoutBoundaries(
                   levels: 50,
-                  child: StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
-                    setState1 = stateSetter;
-                    return targetMovedToOverlayEntry3 ? const SizedBox() : OverlayPortal(
-                      key: targetGlobalKey,
-                      controller: controller1,
-                      overlayChildBuilder: (BuildContext context) {
-                        return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                          layoutCount1 += 1;
-                          verifyOverlayChildReadyForLayout(targetGlobalKey);
-                          return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
-                        });
-                      },
-                      child: WidgetToRenderBoxAdapter(renderBox: childBox),
-                    );
-                  }),
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter stateSetter) {
+                      setState1 = stateSetter;
+                      return targetMovedToOverlayEntry3
+                          ? const SizedBox()
+                          : OverlayPortal(
+                              key: targetGlobalKey,
+                              controller: controller1,
+                              overlayChildBuilder: (BuildContext context) {
+                                return LayoutBuilder(
+                                  builder: (BuildContext context, BoxConstraints constraints) {
+                                    layoutCount1 += 1;
+                                    verifyOverlayChildReadyForLayout(targetGlobalKey);
+                                    return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
+                                  },
+                                );
+                              },
+                              child: WidgetToRenderBoxAdapter(renderBox: childBox),
+                            );
+                    },
+                  ),
                 );
-              }),
-              OverlayEntry(builder: (BuildContext context) => const Placeholder()),
-              OverlayEntry(builder: (BuildContext context) {
+              },
+            ),
+            OverlayEntry(builder: (BuildContext context) => const Placeholder()),
+            OverlayEntry(
+              builder: (BuildContext context) {
                 return SizedBox(
-                  child: StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
-                    setState2 = stateSetter;
-                    return !targetMovedToOverlayEntry3 ? const SizedBox() : OverlayPortal(
-                      key: targetGlobalKey,
-                      controller: controller1,
-                      overlayChildBuilder: (BuildContext context) {
-                        return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                          layoutCount2 += 1;
-                          verifyOverlayChildReadyForLayout(targetGlobalKey);
-                          return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
-                        });
-                      },
-                      child: WidgetToRenderBoxAdapter(renderBox: childBox),
-                    );
-                  }),
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter stateSetter) {
+                      setState2 = stateSetter;
+                      return !targetMovedToOverlayEntry3
+                          ? const SizedBox()
+                          : OverlayPortal(
+                              key: targetGlobalKey,
+                              controller: controller1,
+                              overlayChildBuilder: (BuildContext context) {
+                                return LayoutBuilder(
+                                  builder: (BuildContext context, BoxConstraints constraints) {
+                                    layoutCount2 += 1;
+                                    verifyOverlayChildReadyForLayout(targetGlobalKey);
+                                    return WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
+                                  },
+                                );
+                              },
+                              child: WidgetToRenderBoxAdapter(renderBox: childBox),
+                            );
+                    },
+                  ),
                 );
-              }),
-            ],
-          ),
+              },
+            ),
+          ],
         ),
-      );
+      ));
 
       expect(layoutCount1, 1);
       expect(layoutCount2, 0);
@@ -855,10 +886,7 @@ void main() {
 
       await tester.pump();
 
-      expect(
-        targetGlobalKey.currentContext!.findRenderObject()!.depth,
-        lessThan(overlayChildBox.depth),
-      );
+      expect(targetGlobalKey.currentContext!.findRenderObject()!.depth, lessThan(overlayChildBox.depth));
       verifyTreeIsClean();
       expect(layoutCount1, 1);
       expect(layoutCount2, 1);
@@ -875,30 +903,34 @@ void main() {
       final Widget child1 = WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
       final Widget child2 = WidgetToRenderBoxAdapter(renderBox: childBox);
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(builder: (BuildContext context) {
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[
+            OverlayEntry(
+              builder: (BuildContext context) {
                 return _ManyRelayoutBoundaries(
                   levels: 50,
-                  child: StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
-                    setState = stateSetter;
-                    return OverlayPortal(
-                      controller: controller1,
-                      overlayChildBuilder: (BuildContext context) => swapChildAndRemoteChild ? child1 : child2,
-                      child: swapChildAndRemoteChild ? child2 : child1,
-                    );
-                  }),
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter stateSetter) {
+                      setState = stateSetter;
+                      return OverlayPortal(
+                        controller: controller1,
+                        overlayChildBuilder: (BuildContext context) => swapChildAndRemoteChild ? child1 : child2,
+                        child: swapChildAndRemoteChild ? child2 : child1,
+                      );
+                    },
+                  ),
                 );
-              }),
-            ],
-          ),
+              },
+            ),
+          ],
         ),
-      );
+      ));
 
-      setState(() { swapChildAndRemoteChild = true; });
+      setState(() {
+        swapChildAndRemoteChild = true;
+      });
       await tester.pump();
       verifyTreeIsClean();
     });
@@ -917,43 +949,51 @@ void main() {
 
       controller1.hide();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(builder: (BuildContext context) {
-                return StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
-                  setState2 = stateSetter;
-                  return OverlayPortal(
-                    controller: controller1,
-                    overlayChildBuilder: (BuildContext context) => child2,
-                    child: takeChildren ? child1 : null,
-                  );
-                });
-              }),
-              OverlayEntry(builder: (BuildContext context) {
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[
+            OverlayEntry(
+              builder: (BuildContext context) {
+                return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter stateSetter) {
+                    setState2 = stateSetter;
+                    return OverlayPortal(
+                      controller: controller1,
+                      overlayChildBuilder: (BuildContext context) => child2,
+                      child: takeChildren ? child1 : null,
+                    );
+                  },
+                );
+              },
+            ),
+            OverlayEntry(
+              builder: (BuildContext context) {
                 return _ManyRelayoutBoundaries(
                   levels: 50,
-                  child: StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
-                    setState1 = stateSetter;
-                    return OverlayPortal(
-                      controller: controller2,
-                      overlayChildBuilder: (BuildContext context) => child1,
-                      child: takeChildren ? null : child2,
-                    );
-                  }),
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter stateSetter) {
+                      setState1 = stateSetter;
+                      return OverlayPortal(
+                        controller: controller2,
+                        overlayChildBuilder: (BuildContext context) => child1,
+                        child: takeChildren ? null : child2,
+                      );
+                    },
+                  ),
                 );
-              }),
-            ],
-          ),
+              },
+            ),
+          ],
         ),
-      );
+      ));
 
       controller1.show();
       controller2.hide();
-      setState2(() { takeChildren = true; });
-      setState1(() { });
+      setState2(() {
+        takeChildren = true;
+      });
+      setState1(() {});
 
       await tester.pump();
       verifyTreeIsClean();
@@ -975,40 +1015,44 @@ void main() {
       final Widget child2 = WidgetToRenderBoxAdapter(renderBox: child2Box);
       final Widget child3 = WidgetToRenderBoxAdapter(renderBox: overlayChildBox);
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(builder: (BuildContext context) {
-                return StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
-                  setState = stateSetter;
-                  return OverlayPortal(
-                    key: swapped ? outerKey : innerKey,
-                    controller: swapped ? controller2 : controller1,
-                    overlayChildBuilder: (BuildContext context) {
-                      return OverlayPortal(
-                        key: swapped ? innerKey : outerKey,
-                        controller: swapped ? controller1 : controller2,
-                        overlayChildBuilder: (BuildContext context) {
-                          return OverlayPortal(
-                            controller: OverlayPortalController(),
-                            overlayChildBuilder: (BuildContext context) => child3,
-                          );
-                        },
-                        child: child2,
-                      );
-                    },
-                    child: child1,
-                  );
-                });
-              }),
-            ],
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[
+            OverlayEntry(
+              builder: (BuildContext context) {
+                return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter stateSetter) {
+                    setState = stateSetter;
+                    return OverlayPortal(
+                      key: swapped ? outerKey : innerKey,
+                      controller: swapped ? controller2 : controller1,
+                      overlayChildBuilder: (BuildContext context) {
+                        return OverlayPortal(
+                          key: swapped ? innerKey : outerKey,
+                          controller: swapped ? controller1 : controller2,
+                          overlayChildBuilder: (BuildContext context) {
+                            return OverlayPortal(
+                              controller: OverlayPortalController(),
+                              overlayChildBuilder: (BuildContext context) => child3,
+                            );
+                          },
+                          child: child2,
+                        );
+                      },
+                      child: child1,
+                    );
+                  },
+                );
+              },
+            ),
+          ],
         ),
-      );
+      ));
 
-      setState(() { swapped = true; });
+      setState(() {
+        swapped = true;
+      });
       await tester.pump();
       verifyTreeIsClean();
     });
@@ -1031,10 +1075,7 @@ void main() {
       // Expected Order child1 -> innerKey -> child4.
       Widget widget = Column(
         children: <Widget>[
-          OverlayPortal(
-            controller: controller1,
-            overlayChildBuilder: (BuildContext context) => child1,
-          ),
+          OverlayPortal(controller: controller1, overlayChildBuilder: (BuildContext context) => child1),
           OverlayPortal(
             key: outerKey,
             controller: controller2,
@@ -1047,46 +1088,35 @@ void main() {
               );
             },
           ),
-          OverlayPortal(
-            controller: controller4,
-            overlayChildBuilder: (BuildContext context) => child4,
-          ),
+          OverlayPortal(controller: controller4, overlayChildBuilder: (BuildContext context) => child4),
         ],
       );
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(builder: (BuildContext context) {
-                return StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
-                  setState = stateSetter;
-                  return widget;
-                });
-              }),
-            ],
-          ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[
+            OverlayEntry(
+              builder: (BuildContext context) {
+                return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter stateSetter) {
+                    setState = stateSetter;
+                    return widget;
+                  },
+                );
+              },
+            ),
+          ],
         ),
-      );
+      ));
 
-      expect(_PaintOrder.paintOrder,
-        <Widget>[
-          child1,
-          child2,
-          child3,
-          child4,
-        ],
-      );
+      expect(_PaintOrder.paintOrder, <Widget>[child1, child2, child3, child4]);
       _PaintOrder.paintOrder.clear();
 
       // Swap the nested OverlayPortal.
       widget = Column(
         children: <Widget>[
-          OverlayPortal(
-            controller: controller1,
-            overlayChildBuilder: (BuildContext context) => child1,
-          ),
+          OverlayPortal(controller: controller1, overlayChildBuilder: (BuildContext context) => child1),
           OverlayPortal(
             key: innerKey,
             controller: controller3,
@@ -1099,31 +1129,21 @@ void main() {
               );
             },
           ),
-          OverlayPortal(
-            controller: controller4,
-            overlayChildBuilder: (BuildContext context) => child4,
-          ),
+          OverlayPortal(controller: controller4, overlayChildBuilder: (BuildContext context) => child4),
         ],
       );
 
       setState(() {});
       await tester.pump();
 
-      expect(_PaintOrder.paintOrder,
-        <Widget>[
-          child1,
-          child3,
-          child2,
-          child4,
-        ],
-      );
+      expect(_PaintOrder.paintOrder, <Widget>[child1, child3, child2, child4]);
     });
 
     group('Swapping', () {
       StateSetter? setState1, setState2;
       bool swapped = false;
 
-      void setState({ required bool newValue }) {
+      void setState({required bool newValue}) {
         swapped = newValue;
         setState1?.call(() {});
         setState2?.call(() {});
@@ -1139,28 +1159,31 @@ void main() {
         final _RenderLayoutCounter counter1 = _RenderLayoutCounter();
         final _RenderLayoutCounter counter2 = _RenderLayoutCounter();
 
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Overlay(
-              initialEntries: <OverlayEntry>[
-                OverlayStatefulEntry(builder: (BuildContext context, StateSetter stateSetter) {
+        await tester.pumpWidget(Directionality(
+          textDirection: TextDirection.ltr,
+          child: Overlay(
+            initialEntries: <OverlayEntry>[
+              OverlayStatefulEntry(
+                builder: (BuildContext context, StateSetter stateSetter) {
                   setState1 = stateSetter;
                   // WidgetToRenderBoxAdapter is keyed by the render box.
                   return WidgetToRenderBoxAdapter(renderBox: swapped ? counter2 : counter1);
-                }),
-                OverlayStatefulEntry(builder: (BuildContext context, StateSetter stateSetter) {
+                },
+              ),
+              OverlayStatefulEntry(
+                builder: (BuildContext context, StateSetter stateSetter) {
                   setState2 = stateSetter;
                   return OverlayPortal(
                     controller: controller1,
-                    overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter1 : counter2),
+                    overlayChildBuilder:
+                        (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter1 : counter2),
                     child: const SizedBox(),
                   );
-                }),
-              ],
-            ),
+                },
+              ),
+            ],
           ),
-        );
+        ));
 
         expect(counter1.layoutCount, 1);
         expect(counter2.layoutCount, 1);
@@ -1182,31 +1205,35 @@ void main() {
         final _RenderLayoutCounter counter1 = _RenderLayoutCounter();
         final _RenderLayoutCounter counter2 = _RenderLayoutCounter();
 
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Overlay(
-              initialEntries: <OverlayEntry>[
-                OverlayStatefulEntry(builder: (BuildContext context, StateSetter stateSetter) {
+        await tester.pumpWidget(Directionality(
+          textDirection: TextDirection.ltr,
+          child: Overlay(
+            initialEntries: <OverlayEntry>[
+              OverlayStatefulEntry(
+                builder: (BuildContext context, StateSetter stateSetter) {
                   setState1 = stateSetter;
-                  return  WidgetToRenderBoxAdapter(renderBox: swapped ? counter2 : counter1);
-                }),
-                OverlayStatefulEntry(builder: (BuildContext context, StateSetter stateSetter) {
+                  return WidgetToRenderBoxAdapter(renderBox: swapped ? counter2 : counter1);
+                },
+              ),
+              OverlayStatefulEntry(
+                builder: (BuildContext context, StateSetter stateSetter) {
                   setState2 = stateSetter;
                   return LayoutBuilder(
                     builder: (BuildContext context, BoxConstraints constraints) {
                       return OverlayPortal(
                         controller: controller1,
-                        overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter1 : counter2),
+                        overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(
+                              renderBox: swapped ? counter1 : counter2,
+                            ),
                         child: const SizedBox(),
                       );
-                    }
+                    },
                   );
-                }),
-              ],
-            ),
+                },
+              ),
+            ],
           ),
-        );
+        ));
 
         expect(counter1.layoutCount, 1);
         expect(counter2.layoutCount, 1);
@@ -1228,32 +1255,36 @@ void main() {
         final _RenderLayoutCounter counter1 = _RenderLayoutCounter();
         final _RenderLayoutCounter counter2 = _RenderLayoutCounter();
 
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Overlay(
-              initialEntries: <OverlayEntry>[
-                OverlayStatefulEntry(builder: (BuildContext context, StateSetter stateSetter) {
+        await tester.pumpWidget(Directionality(
+          textDirection: TextDirection.ltr,
+          child: Overlay(
+            initialEntries: <OverlayEntry>[
+              OverlayStatefulEntry(
+                builder: (BuildContext context, StateSetter stateSetter) {
                   setState1 = stateSetter;
                   return OverlayPortal(
                     // WidgetToRenderBoxAdapter is keyed by the render box.
                     controller: controller1,
-                    overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter2 : counter1),
+                    overlayChildBuilder:
+                        (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter2 : counter1),
                     child: const SizedBox(),
                   );
-                }),
-                OverlayStatefulEntry(builder: (BuildContext context, StateSetter stateSetter) {
+                },
+              ),
+              OverlayStatefulEntry(
+                builder: (BuildContext context, StateSetter stateSetter) {
                   setState2 = stateSetter;
                   return OverlayPortal(
                     controller: controller2,
-                    overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter1 : counter2),
+                    overlayChildBuilder:
+                        (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter1 : counter2),
                     child: const SizedBox(),
                   );
-                }),
-              ],
-            ),
+                },
+              ),
+            ],
           ),
-        );
+        ));
 
         expect(counter1.layoutCount, 1);
         expect(counter2.layoutCount, 1);
@@ -1275,39 +1306,45 @@ void main() {
         final _RenderLayoutCounter counter1 = _RenderLayoutCounter();
         final _RenderLayoutCounter counter2 = _RenderLayoutCounter();
 
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Overlay(
-              initialEntries: <OverlayEntry>[
-                OverlayStatefulEntry(builder: (BuildContext context, StateSetter stateSetter) {
+        await tester.pumpWidget(Directionality(
+          textDirection: TextDirection.ltr,
+          child: Overlay(
+            initialEntries: <OverlayEntry>[
+              OverlayStatefulEntry(
+                builder: (BuildContext context, StateSetter stateSetter) {
                   setState1 = stateSetter;
                   return LayoutBuilder(
                     builder: (BuildContext context, BoxConstraints constraints) {
                       return OverlayPortal(
                         controller: controller1,
-                        overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter2 : counter1),
+                        overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(
+                              renderBox: swapped ? counter2 : counter1,
+                            ),
                         child: const SizedBox(),
                       );
-                    }
+                    },
                   );
-                }),
-                OverlayStatefulEntry(builder: (BuildContext context, StateSetter stateSetter) {
+                },
+              ),
+              OverlayStatefulEntry(
+                builder: (BuildContext context, StateSetter stateSetter) {
                   setState2 = stateSetter;
                   return LayoutBuilder(
                     builder: (BuildContext context, BoxConstraints constraints) {
                       return OverlayPortal(
                         controller: controller2,
-                        overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter1 : counter2),
+                        overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(
+                              renderBox: swapped ? counter1 : counter2,
+                            ),
                         child: const SizedBox(),
                       );
-                    }
+                    },
                   );
-                }),
-              ],
-            ),
+                },
+              ),
+            ],
           ),
-        );
+        ));
 
         expect(counter1.layoutCount, 1);
         expect(counter2.layoutCount, 1);
@@ -1329,24 +1366,25 @@ void main() {
         final _RenderLayoutCounter counter1 = _RenderLayoutCounter();
         final _RenderLayoutCounter counter2 = _RenderLayoutCounter();
 
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Overlay(
-              initialEntries: <OverlayEntry>[
-                OverlayStatefulEntry(builder: (BuildContext context, StateSetter stateSetter) {
+        await tester.pumpWidget(Directionality(
+          textDirection: TextDirection.ltr,
+          child: Overlay(
+            initialEntries: <OverlayEntry>[
+              OverlayStatefulEntry(
+                builder: (BuildContext context, StateSetter stateSetter) {
                   setState1 = stateSetter;
                   return OverlayPortal(
                     // WidgetToRenderBoxAdapter is keyed by the render box.
                     controller: controller1,
-                    overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter2 : counter1),
+                    overlayChildBuilder:
+                        (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter2 : counter1),
                     child: WidgetToRenderBoxAdapter(renderBox: swapped ? counter1 : counter2),
                   );
-                }),
-              ],
-            ),
+                },
+              ),
+            ],
           ),
-        );
+        ));
 
         expect(counter1.layoutCount, 1);
         expect(counter2.layoutCount, 1);
@@ -1368,28 +1406,30 @@ void main() {
         final _RenderLayoutCounter counter1 = _RenderLayoutCounter();
         final _RenderLayoutCounter counter2 = _RenderLayoutCounter();
 
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Overlay(
-              initialEntries: <OverlayEntry>[
-                OverlayStatefulEntry(builder: (BuildContext context, StateSetter stateSetter) {
+        await tester.pumpWidget(Directionality(
+          textDirection: TextDirection.ltr,
+          child: Overlay(
+            initialEntries: <OverlayEntry>[
+              OverlayStatefulEntry(
+                builder: (BuildContext context, StateSetter stateSetter) {
                   setState1 = stateSetter;
                   return LayoutBuilder(
                     builder: (BuildContext context, BoxConstraints constraints) {
                       return OverlayPortal(
                         // WidgetToRenderBoxAdapter is keyed by the render box.
                         controller: controller1,
-                        overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(renderBox: swapped ? counter2 : counter1),
+                        overlayChildBuilder: (BuildContext context) => WidgetToRenderBoxAdapter(
+                              renderBox: swapped ? counter2 : counter1,
+                            ),
                         child: WidgetToRenderBoxAdapter(renderBox: swapped ? counter1 : counter2),
                       );
-                    }
+                    },
                   );
-                }),
-              ],
-            ),
+                },
+              ),
+            ],
           ),
-        );
+        ));
 
         expect(counter1.layoutCount, 1);
         expect(counter2.layoutCount, 1);
@@ -1416,62 +1456,42 @@ void main() {
       const _PaintOrder child1 = _PaintOrder();
       const _PaintOrder child2 = _PaintOrder();
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(builder: (BuildContext context) {
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[
+            OverlayEntry(
+              builder: (BuildContext context) {
                 return Column(
                   children: <Widget>[
                     OverlayPortal(controller: controller1, overlayChildBuilder: (BuildContext context) => child1),
                     OverlayPortal(controller: controller2, overlayChildBuilder: (BuildContext context) => child2),
                   ],
                 );
-              }),
-            ],
-          ),
+              },
+            ),
+          ],
         ),
-      );
+      ));
 
       // Only child2 is visible.
-      expect(
-        _PaintOrder.paintOrder,
-        <_PaintOrder>[
-          child2,
-        ],
-      );
+      expect(_PaintOrder.paintOrder, <_PaintOrder>[child2]);
 
       _PaintOrder.paintOrder.clear();
       controller1.show();
       await tester.pump();
-      expect(
-        _PaintOrder.paintOrder,
-        <_PaintOrder>[
-          child2,
-          child1,
-        ],
-      );
+      expect(_PaintOrder.paintOrder, <_PaintOrder>[child2, child1]);
 
       _PaintOrder.paintOrder.clear();
       controller2.show();
       await tester.pump();
-      expect(
-        _PaintOrder.paintOrder,
-        <_PaintOrder>[
-          child1,
-          child2,
-        ],
-      );
+      expect(_PaintOrder.paintOrder, <_PaintOrder>[child1, child2]);
 
       _PaintOrder.paintOrder.clear();
       controller2.hide();
       controller1.hide();
       await tester.pump();
-      expect(
-        _PaintOrder.paintOrder,
-        isEmpty,
-      );
+      expect(_PaintOrder.paintOrder, isEmpty);
     });
 
     testWidgets('Paint order does not change after global key reparenting', (WidgetTester tester) async {
@@ -1499,26 +1519,28 @@ void main() {
         child: const SizedBox(),
       );
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Overlay(
-            initialEntries: <OverlayEntry>[
-              OverlayEntry(builder: (BuildContext context) {
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Overlay(
+          initialEntries: <OverlayEntry>[
+            OverlayEntry(
+              builder: (BuildContext context) {
                 return Column(
                   children: <Widget>[
-                    StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
-                      setState = stateSetter;
-                      return reparented ? SizedBox(child: overlayPortal1) : overlayPortal1;
-                    }),
+                    StatefulBuilder(
+                      builder: (BuildContext context, StateSetter stateSetter) {
+                        setState = stateSetter;
+                        return reparented ? SizedBox(child: overlayPortal1) : overlayPortal1;
+                      },
+                    ),
                     overlayPortal2,
                   ],
                 );
-              }),
-            ],
-          ),
+              },
+            ),
+          ],
         ),
-      );
+      ));
 
       final RenderObject theater = tester.renderObject<RenderObject>(find.byType(Overlay));
       final List<RenderObject> childrenVisited = <RenderObject>[];
@@ -1527,7 +1549,9 @@ void main() {
       expect(childrenVisited, containsAllInOrder(<RenderObject>[child1Box.parent!, child2Box.parent!]));
       childrenVisited.clear();
 
-      setState(() { reparented = true; });
+      setState(() {
+        reparented = true;
+      });
       await tester.pump();
       theater.visitChildren(childrenVisited.add);
       // The child list stays the same.
@@ -1537,9 +1561,8 @@ void main() {
 }
 
 class OverlayStatefulEntry extends OverlayEntry {
-  OverlayStatefulEntry({
-    required StatefulWidgetBuilder builder,
-  }) : super(builder: (BuildContext context) => StatefulBuilder(builder: builder));
+  OverlayStatefulEntry({required StatefulWidgetBuilder builder})
+    : super(builder: (BuildContext context) => StatefulBuilder(builder: builder));
 }
 
 class _RenderLayoutCounter extends RenderProxyBox {

@@ -10,34 +10,18 @@ void main() {
   group('SliverAppBar - Stretch', () {
     testWidgets('fills overscroll', (WidgetTester tester) async {
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: <Widget>[
-              const SliverAppBar(
-                stretch: true,
-                expandedHeight: 100.0,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            const SliverAppBar(stretch: true, expandedHeight: 100.0),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
+      ));
 
-      final RenderSliverScrollingPersistentHeader header = tester.renderObject(
-        find.byType(SliverAppBar),
-      );
+      final RenderSliverScrollingPersistentHeader header = tester.renderObject(find.byType(SliverAppBar));
       expect(header.child!.size.height, equals(100.0));
       await slowDrag(tester, anchor, const Offset(0.0, 100));
       expect(header.child!.size.height, equals(200.0));
@@ -45,35 +29,18 @@ void main() {
 
     testWidgets('fills overscroll after reverse direction input - scrolling header', (WidgetTester tester) async {
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: <Widget>[
-              const SliverAppBar(
-                title: Text('Test'),
-                stretch: true,
-                expandedHeight: 100.0,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            const SliverAppBar(title: Text('Test'), stretch: true, expandedHeight: 100.0),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
+      ));
 
-      final RenderSliverScrollingPersistentHeader header = tester.renderObject(
-        find.byType(SliverAppBar),
-      );
+      final RenderSliverScrollingPersistentHeader header = tester.renderObject(find.byType(SliverAppBar));
       expect(header.child!.size.height, equals(100.0));
       expect(tester.getCenter(find.text('Test')).dy, 28.0);
       // First scroll the header away
@@ -94,36 +61,18 @@ void main() {
 
     testWidgets('fills overscroll after reverse direction input - floating header', (WidgetTester tester) async {
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: <Widget>[
-              const SliverAppBar(
-                title: Text('Test'),
-                stretch: true,
-                floating: true,
-                expandedHeight: 100.0,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            const SliverAppBar(title: Text('Test'), stretch: true, floating: true, expandedHeight: 100.0),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
+      ));
 
-      final RenderSliverFloatingPersistentHeader header = tester.renderObject(
-        find.byType(SliverAppBar),
-      );
+      final RenderSliverFloatingPersistentHeader header = tester.renderObject(find.byType(SliverAppBar));
       expect(header.child!.size.height, equals(100.0));
       expect(tester.getCenter(find.text('Test')).dy, 28.0);
       // First scroll the header away
@@ -144,34 +93,18 @@ void main() {
 
     testWidgets('does not stretch without overscroll physics', (WidgetTester tester) async {
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            slivers: <Widget>[
-              const SliverAppBar(
-                stretch: true,
-                expandedHeight: 100.0,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const ClampingScrollPhysics(),
+          slivers: <Widget>[
+            const SliverAppBar(stretch: true, expandedHeight: 100.0),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
+      ));
 
-      final RenderSliverScrollingPersistentHeader header = tester.renderObject(
-        find.byType(SliverAppBar),
-      );
+      final RenderSliverScrollingPersistentHeader header = tester.renderObject(find.byType(SliverAppBar));
       expect(header.child!.size.height, equals(100.0));
       await slowDrag(tester, anchor, const Offset(0.0, 100.0));
       expect(header.child!.size.height, equals(100.0));
@@ -180,33 +113,22 @@ void main() {
     testWidgets('default trigger offset', (WidgetTester tester) async {
       bool didTrigger = false;
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: <Widget>[
-              SliverAppBar(
-                stretch: true,
-                expandedHeight: 100.0,
-                onStretchTrigger: () async {
-                  didTrigger = true;
-                },
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            SliverAppBar(
+              stretch: true,
+              expandedHeight: 100.0,
+              onStretchTrigger: () async {
+                didTrigger = true;
+              },
+            ),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
+      ));
 
       await slowDrag(tester, anchor, const Offset(0.0, 50.0));
       expect(didTrigger, isFalse);
@@ -218,34 +140,23 @@ void main() {
     testWidgets('custom trigger offset', (WidgetTester tester) async {
       bool didTrigger = false;
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: <Widget>[
-              SliverAppBar(
-                stretch: true,
-                expandedHeight: 100.0,
-                stretchTriggerOffset: 150.0,
-                onStretchTrigger: () async {
-                  didTrigger = true;
-                },
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            SliverAppBar(
+              stretch: true,
+              expandedHeight: 100.0,
+              stretchTriggerOffset: 150.0,
+              onStretchTrigger: () async {
+                didTrigger = true;
+              },
+            ),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
+      ));
 
       await slowDrag(tester, anchor, const Offset(0.0, 100.0));
       await tester.pumpAndSettle();
@@ -257,34 +168,23 @@ void main() {
     testWidgets('stretch callback not triggered without overscroll physics', (WidgetTester tester) async {
       bool didTrigger = false;
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            slivers: <Widget>[
-              SliverAppBar(
-                stretch: true,
-                expandedHeight: 100.0,
-                stretchTriggerOffset: 150.0,
-                onStretchTrigger: () async {
-                  didTrigger = true;
-                },
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const ClampingScrollPhysics(),
+          slivers: <Widget>[
+            SliverAppBar(
+              stretch: true,
+              expandedHeight: 100.0,
+              stretchTriggerOffset: 150.0,
+              onStretchTrigger: () async {
+                didTrigger = true;
+              },
+            ),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
+      ));
 
       await slowDrag(tester, anchor, const Offset(0.0, 100.0));
       await tester.pumpAndSettle();
@@ -294,67 +194,35 @@ void main() {
     });
 
     testWidgets('asserts reasonable trigger offset', (WidgetTester tester) async {
-      expect(
-        () {
-          return MaterialApp(
-            home: CustomScrollView(
-              physics: const ClampingScrollPhysics(),
-              slivers: <Widget>[
-                SliverAppBar(
-                  stretch: true,
-                  expandedHeight: 100.0,
-                  stretchTriggerOffset: -150.0,
-                ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    height: 800,
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    height: 800,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-        throwsAssertionError,
-      );
+      expect(() {
+        return MaterialApp(
+          home: CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: <Widget>[
+              SliverAppBar(stretch: true, expandedHeight: 100.0, stretchTriggerOffset: -150.0),
+              SliverToBoxAdapter(child: Container(height: 800)),
+              SliverToBoxAdapter(child: Container(height: 800)),
+            ],
+          ),
+        );
+      }, throwsAssertionError);
     });
   });
 
   group('SliverAppBar - Stretch, Pinned', () {
     testWidgets('fills overscroll', (WidgetTester tester) async {
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: <Widget>[
-              const SliverAppBar(
-                pinned: true,
-                stretch: true,
-                expandedHeight: 100.0,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            const SliverAppBar(pinned: true, stretch: true, expandedHeight: 100.0),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
-      final RenderSliverPinnedPersistentHeader header = tester.renderObject(
-        find.byType(SliverAppBar),
-      );
+      ));
+      final RenderSliverPinnedPersistentHeader header = tester.renderObject(find.byType(SliverAppBar));
       expect(header.child!.size.height, equals(100.0));
       await slowDrag(tester, anchor, const Offset(0.0, 100));
       expect(header.child!.size.height, equals(200.0));
@@ -362,34 +230,17 @@ void main() {
 
     testWidgets('does not stretch without overscroll physics', (WidgetTester tester) async {
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            slivers: <Widget>[
-              const SliverAppBar(
-                pinned: true,
-                stretch: true,
-                expandedHeight: 100.0,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const ClampingScrollPhysics(),
+          slivers: <Widget>[
+            const SliverAppBar(pinned: true, stretch: true, expandedHeight: 100.0),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
-      final RenderSliverPinnedPersistentHeader header = tester.renderObject(
-        find.byType(SliverAppBar),
-      );
+      ));
+      final RenderSliverPinnedPersistentHeader header = tester.renderObject(find.byType(SliverAppBar));
       expect(header.child!.size.height, equals(100.0));
       await slowDrag(tester, anchor, const Offset(0.0, 100));
       expect(header.child!.size.height, equals(100.0));
@@ -399,34 +250,17 @@ void main() {
   group('SliverAppBar - Stretch, Floating', () {
     testWidgets('fills overscroll', (WidgetTester tester) async {
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: <Widget>[
-              const SliverAppBar(
-                floating: true,
-                stretch: true,
-                expandedHeight: 100.0,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            const SliverAppBar(floating: true, stretch: true, expandedHeight: 100.0),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
-      final RenderSliverFloatingPersistentHeader header = tester.renderObject(
-        find.byType(SliverAppBar),
-      );
+      ));
+      final RenderSliverFloatingPersistentHeader header = tester.renderObject(find.byType(SliverAppBar));
       expect(header.child!.size.height, equals(100.0));
       await slowDrag(tester, anchor, const Offset(0.0, 100));
       expect(header.child!.size.height, equals(200.0));
@@ -434,34 +268,17 @@ void main() {
 
     testWidgets('does not fill overscroll without proper physics', (WidgetTester tester) async {
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            slivers: <Widget>[
-              const SliverAppBar(
-                floating: true,
-                stretch: true,
-                expandedHeight: 100.0,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const ClampingScrollPhysics(),
+          slivers: <Widget>[
+            const SliverAppBar(floating: true, stretch: true, expandedHeight: 100.0),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
-      final RenderSliverFloatingPersistentHeader header = tester.renderObject(
-        find.byType(SliverAppBar),
-      );
+      ));
+      final RenderSliverFloatingPersistentHeader header = tester.renderObject(find.byType(SliverAppBar));
       expect(header.child!.size.height, equals(100.0));
       await slowDrag(tester, anchor, const Offset(0.0, 100));
       expect(header.child!.size.height, equals(100.0));
@@ -471,35 +288,17 @@ void main() {
   group('SliverAppBar - Stretch, Floating, Pinned', () {
     testWidgets('fills overscroll', (WidgetTester tester) async {
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: <Widget>[
-              const SliverAppBar(
-                floating: true,
-                pinned: true,
-                stretch: true,
-                expandedHeight: 100.0,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            const SliverAppBar(floating: true, pinned: true, stretch: true, expandedHeight: 100.0),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
-      final RenderSliverFloatingPinnedPersistentHeader header = tester.renderObject(
-        find.byType(SliverAppBar),
-      );
+      ));
+      final RenderSliverFloatingPinnedPersistentHeader header = tester.renderObject(find.byType(SliverAppBar));
       expect(header.child!.size.height, equals(100.0));
       await slowDrag(tester, anchor, const Offset(0.0, 100));
       expect(header.child!.size.height, equals(200.0));
@@ -507,35 +306,17 @@ void main() {
 
     testWidgets('does not fill overscroll without proper physics', (WidgetTester tester) async {
       const Key anchor = Key('drag');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            slivers: <Widget>[
-              const SliverAppBar(
-                pinned: true,
-                floating: true,
-                stretch: true,
-                expandedHeight: 100.0,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  key: anchor,
-                  height: 800,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 800,
-                ),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(MaterialApp(
+        home: CustomScrollView(
+          physics: const ClampingScrollPhysics(),
+          slivers: <Widget>[
+            const SliverAppBar(pinned: true, floating: true, stretch: true, expandedHeight: 100.0),
+            SliverToBoxAdapter(child: Container(key: anchor, height: 800)),
+            SliverToBoxAdapter(child: Container(height: 800)),
+          ],
         ),
-      );
-      final RenderSliverFloatingPinnedPersistentHeader header = tester.renderObject(
-        find.byType(SliverAppBar),
-      );
+      ));
+      final RenderSliverFloatingPinnedPersistentHeader header = tester.renderObject(find.byType(SliverAppBar));
       expect(header.child!.size.height, equals(100.0));
       await slowDrag(tester, anchor, const Offset(0.0, 100));
       expect(header.child!.size.height, equals(100.0));

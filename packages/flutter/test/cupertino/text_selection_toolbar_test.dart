@@ -31,24 +31,13 @@ class _CustomCupertinoTextSelectionControls extends CupertinoTextSelectionContro
       _kArrowScreenPadding + mediaQueryPadding.left,
       MediaQuery.sizeOf(context).width - mediaQueryPadding.right - _kArrowScreenPadding,
     );
-    final Offset anchorAbove = Offset(
-      anchorX,
-      endpoints.first.point.dy - textLineHeight + globalEditableRegion.top,
-    );
-    final Offset anchorBelow = Offset(
-      anchorX,
-      endpoints.last.point.dy + globalEditableRegion.top,
-    );
+    final Offset anchorAbove = Offset(anchorX, endpoints.first.point.dy - textLineHeight + globalEditableRegion.top);
+    final Offset anchorBelow = Offset(anchorX, endpoints.last.point.dy + globalEditableRegion.top);
 
     return CupertinoTextSelectionToolbar(
       anchorAbove: anchorAbove,
       anchorBelow: anchorBelow,
-      children: <Widget>[
-        CupertinoTextSelectionToolbarButton(
-          onPressed: () {},
-          child: const Text('Custom button'),
-        ),
-      ],
+      children: <Widget>[CupertinoTextSelectionToolbarButton(onPressed: () {}, child: const Text('Custom button'))],
     );
   }
 }
@@ -87,22 +76,20 @@ void main() {
   testWidgets('paginates children if they overflow', (WidgetTester tester) async {
     late StateSetter setState;
     final List<Widget> children = List<Widget>.generate(7, (int i) => const TestBox());
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setter) {
-              setState = setter;
-              return CupertinoTextSelectionToolbar(
-                anchorAbove: const Offset(50.0, 100.0),
-                anchorBelow: const Offset(50.0, 200.0),
-                children: children,
-              );
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setter) {
+            setState = setter;
+            return CupertinoTextSelectionToolbar(
+              anchorAbove: const Offset(50.0, 100.0),
+              anchorBelow: const Offset(50.0, 200.0),
+              children: children,
+            );
+          },
         ),
       ),
-    );
+    ));
 
     // All children fit on the screen, so they are all rendered.
     expect(find.byType(TestBox), findsNWidgets(children.length));
@@ -111,9 +98,7 @@ void main() {
 
     // Adding one more child makes the children overflow.
     setState(() {
-      children.add(
-        const TestBox(),
-      );
+      children.add(const TestBox());
     });
     await tester.pumpAndSettle();
     expect(find.byType(TestBox), findsNWidgets(children.length - 1));
@@ -192,20 +177,18 @@ void main() {
     final double dividerWidth = 1.0 / tester.view.devicePixelRatio;
     const double borderRadius = 8.0; // Should match _kToolbarBorderRadius
     final double width = 7 * TestBox.itemWidth + 6 * (dividerWidth + 2 * spacerWidth) + 2 * borderRadius;
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: SizedBox(
-            width: width,
-            child: CupertinoTextSelectionToolbar(
-              anchorAbove: const Offset(50.0, 100.0),
-              anchorBelow: const Offset(50.0, 200.0),
-              children: children,
-            ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: SizedBox(
+          width: width,
+          child: CupertinoTextSelectionToolbar(
+            anchorAbove: const Offset(50.0, 100.0),
+            anchorBelow: const Offset(50.0, 200.0),
+            children: children,
           ),
         ),
       ),
-    );
+    ));
 
     // All children fit on the screen, so they are all rendered.
     expect(find.byType(TestBox), findsNWidgets(children.length));
@@ -220,38 +203,32 @@ void main() {
     double anchorAboveY = 0.0;
     const double paddingAbove = 12.0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setter) {
-              setState = setter;
-              final MediaQueryData data = MediaQuery.of(context);
-              // Add some custom vertical padding to make this test more strict.
-              // By default in the testing environment, _kToolbarContentDistance
-              // and the built-in padding from CupertinoApp can end up canceling
-              // each other out.
-              return MediaQuery(
-                data: data.copyWith(
-                  padding: data.viewPadding.copyWith(
-                    top: paddingAbove,
-                  ),
-                ),
-                child: CupertinoTextSelectionToolbar(
-                  anchorAbove: Offset(50.0, anchorAboveY),
-                  anchorBelow: const Offset(50.0, anchorBelowY),
-                  children: <Widget>[
-                    Container(color: const Color(0xffff0000), width: 50.0, height: height),
-                    Container(color: const Color(0xff00ff00), width: 50.0, height: height),
-                    Container(color: const Color(0xff0000ff), width: 50.0, height: height),
-                  ],
-                ),
-              );
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setter) {
+            setState = setter;
+            final MediaQueryData data = MediaQuery.of(context);
+            // Add some custom vertical padding to make this test more strict.
+            // By default in the testing environment, _kToolbarContentDistance
+            // and the built-in padding from CupertinoApp can end up canceling
+            // each other out.
+            return MediaQuery(
+              data: data.copyWith(padding: data.viewPadding.copyWith(top: paddingAbove)),
+              child: CupertinoTextSelectionToolbar(
+                anchorAbove: Offset(50.0, anchorAboveY),
+                anchorBelow: const Offset(50.0, anchorBelowY),
+                children: <Widget>[
+                  Container(color: const Color(0xffff0000), width: 50.0, height: height),
+                  Container(color: const Color(0xff00ff00), width: 50.0, height: height),
+                  Container(color: const Color(0xff0000ff), width: 50.0, height: height),
+                ],
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     // When the toolbar doesn't fit above aboveAnchor, it positions itself below
     // belowAnchor.
@@ -280,19 +257,12 @@ void main() {
   }, skip: kIsWeb); // [intended] We do not use Flutter-rendered context menu on the Web.
 
   testWidgets('can create and use a custom toolbar', (WidgetTester tester) async {
-    final TextEditingController controller = TextEditingController(
-      text: 'Select me custom menu',
-    );
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: CupertinoTextField(
-            controller: controller,
-            selectionControls: _CustomCupertinoTextSelectionControls(),
-          ),
-        ),
+    final TextEditingController controller = TextEditingController(text: 'Select me custom menu');
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: CupertinoTextField(controller: controller, selectionControls: _CustomCupertinoTextSelectionControls()),
       ),
-    );
+    ));
 
     // The selection menu is not initially shown.
     expect(find.text('Custom button'), findsNothing);
@@ -314,12 +284,11 @@ void main() {
 
   for (final Brightness? themeBrightness in <Brightness?>[...Brightness.values, null]) {
     for (final Brightness? mediaBrightness in <Brightness?>[...Brightness.values, null]) {
-      testWidgets('draws dark buttons in dark mode and light button in light mode when theme is $themeBrightness and MediaQuery is $mediaBrightness', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          CupertinoApp(
-            theme: CupertinoThemeData(
-              brightness: themeBrightness,
-            ),
+      testWidgets(
+        'draws dark buttons in dark mode and light button in light mode when theme is $themeBrightness and MediaQuery is $mediaBrightness',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(CupertinoApp(
+            theme: CupertinoThemeData(brightness: themeBrightness),
             home: Center(
               child: Builder(
                 builder: (BuildContext context) {
@@ -328,47 +297,43 @@ void main() {
                     child: CupertinoTextSelectionToolbar(
                       anchorAbove: const Offset(100.0, 0.0),
                       anchorBelow: const Offset(100.0, 0.0),
-                      children: <Widget>[
-                        CupertinoTextSelectionToolbarButton.text(
-                          onPressed: () {},
-                          text: 'Button',
-                        ),
-                      ],
+                      children: <Widget>[CupertinoTextSelectionToolbarButton.text(onPressed: () {}, text: 'Button')],
                     ),
                   );
                 },
               ),
             ),
-          ),
-        );
+          ));
 
-        final Finder buttonFinder = find.byType(CupertinoButton);
-        expect(buttonFinder, findsOneWidget);
+          final Finder buttonFinder = find.byType(CupertinoButton);
+          expect(buttonFinder, findsOneWidget);
 
-        final Finder decorationFinder = find.descendant(
-          of: find.byType(CupertinoButton),
-          matching: find.byType(DecoratedBox)
-        );
-        expect(decorationFinder, findsOneWidget);
-        final DecoratedBox decoratedBox = tester.widget(decorationFinder);
-        final BoxDecoration boxDecoration = decoratedBox.decoration as BoxDecoration;
+          final Finder decorationFinder = find.descendant(
+            of: find.byType(CupertinoButton),
+            matching: find.byType(DecoratedBox),
+          );
+          expect(decorationFinder, findsOneWidget);
+          final DecoratedBox decoratedBox = tester.widget(decorationFinder);
+          final BoxDecoration boxDecoration = decoratedBox.decoration as BoxDecoration;
 
-        // Theme brightness is preferred, otherwise MediaQuery brightness is
-        // used. If both are null, defaults to light.
-        late final Brightness effectiveBrightness;
-        if (themeBrightness != null) {
-          effectiveBrightness = themeBrightness;
-        } else {
-          effectiveBrightness = mediaBrightness ?? Brightness.light;
-        }
+          // Theme brightness is preferred, otherwise MediaQuery brightness is
+          // used. If both are null, defaults to light.
+          late final Brightness effectiveBrightness;
+          if (themeBrightness != null) {
+            effectiveBrightness = themeBrightness;
+          } else {
+            effectiveBrightness = mediaBrightness ?? Brightness.light;
+          }
 
-        expect(
-          boxDecoration.color!.value,
-          effectiveBrightness == Brightness.dark
-              ? _kToolbarBackgroundColor.darkColor.value
-              : _kToolbarBackgroundColor.color.value,
-        );
-      }, skip: kIsWeb); // [intended] We do not use Flutter-rendered context menu on the Web.
+          expect(
+            boxDecoration.color!.value,
+            effectiveBrightness == Brightness.dark
+                ? _kToolbarBackgroundColor.darkColor.value
+                : _kToolbarBackgroundColor.color.value,
+          );
+        },
+        skip: kIsWeb,
+      ); // [intended] We do not use Flutter-rendered context menu on the Web.
     }
   }
 
@@ -377,41 +342,33 @@ void main() {
     const double height = _kToolbarHeight;
     double anchorAboveY = 0.0;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        theme: const CupertinoThemeData(
-          brightness: Brightness.light,
-        ),
-        home: Center(
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setter) {
-              setState = setter;
-              final MediaQueryData data = MediaQuery.of(context);
-              // Add some custom vertical padding to make this test more strict.
-              // By default in the testing environment, _kToolbarContentDistance
-              // and the built-in padding from CupertinoApp can end up canceling
-              // each other out.
-              return MediaQuery(
-                data: data.copyWith(
-                  padding: data.viewPadding.copyWith(
-                    top: 12.0,
-                  ),
-                ),
-                child: CupertinoTextSelectionToolbar(
-                  anchorAbove: Offset(50.0, anchorAboveY),
-                  anchorBelow: const Offset(50.0, 500.0),
-                  children: <Widget>[
-                    Container(color: const Color(0xffff0000), width: 50.0, height: height),
-                    Container(color: const Color(0xff00ff00), width: 50.0, height: height),
-                    Container(color: const Color(0xff0000ff), width: 50.0, height: height),
-                  ],
-                ),
-              );
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      theme: const CupertinoThemeData(brightness: Brightness.light),
+      home: Center(
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setter) {
+            setState = setter;
+            final MediaQueryData data = MediaQuery.of(context);
+            // Add some custom vertical padding to make this test more strict.
+            // By default in the testing environment, _kToolbarContentDistance
+            // and the built-in padding from CupertinoApp can end up canceling
+            // each other out.
+            return MediaQuery(
+              data: data.copyWith(padding: data.viewPadding.copyWith(top: 12.0)),
+              child: CupertinoTextSelectionToolbar(
+                anchorAbove: Offset(50.0, anchorAboveY),
+                anchorBelow: const Offset(50.0, 500.0),
+                children: <Widget>[
+                  Container(color: const Color(0xffff0000), width: 50.0, height: height),
+                  Container(color: const Color(0xff00ff00), width: 50.0, height: height),
+                  Container(color: const Color(0xff0000ff), width: 50.0, height: height),
+                ],
+              ),
+            );
+          },
         ),
       ),
-    );
+    ));
 
     // When the toolbar is below the content, the shadow hangs below the entire
     // toolbar.

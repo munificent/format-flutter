@@ -17,11 +17,7 @@ void main() {
 
   test('BorderSide control test', () {
     const BorderSide side1 = BorderSide();
-    final BorderSide side2 = side1.copyWith(
-      color: const Color(0xFF00FFFF),
-      width: 2.0,
-      style: BorderStyle.solid,
-    );
+    final BorderSide side2 = side1.copyWith(color: const Color(0xFF00FFFF), width: 2.0, style: BorderStyle.solid);
 
     expect(side1, hasOneLineDescription);
     expect(side1.hashCode, isNot(equals(side2.hashCode)));
@@ -32,10 +28,10 @@ void main() {
 
     expect(BorderSide.lerp(side1, side2, 0.0), equals(side1));
     expect(BorderSide.lerp(side1, side2, 1.0), equals(side2));
-    expect(BorderSide.lerp(side1, side2, 0.5), equals(BorderSide(
-      color: Color.lerp(const Color(0xFF000000), const Color(0xFF00FFFF), 0.5)!,
-      width: 1.5,
-    )));
+    expect(
+      BorderSide.lerp(side1, side2, 0.5),
+      equals(BorderSide(color: Color.lerp(const Color(0xFF000000), const Color(0xFF00FFFF), 0.5)!, width: 1.5)),
+    );
 
     final BorderSide side3 = side2.copyWith(style: BorderStyle.none);
     BorderSide interpolated = BorderSide.lerp(side2, side3, 0.2);
@@ -49,11 +45,7 @@ void main() {
 
   test('BorderSide toString test', () {
     const BorderSide side1 = BorderSide();
-    final BorderSide side2 = side1.copyWith(
-      color: const Color(0xFF00FFFF),
-      width: 2.0,
-      style: BorderStyle.solid,
-    );
+    final BorderSide side2 = side1.copyWith(color: const Color(0xFF00FFFF), width: 2.0, style: BorderStyle.solid);
 
     expect(side1.toString(), equals('BorderSide'));
     expect(side2.toString(), equals('BorderSide(color: Color(0xff00ffff), width: 2.0)'));
@@ -75,10 +67,7 @@ void main() {
   });
 
   test('Border toString test', () {
-    expect(
-      Border.all(width: 4.0).toString(),
-      equals('Border.all(BorderSide(width: 4.0))'),
-    );
+    expect(Border.all(width: 4.0).toString(), equals('Border.all(BorderSide(width: 4.0))'));
     expect(
       const Border(
         top: BorderSide(width: 3.0),
@@ -156,265 +145,252 @@ void main() {
   });
 
   test('BoxShadow toString test', () {
-    expect(const BoxShadow(blurRadius: 4.0).toString(), equals('BoxShadow(Color(0xff000000), Offset(0.0, 0.0), 4.0, 0.0, BlurStyle.normal)'));
-    expect(const BoxShadow(blurRadius: 4.0, blurStyle: BlurStyle.solid).toString(), equals('BoxShadow(Color(0xff000000), Offset(0.0, 0.0), 4.0, 0.0, BlurStyle.solid)'));
+    expect(
+      const BoxShadow(blurRadius: 4.0).toString(),
+      equals('BoxShadow(Color(0xff000000), Offset(0.0, 0.0), 4.0, 0.0, BlurStyle.normal)'),
+    );
+    expect(
+      const BoxShadow(blurRadius: 4.0, blurStyle: BlurStyle.solid).toString(),
+      equals('BoxShadow(Color(0xff000000), Offset(0.0, 0.0), 4.0, 0.0, BlurStyle.solid)'),
+    );
   });
 
   testWidgets('BoxShadow BoxStyle.solid', (WidgetTester tester) async {
     final Key key = UniqueKey();
     debugDisableShadows = false;
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          key: key,
-          child: Container(
-            color: Colors.white,
-            width: 50,
-            height: 50,
-            child: Center(
-              child: Container(
-                decoration: const BoxDecoration(
-                  boxShadow: <BoxShadow>[BoxShadow(blurRadius: 3.0, blurStyle: BlurStyle.solid)],
-                ),
-                width: 10,
-                height: 10,
-              ),
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        key: key,
+        child: Container(
+          color: Colors.white,
+          width: 50,
+          height: 50,
+          child: Center(
+            child: Container(
+              decoration:
+                  const BoxDecoration(boxShadow: <BoxShadow>[BoxShadow(blurRadius: 3.0, blurStyle: BlurStyle.solid)]),
+              width: 10,
+              height: 10,
             ),
           ),
         ),
       ),
-    );
+    ));
 
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('boxShadow.boxStyle.solid.0.0.png'),
-    );
+    await expectLater(find.byKey(key), matchesGoldenFile('boxShadow.boxStyle.solid.0.0.png'));
     debugDisableShadows = true;
   });
 
   testWidgets('BoxShadow BoxStyle.outer', (WidgetTester tester) async {
     final Key key = UniqueKey();
     debugDisableShadows = false;
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          key: key,
-          child: Container(
-            color: Colors.white,
-            width: 50,
-            height: 50,
-            child: Center(
-              child: Container(
-                decoration: const BoxDecoration(
-                  boxShadow: <BoxShadow>[BoxShadow(blurRadius: 8.0, blurStyle: BlurStyle.outer)],
-                ),
-                width: 20,
-                height: 20,
-              ),
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        key: key,
+        child: Container(
+          color: Colors.white,
+          width: 50,
+          height: 50,
+          child: Center(
+            child: Container(
+              decoration:
+                  const BoxDecoration(boxShadow: <BoxShadow>[BoxShadow(blurRadius: 8.0, blurStyle: BlurStyle.outer)]),
+              width: 20,
+              height: 20,
             ),
           ),
         ),
       ),
-    );
+    ));
 
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('boxShadow.boxStyle.outer.0.0.png'),
-    );
+    await expectLater(find.byKey(key), matchesGoldenFile('boxShadow.boxStyle.outer.0.0.png'));
     debugDisableShadows = true;
   });
 
   testWidgets('BoxShadow BoxStyle.inner', (WidgetTester tester) async {
     final Key key = UniqueKey();
     debugDisableShadows = false;
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          key: key,
-          child: Container(
-            color: Colors.white,
-            width: 50,
-            height: 50,
-            child: Center(
-              child: Container(
-                decoration: const BoxDecoration(
-                  boxShadow: <BoxShadow>[BoxShadow(blurRadius: 4.0, blurStyle: BlurStyle.inner)],
-                ),
-                width: 20,
-                height: 20,
-              ),
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        key: key,
+        child: Container(
+          color: Colors.white,
+          width: 50,
+          height: 50,
+          child: Center(
+            child: Container(
+              decoration:
+                  const BoxDecoration(boxShadow: <BoxShadow>[BoxShadow(blurRadius: 4.0, blurStyle: BlurStyle.inner)]),
+              width: 20,
+              height: 20,
             ),
           ),
         ),
       ),
-    );
+    ));
 
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('boxShadow.boxStyle.inner.0.0.png'),
-    );
+    await expectLater(find.byKey(key), matchesGoldenFile('boxShadow.boxStyle.inner.0.0.png'));
     debugDisableShadows = true;
   });
 
   testWidgets('BoxShadow BoxStyle.normal', (WidgetTester tester) async {
     final Key key = UniqueKey();
     debugDisableShadows = false;
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          key: key,
-          child: Container(
-            color: Colors.white,
-            width: 50,
-            height: 50,
-            child: Center(
-              child: Container(
-                decoration: const BoxDecoration(
-                  boxShadow: <BoxShadow>[BoxShadow(blurRadius: 4.0)],
-                ),
-                width: 20,
-                height: 20,
-              ),
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        key: key,
+        child: Container(
+          color: Colors.white,
+          width: 50,
+          height: 50,
+          child: Center(
+            child: Container(
+              decoration: const BoxDecoration(boxShadow: <BoxShadow>[BoxShadow(blurRadius: 4.0)]),
+              width: 20,
+              height: 20,
             ),
           ),
         ),
       ),
-    );
+    ));
 
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('boxShadow.boxStyle.normal.0.0.png'),
-    );
+    await expectLater(find.byKey(key), matchesGoldenFile('boxShadow.boxStyle.normal.0.0.png'));
     debugDisableShadows = true;
   });
 
   testWidgets('BoxShadow BoxStyle.normal.wide_radius', (WidgetTester tester) async {
     final Key key = UniqueKey();
     debugDisableShadows = false;
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          key: key,
-          child: Container(
-            color: Colors.amber,
-            width: 128,
-            height: 128,
-            child: Center(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                  boxShadow: <BoxShadow>[BoxShadow(blurRadius: 16.0, offset: Offset(4, 4), color: Colors.green, spreadRadius: 2)],
-                ),
-                width: 64,
-                height: 64,
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        key: key,
+        child: Container(
+          color: Colors.amber,
+          width: 128,
+          height: 128,
+          child: Center(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(blurRadius: 16.0, offset: Offset(4, 4), color: Colors.green, spreadRadius: 2),
+                ],
               ),
+              width: 64,
+              height: 64,
             ),
           ),
         ),
       ),
-    );
+    ));
 
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('boxShadow.boxStyle.normal.wide_radius.0.0.png'),
-    );
+    await expectLater(find.byKey(key), matchesGoldenFile('boxShadow.boxStyle.normal.wide_radius.0.0.png'));
     debugDisableShadows = true;
   });
 
   testWidgets('BoxShadow BoxStyle.outer.wide_radius', (WidgetTester tester) async {
     final Key key = UniqueKey();
     debugDisableShadows = false;
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          key: key,
-          child: Container(
-            color: Colors.amber,
-            width: 128,
-            height: 128,
-            child: Center(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                  boxShadow: <BoxShadow>[BoxShadow(blurRadius: 16.0, offset: Offset(4, 4), blurStyle: BlurStyle.outer, color: Colors.red, spreadRadius: 2)],
-                ),
-                width: 64,
-                height: 64,
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        key: key,
+        child: Container(
+          color: Colors.amber,
+          width: 128,
+          height: 128,
+          child: Center(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    blurRadius: 16.0,
+                    offset: Offset(4, 4),
+                    blurStyle: BlurStyle.outer,
+                    color: Colors.red,
+                    spreadRadius: 2,
+                  ),
+                ],
               ),
+              width: 64,
+              height: 64,
             ),
           ),
         ),
       ),
-    );
+    ));
 
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('boxShadow.boxStyle.outer.wide_radius.0.0.png'),
-    );
+    await expectLater(find.byKey(key), matchesGoldenFile('boxShadow.boxStyle.outer.wide_radius.0.0.png'));
     debugDisableShadows = true;
   });
 
   testWidgets('BoxShadow BoxStyle.solid.wide_radius', (WidgetTester tester) async {
     final Key key = UniqueKey();
     debugDisableShadows = false;
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          key: key,
-          child: Container(
-            color: Colors.grey,
-            width: 128,
-            height: 128,
-            child: Center(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                  boxShadow: <BoxShadow>[BoxShadow(blurRadius: 16.0, offset: Offset(4, 4), blurStyle: BlurStyle.solid, color: Colors.purple, spreadRadius: 2)],
-                ),
-                width: 64,
-                height: 64,
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        key: key,
+        child: Container(
+          color: Colors.grey,
+          width: 128,
+          height: 128,
+          child: Center(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    blurRadius: 16.0,
+                    offset: Offset(4, 4),
+                    blurStyle: BlurStyle.solid,
+                    color: Colors.purple,
+                    spreadRadius: 2,
+                  ),
+                ],
               ),
+              width: 64,
+              height: 64,
             ),
           ),
         ),
       ),
-    );
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('boxShadow.boxStyle.solid.wide_radius.0.0.png'),
-    );
+    ));
+    await expectLater(find.byKey(key), matchesGoldenFile('boxShadow.boxStyle.solid.wide_radius.0.0.png'));
     debugDisableShadows = true;
   });
 
   testWidgets('BoxShadow BoxStyle.inner.wide_radius', (WidgetTester tester) async {
     final Key key = UniqueKey();
     debugDisableShadows = false;
-    await tester.pumpWidget(
-      Center(
-        child: RepaintBoundary(
-          key: key,
-          child: Container(
-            color: Colors.green,
-            width: 128,
-            height: 128,
-            child: Center(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                  boxShadow: <BoxShadow>[BoxShadow(blurRadius: 16.0, offset: Offset(4, 4), blurStyle: BlurStyle.inner, color: Colors.amber, spreadRadius: 2)],
-                ),
-                width: 64,
-                height: 64,
+    await tester.pumpWidget(Center(
+      child: RepaintBoundary(
+        key: key,
+        child: Container(
+          color: Colors.green,
+          width: 128,
+          height: 128,
+          child: Center(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    blurRadius: 16.0,
+                    offset: Offset(4, 4),
+                    blurStyle: BlurStyle.inner,
+                    color: Colors.amber,
+                    spreadRadius: 2,
+                  ),
+                ],
               ),
+              width: 64,
+              height: 64,
             ),
           ),
         ),
       ),
-    );
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('boxShadow.boxStyle.inner.wide_radius.0.0.png'),
-    );
+    ));
+    await expectLater(find.byKey(key), matchesGoldenFile('boxShadow.boxStyle.inner.wide_radius.0.0.png'));
     debugDisableShadows = true;
   });
 }

@@ -137,34 +137,34 @@ void main() {
       home: ListView(
         controller: controller,
         children: List<Widget>.generate(30, (int i) {
-          return SizedBox(height: 100.0, child: MouseRegion(
-            onHover: (PointerHoverEvent event) {
-              lastHovered = i;
-            },
-            child: GestureDetector(
-              onTap: () {
-                lastTapped = i;
+          return SizedBox(
+            height: 100.0,
+            child: MouseRegion(
+              onHover: (PointerHoverEvent event) {
+                lastHovered = i;
               },
-              child: Text('$i')
-            )
-          ));
-        })
-      )
+              child: GestureDetector(
+                onTap: () {
+                  lastTapped = i;
+                },
+                child: Text('$i'),
+              ),
+            ),
+          );
+        }),
+      ),
     ));
-    final TestGesture touchGesture = await tester.createGesture(kind: PointerDeviceKind.touch); // ignore: avoid_redundant_argument_values
+    final TestGesture touchGesture =
+        await tester.createGesture(kind: PointerDeviceKind.touch); // ignore: avoid_redundant_argument_values
     // Try mouse hovering while scrolling by touch
     await touchGesture.down(tester.getCenter(find.byType(ListView)));
     await tester.pump();
     await touchGesture.moveBy(const Offset(0, 200));
     await tester.pump();
     final TestGesture hoverGesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await hoverGesture.addPointer(
-      location: tester.getCenter(find.text('3'))
-    );
+    await hoverGesture.addPointer(location: tester.getCenter(find.text('3')));
     await hoverGesture.moveBy(const Offset(1, 1));
-    await hoverGesture.removePointer(
-      location: tester.getCenter(find.text('3'))
-    );
+    await hoverGesture.removePointer(location: tester.getCenter(find.text('3')));
     await tester.pumpAndSettle();
     expect(controller.position.activity?.shouldIgnorePointer, isTrue); // Pointer is ignored for touch scrolling.
     expect(lastHovered, isNull);
@@ -187,15 +187,14 @@ void main() {
     await tester.pump();
     await trackpadGesture.panZoomUpdate(tester.getCenter(find.byType(ListView)), pan: const Offset(0, 200));
     await tester.pump();
-    await hoverGesture.addPointer(
-      location: tester.getCenter(find.text('3'))
-    );
+    await hoverGesture.addPointer(location: tester.getCenter(find.text('3')));
     await hoverGesture.moveBy(const Offset(1, 1));
-    await hoverGesture.removePointer(
-      location: tester.getCenter(find.text('3'))
-    );
+    await hoverGesture.removePointer(location: tester.getCenter(find.text('3')));
     await tester.pumpAndSettle();
-    expect(controller.position.activity?.shouldIgnorePointer, isFalse); // Pointer is not ignored for trackpad scrolling.
+    expect(
+      controller.position.activity?.shouldIgnorePointer,
+      isFalse,
+    ); // Pointer is not ignored for trackpad scrolling.
     expect(lastHovered, equals(3));
     await trackpadGesture.panZoomEnd();
     await tester.pump();
@@ -203,7 +202,10 @@ void main() {
     await tester.trackpadFling(find.byType(ListView), const Offset(0, -200), 1000);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
-    expect(controller.position.activity?.shouldIgnorePointer, isFalse); // Pointer is not ignored following trackpad scrolling.
+    expect(
+      controller.position.activity?.shouldIgnorePointer,
+      isFalse,
+    ); // Pointer is not ignored following trackpad scrolling.
     await tester.tap(find.text('3'));
     expect(lastTapped, equals(3));
     await tester.pumpAndSettle();
@@ -225,10 +227,7 @@ class _PageView62209State extends State<PageView62209> {
   void initState() {
     super.initState();
     for (int i = 0; i < 5; i++) {
-      _pages.add(Carousel62209Page(
-        key: Key('$_nextPageNum'),
-        number: _nextPageNum++,
-      ));
+      _pages.add(Carousel62209Page(key: Key('$_nextPageNum'), number: _nextPageNum++));
     }
     _pages.add(const Carousel62209Page(number: 100));
   }
@@ -243,13 +242,7 @@ class _PageView62209State extends State<PageView62209> {
             child: const Text('ADD PAGE'),
             onPressed: () {
               setState(() {
-                _pages.insert(
-                  1,
-                  Carousel62209Page(
-                    key: Key('$_nextPageNum'),
-                    number: _nextPageNum++,
-                  ),
-                );
+                _pages.insert(1, Carousel62209Page(key: Key('$_nextPageNum'), number: _nextPageNum++));
               });
             },
           ),

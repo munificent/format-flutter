@@ -17,7 +17,12 @@ void main() {
   TestRenderingFlutterBinding.ensureInitialized();
 
   Future<ui.Codec> basicDecoder(ui.ImmutableBuffer bytes, {int? cacheWidth, int? cacheHeight, bool? allowUpscaling}) {
-    return PaintingBinding.instance.instantiateImageCodecFromBuffer(bytes, cacheWidth: cacheWidth, cacheHeight: cacheHeight, allowUpscaling: allowUpscaling ?? false);
+    return PaintingBinding.instance.instantiateImageCodecFromBuffer(
+      bytes,
+      cacheWidth: cacheWidth,
+      cacheHeight: cacheHeight,
+      allowUpscaling: allowUpscaling ?? false,
+    );
   }
 
   FlutterExceptionHandler? oldError;
@@ -74,9 +79,8 @@ void main() {
     final ImageCache otherCache = ImageCache();
     final Uint8List bytes = Uint8List.fromList(kTransparentImage);
     final MemoryImage imageProvider = MemoryImage(bytes);
-    final ImageStreamCompleter cacheStream = otherCache.putIfAbsent(
-      imageProvider, () => imageProvider.loadBuffer(imageProvider, basicDecoder),
-    )!;
+    final ImageStreamCompleter cacheStream =
+        otherCache.putIfAbsent(imageProvider, () => imageProvider.loadBuffer(imageProvider, basicDecoder))!;
     final ImageStream stream = imageProvider.resolve(ImageConfiguration.empty);
     final Completer<void> completer = Completer<void>();
     final Completer<void> cacheCompleter = Completer<void>();
@@ -102,11 +106,14 @@ void main() {
       caughtError.complete(false);
     };
     final ImageStream stream = imageProvider.resolve(ImageConfiguration.empty);
-    stream.addListener(ImageStreamListener((ImageInfo info, bool syncCall) {
-      caughtError.complete(false);
-    }, onError: (dynamic error, StackTrace? stackTrace) {
-      caughtError.complete(true);
-    }));
+    stream.addListener(ImageStreamListener(
+      (ImageInfo info, bool syncCall) {
+        caughtError.complete(false);
+      },
+      onError: (dynamic error, StackTrace? stackTrace) {
+        caughtError.complete(true);
+      },
+    ));
     expect(await caughtError.future, true);
   });
 }

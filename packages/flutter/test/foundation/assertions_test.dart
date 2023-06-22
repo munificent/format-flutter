@@ -58,12 +58,12 @@ void main() {
           yield ErrorDescription('INFO');
         },
       ).toString(),
-        '══╡ EXCEPTION CAUGHT BY LIBRARY ╞════════════════════════════════\n'
-        'The following message was thrown CONTEXTING:\n'
-        'MESSAGE\n'
-        '\n'
-        'INFO\n'
-        '═════════════════════════════════════════════════════════════════\n',
+      '══╡ EXCEPTION CAUGHT BY LIBRARY ╞════════════════════════════════\n'
+      'The following message was thrown CONTEXTING:\n'
+      'MESSAGE\n'
+      '\n'
+      'INFO\n'
+      '═════════════════════════════════════════════════════════════════\n',
     );
     expect(
       FlutterErrorDetails(
@@ -73,12 +73,12 @@ void main() {
           yield ErrorDescription('INFO');
         },
       ).toString(),
-        '══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞══════════════════════\n'
-        'The following message was thrown CONTEXTING:\n'
-        'MESSAGE\n'
-        '\n'
-        'INFO\n'
-        '═════════════════════════════════════════════════════════════════\n',
+      '══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞══════════════════════\n'
+      'The following message was thrown CONTEXTING:\n'
+      'MESSAGE\n'
+      '\n'
+      'INFO\n'
+      '═════════════════════════════════════════════════════════════════\n',
     );
     expect(
       FlutterErrorDetails(
@@ -96,9 +96,7 @@ void main() {
       '═════════════════════════════════════════════════════════════════\n',
     );
     expect(
-      const FlutterErrorDetails(
-        exception: 'MESSAGE',
-      ).toString(),
+      const FlutterErrorDetails(exception: 'MESSAGE').toString(),
       '══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞══════════════════════\n'
       'The following message was thrown:\n'
       'MESSAGE\n'
@@ -108,15 +106,15 @@ void main() {
 
   test('FlutterErrorDetails.toStringShort', () {
     expect(
-        FlutterErrorDetails(
-          exception: 'MESSAGE',
-          library: 'library',
-          context: ErrorDescription('CONTEXTING'),
-          informationCollector: () sync* {
-            yield ErrorDescription('INFO');
-          },
-        ).toStringShort(),
-        'Exception caught by library',
+      FlutterErrorDetails(
+        exception: 'MESSAGE',
+        library: 'library',
+        context: ErrorDescription('CONTEXTING'),
+        informationCollector: () sync* {
+          yield ErrorDescription('INFO');
+        },
+      ).toStringShort(),
+      'Exception caught by library',
     );
   });
 
@@ -223,9 +221,7 @@ void main() {
     {
       final AssertionError error;
       try {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorDescription('Error description without a summary'),
-        ]);
+        throw FlutterError.fromParts(<DiagnosticsNode>[ErrorDescription('Error description without a summary')]);
       } on AssertionError catch (e) {
         error = e;
       }
@@ -355,10 +351,7 @@ void main() {
 #11     Element.updateChild (package:flutter/src/widgets/framework.dart:3070:12)
 #12     SingleChildRenderObjectElement.mount (package:flutter/blah.dart:999:9)''');
 
-    final FlutterErrorDetails details = FlutterErrorDetails(
-      exception: AssertionError('Test assertion'),
-      stack: stack,
-    );
+    final FlutterErrorDetails details = FlutterErrorDetails(exception: AssertionError('Test assertion'), stack: stack);
 
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     details.debugFillProperties(builder);
@@ -391,10 +384,7 @@ void main() {
 #12     Element.updateChild (package:flutter/src/widgets/framework.dart:3070:12)
 #13     SingleChildRenderObjectElement.mount (package:flutter/blah.dart:999:9)''');
 
-    final FlutterErrorDetails details = FlutterErrorDetails(
-      exception: AssertionError('Test assertion'),
-      stack: stack,
-    );
+    final FlutterErrorDetails details = FlutterErrorDetails(exception: AssertionError('Test assertion'), stack: stack);
 
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     details.debugFillProperties(builder);
@@ -426,13 +416,30 @@ void main() {
       replacement: 'test',
     );
     final List<String?> reasons = List<String?>.filled(2, null);
-    filter.filter(
-      const <StackFrame>[
-        StackFrame(className: 'TestClass', method: 'test1', packageScheme: 'package', package: 'test', packagePath: 'blah.dart', line: 1, column: 1, number: 0, source: ''),
-        StackFrame(className: 'TestClass', method: 'test2', packageScheme: 'package', package: 'test', packagePath: 'blah.dart', line: 1, column: 1, number: 0, source: ''),
-      ],
-      reasons,
-    );
+    filter.filter(const <StackFrame>[
+      StackFrame(
+        className: 'TestClass',
+        method: 'test1',
+        packageScheme: 'package',
+        package: 'test',
+        packagePath: 'blah.dart',
+        line: 1,
+        column: 1,
+        number: 0,
+        source: '',
+      ),
+      StackFrame(
+        className: 'TestClass',
+        method: 'test2',
+        packageScheme: 'package',
+        package: 'test',
+        packagePath: 'blah.dart',
+        line: 1,
+        column: 1,
+        number: 0,
+        source: '',
+      ),
+    ], reasons);
     expect(reasons, List<String?>.filled(2, null));
   });
 }

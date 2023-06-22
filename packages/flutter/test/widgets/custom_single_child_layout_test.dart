@@ -84,12 +84,7 @@ class NotifierLayoutDelegate extends SingleChildLayoutDelegate {
 }
 
 Widget buildFrame(SingleChildLayoutDelegate delegate) {
-  return Center(
-    child: CustomSingleChildLayout(
-      delegate: delegate,
-      child: Container(),
-    ),
-  );
+  return Center(child: CustomSingleChildLayout(delegate: delegate, child: Container()));
 }
 
 void main() {
@@ -115,8 +110,7 @@ void main() {
   });
 
   testWidgets('Test SingleChildDelegate shouldRelayout method', (WidgetTester tester) async {
-    TestSingleChildLayoutDelegate delegate =
-        TestSingleChildLayoutDelegate();
+    TestSingleChildLayoutDelegate delegate = TestSingleChildLayoutDelegate();
     await tester.pumpWidget(buildFrame(delegate));
 
     // Layout happened because the delegate was set.

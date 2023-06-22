@@ -9,27 +9,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('TickerMode', (WidgetTester tester) async {
-    const Widget widget = TickerMode(
-      enabled: false,
-      child: CircularProgressIndicator(),
-    );
+    const Widget widget = TickerMode(enabled: false, child: CircularProgressIndicator());
     expect(widget.toString, isNot(throwsException));
 
     await tester.pumpWidget(widget);
 
     expect(tester.binding.transientCallbackCount, 0);
 
-    await tester.pumpWidget(const TickerMode(
-      enabled: true,
-      child: CircularProgressIndicator(),
-    ));
+    await tester.pumpWidget(const TickerMode(enabled: true, child: CircularProgressIndicator()));
 
     expect(tester.binding.transientCallbackCount, 1);
 
-    await tester.pumpWidget(const TickerMode(
-      enabled: false,
-      child: CircularProgressIndicator(),
-    ));
+    await tester.pumpWidget(const TickerMode(enabled: false, child: CircularProgressIndicator()));
 
     expect(tester.binding.transientCallbackCount, 0);
   });
@@ -37,9 +28,7 @@ void main() {
   testWidgets('Navigation with TickerMode', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
       home: const LinearProgressIndicator(),
-      routes: <String, WidgetBuilder>{
-        '/test': (BuildContext context) => const Text('hello'),
-      },
+      routes: <String, WidgetBuilder>{'/test': (BuildContext context) => const Text('hello')},
     ));
     expect(tester.binding.transientCallbackCount, 1);
     tester.state<NavigatorState>(find.byType(Navigator)).pushNamed('/test');
@@ -117,8 +106,10 @@ void main() {
           'the ticker will leak.\n',
         );
         expect(error.diagnostics[3], isA<DiagnosticsProperty<Ticker>>());
-        expect(error.toStringDeep().split('\n').take(13).join('\n'), equalsIgnoringHashCodes(
-          'FlutterError\n'
+        expect(
+          error.toStringDeep().split('\n').take(13).join('\n'),
+          equalsIgnoringHashCodes(
+            'FlutterError\n'
             '   _SingleTickerTestState#00000(ticker active) was disposed with an\n'
             '   active Ticker.\n'
             '   _SingleTickerTestState created a Ticker via its\n'
@@ -131,7 +122,8 @@ void main() {
             '   The offending ticker was:\n'
             '     Ticker(created by _SingleTickerTestState#00000)\n'
             '     The stack trace when the Ticker was actually created was:',
-        ));
+          ),
+        );
         key.currentState!.controller.stop();
       }
     });
@@ -157,21 +149,24 @@ void main() {
           'the ticker will leak.\n',
         );
         expect(error.diagnostics[3], isA<DiagnosticsProperty<Ticker>>());
-        expect(error.toStringDeep().split('\n').take(13).join('\n'), equalsIgnoringHashCodes(
-          'FlutterError\n'
-          '   _SingleTickerTestState#00000(ticker active) was disposed with an\n'
-          '   active Ticker.\n'
-          '   _SingleTickerTestState created a Ticker via its\n'
-          '   SingleTickerProviderStateMixin, but at the time dispose() was\n'
-          '   called on the mixin, that Ticker was still active. The Ticker\n'
-          '   must be disposed before calling super.dispose().\n'
-          '   Tickers used by AnimationControllers should be disposed by\n'
-          '   calling dispose() on the AnimationController itself. Otherwise,\n'
-          '   the ticker will leak.\n'
-          '   The offending ticker was:\n'
-          '     Ticker(created by _SingleTickerTestState#00000)\n'
-          '     The stack trace when the Ticker was actually created was:',
-        ));
+        expect(
+          error.toStringDeep().split('\n').take(13).join('\n'),
+          equalsIgnoringHashCodes(
+            'FlutterError\n'
+            '   _SingleTickerTestState#00000(ticker active) was disposed with an\n'
+            '   active Ticker.\n'
+            '   _SingleTickerTestState created a Ticker via its\n'
+            '   SingleTickerProviderStateMixin, but at the time dispose() was\n'
+            '   called on the mixin, that Ticker was still active. The Ticker\n'
+            '   must be disposed before calling super.dispose().\n'
+            '   Tickers used by AnimationControllers should be disposed by\n'
+            '   calling dispose() on the AnimationController itself. Otherwise,\n'
+            '   the ticker will leak.\n'
+            '   The offending ticker was:\n'
+            '     Ticker(created by _SingleTickerTestState#00000)\n'
+            '     The stack trace when the Ticker was actually created was:',
+          ),
+        );
         key.currentState!.controller.stop();
       }
     });
@@ -197,20 +192,23 @@ void main() {
           'the ticker will leak.\n',
         );
         expect(error.diagnostics[3], isA<DiagnosticsProperty<Ticker>>());
-        expect(error.toStringDeep().split('\n').take(12).join('\n'), equalsIgnoringHashCodes(
-          'FlutterError\n'
-          '   _MultipleTickerTestState#00000(tickers: tracking 2 tickers) was\n'
-          '   disposed with an active Ticker.\n'
-          '   _MultipleTickerTestState created a Ticker via its\n'
-          '   TickerProviderStateMixin, but at the time dispose() was called on\n'
-          '   the mixin, that Ticker was still active. All Tickers must be\n'
-          '   disposed before calling super.dispose().\n'
-          '   Tickers used by AnimationControllers should be disposed by\n'
-          '   calling dispose() on the AnimationController itself. Otherwise,\n'
-          '   the ticker will leak.\n'
-          '   The offending ticker was:\n'
-          '     _WidgetTicker(created by _MultipleTickerTestState#00000)',
-        ));
+        expect(
+          error.toStringDeep().split('\n').take(12).join('\n'),
+          equalsIgnoringHashCodes(
+            'FlutterError\n'
+            '   _MultipleTickerTestState#00000(tickers: tracking 2 tickers) was\n'
+            '   disposed with an active Ticker.\n'
+            '   _MultipleTickerTestState created a Ticker via its\n'
+            '   TickerProviderStateMixin, but at the time dispose() was called on\n'
+            '   the mixin, that Ticker was still active. All Tickers must be\n'
+            '   disposed before calling super.dispose().\n'
+            '   Tickers used by AnimationControllers should be disposed by\n'
+            '   calling dispose() on the AnimationController itself. Otherwise,\n'
+            '   the ticker will leak.\n'
+            '   The offending ticker was:\n'
+            '     _WidgetTicker(created by _MultipleTickerTestState#00000)',
+          ),
+        );
         key.currentState!.controllers.first.stop();
       }
     });
@@ -228,7 +226,7 @@ void main() {
 }
 
 class BoringTickerTest extends StatefulWidget {
-  const BoringTickerTest({ super.key });
+  const BoringTickerTest({super.key});
   @override
   State<BoringTickerTest> createState() => _BoringTickerTestState();
 }
@@ -251,10 +249,7 @@ class _SingleTickerTestState extends State<_SingleTickerTest> with SingleTickerP
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 100),
-    );
+    controller = AnimationController(vsync: this, duration: const Duration(seconds: 100));
   }
 
   @override
@@ -310,18 +305,13 @@ class _SingleTickerCreateMultipleTicker extends StatefulWidget {
   _SingleTickerCreateMultipleTickerState createState() => _SingleTickerCreateMultipleTickerState();
 }
 
-class _SingleTickerCreateMultipleTickerState extends State<_SingleTickerCreateMultipleTicker> with SingleTickerProviderStateMixin {
+class _SingleTickerCreateMultipleTickerState extends State<_SingleTickerCreateMultipleTicker>
+    with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    AnimationController(
-      duration: const Duration(seconds: 5),
-      vsync: this,
-    );
-    AnimationController(
-      duration: const Duration(seconds: 6),
-      vsync: this,
-    );
+    AnimationController(duration: const Duration(seconds: 5), vsync: this);
+    AnimationController(duration: const Duration(seconds: 6), vsync: this);
   }
 
   @override

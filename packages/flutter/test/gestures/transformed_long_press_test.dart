@@ -17,33 +17,26 @@ void main() {
     final List<LongPressStartDetails> startDetails = <LongPressStartDetails>[];
 
     final Key redContainer = UniqueKey();
-    await tester.pumpWidget(
-        Center(
-          child: GestureDetector(
-              onLongPress: () {
-                longPressCount++;
-              },
-              onLongPressEnd: (LongPressEndDetails details) {
-                endDetails.add(details);
-              },
-              onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
-                moveDetails.add(details);
-              },
-              onLongPressStart: (LongPressStartDetails details) {
-                startDetails.add(details);
-              },
-              onLongPressUp: () {
-                longPressUpCount++;
-              },
-              child: Container(
-                key: redContainer,
-                width: 100,
-                height: 150,
-                color: Colors.red,
-              ),
-          ),
-        ),
-    );
+    await tester.pumpWidget(Center(
+      child: GestureDetector(
+        onLongPress: () {
+          longPressCount++;
+        },
+        onLongPressEnd: (LongPressEndDetails details) {
+          endDetails.add(details);
+        },
+        onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
+          moveDetails.add(details);
+        },
+        onLongPressStart: (LongPressStartDetails details) {
+          startDetails.add(details);
+        },
+        onLongPressUp: () {
+          longPressUpCount++;
+        },
+        child: Container(key: redContainer, width: 100, height: 150, color: Colors.red),
+      ),
+    ));
 
     await tester.longPressAt(tester.getCenter(find.byKey(redContainer)));
     expect(longPressCount, 1);
@@ -63,36 +56,29 @@ void main() {
     final List<LongPressStartDetails> startDetails = <LongPressStartDetails>[];
 
     final Key redContainer = UniqueKey();
-    await tester.pumpWidget(
-        Center(
-          child: Transform.scale(
-            scale: 2.0,
-            child: GestureDetector(
-                onLongPress: () {
-                  longPressCount++;
-                },
-                onLongPressEnd: (LongPressEndDetails details) {
-                  endDetails.add(details);
-                },
-                onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
-                  moveDetails.add(details);
-                },
-                onLongPressStart: (LongPressStartDetails details) {
-                  startDetails.add(details);
-                },
-                onLongPressUp: () {
-                  longPressUpCount++;
-                },
-                child: Container(
-                  key: redContainer,
-                  width: 100,
-                  height: 150,
-                  color: Colors.red,
-                ),
-            ),
-          ),
+    await tester.pumpWidget(Center(
+      child: Transform.scale(
+        scale: 2.0,
+        child: GestureDetector(
+          onLongPress: () {
+            longPressCount++;
+          },
+          onLongPressEnd: (LongPressEndDetails details) {
+            endDetails.add(details);
+          },
+          onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
+            moveDetails.add(details);
+          },
+          onLongPressStart: (LongPressStartDetails details) {
+            startDetails.add(details);
+          },
+          onLongPressUp: () {
+            longPressUpCount++;
+          },
+          child: Container(key: redContainer, width: 100, height: 150, color: Colors.red),
         ),
-    );
+      ),
+    ));
 
     TestGesture gesture = await tester.startGesture(tester.getCenter(find.byKey(redContainer)));
     await gesture.moveBy(const Offset(0, 10.0));
@@ -138,36 +124,29 @@ void main() {
     final List<LongPressStartDetails> startDetails = <LongPressStartDetails>[];
 
     final Key redContainer = UniqueKey();
-    await tester.pumpWidget(
-        Center(
-          child: Transform.scale(
-            scale: 0.5,
-            child: GestureDetector(
-                onLongPress: () {
-                  longPressCount++;
-                },
-                onLongPressEnd: (LongPressEndDetails details) {
-                  endDetails.add(details);
-                },
-                onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
-                  moveDetails.add(details);
-                },
-                onLongPressStart: (LongPressStartDetails details) {
-                  startDetails.add(details);
-                },
-                onLongPressUp: () {
-                  longPressUpCount++;
-                },
-                child: Container(
-                  key: redContainer,
-                  width: 100,
-                  height: 150,
-                  color: Colors.red,
-                ),
-            ),
-          ),
+    await tester.pumpWidget(Center(
+      child: Transform.scale(
+        scale: 0.5,
+        child: GestureDetector(
+          onLongPress: () {
+            longPressCount++;
+          },
+          onLongPressEnd: (LongPressEndDetails details) {
+            endDetails.add(details);
+          },
+          onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
+            moveDetails.add(details);
+          },
+          onLongPressStart: (LongPressStartDetails details) {
+            startDetails.add(details);
+          },
+          onLongPressUp: () {
+            longPressUpCount++;
+          },
+          child: Container(key: redContainer, width: 100, height: 150, color: Colors.red),
         ),
-    );
+      ),
+    ));
 
     TestGesture gesture = await tester.startGesture(tester.getCenter(find.byKey(redContainer)));
     await gesture.moveBy(const Offset(0, 10.0));

@@ -13,10 +13,7 @@ void main() {
     expect(span.codeUnitAt(1), isNull);
     expect(span.codeUnitAt(2), isNull);
 
-    const InlineSpan nestedSpan = TextSpan(
-      text: 'AAA',
-      children: <InlineSpan>[span, span],
-    );
+    const InlineSpan nestedSpan = TextSpan(text: 'AAA', children: <InlineSpan>[span, span]);
     expect(nestedSpan.codeUnitAt(-1), isNull);
     expect(nestedSpan.codeUnitAt(0), 65);
     expect(nestedSpan.codeUnitAt(1), 65);

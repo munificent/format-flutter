@@ -13,13 +13,7 @@ void main() {
   test('nested repaint boundaries - smoke test', () {
     RenderOpacity a, b, c;
     a = RenderOpacity(
-      child: RenderRepaintBoundary(
-        child: b = RenderOpacity(
-          child: RenderRepaintBoundary(
-            child: c = RenderOpacity(),
-          ),
-        ),
-      ),
+      child: RenderRepaintBoundary(child: b = RenderOpacity(child: RenderRepaintBoundary(child: c = RenderOpacity()))),
     );
     layout(a, phase: EnginePhase.flushSemantics);
     c.opacity = 0.9;
@@ -42,9 +36,7 @@ void main() {
     repaintBoundary.markNeedsCompositingBitsUpdate();
 
     TestRenderingFlutterBinding.instance.renderView.child = null;
-    final RenderPadding padding = RenderPadding(
-      padding: const EdgeInsets.all(50),
-    );
+    final RenderPadding padding = RenderPadding(padding: const EdgeInsets.all(50));
     TestRenderingFlutterBinding.instance.renderView.child = padding;
     padding.child = repaintBoundary;
     pumpFrame(phase: EnginePhase.flushSemantics);
@@ -52,41 +44,37 @@ void main() {
 
   test('Framework creates an OffsetLayer for a repaint boundary', () {
     final _TestRepaintBoundary repaintBoundary = _TestRepaintBoundary();
-    final RenderOpacity opacity = RenderOpacity(
-      child: repaintBoundary,
-    );
+    final RenderOpacity opacity = RenderOpacity(child: repaintBoundary);
     layout(opacity, phase: EnginePhase.flushSemantics);
     expect(repaintBoundary.debugLayer, isA<OffsetLayer>());
   });
 
   test('Framework does not create an OffsetLayer for a non-repaint boundary', () {
     final _TestNonCompositedBox nonCompositedBox = _TestNonCompositedBox();
-    final RenderOpacity opacity = RenderOpacity(
-      child: nonCompositedBox,
-    );
+    final RenderOpacity opacity = RenderOpacity(child: nonCompositedBox);
     layout(opacity, phase: EnginePhase.flushSemantics);
     expect(nonCompositedBox.debugLayer, null);
   });
 
   test('Framework allows a non-repaint boundary to create own layer', () {
     final _TestCompositedBox compositedBox = _TestCompositedBox();
-    final RenderOpacity opacity = RenderOpacity(
-      child: compositedBox,
-    );
+    final RenderOpacity opacity = RenderOpacity(child: compositedBox);
     layout(opacity, phase: EnginePhase.flushSemantics);
     expect(compositedBox.debugLayer, isA<OpacityLayer>());
   });
 
   test('Framework ensures repaint boundary layer is not overwritten', () {
     final _TestRepaintBoundaryThatOverwritesItsLayer faultyRenderObject = _TestRepaintBoundaryThatOverwritesItsLayer();
-    final RenderOpacity opacity = RenderOpacity(
-      child: faultyRenderObject,
-    );
+    final RenderOpacity opacity = RenderOpacity(child: faultyRenderObject);
 
     late FlutterErrorDetails error;
-    layout(opacity, phase: EnginePhase.flushSemantics, onErrors: () {
-      error = TestRenderingFlutterBinding.instance.takeFlutterErrorDetails()!;
-    });
+    layout(
+      opacity,
+      phase: EnginePhase.flushSemantics,
+      onErrors: () {
+        error = TestRenderingFlutterBinding.instance.takeFlutterErrorDetails()!;
+      },
+    );
     expect('${error.exception}', contains('Attempted to set a layer to a repaint boundary render object.'));
   });
 }

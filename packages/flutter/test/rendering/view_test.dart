@@ -13,10 +13,7 @@ void main() {
 
   // Create non-const instances, otherwise tests pass even if the
   // operator override is incorrect.
-  ViewConfiguration createViewConfiguration({
-    Size size = const Size(20, 20),
-    double devicePixelRatio = 2.0,
-  }) {
+  ViewConfiguration createViewConfiguration({Size size = const Size(20, 20), double devicePixelRatio = 2.0}) {
     return ViewConfiguration(size: size, devicePixelRatio: devicePixelRatio);
   }
 
@@ -72,55 +69,25 @@ void main() {
   });
 
   test('invokes DebugPaintCallback', () {
-    final PaintPattern paintsOrangeRect = paints..rect(
-      color: orange,
-      rect: orangeRect,
-    );
-    final PaintPattern paintsGreenRect = paints..rect(
-      color: green,
-      rect: greenRect,
-    );
+    final PaintPattern paintsOrangeRect = paints..rect(color: orange, rect: orangeRect);
+    final PaintPattern paintsGreenRect = paints..rect(color: green, rect: greenRect);
     final PaintPattern paintOrangeAndGreenRect = paints
-      ..rect(
-        color: orange,
-        rect: orangeRect,
-      )
-      ..rect(
-        color: green,
-        rect: greenRect,
-      );
+      ..rect(color: orange, rect: orangeRect)
+      ..rect(color: green, rect: greenRect);
     void paintCallback(PaintingContext context, Offset offset, RenderView renderView) {
-      context.canvas.drawRect(
-        greenRect,
-        Paint()..color = green,
-      );
+      context.canvas.drawRect(greenRect, Paint()..color = green);
     }
 
     layout(TestRenderObject());
-    expect(
-      TestRenderingFlutterBinding.instance.renderView,
-      paintsOrangeRect,
-    );
-    expect(
-      TestRenderingFlutterBinding.instance.renderView,
-      isNot(paintsGreenRect),
-    );
+    expect(TestRenderingFlutterBinding.instance.renderView, paintsOrangeRect);
+    expect(TestRenderingFlutterBinding.instance.renderView, isNot(paintsGreenRect));
 
     RenderView.debugAddPaintCallback(paintCallback);
-    expect(
-      TestRenderingFlutterBinding.instance.renderView,
-      paintOrangeAndGreenRect,
-    );
+    expect(TestRenderingFlutterBinding.instance.renderView, paintOrangeAndGreenRect);
 
     RenderView.debugRemovePaintCallback(paintCallback);
-    expect(
-      TestRenderingFlutterBinding.instance.renderView,
-      paintsOrangeRect,
-    );
-    expect(
-      TestRenderingFlutterBinding.instance.renderView,
-      isNot(paintsGreenRect),
-    );
+    expect(TestRenderingFlutterBinding.instance.renderView, paintsOrangeRect);
+    expect(TestRenderingFlutterBinding.instance.renderView, isNot(paintsGreenRect));
   });
 }
 
@@ -137,9 +104,6 @@ class TestRenderObject extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    context.canvas.drawRect(
-      orangeRect,
-      Paint()..color = orange,
-    );
+    context.canvas.drawRect(orangeRect, Paint()..color = orange);
   }
 }

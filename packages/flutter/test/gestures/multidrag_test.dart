@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'gesture_tester.dart';
 
-class TestDrag extends Drag { }
+class TestDrag extends Drag {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -64,7 +64,7 @@ void main() {
 
   testGesture('MultiDrag: can filter based on device kind', (GestureTester tester) {
     final DelayedMultiDragGestureRecognizer drag = DelayedMultiDragGestureRecognizer(
-      supportedDevices: <PointerDeviceKind>{ PointerDeviceKind.touch },
+      supportedDevices: <PointerDeviceKind>{PointerDeviceKind.touch},
     );
 
     bool didStartDrag = false;
@@ -96,7 +96,9 @@ void main() {
 
     final ImmediateMultiDragGestureRecognizer recognizer1 = ImmediateMultiDragGestureRecognizer();
     // ignore: avoid_redundant_argument_values
-    final ImmediateMultiDragGestureRecognizer recognizer2 = ImmediateMultiDragGestureRecognizer(allowedButtonsFilter: null);
+    final ImmediateMultiDragGestureRecognizer recognizer2 = ImmediateMultiDragGestureRecognizer(
+      allowedButtonsFilter: null,
+    );
 
     // We want to test _allowedButtonsFilter, which is called in this method.
     const PointerDownEvent allowedPointer = PointerDownEvent(timeStamp: Duration(days: 10));
@@ -105,7 +107,10 @@ void main() {
     // ignore: invalid_use_of_protected_member
     expect(recognizer2.isPointerAllowed(allowedPointer), true);
 
-    const PointerDownEvent rejectedPointer = PointerDownEvent(timeStamp: Duration(days: 10), buttons: kMiddleMouseButton);
+    const PointerDownEvent rejectedPointer = PointerDownEvent(
+      timeStamp: Duration(days: 10),
+      buttons: kMiddleMouseButton,
+    );
     // ignore: invalid_use_of_protected_member
     expect(recognizer1.isPointerAllowed(rejectedPointer), false);
     // ignore: invalid_use_of_protected_member

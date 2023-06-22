@@ -6,27 +6,36 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-
 class _ConsistentTextRangeImplementationMatcher extends Matcher {
-  _ConsistentTextRangeImplementationMatcher(int length)
-    : range = TextRange(start: -1, end: length + 1),
+  _ConsistentTextRangeImplementationMatcher(
+    int length,
+  ) : range = TextRange(start: -1, end: length + 1),
       assert(length >= 0);
 
   final TextRange range;
   @override
   Description describe(Description description) {
-    return description.add('The implementation of TextBoundary.getTextBoundaryAt is consistent with its other methods.');
+    return description.add(
+      'The implementation of TextBoundary.getTextBoundaryAt is consistent with its other methods.',
+    );
   }
 
   @override
-  Description describeMismatch(dynamic item, Description mismatchDescription, Map<dynamic, dynamic> matchState, bool verbose) {
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map<dynamic, dynamic> matchState,
+    bool verbose,
+  ) {
     final TextBoundary boundary = matchState['textBoundary'] as TextBoundary;
     final int position = matchState['position'] as int;
     final int leading = boundary.getLeadingTextBoundaryAt(position) ?? -1;
     final int trailing = boundary.getTrailingTextBoundaryAt(position) ?? -1;
 
     return mismatchDescription.add(
-      'at position $position, expected ${TextRange(start: leading, end: trailing)} but got ${boundary.getTextBoundaryAt(position)}',
+      'at position $position, expected ${TextRange(start: leading, end: trailing)} but got ${boundary.getTextBoundaryAt(
+        position,
+      )}',
     );
   }
 
@@ -47,7 +56,9 @@ class _ConsistentTextRangeImplementationMatcher extends Matcher {
   }
 }
 
-Matcher _hasConsistentTextRangeImplementationWithinRange(int length) => _ConsistentTextRangeImplementationMatcher(length);
+Matcher _hasConsistentTextRangeImplementationWithinRange(int length) => _ConsistentTextRangeImplementationMatcher(
+  length,
+);
 
 void main() {
   test('Character boundary works', () {
@@ -99,12 +110,12 @@ void main() {
   });
 
   test('wordBoundary.moveByWordBoundary', () {
-    const String text = 'ABC   ABC\n'       // [0, 10)
-                        'AÁ    Á\n'         // [10, 20)
-                        '         \n'       // [20, 30)
-                        'ABC!!!ABC\n'       // [30, 40)
-                        '  !ABC !!\n'       // [40, 50)
-                        'A  𑗋𑗋 A\n';     // [50, 60)
+    const String text = 'ABC   ABC\n' // [0, 10)
+        'AÁ    Á\n' // [10, 20)
+        '         \n' // [20, 30)
+        'ABC!!!ABC\n' // [30, 40)
+        '  !ABC !!\n' // [40, 50)
+        'A  𑗋𑗋 A\n'; // [50, 60)
 
     final TextPainter textPainter = TextPainter()
       ..textDirection = TextDirection.ltr
@@ -148,7 +159,7 @@ void main() {
 
   group('paragraph boundary', () {
     test('works for simple cases', () {
-      const String textA= 'abcd efg hi\njklmno\npqrstuv';
+      const String textA = 'abcd efg hi\njklmno\npqrstuv';
       const ParagraphBoundary boundaryA = ParagraphBoundary(textA);
 
       // Position enclosed inside of paragraph, 'abcd efg h|i\n'.
@@ -165,9 +176,9 @@ void main() {
       expect(boundaryB.getTrailingTextBoundaryAt(position), 13);
 
       const String textF = 'Now is the time for\n' // 20
-          'all good people\n'                         // 20 + 16 => 36
-          'to come to the aid\n'                      // 36 + 19 => 55
-          'of their country.';                        // 55 + 17 => 72
+          'all good people\n' // 20 + 16 => 36
+          'to come to the aid\n' // 36 + 19 => 55
+          'of their country.'; // 55 + 17 => 72
       const ParagraphBoundary boundaryF = ParagraphBoundary(textF);
       const int positionF = 11;
       expect(boundaryF.getLeadingTextBoundaryAt(positionF), 0);
@@ -176,13 +187,13 @@ void main() {
 
     test('works for consecutive line terminators involving CRLF', () {
       const String textI = 'Now is the time for\n' // 20
-          'all good people\n\r\n'                         // 20 + 16 => 38
-          'to come to the aid\n'                      // 38 + 19 => 57
-          'of their country.';                        // 57 + 17 => 74
+          'all good people\n\r\n' // 20 + 16 => 38
+          'to come to the aid\n' // 38 + 19 => 57
+          'of their country.'; // 57 + 17 => 74
       const ParagraphBoundary boundaryI = ParagraphBoundary(textI);
-      const int positionI = 56;// \n at the end of the third line.
-      const int positionJ = 38;// t at beginning of third line.
-      const int positionK = 37;// \n at end of second line.
+      const int positionI = 56; // \n at the end of the third line.
+      const int positionJ = 38; // t at beginning of third line.
+      const int positionK = 37; // \n at end of second line.
       expect(boundaryI.getLeadingTextBoundaryAt(positionI), 38);
       expect(boundaryI.getTrailingTextBoundaryAt(positionI), 57);
       expect(boundaryI.getLeadingTextBoundaryAt(positionJ), 38);
@@ -193,13 +204,13 @@ void main() {
 
     test('works for consecutive line terminators', () {
       const String textI = 'Now is the time for\n' // 20
-          'all good people\n\n'                         // 20 + 16 => 37
-          'to come to the aid\n'                      // 37 + 19 => 56
-          'of their country.';                        // 56 + 17 => 73
+          'all good people\n\n' // 20 + 16 => 37
+          'to come to the aid\n' // 37 + 19 => 56
+          'of their country.'; // 56 + 17 => 73
       const ParagraphBoundary boundaryI = ParagraphBoundary(textI);
-      const int positionI = 55;// \n at the end of the third line.
-      const int positionJ = 37;// t at beginning of third line.
-      const int positionK = 36;// \n at end of second line.
+      const int positionI = 55; // \n at the end of the third line.
+      const int positionJ = 37; // t at beginning of third line.
+      const int positionK = 36; // \n at end of second line.
       expect(boundaryI.getLeadingTextBoundaryAt(positionI), 37);
       expect(boundaryI.getTrailingTextBoundaryAt(positionI), 56);
       expect(boundaryI.getLeadingTextBoundaryAt(positionJ), 37);

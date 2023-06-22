@@ -25,14 +25,8 @@ void main() {
           key: key1,
           child: Column(
             children: <Widget>[
-              Focus(
-                key: key2,
-                child: SizedBox(key: key3, width: 100, height: 100),
-              ),
-              Focus(
-                key: key4,
-                child: SizedBox(key: key5, width: 100, height: 100),
-              ),
+              Focus(key: key2, child: SizedBox(key: key3, width: 100, height: 100)),
+              Focus(key: key4, child: SizedBox(key: key5, width: 100, height: 100)),
             ],
           ),
         ),
@@ -64,14 +58,8 @@ void main() {
           key: key1,
           child: Column(
             children: <Widget>[
-              Focus(
-                key: key2,
-                child: SizedBox(key: key3, width: 100, height: 100),
-              ),
-              Focus(
-                key: key4,
-                child: SizedBox(key: key5, width: 100, height: 100),
-              ),
+              Focus(key: key2, child: SizedBox(key: key3, width: 100, height: 100)),
+              Focus(key: key4, child: SizedBox(key: key5, width: 100, height: 100)),
             ],
           ),
         ),
@@ -106,41 +94,39 @@ void main() {
       bool? focus2;
       bool? focus3;
       bool? focus5;
-      await tester.pumpWidget(
-        FocusTraversalGroup(
-          policy: WidgetOrderTraversalPolicy(),
-          child: FocusScope(
-            debugLabel: 'key1',
-            key: key1,
-            onFocusChange: (bool focus) => focus1 = focus,
-            child: Column(
-              children: <Widget>[
-                FocusScope(
-                  debugLabel: 'key2',
-                  key: key2,
-                  onFocusChange: (bool focus) => focus2 = focus,
-                  child: Column(
-                    children: <Widget>[
-                      Focus(
-                        debugLabel: 'key3',
-                        key: key3,
-                        onFocusChange: (bool focus) => focus3 = focus,
-                        child: Container(key: key4),
-                      ),
-                      Focus(
-                        debugLabel: 'key5',
-                        key: key5,
-                        onFocusChange: (bool focus) => focus5 = focus,
-                        child: Container(key: key6),
-                      ),
-                    ],
-                  ),
+      await tester.pumpWidget(FocusTraversalGroup(
+        policy: WidgetOrderTraversalPolicy(),
+        child: FocusScope(
+          debugLabel: 'key1',
+          key: key1,
+          onFocusChange: (bool focus) => focus1 = focus,
+          child: Column(
+            children: <Widget>[
+              FocusScope(
+                debugLabel: 'key2',
+                key: key2,
+                onFocusChange: (bool focus) => focus2 = focus,
+                child: Column(
+                  children: <Widget>[
+                    Focus(
+                      debugLabel: 'key3',
+                      key: key3,
+                      onFocusChange: (bool focus) => focus3 = focus,
+                      child: Container(key: key4),
+                    ),
+                    Focus(
+                      debugLabel: 'key5',
+                      key: key5,
+                      onFocusChange: (bool focus) => focus5 = focus,
+                      child: Container(key: key6),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
+      ));
 
       final Element firstChild = tester.element(find.byKey(key4));
       final Element secondChild = tester.element(find.byKey(key6));
@@ -219,33 +205,25 @@ void main() {
       final GlobalKey key4 = GlobalKey(debugLabel: '4');
       final GlobalKey key5 = GlobalKey(debugLabel: '5');
       final GlobalKey key6 = GlobalKey(debugLabel: '6');
-      await tester.pumpWidget(
-        FocusTraversalGroup(
-          policy: WidgetOrderTraversalPolicy(),
-          child: FocusScope(
-            key: key1,
-            child: Column(
-              children: <Widget>[
-                FocusScope(
-                  key: key2,
-                  child: Column(
-                    children: <Widget>[
-                      Focus(
-                        key: key3,
-                        child: Container(key: key4),
-                      ),
-                      Focus(
-                        key: key5,
-                        child: Container(key: key6),
-                      ),
-                    ],
-                  ),
+      await tester.pumpWidget(FocusTraversalGroup(
+        policy: WidgetOrderTraversalPolicy(),
+        child: FocusScope(
+          key: key1,
+          child: Column(
+            children: <Widget>[
+              FocusScope(
+                key: key2,
+                child: Column(
+                  children: <Widget>[
+                    Focus(key: key3, child: Container(key: key4)),
+                    Focus(key: key5, child: Container(key: key6)),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
+      ));
 
       final Element firstChild = tester.element(find.byKey(key4));
       final Element secondChild = tester.element(find.byKey(key6));
@@ -287,22 +265,16 @@ void main() {
     });
 
     testWidgets('Move focus to next/previous node while skipping nodes in policy', (WidgetTester tester) async {
-      final List<FocusNode> nodes =
-      List<FocusNode>.generate(7, (int index) => FocusNode(debugLabel: 'Node $index'));
-      await tester.pumpWidget(
-        FocusTraversalGroup(
-          policy: SkipAllButFirstAndLastPolicy(),
-          child: Column(
-            children: List<Widget>.generate(
-              nodes.length,
-              (int index) => Focus(
-                focusNode: nodes[index],
-                child: const SizedBox(),
-              ),
-            ),
+      final List<FocusNode> nodes = List<FocusNode>.generate(7, (int index) => FocusNode(debugLabel: 'Node $index'));
+      await tester.pumpWidget(FocusTraversalGroup(
+        policy: SkipAllButFirstAndLastPolicy(),
+        child: Column(
+          children: List<Widget>.generate(
+            nodes.length,
+            (int index) => Focus(focusNode: nodes[index], child: const SizedBox()),
           ),
         ),
-      );
+      ));
 
       nodes[2].requestFocus();
       await tester.pump();
@@ -325,42 +297,40 @@ void main() {
       final GlobalKey key2 = GlobalKey(debugLabel: '2');
       final FocusNode testNode1 = FocusNode(debugLabel: 'First Focus Node');
       final FocusNode testNode2 = FocusNode(debugLabel: 'Second Focus Node');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: FocusTraversalGroup(
-            policy: WidgetOrderTraversalPolicy(),
-            child: Center(
-              child: Builder(builder: (BuildContext context) {
+      await tester.pumpWidget(MaterialApp(
+        home: FocusTraversalGroup(
+          policy: WidgetOrderTraversalPolicy(),
+          child: Center(
+            child: Builder(
+              builder: (BuildContext context) {
                 return ElevatedButton(
                   key: key1,
                   focusNode: testNode1,
                   autofocus: true,
                   onPressed: () {
-                    Navigator.of(context).push<void>(
-                      MaterialPageRoute<void>(
-                        builder: (BuildContext context) {
-                          return Center(
-                            child: ElevatedButton(
-                              key: key2,
-                              focusNode: testNode2,
-                              autofocus: true,
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Go Back'),
-                            ),
-                          );
-                        },
-                      ),
-                    );
+                    Navigator.of(context).push<void>(MaterialPageRoute<void>(
+                      builder: (BuildContext context) {
+                        return Center(
+                          child: ElevatedButton(
+                            key: key2,
+                            focusNode: testNode2,
+                            autofocus: true,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Go Back'),
+                          ),
+                        );
+                      },
+                    ));
                   },
                   child: const Text('Go Forward'),
                 );
-              }),
+              },
             ),
           ),
         ),
-      );
+      ));
 
       final Element firstChild = tester.element(find.text('Go Forward'));
       final FocusNode firstFocusNode = Focus.of(firstChild);
@@ -391,26 +361,20 @@ void main() {
       final FocusNode testNode1 = FocusNode(debugLabel: 'Focus Node');
       bool calledCallback = false;
 
-      await tester.pumpWidget(
-        FocusTraversalGroup(
-          policy: WidgetOrderTraversalPolicy(
-            requestFocusCallback: (FocusNode node, {double? alignment,
-              ScrollPositionAlignmentPolicy? alignmentPolicy,
-              Curve? curve,
-              Duration? duration}) {
-              calledCallback = true;
-            },
-          ),
-          child: FocusScope(
-            debugLabel: 'key1',
-            child: Focus(
-              key: key1,
-              focusNode: testNode1,
-              child: Container(),
-            ),
-          ),
+      await tester.pumpWidget(FocusTraversalGroup(
+        policy: WidgetOrderTraversalPolicy(
+          requestFocusCallback: (
+            FocusNode node, {
+            double? alignment,
+            ScrollPositionAlignmentPolicy? alignmentPolicy,
+            Curve? curve,
+            Duration? duration,
+          }) {
+            calledCallback = true;
+          },
         ),
-      );
+        child: FocusScope(debugLabel: 'key1', child: Focus(key: key1, focusNode: testNode1, child: Container())),
+      ));
 
       final Element element = tester.element(find.byKey(key1));
       final FocusNode scope = FocusScope.of(element);
@@ -427,7 +391,6 @@ void main() {
 
       expect(calledCallback, isTrue);
     });
-
   });
 
   group(ReadingOrderTraversalPolicy, () {
@@ -443,14 +406,8 @@ void main() {
           key: key1,
           child: Column(
             children: <Widget>[
-              Focus(
-                key: key2,
-                child: SizedBox(key: key3, width: 100, height: 100),
-              ),
-              Focus(
-                key: key4,
-                child: SizedBox(key: key5, width: 100, height: 100),
-              ),
+              Focus(key: key2, child: SizedBox(key: key3, width: 100, height: 100)),
+              Focus(key: key4, child: SizedBox(key: key5, width: 100, height: 100)),
             ],
           ),
         ),
@@ -481,44 +438,42 @@ void main() {
       bool? focus2;
       bool? focus3;
       bool? focus5;
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: ReadingOrderTraversalPolicy(),
-            child: FocusScope(
-              debugLabel: 'key1',
-              key: key1,
-              onFocusChange: (bool focus) => focus1 = focus,
-              child: Column(
-                children: <Widget>[
-                  FocusScope(
-                    debugLabel: 'key2',
-                    key: key2,
-                    onFocusChange: (bool focus) => focus2 = focus,
-                    child: Row(
-                      children: <Widget>[
-                        Focus(
-                          debugLabel: 'key3',
-                          key: key3,
-                          onFocusChange: (bool focus) => focus3 = focus,
-                          child: Container(key: key4),
-                        ),
-                        Focus(
-                          debugLabel: 'key5',
-                          key: key5,
-                          onFocusChange: (bool focus) => focus5 = focus,
-                          child: Container(key: key6),
-                        ),
-                      ],
-                    ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: ReadingOrderTraversalPolicy(),
+          child: FocusScope(
+            debugLabel: 'key1',
+            key: key1,
+            onFocusChange: (bool focus) => focus1 = focus,
+            child: Column(
+              children: <Widget>[
+                FocusScope(
+                  debugLabel: 'key2',
+                  key: key2,
+                  onFocusChange: (bool focus) => focus2 = focus,
+                  child: Row(
+                    children: <Widget>[
+                      Focus(
+                        debugLabel: 'key3',
+                        key: key3,
+                        onFocusChange: (bool focus) => focus3 = focus,
+                        child: Container(key: key4),
+                      ),
+                      Focus(
+                        debugLabel: 'key5',
+                        key: key5,
+                        onFocusChange: (bool focus) => focus5 = focus,
+                        child: Container(key: key6),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ));
 
       void clear() {
         focus1 = null;
@@ -592,33 +547,25 @@ void main() {
       final GlobalKey key4 = GlobalKey(debugLabel: '4');
       final GlobalKey key5 = GlobalKey(debugLabel: '5');
       final GlobalKey key6 = GlobalKey(debugLabel: '6');
-      await tester.pumpWidget(
-        FocusTraversalGroup(
-          policy: ReadingOrderTraversalPolicy(),
-          child: FocusScope(
-            key: key1,
-            child: Column(
-              children: <Widget>[
-                FocusScope(
-                  key: key2,
-                  child: Column(
-                    children: <Widget>[
-                      Focus(
-                        key: key3,
-                        child: Container(key: key4),
-                      ),
-                      Focus(
-                        key: key5,
-                        child: Container(key: key6),
-                      ),
-                    ],
-                  ),
+      await tester.pumpWidget(FocusTraversalGroup(
+        policy: ReadingOrderTraversalPolicy(),
+        child: FocusScope(
+          key: key1,
+          child: Column(
+            children: <Widget>[
+              FocusScope(
+                key: key2,
+                child: Column(
+                  children: <Widget>[
+                    Focus(key: key3, child: Container(key: key4)),
+                    Focus(key: key5, child: Container(key: key6)),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
+      ));
 
       final Element firstChild = tester.element(find.byKey(key4));
       final Element secondChild = tester.element(find.byKey(key6));
@@ -662,7 +609,10 @@ void main() {
     testWidgets('Focus order is correct in the presence of different directionalities.', (WidgetTester tester) async {
       const int nodeCount = 10;
       final FocusScopeNode scopeNode = FocusScopeNode();
-      final List<FocusNode> nodes = List<FocusNode>.generate(nodeCount, (int index) => FocusNode(debugLabel: 'Node $index'));
+      final List<FocusNode> nodes = List<FocusNode>.generate(
+        nodeCount,
+        (int index) => FocusNode(debugLabel: 'Node $index'),
+      );
       Widget buildTest(TextDirection topDirection) {
         return Directionality(
           textDirection: topDirection,
@@ -674,83 +624,60 @@ void main() {
                 children: <Widget>[
                   Directionality(
                     textDirection: TextDirection.ltr,
-                    child: Row(children: <Widget>[
-                      Focus(
-                        focusNode: nodes[0],
-                        child: const SizedBox(width: 10, height: 10),
-                      ),
-                      Focus(
-                        focusNode: nodes[1],
-                        child: const SizedBox(width: 10, height: 10),
-                      ),
-                      Focus(
-                        focusNode: nodes[2],
-                        child: const SizedBox(width: 10, height: 10),
-                      ),
-                    ]),
+                    child: Row(
+                      children: <Widget>[
+                        Focus(focusNode: nodes[0], child: const SizedBox(width: 10, height: 10)),
+                        Focus(focusNode: nodes[1], child: const SizedBox(width: 10, height: 10)),
+                        Focus(focusNode: nodes[2], child: const SizedBox(width: 10, height: 10)),
+                      ],
+                    ),
                   ),
                   Directionality(
                     textDirection: TextDirection.ltr,
-                    child: Row(children: <Widget>[
-                      Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: Focus(
-                          focusNode: nodes[3],
-                          child: const SizedBox(width: 10, height: 10),
+                    child: Row(
+                      children: <Widget>[
+                        Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: Focus(focusNode: nodes[3], child: const SizedBox(width: 10, height: 10)),
                         ),
+                        Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: Focus(focusNode: nodes[4], child: const SizedBox(width: 10, height: 10)),
+                        ),
+                        Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: Focus(focusNode: nodes[5], child: const SizedBox(width: 10, height: 10)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: Focus(focusNode: nodes[6], child: const SizedBox(width: 10, height: 10)),
                       ),
                       Directionality(
                         textDirection: TextDirection.rtl,
-                        child: Focus(
-                          focusNode: nodes[4],
-                          child: const SizedBox(width: 10, height: 10),
-                        ),
+                        child: Focus(focusNode: nodes[7], child: const SizedBox(width: 10, height: 10)),
+                      ),
+                      Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Focus(focusNode: nodes[8], child: const SizedBox(width: 10, height: 10)),
                       ),
                       Directionality(
                         textDirection: TextDirection.ltr,
-                        child: Focus(
-                          focusNode: nodes[5],
-                          child: const SizedBox(width: 10, height: 10),
-                        ),
+                        child: Focus(focusNode: nodes[9], child: const SizedBox(width: 10, height: 10)),
                       ),
-                    ]),
+                    ],
                   ),
-                  Row(children: <Widget>[
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Focus(
-                        focusNode: nodes[6],
-                        child: const SizedBox(width: 10, height: 10),
-                      ),
-                    ),
-                    Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: Focus(
-                        focusNode: nodes[7],
-                        child: const SizedBox(width: 10, height: 10),
-                      ),
-                    ),
-                    Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: Focus(
-                        focusNode: nodes[8],
-                        child: const SizedBox(width: 10, height: 10),
-                      ),
-                    ),
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Focus(
-                        focusNode: nodes[9],
-                        child: const SizedBox(width: 10, height: 10),
-                      ),
-                    ),
-                  ]),
                 ],
               ),
             ),
           ),
         );
       }
+
       await tester.pumpWidget(buildTest(TextDirection.rtl));
 
       // The last four *are* correct: the Row is sensitive to the directionality
@@ -774,11 +701,15 @@ void main() {
       expect(order, orderedEquals(<int>[0, 1, 2, 4, 3, 5, 6, 8, 7, 9]));
     });
 
-    testWidgets('Focus order is reading order regardless of widget order, even when overlapping.', (WidgetTester tester) async {
-      const int nodeCount = 10;
-      final List<FocusNode> nodes = List<FocusNode>.generate(nodeCount, (int index) => FocusNode(debugLabel: 'Node $index'));
-      await tester.pumpWidget(
-        Directionality(
+    testWidgets(
+      'Focus order is reading order regardless of widget order, even when overlapping.',
+      (WidgetTester tester) async {
+        const int nodeCount = 10;
+        final List<FocusNode> nodes = List<FocusNode>.generate(
+          nodeCount,
+          (int index) => FocusNode(debugLabel: 'Node $index'),
+        );
+        await tester.pumpWidget(Directionality(
           textDirection: TextDirection.rtl,
           child: FocusTraversalGroup(
             policy: ReadingOrderTraversalPolicy(),
@@ -793,20 +724,18 @@ void main() {
               }),
             ),
           ),
-        ),
-      );
+        ));
 
-      final List<int> order = <int>[];
-      for (int i = 0; i < nodeCount; ++i) {
-        nodes.first.nextFocus();
-        await tester.pump();
-        order.add(nodes.indexOf(primaryFocus!));
-      }
-      expect(order, orderedEquals(<int>[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]));
+        final List<int> order = <int>[];
+        for (int i = 0; i < nodeCount; ++i) {
+          nodes.first.nextFocus();
+          await tester.pump();
+          order.add(nodes.indexOf(primaryFocus!));
+        }
+        expect(order, orderedEquals(<int>[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]));
 
-      // Concentric boxes.
-      await tester.pumpWidget(
-        Directionality(
+        // Concentric boxes.
+        await tester.pumpWidget(Directionality(
           textDirection: TextDirection.rtl,
           child: FocusTraversalGroup(
             policy: ReadingOrderTraversalPolicy(),
@@ -820,21 +749,19 @@ void main() {
               }),
             ),
           ),
-        ),
-      );
+        ));
 
-      order.clear();
-      for (int i = 0; i < nodeCount; ++i) {
-        nodes.first.nextFocus();
-        await tester.pump();
-        order.add(nodes.indexOf(primaryFocus!));
-      }
-      expect(order, orderedEquals(<int>[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]));
+        order.clear();
+        for (int i = 0; i < nodeCount; ++i) {
+          nodes.first.nextFocus();
+          await tester.pump();
+          order.add(nodes.indexOf(primaryFocus!));
+        }
+        expect(order, orderedEquals(<int>[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]));
 
-      // Stacked (vertically) and centered (horizontally, on each other)
-      // widgets, not overlapping.
-      await tester.pumpWidget(
-        Directionality(
+        // Stacked (vertically) and centered (horizontally, on each other)
+        // widgets, not overlapping.
+        await tester.pumpWidget(Directionality(
           textDirection: TextDirection.rtl,
           child: FocusTraversalGroup(
             policy: ReadingOrderTraversalPolicy(),
@@ -856,46 +783,40 @@ void main() {
               }),
             ),
           ),
-        ),
-      );
+        ));
 
-      order.clear();
-      for (int i = 0; i < nodeCount; ++i) {
-        nodes.first.nextFocus();
-        await tester.pump();
-        order.add(nodes.indexOf(primaryFocus!));
-      }
-      expect(order, orderedEquals(<int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 0]));
-    });
+        order.clear();
+        for (int i = 0; i < nodeCount; ++i) {
+          nodes.first.nextFocus();
+          await tester.pump();
+          order.add(nodes.indexOf(primaryFocus!));
+        }
+        expect(order, orderedEquals(<int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 0]));
+      },
+    );
 
     testWidgets('Custom requestFocusCallback gets called on the next/previous focus.', (WidgetTester tester) async {
       final GlobalKey key1 = GlobalKey(debugLabel: '1');
       final FocusNode testNode1 = FocusNode(debugLabel: 'Focus Node');
       bool calledCallback = false;
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: ReadingOrderTraversalPolicy(
-              requestFocusCallback: (FocusNode node, {double? alignment,
-                ScrollPositionAlignmentPolicy? alignmentPolicy,
-                Curve? curve,
-                Duration? duration}) {
-                calledCallback = true;
-              },
-            ),
-            child: FocusScope(
-              debugLabel: 'key1',
-              child: Focus(
-                key: key1,
-                focusNode: testNode1,
-                child: Container(),
-              ),
-            ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: ReadingOrderTraversalPolicy(
+            requestFocusCallback: (
+              FocusNode node, {
+              double? alignment,
+              ScrollPositionAlignmentPolicy? alignmentPolicy,
+              Curve? curve,
+              Duration? duration,
+            }) {
+              calledCallback = true;
+            },
           ),
+          child: FocusScope(debugLabel: 'key1', child: Focus(key: key1, focusNode: testNode1, child: Container())),
         ),
-      );
+      ));
 
       final Element element = tester.element(find.byKey(key1));
       final FocusNode scope = FocusScope.of(element);
@@ -925,15 +846,11 @@ void main() {
             children: <Widget>[
               FocusTraversalOrder(
                 order: const NumericFocusOrder(2),
-                child: Focus(
-                  child: SizedBox(key: key1, width: 100, height: 100),
-                ),
+                child: Focus(child: SizedBox(key: key1, width: 100, height: 100)),
               ),
               FocusTraversalOrder(
                 order: const NumericFocusOrder(1),
-                child: Focus(
-                  child: SizedBox(key: key2, width: 100, height: 100),
-                ),
+                child: Focus(child: SizedBox(key: key2, width: 100, height: 100)),
               ),
             ],
           ),
@@ -956,26 +873,24 @@ void main() {
 
     testWidgets('Fall back to the secondary sort if no FocusTraversalOrder exists.', (WidgetTester tester) async {
       const int nodeCount = 10;
-      final List<FocusNode> nodes = List<FocusNode>.generate(nodeCount, (int index) => FocusNode(debugLabel: 'Node $index'));
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.rtl,
-          child: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
-            child: FocusScope(
-              child: Row(
-                children: List<Widget>.generate(
-                  nodeCount,
-                  (int index) => Focus(
-                    focusNode: nodes[index],
-                    child: const SizedBox(width: 10, height: 10),
-                  ),
-                ),
+      final List<FocusNode> nodes = List<FocusNode>.generate(
+        nodeCount,
+        (int index) => FocusNode(debugLabel: 'Node $index'),
+      );
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.rtl,
+        child: FocusTraversalGroup(
+          policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
+          child: FocusScope(
+            child: Row(
+              children: List<Widget>.generate(
+                nodeCount,
+                (int index) => Focus(focusNode: nodes[index], child: const SizedBox(width: 10, height: 10)),
               ),
             ),
           ),
         ),
-      );
+      ));
 
       // Because it should be using widget order, this shouldn't be affected by
       // the directionality.
@@ -995,29 +910,27 @@ void main() {
 
     testWidgets('Move focus to next/previous node using numerical order.', (WidgetTester tester) async {
       const int nodeCount = 10;
-      final List<FocusNode> nodes = List<FocusNode>.generate(nodeCount, (int index) => FocusNode(debugLabel: 'Node $index'));
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
-            child: FocusScope(
-              child: Row(
-                children: List<Widget>.generate(
-                  nodeCount,
-                  (int index) => FocusTraversalOrder(
-                    order: NumericFocusOrder(nodeCount - index.toDouble()),
-                    child: Focus(
-                      focusNode: nodes[index],
-                      child: const SizedBox(width: 10, height: 10),
-                    ),
-                  ),
+      final List<FocusNode> nodes = List<FocusNode>.generate(
+        nodeCount,
+        (int index) => FocusNode(debugLabel: 'Node $index'),
+      );
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
+          child: FocusScope(
+            child: Row(
+              children: List<Widget>.generate(
+                nodeCount,
+                (int index) => FocusTraversalOrder(
+                  order: NumericFocusOrder(nodeCount - index.toDouble()),
+                  child: Focus(focusNode: nodes[index], child: const SizedBox(width: 10, height: 10)),
                 ),
               ),
             ),
           ),
         ),
-      );
+      ));
 
       // The orders are assigned to be backwards from normal, so should go backwards.
       for (int i = nodeCount - 1; i >= 0; --i) {
@@ -1038,30 +951,31 @@ void main() {
       const int nodeCount = 10;
 
       /// Generate ['J' ... 'A'];
-      final List<String> keys = List<String>.generate(nodeCount, (int index) => String.fromCharCode('A'.codeUnits[0] + nodeCount - index - 1));
-      final List<FocusNode> nodes = List<FocusNode>.generate(nodeCount, (int index) => FocusNode(debugLabel: 'Node ${keys[index]}'));
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
-            child: FocusScope(
-              child: Row(
-                children: List<Widget>.generate(
-                  nodeCount,
-                  (int index) => FocusTraversalOrder(
-                    order: LexicalFocusOrder(keys[index]),
-                    child: Focus(
-                      focusNode: nodes[index],
-                      child: const SizedBox(width: 10, height: 10),
-                    ),
-                  ),
+      final List<String> keys = List<String>.generate(
+        nodeCount,
+        (int index) => String.fromCharCode('A'.codeUnits[0] + nodeCount - index - 1),
+      );
+      final List<FocusNode> nodes = List<FocusNode>.generate(
+        nodeCount,
+        (int index) => FocusNode(debugLabel: 'Node ${keys[index]}'),
+      );
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
+          child: FocusScope(
+            child: Row(
+              children: List<Widget>.generate(
+                nodeCount,
+                (int index) => FocusTraversalOrder(
+                  order: LexicalFocusOrder(keys[index]),
+                  child: Focus(focusNode: nodes[index], child: const SizedBox(width: 10, height: 10)),
                 ),
               ),
             ),
           ),
         ),
-      );
+      ));
 
       // The orders are assigned to be backwards from normal, so should go backwards.
       for (int i = nodeCount - 1; i >= 0; --i) {
@@ -1081,119 +995,96 @@ void main() {
     testWidgets('Focus order is correct in the presence of FocusTraversalPolicyGroups.', (WidgetTester tester) async {
       const int nodeCount = 10;
       final FocusScopeNode scopeNode = FocusScopeNode();
-      final List<FocusNode> nodes = List<FocusNode>.generate(nodeCount, (int index) => FocusNode(debugLabel: 'Node $index'));
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: WidgetOrderTraversalPolicy(),
-            child: FocusScope(
-              node: scopeNode,
-              child: FocusTraversalGroup(
-                policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
-                child: Row(
-                  children: <Widget>[
-                    FocusTraversalOrder(
-                      order: const NumericFocusOrder(0),
-                      child: FocusTraversalGroup(
-                        policy: WidgetOrderTraversalPolicy(),
-                        child: Row(children: <Widget>[
+      final List<FocusNode> nodes = List<FocusNode>.generate(
+        nodeCount,
+        (int index) => FocusNode(debugLabel: 'Node $index'),
+      );
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: WidgetOrderTraversalPolicy(),
+          child: FocusScope(
+            node: scopeNode,
+            child: FocusTraversalGroup(
+              policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
+              child: Row(
+                children: <Widget>[
+                  FocusTraversalOrder(
+                    order: const NumericFocusOrder(0),
+                    child: FocusTraversalGroup(
+                      policy: WidgetOrderTraversalPolicy(),
+                      child: Row(
+                        children: <Widget>[
                           FocusTraversalOrder(
                             order: const NumericFocusOrder(9),
-                            child: Focus(
-                              focusNode: nodes[9],
-                              child: const SizedBox(width: 10, height: 10),
-                            ),
+                            child: Focus(focusNode: nodes[9], child: const SizedBox(width: 10, height: 10)),
                           ),
                           FocusTraversalOrder(
                             order: const NumericFocusOrder(8),
-                            child: Focus(
-                              focusNode: nodes[8],
-                              child: const SizedBox(width: 10, height: 10),
-                            ),
+                            child: Focus(focusNode: nodes[8], child: const SizedBox(width: 10, height: 10)),
                           ),
                           FocusTraversalOrder(
                             order: const NumericFocusOrder(7),
-                            child: Focus(
-                              focusNode: nodes[7],
-                              child: const SizedBox(width: 10, height: 10),
-                            ),
+                            child: Focus(focusNode: nodes[7], child: const SizedBox(width: 10, height: 10)),
                           ),
-                        ]),
+                        ],
                       ),
                     ),
-                    FocusTraversalOrder(
-                      order: const NumericFocusOrder(1),
-                      child: FocusTraversalGroup(
-                        policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
-                        child: Row(children: <Widget>[
+                  ),
+                  FocusTraversalOrder(
+                    order: const NumericFocusOrder(1),
+                    child: FocusTraversalGroup(
+                      policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
+                      child: Row(
+                        children: <Widget>[
                           FocusTraversalOrder(
                             order: const NumericFocusOrder(4),
-                            child: Focus(
-                              focusNode: nodes[4],
-                              child: const SizedBox(width: 10, height: 10),
-                            ),
+                            child: Focus(focusNode: nodes[4], child: const SizedBox(width: 10, height: 10)),
                           ),
                           FocusTraversalOrder(
                             order: const NumericFocusOrder(5),
-                            child: Focus(
-                              focusNode: nodes[5],
-                              child: const SizedBox(width: 10, height: 10),
-                            ),
+                            child: Focus(focusNode: nodes[5], child: const SizedBox(width: 10, height: 10)),
                           ),
                           FocusTraversalOrder(
                             order: const NumericFocusOrder(6),
-                            child: Focus(
-                              focusNode: nodes[6],
-                              child: const SizedBox(width: 10, height: 10),
-                            ),
+                            child: Focus(focusNode: nodes[6], child: const SizedBox(width: 10, height: 10)),
                           ),
-                        ]),
+                        ],
                       ),
                     ),
-                    FocusTraversalOrder(
-                      order: const NumericFocusOrder(2),
-                      child: FocusTraversalGroup(
-                        policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
-                        child: Row(children: <Widget>[
+                  ),
+                  FocusTraversalOrder(
+                    order: const NumericFocusOrder(2),
+                    child: FocusTraversalGroup(
+                      policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
+                      child: Row(
+                        children: <Widget>[
                           FocusTraversalOrder(
                             order: const LexicalFocusOrder('D'),
-                            child: Focus(
-                              focusNode: nodes[3],
-                              child: const SizedBox(width: 10, height: 10),
-                            ),
+                            child: Focus(focusNode: nodes[3], child: const SizedBox(width: 10, height: 10)),
                           ),
                           FocusTraversalOrder(
                             order: const LexicalFocusOrder('C'),
-                            child: Focus(
-                              focusNode: nodes[2],
-                              child: const SizedBox(width: 10, height: 10),
-                            ),
+                            child: Focus(focusNode: nodes[2], child: const SizedBox(width: 10, height: 10)),
                           ),
                           FocusTraversalOrder(
                             order: const LexicalFocusOrder('B'),
-                            child: Focus(
-                              focusNode: nodes[1],
-                              child: const SizedBox(width: 10, height: 10),
-                            ),
+                            child: Focus(focusNode: nodes[1], child: const SizedBox(width: 10, height: 10)),
                           ),
                           FocusTraversalOrder(
                             order: const LexicalFocusOrder('A'),
-                            child: Focus(
-                              focusNode: nodes[0],
-                              child: const SizedBox(width: 10, height: 10),
-                            ),
+                            child: Focus(focusNode: nodes[0], child: const SizedBox(width: 10, height: 10)),
                           ),
-                        ]),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      );
+      ));
 
       final List<int> expectedOrder = <int>[9, 8, 7, 4, 5, 6, 0, 1, 2, 3];
       final List<int> order = <int>[];
@@ -1210,12 +1101,12 @@ void main() {
       final GlobalKey key2 = GlobalKey(debugLabel: '2');
       final FocusNode testNode1 = FocusNode(debugLabel: 'First Focus Node');
       final FocusNode testNode2 = FocusNode(debugLabel: 'Second Focus Node');
-      await tester.pumpWidget(
-        MaterialApp(
-          home: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
-            child: Center(
-              child: Builder(builder: (BuildContext context) {
+      await tester.pumpWidget(MaterialApp(
+        home: FocusTraversalGroup(
+          policy: OrderedTraversalPolicy(secondary: WidgetOrderTraversalPolicy()),
+          child: Center(
+            child: Builder(
+              builder: (BuildContext context) {
                 return FocusTraversalOrder(
                   order: const NumericFocusOrder(0),
                   child: ElevatedButton(
@@ -1223,35 +1114,33 @@ void main() {
                     focusNode: testNode1,
                     autofocus: true,
                     onPressed: () {
-                      Navigator.of(context).push<void>(
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) {
-                            return Center(
-                              child: FocusTraversalOrder(
-                                order: const NumericFocusOrder(0),
-                                child: ElevatedButton(
-                                  key: key2,
-                                  focusNode: testNode2,
-                                  autofocus: true,
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Go Back'),
-                                ),
+                      Navigator.of(context).push<void>(MaterialPageRoute<void>(
+                        builder: (BuildContext context) {
+                          return Center(
+                            child: FocusTraversalOrder(
+                              order: const NumericFocusOrder(0),
+                              child: ElevatedButton(
+                                key: key2,
+                                focusNode: testNode2,
+                                autofocus: true,
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Go Back'),
                               ),
-                            );
-                          },
-                        ),
-                      );
+                            ),
+                          );
+                        },
+                      ));
                     },
                     child: const Text('Go Forward'),
                   ),
                 );
-              }),
+              },
             ),
           ),
         ),
-      );
+      ));
 
       final Element firstChild = tester.element(find.text('Go Forward'));
       final FocusNode firstFocusNode = Focus.of(firstChild);
@@ -1282,29 +1171,23 @@ void main() {
       final FocusNode testNode1 = FocusNode(debugLabel: 'Focus Node');
       bool calledCallback = false;
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(
-              requestFocusCallback: (FocusNode node, {double? alignment,
-                ScrollPositionAlignmentPolicy? alignmentPolicy,
-                Curve? curve,
-                Duration? duration}) {
-                calledCallback = true;
-              },
-            ),
-            child: FocusScope(
-              debugLabel: 'key1',
-              child: Focus(
-                key: key1,
-                focusNode: testNode1,
-                child: Container(),
-              ),
-            ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: OrderedTraversalPolicy(
+            requestFocusCallback: (
+              FocusNode node, {
+              double? alignment,
+              ScrollPositionAlignmentPolicy? alignmentPolicy,
+              Curve? curve,
+              Duration? duration,
+            }) {
+              calledCallback = true;
+            },
           ),
+          child: FocusScope(debugLabel: 'key1', child: Focus(key: key1, focusNode: testNode1, child: Container())),
         ),
-      );
+      ));
 
       final Element element = tester.element(find.byKey(key1));
       final FocusNode scope = FocusScope.of(element);
@@ -1333,49 +1216,47 @@ void main() {
       bool? focusUpperRight;
       bool? focusLowerLeft;
       bool? focusLowerRight;
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: WidgetOrderTraversalPolicy(),
-            child: FocusScope(
-              debugLabel: 'Scope',
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Focus(
-                        debugLabel: 'upperLeft',
-                        onFocusChange: (bool focus) => focusUpperLeft = focus,
-                        child: SizedBox(width: 100, height: 100, key: upperLeftKey),
-                      ),
-                      Focus(
-                        debugLabel: 'upperRight',
-                        onFocusChange: (bool focus) => focusUpperRight = focus,
-                        child: SizedBox(width: 100, height: 100, key: upperRightKey),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Focus(
-                        debugLabel: 'lowerLeft',
-                        onFocusChange: (bool focus) => focusLowerLeft = focus,
-                        child: SizedBox(width: 100, height: 100, key: lowerLeftKey),
-                      ),
-                      Focus(
-                        debugLabel: 'lowerRight',
-                        onFocusChange: (bool focus) => focusLowerRight = focus,
-                        child: SizedBox(width: 100, height: 100, key: lowerRightKey),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: WidgetOrderTraversalPolicy(),
+          child: FocusScope(
+            debugLabel: 'Scope',
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Focus(
+                      debugLabel: 'upperLeft',
+                      onFocusChange: (bool focus) => focusUpperLeft = focus,
+                      child: SizedBox(width: 100, height: 100, key: upperLeftKey),
+                    ),
+                    Focus(
+                      debugLabel: 'upperRight',
+                      onFocusChange: (bool focus) => focusUpperRight = focus,
+                      child: SizedBox(width: 100, height: 100, key: upperRightKey),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Focus(
+                      debugLabel: 'lowerLeft',
+                      onFocusChange: (bool focus) => focusLowerLeft = focus,
+                      child: SizedBox(width: 100, height: 100, key: lowerLeftKey),
+                    ),
+                    Focus(
+                      debugLabel: 'lowerRight',
+                      onFocusChange: (bool focus) => focusLowerRight = focus,
+                      child: SizedBox(width: 100, height: 100, key: lowerRightKey),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ));
 
       void clear() {
         focusUpperLeft = null;
@@ -1480,42 +1361,25 @@ void main() {
       ///          [0]
       ///       [1]   [2]
       ///    [3]   [4]   [5]
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: WidgetOrderTraversalPolicy(),
-            child: FocusScope(
-              debugLabel: 'Scope',
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      makeFocus(0),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      makeFocus(1),
-                      makeFocus(2),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      makeFocus(3),
-                      makeFocus(4),
-                      makeFocus(5),
-                    ],
-                  ),
-                ],
-              ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: WidgetOrderTraversalPolicy(),
+          child: FocusScope(
+            debugLabel: 'Scope',
+            child: Column(
+              children: <Widget>[
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[makeFocus(0)]),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[makeFocus(1), makeFocus(2)]),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[makeFocus(3), makeFocus(4), makeFocus(5)],
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ));
 
       void clear() {
         focus = List<bool?>.generate(focus.length, (int _) => null);
@@ -1586,7 +1450,10 @@ void main() {
       const int cols = 3;
       const int rows = 3;
       List<bool?> focus = List<bool?>.generate(rows * cols, (int _) => null);
-      final List<FocusNode> nodes = List<FocusNode>.generate(rows * cols, (int index) => FocusNode(debugLabel: 'Node $index'));
+      final List<FocusNode> nodes = List<FocusNode>.generate(
+        rows * cols,
+        (int index) => FocusNode(debugLabel: 'Node $index'),
+      );
 
       Widget makeFocus(int row, int col) {
         final int index = row * rows + col;
@@ -1609,46 +1476,32 @@ void main() {
       ///    [0, 0] [    ] [0, 2]
       ///    [  1,  0 ] [1, 1] [1, 2]
       ///    [2, 0] [2, 1] [2, 2]
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: WidgetOrderTraversalPolicy(),
-            child: FocusScope(
-              debugLabel: 'Scope',
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      makeFocus(0, 0),
-                      makeFocus(0, 1),
-                      makeFocus(0, 2),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      makeFocus(1, 0),
-                      makeFocus(1, 1),
-                      makeFocus(1, 2),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      makeFocus(2, 0),
-                      makeFocus(2, 1),
-                      makeFocus(2, 2),
-                    ],
-                  ),
-                ],
-              ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: WidgetOrderTraversalPolicy(),
+          child: FocusScope(
+            debugLabel: 'Scope',
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[makeFocus(0, 0), makeFocus(0, 1), makeFocus(0, 2)],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[makeFocus(1, 0), makeFocus(1, 1), makeFocus(1, 2)],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[makeFocus(2, 0), makeFocus(2, 1), makeFocus(2, 2)],
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ));
 
       void clear() {
         focus = List<bool?>.generate(focus.length, (int _) => null);
@@ -1749,26 +1602,19 @@ void main() {
       /// by widget [0]. We want it to traverse to 1, 2, 3 in order, even though
       /// the center of [2] is horizontally closer to the vertical axis of [0]'s
       /// center than [1]'s.
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: WidgetOrderTraversalPolicy(),
-            child: FocusScope(
-              debugLabel: 'Scope',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  makeFocus(0),
-                  makeFocus(1),
-                  makeFocus(2),
-                  makeFocus(3),
-                ],
-              ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: WidgetOrderTraversalPolicy(),
+          child: FocusScope(
+            debugLabel: 'Scope',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[makeFocus(0), makeFocus(1), makeFocus(2), makeFocus(3)],
             ),
           ),
         ),
-      );
+      ));
 
       void clear() {
         focus = List<bool?>.generate(focus.length, (int _) => null);
@@ -1835,26 +1681,19 @@ void main() {
       /// defined by widget [0]. We want it to traverse to 1, 2, 3 in order,
       /// even though the center of [2] is vertically closer to the horizontal
       /// axis of [0]'s center than [1]'s.
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: WidgetOrderTraversalPolicy(),
-            child: FocusScope(
-              debugLabel: 'Scope',
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  makeFocus(0),
-                  makeFocus(1),
-                  makeFocus(2),
-                  makeFocus(3),
-                ],
-              ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: WidgetOrderTraversalPolicy(),
+          child: FocusScope(
+            debugLabel: 'Scope',
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[makeFocus(0), makeFocus(1), makeFocus(2), makeFocus(3)],
             ),
           ),
         ),
-      );
+      ));
 
       void clear() {
         focus = List<bool?>.generate(focus.length, (int _) => null);
@@ -1895,45 +1734,31 @@ void main() {
       final GlobalKey upperRightKey = GlobalKey(debugLabel: 'upperRightKey');
       final GlobalKey lowerLeftKey = GlobalKey(debugLabel: 'lowerLeftKey');
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: FocusTraversalGroup(
-            policy: WidgetOrderTraversalPolicy(),
-            child: FocusScope(
-              debugLabel: 'scope',
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Focus(
-                        debugLabel: 'upperLeft',
-                        child: SizedBox(width: 100, height: 100, key: upperLeftKey),
-                      ),
-                      Focus(
-                        debugLabel: 'upperRight',
-                        child: SizedBox(width: 100, height: 100, key: upperRightKey),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Focus(
-                        debugLabel: 'lowerLeft',
-                        child: SizedBox(width: 100, height: 100, key: lowerLeftKey),
-                      ),
-                      const Focus(
-                        debugLabel: 'lowerRight',
-                        child: SizedBox(width: 100, height: 100),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: FocusTraversalGroup(
+          policy: WidgetOrderTraversalPolicy(),
+          child: FocusScope(
+            debugLabel: 'scope',
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Focus(debugLabel: 'upperLeft', child: SizedBox(width: 100, height: 100, key: upperLeftKey)),
+                    Focus(debugLabel: 'upperRight', child: SizedBox(width: 100, height: 100, key: upperRightKey)),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Focus(debugLabel: 'lowerLeft', child: SizedBox(width: 100, height: 100, key: lowerLeftKey)),
+                    const Focus(debugLabel: 'lowerRight', child: SizedBox(width: 100, height: 100)),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ));
 
       final FocusNode upperLeftNode = Focus.of(tester.element(find.byKey(upperLeftKey)));
       final FocusNode upperRightNode = Focus.of(tester.element(find.byKey(upperRightKey)));
@@ -2001,14 +1826,15 @@ void main() {
       expect(focusTop.hasFocus, isTrue);
     });
 
-    testWidgets('Focus traversal actions are invoked when shortcuts are used.', (WidgetTester tester) async {
-      final GlobalKey upperLeftKey = GlobalKey(debugLabel: 'upperLeftKey');
-      final GlobalKey upperRightKey = GlobalKey(debugLabel: 'upperRightKey');
-      final GlobalKey lowerLeftKey = GlobalKey(debugLabel: 'lowerLeftKey');
-      final GlobalKey lowerRightKey = GlobalKey(debugLabel: 'lowerRightKey');
+    testWidgets(
+      'Focus traversal actions are invoked when shortcuts are used.',
+      (WidgetTester tester) async {
+        final GlobalKey upperLeftKey = GlobalKey(debugLabel: 'upperLeftKey');
+        final GlobalKey upperRightKey = GlobalKey(debugLabel: 'upperRightKey');
+        final GlobalKey lowerLeftKey = GlobalKey(debugLabel: 'lowerLeftKey');
+        final GlobalKey lowerRightKey = GlobalKey(debugLabel: 'lowerRightKey');
 
-      await tester.pumpWidget(
-        WidgetsApp(
+        await tester.pumpWidget(WidgetsApp(
           color: const Color(0xFFFFFFFF),
           onGenerateRoute: (RouteSettings settings) {
             return TestRoute(
@@ -2025,22 +1851,13 @@ void main() {
                             debugLabel: 'upperLeft',
                             child: SizedBox(width: 100, height: 100, key: upperLeftKey),
                           ),
-                          Focus(
-                            debugLabel: 'upperRight',
-                            child: SizedBox(width: 100, height: 100, key: upperRightKey),
-                          ),
+                          Focus(debugLabel: 'upperRight', child: SizedBox(width: 100, height: 100, key: upperRightKey)),
                         ],
                       ),
                       Row(
                         children: <Widget>[
-                          Focus(
-                            debugLabel: 'lowerLeft',
-                            child: SizedBox(width: 100, height: 100, key: lowerLeftKey),
-                          ),
-                          Focus(
-                            debugLabel: 'lowerRight',
-                            child: SizedBox(width: 100, height: 100, key: lowerRightKey),
-                          ),
+                          Focus(debugLabel: 'lowerLeft', child: SizedBox(width: 100, height: 100, key: lowerLeftKey)),
+                          Focus(debugLabel: 'lowerRight', child: SizedBox(width: 100, height: 100, key: lowerRightKey)),
                         ],
                       ),
                     ],
@@ -2049,55 +1866,59 @@ void main() {
               ),
             );
           },
-        ),
-      );
+        ));
 
-      expect(Focus.of(upperLeftKey.currentContext!).hasPrimaryFocus, isTrue);
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      expect(Focus.of(upperRightKey.currentContext!).hasPrimaryFocus, isTrue);
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      expect(Focus.of(lowerLeftKey.currentContext!).hasPrimaryFocus, isTrue);
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      expect(Focus.of(lowerRightKey.currentContext!).hasPrimaryFocus, isTrue);
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      expect(Focus.of(upperLeftKey.currentContext!).hasPrimaryFocus, isTrue);
+        expect(Focus.of(upperLeftKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        expect(Focus.of(upperRightKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        expect(Focus.of(lowerLeftKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        expect(Focus.of(lowerRightKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        expect(Focus.of(upperLeftKey.currentContext!).hasPrimaryFocus, isTrue);
 
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
-      expect(Focus.of(lowerRightKey.currentContext!).hasPrimaryFocus, isTrue);
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
-      expect(Focus.of(lowerLeftKey.currentContext!).hasPrimaryFocus, isTrue);
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
-      expect(Focus.of(upperRightKey.currentContext!).hasPrimaryFocus, isTrue);
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
-      expect(Focus.of(upperLeftKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
+        expect(Focus.of(lowerRightKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
+        expect(Focus.of(lowerLeftKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
+        expect(Focus.of(upperRightKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
+        expect(Focus.of(upperLeftKey.currentContext!).hasPrimaryFocus, isTrue);
 
-      // Traverse in a direction
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      expect(Focus.of(upperRightKey.currentContext!).hasPrimaryFocus, isTrue);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      expect(Focus.of(lowerRightKey.currentContext!).hasPrimaryFocus, isTrue);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
-      expect(Focus.of(lowerLeftKey.currentContext!).hasPrimaryFocus, isTrue);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
-      expect(Focus.of(upperLeftKey.currentContext!).hasPrimaryFocus, isTrue);
-    }, skip: isBrowser, variant: KeySimulatorTransitModeVariant.all()); // https://github.com/flutter/flutter/issues/35347
+        // Traverse in a direction
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+        expect(Focus.of(upperRightKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        expect(Focus.of(lowerRightKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+        expect(Focus.of(lowerLeftKey.currentContext!).hasPrimaryFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+        expect(Focus.of(upperLeftKey.currentContext!).hasPrimaryFocus, isTrue);
+      },
+      skip: isBrowser,
+      variant: KeySimulatorTransitModeVariant.all(),
+    ); // https://github.com/flutter/flutter/issues/35347
 
-    testWidgets('Focus traversal inside a vertical scrollable scrolls to stay visible.', (WidgetTester tester) async {
-      final List<int> items = List<int>.generate(11, (int index) => index).toList();
-      final List<FocusNode> nodes = List<FocusNode>.generate(11, (int index) => FocusNode(debugLabel: 'Item ${index + 1}')).toList();
-      final FocusNode topNode = FocusNode(debugLabel: 'Header');
-      final FocusNode bottomNode = FocusNode(debugLabel: 'Footer');
-      final ScrollController controller = ScrollController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'Focus traversal inside a vertical scrollable scrolls to stay visible.',
+      (WidgetTester tester) async {
+        final List<int> items = List<int>.generate(11, (int index) => index).toList();
+        final List<FocusNode> nodes =
+            List<FocusNode>.generate(11, (int index) => FocusNode(debugLabel: 'Item ${index + 1}')).toList();
+        final FocusNode topNode = FocusNode(debugLabel: 'Header');
+        final FocusNode bottomNode = FocusNode(debugLabel: 'Footer');
+        final ScrollController controller = ScrollController();
+        await tester.pumpWidget(MaterialApp(
           home: Column(
             children: <Widget>[
               Focus(focusNode: topNode, child: Container(height: 100)),
@@ -2105,96 +1926,101 @@ void main() {
                 child: ListView(
                   controller: controller,
                   children: items.map<Widget>((int item) {
-                    return Focus(
-                      focusNode: nodes[item],
-                      child: Container(height: 100),
-                    );
+                    return Focus(focusNode: nodes[item], child: Container(height: 100));
                   }).toList(),
                 ),
               ),
               Focus(focusNode: bottomNode, child: Container(height: 100)),
             ],
           ),
-        ),
-      );
+        ));
 
-      // Start at the top
-      expect(controller.offset, equals(0.0));
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pump();
-      expect(topNode.hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(0.0));
-
-      // Enter the list.
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pump();
-      expect(nodes[0].hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(0.0));
-
-      // Go down until we hit the bottom of the visible area.
-      for (int i = 1; i <= 4; ++i) {
+        // Start at the top
+        expect(controller.offset, equals(0.0));
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
         await tester.pump();
-        expect(controller.offset, equals(0.0), reason: 'Focusing item $i caused a scroll');
-      }
+        expect(topNode.hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(0.0));
 
-      // Now keep going down, and the scrollable should scroll automatically.
-      for (int i = 5; i <= 10; ++i) {
+        // Enter the list.
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
         await tester.pump();
-        final double expectedOffset = 100.0 * (i - 5) + 200.0;
-        expect(controller.offset, equals(expectedOffset), reason: "Focusing item $i didn't cause a scroll to $expectedOffset");
-      }
+        expect(nodes[0].hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(0.0));
 
-      // Now go one more, and see that the footer gets focused.
+        // Go down until we hit the bottom of the visible area.
+        for (int i = 1; i <= 4; ++i) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pump();
+          expect(controller.offset, equals(0.0), reason: 'Focusing item $i caused a scroll');
+        }
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pump();
-      expect(bottomNode.hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(100.0 * (10 - 5) + 200.0));
+        // Now keep going down, and the scrollable should scroll automatically.
+        for (int i = 5; i <= 10; ++i) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pump();
+          final double expectedOffset = 100.0 * (i - 5) + 200.0;
+          expect(
+            controller.offset,
+            equals(expectedOffset),
+            reason: "Focusing item $i didn't cause a scroll to $expectedOffset",
+          );
+        }
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
-      await tester.pump();
-      expect(nodes[10].hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(100.0 * (10 - 5) + 200.0));
+        // Now go one more, and see that the footer gets focused.
 
-      // Now reverse directions and go back to the top.
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pump();
+        expect(bottomNode.hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(100.0 * (10 - 5) + 200.0));
 
-      // These should not cause a scroll.
-      final double lowestOffset = controller.offset;
-      for (int i = 10; i >= 8; --i) {
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
         await tester.pump();
-        expect(controller.offset, equals(lowestOffset), reason: 'Focusing item $i caused a scroll');
-      }
+        expect(nodes[10].hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(100.0 * (10 - 5) + 200.0));
 
-      // These should all cause a scroll.
-      for (int i = 7; i >= 1; --i) {
+        // Now reverse directions and go back to the top.
+
+        // These should not cause a scroll.
+        final double lowestOffset = controller.offset;
+        for (int i = 10; i >= 8; --i) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+          await tester.pump();
+          expect(controller.offset, equals(lowestOffset), reason: 'Focusing item $i caused a scroll');
+        }
+
+        // These should all cause a scroll.
+        for (int i = 7; i >= 1; --i) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+          await tester.pump();
+          final double expectedOffset = 100.0 * (i - 1);
+          expect(controller.offset, equals(expectedOffset), reason: "Focusing item $i didn't cause a scroll");
+        }
+
+        // Back at the top.
+        expect(nodes[0].hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(0.0));
+
+        // Now we jump to the header.
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
         await tester.pump();
-        final double expectedOffset = 100.0 * (i - 1);
-        expect(controller.offset, equals(expectedOffset), reason: "Focusing item $i didn't cause a scroll");
-      }
+        expect(topNode.hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(0.0));
+      },
+      skip: isBrowser,
+      variant: KeySimulatorTransitModeVariant.all(),
+    ); // https://github.com/flutter/flutter/issues/35347
 
-      // Back at the top.
-      expect(nodes[0].hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(0.0));
-
-      // Now we jump to the header.
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
-      await tester.pump();
-      expect(topNode.hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(0.0));
-    }, skip: isBrowser, variant: KeySimulatorTransitModeVariant.all()); // https://github.com/flutter/flutter/issues/35347
-
-    testWidgets('Focus traversal inside a horizontal scrollable scrolls to stay visible.', (WidgetTester tester) async {
-      final List<int> items = List<int>.generate(11, (int index) => index).toList();
-      final List<FocusNode> nodes = List<FocusNode>.generate(11, (int index) => FocusNode(debugLabel: 'Item ${index + 1}')).toList();
-      final FocusNode leftNode = FocusNode(debugLabel: 'Left Side');
-      final FocusNode rightNode = FocusNode(debugLabel: 'Right Side');
-      final ScrollController controller = ScrollController();
-      await tester.pumpWidget(
-        MaterialApp(
+    testWidgets(
+      'Focus traversal inside a horizontal scrollable scrolls to stay visible.',
+      (WidgetTester tester) async {
+        final List<int> items = List<int>.generate(11, (int index) => index).toList();
+        final List<FocusNode> nodes =
+            List<FocusNode>.generate(11, (int index) => FocusNode(debugLabel: 'Item ${index + 1}')).toList();
+        final FocusNode leftNode = FocusNode(debugLabel: 'Left Side');
+        final FocusNode rightNode = FocusNode(debugLabel: 'Right Side');
+        final ScrollController controller = ScrollController();
+        await tester.pumpWidget(MaterialApp(
           home: Row(
             children: <Widget>[
               Focus(focusNode: leftNode, child: Container(width: 100)),
@@ -2203,87 +2029,90 @@ void main() {
                   scrollDirection: Axis.horizontal,
                   controller: controller,
                   children: items.map<Widget>((int item) {
-                    return Focus(
-                      focusNode: nodes[item],
-                      child: Container(width: 100),
-                    );
+                    return Focus(focusNode: nodes[item], child: Container(width: 100));
                   }).toList(),
                 ),
               ),
               Focus(focusNode: rightNode, child: Container(width: 100)),
             ],
           ),
-        ),
-      );
+        ));
 
-      // Start at the right
-      expect(controller.offset, equals(0.0));
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      await tester.pump();
-      expect(leftNode.hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(0.0));
-
-      // Enter the list.
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      await tester.pump();
-      expect(nodes[0].hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(0.0));
-
-      // Go right until we hit the right of the visible area.
-      for (int i = 1; i <= 6; ++i) {
+        // Start at the right
+        expect(controller.offset, equals(0.0));
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
         await tester.pump();
-        expect(controller.offset, equals(0.0), reason: 'Focusing item $i caused a scroll');
-      }
+        expect(leftNode.hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(0.0));
 
-      // Now keep going right, and the scrollable should scroll automatically.
-      for (int i = 7; i <= 10; ++i) {
+        // Enter the list.
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
         await tester.pump();
-        final double expectedOffset = 100.0 * (i - 5);
-        expect(controller.offset, equals(expectedOffset), reason: "Focusing item $i didn't cause a scroll to $expectedOffset");
-      }
+        expect(nodes[0].hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(0.0));
 
-      // Now go one more, and see that the right edge gets focused.
+        // Go right until we hit the right of the visible area.
+        for (int i = 1; i <= 6; ++i) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+          await tester.pump();
+          expect(controller.offset, equals(0.0), reason: 'Focusing item $i caused a scroll');
+        }
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      await tester.pump();
-      expect(rightNode.hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(100.0 * 5));
+        // Now keep going right, and the scrollable should scroll automatically.
+        for (int i = 7; i <= 10; ++i) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+          await tester.pump();
+          final double expectedOffset = 100.0 * (i - 5);
+          expect(
+            controller.offset,
+            equals(expectedOffset),
+            reason: "Focusing item $i didn't cause a scroll to $expectedOffset",
+          );
+        }
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
-      await tester.pump();
-      expect(nodes[10].hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(100.0 * 5));
+        // Now go one more, and see that the right edge gets focused.
 
-      // Now reverse directions and go back to the left.
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+        await tester.pump();
+        expect(rightNode.hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(100.0 * 5));
 
-      // These should not cause a scroll.
-      final double lowestOffset = controller.offset;
-      for (int i = 10; i >= 7; --i) {
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
         await tester.pump();
-        expect(controller.offset, equals(lowestOffset), reason: 'Focusing item $i caused a scroll');
-      }
+        expect(nodes[10].hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(100.0 * 5));
 
-      // These should all cause a scroll.
-      for (int i = 6; i >= 1; --i) {
+        // Now reverse directions and go back to the left.
+
+        // These should not cause a scroll.
+        final double lowestOffset = controller.offset;
+        for (int i = 10; i >= 7; --i) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+          await tester.pump();
+          expect(controller.offset, equals(lowestOffset), reason: 'Focusing item $i caused a scroll');
+        }
+
+        // These should all cause a scroll.
+        for (int i = 6; i >= 1; --i) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+          await tester.pump();
+          final double expectedOffset = 100.0 * (i - 1);
+          expect(controller.offset, equals(expectedOffset), reason: "Focusing item $i didn't cause a scroll");
+        }
+
+        // Back at the left side of the scrollable.
+        expect(nodes[0].hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(0.0));
+
+        // Now we jump to the left edge of the app.
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
         await tester.pump();
-        final double expectedOffset = 100.0 * (i - 1);
-        expect(controller.offset, equals(expectedOffset), reason: "Focusing item $i didn't cause a scroll");
-      }
-
-      // Back at the left side of the scrollable.
-      expect(nodes[0].hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(0.0));
-
-      // Now we jump to the left edge of the app.
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
-      await tester.pump();
-      expect(leftNode.hasPrimaryFocus, isTrue);
-      expect(controller.offset, equals(0.0));
-    }, skip: isBrowser, variant: KeySimulatorTransitModeVariant.all()); // https://github.com/flutter/flutter/issues/35347
+        expect(leftNode.hasPrimaryFocus, isTrue);
+        expect(controller.offset, equals(0.0));
+      },
+      skip: isBrowser,
+      variant: KeySimulatorTransitModeVariant.all(),
+    ); // https://github.com/flutter/flutter/issues/35347
 
     testWidgets('Arrow focus traversal actions can be re-enabled for text fields.', (WidgetTester tester) async {
       final GlobalKey upperLeftKey = GlobalKey(debugLabel: 'upperLeftKey');
@@ -2303,10 +2132,14 @@ void main() {
 
       Widget generateTestWidgets(bool ignoreTextFields) {
         final Map<ShortcutActivator, Intent> shortcuts = <ShortcutActivator, Intent>{
-          const SingleActivator(LogicalKeyboardKey.arrowLeft): DirectionalFocusIntent(TraversalDirection.left, ignoreTextFields: ignoreTextFields),
-          const SingleActivator(LogicalKeyboardKey.arrowRight): DirectionalFocusIntent(TraversalDirection.right, ignoreTextFields: ignoreTextFields),
-          const SingleActivator(LogicalKeyboardKey.arrowDown): DirectionalFocusIntent(TraversalDirection.down, ignoreTextFields: ignoreTextFields),
-          const SingleActivator(LogicalKeyboardKey.arrowUp): DirectionalFocusIntent(TraversalDirection.up, ignoreTextFields: ignoreTextFields),
+          const SingleActivator(LogicalKeyboardKey.arrowLeft):
+              DirectionalFocusIntent(TraversalDirection.left, ignoreTextFields: ignoreTextFields),
+          const SingleActivator(LogicalKeyboardKey.arrowRight):
+              DirectionalFocusIntent(TraversalDirection.right, ignoreTextFields: ignoreTextFields),
+          const SingleActivator(LogicalKeyboardKey.arrowDown):
+              DirectionalFocusIntent(TraversalDirection.down, ignoreTextFields: ignoreTextFields),
+          const SingleActivator(LogicalKeyboardKey.arrowUp):
+              DirectionalFocusIntent(TraversalDirection.up, ignoreTextFields: ignoreTextFields),
         };
 
         return MaterialApp(
@@ -2408,109 +2241,115 @@ void main() {
       expect(focusNodeUpperLeft.hasPrimaryFocus, isTrue);
     }, variant: KeySimulatorTransitModeVariant.all());
 
-    testWidgets('Focus traversal does not break when no focusable is available on a MaterialApp', (WidgetTester tester) async {
-      final List<Object> events = <Object>[];
+    testWidgets(
+      'Focus traversal does not break when no focusable is available on a MaterialApp',
+      (WidgetTester tester) async {
+        final List<Object> events = <Object>[];
 
-      await tester.pumpWidget(MaterialApp(home: Container()));
+        await tester.pumpWidget(MaterialApp(home: Container()));
 
-      RawKeyboard.instance.addListener((RawKeyEvent event) {
-        events.add(event);
-      });
+        RawKeyboard.instance.addListener((RawKeyEvent event) {
+          events.add(event);
+        });
 
-      await tester.idle();
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      await tester.idle();
+        await tester.idle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+        await tester.idle();
 
-      expect(events.length, 2);
-    }, variant: KeySimulatorTransitModeVariant.all());
+        expect(events.length, 2);
+      },
+      variant: KeySimulatorTransitModeVariant.all(),
+    );
 
-    testWidgets('Focus traversal does not throw when no focusable is available in a group', (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: ListTile(title: Text('title')))));
-      final FocusNode? initialFocus = primaryFocus;
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      await tester.pump();
-      expect(primaryFocus, equals(initialFocus));
-    });
+    testWidgets(
+      'Focus traversal does not throw when no focusable is available in a group',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(const MaterialApp(home: Scaffold(body: ListTile(title: Text('title')))));
+        final FocusNode? initialFocus = primaryFocus;
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        expect(primaryFocus, equals(initialFocus));
+      },
+    );
 
-    testWidgets('Focus traversal does not break when no focusable is available on a WidgetsApp', (WidgetTester tester) async {
-      final List<RawKeyEvent> events = <RawKeyEvent>[];
+    testWidgets(
+      'Focus traversal does not break when no focusable is available on a WidgetsApp',
+      (WidgetTester tester) async {
+        final List<RawKeyEvent> events = <RawKeyEvent>[];
 
-      await tester.pumpWidget(
-        WidgetsApp(
+        await tester.pumpWidget(WidgetsApp(
           color: Colors.white,
           onGenerateRoute: (RouteSettings settings) => PageRouteBuilder<void>(
-            settings: settings,
-            pageBuilder: (BuildContext context, Animation<double> animation1, Animation<double> animation2) {
-              return const Placeholder();
-            },
-          ),
-        ),
-      );
+                settings: settings,
+                pageBuilder: (BuildContext context, Animation<double> animation1, Animation<double> animation2) {
+                  return const Placeholder();
+                },
+              ),
+        ));
 
-      RawKeyboard.instance.addListener((RawKeyEvent event) {
-        events.add(event);
-      });
+        RawKeyboard.instance.addListener((RawKeyEvent event) {
+          events.add(event);
+        });
 
-      await tester.idle();
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      await tester.idle();
+        await tester.idle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+        await tester.idle();
 
-      expect(events.length, 2);
-    }, variant: KeySimulatorTransitModeVariant.all());
+        expect(events.length, 2);
+      },
+      variant: KeySimulatorTransitModeVariant.all(),
+    );
 
-    testWidgets('Custom requestFocusCallback gets called on focusInDirection up/down/left/right.', (WidgetTester tester) async {
-      final GlobalKey key1 = GlobalKey(debugLabel: '1');
-      final FocusNode testNode1 = FocusNode(debugLabel: 'Focus Node');
-      bool calledCallback = false;
+    testWidgets(
+      'Custom requestFocusCallback gets called on focusInDirection up/down/left/right.',
+      (WidgetTester tester) async {
+        final GlobalKey key1 = GlobalKey(debugLabel: '1');
+        final FocusNode testNode1 = FocusNode(debugLabel: 'Focus Node');
+        bool calledCallback = false;
 
-      await tester.pumpWidget(
-        FocusTraversalGroup(
+        await tester.pumpWidget(FocusTraversalGroup(
           policy: ReadingOrderTraversalPolicy(
-            requestFocusCallback: (FocusNode node, {double? alignment,
+            requestFocusCallback: (
+              FocusNode node, {
+              double? alignment,
               ScrollPositionAlignmentPolicy? alignmentPolicy,
               Curve? curve,
-              Duration? duration}) {
+              Duration? duration,
+            }) {
               calledCallback = true;
             },
           ),
-          child: FocusScope(
-            debugLabel: 'key1',
-            child: Focus(
-              key: key1,
-              focusNode: testNode1,
-              child: Container(),
-            ),
-          ),
-        ),
-      );
+          child: FocusScope(debugLabel: 'key1', child: Focus(key: key1, focusNode: testNode1, child: Container())),
+        ));
 
-      final Element element = tester.element(find.byKey(key1));
-      final FocusNode scope = FocusScope.of(element);
-      scope.focusInDirection(TraversalDirection.up);
+        final Element element = tester.element(find.byKey(key1));
+        final FocusNode scope = FocusScope.of(element);
+        scope.focusInDirection(TraversalDirection.up);
 
-      await tester.pump();
+        await tester.pump();
 
-      expect(calledCallback, isTrue);
+        expect(calledCallback, isTrue);
 
-      calledCallback = false;
+        calledCallback = false;
 
-      scope.focusInDirection(TraversalDirection.down);
-      await tester.pump();
+        scope.focusInDirection(TraversalDirection.down);
+        await tester.pump();
 
-      expect(calledCallback, isTrue);
+        expect(calledCallback, isTrue);
 
-      calledCallback = false;
+        calledCallback = false;
 
-      scope.focusInDirection(TraversalDirection.left);
-      await tester.pump();
+        scope.focusInDirection(TraversalDirection.left);
+        await tester.pump();
 
-      expect(calledCallback, isTrue);
+        expect(calledCallback, isTrue);
 
-      scope.focusInDirection(TraversalDirection.right);
-      await tester.pump();
+        scope.focusInDirection(TraversalDirection.right);
+        await tester.pump();
 
-      expect(calledCallback, isTrue);
-    });
+        expect(calledCallback, isTrue);
+      },
+    );
   });
 
   group(FocusTraversalGroup, () {
@@ -2522,54 +2361,52 @@ void main() {
       semantics.dispose();
     });
 
-    testWidgets("Descendants of FocusTraversalGroup aren't focusable if descendantsAreFocusable is false.", (WidgetTester tester) async {
-      final GlobalKey key1 = GlobalKey(debugLabel: '1');
-      final GlobalKey key2 = GlobalKey(debugLabel: '2');
-      final FocusNode focusNode = FocusNode();
-      bool? gotFocus;
-      await tester.pumpWidget(
-        FocusTraversalGroup(
+    testWidgets(
+      "Descendants of FocusTraversalGroup aren't focusable if descendantsAreFocusable is false.",
+      (WidgetTester tester) async {
+        final GlobalKey key1 = GlobalKey(debugLabel: '1');
+        final GlobalKey key2 = GlobalKey(debugLabel: '2');
+        final FocusNode focusNode = FocusNode();
+        bool? gotFocus;
+        await tester.pumpWidget(FocusTraversalGroup(
           descendantsAreFocusable: false,
           child: Focus(
             onFocusChange: (bool focused) => gotFocus = focused,
-            child: Focus(
-              key: key1,
-              focusNode: focusNode,
-              child: Container(key: key2),
-            ),
+            child: Focus(key: key1, focusNode: focusNode, child: Container(key: key2)),
           ),
-        ),
-      );
+        ));
 
-      final Element childWidget = tester.element(find.byKey(key1));
-      final FocusNode unfocusableNode = Focus.of(childWidget);
-      final Element containerWidget = tester.element(find.byKey(key2));
-      final FocusNode containerNode = Focus.of(containerWidget);
+        final Element childWidget = tester.element(find.byKey(key1));
+        final FocusNode unfocusableNode = Focus.of(childWidget);
+        final Element containerWidget = tester.element(find.byKey(key2));
+        final FocusNode containerNode = Focus.of(containerWidget);
 
-      unfocusableNode.requestFocus();
-      await tester.pump();
+        unfocusableNode.requestFocus();
+        await tester.pump();
 
-      expect(gotFocus, isNull);
-      expect(containerNode.hasFocus, isFalse);
-      expect(unfocusableNode.hasFocus, isFalse);
+        expect(gotFocus, isNull);
+        expect(containerNode.hasFocus, isFalse);
+        expect(unfocusableNode.hasFocus, isFalse);
 
-      containerNode.requestFocus();
-      await tester.pump();
+        containerNode.requestFocus();
+        await tester.pump();
 
-      expect(gotFocus, isNull);
-      expect(containerNode.hasFocus, isFalse);
-      expect(unfocusableNode.hasFocus, isFalse);
-    });
+        expect(gotFocus, isNull);
+        expect(containerNode.hasFocus, isFalse);
+        expect(unfocusableNode.hasFocus, isFalse);
+      },
+    );
 
-    testWidgets('Group applies correct policy if focus tree is different from widget tree.', (WidgetTester tester) async {
-      final GlobalKey key1 = GlobalKey(debugLabel: '1');
-      final GlobalKey key2 = GlobalKey(debugLabel: '2');
-      final GlobalKey key3 = GlobalKey(debugLabel: '3');
-      final GlobalKey key4 = GlobalKey(debugLabel: '4');
-      final FocusNode focusNode = FocusNode(debugLabel: 'child');
-      final FocusNode parentFocusNode = FocusNode(debugLabel: 'parent');
-      await tester.pumpWidget(
-        Column(
+    testWidgets(
+      'Group applies correct policy if focus tree is different from widget tree.',
+      (WidgetTester tester) async {
+        final GlobalKey key1 = GlobalKey(debugLabel: '1');
+        final GlobalKey key2 = GlobalKey(debugLabel: '2');
+        final GlobalKey key3 = GlobalKey(debugLabel: '3');
+        final GlobalKey key4 = GlobalKey(debugLabel: '4');
+        final FocusNode focusNode = FocusNode(debugLabel: 'child');
+        final FocusNode parentFocusNode = FocusNode(debugLabel: 'parent');
+        await tester.pumpWidget(Column(
           children: <Widget>[
             FocusTraversalGroup(
               policy: WidgetOrderTraversalPolicy(),
@@ -2587,43 +2424,30 @@ void main() {
             FocusTraversalGroup(
               policy: SkipAllButFirstAndLastPolicy(),
               child: FocusScope(
-                child: Focus.withExternalFocusNode(
-                  key: key3,
-                  focusNode: parentFocusNode,
-                  child: Container(key: key4),
-                ),
+                child: Focus.withExternalFocusNode(key: key3, focusNode: parentFocusNode, child: Container(key: key4)),
               ),
             ),
           ],
-        ),
-      );
+        ));
 
-      expect(focusNode.parent, equals(parentFocusNode));
-      expect(FocusTraversalGroup.maybeOf(key2.currentContext!), const TypeMatcher<SkipAllButFirstAndLastPolicy>());
-      expect(FocusTraversalGroup.of(key2.currentContext!), const TypeMatcher<SkipAllButFirstAndLastPolicy>());
-    });
+        expect(focusNode.parent, equals(parentFocusNode));
+        expect(FocusTraversalGroup.maybeOf(key2.currentContext!), const TypeMatcher<SkipAllButFirstAndLastPolicy>());
+        expect(FocusTraversalGroup.of(key2.currentContext!), const TypeMatcher<SkipAllButFirstAndLastPolicy>());
+      },
+    );
 
-    testWidgets("Descendants of FocusTraversalGroup aren't traversable if descendantsAreTraversable is false.", (WidgetTester tester) async {
+    testWidgets("Descendants of FocusTraversalGroup aren't traversable if descendantsAreTraversable is false.", (
+      WidgetTester tester,
+    ) async {
       final FocusNode node1 = FocusNode();
       final FocusNode node2 = FocusNode();
 
-      await tester.pumpWidget(
-        FocusTraversalGroup(
-          descendantsAreTraversable: false,
-          child: Column(
-            children: <Widget>[
-              Focus(
-                focusNode: node1,
-                child: Container(),
-              ),
-              Focus(
-                focusNode: node2,
-                child: Container(),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(FocusTraversalGroup(
+        descendantsAreTraversable: false,
+        child: Column(
+          children: <Widget>[Focus(focusNode: node1, child: Container()), Focus(focusNode: node2, child: Container())],
         ),
-      );
+      ));
 
       node1.requestFocus();
       await tester.pump();
@@ -2638,70 +2462,54 @@ void main() {
       expect(node2.hasPrimaryFocus, isFalse);
     });
 
-    testWidgets("FocusTraversalGroup with skipTraversal for all descendants set to true doesn't cause an exception.", (WidgetTester tester) async {
-      final FocusNode node1 = FocusNode();
-      final FocusNode node2 = FocusNode();
+    testWidgets(
+      "FocusTraversalGroup with skipTraversal for all descendants set to true doesn't cause an exception.",
+      (WidgetTester tester) async {
+        final FocusNode node1 = FocusNode();
+        final FocusNode node2 = FocusNode();
 
-      await tester.pumpWidget(
-        FocusTraversalGroup(
+        await tester.pumpWidget(FocusTraversalGroup(
           child: Column(
             children: <Widget>[
-              Focus(
-                skipTraversal: true,
-                focusNode: node1,
-                child: Container(),
-              ),
-              Focus(
-                skipTraversal: true,
-                focusNode: node2,
-                child: Container(),
-              ),
+              Focus(skipTraversal: true, focusNode: node1, child: Container()),
+              Focus(skipTraversal: true, focusNode: node2, child: Container()),
             ],
           ),
-        ),
-      );
+        ));
 
-      node1.requestFocus();
-      await tester.pump();
+        node1.requestFocus();
+        await tester.pump();
 
-      expect(node1.hasPrimaryFocus, isTrue);
-      expect(node2.hasPrimaryFocus, isFalse);
+        expect(node1.hasPrimaryFocus, isTrue);
+        expect(node2.hasPrimaryFocus, isFalse);
 
-      expect(primaryFocus!.nextFocus(), isFalse);
-      await tester.pump();
+        expect(primaryFocus!.nextFocus(), isFalse);
+        await tester.pump();
 
-      expect(node1.hasPrimaryFocus, isTrue);
-      expect(node2.hasPrimaryFocus, isFalse);
-    });
+        expect(node1.hasPrimaryFocus, isTrue);
+        expect(node2.hasPrimaryFocus, isFalse);
+      },
+    );
 
     testWidgets("Nested FocusTraversalGroup with unfocusable children doesn't assert.", (WidgetTester tester) async {
       final GlobalKey key1 = GlobalKey(debugLabel: '1');
       final GlobalKey key2 = GlobalKey(debugLabel: '2');
       final FocusNode focusNode = FocusNode();
       bool? gotFocus;
-      await tester.pumpWidget(
-        FocusTraversalGroup(
-          child: Column(
-            children: <Widget>[
-              Focus(
-                autofocus: true,
-                child: Container(),
+      await tester.pumpWidget(FocusTraversalGroup(
+        child: Column(
+          children: <Widget>[
+            Focus(autofocus: true, child: Container()),
+            FocusTraversalGroup(
+              descendantsAreFocusable: false,
+              child: Focus(
+                onFocusChange: (bool focused) => gotFocus = focused,
+                child: Focus(key: key1, focusNode: focusNode, child: Container(key: key2)),
               ),
-              FocusTraversalGroup(
-                descendantsAreFocusable: false,
-                child: Focus(
-                  onFocusChange: (bool focused) => gotFocus = focused,
-                  child: Focus(
-                    key: key1,
-                    focusNode: focusNode,
-                    child: Container(key: key2),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
+      ));
 
       final Element childWidget = tester.element(find.byKey(key1));
       final FocusNode unfocusableNode = Focus.of(childWidget);
@@ -2726,25 +2534,17 @@ void main() {
     testWidgets("Empty FocusTraversalGroup doesn't cause an exception.", (WidgetTester tester) async {
       final GlobalKey key = GlobalKey(debugLabel: 'Test Key');
       final FocusNode focusNode = FocusNode(debugLabel: 'Test Node');
-      await tester.pumpWidget(
-        FocusTraversalGroup(
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Column(
-              children: <Widget>[
-                FocusTraversalGroup(
-                  child: Container(key: key),
-                ),
-                Focus(
-                  focusNode: focusNode,
-                  autofocus: true,
-                  child: Container(),
-                ),
-              ],
-            ),
+      await tester.pumpWidget(FocusTraversalGroup(
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Column(
+            children: <Widget>[
+              FocusTraversalGroup(child: Container(key: key)),
+              Focus(focusNode: focusNode, autofocus: true, child: Container()),
+            ],
           ),
         ),
-      );
+      ));
 
       await tester.pump();
       primaryFocus!.nextFocus();
@@ -2757,40 +2557,20 @@ void main() {
     testWidgets('Raw keyboard listener introduces a Semantics node by default', (WidgetTester tester) async {
       final SemanticsTester semantics = SemanticsTester(tester);
       final FocusNode focusNode = FocusNode();
-      await tester.pumpWidget(
-        RawKeyboardListener(
-          focusNode: focusNode,
-          child: Container(),
-        ),
-      );
+      await tester.pumpWidget(RawKeyboardListener(focusNode: focusNode, child: Container()));
       final TestSemantics expectedSemantics = TestSemantics.root(
         children: <TestSemantics>[
-          TestSemantics.rootChild(
-            flags: <SemanticsFlag>[
-              SemanticsFlag.isFocusable,
-            ],
-          ),
+          TestSemantics.rootChild(flags: <SemanticsFlag>[SemanticsFlag.isFocusable]),
         ],
       );
-      expect(semantics, hasSemantics(
-        expectedSemantics,
-        ignoreId: true,
-        ignoreRect: true,
-        ignoreTransform: true,
-      ));
+      expect(semantics, hasSemantics(expectedSemantics, ignoreId: true, ignoreRect: true, ignoreTransform: true));
       semantics.dispose();
     });
 
     testWidgets("Raw keyboard listener doesn't introduce a Semantics node when specified", (WidgetTester tester) async {
       final SemanticsTester semantics = SemanticsTester(tester);
       final FocusNode focusNode = FocusNode();
-      await tester.pumpWidget(
-        RawKeyboardListener(
-          focusNode: focusNode,
-          includeSemantics: false,
-          child: Container(),
-        ),
-      );
+      await tester.pumpWidget(RawKeyboardListener(focusNode: focusNode, includeSemantics: false, child: Container()));
       final TestSemantics expectedSemantics = TestSemantics.root();
       expect(semantics, hasSemantics(expectedSemantics));
       semantics.dispose();
@@ -2804,32 +2584,15 @@ void main() {
       final FocusNode node3 = FocusNode(debugLabel: 'node 3');
       final FocusNode node4 = FocusNode(debugLabel: 'node 4');
 
-      await tester.pumpWidget(
-        FocusTraversalGroup(
-          child: Column(
-            children: <Widget>[
-              Focus(
-                autofocus: true,
-                focusNode: node1,
-                child: Container(),
-              ),
-              ExcludeFocusTraversal(
-                child: Focus(
-                  focusNode: node2,
-                  child: Focus(
-                    focusNode: node3,
-                    child: Container(),
-                  ),
-                ),
-              ),
-              Focus(
-                focusNode: node4,
-                child: Container(),
-              ),
-            ],
-          ),
+      await tester.pumpWidget(FocusTraversalGroup(
+        child: Column(
+          children: <Widget>[
+            Focus(autofocus: true, focusNode: node1, child: Container()),
+            ExcludeFocusTraversal(child: Focus(focusNode: node2, child: Focus(focusNode: node3, child: Container()))),
+            Focus(focusNode: node4, child: Container()),
+          ],
         ),
-      );
+      ));
       await tester.pump();
 
       expect(node1.hasPrimaryFocus, isTrue);
@@ -2867,41 +2630,25 @@ void main() {
     final FocusNode nodeB = FocusNode();
 
     Future<bool> nextFocus() async {
-      final bool result = Actions.invoke(
-        primaryFocus!.context!,
-        const NextFocusIntent(),
-      )! as bool;
+      final bool result = Actions.invoke(primaryFocus!.context!, const NextFocusIntent())! as bool;
       await tester.pump();
       return result;
     }
 
     Future<bool> previousFocus() async {
-      final bool result = Actions.invoke(
-        primaryFocus!.context!,
-        const PreviousFocusIntent(),
-      )! as bool;
+      final bool result = Actions.invoke(primaryFocus!.context!, const PreviousFocusIntent())! as bool;
       await tester.pump();
       return result;
     }
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Column(
-          children: <Widget>[
-            TextButton(
-              focusNode: nodeA,
-              child: const Text('A'),
-              onPressed: () {},
-            ),
-            TextButton(
-              focusNode: nodeB,
-              child: const Text('B'),
-              onPressed: () {},
-            ),
-          ],
-        ),
+    await tester.pumpWidget(MaterialApp(
+      home: Column(
+        children: <Widget>[
+          TextButton(focusNode: nodeA, child: const Text('A'), onPressed: () {}),
+          TextButton(focusNode: nodeB, child: const Text('B'), onPressed: () {}),
+        ],
       ),
-    );
+    ));
 
     nodeA.requestFocus();
     await tester.pump();
@@ -2950,44 +2697,28 @@ void main() {
     final FocusNode nodeB = FocusNode();
 
     Future<bool> nextFocus() async {
-      final bool result = Actions.invoke(
-        primaryFocus!.context!,
-        const NextFocusIntent(),
-      )! as bool;
+      final bool result = Actions.invoke(primaryFocus!.context!, const NextFocusIntent())! as bool;
       await tester.pump();
       return result;
     }
 
     Future<bool> previousFocus() async {
-      final bool result = Actions.invoke(
-        primaryFocus!.context!,
-        const PreviousFocusIntent(),
-      )! as bool;
+      final bool result = Actions.invoke(primaryFocus!.context!, const PreviousFocusIntent())! as bool;
       await tester.pump();
       return result;
     }
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Focus(
-          focusNode: scope,
-          child: Column(
-            children: <Widget>[
-              TextButton(
-                focusNode: nodeA,
-                child: const Text('A'),
-                onPressed: () {},
-              ),
-              TextButton(
-                focusNode: nodeB,
-                child: const Text('B'),
-                onPressed: () {},
-              ),
-            ],
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Focus(
+        focusNode: scope,
+        child: Column(
+          children: <Widget>[
+            TextButton(focusNode: nodeA, child: const Text('A'), onPressed: () {}),
+            TextButton(focusNode: nodeB, child: const Text('B'), onPressed: () {}),
+          ],
         ),
       ),
-    );
+    ));
 
     nodeA.requestFocus();
     await tester.pump();
@@ -3032,21 +2763,12 @@ void main() {
   });
 
   testWidgets('NextFocusAction converts invoke result to KeyEventResult', (WidgetTester tester) async {
-    expect(
-      NextFocusAction().toKeyEventResult(const NextFocusIntent(), true),
-      KeyEventResult.handled,
-    );
-    expect(
-      NextFocusAction().toKeyEventResult(const NextFocusIntent(), false),
-      KeyEventResult.skipRemainingHandlers,
-    );
+    expect(NextFocusAction().toKeyEventResult(const NextFocusIntent(), true), KeyEventResult.handled);
+    expect(NextFocusAction().toKeyEventResult(const NextFocusIntent(), false), KeyEventResult.skipRemainingHandlers);
   });
 
   testWidgets('PreviousFocusAction converts invoke result to KeyEventResult', (WidgetTester tester) async {
-    expect(
-      PreviousFocusAction().toKeyEventResult(const PreviousFocusIntent(), true),
-      KeyEventResult.handled,
-    );
+    expect(PreviousFocusAction().toKeyEventResult(const PreviousFocusIntent(), true), KeyEventResult.handled);
     expect(
       PreviousFocusAction().toKeyEventResult(const PreviousFocusIntent(), false),
       KeyEventResult.skipRemainingHandlers,
@@ -3057,17 +2779,9 @@ void main() {
     bool calledCallback = false;
     final FocusNode nodeA = FocusNode();
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: SingleChildScrollView(
-          child: TextButton(
-            focusNode: nodeA,
-            child: const Text('A'),
-            onPressed: () {},
-          ),
-        )
-      )
-    );
+    await tester.pumpWidget(MaterialApp(
+      home: SingleChildScrollView(child: TextButton(focusNode: nodeA, child: const Text('A'), onPressed: () {})),
+    ));
 
     RequestFocusAction().invoke(RequestFocusIntent(nodeA));
     await tester.pump();
@@ -3077,12 +2791,16 @@ void main() {
     await tester.pump();
     expect(nodeA.hasFocus, isFalse);
 
-    final RequestFocusIntent focusIntentWithCallback = RequestFocusIntent(nodeA, requestFocusCallback: (FocusNode node, {
-      double? alignment,
-      ScrollPositionAlignmentPolicy? alignmentPolicy,
-      Curve? curve,
-      Duration? duration
-    }) => calledCallback = true);
+    final RequestFocusIntent focusIntentWithCallback = RequestFocusIntent(
+      nodeA,
+      requestFocusCallback: (
+        FocusNode node, {
+        double? alignment,
+        ScrollPositionAlignmentPolicy? alignmentPolicy,
+        Curve? curve,
+        Duration? duration,
+      }) => calledCallback = true,
+    );
 
     RequestFocusAction().invoke(focusIntentWithCallback);
     await tester.pump();
@@ -3091,12 +2809,13 @@ void main() {
 }
 
 class TestRoute extends PageRouteBuilder<void> {
-  TestRoute({required Widget child})
-      : super(
-          pageBuilder: (BuildContext _, Animation<double> __, Animation<double> ___) {
-            return child;
-          },
-        );
+  TestRoute({
+    required Widget child,
+  }) : super(
+         pageBuilder: (BuildContext _, Animation<double> __, Animation<double> ___) {
+           return child;
+         },
+       );
 }
 
 /// Used to test removal of nodes while sorting.

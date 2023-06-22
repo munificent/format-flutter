@@ -35,11 +35,7 @@ void main() {
       const BottomAppBarTheme theme = BottomAppBarTheme(color: babThemeColor);
 
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(
-          useMaterial3: false,
-          bottomAppBarTheme: theme,
-          bottomAppBarColor: themeColor
-        ),
+        theme: ThemeData(useMaterial3: false, bottomAppBarTheme: theme, bottomAppBarColor: themeColor),
         home: const Scaffold(body: BottomAppBar(color: babColor)),
       ));
 
@@ -53,11 +49,7 @@ void main() {
       const BottomAppBarTheme theme = BottomAppBarTheme(color: babThemeColor);
 
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(
-          useMaterial3: false,
-          bottomAppBarTheme: theme,
-          bottomAppBarColor: themeColor
-        ),
+        theme: ThemeData(useMaterial3: false, bottomAppBarTheme: theme, bottomAppBarColor: themeColor),
         home: const Scaffold(body: BottomAppBar()),
       ));
 
@@ -78,10 +70,9 @@ void main() {
     });
 
     testWidgets('BAB color - Default', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: const Scaffold(body: BottomAppBar()),
-      ));
+      await tester.pumpWidget(
+        MaterialApp(theme: ThemeData(useMaterial3: false), home: const Scaffold(body: BottomAppBar())),
+      );
 
       final PhysicalShape widget = _getBabRenderObject(tester);
 
@@ -97,17 +88,13 @@ void main() {
 
       await tester.pumpWidget(_withTheme(theme));
 
-      await expectLater(
-        find.byKey(_painterKey),
-        matchesGoldenFile('bottom_app_bar_theme.custom_shape.png'),
-      );
+      await expectLater(find.byKey(_painterKey), matchesGoldenFile('bottom_app_bar_theme.custom_shape.png'));
     });
 
     testWidgets('BAB theme does not affect defaults', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: const Scaffold(body: BottomAppBar()),
-      ));
+      await tester.pumpWidget(
+        MaterialApp(theme: ThemeData(useMaterial3: false), home: const Scaffold(body: BottomAppBar())),
+      );
 
       final PhysicalShape widget = _getBabRenderObject(tester);
 
@@ -119,10 +106,7 @@ void main() {
   group('Material 3 tests', () {
     testWidgets('BAB theme overrides color - M3', (WidgetTester tester) async {
       const Color themedColor = Colors.black87;
-      const BottomAppBarTheme theme = BottomAppBarTheme(
-        color: themedColor,
-        elevation: 0
-      );
+      const BottomAppBarTheme theme = BottomAppBarTheme(color: themedColor, elevation: 0);
       await tester.pumpWidget(_withTheme(theme, true));
 
       final PhysicalShape widget = _getBabRenderObject(tester);
@@ -136,11 +120,7 @@ void main() {
       const BottomAppBarTheme theme = BottomAppBarTheme(color: babThemeColor);
 
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-          bottomAppBarTheme: theme,
-          bottomAppBarColor: themeColor
-        ),
+        theme: ThemeData(useMaterial3: true, bottomAppBarTheme: theme, bottomAppBarColor: themeColor),
         home: const Scaffold(body: BottomAppBar(color: babColor, surfaceTintColor: Colors.transparent)),
       ));
 
@@ -154,11 +134,7 @@ void main() {
       const BottomAppBarTheme theme = BottomAppBarTheme(color: babThemeColor);
 
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-          bottomAppBarTheme: theme,
-          bottomAppBarColor: themeColor
-        ),
+        theme: ThemeData(useMaterial3: true, bottomAppBarTheme: theme, bottomAppBarColor: themeColor),
         home: const Scaffold(body: BottomAppBar(surfaceTintColor: Colors.transparent)),
       ));
 
@@ -168,10 +144,9 @@ void main() {
 
     testWidgets('BAB theme does not affect defaults - M3', (WidgetTester tester) async {
       final ThemeData theme = ThemeData(useMaterial3: true);
-      await tester.pumpWidget(MaterialApp(
-        theme: theme,
-        home: const Scaffold(body: BottomAppBar(surfaceTintColor: Colors.transparent)),
-      ));
+      await tester.pumpWidget(
+        MaterialApp(theme: theme, home: const Scaffold(body: BottomAppBar(surfaceTintColor: Colors.transparent))),
+      );
 
       final PhysicalShape widget = _getBabRenderObject(tester);
 
@@ -183,7 +158,9 @@ void main() {
       const Color color = Colors.blue; // base color that the surface tint will be applied to
       const Color babThemeSurfaceTintColor = Colors.black87;
       const BottomAppBarTheme theme = BottomAppBarTheme(
-          color: color, surfaceTintColor: babThemeSurfaceTintColor, elevation: 0,
+        color: color,
+        surfaceTintColor: babThemeSurfaceTintColor,
+        elevation: 0,
       );
       await tester.pumpWidget(_withTheme(theme, true));
 
@@ -193,9 +170,7 @@ void main() {
 
     testWidgets('BAB theme overrides shadowColor - M3', (WidgetTester tester) async {
       const Color babThemeShadowColor = Colors.yellow;
-      const BottomAppBarTheme theme = BottomAppBarTheme(
-        shadowColor: babThemeShadowColor, elevation: 0
-      );
+      const BottomAppBarTheme theme = BottomAppBarTheme(shadowColor: babThemeShadowColor, elevation: 0);
       await tester.pumpWidget(_withTheme(theme, true));
 
       final PhysicalShape widget = _getBabRenderObject(tester);
@@ -207,18 +182,10 @@ void main() {
       const Color themeSurfaceTintColor = Colors.white10;
       const Color babThemeSurfaceTintColor = Colors.black87;
       const Color babSurfaceTintColor = Colors.pink;
-      const BottomAppBarTheme theme = BottomAppBarTheme(
-        surfaceTintColor: babThemeSurfaceTintColor
-      );
+      const BottomAppBarTheme theme = BottomAppBarTheme(surfaceTintColor: babThemeSurfaceTintColor);
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-          bottomAppBarTheme: theme,
-          bottomAppBarColor: themeSurfaceTintColor
-        ),
-        home: const Scaffold(
-          body: BottomAppBar(color: color, surfaceTintColor: babSurfaceTintColor)
-        ),
+        theme: ThemeData(useMaterial3: true, bottomAppBarTheme: theme, bottomAppBarColor: themeSurfaceTintColor),
+        home: const Scaffold(body: BottomAppBar(color: color, surfaceTintColor: babSurfaceTintColor)),
       ));
 
       final PhysicalShape widget = _getBabRenderObject(tester);
@@ -229,16 +196,10 @@ void main() {
       const Color color = Colors.blue; // base color that the surface tint will be applied to
       const Color themeColor = Colors.white10;
       const Color babThemeColor = Colors.black87;
-      const BottomAppBarTheme theme = BottomAppBarTheme(
-        surfaceTintColor: babThemeColor
-      );
+      const BottomAppBarTheme theme = BottomAppBarTheme(surfaceTintColor: babThemeColor);
 
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-          bottomAppBarTheme: theme,
-          bottomAppBarColor: themeColor
-        ),
+        theme: ThemeData(useMaterial3: true, bottomAppBarTheme: theme, bottomAppBarColor: themeColor),
         home: const Scaffold(body: BottomAppBar(color: color)),
       ));
 
@@ -250,10 +211,7 @@ void main() {
 
 PhysicalShape _getBabRenderObject(WidgetTester tester) {
   return tester.widget<PhysicalShape>(
-      find.descendant(
-        of: find.byType(BottomAppBar),
-        matching: find.byType(PhysicalShape),
-      ),
+    find.descendant(of: find.byType(BottomAppBar), matching: find.byType(PhysicalShape)),
   );
 }
 
@@ -268,13 +226,7 @@ Widget _withTheme(BottomAppBarTheme theme, [bool useMaterial3 = false]) {
       bottomNavigationBar: RepaintBoundary(
         key: _painterKey,
         child: const BottomAppBar(
-          child: Row(
-            children: <Widget>[
-              Icon(Icons.add),
-              Expanded(child: SizedBox()),
-              Icon(Icons.add),
-            ],
-          ),
+          child: Row(children: <Widget>[Icon(Icons.add), Expanded(child: SizedBox()), Icon(Icons.add)]),
         ),
       ),
     ),

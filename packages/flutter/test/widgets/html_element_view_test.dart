@@ -22,20 +22,12 @@ void main() {
       viewsController.registerViewType('webview');
 
       await tester.pumpWidget(
-        const Center(
-          child: SizedBox(
-            width: 200.0,
-            height: 100.0,
-            child: HtmlElementView(viewType: 'webview'),
-          ),
-        ),
+        const Center(child: SizedBox(width: 200.0, height: 100.0, child: HtmlElementView(viewType: 'webview'))),
       );
 
       expect(
         viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
-          FakeHtmlPlatformView(currentViewId + 1, 'webview'),
-        ]),
+        unorderedEquals(<FakeHtmlPlatformView>[FakeHtmlPlatformView(currentViewId + 1, 'webview')]),
       );
     });
 
@@ -49,27 +41,20 @@ void main() {
         hasPlatformViewCreated = true;
       }
 
-      await tester.pumpWidget(
-        Center(
-          child: SizedBox(
-            width: 200.0,
-            height: 100.0,
-            child: HtmlElementView(
-              viewType: 'webview',
-              onPlatformViewCreated: onPlatformViewCreatedCallBack,
-            ),
-          ),
+      await tester.pumpWidget(Center(
+        child: SizedBox(
+          width: 200.0,
+          height: 100.0,
+          child: HtmlElementView(viewType: 'webview', onPlatformViewCreated: onPlatformViewCreatedCallBack),
         ),
-      );
+      ));
 
       // Check the onPlatformViewCreatedCallBack has been called.
       expect(hasPlatformViewCreated, true);
 
       expect(
         viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
-          FakeHtmlPlatformView(currentViewId + 1, 'webview'),
-        ]),
+        unorderedEquals(<FakeHtmlPlatformView>[FakeHtmlPlatformView(currentViewId + 1, 'webview')]),
       );
     });
 
@@ -83,30 +68,17 @@ void main() {
             SizedBox(
               width: 200.0,
               height: 100.0,
-              child: HtmlElementView(
-                viewType: 'webview',
-                creationParams: 'foobar',
-              ),
+              child: HtmlElementView(viewType: 'webview', creationParams: 'foobar'),
             ),
-            SizedBox(
-              width: 200.0,
-              height: 100.0,
-              child: HtmlElementView(
-                viewType: 'webview',
-                creationParams: 123,
-              ),
-            ),
+            SizedBox(width: 200.0, height: 100.0, child: HtmlElementView(viewType: 'webview', creationParams: 123)),
           ],
         ),
       );
 
-      expect(
-        viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
-          FakeHtmlPlatformView(currentViewId + 1, 'webview', 'foobar'),
-          FakeHtmlPlatformView(currentViewId + 2, 'webview', 123),
-        ]),
-      );
+      expect(viewsController.views, unorderedEquals(<FakeHtmlPlatformView>[
+        FakeHtmlPlatformView(currentViewId + 1, 'webview', 'foobar'),
+        FakeHtmlPlatformView(currentViewId + 2, 'webview', 123),
+      ]));
     });
 
     testWidgets('Resize HTML view', (WidgetTester tester) async {
@@ -114,25 +86,13 @@ void main() {
       final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
       viewsController.registerViewType('webview');
       await tester.pumpWidget(
-        const Center(
-          child: SizedBox(
-            width: 200.0,
-            height: 100.0,
-            child: HtmlElementView(viewType: 'webview'),
-          ),
-        ),
+        const Center(child: SizedBox(width: 200.0, height: 100.0, child: HtmlElementView(viewType: 'webview'))),
       );
 
       viewsController.resizeCompleter = Completer<void>();
 
       await tester.pumpWidget(
-        const Center(
-          child: SizedBox(
-            width: 100.0,
-            height: 50.0,
-            child: HtmlElementView(viewType: 'webview'),
-          ),
-        ),
+        const Center(child: SizedBox(width: 100.0, height: 50.0, child: HtmlElementView(viewType: 'webview'))),
       );
 
       viewsController.resizeCompleter.complete();
@@ -140,9 +100,7 @@ void main() {
 
       expect(
         viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
-          FakeHtmlPlatformView(currentViewId + 1, 'webview'),
-        ]),
+        unorderedEquals(<FakeHtmlPlatformView>[FakeHtmlPlatformView(currentViewId + 1, 'webview')]),
       );
     });
 
@@ -152,30 +110,16 @@ void main() {
       viewsController.registerViewType('webview');
       viewsController.registerViewType('maps');
       await tester.pumpWidget(
-        const Center(
-          child: SizedBox(
-            width: 200.0,
-            height: 100.0,
-            child: HtmlElementView(viewType: 'webview'),
-          ),
-        ),
+        const Center(child: SizedBox(width: 200.0, height: 100.0, child: HtmlElementView(viewType: 'webview'))),
       );
 
       await tester.pumpWidget(
-        const Center(
-          child: SizedBox(
-            width: 200.0,
-            height: 100.0,
-            child: HtmlElementView(viewType: 'maps'),
-          ),
-        ),
+        const Center(child: SizedBox(width: 200.0, height: 100.0, child: HtmlElementView(viewType: 'maps'))),
       );
 
       expect(
         viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
-          FakeHtmlPlatformView(currentViewId + 2, 'maps'),
-        ]),
+        unorderedEquals(<FakeHtmlPlatformView>[FakeHtmlPlatformView(currentViewId + 2, 'maps')]),
       );
     });
 
@@ -183,28 +127,12 @@ void main() {
       final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
       viewsController.registerViewType('webview');
       await tester.pumpWidget(
-        const Center(
-          child: SizedBox(
-            width: 200.0,
-            height: 100.0,
-            child: HtmlElementView(viewType: 'webview'),
-          ),
-        ),
+        const Center(child: SizedBox(width: 200.0, height: 100.0, child: HtmlElementView(viewType: 'webview'))),
       );
 
-      await tester.pumpWidget(
-        const Center(
-          child: SizedBox(
-            width: 200.0,
-            height: 100.0,
-          ),
-        ),
-      );
+      await tester.pumpWidget(const Center(child: SizedBox(width: 200.0, height: 100.0)));
 
-      expect(
-        viewsController.views,
-        isEmpty,
-      );
+      expect(viewsController.views, isEmpty);
     });
 
     testWidgets('HTML view survives widget tree change', (WidgetTester tester) async {
@@ -213,30 +141,16 @@ void main() {
       viewsController.registerViewType('webview');
       final GlobalKey key = GlobalKey();
       await tester.pumpWidget(
-        Center(
-          child: SizedBox(
-            width: 200.0,
-            height: 100.0,
-            child: HtmlElementView(viewType: 'webview', key: key),
-          ),
-        ),
+        Center(child: SizedBox(width: 200.0, height: 100.0, child: HtmlElementView(viewType: 'webview', key: key))),
       );
 
       await tester.pumpWidget(
-        Center(
-          child: SizedBox(
-            width: 200.0,
-            height: 100.0,
-            child: HtmlElementView(viewType: 'webview', key: key),
-          ),
-        ),
+        Center(child: SizedBox(width: 200.0, height: 100.0, child: HtmlElementView(viewType: 'webview', key: key))),
       );
 
       expect(
         viewsController.views,
-        unorderedEquals(<FakeHtmlPlatformView>[
-          FakeHtmlPlatformView(currentViewId + 1, 'webview'),
-        ]),
+        unorderedEquals(<FakeHtmlPlatformView>[FakeHtmlPlatformView(currentViewId + 1, 'webview')]),
       );
     });
 
@@ -247,21 +161,13 @@ void main() {
       final FakeHtmlPlatformViewsController viewsController = FakeHtmlPlatformViewsController();
       viewsController.registerViewType('webview');
 
-      await tester.pumpWidget(
-        Semantics(
-          container: true,
-          child: const Align(
-            alignment: Alignment.bottomRight,
-            child: SizedBox(
-              width: 200.0,
-              height: 100.0,
-              child: HtmlElementView(
-                viewType: 'webview',
-              ),
-            ),
-          ),
+      await tester.pumpWidget(Semantics(
+        container: true,
+        child: const Align(
+          alignment: Alignment.bottomRight,
+          child: SizedBox(width: 200.0, height: 100.0, child: HtmlElementView(viewType: 'webview')),
         ),
-      );
+      ));
       // First frame is before the platform view was created so the render object
       // is not yet in the tree.
       await tester.pump();

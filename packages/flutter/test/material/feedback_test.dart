@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../widgets/semantics_tester.dart';
 import 'feedback_tester.dart';
 
-void main () {
+void main() {
   const Duration kWaitDuration = Duration(seconds: 1);
 
   late FeedbackTester feedback;
@@ -27,14 +27,20 @@ void main () {
 
     setUp(() {
       semanticEvents = <Map<String, Object>>[];
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(SystemChannels.accessibility, (dynamic message) async {
-        final Map<dynamic, dynamic> typedMessage = message as Map<dynamic, dynamic>;
-        semanticEvents.add(typedMessage.cast<String, Object>());
-      });
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(
+        SystemChannels.accessibility,
+        (dynamic message) async {
+          final Map<dynamic, dynamic> typedMessage = message as Map<dynamic, dynamic>;
+          semanticEvents.add(typedMessage.cast<String, Object>());
+        },
+      );
     });
 
     tearDown(() {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(SystemChannels.accessibility, null);
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(
+        SystemChannels.accessibility,
+        null,
+      );
     });
 
     testWidgets('forTap', (WidgetTester tester) async {
@@ -162,7 +168,6 @@ void main () {
 
       semanticsTester.dispose();
     });
-
   });
 
   group('Feedback on iOS', () {
@@ -201,11 +206,7 @@ void main () {
 }
 
 class TestWidget extends StatelessWidget {
-  const TestWidget({
-    super.key,
-    this.tapHandler = nullHandler,
-    this.longPressHandler = nullHandler,
-  });
+  const TestWidget({super.key, this.tapHandler = nullHandler, this.longPressHandler = nullHandler});
 
   final HandlerCreator tapHandler;
   final HandlerCreator longPressHandler;
@@ -215,9 +216,9 @@ class TestWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: tapHandler(context),
-        onLongPress: longPressHandler(context),
-        child: const Text('X', textDirection: TextDirection.ltr),
+      onTap: tapHandler(context),
+      onLongPress: longPressHandler(context),
+      child: const Text('X', textDirection: TextDirection.ltr),
     );
   }
 }

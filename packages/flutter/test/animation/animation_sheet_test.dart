@@ -24,26 +24,19 @@ void main() {
     final AnimationSheetBuilder builder = AnimationSheetBuilder(frameSize: _DecuplePixels.size);
 
     await tester.pumpFrames(
-      builder.record(
-        const _DecuplePixels(Duration(seconds: 1)),
-      ),
+      builder.record(const _DecuplePixels(Duration(seconds: 1))),
       const Duration(milliseconds: 200),
       const Duration(milliseconds: 100),
     );
 
     await tester.pumpFrames(
-      builder.record(
-        const _DecuplePixels(Duration(seconds: 1)),
-        recording: false,
-      ),
+      builder.record(const _DecuplePixels(Duration(seconds: 1)), recording: false),
       const Duration(milliseconds: 200),
       const Duration(milliseconds: 100),
     );
 
     await tester.pumpFrames(
-      builder.record(
-        const _DecuplePixels(Duration(seconds: 1)),
-      ),
+      builder.record(const _DecuplePixels(Duration(seconds: 1))),
       const Duration(milliseconds: 400),
       const Duration(milliseconds: 100),
     );
@@ -78,70 +71,47 @@ void main() {
     final AnimationSheetBuilder builder = AnimationSheetBuilder(frameSize: _DecuplePixels.size);
 
     await tester.pumpFrames(
-      builder.record(
-        const _DecuplePixels(Duration(seconds: 1)),
-      ),
+      builder.record(const _DecuplePixels(Duration(seconds: 1))),
       const Duration(milliseconds: 200),
       const Duration(milliseconds: 100),
     );
 
     await tester.pumpFrames(
-      builder.record(
-        const _DecuplePixels(Duration(seconds: 1)),
-        recording: false,
-      ),
+      builder.record(const _DecuplePixels(Duration(seconds: 1)), recording: false),
       const Duration(milliseconds: 200),
       const Duration(milliseconds: 100),
     );
 
     await tester.pumpFrames(
-      builder.record(
-        const _DecuplePixels(Duration(seconds: 1)),
-      ),
+      builder.record(const _DecuplePixels(Duration(seconds: 1))),
       const Duration(milliseconds: 400),
       const Duration(milliseconds: 100),
     );
 
     final ui.Image image = await builder.collate(5);
 
-    await expectLater(
-      image,
-      matchesGoldenFile('test.animation_sheet_builder.collate.png'),
-    );
+    await expectLater(image, matchesGoldenFile('test.animation_sheet_builder.collate.png'));
     image.dispose();
   }, skip: isBrowser); // https://github.com/flutter/flutter/issues/56001
 
   testWidgetsWithLeakTracking('use allLayers to record out-of-subtree contents', (WidgetTester tester) async {
-    final AnimationSheetBuilder builder = AnimationSheetBuilder(
-      frameSize: const Size(8, 2),
-      allLayers: true,
-    );
+    final AnimationSheetBuilder builder = AnimationSheetBuilder(frameSize: const Size(8, 2), allLayers: true);
 
     // The `record` (sized 8, 2) is placed on top of `_DecuplePixels`
     // (sized 12, 3), aligned at its top left.
-    await tester.pumpFrames(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Stack(
-          children: <Widget>[
-            const _DecuplePixels(Duration(seconds: 1)),
-            Align(
-              alignment: Alignment.topLeft,
-              child: builder.record(Container()),
-            ),
-          ],
-        ),
+    await tester.pumpFrames(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Stack(
+        children: <Widget>[
+          const _DecuplePixels(Duration(seconds: 1)),
+          Align(alignment: Alignment.topLeft, child: builder.record(Container())),
+        ],
       ),
-      const Duration(milliseconds: 600),
-      const Duration(milliseconds: 100),
-    );
+    ), const Duration(milliseconds: 600), const Duration(milliseconds: 100));
 
     final ui.Image image = await builder.collate(5);
 
-    await expectLater(
-      image,
-      matchesGoldenFile('test.animation_sheet_builder.out_of_tree.png'),
-    );
+    await expectLater(image, matchesGoldenFile('test.animation_sheet_builder.out_of_tree.png'));
     image.dispose();
   }, skip: isBrowser); // https://github.com/flutter/flutter/issues/56001
 }
@@ -165,10 +135,7 @@ class _DecuplePixelsState extends State<_DecuplePixels> with SingleTickerProvide
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _controller.repeat();
   }
 
@@ -183,9 +150,7 @@ class _DecuplePixelsState extends State<_DecuplePixels> with SingleTickerProvide
     return AnimatedBuilder(
       animation: _controller.view,
       builder: (BuildContext context, Widget? child) {
-        return CustomPaint(
-          painter: _PaintDecuplePixels(_controller.value),
-        );
+        return CustomPaint(painter: _PaintDecuplePixels(_controller.value));
       },
     );
   }
@@ -204,10 +169,8 @@ class _PaintDecuplePixels extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.save();
-    final Rect rect = RectTween(
-      begin: const Rect.fromLTWH(1, 1, 1, 1),
-      end: const Rect.fromLTWH(11, 1, 1, 1),
-    ).transform(value)!;
+    final Rect rect =
+        RectTween(begin: const Rect.fromLTWH(1, 1, 1, 1), end: const Rect.fromLTWH(11, 1, 1, 1)).transform(value)!;
     canvas.drawRect(rect, Paint()..color = Colors.yellow);
     final Paint black = Paint()..color = Colors.black;
     canvas

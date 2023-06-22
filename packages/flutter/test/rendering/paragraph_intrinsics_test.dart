@@ -8,17 +8,10 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('list body and paragraph intrinsics', () {
     final RenderParagraph paragraph = RenderParagraph(
-      const TextSpan(
-        style: TextStyle(height: 1.0),
-        text: 'Hello World',
-      ),
+      const TextSpan(style: TextStyle(height: 1.0), text: 'Hello World'),
       textDirection: TextDirection.ltr,
     );
-    final RenderListBody testBlock = RenderListBody(
-      children: <RenderBox>[
-        paragraph,
-      ],
-    );
+    final RenderListBody testBlock = RenderListBody(children: <RenderBox>[paragraph]);
 
     final double textWidth = paragraph.getMaxIntrinsicWidth(double.infinity);
     final double oneLineTextHeight = paragraph.getMinIntrinsicHeight(double.infinity);

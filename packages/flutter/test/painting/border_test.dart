@@ -40,37 +40,19 @@ void main() {
     const BorderSide yellow2 = BorderSide(color: Color(0xFFFFFF00), width: 2.0);
     const BorderSide yellowNone0 = BorderSide(color: Color(0xFFFFFF00), width: 0.0, style: BorderStyle.none);
     expect(
-      Border.merge(
-        const Border(top: yellow2),
-        const Border(right: magenta3),
-      ),
+      Border.merge(const Border(top: yellow2), const Border(right: magenta3)),
       const Border(top: yellow2, right: magenta3),
     );
     expect(
-      Border.merge(
-        const Border(bottom: magenta3),
-        const Border(bottom: magenta3),
-      ),
+      Border.merge(const Border(bottom: magenta3), const Border(bottom: magenta3)),
       const Border(bottom: magenta6),
     );
     expect(
-      Border.merge(
-        const Border(left: magenta3, right: yellowNone0),
-        const Border(right: yellow2),
-      ),
+      Border.merge(const Border(left: magenta3, right: yellowNone0), const Border(right: yellow2)),
       const Border(left: magenta3, right: yellow2),
     );
-    expect(
-      Border.merge(const Border(), const Border()),
-      const Border(),
-    );
-    expect(
-      () => Border.merge(
-        const Border(left: magenta3),
-        const Border(left: yellow2),
-      ),
-      throwsAssertionError,
-    );
+    expect(Border.merge(const Border(), const Border()), const Border());
+    expect(() => Border.merge(const Border(left: magenta3), const Border(left: yellow2)), throwsAssertionError);
   });
 
   test('Border.add', () {
@@ -78,22 +60,13 @@ void main() {
     const BorderSide magenta6 = BorderSide(color: Color(0xFFFF00FF), width: 6.0);
     const BorderSide yellow2 = BorderSide(color: Color(0xFFFFFF00), width: 2.0);
     const BorderSide yellowNone0 = BorderSide(color: Color(0xFFFFFF00), width: 0.0, style: BorderStyle.none);
-    expect(
-      const Border(top: yellow2) + const Border(right: magenta3),
-      const Border(top: yellow2, right: magenta3),
-    );
-    expect(
-      const Border(bottom: magenta3) + const Border(bottom: magenta3),
-      const Border(bottom: magenta6),
-    );
+    expect(const Border(top: yellow2) + const Border(right: magenta3), const Border(top: yellow2, right: magenta3));
+    expect(const Border(bottom: magenta3) + const Border(bottom: magenta3), const Border(bottom: magenta6));
     expect(
       const Border(left: magenta3, right: yellowNone0) + const Border(right: yellow2),
       const Border(left: magenta3, right: yellow2),
     );
-    expect(
-      const Border() + const Border(),
-      const Border(),
-    );
+    expect(const Border() + const Border(), const Border());
     expect(
       const Border(left: magenta3) + const Border(left: yellow2),
       isNot(isA<Border>()), // see shape_border_test.dart for better tests of this case
@@ -206,14 +179,8 @@ void main() {
       ).isUniform,
       false,
     );
-    expect(
-      const Border().isUniform,
-      true,
-    );
-    expect(
-      const Border().isUniform,
-      true,
-    );
+    expect(const Border().isUniform, true);
+    expect(const Border().isUniform, true);
   });
 
   test('Border.lerp', () {
@@ -288,15 +255,30 @@ void main() {
     expect(outsideBorder.dimensions, EdgeInsets.zero);
 
     const BorderSide insideSide = BorderSide(width: 10);
-    const BorderDirectional insideBorderDirectional = BorderDirectional(top: insideSide, bottom: insideSide, start: insideSide, end: insideSide);
+    const BorderDirectional insideBorderDirectional = BorderDirectional(
+      top: insideSide,
+      bottom: insideSide,
+      start: insideSide,
+      end: insideSide,
+    );
     expect(insideBorderDirectional.dimensions, const EdgeInsetsDirectional.all(10));
 
     const BorderSide centerSide = BorderSide(width: 10, strokeAlign: BorderSide.strokeAlignCenter);
-    const BorderDirectional centerBorderDirectional = BorderDirectional(top: centerSide, bottom: centerSide, start: centerSide, end: centerSide);
+    const BorderDirectional centerBorderDirectional = BorderDirectional(
+      top: centerSide,
+      bottom: centerSide,
+      start: centerSide,
+      end: centerSide,
+    );
     expect(centerBorderDirectional.dimensions, const EdgeInsetsDirectional.all(5));
 
     const BorderSide outsideSide = BorderSide(width: 10, strokeAlign: BorderSide.strokeAlignOutside);
-    const BorderDirectional outsideBorderDirectional = BorderDirectional(top: outsideSide, bottom: outsideSide, start: outsideSide, end: outsideSide);
+    const BorderDirectional outsideBorderDirectional = BorderDirectional(
+      top: outsideSide,
+      bottom: outsideSide,
+      start: outsideSide,
+      end: outsideSide,
+    );
     expect(outsideBorderDirectional.dimensions, EdgeInsetsDirectional.zero);
 
     const Border nonUniformBorder = Border(
@@ -317,17 +299,14 @@ void main() {
   });
 
   testWidgets('Non-Uniform Border variations', (WidgetTester tester) async {
-
-    Widget buildWidget({ required BoxBorder border, BorderRadius? borderRadius, BoxShape boxShape = BoxShape.rectangle}) {
+    Widget buildWidget({
+      required BoxBorder border,
+      BorderRadius? borderRadius,
+      BoxShape boxShape = BoxShape.rectangle,
+    }) {
       return Directionality(
         textDirection: TextDirection.ltr,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            shape: boxShape,
-            border: border,
-            borderRadius: borderRadius,
-          ),
-        ),
+        child: DecoratedBox(decoration: BoxDecoration(shape: boxShape, border: border, borderRadius: borderRadius)),
       );
     }
 
@@ -341,45 +320,43 @@ void main() {
 
     // This falls into non-uniform border because of strokeAlign.
     await tester.pumpWidget(buildWidget(border: allowedBorderVariations));
-    expect(tester.takeException(), isNull,
-        reason: 'Border with non-uniform strokeAlign should not fail.');
+    expect(tester.takeException(), isNull, reason: 'Border with non-uniform strokeAlign should not fail.');
 
-    await tester.pumpWidget(buildWidget(
-      border: allowedBorderVariations,
-      borderRadius: BorderRadius.circular(25),
-    ));
+    await tester.pumpWidget(buildWidget(border: allowedBorderVariations, borderRadius: BorderRadius.circular(25)));
     expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(buildWidget(border: allowedBorderVariations, boxShape: BoxShape.circle));
     expect(tester.takeException(), isNull);
 
-    await tester.pumpWidget(
-      buildWidget(
-        border: const Border(
-          left: BorderSide(width: 5, style: BorderStyle.none),
-          top: BorderSide(width: 10),
-          right: BorderSide(width: 15),
-          bottom: BorderSide(width: 20),
-        ),
-        borderRadius: BorderRadius.circular(25),
+    await tester.pumpWidget(buildWidget(
+      border: const Border(
+        left: BorderSide(width: 5, style: BorderStyle.none),
+        top: BorderSide(width: 10),
+        right: BorderSide(width: 15),
+        bottom: BorderSide(width: 20),
       ),
+      borderRadius: BorderRadius.circular(25),
+    ));
+    expect(
+      tester.takeException(),
+      isAssertionError,
+      reason: 'Border with non-uniform styles should fail with borderRadius.',
     );
-    expect(tester.takeException(), isAssertionError,
-        reason: 'Border with non-uniform styles should fail with borderRadius.');
 
-    await tester.pumpWidget(
-      buildWidget(
-        border: const Border(
-          left: BorderSide(width: 5, color: Color(0xff123456)),
-          top: BorderSide(width: 10),
-          right: BorderSide(width: 15),
-          bottom: BorderSide(width: 20),
-        ),
-        borderRadius: BorderRadius.circular(20),
+    await tester.pumpWidget(buildWidget(
+      border: const Border(
+        left: BorderSide(width: 5, color: Color(0xff123456)),
+        top: BorderSide(width: 10),
+        right: BorderSide(width: 15),
+        bottom: BorderSide(width: 20),
       ),
+      borderRadius: BorderRadius.circular(20),
+    ));
+    expect(
+      tester.takeException(),
+      isAssertionError,
+      reason: 'Border with non-uniform colors should fail with borderRadius.',
     );
-    expect(tester.takeException(), isAssertionError,
-        reason: 'Border with non-uniform colors should fail with borderRadius.');
 
     // Tests for BorderDirectional.
     const BorderDirectional allowedBorderDirectionalVariations = BorderDirectional(
@@ -392,12 +369,10 @@ void main() {
     await tester.pumpWidget(buildWidget(border: allowedBorderDirectionalVariations));
     expect(tester.takeException(), isNull);
 
-    await tester.pumpWidget(buildWidget(
-      border: allowedBorderDirectionalVariations,
-      borderRadius: BorderRadius.circular(25),
-    ));
-    expect(tester.takeException(), isNull,
-        reason:'BorderDirectional should not fail with uniform styles and colors.');
+    await tester.pumpWidget(
+      buildWidget(border: allowedBorderDirectionalVariations, borderRadius: BorderRadius.circular(25)),
+    );
+    expect(tester.takeException(), isNull, reason: 'BorderDirectional should not fail with uniform styles and colors.');
 
     await tester.pumpWidget(buildWidget(border: allowedBorderDirectionalVariations, boxShape: BoxShape.circle));
     expect(tester.takeException(), isNull);

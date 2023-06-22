@@ -28,149 +28,75 @@ const Offset _kRowOffset = Offset(0.0, -50.0);
 void main() {
   group('Countdown timer picker', () {
     testWidgets('initialTimerDuration falls within limit', (WidgetTester tester) async {
-      expect(
-        () {
-          CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-            initialTimerDuration: const Duration(days: 1),
-          );
-        },
-        throwsAssertionError,
-      );
+      expect(() {
+        CupertinoTimerPicker(onTimerDurationChanged: (_) {}, initialTimerDuration: const Duration(days: 1));
+      }, throwsAssertionError);
 
-      expect(
-        () {
-          CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-            initialTimerDuration: const Duration(seconds: -1),
-          );
-        },
-        throwsAssertionError,
-      );
+      expect(() {
+        CupertinoTimerPicker(onTimerDurationChanged: (_) {}, initialTimerDuration: const Duration(seconds: -1));
+      }, throwsAssertionError);
     });
 
     testWidgets('minuteInterval is positive and is a factor of 60', (WidgetTester tester) async {
-      expect(
-        () {
-          CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-            minuteInterval: 0,
-          );
-        },
-        throwsAssertionError,
-      );
-      expect(
-        () {
-          CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-            minuteInterval: -1,
-          );
-        },
-        throwsAssertionError,
-      );
-      expect(
-        () {
-          CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-            minuteInterval: 7,
-          );
-        },
-        throwsAssertionError,
-      );
+      expect(() {
+        CupertinoTimerPicker(onTimerDurationChanged: (_) {}, minuteInterval: 0);
+      }, throwsAssertionError);
+      expect(() {
+        CupertinoTimerPicker(onTimerDurationChanged: (_) {}, minuteInterval: -1);
+      }, throwsAssertionError);
+      expect(() {
+        CupertinoTimerPicker(onTimerDurationChanged: (_) {}, minuteInterval: 7);
+      }, throwsAssertionError);
     });
 
     testWidgets('secondInterval is positive and is a factor of 60', (WidgetTester tester) async {
-      expect(
-        () {
-          CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-            secondInterval: 0,
-          );
-        },
-        throwsAssertionError,
-      );
-      expect(
-        () {
-          CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-            secondInterval: -1,
-          );
-        },
-        throwsAssertionError,
-      );
-      expect(
-        () {
-          CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-            secondInterval: 7,
-          );
-        },
-        throwsAssertionError,
-      );
+      expect(() {
+        CupertinoTimerPicker(onTimerDurationChanged: (_) {}, secondInterval: 0);
+      }, throwsAssertionError);
+      expect(() {
+        CupertinoTimerPicker(onTimerDurationChanged: (_) {}, secondInterval: -1);
+      }, throwsAssertionError);
+      expect(() {
+        CupertinoTimerPicker(onTimerDurationChanged: (_) {}, secondInterval: 7);
+      }, throwsAssertionError);
     });
 
     testWidgets('background color default value', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-          ),
-        ),
-      );
+      await tester.pumpWidget(CupertinoApp(home: CupertinoTimerPicker(onTimerDurationChanged: (_) {})));
 
       final Iterable<CupertinoPicker> pickers = tester.allWidgets.whereType<CupertinoPicker>();
       expect(pickers.any((CupertinoPicker picker) => picker.backgroundColor != null), false);
     });
 
     testWidgets('background color can be null', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-          ),
-        ),
-      );
+      await tester.pumpWidget(CupertinoApp(home: CupertinoTimerPicker(onTimerDurationChanged: (_) {})));
 
       expect(tester.takeException(), isNull);
     });
 
     testWidgets('specified background color is applied', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-            backgroundColor: CupertinoColors.black,
-          ),
-        ),
-      );
+      await tester.pumpWidget(CupertinoApp(
+        home: CupertinoTimerPicker(onTimerDurationChanged: (_) {}, backgroundColor: CupertinoColors.black),
+      ));
 
       final Iterable<CupertinoPicker> pickers = tester.allWidgets.whereType<CupertinoPicker>();
       expect(pickers.any((CupertinoPicker picker) => picker.backgroundColor != CupertinoColors.black), false);
     });
 
     testWidgets('specified item extent value is applied', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoTimerPicker(
-            itemExtent: 42,
-            onTimerDurationChanged: (_) { },
-          ),
-        ),
-      );
+      await tester.pumpWidget(CupertinoApp(home: CupertinoTimerPicker(itemExtent: 42, onTimerDurationChanged: (_) {})));
 
       final Iterable<CupertinoPicker> pickers = tester.allWidgets.whereType<CupertinoPicker>();
       expect(pickers.any((CupertinoPicker picker) => picker.itemExtent != 42), false);
     });
 
     testWidgets('columns are ordered correctly when text direction is ltr', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoTimerPicker(
-            onTimerDurationChanged: (_) { },
-            initialTimerDuration: const Duration(hours: 12, minutes: 30, seconds: 59),
-          ),
+      await tester.pumpWidget(CupertinoApp(
+        home: CupertinoTimerPicker(
+          onTimerDurationChanged: (_) {},
+          initialTimerDuration: const Duration(hours: 12, minutes: 30, seconds: 59),
         ),
-      );
+      ));
 
       Offset lastOffset = tester.getTopLeft(find.text('12'));
 
@@ -190,17 +116,15 @@ void main() {
     });
 
     testWidgets('columns are ordered correctly when text direction is rtl', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Directionality(
-            textDirection: TextDirection.rtl,
-            child: CupertinoTimerPicker(
-              onTimerDurationChanged: (_) { },
-              initialTimerDuration: const Duration(hours: 12, minutes: 30, seconds: 59),
-            ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Directionality(
+          textDirection: TextDirection.rtl,
+          child: CupertinoTimerPicker(
+            onTimerDurationChanged: (_) {},
+            initialTimerDuration: const Duration(hours: 12, minutes: 30, seconds: 59),
           ),
         ),
-      );
+      ));
 
       Offset lastOffset = tester.getTopLeft(find.text('12'));
 
@@ -220,114 +144,83 @@ void main() {
     });
 
     testWidgets('width of picker is consistent', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: SizedBox(
-            height: 400.0,
-            width: 400.0,
-            child: CupertinoTimerPicker(
-              onTimerDurationChanged: (_) { },
-              initialTimerDuration: const Duration(hours: 12, minutes: 30, seconds: 59),
-            ),
+      await tester.pumpWidget(CupertinoApp(
+        home: SizedBox(
+          height: 400.0,
+          width: 400.0,
+          child: CupertinoTimerPicker(
+            onTimerDurationChanged: (_) {},
+            initialTimerDuration: const Duration(hours: 12, minutes: 30, seconds: 59),
           ),
         ),
-      );
+      ));
 
       // Distance between the first column and the last column.
       final double distance = tester.getCenter(find.text('sec.')).dx - tester.getCenter(find.text('12')).dx;
 
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: SizedBox(
-            height: 400.0,
-            width: 800.0,
-            child: CupertinoTimerPicker(
-              onTimerDurationChanged: (_) { },
-              initialTimerDuration: const Duration(hours: 12, minutes: 30, seconds: 59),
-            ),
+      await tester.pumpWidget(CupertinoApp(
+        home: SizedBox(
+          height: 400.0,
+          width: 800.0,
+          child: CupertinoTimerPicker(
+            onTimerDurationChanged: (_) {},
+            initialTimerDuration: const Duration(hours: 12, minutes: 30, seconds: 59),
           ),
         ),
-      );
+      ));
 
       // Distance between the first and the last column should be the same.
-      expect(
-        tester.getCenter(find.text('sec.')).dx - tester.getCenter(find.text('12')).dx,
-        distance,
-      );
+      expect(tester.getCenter(find.text('sec.')).dx - tester.getCenter(find.text('12')).dx, distance);
     });
   });
 
   testWidgets('picker honors minuteInterval and secondInterval', (WidgetTester tester) async {
     late Duration duration;
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: SizedBox(
-          height: 400.0,
-          width: 400.0,
-          child: CupertinoTimerPicker(
-            minuteInterval: 10,
-            secondInterval: 12,
-            initialTimerDuration: const Duration(hours: 10, minutes: 40, seconds: 48),
-            onTimerDurationChanged: (Duration d) {
-              duration = d;
-            },
-          ),
+    await tester.pumpWidget(CupertinoApp(
+      home: SizedBox(
+        height: 400.0,
+        width: 400.0,
+        child: CupertinoTimerPicker(
+          minuteInterval: 10,
+          secondInterval: 12,
+          initialTimerDuration: const Duration(hours: 10, minutes: 40, seconds: 48),
+          onTimerDurationChanged: (Duration d) {
+            duration = d;
+          },
         ),
       ),
-    );
+    ));
     await tester.drag(find.text('40'), _kRowOffset, warnIfMissed: false); // see top of file
     await tester.pump();
     await tester.drag(find.text('48'), -_kRowOffset, warnIfMissed: false); // see top of file
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
-    expect(
-      duration,
-      const Duration(hours: 10, minutes: 50, seconds: 36),
-    );
+    expect(duration, const Duration(hours: 10, minutes: 50, seconds: 36));
   });
 
   group('Date picker', () {
     testWidgets('initial date is set to default value', (WidgetTester tester) async {
-      final CupertinoDatePicker picker = CupertinoDatePicker(
-        onDateTimeChanged: (_) { },
-      );
+      final CupertinoDatePicker picker = CupertinoDatePicker(onDateTimeChanged: (_) {});
       expect(picker.initialDateTime, isNotNull);
     });
 
     testWidgets('background color default value', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoDatePicker(
-            onDateTimeChanged: (_) { },
-          ),
-        ),
-      );
+      await tester.pumpWidget(CupertinoApp(home: CupertinoDatePicker(onDateTimeChanged: (_) {})));
 
       final Iterable<CupertinoPicker> pickers = tester.allWidgets.whereType<CupertinoPicker>();
       expect(pickers.any((CupertinoPicker picker) => picker.backgroundColor != null), false);
     });
 
     testWidgets('background color can be null', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoDatePicker(
-            onDateTimeChanged: (_) { },
-          ),
-        ),
-      );
+      await tester.pumpWidget(CupertinoApp(home: CupertinoDatePicker(onDateTimeChanged: (_) {})));
 
       expect(tester.takeException(), isNull);
     });
 
     testWidgets('specified background color is applied', (WidgetTester tester) async {
       await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoDatePicker(
-            onDateTimeChanged: (_) { },
-            backgroundColor: CupertinoColors.black,
-          ),
-        ),
+        CupertinoApp(home: CupertinoDatePicker(onDateTimeChanged: (_) {}, backgroundColor: CupertinoColors.black)),
       );
 
       final Iterable<CupertinoPicker> pickers = tester.allWidgets.whereType<CupertinoPicker>();
@@ -335,14 +228,7 @@ void main() {
     });
 
     testWidgets('specified item extent value is applied', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoDatePicker(
-            itemExtent: 55,
-            onDateTimeChanged: (_) { },
-          ),
-        ),
-      );
+      await tester.pumpWidget(CupertinoApp(home: CupertinoDatePicker(itemExtent: 55, onDateTimeChanged: (_) {})));
 
       final Iterable<CupertinoPicker> pickers = tester.allWidgets.whereType<CupertinoPicker>();
       expect(pickers.any((CupertinoPicker picker) => picker.itemExtent != 55), false);
@@ -350,21 +236,19 @@ void main() {
 
     testWidgets('initial date honors minuteInterval', (WidgetTester tester) async {
       late DateTime newDateTime;
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              width: 400,
-              height: 400,
-              child: CupertinoDatePicker(
-                onDateTimeChanged: (DateTime d) => newDateTime = d,
-                initialDateTime: DateTime(2018, 10, 10, 10, 3),
-                minuteInterval: 3,
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            width: 400,
+            height: 400,
+            child: CupertinoDatePicker(
+              onDateTimeChanged: (DateTime d) => newDateTime = d,
+              initialDateTime: DateTime(2018, 10, 10, 10, 3),
+              minuteInterval: 3,
             ),
           ),
         ),
-      );
+      ));
 
       // Drag the minute picker to the next slot (03 -> 06).
       // The `initialDateTime` and the `minuteInterval` values are specifically chosen
@@ -377,64 +261,61 @@ void main() {
 
     test('initial date honors minimumDate & maximumDate', () {
       expect(() {
-          CupertinoDatePicker(
-            onDateTimeChanged: (DateTime d) { },
-            initialDateTime: DateTime(2018, 10, 10),
-            minimumDate: DateTime(2018, 10, 11),
-          );
-        },
-        throwsAssertionError,
-      );
+        CupertinoDatePicker(
+          onDateTimeChanged: (DateTime d) {},
+          initialDateTime: DateTime(2018, 10, 10),
+          minimumDate: DateTime(2018, 10, 11),
+        );
+      }, throwsAssertionError);
 
       expect(() {
-          CupertinoDatePicker(
-            onDateTimeChanged: (DateTime d) { },
-            initialDateTime: DateTime(2018, 10, 10),
-            maximumDate: DateTime(2018, 10, 9),
-          );
-        },
-        throwsAssertionError,
-      );
+        CupertinoDatePicker(
+          onDateTimeChanged: (DateTime d) {},
+          initialDateTime: DateTime(2018, 10, 10),
+          maximumDate: DateTime(2018, 10, 9),
+        );
+      }, throwsAssertionError);
     });
 
     testWidgets('changing initialDateTime after first build does not do anything', (WidgetTester tester) async {
       late DateTime selectedDateTime;
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                onDateTimeChanged: (DateTime dateTime) => selectedDateTime = dateTime,
-                initialDateTime: DateTime(2018, 1, 1, 10, 30),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              onDateTimeChanged: (DateTime dateTime) => selectedDateTime = dateTime,
+              initialDateTime: DateTime(2018, 1, 1, 10, 30),
             ),
           ),
         ),
-      );
+      ));
 
-      await tester.drag(find.text('10'), const Offset(0.0, 32.0), touchSlopY: 0, warnIfMissed: false); // see top of file
+      await tester.drag(
+        find.text('10'),
+        const Offset(0.0, 32.0),
+        touchSlopY: 0,
+        warnIfMissed: false,
+      ); // see top of file
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(selectedDateTime, DateTime(2018, 1, 1, 9, 30));
 
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                onDateTimeChanged: (DateTime dateTime) => selectedDateTime = dateTime,
-                // Change the initial date, but it shouldn't affect the present state.
-                initialDateTime: DateTime(2016, 4, 5, 15),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              onDateTimeChanged: (DateTime dateTime) => selectedDateTime = dateTime,
+              // Change the initial date, but it shouldn't affect the present state.
+              initialDateTime: DateTime(2016, 4, 5, 15),
             ),
           ),
         ),
-      );
+      ));
 
       await tester.drag(find.text('9'), const Offset(0.0, 32.0), touchSlopY: 0, warnIfMissed: false); // see top of file
       await tester.pump();
@@ -445,21 +326,19 @@ void main() {
     });
 
     testWidgets('date picker has expected string', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.date,
-                onDateTimeChanged: (_) { },
-                initialDateTime: DateTime(2018, 9, 15),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.date,
+              onDateTimeChanged: (_) {},
+              initialDateTime: DateTime(2018, 9, 15),
             ),
           ),
         ),
-      );
+      ));
 
       expect(find.text('September'), findsOneWidget);
       expect(find.text('9'), findsOneWidget);
@@ -467,20 +346,15 @@ void main() {
     });
 
     testWidgets('datetime picker has expected string', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                onDateTimeChanged: (_) { },
-                initialDateTime: DateTime(2018, 9, 15, 3, 14),
-              ),
-            ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(onDateTimeChanged: (_) {}, initialDateTime: DateTime(2018, 9, 15, 3, 14)),
           ),
         ),
-      );
+      ));
 
       expect(find.text('Sat Sep 15'), findsOneWidget);
       expect(find.text('3'), findsOneWidget);
@@ -489,202 +363,161 @@ void main() {
     });
 
     testWidgets('monthYear picker has expected string', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.monthYear,
-                onDateTimeChanged: (_) { },
-                initialDateTime: DateTime(2018, 9),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.monthYear,
+              onDateTimeChanged: (_) {},
+              initialDateTime: DateTime(2018, 9),
             ),
           ),
         ),
-      );
+      ));
 
       expect(find.text('September'), findsOneWidget);
       expect(find.text('2018'), findsOneWidget);
     });
 
     testWidgets('width of picker in date and time mode is consistent', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Directionality(
-            textDirection: TextDirection.ltr,
+      await tester.pumpWidget(CupertinoApp(
+        home: Directionality(
+          textDirection: TextDirection.ltr,
+          child: CupertinoDatePicker(onDateTimeChanged: (_) {}, initialDateTime: DateTime(2018, 1, 1, 10, 30)),
+        ),
+      ));
+
+      // Distance between the first column and the last column.
+      final double distance = tester.getCenter(find.text('Mon Jan 1 ')).dx - tester.getCenter(find.text('AM')).dx;
+
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 800.0,
+            child: CupertinoDatePicker(onDateTimeChanged: (_) {}, initialDateTime: DateTime(2018, 1, 1, 10, 30)),
+          ),
+        ),
+      ));
+
+      // Distance between the first and the last column should be the same.
+      expect(tester.getCenter(find.text('Mon Jan 1 ')).dx - tester.getCenter(find.text('AM')).dx, distance);
+    });
+
+    testWidgets('width of picker in date mode is consistent', (WidgetTester tester) async {
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
             child: CupertinoDatePicker(
-              onDateTimeChanged: (_) { },
+              mode: CupertinoDatePickerMode.date,
+              onDateTimeChanged: (_) {},
               initialDateTime: DateTime(2018, 1, 1, 10, 30),
             ),
           ),
         ),
-      );
+      ));
 
       // Distance between the first column and the last column.
-      final double distance =
-          tester.getCenter(find.text('Mon Jan 1 ')).dx - tester.getCenter(find.text('AM')).dx;
+      final double distance = tester.getCenter(find.text('January')).dx - tester.getCenter(find.text('2018')).dx;
 
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 800.0,
-              child: CupertinoDatePicker(
-                onDateTimeChanged: (_) { },
-                initialDateTime: DateTime(2018, 1, 1, 10, 30),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 800.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.date,
+              onDateTimeChanged: (_) {},
+              initialDateTime: DateTime(2018, 1, 1, 10, 30),
             ),
           ),
         ),
-      );
+      ));
 
       // Distance between the first and the last column should be the same.
-      expect(
-        tester.getCenter(find.text('Mon Jan 1 ')).dx - tester.getCenter(find.text('AM')).dx,
-        distance,
-      );
-    });
-
-    testWidgets('width of picker in date mode is consistent', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.date,
-                onDateTimeChanged: (_) { },
-                initialDateTime: DateTime(2018, 1, 1, 10, 30),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      // Distance between the first column and the last column.
-      final double distance =
-          tester.getCenter(find.text('January')).dx - tester.getCenter(find.text('2018')).dx;
-
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 800.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.date,
-                onDateTimeChanged: (_) { },
-                initialDateTime: DateTime(2018, 1, 1, 10, 30),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      // Distance between the first and the last column should be the same.
-      expect(
-        tester.getCenter(find.text('January')).dx - tester.getCenter(find.text('2018')).dx,
-        distance,
-      );
+      expect(tester.getCenter(find.text('January')).dx - tester.getCenter(find.text('2018')).dx, distance);
     });
 
     testWidgets('width of picker in time mode is consistent', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.time,
-                onDateTimeChanged: (_) { },
-                initialDateTime: DateTime(2018, 1, 1, 10, 30),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.time,
+              onDateTimeChanged: (_) {},
+              initialDateTime: DateTime(2018, 1, 1, 10, 30),
             ),
           ),
         ),
-      );
+      ));
 
       // Distance between the first column and the last column.
-      final double distance =
-          tester.getCenter(find.text('10')).dx - tester.getCenter(find.text('AM')).dx;
+      final double distance = tester.getCenter(find.text('10')).dx - tester.getCenter(find.text('AM')).dx;
 
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 800.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.time,
-                onDateTimeChanged: (_) { },
-                initialDateTime: DateTime(2018, 1, 1, 10, 30),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 800.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.time,
+              onDateTimeChanged: (_) {},
+              initialDateTime: DateTime(2018, 1, 1, 10, 30),
             ),
           ),
         ),
-      );
+      ));
 
       // Distance between the first and the last column should be the same.
-      expect(
-        tester.getCenter(find.text('10')).dx - tester.getCenter(find.text('AM')).dx,
-        distance,
-      );
+      expect(tester.getCenter(find.text('10')).dx - tester.getCenter(find.text('AM')).dx, distance);
     });
 
     testWidgets('width of picker in monthYear mode is consistent', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.monthYear,
-                onDateTimeChanged: (_) { },
-                initialDateTime: DateTime(2018),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.monthYear,
+              onDateTimeChanged: (_) {},
+              initialDateTime: DateTime(2018),
             ),
           ),
         ),
-      );
+      ));
 
       // Distance between the first column and the last column.
-      final double distance =
-          tester.getCenter(find.text('January')).dx - tester.getCenter(find.text('2018')).dx;
+      final double distance = tester.getCenter(find.text('January')).dx - tester.getCenter(find.text('2018')).dx;
 
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 800.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.monthYear,
-                onDateTimeChanged: (_) { },
-                initialDateTime: DateTime(2018),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 800.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.monthYear,
+              onDateTimeChanged: (_) {},
+              initialDateTime: DateTime(2018),
             ),
           ),
         ),
-      );
+      ));
 
       // Distance between the first and the last column should be the same.
-      expect(
-        tester.getCenter(find.text('January')).dx - tester.getCenter(find.text('2018')).dx,
-        distance,
-      );
+      expect(tester.getCenter(find.text('January')).dx - tester.getCenter(find.text('2018')).dx, distance);
     });
 
     testWidgets('wheel does not bend outwards', (WidgetTester tester) async {
-
       final Widget dateWidget = CupertinoDatePicker(
         mode: CupertinoDatePickerMode.date,
-        onDateTimeChanged: (_) { },
+        onDateTimeChanged: (_) {},
         initialDateTime: DateTime(2018, 1, 1, 10, 30),
       );
 
@@ -700,426 +533,355 @@ void main() {
         'May',
       ];
 
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoPageScaffold(
-            child: Center(
-              child: SizedBox(
-                height: 200.0,
-                width: 300.0,
-                child: dateWidget,
-              ),
-            ),
-          ),
-        ),
-      );
+      await tester.pumpWidget(CupertinoApp(
+        home: CupertinoPageScaffold(child: Center(child: SizedBox(height: 200.0, width: 300.0, child: dateWidget))),
+      ));
 
       // The wheel does not bend outwards.
       for (final String month in visibleMonthsExceptTheCenter) {
-        expect(
-          tester.getBottomLeft(find.text(centerMonth)).dx,
-          lessThan(tester.getBottomLeft(find.text(month)).dx),
-        );
+        expect(tester.getBottomLeft(find.text(centerMonth)).dx, lessThan(tester.getBottomLeft(find.text(month)).dx));
       }
 
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: CupertinoPageScaffold(
-            child: Center(
-              child: SizedBox(
-                height: 200.0,
-                width: 3000.0,
-                child: dateWidget,
-              ),
-            ),
-          ),
-        ),
-      );
+      await tester.pumpWidget(CupertinoApp(
+        home: CupertinoPageScaffold(child: Center(child: SizedBox(height: 200.0, width: 3000.0, child: dateWidget))),
+      ));
 
       // The wheel does not bend outwards at large widths.
       for (final String month in visibleMonthsExceptTheCenter) {
-        expect(
-          tester.getBottomLeft(find.text(centerMonth)).dx,
-          lessThan(tester.getBottomLeft(find.text(month)).dx),
-        );
+        expect(tester.getBottomLeft(find.text(centerMonth)).dx, lessThan(tester.getBottomLeft(find.text(month)).dx));
       }
     });
 
     testWidgets('picker automatically scrolls away from invalid date on month change', (WidgetTester tester) async {
       late DateTime date;
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.date,
-                onDateTimeChanged: (DateTime newDate) {
-                  date = newDate;
-                },
-                initialDateTime: DateTime(2018, 3, 30),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.date,
+              onDateTimeChanged: (DateTime newDate) {
+                date = newDate;
+              },
+              initialDateTime: DateTime(2018, 3, 30),
             ),
           ),
         ),
-      );
+      ));
 
-      await tester.drag(find.text('March'), const Offset(0, 32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
+      await tester.drag(
+        find.text('March'),
+        const Offset(0, 32.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
 
       // Momentarily, the 2018 and the incorrect 30 of February is aligned.
-      expect(
-        tester.getTopLeft(find.text('2018')).dy,
-        tester.getTopLeft(find.text('30')).dy,
-      );
+      expect(tester.getTopLeft(find.text('2018')).dy, tester.getTopLeft(find.text('30')).dy);
       await tester.pump(); // Once to trigger the post frame animate call.
       await tester.pump(); // Once to start the DrivenScrollActivity.
       await tester.pump(const Duration(milliseconds: 500));
 
-      expect(
-        date,
-        DateTime(2018, 2, 28),
-      );
-      expect(
-        tester.getTopLeft(find.text('2018')).dy,
-        tester.getTopLeft(find.text('28')).dy,
-      );
+      expect(date, DateTime(2018, 2, 28));
+      expect(tester.getTopLeft(find.text('2018')).dy, tester.getTopLeft(find.text('28')).dy);
     });
 
-    testWidgets(
-      'date picker automatically scrolls away from invalid date, '
-      "and onDateTimeChanged doesn't report these dates",
-      (WidgetTester tester) async {
-        late DateTime date;
-        // 2016 is a leap year.
-        final DateTime minimum = DateTime(2016, 2, 29);
-        final DateTime maximum = DateTime(2018, 12, 31);
-        await tester.pumpWidget(
-          CupertinoApp(
-            home: Center(
-              child: SizedBox(
-                height: 400.0,
-                width: 400.0,
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.date,
-                  minimumDate: minimum,
-                  maximumDate: maximum,
-                  onDateTimeChanged: (DateTime newDate) {
-                    date = newDate;
-                    // Callback doesn't transiently go into invalid dates.
-                    expect(newDate.isAtSameMomentAs(minimum) || newDate.isAfter(minimum), isTrue);
-                    expect(newDate.isAtSameMomentAs(maximum) || newDate.isBefore(maximum), isTrue);
-                  },
-                  initialDateTime: DateTime(2017, 2, 28),
-                ),
-              ),
+    testWidgets('date picker automatically scrolls away from invalid date, '
+        "and onDateTimeChanged doesn't report these dates", (WidgetTester tester) async {
+      late DateTime date;
+      // 2016 is a leap year.
+      final DateTime minimum = DateTime(2016, 2, 29);
+      final DateTime maximum = DateTime(2018, 12, 31);
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.date,
+              minimumDate: minimum,
+              maximumDate: maximum,
+              onDateTimeChanged: (DateTime newDate) {
+                date = newDate;
+                // Callback doesn't transiently go into invalid dates.
+                expect(newDate.isAtSameMomentAs(minimum) || newDate.isAfter(minimum), isTrue);
+                expect(newDate.isAtSameMomentAs(maximum) || newDate.isBefore(maximum), isTrue);
+              },
+              initialDateTime: DateTime(2017, 2, 28),
             ),
           ),
-        );
+        ),
+      ));
 
-        // 2017 has 28 days in Feb so 29 is greyed out.
-        expect(
-          tester.widget<Text>(find.text('29')).style!.color,
-          isSameColorAs(CupertinoColors.inactiveGray.color),
-        );
+      // 2017 has 28 days in Feb so 29 is greyed out.
+      expect(tester.widget<Text>(find.text('29')).style!.color, isSameColorAs(CupertinoColors.inactiveGray.color));
 
-        await tester.drag(find.text('2017'), const Offset(0.0, 32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
-        await tester.pump();
-        await tester.pumpAndSettle(); // Now the autoscrolling should happen.
+      await tester.drag(
+        find.text('2017'),
+        const Offset(0.0, 32.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
+      await tester.pump();
+      await tester.pumpAndSettle(); // Now the autoscrolling should happen.
 
-        expect(
-          date,
-          DateTime(2016, 2, 29),
-        );
+      expect(date, DateTime(2016, 2, 29));
 
-        // 2016 has 29 days in Feb so 29 is not greyed out.
-        expect(
-          tester.widget<Text>(find.text('29')).style!.color,
-          isNot(isSameColorAs(CupertinoColors.inactiveGray.color)),
-        );
+      // 2016 has 29 days in Feb so 29 is not greyed out.
+      expect(
+        tester.widget<Text>(find.text('29')).style!.color,
+        isNot(isSameColorAs(CupertinoColors.inactiveGray.color)),
+      );
 
-        await tester.drag(find.text('2016'), const Offset(0.0, -32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
-        await tester.pump(); // Once to trigger the post frame animate call.
-        await tester.pumpAndSettle();
+      await tester.drag(
+        find.text('2016'),
+        const Offset(0.0, -32.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
+      await tester.pump(); // Once to trigger the post frame animate call.
+      await tester.pumpAndSettle();
 
-        expect(
-          date,
-          DateTime(2017, 2, 28),
-        );
+      expect(date, DateTime(2017, 2, 28));
 
-        expect(
-          tester.widget<Text>(find.text('29')).style!.color,
-          isSameColorAs(CupertinoColors.inactiveGray.color),
-        );
-      },
-    );
+      expect(tester.widget<Text>(find.text('29')).style!.color, isSameColorAs(CupertinoColors.inactiveGray.color));
+    });
 
-    testWidgets(
-      'dateTime picker automatically scrolls away from invalid date, '
-      "and onDateTimeChanged doesn't report these dates",
-      (WidgetTester tester) async {
-        late DateTime date;
-        final DateTime minimum = DateTime(2019, 11, 11, 3, 30);
-        final DateTime maximum = DateTime(2019, 11, 11, 14, 59, 59);
-        await tester.pumpWidget(
-          CupertinoApp(
-            home: Center(
-              child: SizedBox(
-                height: 400.0,
-                width: 400.0,
-                child: CupertinoDatePicker(
-                  minimumDate: minimum,
-                  maximumDate: maximum,
-                  onDateTimeChanged: (DateTime newDate) {
-                    date = newDate;
-                    // Callback doesn't transiently go into invalid dates.
-                    expect(minimum.isAfter(newDate), isFalse);
-                    expect(maximum.isBefore(newDate), isFalse);
-                  },
-                  initialDateTime: DateTime(2019, 11, 11, 4),
-                ),
-              ),
+    testWidgets('dateTime picker automatically scrolls away from invalid date, '
+        "and onDateTimeChanged doesn't report these dates", (WidgetTester tester) async {
+      late DateTime date;
+      final DateTime minimum = DateTime(2019, 11, 11, 3, 30);
+      final DateTime maximum = DateTime(2019, 11, 11, 14, 59, 59);
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              minimumDate: minimum,
+              maximumDate: maximum,
+              onDateTimeChanged: (DateTime newDate) {
+                date = newDate;
+                // Callback doesn't transiently go into invalid dates.
+                expect(minimum.isAfter(newDate), isFalse);
+                expect(maximum.isBefore(newDate), isFalse);
+              },
+              initialDateTime: DateTime(2019, 11, 11, 4),
             ),
           ),
-        );
+        ),
+      ));
 
-        // 3:00 is valid but 2:00 should be invalid.
-        expect(
-          tester.widget<Text>(find.text('3')).style!.color,
-          isNot(isSameColorAs(CupertinoColors.inactiveGray.color)),
-        );
+      // 3:00 is valid but 2:00 should be invalid.
+      expect(
+        tester.widget<Text>(find.text('3')).style!.color,
+        isNot(isSameColorAs(CupertinoColors.inactiveGray.color)),
+      );
 
-        expect(
-          tester.widget<Text>(find.text('2')).style!.color,
-          isSameColorAs(CupertinoColors.inactiveGray.color),
-        );
+      expect(tester.widget<Text>(find.text('2')).style!.color, isSameColorAs(CupertinoColors.inactiveGray.color));
 
-        // 'PM' is greyed out.
-        expect(
-          tester.widget<Text>(find.text('PM')).style!.color,
-          isSameColorAs(CupertinoColors.inactiveGray.color),
-        );
+      // 'PM' is greyed out.
+      expect(tester.widget<Text>(find.text('PM')).style!.color, isSameColorAs(CupertinoColors.inactiveGray.color));
 
-        await tester.drag(find.text('AM'), const Offset(0.0, -32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
-        await tester.pump();
-        await tester.pumpAndSettle(); // Now the autoscrolling should happen.
+      await tester.drag(
+        find.text('AM'),
+        const Offset(0.0, -32.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
+      await tester.pump();
+      await tester.pumpAndSettle(); // Now the autoscrolling should happen.
 
-        expect(
-          date,
-          DateTime(2019, 11, 11, 14, 59),
-        );
+      expect(date, DateTime(2019, 11, 11, 14, 59));
 
-        // 3'o clock and 'AM' are now greyed out.
-        expect(
-          tester.widget<Text>(find.text('AM')).style!.color,
-          isSameColorAs(CupertinoColors.inactiveGray.color),
-        );
-        expect(
-          tester.widget<Text>(find.text('3')).style!.color,
-          isSameColorAs(CupertinoColors.inactiveGray.color),
-        );
+      // 3'o clock and 'AM' are now greyed out.
+      expect(tester.widget<Text>(find.text('AM')).style!.color, isSameColorAs(CupertinoColors.inactiveGray.color));
+      expect(tester.widget<Text>(find.text('3')).style!.color, isSameColorAs(CupertinoColors.inactiveGray.color));
 
-        await tester.drag(find.text('PM'), const Offset(0.0, 32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
-        await tester.pump(); // Once to trigger the post frame animate call.
-        await tester.pumpAndSettle();
+      await tester.drag(
+        find.text('PM'),
+        const Offset(0.0, 32.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
+      await tester.pump(); // Once to trigger the post frame animate call.
+      await tester.pumpAndSettle();
 
-        // Returns to min date.
-        expect(
-          date,
-          DateTime(2019, 11, 11, 3, 30),
-        );
-      },
-    );
+      // Returns to min date.
+      expect(date, DateTime(2019, 11, 11, 3, 30));
+    });
 
-    testWidgets(
-      'time picker automatically scrolls away from invalid date, '
-      "and onDateTimeChanged doesn't report these dates",
-      (WidgetTester tester) async {
-        late DateTime date;
-        final DateTime minimum = DateTime(2019, 11, 11, 3, 30);
-        final DateTime maximum = DateTime(2019, 11, 11, 14, 59, 59);
-        await tester.pumpWidget(
-          CupertinoApp(
-            home: Center(
-              child: SizedBox(
-                height: 400.0,
-                width: 400.0,
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.time,
-                  minimumDate: minimum,
-                  maximumDate: maximum,
-                  onDateTimeChanged: (DateTime newDate) {
-                    date = newDate;
-                    // Callback doesn't transiently go into invalid dates.
-                    expect(minimum.isAfter(newDate), isFalse);
-                    expect(maximum.isBefore(newDate), isFalse);
-                  },
-                  initialDateTime: DateTime(2019, 11, 11, 4),
-                ),
-              ),
+    testWidgets('time picker automatically scrolls away from invalid date, '
+        "and onDateTimeChanged doesn't report these dates", (WidgetTester tester) async {
+      late DateTime date;
+      final DateTime minimum = DateTime(2019, 11, 11, 3, 30);
+      final DateTime maximum = DateTime(2019, 11, 11, 14, 59, 59);
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.time,
+              minimumDate: minimum,
+              maximumDate: maximum,
+              onDateTimeChanged: (DateTime newDate) {
+                date = newDate;
+                // Callback doesn't transiently go into invalid dates.
+                expect(minimum.isAfter(newDate), isFalse);
+                expect(maximum.isBefore(newDate), isFalse);
+              },
+              initialDateTime: DateTime(2019, 11, 11, 4),
             ),
           ),
-        );
+        ),
+      ));
 
-        // 3:00 is valid but 2:00 should be invalid.
-        expect(
-          tester.widget<Text>(find.text('3')).style!.color,
-          isNot(isSameColorAs(CupertinoColors.inactiveGray.color)),
-        );
+      // 3:00 is valid but 2:00 should be invalid.
+      expect(
+        tester.widget<Text>(find.text('3')).style!.color,
+        isNot(isSameColorAs(CupertinoColors.inactiveGray.color)),
+      );
 
-        expect(
-          tester.widget<Text>(find.text('2')).style!.color,
-          isSameColorAs(CupertinoColors.inactiveGray.color),
-        );
+      expect(tester.widget<Text>(find.text('2')).style!.color, isSameColorAs(CupertinoColors.inactiveGray.color));
 
-        // 'PM' is greyed out.
-        expect(
-          tester.widget<Text>(find.text('PM')).style!.color,
-          isSameColorAs(CupertinoColors.inactiveGray.color),
-        );
+      // 'PM' is greyed out.
+      expect(tester.widget<Text>(find.text('PM')).style!.color, isSameColorAs(CupertinoColors.inactiveGray.color));
 
-        await tester.drag(find.text('AM'), const Offset(0.0, -32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
-        await tester.pump();
-        await tester.pumpAndSettle(); // Now the autoscrolling should happen.
+      await tester.drag(
+        find.text('AM'),
+        const Offset(0.0, -32.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
+      await tester.pump();
+      await tester.pumpAndSettle(); // Now the autoscrolling should happen.
 
-        expect(
-          date,
-          DateTime(2019, 11, 11, 14, 59),
-        );
+      expect(date, DateTime(2019, 11, 11, 14, 59));
 
-        // 3'o clock and 'AM' are now greyed out.
-        expect(
-          tester.widget<Text>(find.text('AM')).style!.color,
-          isSameColorAs(CupertinoColors.inactiveGray.color),
-        );
-        expect(
-          tester.widget<Text>(find.text('3')).style!.color,
-          isSameColorAs(CupertinoColors.inactiveGray.color),
-        );
+      // 3'o clock and 'AM' are now greyed out.
+      expect(tester.widget<Text>(find.text('AM')).style!.color, isSameColorAs(CupertinoColors.inactiveGray.color));
+      expect(tester.widget<Text>(find.text('3')).style!.color, isSameColorAs(CupertinoColors.inactiveGray.color));
 
-        await tester.drag(find.text('PM'), const Offset(0.0, 32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
-        await tester.pump(); // Once to trigger the post frame animate call.
-        await tester.pumpAndSettle();
+      await tester.drag(
+        find.text('PM'),
+        const Offset(0.0, 32.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
+      await tester.pump(); // Once to trigger the post frame animate call.
+      await tester.pumpAndSettle();
 
-        // Returns to min date.
-        expect(
-          date,
-          DateTime(2019, 11, 11, 3, 30),
-        );
-      },
-    );
+      // Returns to min date.
+      expect(date, DateTime(2019, 11, 11, 3, 30));
+    });
 
-    testWidgets(
-      'monthYear picker automatically scrolls away from invalid date, '
-      "and onDateTimeChanged doesn't report these dates",
-      (WidgetTester tester) async {
-        late DateTime date;
-        final DateTime minimum = DateTime(2016, 2);
-        final DateTime maximum = DateTime(2018, 12);
-        await tester.pumpWidget(
-          CupertinoApp(
-            home: Center(
-              child: SizedBox(
-                height: 400.0,
-                width: 400.0,
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.monthYear,
-                  minimumDate: minimum,
-                  maximumDate: maximum,
-                  onDateTimeChanged: (DateTime newDate) {
-                    date = newDate;
-                    // Callback doesn't transiently go into invalid dates.
-                    expect(newDate.isAtSameMomentAs(minimum) || newDate.isAfter(minimum), isTrue);
-                    expect(newDate.isAtSameMomentAs(maximum) || newDate.isBefore(maximum), isTrue);
-                  },
-                  initialDateTime: DateTime(2017, 2),
-                ),
-              ),
+    testWidgets('monthYear picker automatically scrolls away from invalid date, '
+        "and onDateTimeChanged doesn't report these dates", (WidgetTester tester) async {
+      late DateTime date;
+      final DateTime minimum = DateTime(2016, 2);
+      final DateTime maximum = DateTime(2018, 12);
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.monthYear,
+              minimumDate: minimum,
+              maximumDate: maximum,
+              onDateTimeChanged: (DateTime newDate) {
+                date = newDate;
+                // Callback doesn't transiently go into invalid dates.
+                expect(newDate.isAtSameMomentAs(minimum) || newDate.isAfter(minimum), isTrue);
+                expect(newDate.isAtSameMomentAs(maximum) || newDate.isBefore(maximum), isTrue);
+              },
+              initialDateTime: DateTime(2017, 2),
             ),
           ),
-        );
+        ),
+      ));
 
-        await tester.drag(find.text('2017'), const Offset(0.0, 100.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
-        await tester.pump();
-        await tester.pumpAndSettle(); // Now the autoscrolling should happen.
+      await tester.drag(
+        find.text('2017'),
+        const Offset(0.0, 100.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
+      await tester.pump();
+      await tester.pumpAndSettle(); // Now the autoscrolling should happen.
 
-        expect(
-          date,
-          DateTime(2016, 2),
-        );
+      expect(date, DateTime(2016, 2));
 
-        await tester.drag(find.text('2016'), const Offset(0.0, -100.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
-        await tester.pump(); // Once to trigger the post frame animate call.
-        await tester.pumpAndSettle();
+      await tester.drag(
+        find.text('2016'),
+        const Offset(0.0, -100.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
+      await tester.pump(); // Once to trigger the post frame animate call.
+      await tester.pumpAndSettle();
 
-        expect(
-          date,
-          DateTime(2018, 12),
-        );
+      expect(date, DateTime(2018, 12));
 
-        await tester.drag(find.text('2016'), const Offset(0.0, 32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
-        await tester.pump(); // Once to trigger the post frame animate call.
-        await tester.pumpAndSettle();
+      await tester.drag(
+        find.text('2016'),
+        const Offset(0.0, 32.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
+      await tester.pump(); // Once to trigger the post frame animate call.
+      await tester.pumpAndSettle();
 
-        expect(
-          date,
-          DateTime(2017, 12),
-        );
-      },
-    );
+      expect(date, DateTime(2017, 12));
+    });
 
     testWidgets('picker automatically scrolls away from invalid date on day change', (WidgetTester tester) async {
       late DateTime date;
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.date,
-                onDateTimeChanged: (DateTime newDate) {
-                  date = newDate;
-                },
-                initialDateTime: DateTime(2018, 2, 27), // 2018 has 28 days in Feb.
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.date,
+              onDateTimeChanged: (DateTime newDate) {
+                date = newDate;
+              },
+              initialDateTime: DateTime(2018, 2, 27), // 2018 has 28 days in Feb.
             ),
           ),
         ),
-      );
+      ));
 
-      await tester.drag(find.text('27'), const Offset(0.0, -32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
+      await tester.drag(
+        find.text('27'),
+        const Offset(0.0, -32.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
       await tester.pump();
-      expect(
-        date,
-        DateTime(2018, 2, 28),
-      );
+      expect(date, DateTime(2018, 2, 28));
 
-      await tester.drag(find.text('28'), const Offset(0.0, -32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
+      await tester.drag(
+        find.text('28'),
+        const Offset(0.0, -32.0),
+        touchSlopY: 0.0,
+        warnIfMissed: false,
+      ); // see top of file
       await tester.pump(); // Once to trigger the post frame animate call.
 
       // Callback doesn't transiently go into invalid dates.
-      expect(
-        date,
-        DateTime(2018, 2, 28),
-      );
+      expect(date, DateTime(2018, 2, 28));
       // Momentarily, the invalid 29th of Feb is dragged into the middle.
-      expect(
-        tester.getTopLeft(find.text('2018')).dy,
-        tester.getTopLeft(find.text('29')).dy,
-      );
+      expect(tester.getTopLeft(find.text('2018')).dy, tester.getTopLeft(find.text('29')).dy);
 
       await tester.pump(); // Once to start the DrivenScrollActivity.
       await tester.pump(const Duration(milliseconds: 500));
 
-      expect(
-        date,
-        DateTime(2018, 2, 28),
-      );
-      expect(
-        tester.getTopLeft(find.text('2018')).dy,
-        tester.getTopLeft(find.text('28')).dy,
-      );
+      expect(date, DateTime(2018, 2, 28));
+      expect(tester.getTopLeft(find.text('2018')).dy, tester.getTopLeft(find.text('28')).dy);
     });
 
     testWidgets(
@@ -1128,25 +890,30 @@ void main() {
         // Regression test for https://github.com/flutter/flutter/issues/49606.
         late DateTime date;
         final DateTime minDate = DateTime(2020, 1, 1, 12);
-        await tester.pumpWidget(
-          CupertinoApp(
-            home: Center(
-              child: SizedBox(
-                height: 400.0,
-                width: 400.0,
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.date,
-                  minimumDate: minDate,
-                  onDateTimeChanged: (DateTime newDate) { date = newDate; },
-                  initialDateTime: DateTime(2020, 1, 12),
-                ),
+        await tester.pumpWidget(CupertinoApp(
+          home: Center(
+            child: SizedBox(
+              height: 400.0,
+              width: 400.0,
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.date,
+                minimumDate: minDate,
+                onDateTimeChanged: (DateTime newDate) {
+                  date = newDate;
+                },
+                initialDateTime: DateTime(2020, 1, 12),
               ),
             ),
           ),
-        );
+        ));
 
         // Scroll to 2019.
-        await tester.drag(find.text('2020'), const Offset(0.0, 32.0), touchSlopY: 0.0, warnIfMissed: false); // see top of file
+        await tester.drag(
+          find.text('2020'),
+          const Offset(0.0, 32.0),
+          touchSlopY: 0.0,
+          warnIfMissed: false,
+        ); // see top of file
         await tester.pump();
         await tester.pumpAndSettle();
         expect(date.year, minDate.year);
@@ -1155,49 +922,47 @@ void main() {
       },
     );
 
-    testWidgets('date picker does not display previous day of minimumDate if it is set at midnight', (WidgetTester tester) async {
-      // Regression test for https://github.com/flutter/flutter/issues/72932
-      final DateTime minDate = DateTime(2019, 12, 31);
-      await tester.pumpWidget(
-        CupertinoApp(
+    testWidgets(
+      'date picker does not display previous day of minimumDate if it is set at midnight',
+      (WidgetTester tester) async {
+        // Regression test for https://github.com/flutter/flutter/issues/72932
+        final DateTime minDate = DateTime(2019, 12, 31);
+        await tester.pumpWidget(CupertinoApp(
           home: Center(
             child: SizedBox(
               height: 400.0,
               width: 400.0,
               child: CupertinoDatePicker(
                 minimumDate: minDate,
-                onDateTimeChanged: (DateTime newDate) { },
+                onDateTimeChanged: (DateTime newDate) {},
                 initialDateTime: minDate.add(const Duration(days: 1)),
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      expect(find.text('Mon Dec 30'), findsNothing);
-    });
-
+        expect(find.text('Mon Dec 30'), findsNothing);
+      },
+    );
 
     group('Picker handles initial noon/midnight times', () {
       testWidgets('midnight', (WidgetTester tester) async {
         late DateTime date;
-        await tester.pumpWidget(
-          CupertinoApp(
-            home: Center(
-              child: SizedBox(
-                height: 400.0,
-                width: 400.0,
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.time,
-                  onDateTimeChanged: (DateTime newDate) {
-                    date = newDate;
-                  },
-                  initialDateTime: DateTime(2019, 1, 1, 0, 15),
-                ),
+        await tester.pumpWidget(CupertinoApp(
+          home: Center(
+            child: SizedBox(
+              height: 400.0,
+              width: 400.0,
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.time,
+                onDateTimeChanged: (DateTime newDate) {
+                  date = newDate;
+                },
+                initialDateTime: DateTime(2019, 1, 1, 0, 15),
               ),
             ),
           ),
-        );
+        ));
 
         // 0:15 -> 0:16
         await tester.drag(find.text('15'), _kRowOffset, warnIfMissed: false); // see top of file
@@ -1209,23 +974,21 @@ void main() {
 
       testWidgets('noon', (WidgetTester tester) async {
         late DateTime date;
-        await tester.pumpWidget(
-          CupertinoApp(
-            home: Center(
-              child: SizedBox(
-                height: 400.0,
-                width: 400.0,
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.time,
-                  onDateTimeChanged: (DateTime newDate) {
-                    date = newDate;
-                  },
-                  initialDateTime: DateTime(2019, 1, 1, 12, 15),
-                ),
+        await tester.pumpWidget(CupertinoApp(
+          home: Center(
+            child: SizedBox(
+              height: 400.0,
+              width: 400.0,
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.time,
+                onDateTimeChanged: (DateTime newDate) {
+                  date = newDate;
+                },
+                initialDateTime: DateTime(2019, 1, 1, 12, 15),
               ),
             ),
           ),
-        );
+        ));
 
         // 12:15 -> 12:16
         await tester.drag(find.text('15'), _kRowOffset, warnIfMissed: false); // see top of file
@@ -1237,24 +1000,22 @@ void main() {
 
       testWidgets('noon in 24 hour time', (WidgetTester tester) async {
         late DateTime date;
-        await tester.pumpWidget(
-          CupertinoApp(
-            home: Center(
-              child: SizedBox(
-                height: 400.0,
-                width: 400.0,
-                child: CupertinoDatePicker(
-                  use24hFormat: true,
-                  mode: CupertinoDatePickerMode.time,
-                  onDateTimeChanged: (DateTime newDate) {
-                    date = newDate;
-                  },
-                  initialDateTime: DateTime(2019, 1, 1, 12, 25),
-                ),
+        await tester.pumpWidget(CupertinoApp(
+          home: Center(
+            child: SizedBox(
+              height: 400.0,
+              width: 400.0,
+              child: CupertinoDatePicker(
+                use24hFormat: true,
+                mode: CupertinoDatePickerMode.time,
+                onDateTimeChanged: (DateTime newDate) {
+                  date = newDate;
+                },
+                initialDateTime: DateTime(2019, 1, 1, 12, 25),
               ),
             ),
           ),
-        );
+        ));
 
         // 12:25 -> 12:26
         await tester.drag(find.text('25'), _kRowOffset, warnIfMissed: false); // see top of file
@@ -1267,23 +1028,21 @@ void main() {
 
     testWidgets('picker persists am/pm value when scrolling hours', (WidgetTester tester) async {
       late DateTime date;
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.time,
-                onDateTimeChanged: (DateTime newDate) {
-                  date = newDate;
-                },
-                initialDateTime: DateTime(2019, 1, 1, 3),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.time,
+              onDateTimeChanged: (DateTime newDate) {
+                date = newDate;
+              },
+              initialDateTime: DateTime(2019, 1, 1, 3),
             ),
           ),
         ),
-      );
+      ));
 
       // 3:00 -> 15:00
       await tester.drag(find.text('AM'), _kRowOffset, warnIfMissed: false); // see top of file
@@ -1314,10 +1073,11 @@ void main() {
       expect(date, DateTime(2019, 1, 1, 3));
     });
 
-    testWidgets('picker automatically scrolls the am/pm column when the hour column changes enough', (WidgetTester tester) async {
-      late DateTime date;
-      await tester.pumpWidget(
-        CupertinoApp(
+    testWidgets(
+      'picker automatically scrolls the am/pm column when the hour column changes enough',
+      (WidgetTester tester) async {
+        late DateTime date;
+        await tester.pumpWidget(CupertinoApp(
           home: Center(
             child: SizedBox(
               height: 400.0,
@@ -1331,62 +1091,62 @@ void main() {
               ),
             ),
           ),
-        ),
-      );
+        ));
 
-      const Offset deltaOffset = Offset(0.0, -18.0);
+        const Offset deltaOffset = Offset(0.0, -18.0);
 
-      // 11:59 -> 12:59
-      await tester.drag(find.text('11'), _kRowOffset, warnIfMissed: false); // see top of file
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+        // 11:59 -> 12:59
+        await tester.drag(find.text('11'), _kRowOffset, warnIfMissed: false); // see top of file
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
 
-      expect(date, DateTime(2018, 1, 1, 12, 59));
+        expect(date, DateTime(2018, 1, 1, 12, 59));
 
-      // 12:59 -> 11:59
-      await tester.drag(find.text('12'), -_kRowOffset, warnIfMissed: false); // see top of file
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+        // 12:59 -> 11:59
+        await tester.drag(find.text('12'), -_kRowOffset, warnIfMissed: false); // see top of file
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
 
-      expect(date, DateTime(2018, 1, 1, 11, 59));
+        expect(date, DateTime(2018, 1, 1, 11, 59));
 
-      // 11:59 -> 9:59
-      await tester.drag(find.text('11'), -((_kRowOffset - deltaOffset) * 2 + deltaOffset), warnIfMissed: false); // see top of file
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+        // 11:59 -> 9:59
+        await tester.drag(
+          find.text('11'),
+          -((_kRowOffset - deltaOffset) * 2 + deltaOffset),
+          warnIfMissed: false,
+        ); // see top of file
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
 
-      expect(date, DateTime(2018, 1, 1, 9, 59));
+        expect(date, DateTime(2018, 1, 1, 9, 59));
 
-      // 9:59 -> 15:59
-      await tester.drag(find.text('9'), (_kRowOffset - deltaOffset) * 6 + deltaOffset, warnIfMissed: false); // see top of file
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+        // 9:59 -> 15:59
+        await tester.drag(
+          find.text('9'),
+          (_kRowOffset - deltaOffset) * 6 + deltaOffset,
+          warnIfMissed: false,
+        ); // see top of file
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
 
-      expect(date, DateTime(2018, 1, 1, 15, 59));
-    });
+        expect(date, DateTime(2018, 1, 1, 15, 59));
+      },
+    );
 
     testWidgets('date picker given too narrow space horizontally shows message', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              // This is too small to draw the picker out fully.
-              width: 100,
-              child: CupertinoDatePicker(
-                initialDateTime: DateTime(2019, 1, 1, 4),
-                onDateTimeChanged: (_) {},
-              ),
-            ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            // This is too small to draw the picker out fully.
+            width: 100,
+            child: CupertinoDatePicker(initialDateTime: DateTime(2019, 1, 1, 4), onDateTimeChanged: (_) {}),
           ),
         ),
-      );
+      ));
 
       final dynamic exception = tester.takeException();
       expect(exception, isFlutterError);
-      expect(
-        exception.toString(),
-        contains('Insufficient horizontal space to render the CupertinoDatePicker'),
-      );
+      expect(exception.toString(), contains('Insufficient horizontal space to render the CupertinoDatePicker'));
     });
 
     testWidgets('DatePicker golden tests', (WidgetTester tester) async {
@@ -1411,18 +1171,12 @@ void main() {
 
       await tester.pumpWidget(buildApp(CupertinoDatePickerMode.time));
       if (!skipPerspectiveTextGoldens) {
-        await expectLater(
-          find.byType(CupertinoDatePicker),
-          matchesGoldenFile('date_picker_test.time.initial.png'),
-        );
+        await expectLater(find.byType(CupertinoDatePicker), matchesGoldenFile('date_picker_test.time.initial.png'));
       }
 
       await tester.pumpWidget(buildApp(CupertinoDatePickerMode.date));
       if (!skipPerspectiveTextGoldens) {
-        await expectLater(
-          find.byType(CupertinoDatePicker),
-          matchesGoldenFile('date_picker_test.date.initial.png'),
-        );
+        await expectLater(find.byType(CupertinoDatePicker), matchesGoldenFile('date_picker_test.date.initial.png'));
       }
 
       await tester.pumpWidget(buildApp(CupertinoDatePickerMode.monthYear));
@@ -1435,10 +1189,7 @@ void main() {
 
       await tester.pumpWidget(buildApp(CupertinoDatePickerMode.dateAndTime));
       if (!skipPerspectiveTextGoldens) {
-        await expectLater(
-          find.byType(CupertinoDatePicker),
-          matchesGoldenFile('date_picker_test.datetime.initial.png'),
-        );
+        await expectLater(find.byType(CupertinoDatePicker), matchesGoldenFile('date_picker_test.datetime.initial.png'));
       }
 
       // Slightly drag the hour component to make the current hour off-center.
@@ -1446,40 +1197,29 @@ void main() {
       await tester.pump();
 
       if (!skipPerspectiveTextGoldens) {
-        await expectLater(
-          find.byType(CupertinoDatePicker),
-          matchesGoldenFile('date_picker_test.datetime.drag.png'),
-        );
+        await expectLater(find.byType(CupertinoDatePicker), matchesGoldenFile('date_picker_test.datetime.drag.png'));
       }
     });
 
     testWidgets('DatePicker displays the date in correct order', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Center(
-            child: SizedBox(
-              height: 400.0,
-              width: 400.0,
-              child: CupertinoDatePicker(
-                dateOrder: DatePickerDateOrder.ydm,
-                mode: CupertinoDatePickerMode.date,
-                onDateTimeChanged: (DateTime newDate) {},
-                initialDateTime: DateTime(2018, 1, 14, 10, 30),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Center(
+          child: SizedBox(
+            height: 400.0,
+            width: 400.0,
+            child: CupertinoDatePicker(
+              dateOrder: DatePickerDateOrder.ydm,
+              mode: CupertinoDatePickerMode.date,
+              onDateTimeChanged: (DateTime newDate) {},
+              initialDateTime: DateTime(2018, 1, 14, 10, 30),
             ),
           ),
         ),
-      );
+      ));
 
-      expect(
-        tester.getTopLeft(find.text('2018')).dx,
-        lessThan(tester.getTopLeft(find.text('14')).dx),
-      );
+      expect(tester.getTopLeft(find.text('2018')).dx, lessThan(tester.getTopLeft(find.text('14')).dx));
 
-      expect(
-        tester.getTopLeft(find.text('14')).dx,
-        lessThan(tester.getTopLeft(find.text('January')).dx),
-      );
+      expect(tester.getTopLeft(find.text('14')).dx, lessThan(tester.getTopLeft(find.text('January')).dx));
     });
 
     testWidgets('monthYear DatePicker displays the date in correct order', (WidgetTester tester) async {
@@ -1502,48 +1242,31 @@ void main() {
       }
 
       await tester.pumpWidget(buildApp(DatePickerDateOrder.dmy));
-      expect(
-        tester.getTopLeft(find.text('January')).dx,
-        lessThan(tester.getTopLeft(find.text('2018')).dx),
-      );
+      expect(tester.getTopLeft(find.text('January')).dx, lessThan(tester.getTopLeft(find.text('2018')).dx));
 
       await tester.pumpWidget(buildApp(DatePickerDateOrder.mdy));
-      expect(
-        tester.getTopLeft(find.text('January')).dx,
-        lessThan(tester.getTopLeft(find.text('2018')).dx),
-      );
+      expect(tester.getTopLeft(find.text('January')).dx, lessThan(tester.getTopLeft(find.text('2018')).dx));
 
       await tester.pumpWidget(buildApp(DatePickerDateOrder.ydm));
-      expect(
-        tester.getTopLeft(find.text('2018')).dx,
-        lessThan(tester.getTopLeft(find.text('January')).dx),
-      );
+      expect(tester.getTopLeft(find.text('2018')).dx, lessThan(tester.getTopLeft(find.text('January')).dx));
 
       await tester.pumpWidget(buildApp(DatePickerDateOrder.ymd));
-      expect(
-        tester.getTopLeft(find.text('2018')).dx,
-        lessThan(tester.getTopLeft(find.text('January')).dx),
-      );
+      expect(tester.getTopLeft(find.text('2018')).dx, lessThan(tester.getTopLeft(find.text('January')).dx));
     });
 
     testWidgets('DatePicker displays hours and minutes correctly in RTL', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Center(
-              child: SizedBox(
-                width: 500,
-                height: 400,
-                child: CupertinoDatePicker(
-                  initialDateTime: DateTime(2019, 1, 1, 4),
-                  onDateTimeChanged: (_) {},
-                ),
-              ),
+      await tester.pumpWidget(CupertinoApp(
+        home: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Center(
+            child: SizedBox(
+              width: 500,
+              height: 400,
+              child: CupertinoDatePicker(initialDateTime: DateTime(2019, 1, 1, 4), onDateTimeChanged: (_) {}),
             ),
           ),
         ),
-      );
+      ));
 
       final double hourLeft = tester.getTopLeft(find.text('4')).dx;
       final double minuteLeft = tester.getTopLeft(find.text('00')).dx;
@@ -1552,38 +1275,28 @@ void main() {
   });
 
   testWidgets('TimerPicker golden tests', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        // Also check if the picker respects the theme.
-        theme: const CupertinoThemeData(
-          textTheme: CupertinoTextThemeData(
-            pickerTextStyle: TextStyle(
-              color: Color(0xFF663311),
-              fontSize: 21,
-            ),
-          ),
-        ),
-        home: Center(
-          child: SizedBox(
-            width: 320,
-            height: 216,
-            child: RepaintBoundary(
-              child: CupertinoTimerPicker(
-                mode: CupertinoTimerPickerMode.hm,
-                initialTimerDuration: const Duration(hours: 23, minutes: 59),
-                onTimerDurationChanged: (_) {},
-              ),
+    await tester.pumpWidget(CupertinoApp(
+      // Also check if the picker respects the theme.
+      theme: const CupertinoThemeData(
+        textTheme: CupertinoTextThemeData(pickerTextStyle: TextStyle(color: Color(0xFF663311), fontSize: 21)),
+      ),
+      home: Center(
+        child: SizedBox(
+          width: 320,
+          height: 216,
+          child: RepaintBoundary(
+            child: CupertinoTimerPicker(
+              mode: CupertinoTimerPickerMode.hm,
+              initialTimerDuration: const Duration(hours: 23, minutes: 59),
+              onTimerDurationChanged: (_) {},
             ),
           ),
         ),
       ),
-    );
+    ));
 
     if (!skipPerspectiveTextGoldens) {
-      await expectLater(
-        find.byType(CupertinoTimerPicker),
-        matchesGoldenFile('timer_picker_test.datetime.initial.png'),
-      );
+      await expectLater(find.byType(CupertinoTimerPicker), matchesGoldenFile('timer_picker_test.datetime.initial.png'));
     }
 
     // Slightly drag the minute component to make the current minute off-center.
@@ -1591,30 +1304,27 @@ void main() {
     await tester.pump();
 
     if (!skipPerspectiveTextGoldens) {
-      await expectLater(
-        find.byType(CupertinoTimerPicker),
-        matchesGoldenFile('timer_picker_test.datetime.drag.png'),
-      );
+      await expectLater(find.byType(CupertinoTimerPicker), matchesGoldenFile('timer_picker_test.datetime.drag.png'));
     }
   });
 
   testWidgets('TimerPicker only changes hour label after scrolling stops', (WidgetTester tester) async {
     Duration? duration;
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: SizedBox(
-            width: 320,
-            height: 216,
-            child: CupertinoTimerPicker(
-              mode: CupertinoTimerPickerMode.hm,
-              initialTimerDuration: const Duration(hours: 2, minutes: 30),
-              onTimerDurationChanged: (Duration d) { duration = d; },
-            ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: SizedBox(
+          width: 320,
+          height: 216,
+          child: CupertinoTimerPicker(
+            mode: CupertinoTimerPickerMode.hm,
+            initialTimerDuration: const Duration(hours: 2, minutes: 30),
+            onTimerDurationChanged: (Duration d) {
+              duration = d;
+            },
           ),
         ),
       ),
-    );
+    ));
 
     expect(duration, isNull);
     expect(find.text('hour'), findsNothing);
@@ -1636,45 +1346,39 @@ void main() {
   testWidgets('TimerPicker has intrinsic width and height', (WidgetTester tester) async {
     const Key key = Key('key');
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: CupertinoTimerPicker(
-          key: key,
-          mode: CupertinoTimerPickerMode.hm,
-          initialTimerDuration: const Duration(hours: 2, minutes: 30),
-          onTimerDurationChanged: (Duration d) {},
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: CupertinoTimerPicker(
+        key: key,
+        mode: CupertinoTimerPickerMode.hm,
+        initialTimerDuration: const Duration(hours: 2, minutes: 30),
+        onTimerDurationChanged: (Duration d) {},
       ),
-    );
+    ));
 
     expect(tester.getSize(find.descendant(of: find.byKey(key), matching: find.byType(Row))), const Size(320, 216));
 
     // Different modes shouldn't share state.
     await tester.pumpWidget(const Placeholder());
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: CupertinoTimerPicker(
-          key: key,
-          mode: CupertinoTimerPickerMode.ms,
-          initialTimerDuration: const Duration(minutes: 30, seconds: 3),
-          onTimerDurationChanged: (Duration d) {},
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: CupertinoTimerPicker(
+        key: key,
+        mode: CupertinoTimerPickerMode.ms,
+        initialTimerDuration: const Duration(minutes: 30, seconds: 3),
+        onTimerDurationChanged: (Duration d) {},
       ),
-    );
+    ));
 
     expect(tester.getSize(find.descendant(of: find.byKey(key), matching: find.byType(Row))), const Size(320, 216));
 
     // Different modes shouldn't share state.
     await tester.pumpWidget(const Placeholder());
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: CupertinoTimerPicker(
-          key: key,
-          initialTimerDuration: const Duration(hours: 5, minutes: 17, seconds: 19),
-          onTimerDurationChanged: (Duration d) {},
-        ),
+    await tester.pumpWidget(CupertinoApp(
+      home: CupertinoTimerPicker(
+        key: key,
+        initialTimerDuration: const Duration(hours: 5, minutes: 17, seconds: 19),
+        onTimerDurationChanged: (Duration d) {},
       ),
-    );
+    ));
 
     expect(tester.getSize(find.descendant(of: find.byKey(key), matching: find.byType(Row))), const Size(342, 216));
   });
@@ -1685,27 +1389,24 @@ void main() {
     void onSelectedItemChanged(int index) {
       lastSelectedItem = index;
     }
-    await tester.pumpWidget(_buildPicker(
-      controller: FixedExtentScrollController(),
-      onSelectedItemChanged: onSelectedItemChanged,
-    ));
+
+    await tester.pumpWidget(
+      _buildPicker(controller: FixedExtentScrollController(), onSelectedItemChanged: onSelectedItemChanged),
+    );
 
     tester.binding.pipelineOwner.semanticsOwner!.performAction(1, SemanticsAction.increase);
     await tester.pumpAndSettle();
     expect(lastSelectedItem, 1);
 
-    await tester.pumpWidget(_buildPicker(
-      onSelectedItemChanged: onSelectedItemChanged,
-    ));
+    await tester.pumpWidget(_buildPicker(onSelectedItemChanged: onSelectedItemChanged));
 
     tester.binding.pipelineOwner.semanticsOwner!.performAction(1, SemanticsAction.increase);
     await tester.pumpAndSettle();
     expect(lastSelectedItem, 2);
 
-    await tester.pumpWidget(_buildPicker(
-      controller: FixedExtentScrollController(),
-      onSelectedItemChanged: onSelectedItemChanged,
-    ));
+    await tester.pumpWidget(
+      _buildPicker(controller: FixedExtentScrollController(), onSelectedItemChanged: onSelectedItemChanged),
+    );
 
     tester.binding.pipelineOwner.semanticsOwner!.performAction(1, SemanticsAction.increase);
     await tester.pumpAndSettle();
@@ -1719,19 +1420,16 @@ void main() {
     Brightness brightness = Brightness.light;
     late StateSetter setState;
 
-    await tester.pumpWidget(
-      CupertinoApp(
-        theme: const CupertinoThemeData(
-          textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: TextStyle(
-              color: CupertinoDynamicColor.withBrightness(
-                color: Color(0xFFFFFFFF),
-                darkColor: Color(0xFF000000),
-              ),
-            ),
+    await tester.pumpWidget(CupertinoApp(
+      theme: const CupertinoThemeData(
+        textTheme: CupertinoTextThemeData(
+          dateTimePickerTextStyle: TextStyle(
+            color: CupertinoDynamicColor.withBrightness(color: Color(0xFFFFFFFF), darkColor: Color(0xFF000000)),
           ),
         ),
-        home: StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
+      ),
+      home: StatefulBuilder(
+        builder: (BuildContext context, StateSetter stateSetter) {
           setState = stateSetter;
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(platformBrightness: brightness),
@@ -1741,58 +1439,57 @@ void main() {
               onDateTimeChanged: (DateTime date) {},
             ),
           );
-        }),
+        },
       ),
-    );
+    ));
 
-    expect(
-      tester.widget<Text>(find.text('2019')).style!.color,
-      isSameColorAs(const Color(0xFFFFFFFF)),
-    );
+    expect(tester.widget<Text>(find.text('2019')).style!.color, isSameColorAs(const Color(0xFFFFFFFF)));
 
-    setState(() { brightness = Brightness.dark; });
+    setState(() {
+      brightness = Brightness.dark;
+    });
     await tester.pump();
 
-    expect(
-      tester.widget<Text>(find.text('2019')).style!.color,
-      isSameColorAs(const Color(0xFF000000)),
-    );
+    expect(tester.widget<Text>(find.text('2019')).style!.color, isSameColorAs(const Color(0xFF000000)));
   });
 
   testWidgets('picker exports semantics', (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
     debugResetSemanticsIdCounter();
     int? lastSelectedItem;
-    await tester.pumpWidget(_buildPicker(onSelectedItemChanged: (int index) {
-      lastSelectedItem = index;
-    }));
-
-    expect(tester.getSemantics(find.byType(CupertinoPicker)), matchesSemantics(
-      children: <Matcher>[
-        matchesSemantics(
-          hasIncreaseAction: true,
-          increasedValue: '1',
-          value: '0',
-          textDirection: TextDirection.ltr,
-        ),
-      ],
+    await tester.pumpWidget(_buildPicker(
+      onSelectedItemChanged: (int index) {
+        lastSelectedItem = index;
+      },
     ));
+
+    expect(
+      tester.getSemantics(find.byType(CupertinoPicker)),
+      matchesSemantics(
+        children: <Matcher>[
+          matchesSemantics(hasIncreaseAction: true, increasedValue: '1', value: '0', textDirection: TextDirection.ltr),
+        ],
+      ),
+    );
 
     tester.binding.pipelineOwner.semanticsOwner!.performAction(1, SemanticsAction.increase);
     await tester.pumpAndSettle();
 
-    expect(tester.getSemantics(find.byType(CupertinoPicker)), matchesSemantics(
-      children: <Matcher>[
-        matchesSemantics(
-          hasIncreaseAction: true,
-          hasDecreaseAction: true,
-          increasedValue: '2',
-          decreasedValue: '0',
-          value: '1',
-          textDirection: TextDirection.ltr,
-        ),
-      ],
-    ));
+    expect(
+      tester.getSemantics(find.byType(CupertinoPicker)),
+      matchesSemantics(
+        children: <Matcher>[
+          matchesSemantics(
+            hasIncreaseAction: true,
+            hasDecreaseAction: true,
+            increasedValue: '2',
+            decreasedValue: '0',
+            value: '1',
+            textDirection: TextDirection.ltr,
+          ),
+        ],
+      ),
+    );
     expect(lastSelectedItem, 1);
     handle.dispose();
   });
@@ -1803,22 +1500,20 @@ void main() {
     debugResetSemanticsIdCounter();
     final DateTime initialDate = DateTime(2018, 6, 8);
     late DateTime? date;
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: SizedBox(
-            height: 400.0,
-            width: 400.0,
-            child: CupertinoDatePicker(
-              onDateTimeChanged: (DateTime newDate) => date = newDate,
-              initialDateTime: initialDate,
-              maximumDate: initialDate.add(const Duration(days: 2)),
-              minimumDate: initialDate.subtract(const Duration(days: 2)),
-            ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: SizedBox(
+          height: 400.0,
+          width: 400.0,
+          child: CupertinoDatePicker(
+            onDateTimeChanged: (DateTime newDate) => date = newDate,
+            initialDateTime: initialDate,
+            maximumDate: initialDate.add(const Duration(days: 2)),
+            minimumDate: initialDate.subtract(const Duration(days: 2)),
           ),
         ),
       ),
-    );
+    ));
 
     tester.binding.pipelineOwner.semanticsOwner!.performAction(4, SemanticsAction.decrease);
     await tester.pumpAndSettle();
@@ -1887,65 +1582,55 @@ void main() {
     final DateTime minimum = DateTime(2022, 6, 14, 3, 31);
     final DateTime initial = DateTime(2022, 6, 14, 3, 40);
     final DateTime maximum = DateTime(2022, 6, 14, 3, 49);
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: SizedBox(
-            height: 400.0,
-            width: 400.0,
-            child: CupertinoDatePicker(
-              initialDateTime: initial,
-              minimumDate: minimum,
-              maximumDate: maximum,
-              minuteInterval: 5,
-              use24hFormat: true,
-              onDateTimeChanged: (DateTime newDate) {
-                date = newDate;
-              },
-            ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: SizedBox(
+          height: 400.0,
+          width: 400.0,
+          child: CupertinoDatePicker(
+            initialDateTime: initial,
+            minimumDate: minimum,
+            maximumDate: maximum,
+            minuteInterval: 5,
+            use24hFormat: true,
+            onDateTimeChanged: (DateTime newDate) {
+              date = newDate;
+            },
           ),
         ),
       ),
-    );
+    ));
 
     // Drag picker minutes to min date
     await tester.drag(find.text('40'), const Offset(0.0, 32.0), touchSlopY: 0.0, warnIfMissed: false);
     await tester.pumpAndSettle();
 
     // Returns to min date.
-    expect(
-      date,
-      DateTime(2022, 6, 14, 3, 35),
-    );
+    expect(date, DateTime(2022, 6, 14, 3, 35));
 
     // Drag picker minutes to max date
     await tester.drag(find.text('50'), const Offset(0.0, -64.0), touchSlopY: 0.0, warnIfMissed: false);
     await tester.pumpAndSettle();
 
     // Returns to max date.
-    expect(
-      date,
-      DateTime(2022, 6, 14, 3, 45),
-    );
+    expect(date, DateTime(2022, 6, 14, 3, 45));
   });
 
   testWidgets('date picker has expected day of week', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      CupertinoApp(
-        home: Center(
-          child: SizedBox(
-            height: 400.0,
-            width: 400.0,
-            child: CupertinoDatePicker(
-              mode: CupertinoDatePickerMode.date,
-              onDateTimeChanged: (_) { },
-              initialDateTime: DateTime(2018, 9, 15),
-              showDayOfWeek: true,
-            ),
+    await tester.pumpWidget(CupertinoApp(
+      home: Center(
+        child: SizedBox(
+          height: 400.0,
+          width: 400.0,
+          child: CupertinoDatePicker(
+            mode: CupertinoDatePickerMode.date,
+            onDateTimeChanged: (_) {},
+            initialDateTime: DateTime(2018, 9, 15),
+            showDayOfWeek: true,
           ),
         ),
       ),
-    );
+    ));
 
     expect(find.text('September'), findsOneWidget);
     expect(find.textContaining('Sat').last, findsOneWidget);
@@ -1954,10 +1639,7 @@ void main() {
   });
 }
 
-Widget _buildPicker({
-  FixedExtentScrollController? controller,
-  required ValueChanged<int> onSelectedItemChanged,
-}) {
+Widget _buildPicker({FixedExtentScrollController? controller, required ValueChanged<int> onSelectedItemChanged}) {
   return Directionality(
     textDirection: TextDirection.ltr,
     child: CupertinoPicker(
@@ -1965,13 +1647,7 @@ Widget _buildPicker({
       itemExtent: 100.0,
       onSelectedItemChanged: onSelectedItemChanged,
       children: List<Widget>.generate(100, (int index) {
-        return Center(
-          child: SizedBox(
-            width: 400.0,
-            height: 100.0,
-            child: Text(index.toString()),
-          ),
-        );
+        return Center(child: SizedBox(width: 400.0, height: 100.0, child: Text(index.toString())));
       }),
     ),
   );

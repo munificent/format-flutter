@@ -22,12 +22,7 @@ void main() {
       foregroundDecoration: const BoxDecoration(color: Color(0x7F0000FF)),
       width: 53.0,
       height: 76.0,
-      constraints: const BoxConstraints(
-        minWidth: 50.0,
-        maxWidth: 55.0,
-        minHeight: 78.0,
-        maxHeight: 82.0,
-      ),
+      constraints: const BoxConstraints(minWidth: 50.0, maxWidth: 55.0, minHeight: 78.0, maxHeight: 82.0),
       margin: const EdgeInsets.all(5.0),
       child: const SizedBox(
         width: 25.0,
@@ -40,27 +35,23 @@ void main() {
     );
 
     testWidgets('paints as expected', (WidgetTester tester) async {
-      await tester.pumpWidget(Align(
-        alignment: Alignment.topLeft,
-        child: container,
-      ));
+      await tester.pumpWidget(Align(alignment: Alignment.topLeft, child: container));
 
       final RenderBox box = tester.renderObject(find.byType(Container));
       expect(box, isNotNull);
 
-      expect(box, paints
-        ..rect(rect: const Rect.fromLTWH(5.0, 5.0, 53.0, 78.0), color: const Color(0xFF00FF00))
-        ..rect(rect: const Rect.fromLTWH(26.0, 43.0, 25.0, 33.0), color: const Color(0xFFFFFF00))
-        ..rect(rect: const Rect.fromLTWH(5.0, 5.0, 53.0, 78.0), color: const Color(0x7F0000FF)),
+      expect(
+        box,
+        paints
+          ..rect(rect: const Rect.fromLTWH(5.0, 5.0, 53.0, 78.0), color: const Color(0xFF00FF00))
+          ..rect(rect: const Rect.fromLTWH(26.0, 43.0, 25.0, 33.0), color: const Color(0xFFFFFF00))
+          ..rect(rect: const Rect.fromLTWH(5.0, 5.0, 53.0, 78.0), color: const Color(0x7F0000FF)),
       );
     });
 
     group('diagnostics', () {
       testWidgets('has reasonable default diagnostics', (WidgetTester tester) async {
-        await tester.pumpWidget(Align(
-          alignment: Alignment.topLeft,
-          child: container,
-        ));
+        await tester.pumpWidget(Align(alignment: Alignment.topLeft, child: container));
 
         final RenderBox box = tester.renderObject(find.byType(Container));
 
@@ -69,10 +60,7 @@ void main() {
       });
 
       testWidgets('has expected info diagnostics', (WidgetTester tester) async {
-        await tester.pumpWidget(Align(
-          alignment: Alignment.topLeft,
-          child: container,
-        ));
+        await tester.pumpWidget(Align(alignment: Alignment.topLeft, child: container));
 
         final RenderBox box = tester.renderObject(find.byType(Container));
 
@@ -141,10 +129,7 @@ void main() {
       });
 
       testWidgets('has expected debug diagnostics', (WidgetTester tester) async {
-        await tester.pumpWidget(Align(
-          alignment: Alignment.topLeft,
-          child: container,
-        ));
+        await tester.pumpWidget(Align(alignment: Alignment.topLeft, child: container));
 
         final RenderBox box = tester.renderObject(find.byType(Container));
 
@@ -243,10 +228,7 @@ void main() {
       });
 
       testWidgets('has expected fine diagnostics', (WidgetTester tester) async {
-        await tester.pumpWidget(Align(
-          alignment: Alignment.topLeft,
-          child: container,
-        ));
+        await tester.pumpWidget(Align(alignment: Alignment.topLeft, child: container));
 
         final RenderBox box = tester.renderObject(find.byType(Container));
 
@@ -373,10 +355,7 @@ void main() {
       });
 
       testWidgets('has expected hidden diagnostics', (WidgetTester tester) async {
-        await tester.pumpWidget(Align(
-          alignment: Alignment.topLeft,
-          child: container,
-        ));
+        await tester.pumpWidget(Align(alignment: Alignment.topLeft, child: container));
 
         final RenderBox box = tester.renderObject(find.byType(Container));
 
@@ -527,10 +506,7 @@ void main() {
       });
 
       testWidgets('painting error has expected diagnostics', (WidgetTester tester) async {
-        await tester.pumpWidget(Align(
-          alignment: Alignment.topLeft,
-          child: container,
-        ));
+        await tester.pumpWidget(Align(alignment: Alignment.topLeft, child: container));
 
         final RenderBox decoratedBox = tester.renderObject(find.byType(DecoratedBox).last);
         final PaintingContext context = _MockPaintingContext();
@@ -559,48 +535,37 @@ void main() {
 
   testWidgets('Can be placed in an infinite box', (WidgetTester tester) async {
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView(children: <Widget>[Container()]),
-      ),
+      Directionality(textDirection: TextDirection.ltr, child: ListView(children: <Widget>[Container()])),
     );
   });
 
   testWidgets('Container transformAlignment', (WidgetTester tester) async {
     final Key key = UniqueKey();
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: 100.0,
-              left: 100.0,
-              child: Container(
-                width: 100.0,
-                height: 100.0,
-                color: const Color(0xFF0000FF),
-              ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            top: 100.0,
+            left: 100.0,
+            child: Container(width: 100.0, height: 100.0, color: const Color(0xFF0000FF)),
+          ),
+          Positioned(
+            top: 100.0,
+            left: 100.0,
+            child: Container(
+              width: 100.0,
+              height: 100.0,
+              key: key,
+              transform: Matrix4.diagonal3Values(0.5, 0.5, 1.0),
+              transformAlignment: Alignment.centerRight,
+              child: Container(color: const Color(0xFF00FFFF)),
             ),
-            Positioned(
-              top: 100.0,
-              left: 100.0,
-              child: Container(
-                width: 100.0,
-                height: 100.0,
-                key: key,
-                transform: Matrix4.diagonal3Values(0.5, 0.5, 1.0),
-                transformAlignment: Alignment.centerRight,
-                child: Container(
-                  color: const Color(0xFF00FFFF),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ));
 
     final Finder finder = find.byKey(key);
 
@@ -614,61 +579,50 @@ void main() {
   });
 
   testWidgets('giving clipBehaviour Clip.None, will not add a ClipPath to the tree', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Container(
-        decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(1)),
-      ),
+    await tester.pumpWidget(Container(
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(1))),
       child: const SizedBox(),
     ));
 
-    expect(
-      find.byType(ClipPath),
-      findsNothing,
-    );
+    expect(find.byType(ClipPath), findsNothing);
   });
 
   testWidgets('giving clipBehaviour not a Clip.None, will add a ClipPath to the tree', (WidgetTester tester) async {
     final Container container = Container(
       clipBehavior: Clip.hardEdge,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(1)),
-      ),
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(1))),
       child: const SizedBox(),
     );
 
     await tester.pumpWidget(container);
 
-    expect(
-      find.byType(ClipPath),
-      findsOneWidget,
-    );
+    expect(find.byType(ClipPath), findsOneWidget);
   });
 
   testWidgets('getClipPath() works for lots of kinds of decorations', (WidgetTester tester) async {
     Future<void> test(Decoration decoration) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.rtl,
-          child: Center(
-            child: SizedBox(
-              width: 100.0,
-              height: 100.0,
-              child: RepaintBoundary(
-                child: Container(
-                  clipBehavior: Clip.hardEdge,
-                  decoration: decoration,
-                  child: ColoredBox(
-                    color: Colors.yellow.withOpacity(0.5),
-                  ),
-                ),
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.rtl,
+        child: Center(
+          child: SizedBox(
+            width: 100.0,
+            height: 100.0,
+            child: RepaintBoundary(
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: decoration,
+                child: ColoredBox(color: Colors.yellow.withOpacity(0.5)),
               ),
             ),
           ),
         ),
+      ));
+      await expectLater(
+        find.byType(Container),
+        matchesGoldenFile('container_test.getClipPath.${decoration.runtimeType}.png'),
       );
-      await expectLater(find.byType(Container), matchesGoldenFile('container_test.getClipPath.${decoration.runtimeType}.png'));
     }
+
     await test(const BoxDecoration());
     await test(const UnderlineTabIndicator());
     await test(const ShapeDecoration(shape: StadiumBorder()));
@@ -678,10 +632,10 @@ void main() {
   testWidgets('Container is hittable only when having decorations', (WidgetTester tester) async {
     bool tapped = false;
     await tester.pumpWidget(GestureDetector(
-      onTap: () { tapped = true; },
-      child: Container(
-        decoration: const BoxDecoration(color: Colors.black),
-      ),
+      onTap: () {
+        tapped = true;
+      },
+      child: Container(decoration: const BoxDecoration(color: Colors.black)),
     ));
 
     await tester.tap(find.byType(Container));
@@ -689,10 +643,10 @@ void main() {
     tapped = false;
 
     await tester.pumpWidget(GestureDetector(
-      onTap: () { tapped = true; },
-      child: Container(
-        foregroundDecoration: const BoxDecoration(color: Colors.black),
-      ),
+      onTap: () {
+        tapped = true;
+      },
+      child: Container(foregroundDecoration: const BoxDecoration(color: Colors.black)),
     ));
 
     await tester.tap(find.byType(Container));
@@ -700,10 +654,10 @@ void main() {
     tapped = false;
 
     await tester.pumpWidget(GestureDetector(
-      onTap: () { tapped = true; },
-      child: Container(
-        color: Colors.black,
-      ),
+      onTap: () {
+        tapped = true;
+      },
+      child: Container(color: Colors.black),
     ));
 
     await tester.tap(find.byType(Container));
@@ -712,7 +666,9 @@ void main() {
 
     // Everything but color or decorations
     await tester.pumpWidget(GestureDetector(
-      onTap: () { tapped = true; },
+      onTap: () {
+        tapped = true;
+      },
       child: Center(
         child: Container(
           alignment: Alignment.bottomRight,
@@ -729,20 +685,17 @@ void main() {
     expect(tapped, false);
   });
 
-  testWidgets('Container discards alignment when the child parameter is null and constraints is not Tight', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Container(
-        decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(1)),
-      ),
-      alignment: Alignment.centerLeft
-    ));
+  testWidgets(
+    'Container discards alignment when the child parameter is null and constraints is not Tight',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(Container(
+        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(1))),
+        alignment: Alignment.centerLeft,
+      ));
 
-    expect(
-      find.byType(Align),
-      findsNothing,
-    );
-  });
+      expect(find.byType(Align), findsNothing);
+    },
+  );
 
   testWidgets('using clipBehaviour and shadow, should not clip the shadow', (WidgetTester tester) async {
     final Container container = Container(
@@ -750,30 +703,14 @@ void main() {
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(30)),
         color: Colors.red,
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Colors.blue,
-            spreadRadius: 10,
-            blurRadius: 20.0,
-          ),
-        ],
+        boxShadow: <BoxShadow>[BoxShadow(color: Colors.blue, spreadRadius: 10, blurRadius: 20.0)],
       ),
       child: const SizedBox(width: 50, height: 50),
     );
 
-    await tester.pumpWidget(
-      RepaintBoundary(
-        child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: container,
-        ),
-      ),
-    );
+    await tester.pumpWidget(RepaintBoundary(child: Padding(padding: const EdgeInsets.all(30.0), child: container)));
 
-    await expectLater(
-      find.byType(RepaintBoundary),
-      matchesGoldenFile('container.clipBehaviour.with.shadow.png'),
-    );
+    await expectLater(find.byType(RepaintBoundary), matchesGoldenFile('container.clipBehaviour.with.shadow.png'));
   });
 }
 
@@ -791,5 +728,5 @@ class _MockCanvas extends Fake implements Canvas {
   }
 
   @override
-  void drawRect(Rect rect, Paint paint) { }
+  void drawRect(Rect rect, Paint paint) {}
 }

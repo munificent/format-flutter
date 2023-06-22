@@ -12,10 +12,12 @@ void main() {
     await tester.pumpWidget(Directionality(
       key: key,
       textDirection: TextDirection.ltr,
-      child: Builder(builder: (BuildContext context) {
-        Directionality.of(context);
-        return const SizedBox();
-      }),
+      child: Builder(
+        builder: (BuildContext context) {
+          Directionality.of(context);
+          return const SizedBox();
+        },
+      ),
     ));
     final InheritedElement element = key.currentContext! as InheritedElement;
     expect(
@@ -30,10 +32,12 @@ void main() {
     await tester.pumpWidget(Directionality(
       key: key,
       textDirection: TextDirection.rtl,
-      child: Builder(builder: (BuildContext context) {
-        Directionality.of(context);
-        return const SizedBox();
-      }),
+      child: Builder(
+        builder: (BuildContext context) {
+          Directionality.of(context);
+          return const SizedBox();
+        },
+      ),
     ));
     expect(
       element.toStringDeep(minLevel: DiagnosticLevel.info),

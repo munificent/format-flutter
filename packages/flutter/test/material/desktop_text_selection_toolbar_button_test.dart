@@ -10,18 +10,16 @@ void main() {
 
   testWidgets('can press', (WidgetTester tester) async {
     bool pressed = false;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Center(
-          child: DesktopTextSelectionToolbarButton(
-            onPressed: () {
-              pressed = true;
-            },
-            child: const Text('Tap me'),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Center(
+        child: DesktopTextSelectionToolbarButton(
+          onPressed: () {
+            pressed = true;
+          },
+          child: const Text('Tap me'),
         ),
       ),
-    );
+    ));
 
     expect(pressed, false);
 
@@ -32,12 +30,7 @@ void main() {
   testWidgets('passing null to onPressed disables the button', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Center(
-          child: DesktopTextSelectionToolbarButton(
-            onPressed: null,
-            child: Text('Cannot tap me'),
-          ),
-        ),
+        home: Center(child: DesktopTextSelectionToolbarButton(onPressed: null, child: Text('Cannot tap me'))),
       ),
     );
 

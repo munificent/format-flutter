@@ -10,29 +10,27 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('Scrollable scaled up', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Transform.scale(
-          scale: 2.0,
-          child: Center(
-            child: SizedBox(
-              width: 200,
-              child: ListView.builder(
-                controller: controller,
-                cacheExtent: 0.0,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 100.0,
-                    color: index.isEven ? Colors.blue : Colors.red,
-                    child: Text('Tile $index'),
-                  );
-                },
-              ),
+    await tester.pumpWidget(MaterialApp(
+      home: Transform.scale(
+        scale: 2.0,
+        child: Center(
+          child: SizedBox(
+            width: 200,
+            child: ListView.builder(
+              controller: controller,
+              cacheExtent: 0.0,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  height: 100.0,
+                  color: index.isEven ? Colors.blue : Colors.red,
+                  child: Text('Tile $index'),
+                );
+              },
             ),
           ),
         ),
       ),
-    );
+    ));
     expect(controller.offset, 0.0);
 
     await tester.drag(find.byType(ListView), const Offset(0.0, -100.0));
@@ -54,29 +52,27 @@ void main() {
 
   testWidgets('Scrollable scaled down', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Transform.scale(
-          scale: 0.5,
-          child: Center(
-            child: SizedBox(
-              width: 200,
-              child: ListView.builder(
-                controller: controller,
-                cacheExtent: 0.0,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 100.0,
-                    color: index.isEven ? Colors.blue : Colors.red,
-                    child: Text('Tile $index'),
-                  );
-                },
-              ),
+    await tester.pumpWidget(MaterialApp(
+      home: Transform.scale(
+        scale: 0.5,
+        child: Center(
+          child: SizedBox(
+            width: 200,
+            child: ListView.builder(
+              controller: controller,
+              cacheExtent: 0.0,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  height: 100.0,
+                  color: index.isEven ? Colors.blue : Colors.red,
+                  child: Text('Tile $index'),
+                );
+              },
             ),
           ),
         ),
       ),
-    );
+    ));
     expect(controller.offset, 0.0);
 
     await tester.drag(find.byType(ListView), const Offset(0.0, -100.0));
@@ -98,29 +94,27 @@ void main() {
 
   testWidgets('Scrollable rotated 90 degrees', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Transform.rotate(
-          angle: math.pi / 2,
-          child: Center(
-            child: SizedBox(
-              width: 200,
-              child: ListView.builder(
-                controller: controller,
-                cacheExtent: 0.0,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 100.0,
-                    color: index.isEven ? Colors.blue : Colors.red,
-                    child: Text('Tile $index'),
-                  );
-                },
-              ),
+    await tester.pumpWidget(MaterialApp(
+      home: Transform.rotate(
+        angle: math.pi / 2,
+        child: Center(
+          child: SizedBox(
+            width: 200,
+            child: ListView.builder(
+              controller: controller,
+              cacheExtent: 0.0,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  height: 100.0,
+                  color: index.isEven ? Colors.blue : Colors.red,
+                  child: Text('Tile $index'),
+                );
+              },
             ),
           ),
         ),
       ),
-    );
+    ));
     expect(controller.offset, 0.0);
 
     await tester.drag(find.byType(ListView), const Offset(100.0, 0.0));
@@ -138,31 +132,29 @@ void main() {
 
   testWidgets('Perspective transform on scrollable', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Transform(
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.001)
-            ..rotateX(math.pi / 4),
-          child: Center(
-            child: SizedBox(
-              width: 200,
-              child: ListView.builder(
-                controller: controller,
-                cacheExtent: 0.0,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 100.0,
-                    color: index.isEven ? Colors.blue : Colors.red,
-                    child: Text('Tile $index'),
-                  );
-                },
-              ),
+    await tester.pumpWidget(MaterialApp(
+      home: Transform(
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.001)
+          ..rotateX(math.pi / 4),
+        child: Center(
+          child: SizedBox(
+            width: 200,
+            child: ListView.builder(
+              controller: controller,
+              cacheExtent: 0.0,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  height: 100.0,
+                  color: index.isEven ? Colors.blue : Colors.red,
+                  child: Text('Tile $index'),
+                );
+              },
             ),
           ),
         ),
       ),
-    );
+    ));
     expect(controller.offset, 0.0);
 
     // We want to test that the point in the ListView that the finger touches
@@ -202,10 +194,7 @@ void main() {
 
     // The tracked point (in the coordinate space of the screen) and the finger
     // should have moved the same vertical distance over the screen.
-    expect(
-      pointOnScreenStart.dy - pointOnScreenEnd.dy,
-      within(distance: 0.00001, from: 50.0),
-    );
+    expect(pointOnScreenStart.dy - pointOnScreenEnd.dy, within(distance: 0.00001, from: 50.0));
 
     // While the point traveled the same distance as the finger in the
     // coordinate space of the screen, the scroll view actually moved far more

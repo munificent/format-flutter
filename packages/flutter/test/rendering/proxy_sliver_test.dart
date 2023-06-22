@@ -77,9 +77,7 @@ void main() {
   });
 
   test('RenderSliverAnimatedOpacity does not composite if it is transparent', () async {
-    final Animation<double> opacityAnimation = AnimationController(
-      vsync: FakeTickerProvider(),
-    )..value = 0.0;
+    final Animation<double> opacityAnimation = AnimationController(vsync: FakeTickerProvider())..value = 0.0;
 
     final RenderSliverAnimatedOpacity renderSliverAnimatedOpacity = RenderSliverAnimatedOpacity(
       opacity: opacityAnimation,
@@ -100,9 +98,7 @@ void main() {
   });
 
   test('RenderSliverAnimatedOpacity does composite if it is partially opaque', () {
-    final Animation<double> opacityAnimation = AnimationController(
-      vsync: FakeTickerProvider(),
-    )..value = 0.5;
+    final Animation<double> opacityAnimation = AnimationController(vsync: FakeTickerProvider())..value = 0.5;
 
     final RenderSliverAnimatedOpacity renderSliverAnimatedOpacity = RenderSliverAnimatedOpacity(
       opacity: opacityAnimation,
@@ -123,9 +119,7 @@ void main() {
   });
 
   test('RenderSliverAnimatedOpacity does composite if it is opaque', () {
-    final Animation<double> opacityAnimation = AnimationController(
-      vsync: FakeTickerProvider(),
-    )..value = 1.0;
+    final Animation<double> opacityAnimation = AnimationController(vsync: FakeTickerProvider())..value = 1.0;
 
     final RenderSliverAnimatedOpacity renderSliverAnimatedOpacity = RenderSliverAnimatedOpacity(
       opacity: opacityAnimation,
@@ -146,9 +140,8 @@ void main() {
   });
 
   test('RenderSliverAnimatedOpacity reuses its layer', () {
-    final Animation<double> opacityAnimation = AnimationController(
-      vsync: FakeTickerProvider(),
-    )..value = 0.5;  // must not be 0 or 1.0. Otherwise, it won't create a layer
+    final Animation<double> opacityAnimation = AnimationController(vsync: FakeTickerProvider())..value =
+        0.5; // must not be 0 or 1.0. Otherwise, it won't create a layer
 
     final RenderSliverAnimatedOpacity renderSliverAnimatedOpacity = RenderSliverAnimatedOpacity(
       opacity: opacityAnimation,

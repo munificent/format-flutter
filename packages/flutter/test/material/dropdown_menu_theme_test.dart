@@ -44,22 +44,20 @@ void main() {
 
   testWidgets('With no other configuration, defaults are used', (WidgetTester tester) async {
     final ThemeData themeData = ThemeData();
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: themeData,
-        home: const Scaffold(
-          body: Center(
-            child: DropdownMenu<int>(
-              dropdownMenuEntries: <DropdownMenuEntry<int>>[
-                DropdownMenuEntry<int>(value: 0, label: 'Item 0'),
-                DropdownMenuEntry<int>(value: 1, label: 'Item 1'),
-                DropdownMenuEntry<int>(value: 2, label: 'Item 2'),
-              ],
-            ),
+    await tester.pumpWidget(MaterialApp(
+      theme: themeData,
+      home: const Scaffold(
+        body: Center(
+          child: DropdownMenu<int>(
+            dropdownMenuEntries: <DropdownMenuEntry<int>>[
+              DropdownMenuEntry<int>(value: 0, label: 'Item 0'),
+              DropdownMenuEntry<int>(value: 1, label: 'Item 1'),
+              DropdownMenuEntry<int>(value: 2, label: 'Item 2'),
+            ],
           ),
         ),
-      )
-    );
+      ),
+    ));
 
     final EditableText editableText = tester.widget(find.byType(EditableText));
     expect(editableText.style.color, themeData.textTheme.labelLarge!.color);
@@ -76,10 +74,8 @@ void main() {
     await tester.pump();
     expect(find.byType(MenuAnchor), findsOneWidget);
 
-    final Finder menuMaterial = find.ancestor(
-      of: find.widgetWithText(TextButton, 'Item 0'),
-      matching: find.byType(Material),
-    ).last;
+    final Finder menuMaterial =
+        find.ancestor(of: find.widgetWithText(TextButton, 'Item 0'), matching: find.byType(Material)).last;
     Material material = tester.widget<Material>(menuMaterial);
     expect(material.color, themeData.colorScheme.surface);
     expect(material.shadowColor, themeData.colorScheme.shadow);
@@ -87,10 +83,8 @@ void main() {
     expect(material.elevation, 3.0);
     expect(material.shape, const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))));
 
-    final Finder buttonMaterial = find.descendant(
-      of: find.widgetWithText(TextButton, 'Item 0'),
-      matching: find.byType(Material),
-    ).last;
+    final Finder buttonMaterial =
+        find.descendant(of: find.widgetWithText(TextButton, 'Item 0'), matching: find.byType(Material)).last;
 
     material = tester.widget<Material>(buttonMaterial);
     expect(material.color, Colors.transparent);
@@ -120,25 +114,23 @@ void main() {
           ),
         ),
         inputDecorationTheme: const InputDecorationTheme(filled: true, fillColor: Colors.lightGreen),
-      )
+      ),
     );
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Scaffold(
-          body: Center(
-            child: DropdownMenu<int>(
-              dropdownMenuEntries: <DropdownMenuEntry<int>>[
-                DropdownMenuEntry<int>(value: 0, label: 'Item 0'),
-                DropdownMenuEntry<int>(value: 1, label: 'Item 1'),
-                DropdownMenuEntry<int>(value: 2, label: 'Item 2'),
-              ],
-            ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: const Scaffold(
+        body: Center(
+          child: DropdownMenu<int>(
+            dropdownMenuEntries: <DropdownMenuEntry<int>>[
+              DropdownMenuEntry<int>(value: 0, label: 'Item 0'),
+              DropdownMenuEntry<int>(value: 1, label: 'Item 1'),
+              DropdownMenuEntry<int>(value: 2, label: 'Item 2'),
+            ],
           ),
-        )
-      )
-    );
+        ),
+      ),
+    ));
 
     final EditableText editableText = tester.widget(find.byType(EditableText));
     expect(editableText.style.color, Colors.orange);
@@ -155,10 +147,8 @@ void main() {
     await tester.pump();
     expect(find.byType(MenuAnchor), findsOneWidget);
 
-    final Finder menuMaterial = find.ancestor(
-      of: find.widgetWithText(TextButton, 'Item 0'),
-      matching: find.byType(Material),
-    ).last;
+    final Finder menuMaterial =
+        find.ancestor(of: find.widgetWithText(TextButton, 'Item 0'), matching: find.byType(Material)).last;
     Material material = tester.widget<Material>(menuMaterial);
     expect(material.color, Colors.grey);
     expect(material.shadowColor, Colors.brown);
@@ -166,10 +156,8 @@ void main() {
     expect(material.elevation, 10.0);
     expect(material.shape, const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))));
 
-    final Finder buttonMaterial = find.descendant(
-      of: find.widgetWithText(TextButton, 'Item 0'),
-      matching: find.byType(Material),
-    ).last;
+    final Finder buttonMaterial =
+        find.descendant(of: find.widgetWithText(TextButton, 'Item 0'), matching: find.byType(Material)).last;
 
     material = tester.widget<Material>(buttonMaterial);
     expect(material.color, Colors.transparent);
@@ -222,25 +210,23 @@ void main() {
     );
 
     final ThemeData theme = ThemeData(dropdownMenuTheme: global);
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: DropdownMenuTheme(
-          data: dropdownMenuTheme,
-          child: const Scaffold(
-            body: Center(
-              child: DropdownMenu<int>(
-                dropdownMenuEntries: <DropdownMenuEntry<int>>[
-                  DropdownMenuEntry<int>(value: 0, label: 'Item 0'),
-                  DropdownMenuEntry<int>(value: 1, label: 'Item 1'),
-                  DropdownMenuEntry<int>(value: 2, label: 'Item 2'),
-                ],
-              ),
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: DropdownMenuTheme(
+        data: dropdownMenuTheme,
+        child: const Scaffold(
+          body: Center(
+            child: DropdownMenu<int>(
+              dropdownMenuEntries: <DropdownMenuEntry<int>>[
+                DropdownMenuEntry<int>(value: 0, label: 'Item 0'),
+                DropdownMenuEntry<int>(value: 1, label: 'Item 1'),
+                DropdownMenuEntry<int>(value: 2, label: 'Item 2'),
+              ],
             ),
           ),
-        )
-      )
-    );
+        ),
+      ),
+    ));
 
     final EditableText editableText = tester.widget(find.byType(EditableText));
     expect(editableText.style.color, Colors.red);
@@ -258,10 +244,8 @@ void main() {
     await tester.pump();
     expect(find.byType(MenuAnchor), findsOneWidget);
 
-    final Finder menuMaterial = find.ancestor(
-      of: find.widgetWithText(TextButton, 'Item 0'),
-      matching: find.byType(Material),
-    ).last;
+    final Finder menuMaterial =
+        find.ancestor(of: find.widgetWithText(TextButton, 'Item 0'), matching: find.byType(Material)).last;
     Material material = tester.widget<Material>(menuMaterial);
     expect(material.color, Colors.yellow);
     expect(material.shadowColor, Colors.green);
@@ -269,10 +253,8 @@ void main() {
     expect(material.elevation, 15.0);
     expect(material.shape, const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))));
 
-    final Finder buttonMaterial = find.descendant(
-      of: find.widgetWithText(TextButton, 'Item 0'),
-      matching: find.byType(Material),
-    ).last;
+    final Finder buttonMaterial =
+        find.descendant(of: find.widgetWithText(TextButton, 'Item 0'), matching: find.byType(Material)).last;
 
     material = tester.widget<Material>(buttonMaterial);
     expect(material.color, Colors.transparent);
@@ -325,43 +307,41 @@ void main() {
     );
 
     final ThemeData theme = ThemeData(dropdownMenuTheme: global);
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: DropdownMenuTheme(
-          data: dropdownMenuTheme,
-          child: Scaffold(
-            body: Center(
-              child: DropdownMenu<int>(
-                textStyle: TextStyle(
-                  color: Colors.pink,
-                  backgroundColor: Colors.cyan,
-                  fontSize: 32.0,
-                  shadows: kElevationToShadow[3],
-                  decoration: TextDecoration.overline,
-                  wordSpacing: 3.0,
-                ),
-                menuStyle: const MenuStyle(
-                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.limeAccent),
-                  shadowColor: MaterialStatePropertyAll<Color>(Colors.deepOrangeAccent),
-                  surfaceTintColor: MaterialStatePropertyAll<Color>(Colors.lightBlue),
-                  elevation: MaterialStatePropertyAll<double>(21.0),
-                  shape: MaterialStatePropertyAll<OutlinedBorder>(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                  ),
-                ),
-                inputDecorationTheme: const InputDecorationTheme(filled: true, fillColor: Colors.deepPurple),
-                dropdownMenuEntries: const <DropdownMenuEntry<int>>[
-                  DropdownMenuEntry<int>(value: 0, label: 'Item 0'),
-                  DropdownMenuEntry<int>(value: 1, label: 'Item 1'),
-                  DropdownMenuEntry<int>(value: 2, label: 'Item 2'),
-                ],
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: DropdownMenuTheme(
+        data: dropdownMenuTheme,
+        child: Scaffold(
+          body: Center(
+            child: DropdownMenu<int>(
+              textStyle: TextStyle(
+                color: Colors.pink,
+                backgroundColor: Colors.cyan,
+                fontSize: 32.0,
+                shadows: kElevationToShadow[3],
+                decoration: TextDecoration.overline,
+                wordSpacing: 3.0,
               ),
+              menuStyle: const MenuStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.limeAccent),
+                shadowColor: MaterialStatePropertyAll<Color>(Colors.deepOrangeAccent),
+                surfaceTintColor: MaterialStatePropertyAll<Color>(Colors.lightBlue),
+                elevation: MaterialStatePropertyAll<double>(21.0),
+                shape: MaterialStatePropertyAll<OutlinedBorder>(
+                  RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                ),
+              ),
+              inputDecorationTheme: const InputDecorationTheme(filled: true, fillColor: Colors.deepPurple),
+              dropdownMenuEntries: const <DropdownMenuEntry<int>>[
+                DropdownMenuEntry<int>(value: 0, label: 'Item 0'),
+                DropdownMenuEntry<int>(value: 1, label: 'Item 1'),
+                DropdownMenuEntry<int>(value: 2, label: 'Item 2'),
+              ],
             ),
           ),
-        )
-      )
-    );
+        ),
+      ),
+    ));
 
     final EditableText editableText = tester.widget(find.byType(EditableText));
     expect(editableText.style.color, Colors.pink);
@@ -379,10 +359,8 @@ void main() {
     await tester.pump();
     expect(find.byType(MenuAnchor), findsOneWidget);
 
-    final Finder menuMaterial = find.ancestor(
-      of: find.widgetWithText(TextButton, 'Item 0'),
-      matching: find.byType(Material),
-    ).last;
+    final Finder menuMaterial =
+        find.ancestor(of: find.widgetWithText(TextButton, 'Item 0'), matching: find.byType(Material)).last;
     Material material = tester.widget<Material>(menuMaterial);
     expect(material.color, Colors.limeAccent);
     expect(material.shadowColor, Colors.deepOrangeAccent);
@@ -390,10 +368,8 @@ void main() {
     expect(material.elevation, 21.0);
     expect(material.shape, const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))));
 
-    final Finder buttonMaterial = find.descendant(
-      of: find.widgetWithText(TextButton, 'Item 0'),
-      matching: find.byType(Material),
-    ).last;
+    final Finder buttonMaterial =
+        find.descendant(of: find.widgetWithText(TextButton, 'Item 0'), matching: find.byType(Material)).last;
 
     material = tester.widget<Material>(buttonMaterial);
     expect(material.color, Colors.transparent);

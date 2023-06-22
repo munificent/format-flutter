@@ -5,13 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget wrap({ required Widget child, ThemeData? theme }) {
-  return MaterialApp(
-    theme: theme,
-    home: Center(
-      child: Material(child: child),
-    ),
-  );
+Widget wrap({required Widget child, ThemeData? theme}) {
+  return MaterialApp(theme: theme, home: Center(child: Material(child: child)));
 }
 
 void main() {
@@ -76,10 +71,7 @@ void main() {
   testWidgets('ExpandIcon disabled', (WidgetTester tester) async {
     IconTheme iconTheme;
     // Light mode test
-    await tester.pumpWidget(wrap(
-      theme: ThemeData(useMaterial3: false),
-      child: const ExpandIcon(onPressed: null),
-    ));
+    await tester.pumpWidget(wrap(theme: ThemeData(useMaterial3: false), child: const ExpandIcon(onPressed: null)));
     await tester.pumpAndSettle();
 
     iconTheme = tester.firstWidget(find.byType(IconTheme).last);
@@ -135,39 +127,25 @@ void main() {
   });
 
   testWidgets('ExpandIcon default size is 24', (WidgetTester tester) async {
-    final ExpandIcon expandIcon =  ExpandIcon(
-      onPressed: (bool isExpanded) {},
-    );
+    final ExpandIcon expandIcon = ExpandIcon(onPressed: (bool isExpanded) {});
 
-    await tester.pumpWidget(wrap(
-      child: expandIcon,
-    ));
+    await tester.pumpWidget(wrap(child: expandIcon));
 
     final ExpandIcon icon = tester.firstWidget(find.byWidget(expandIcon));
     expect(icon.size, 24);
   });
 
   testWidgets('ExpandIcon has the correct given size', (WidgetTester tester) async {
-    ExpandIcon expandIcon =  ExpandIcon(
-      size: 36,
-      onPressed: (bool isExpanded) {},
-    );
+    ExpandIcon expandIcon = ExpandIcon(size: 36, onPressed: (bool isExpanded) {});
 
-    await tester.pumpWidget(wrap(
-      child: expandIcon,
-    ));
+    await tester.pumpWidget(wrap(child: expandIcon));
 
     ExpandIcon icon = tester.firstWidget(find.byWidget(expandIcon));
     expect(icon.size, 36);
 
-    expandIcon =  ExpandIcon(
-      size: 48,
-      onPressed: (bool isExpanded) {},
-    );
+    expandIcon = ExpandIcon(size: 48, onPressed: (bool isExpanded) {});
 
-    await tester.pumpWidget(wrap(
-      child: expandIcon,
-    ));
+    await tester.pumpWidget(wrap(child: expandIcon));
 
     icon = tester.firstWidget(find.byWidget(expandIcon));
     expect(icon.size, 48);
@@ -176,37 +154,35 @@ void main() {
   testWidgets('ExpandIcon has correct semantic hints', (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
     const DefaultMaterialLocalizations localizations = DefaultMaterialLocalizations();
-    await tester.pumpWidget(wrap(
-      theme: ThemeData(useMaterial3: false),
-      child: ExpandIcon(
-        isExpanded: true,
-        onPressed: (bool _) { },
+    await tester.pumpWidget(
+      wrap(theme: ThemeData(useMaterial3: false), child: ExpandIcon(isExpanded: true, onPressed: (bool _) {})),
+    );
+
+    expect(
+      tester.getSemantics(find.byType(ExpandIcon)),
+      matchesSemantics(
+        hasTapAction: true,
+        hasEnabledState: true,
+        isEnabled: true,
+        isFocusable: true,
+        isButton: true,
+        onTapHint: localizations.expandedIconTapHint,
       ),
-    ));
+    );
 
-    expect(tester.getSemantics(find.byType(ExpandIcon)), matchesSemantics(
-      hasTapAction: true,
-      hasEnabledState: true,
-      isEnabled: true,
-      isFocusable: true,
-      isButton: true,
-      onTapHint: localizations.expandedIconTapHint,
-    ));
+    await tester.pumpWidget(wrap(child: ExpandIcon(onPressed: (bool _) {})));
 
-    await tester.pumpWidget(wrap(
-      child: ExpandIcon(
-        onPressed: (bool _) { },
+    expect(
+      tester.getSemantics(find.byType(ExpandIcon)),
+      matchesSemantics(
+        hasTapAction: true,
+        hasEnabledState: true,
+        isEnabled: true,
+        isFocusable: true,
+        isButton: true,
+        onTapHint: localizations.collapsedIconTapHint,
       ),
-    ));
-
-    expect(tester.getSemantics(find.byType(ExpandIcon)), matchesSemantics(
-      hasTapAction: true,
-      hasEnabledState: true,
-      isEnabled: true,
-      isFocusable: true,
-      isButton: true,
-      onTapHint: localizations.collapsedIconTapHint,
-    ));
+    );
     handle.dispose();
   });
 
@@ -274,41 +250,24 @@ void main() {
   testWidgets('ExpandIcon uses custom disabled icon color', (WidgetTester tester) async {
     IconTheme iconTheme;
 
-    await tester.pumpWidget(wrap(
-      child: const ExpandIcon(
-        onPressed: null,
-        disabledColor: Colors.cyan,
-      ),
-    ));
+    await tester.pumpWidget(wrap(child: const ExpandIcon(onPressed: null, disabledColor: Colors.cyan)));
     await tester.pumpAndSettle();
     iconTheme = tester.firstWidget(find.byType(IconTheme).last);
     expect(iconTheme.data.color, equals(Colors.cyan));
 
-    await tester.pumpWidget(wrap(
-      child: const ExpandIcon(
-        onPressed: null,
-        color: Colors.indigo,
-        disabledColor: Colors.cyan,
-      ),
-    ));
+    await tester.pumpWidget(
+      wrap(child: const ExpandIcon(onPressed: null, color: Colors.indigo, disabledColor: Colors.cyan)),
+    );
     await tester.pumpAndSettle();
     iconTheme = tester.firstWidget(find.byType(IconTheme).last);
     expect(iconTheme.data.color, equals(Colors.cyan));
 
+    await tester.pumpWidget(
+      wrap(child: const ExpandIcon(isExpanded: true, onPressed: null, disabledColor: Colors.cyan)),
+    );
     await tester.pumpWidget(wrap(
-      child: const ExpandIcon(
-        isExpanded: true,
-        onPressed: null,
-        disabledColor: Colors.cyan,
-      ),
-    ));
-    await tester.pumpWidget(wrap(
-      child: const ExpandIcon(
-        isExpanded: true,
-        onPressed: null,
-        expandedColor: Colors.teal,
-        disabledColor: Colors.cyan,
-      ),
+      child:
+          const ExpandIcon(isExpanded: true, onPressed: null, expandedColor: Colors.teal, disabledColor: Colors.cyan),
     ));
     await tester.pumpAndSettle();
     iconTheme = tester.firstWidget(find.byType(IconTheme).last);

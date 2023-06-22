@@ -15,40 +15,24 @@ import '../widgets/semantics_tester.dart';
 
 void main() {
   testWidgets('FlexibleSpaceBar centers title on iOS', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(platform: TargetPlatform.android),
-        home: Scaffold(
-          appBar: AppBar(
-            flexibleSpace: const FlexibleSpaceBar(
-              title: Text('X'),
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(platform: TargetPlatform.android),
+      home: Scaffold(appBar: AppBar(flexibleSpace: const FlexibleSpaceBar(title: Text('X')))),
+    ));
 
     final Finder title = find.text('X');
     Offset center = tester.getCenter(title);
     Size size = tester.getSize(title);
     expect(center.dx, lessThan(400.0 - size.width / 2.0));
 
-    for (final TargetPlatform platform in <TargetPlatform>[ TargetPlatform.iOS, TargetPlatform.macOS ]) {
+    for (final TargetPlatform platform in <TargetPlatform>[TargetPlatform.iOS, TargetPlatform.macOS]) {
       // Clear the widget tree to avoid animating between platforms.
       await tester.pumpWidget(Container(key: UniqueKey()));
 
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(platform: platform),
-          home: Scaffold(
-            appBar: AppBar(
-              flexibleSpace: const FlexibleSpaceBar(
-                title: Text('X'),
-              ),
-            ),
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(platform: platform),
+        home: Scaffold(appBar: AppBar(flexibleSpace: const FlexibleSpaceBar(title: Text('X')))),
+      ));
 
       center = tester.getCenter(title);
       size = tester.getSize(title);
@@ -69,47 +53,30 @@ void main() {
       maxExtent: maxExtent,
       toolbarOpacity: alpha,
       child: AppBar(
-        flexibleSpace: const FlexibleSpaceBar(
-          title: Text('title'),
-          background:  Text('X2'),
-          collapseMode: CollapseMode.pin,
-        ),
+        flexibleSpace:
+            const FlexibleSpaceBar(title: Text('title'), background: Text('X2'), collapseMode: CollapseMode.pin),
       ),
     ) as FlexibleSpaceBarSettings;
 
     const Key dragTarget = Key('orange box');
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: Scaffold(
-          body: CustomScrollView(
-            key: dragTarget,
-            primary: true,
-            slivers: <Widget>[
-              SliverPersistentHeader(
-                floating: true,
-                pinned: true,
-                delegate: TestDelegate(settings: customSettings),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 1200.0,
-                  color: Colors.orange[400],
-                ),
-              ),
-            ],
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: false),
+      home: Scaffold(
+        body: CustomScrollView(
+          key: dragTarget,
+          primary: true,
+          slivers: <Widget>[
+            SliverPersistentHeader(floating: true, pinned: true, delegate: TestDelegate(settings: customSettings)),
+            SliverToBoxAdapter(child: Container(height: 1200.0, color: Colors.orange[400])),
+          ],
         ),
       ),
-    );
+    ));
 
     final RenderBox clipRect = tester.renderObject(find.byType(ClipRect).first);
     final Transform transform = tester.firstWidget(
-      find.descendant(
-        of: find.byType(FlexibleSpaceBar),
-        matching: find.byType(Transform),
-      ),
+      find.descendant(of: find.byType(FlexibleSpaceBar), matching: find.byType(Transform)),
     );
 
     // The current (200) is half way between the min (100) and max (300) and the
@@ -133,74 +100,59 @@ void main() {
     expect(clipRect.size.height, minExtent);
   });
 
-  testWidgets('FlexibleSpaceBar.background is visible when using height other than kToolbarHeight', (WidgetTester tester) async {
-    // Regression test for https://github.com/flutter/flutter/issues/80451
-    await tester.pumpWidget(
-      MaterialApp(
+  testWidgets(
+    'FlexibleSpaceBar.background is visible when using height other than kToolbarHeight',
+    (WidgetTester tester) async {
+      // Regression test for https://github.com/flutter/flutter/issues/80451
+      await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           appBar: AppBar(
             toolbarHeight: 300,
             flexibleSpace: const FlexibleSpaceBar(
               title: Text('Title'),
-              background:  Text('Background'),
+              background: Text('Background'),
               collapseMode: CollapseMode.pin,
             ),
           ),
           body: CustomScrollView(
             primary: true,
-            slivers: <Widget>[
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 1200.0,
-                  color: Colors.orange[400],
-                ),
-              ),
-            ],
+            slivers: <Widget>[SliverToBoxAdapter(child: Container(height: 1200.0, color: Colors.orange[400]))],
           ),
         ),
-      ),
-    );
+      ));
 
-    final dynamic backgroundOpacity = tester.firstWidget(
-      find.byWidgetPredicate((Widget widget) => widget.runtimeType.toString() == '_FlexibleSpaceHeaderOpacity'));
-    // accessing private type member.
-    // ignore: avoid_dynamic_calls
-    expect(backgroundOpacity.opacity, 1.0);
-  });
+      final dynamic backgroundOpacity = tester.firstWidget(
+        find.byWidgetPredicate((Widget widget) => widget.runtimeType.toString() == '_FlexibleSpaceHeaderOpacity'),
+      );
+      // accessing private type member.
+      // ignore: avoid_dynamic_calls
+      expect(backgroundOpacity.opacity, 1.0);
+    },
+  );
 
   testWidgets('Collapsed FlexibleSpaceBar has correct semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
     const double expandedHeight = 200;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: Scaffold(
-          body: CustomScrollView(
-            slivers: <Widget>[
-              const SliverAppBar(
-                pinned: true,
-                expandedHeight: expandedHeight,
-                title: Text('Title'),
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Text('Expanded title'),
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  <Widget>[
-                    for (int i = 0; i < 50; i++)
-                      SizedBox(
-                        height: 200,
-                        child: Center(child: Text('Item $i')),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: false),
+      home: Scaffold(
+        body: CustomScrollView(
+          slivers: <Widget>[
+            const SliverAppBar(
+              pinned: true,
+              expandedHeight: expandedHeight,
+              title: Text('Title'),
+              flexibleSpace: FlexibleSpaceBar(background: Text('Expanded title')),
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(<Widget>[
+                for (int i = 0; i < 50; i++) SizedBox(height: 200, child: Center(child: Text('Item $i'))),
+              ]),
+            ),
+          ],
         ),
       ),
-    );
+    ));
 
     TestSemantics expectedSemantics = TestSemantics.root(
       children: <TestSemantics>[
@@ -232,10 +184,7 @@ void main() {
                                 TestSemantics(
                                   id: 13,
                                   rect: const Rect.fromLTRB(0.0, 0.0, 100.0, 20.0),
-                                  flags: <SemanticsFlag>[
-                                    SemanticsFlag.isHeader,
-                                    SemanticsFlag.namesRoute,
-                                  ],
+                                  flags: <SemanticsFlag>[SemanticsFlag.isHeader, SemanticsFlag.namesRoute],
                                   label: 'Title',
                                   textDirection: TextDirection.ltr,
                                 ),
@@ -287,7 +236,6 @@ void main() {
                               label: 'Item 3',
                               textDirection: TextDirection.ltr,
                             ),
-
                           ],
                         ),
                       ],
@@ -338,10 +286,7 @@ void main() {
                                 TestSemantics(
                                   id: 13,
                                   rect: const Rect.fromLTRB(0.0, 0.0, 100.0, 20.0),
-                                  flags: <SemanticsFlag>[
-                                    SemanticsFlag.isHeader,
-                                    SemanticsFlag.namesRoute,
-                                  ],
+                                  flags: <SemanticsFlag>[SemanticsFlag.isHeader, SemanticsFlag.namesRoute],
                                   label: 'Title',
                                   textDirection: TextDirection.ltr,
                                 ),
@@ -438,41 +383,39 @@ void main() {
     const double titleFontSize = 20.0;
     const double height = 300.0;
     late double width;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: Scaffold(
-          body: Builder(
-            builder: (BuildContext context) {
-              width = MediaQuery.sizeOf(context).width;
-              return CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    expandedHeight: height,
-                    pinned: true,
-                    stretch: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      titlePadding: EdgeInsets.zero,
-                      title: Text(
-                        'X' * 2000,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: titleFontSize),
-                      ),
-                      centerTitle: false,
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: false),
+      home: Scaffold(
+        body: Builder(
+          builder: (BuildContext context) {
+            width = MediaQuery.sizeOf(context).width;
+            return CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  expandedHeight: height,
+                  pinned: true,
+                  stretch: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    titlePadding: EdgeInsets.zero,
+                    title: Text(
+                      'X' * 2000,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: titleFontSize),
                     ),
+                    centerTitle: false,
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+              ],
+            );
+          },
         ),
       ),
-    );
+    ));
 
     final double textWidth = const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK')
-      ? width
-      : (width / 1.5).floorToDouble() * 1.5;
+        ? width
+        : (width / 1.5).floorToDouble() * 1.5;
     // The title is scaled and transformed to be 1.5 times bigger, when the
     // FlexibleSpaceBar is fully expanded, thus we expect the width to be
     // 1.5 times smaller than the full width. The height of the text is the same
@@ -483,48 +426,42 @@ void main() {
     );
   });
 
-  testWidgets('FlexibleSpaceBar sets constraints for the title - override expandedTitleScale', (WidgetTester tester) async {
+  testWidgets('FlexibleSpaceBar sets constraints for the title - override expandedTitleScale', (
+    WidgetTester tester,
+  ) async {
     const double titleFontSize = 20.0;
     const double height = 300.0;
     const double expandedTitleScale = 3.0;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: Scaffold(
-          body: CustomScrollView(
-            slivers: <Widget>[
-              SliverAppBar(
-                expandedHeight: height,
-                pinned: true,
-                stretch: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  expandedTitleScale: expandedTitleScale,
-                  titlePadding: EdgeInsets.zero,
-                  title: Text(
-                    'X' * 41,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: titleFontSize,),
-                  ),
-                  centerTitle: false,
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: false),
+      home: Scaffold(
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: height,
+              pinned: true,
+              stretch: true,
+              flexibleSpace: FlexibleSpaceBar(
+                expandedTitleScale: expandedTitleScale,
+                titlePadding: EdgeInsets.zero,
+                title: Text(
+                  'X' * 41,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: titleFontSize),
                 ),
+                centerTitle: false,
               ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  <Widget>[
-                    for (int i = 0; i < 3; i++)
-                      SizedBox(
-                        height: 200.0,
-                        child: Center(child: Text('Item $i')),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(<Widget>[
+                for (int i = 0; i < 3; i++) SizedBox(height: 200.0, child: Center(child: Text('Item $i'))),
+              ]),
+            ),
+          ],
         ),
       ),
-    );
+    ));
 
     // We drag up to fully collapse the space bar.
     await tester.drag(find.text('Item 0'), const Offset(0, -600.0));
@@ -542,8 +479,8 @@ void main() {
     const double bottomMargin = titleFontSize * (expandedTitleScale - 1);
 
     final double textWidth = const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK')
-      ? collapsedWidth
-      : (collapsedWidth / 3).floorToDouble() * 3;
+        ? collapsedWidth
+        : (collapsedWidth / 3).floorToDouble() * 3;
     // The title is scaled and transformed to be 3 times bigger, when the
     // FlexibleSpaceBar is fully expanded, thus we expect the width to be
     // 3 times smaller than the full width. The height of the text is the same
@@ -557,51 +494,41 @@ void main() {
   testWidgets('FlexibleSpaceBar scaled title', (WidgetTester tester) async {
     const double titleFontSize = 20.0;
     const double height = 300.0;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: Scaffold(
-          body: CustomScrollView(
-            slivers: <Widget>[
-              const SliverAppBar(
-                expandedHeight: height,
-                pinned: true,
-                stretch: true,
-                flexibleSpace: RepaintBoundary(
-                  child: FlexibleSpaceBar(
-                    title: Text(
-                      'X',
-                      style: TextStyle(fontSize: titleFontSize,),
-                    ),
-                    centerTitle: false,
-                  ),
-                ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: false),
+      home: Scaffold(
+        body: CustomScrollView(
+          slivers: <Widget>[
+            const SliverAppBar(
+              expandedHeight: height,
+              pinned: true,
+              stretch: true,
+              flexibleSpace: RepaintBoundary(
+                child:
+                    FlexibleSpaceBar(title: Text('X', style: TextStyle(fontSize: titleFontSize)), centerTitle: false),
               ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  <Widget>[
-                    for (int i = 0; i < 3; i += 1)
-                      SizedBox(
-                        height: 200.0,
-                        child: Center(child: Text('Item $i')),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(<Widget>[
+                for (int i = 0; i < 3; i += 1) SizedBox(height: 200.0, child: Center(child: Text('Item $i'))),
+              ]),
+            ),
+          ],
         ),
       ),
-    );
+    ));
 
     // We drag up to fully collapse the space bar.
     await tester.drag(find.text('Item 0'), const Offset(0, -600.0));
     await tester.pumpAndSettle();
 
-    final Finder flexibleSpaceBar = find.ancestor(of: find.byType(FlexibleSpaceBar), matching: find.byType(RepaintBoundary).first);
+    final Finder flexibleSpaceBar = find.ancestor(
+      of: find.byType(FlexibleSpaceBar),
+      matching: find.byType(RepaintBoundary).first,
+    );
     await expectLater(
       flexibleSpaceBar,
-      matchesGoldenFile('flexible_space_bar.expanded_title_scale_default.collapsed.png')
+      matchesGoldenFile('flexible_space_bar.expanded_title_scale_default.collapsed.png'),
     );
 
     // We drag down to fully expand the space bar.
@@ -610,7 +537,7 @@ void main() {
 
     await expectLater(
       flexibleSpaceBar,
-      matchesGoldenFile('flexible_space_bar.expanded_title_scale_default.expanded.png')
+      matchesGoldenFile('flexible_space_bar.expanded_title_scale_default.expanded.png'),
     );
   });
 
@@ -618,53 +545,45 @@ void main() {
     const double titleFontSize = 20.0;
     const double height = 300.0;
     const double expandedTitleScale = 3.0;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: Scaffold(
-          body: CustomScrollView(
-            slivers: <Widget>[
-              const SliverAppBar(
-                expandedHeight: height,
-                pinned: true,
-                stretch: true,
-                flexibleSpace: RepaintBoundary(
-                  child: FlexibleSpaceBar(
-                    title: Text(
-                      'X',
-                      style: TextStyle(fontSize: titleFontSize,),
-                    ),
-                    centerTitle: false,
-                    expandedTitleScale: expandedTitleScale,
-                  ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: false),
+      home: Scaffold(
+        body: CustomScrollView(
+          slivers: <Widget>[
+            const SliverAppBar(
+              expandedHeight: height,
+              pinned: true,
+              stretch: true,
+              flexibleSpace: RepaintBoundary(
+                child: FlexibleSpaceBar(
+                  title: Text('X', style: TextStyle(fontSize: titleFontSize)),
+                  centerTitle: false,
+                  expandedTitleScale: expandedTitleScale,
                 ),
               ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  <Widget>[
-                    for (int i = 0; i < 3; i += 1)
-                      SizedBox(
-                        height: 200.0,
-                        child: Center(child: Text('Item $i')),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(<Widget>[
+                for (int i = 0; i < 3; i += 1) SizedBox(height: 200.0, child: Center(child: Text('Item $i'))),
+              ]),
+            ),
+          ],
         ),
       ),
-    );
+    ));
 
     // We drag up to fully collapse the space bar.
     await tester.drag(find.text('Item 0'), const Offset(0, -600.0));
     await tester.pumpAndSettle();
 
-    final Finder flexibleSpaceBar = find.ancestor(of: find.byType(FlexibleSpaceBar), matching: find.byType(RepaintBoundary).first);
+    final Finder flexibleSpaceBar = find.ancestor(
+      of: find.byType(FlexibleSpaceBar),
+      matching: find.byType(RepaintBoundary).first,
+    );
     // This should match the default behavior
     await expectLater(
       flexibleSpaceBar,
-      matchesGoldenFile('flexible_space_bar.expanded_title_scale_default.collapsed.png')
+      matchesGoldenFile('flexible_space_bar.expanded_title_scale_default.collapsed.png'),
     );
 
     // We drag down to fully expand the space bar.
@@ -673,7 +592,7 @@ void main() {
 
     await expectLater(
       flexibleSpaceBar,
-      matchesGoldenFile('flexible_space_bar.expanded_title_scale_override.expanded.png')
+      matchesGoldenFile('flexible_space_bar.expanded_title_scale_override.expanded.png'),
     );
   });
 
@@ -681,14 +600,8 @@ void main() {
     Widget buildFrame(TargetPlatform platform, bool? centerTitle) {
       return MaterialApp(
         theme: ThemeData(platform: platform, useMaterial3: false),
-        home: Scaffold(
-          appBar: AppBar(
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: centerTitle,
-              title: const Text('X'),
-            ),
-          ),
-        ),
+        home:
+            Scaffold(appBar: AppBar(flexibleSpace: FlexibleSpaceBar(centerTitle: centerTitle, title: const Text('X')))),
       );
     }
 
@@ -724,7 +637,6 @@ void main() {
 
     await tester.pumpWidget(buildFrame(TargetPlatform.macOS, false));
     expect(getTitleBottomLeft(), const Offset(72.0, 16.0));
-
   });
 
   testWidgets('FlexibleSpaceBar test titlePadding override', (WidgetTester tester) async {
@@ -733,11 +645,8 @@ void main() {
         theme: ThemeData(platform: platform, useMaterial3: false),
         home: Scaffold(
           appBar: AppBar(
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.zero,
-              centerTitle: centerTitle,
-              title: const Text('X'),
-            ),
+            flexibleSpace:
+                FlexibleSpaceBar(titlePadding: EdgeInsets.zero, centerTitle: centerTitle, title: const Text('X')),
           ),
         ),
       );
@@ -796,9 +705,7 @@ void main() {
   });
 
   testWidgets('FlexibleSpaceBar rebuilds when scrolling.', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: SubCategoryScreenView(),
-    ));
+    await tester.pumpWidget(const MaterialApp(home: SubCategoryScreenView()));
 
     expect(RenderRebuildTracker.count, 1);
 
@@ -813,10 +720,7 @@ void main() {
 }
 
 class TestDelegate extends SliverPersistentHeaderDelegate {
-
-  const TestDelegate({
-    required this.settings,
-  });
+  const TestDelegate({required this.settings});
 
   final FlexibleSpaceBarSettings settings;
 
@@ -855,9 +759,7 @@ class RenderRebuildTracker extends RenderProxyBox {
 }
 
 class SubCategoryScreenView extends StatefulWidget {
-  const SubCategoryScreenView({
-    super.key,
-  });
+  const SubCategoryScreenView({super.key});
 
   static const Key scrollKey = Key('orange box');
 
@@ -865,15 +767,11 @@ class SubCategoryScreenView extends StatefulWidget {
   State<SubCategoryScreenView> createState() => _SubCategoryScreenViewState();
 }
 
-class _SubCategoryScreenViewState extends State<SubCategoryScreenView>
-    with TickerProviderStateMixin {
+class _SubCategoryScreenViewState extends State<SubCategoryScreenView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Test'),
-      ),
+      appBar: AppBar(centerTitle: true, title: const Text('Test')),
       body: CustomScrollView(
         key: SubCategoryScreenView.scrollKey,
         slivers: <Widget>[
@@ -884,27 +782,17 @@ class _SubCategoryScreenViewState extends State<SubCategoryScreenView>
             toolbarHeight: 0,
             titleSpacing: 0,
             leadingWidth: 0,
-            flexibleSpace: const FlexibleSpaceBar(
-              background: AspectRatio(
-                aspectRatio: 1.7,
-                child: RebuildTracker(),
-              ),
-            ),
+            flexibleSpace: const FlexibleSpaceBar(background: AspectRatio(aspectRatio: 1.7, child: RebuildTracker())),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
           SliverToBoxAdapter(
             child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-              ),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 300,
               itemBuilder: (BuildContext context, int index) {
-                return Card(
-                  color: Colors.amber,
-                  child: Center(child: Text('$index')),
-                );
+                return Card(color: Colors.amber, child: Center(child: Text('$index')));
               },
             ),
           ),

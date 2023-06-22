@@ -19,22 +19,22 @@ void verifyPaintPosition(GlobalKey key, Offset ideal) {
 void main() {
   testWidgets('Sliver protocol', (WidgetTester tester) async {
     GlobalKey key1, key2, key3, key4, key5;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            BigSliver(key: key1 = GlobalKey()),
-            OverlappingSliver(key: key2 = GlobalKey()),
-            OverlappingSliver(key: key3 = GlobalKey()),
-            BigSliver(key: key4 = GlobalKey()),
-            BigSliver(key: key5 = GlobalKey()),
-          ],
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: CustomScrollView(
+        slivers: <Widget>[
+          BigSliver(key: key1 = GlobalKey()),
+          OverlappingSliver(key: key2 = GlobalKey()),
+          OverlappingSliver(key: key3 = GlobalKey()),
+          BigSliver(key: key4 = GlobalKey()),
+          BigSliver(key: key5 = GlobalKey()),
+        ],
       ),
-    );
+    ));
     final ScrollPosition position = tester.state<ScrollableState>(find.byType(Scrollable)).position;
-    const double max = RenderBigSliver.height * 3.0 + (RenderOverlappingSliver.totalHeight) * 2.0 - 600.0; // 600 is the height of the test viewport
+    const double max = RenderBigSliver.height * 3.0 +
+        (RenderOverlappingSliver.totalHeight) * 2.0 -
+        600.0; // 600 is the height of the test viewport
     assert(max < 10000.0);
     expect(max, 1450.0);
     expect(position.pixels, 0.0);
@@ -59,16 +59,12 @@ class RenderBigSliver extends RenderSliver {
 
   @override
   void performLayout() {
-    geometry = SliverGeometry(
-      scrollExtent: height,
-      paintExtent: paintExtent,
-      maxPaintExtent: height,
-    );
+    geometry = SliverGeometry(scrollExtent: height, paintExtent: paintExtent, maxPaintExtent: height);
   }
 }
 
 class BigSliver extends LeafRenderObjectWidget {
-  const BigSliver({ super.key });
+  const BigSliver({super.key});
   @override
   RenderBigSliver createRenderObject(BuildContext context) {
     return RenderBigSliver();
@@ -80,13 +76,7 @@ class RenderOverlappingSliver extends RenderSliver {
   static const double fixedHeight = 100.0;
 
   double get paintExtent {
-    return math.min(
-             math.max(
-               fixedHeight,
-               totalHeight - constraints.scrollOffset,
-             ),
-             constraints.remainingPaintExtent,
-           );
+    return math.min(math.max(fixedHeight, totalHeight - constraints.scrollOffset), constraints.remainingPaintExtent);
   }
 
   double get layoutExtent {
@@ -105,7 +95,7 @@ class RenderOverlappingSliver extends RenderSliver {
 }
 
 class OverlappingSliver extends LeafRenderObjectWidget {
-  const OverlappingSliver({ super.key });
+  const OverlappingSliver({super.key});
   @override
   RenderOverlappingSliver createRenderObject(BuildContext context) {
     return RenderOverlappingSliver();

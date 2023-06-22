@@ -51,17 +51,10 @@ void main() {
 
         // Send updateEditingValueWithDeltas message.
         final ByteData? messageBytes = const JSONMessageCodec().encodeMessage(<String, dynamic>{
-          'args': <dynamic>[
-            1,
-            jsonDecode('{"deltas": [$jsonDelta]}'),
-          ],
+          'args': <dynamic>[1, jsonDecode('{"deltas": [$jsonDelta]}')],
           'method': 'TextInputClient.updateEditingStateWithDeltas',
         });
-        await binding.defaultBinaryMessenger.handlePlatformMessage(
-          'flutter/textinput',
-          messageBytes,
-              (ByteData? _) {},
-        );
+        await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
 
         expect(client.latestMethodCall, 'updateEditingValueWithDeltas');
       },
@@ -94,15 +87,13 @@ void main() {
         'args': <dynamic>[-1, jsonDecode('{"deltas": [$jsonDelta]}')],
       });
 
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
       expect(record.length, 1);
       // Verify the error message in parts because Web formats the message
       // differently from others.
-      expect(record[0].exception.toString(), matches(RegExp(r'\bThe selection range: TextSelection.collapsed\(offset: 3, affinity: TextAffinity.downstream, isDirectional: false\)(?!\w)')));
+      expect(record[0].exception.toString(), matches(RegExp(
+        r'\bThe selection range: TextSelection.collapsed\(offset: 3, affinity: TextAffinity.downstream, isDirectional: false\)(?!\w)',
+      )));
       expect(record[0].exception.toString(), matches(RegExp(r'\bis not within the bounds of text: 1 of length: 1\b')));
     });
 
@@ -133,15 +124,14 @@ void main() {
         'args': <dynamic>[-1, jsonDecode('{"deltas": [$jsonDelta]}')],
       });
 
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
       expect(record.length, 1);
       // Verify the error message in parts because Web formats the message
       // differently from others.
-      expect(record[0].exception.toString(), matches(RegExp(r'\bThe delta range: TextRange\(start: 0, end: 5\)(?!\w)')));
+      expect(
+        record[0].exception.toString(),
+        matches(RegExp(r'\bThe delta range: TextRange\(start: 0, end: 5\)(?!\w)')),
+      );
       expect(record[0].exception.toString(), matches(RegExp(r'\bis not within the bounds of text:  of length: 0\b')));
     });
 
@@ -172,16 +162,17 @@ void main() {
         'args': <dynamic>[-1, jsonDecode('{"deltas": [$jsonDelta]}')],
       });
 
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
       expect(record.length, 1);
       // Verify the error message in parts because Web formats the message
       // differently from others.
-      expect(record[0].exception.toString(), matches(RegExp(r'\bThe selection range: TextSelection.collapsed\(offset: 6, affinity: TextAffinity.downstream, isDirectional: false\)(?!\w)')));
-      expect(record[0].exception.toString(), matches(RegExp(r'\bis not within the bounds of text: hello of length: 5\b')));
+      expect(record[0].exception.toString(), matches(RegExp(
+        r'\bThe selection range: TextSelection.collapsed\(offset: 6, affinity: TextAffinity.downstream, isDirectional: false\)(?!\w)',
+      )));
+      expect(
+        record[0].exception.toString(),
+        matches(RegExp(r'\bis not within the bounds of text: hello of length: 5\b')),
+      );
     });
 
     test('Invalid TextRange fails loudly when being converted to JSON - Faulty Composing Region', () async {
@@ -211,16 +202,18 @@ void main() {
         'args': <dynamic>[-1, jsonDecode('{"deltas": [$jsonDelta]}')],
       });
 
-      await binding.defaultBinaryMessenger.handlePlatformMessage(
-        'flutter/textinput',
-        messageBytes,
-        (ByteData? _) {},
-      );
+      await binding.defaultBinaryMessenger.handlePlatformMessage('flutter/textinput', messageBytes, (ByteData? _) {});
       expect(record.length, 1);
       // Verify the error message in parts because Web formats the message
       // differently from others.
-      expect(record[0].exception.toString(), matches(RegExp(r'\bThe composing range: TextRange\(start: 0, end: 6\)(?!\w)')));
-      expect(record[0].exception.toString(), matches(RegExp(r'\bis not within the bounds of text: world of length: 5\b')));
+      expect(
+        record[0].exception.toString(),
+        matches(RegExp(r'\bThe composing range: TextRange\(start: 0, end: 6\)(?!\w)')),
+      );
+      expect(
+        record[0].exception.toString(),
+        matches(RegExp(r'\bis not within the bounds of text: world of length: 5\b')),
+      );
     });
   });
 }

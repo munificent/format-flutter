@@ -49,9 +49,9 @@ void main() {
     const SwitchThemeData().debugFillProperties(builder);
 
     final List<String> description = builder.properties
-      .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
-      .map((DiagnosticsNode node) => node.toString())
-      .toList();
+        .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
+        .map((DiagnosticsNode node) => node.toString())
+        .toList();
 
     expect(description, <String>[]);
   });
@@ -71,9 +71,9 @@ void main() {
     ).debugFillProperties(builder);
 
     final List<String> description = builder.properties
-      .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
-      .map((DiagnosticsNode node) => node.toString())
-      .toList();
+        .where((DiagnosticsNode node) => !node.isFiltered(DiagnosticLevel.info))
+        .map((DiagnosticsNode node) => node.toString())
+        .toList();
 
     expect(description[0], 'thumbColor: MaterialStatePropertyAll(Color(0xfffffff0))');
     expect(description[1], 'trackColor: MaterialStatePropertyAll(Color(0xfffffff1))');
@@ -172,20 +172,18 @@ void main() {
     expect(
       _getSwitchMaterial(tester),
       material3
-      ? (paints
-        ..rrect(color: defaultTrackColor)
-        ..rrect(color: defaultTrackOutlineColor, strokeWidth: defaultTrackOutlineWidth)
-        ..rrect(color: defaultThumbColor)
-        ..paragraph()
-      )
-      : (paints
-        ..rrect(color: defaultTrackColor)
-        ..rrect(color: defaultTrackOutlineColor, strokeWidth: defaultTrackOutlineWidth)
-        ..rrect()
-        ..rrect()
-        ..rrect()
-        ..rrect(color: defaultThumbColor)
-      )
+          ? (paints
+              ..rrect(color: defaultTrackColor)
+              ..rrect(color: defaultTrackOutlineColor, strokeWidth: defaultTrackOutlineWidth)
+              ..rrect(color: defaultThumbColor)
+              ..paragraph())
+          : (paints
+              ..rrect(color: defaultTrackColor)
+              ..rrect(color: defaultTrackOutlineColor, strokeWidth: defaultTrackOutlineWidth)
+              ..rrect()
+              ..rrect()
+              ..rrect()
+              ..rrect(color: defaultThumbColor)),
     );
     // Size from MaterialTapTargetSize.shrinkWrap.
     expect(tester.getSize(find.byType(Switch)), material3 ? const Size(60.0, 40.0) : const Size(59.0, 40.0));
@@ -196,17 +194,18 @@ void main() {
     expect(
       _getSwitchMaterial(tester),
       material3
-      ? (paints
-        ..rrect(color: selectedTrackColor)
-        ..rrect(color: selectedTrackOutlineColor, strokeWidth: selectedTrackOutlineWidth)
-        ..rrect(color: selectedThumbColor)..paragraph())
-      : (paints
-        ..rrect(color: selectedTrackColor)
-        ..rrect(color: selectedTrackOutlineColor, strokeWidth: selectedTrackOutlineWidth)
-        ..rrect()
-        ..rrect()
-        ..rrect()
-        ..rrect(color: selectedThumbColor))
+          ? (paints
+              ..rrect(color: selectedTrackColor)
+              ..rrect(color: selectedTrackOutlineColor, strokeWidth: selectedTrackOutlineWidth)
+              ..rrect(color: selectedThumbColor)
+              ..paragraph())
+          : (paints
+              ..rrect(color: selectedTrackColor)
+              ..rrect(color: selectedTrackOutlineColor, strokeWidth: selectedTrackOutlineWidth)
+              ..rrect()
+              ..rrect()
+              ..rrect()
+              ..rrect(color: selectedThumbColor)),
     );
 
     // Switch with hover.
@@ -355,17 +354,18 @@ void main() {
     expect(
       _getSwitchMaterial(tester),
       material3
-      ? (paints
-        ..rrect(color: defaultTrackColor)
-        ..rrect(color: defaultOutlineColor, strokeWidth: defaultOutlineWidth)
-        ..rrect(color: defaultThumbColor)..paragraph(offset: const Offset(12, 12)))
-      : (paints
-        ..rrect(color: defaultTrackColor)
-        ..rrect(color: defaultOutlineColor, strokeWidth: defaultOutlineWidth)
-        ..rrect()
-        ..rrect()
-        ..rrect()
-        ..rrect(color: defaultThumbColor))
+          ? (paints
+              ..rrect(color: defaultTrackColor)
+              ..rrect(color: defaultOutlineColor, strokeWidth: defaultOutlineWidth)
+              ..rrect(color: defaultThumbColor)
+              ..paragraph(offset: const Offset(12, 12)))
+          : (paints
+              ..rrect(color: defaultTrackColor)
+              ..rrect(color: defaultOutlineColor, strokeWidth: defaultOutlineWidth)
+              ..rrect()
+              ..rrect()
+              ..rrect()
+              ..rrect(color: defaultThumbColor)),
     );
     // Size from MaterialTapTargetSize.shrinkWrap.
     expect(tester.getSize(find.byType(Switch)), material3 ? const Size(60.0, 40.0) : const Size(59.0, 40.0));
@@ -376,16 +376,17 @@ void main() {
     expect(
       _getSwitchMaterial(tester),
       material3
-      ? (paints
-        ..rrect(color: selectedTrackColor)..rrect(color: selectedOutlineColor, strokeWidth: selectedOutlineWidth)
-        ..rrect(color: selectedThumbColor))
-      : (paints
-        ..rrect(color: selectedTrackColor)
-        ..rrect(color: selectedOutlineColor, strokeWidth: selectedOutlineWidth)
-        ..rrect()
-        ..rrect()
-        ..rrect()
-        ..rrect(color: selectedThumbColor))
+          ? (paints
+              ..rrect(color: selectedTrackColor)
+              ..rrect(color: selectedOutlineColor, strokeWidth: selectedOutlineWidth)
+              ..rrect(color: selectedThumbColor))
+          : (paints
+              ..rrect(color: selectedTrackColor)
+              ..rrect(color: selectedOutlineColor, strokeWidth: selectedOutlineWidth)
+              ..rrect()
+              ..rrect()
+              ..rrect()
+              ..rrect(color: selectedThumbColor)),
     );
 
     // Switch with hover.
@@ -454,17 +455,17 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       _getSwitchMaterial(tester),
-        material3
-        ? (paints
-          ..rrect(color: defaultTrackColor)
-          ..rrect(color: themeData.colorScheme.outline)
-          ..rrect(color: defaultThumbColor))
-        : (paints
-          ..rrect(color: defaultTrackColor)
-          ..rrect()
-          ..rrect()
-          ..rrect()
-          ..rrect(color: defaultThumbColor))
+      material3
+          ? (paints
+              ..rrect(color: defaultTrackColor)
+              ..rrect(color: themeData.colorScheme.outline)
+              ..rrect(color: defaultThumbColor))
+          : (paints
+              ..rrect(color: defaultTrackColor)
+              ..rrect()
+              ..rrect()
+              ..rrect()
+              ..rrect(color: defaultThumbColor)),
     );
 
     // Selected switch.
@@ -473,16 +474,16 @@ void main() {
     expect(
       _getSwitchMaterial(tester),
       material3
-      ? (paints
-        ..rrect(color: selectedTrackColor)
-        ..rrect()
-        ..rrect(color: selectedThumbColor))
-      : (paints
-        ..rrect(color: selectedTrackColor)
-        ..rrect()
-        ..rrect()
-        ..rrect()
-        ..rrect(color: selectedThumbColor))
+          ? (paints
+              ..rrect(color: selectedTrackColor)
+              ..rrect()
+              ..rrect(color: selectedThumbColor))
+          : (paints
+              ..rrect(color: selectedTrackColor)
+              ..rrect()
+              ..rrect()
+              ..rrect()
+              ..rrect(color: selectedThumbColor)),
     );
   });
 
@@ -499,25 +500,16 @@ void main() {
       }
       return null;
     }
+
     const double splashRadius = 24.0;
     final ThemeData themeData = ThemeData(
-      switchTheme: SwitchThemeData(
-        overlayColor: MaterialStateProperty.resolveWith(getOverlayColor),
-        splashRadius: splashRadius,
-      ),
+      switchTheme:
+          SwitchThemeData(overlayColor: MaterialStateProperty.resolveWith(getOverlayColor), splashRadius: splashRadius),
     );
     final bool material3 = themeData.useMaterial3;
 
     Widget buildSwitch({required bool active}) {
-      return MaterialApp(
-        theme: themeData,
-        home: Scaffold(
-          body: Switch(
-            value: active,
-            onChanged: (_) { },
-          ),
-        ),
-      );
+      return MaterialApp(theme: themeData, home: Scaffold(body: Switch(value: active, onChanged: (_) {})));
     }
 
     await tester.pumpWidget(buildSwitch(active: false));
@@ -527,19 +519,13 @@ void main() {
     expect(
       _getSwitchMaterial(tester),
       material3
-      ? ((paints
-        ..rrect()
-        ..rrect())
-        ..circle(
-          color: inactivePressedOverlayColor,
-          radius: splashRadius,
-      ))
-      : (paints
-        ..rrect()
-        ..circle(
-          color: inactivePressedOverlayColor,
-          radius: splashRadius,
-      )),
+          ? ((paints
+              ..rrect()
+              ..rrect())
+              ..circle(color: inactivePressedOverlayColor, radius: splashRadius))
+          : (paints
+              ..rrect()
+              ..circle(color: inactivePressedOverlayColor, radius: splashRadius)),
       reason: 'Inactive pressed Switch should have overlay color: $inactivePressedOverlayColor',
     );
 
@@ -551,10 +537,7 @@ void main() {
       _getSwitchMaterial(tester),
       paints
         ..rrect()
-        ..circle(
-          color: activePressedOverlayColor,
-          radius: splashRadius,
-        ),
+        ..circle(color: activePressedOverlayColor, radius: splashRadius),
       reason: 'Active pressed Switch should have overlay color: $activePressedOverlayColor',
     );
   });
@@ -587,13 +570,9 @@ void main() {
               thumbColor: MaterialStatePropertyAll<Color>(localThemeThumbColor),
               trackColor: MaterialStatePropertyAll<Color>(localThemeTrackColor),
               trackOutlineColor: MaterialStatePropertyAll<Color>(localThemeOutlineColor),
-              trackOutlineWidth: MaterialStatePropertyAll<double>(localThemeOutlineWidth)
+              trackOutlineWidth: MaterialStatePropertyAll<double>(localThemeOutlineWidth),
             ),
-            child: Switch(
-              value: selected,
-              onChanged: (bool value) {},
-              autofocus: autofocus,
-            ),
+            child: Switch(value: selected, onChanged: (bool value) {}, autofocus: autofocus),
           ),
         ),
       );
@@ -604,17 +583,17 @@ void main() {
     expect(
       _getSwitchMaterial(tester),
       material3
-      ? (paints
-        ..rrect(color: localThemeTrackColor)
-        ..rrect(color: localThemeOutlineColor, strokeWidth: localThemeOutlineWidth)
-        ..rrect(color: localThemeThumbColor))
-      : (paints
-        ..rrect(color: localThemeTrackColor)
-        ..rrect(color: localThemeOutlineColor, strokeWidth: localThemeOutlineWidth)
-        ..rrect()
-        ..rrect()
-        ..rrect()
-        ..rrect(color: localThemeThumbColor))
+          ? (paints
+              ..rrect(color: localThemeTrackColor)
+              ..rrect(color: localThemeOutlineColor, strokeWidth: localThemeOutlineWidth)
+              ..rrect(color: localThemeThumbColor))
+          : (paints
+              ..rrect(color: localThemeTrackColor)
+              ..rrect(color: localThemeOutlineColor, strokeWidth: localThemeOutlineWidth)
+              ..rrect()
+              ..rrect()
+              ..rrect()
+              ..rrect(color: localThemeThumbColor)),
     );
   });
 }

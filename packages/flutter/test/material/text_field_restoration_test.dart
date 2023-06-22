@@ -10,25 +10,13 @@ const String alternativeText = 'Everything is awesome!!';
 
 void main() {
   testWidgets('TextField restoration', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        restorationScopeId: 'app',
-        home: TestWidget(),
-      ),
-    );
+    await tester.pumpWidget(const MaterialApp(restorationScopeId: 'app', home: TestWidget()));
 
     await restoreAndVerify(tester);
   });
 
   testWidgets('TextField restoration with external controller', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        restorationScopeId: 'root',
-        home: TestWidget(
-          useExternal: true,
-        ),
-      ),
-    );
+    await tester.pumpWidget(const MaterialApp(restorationScopeId: 'root', home: TestWidget(useExternal: true)));
 
     await restoreAndVerify(tester);
   });
@@ -101,11 +89,8 @@ class TestWidgetState extends State<TestWidget> with RestorationMixin {
       child: Align(
         child: SizedBox(
           width: 50,
-          child: TextField(
-            restorationId: 'text',
-            maxLines: 3,
-            controller: widget.useExternal ? controller.value : null,
-          ),
+          child:
+              TextField(restorationId: 'text', maxLines: 3, controller: widget.useExternal ? controller.value : null),
         ),
       ),
     );

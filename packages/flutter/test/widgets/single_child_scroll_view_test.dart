@@ -15,9 +15,7 @@ class TestScrollPosition extends ScrollPositionWithSingleContext {
     required ScrollContext state,
     double super.initialPixels,
     super.oldPosition,
-  }) : super(
-    context: state,
-  );
+  }) : super(context: state);
 }
 
 class TestScrollController extends ScrollController {
@@ -32,16 +30,11 @@ class TestScrollController extends ScrollController {
   }
 }
 
-Widget primaryScrollControllerBoilerplate({ required Widget child, required ScrollController controller }) {
+Widget primaryScrollControllerBoilerplate({required Widget child, required ScrollController controller}) {
   return Directionality(
     textDirection: TextDirection.ltr,
-    child: MediaQuery(
-      data: const MediaQueryData(),
-      child: PrimaryScrollController(
-        controller: controller,
-        child: child,
-      ),
-    ),
+    child:
+        MediaQuery(data: const MediaQueryData(), child: PrimaryScrollController(controller: controller, child: child)),
   );
 }
 
@@ -49,16 +42,13 @@ void main() {
   testWidgets('SingleChildScrollView overflow and clipRect test', (WidgetTester tester) async {
     // the test widowSize is Size(800.0, 600.0)
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SingleChildScrollView(
-          child: Container(height: 600.0),
-        ),
-      ),
+      Directionality(textDirection: TextDirection.ltr, child: SingleChildScrollView(child: Container(height: 600.0))),
     );
 
     // 1st, check that the render object has received the default clip behavior.
-    final dynamic renderObject = tester.allRenderObjects.where((RenderObject o) => o.runtimeType.toString() == '_RenderSingleChildViewport').first;
+    final dynamic renderObject = tester.allRenderObjects.where(
+      (RenderObject o) => o.runtimeType.toString() == '_RenderSingleChildViewport',
+    ).first;
     expect(renderObject.clipBehavior, equals(Clip.hardEdge)); // ignore: avoid_dynamic_calls
 
     // 2nd, height == widow.height test: check that the painting context does not call pushClipRect .
@@ -68,12 +58,7 @@ void main() {
 
     // 3rd, height overflow test: check that the painting context call pushClipRect.
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SingleChildScrollView(
-          child: Container(height: 600.1),
-        ),
-      ),
+      Directionality(textDirection: TextDirection.ltr, child: SingleChildScrollView(child: Container(height: 600.1))),
     );
     renderObject.paint(context, Offset.zero); // ignore: avoid_dynamic_calls
     expect(context.clipBehavior, equals(Clip.hardEdge));
@@ -81,28 +66,18 @@ void main() {
     // 4th, width == widow.width test: check that the painting context do not call pushClipRect.
     context = TestClipPaintingContext();
     expect(context.clipBehavior, equals(Clip.none)); // initial value
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Container(width: 800.0),
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Container(width: 800.0)),
+    ));
     renderObject.paint(context, Offset.zero); // ignore: avoid_dynamic_calls
     expect(context.clipBehavior, equals(Clip.none));
 
     // 5th, width overflow test: check that the painting context call pushClipRect.
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Container(width: 800.1),
-        ),
-      ),
-    );
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Container(width: 800.1)),
+    ));
     renderObject.paint(context, Offset.zero); // ignore: avoid_dynamic_calls
     expect(context.clipBehavior, equals(Clip.hardEdge));
   });
@@ -111,7 +86,9 @@ void main() {
     await tester.pumpWidget(SingleChildScrollView(child: Container(height: 2000.0)));
 
     // 1st, check that the render object has received the default clip behavior.
-    final dynamic renderObject = tester.allRenderObjects.where((RenderObject o) => o.runtimeType.toString() == '_RenderSingleChildViewport').first;
+    final dynamic renderObject = tester.allRenderObjects.where(
+      (RenderObject o) => o.runtimeType.toString() == '_RenderSingleChildViewport',
+    ).first;
     expect(renderObject.clipBehavior, equals(Clip.hardEdge)); // ignore: avoid_dynamic_calls
 
     // 2nd, check that the painting context has received the default clip behavior.
@@ -129,12 +106,7 @@ void main() {
   });
 
   testWidgets('SingleChildScrollView control test', (WidgetTester tester) async {
-    await tester.pumpWidget(SingleChildScrollView(
-      child: Container(
-        height: 2000.0,
-        color: const Color(0xFF00FF00),
-      ),
-    ));
+    await tester.pumpWidget(SingleChildScrollView(child: Container(height: 2000.0, color: const Color(0xFF00FF00))));
 
     final RenderBox box = tester.renderObject(find.byType(Container));
     expect(box.localToGlobal(Offset.zero), equals(Offset.zero));
@@ -147,20 +119,11 @@ void main() {
   testWidgets('Changing controllers changes scroll position', (WidgetTester tester) async {
     final TestScrollController controller = TestScrollController();
 
-    await tester.pumpWidget(SingleChildScrollView(
-      child: Container(
-        height: 2000.0,
-        color: const Color(0xFF00FF00),
-      ),
-    ));
+    await tester.pumpWidget(SingleChildScrollView(child: Container(height: 2000.0, color: const Color(0xFF00FF00))));
 
-    await tester.pumpWidget(SingleChildScrollView(
-      controller: controller,
-      child: Container(
-        height: 2000.0,
-        color: const Color(0xFF00FF00),
-      ),
-    ));
+    await tester.pumpWidget(
+      SingleChildScrollView(controller: controller, child: Container(height: 2000.0, color: const Color(0xFF00FF00))),
+    );
 
     final ScrollableState scrollable = tester.state(find.byType(Scrollable));
     expect(scrollable.position, isA<TestScrollPosition>());
@@ -170,19 +133,12 @@ void main() {
     final ScrollController primaryScrollController = ScrollController();
     await tester.pumpWidget(PrimaryScrollController(
       controller: primaryScrollController,
-      child: SingleChildScrollView(
-        primary: true,
-        child: Container(
-          height: 2000.0,
-          color: const Color(0xFF00FF00),
-        ),
-      ),
+      child: SingleChildScrollView(primary: true, child: Container(height: 2000.0, color: const Color(0xFF00FF00))),
     ));
 
     final Scrollable scrollable = tester.widget(find.byType(Scrollable));
     expect(scrollable.controller, primaryScrollController);
   });
-
 
   testWidgets('Changing scroll controller inside dirty layout builder does not assert', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
@@ -192,12 +148,7 @@ void main() {
         width: 750.0,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-            return SingleChildScrollView(
-              child: Container(
-                height: 2000.0,
-                color: const Color(0xFF00FF00),
-              ),
-            );
+            return SingleChildScrollView(child: Container(height: 2000.0, color: const Color(0xFF00FF00)));
           },
         ),
       ),
@@ -210,10 +161,7 @@ void main() {
           builder: (BuildContext context, BoxConstraints constraints) {
             return SingleChildScrollView(
               controller: controller,
-              child: Container(
-                height: 2000.0,
-                color: const Color(0xFF00FF00),
-              ),
+              child: Container(height: 2000.0, color: const Color(0xFF00FF00)),
             );
           },
         ),
@@ -232,54 +180,53 @@ void main() {
   });
 
   testWidgets('SingleChildScrollViews with controllers are not primary by default', (WidgetTester tester) async {
-    final SingleChildScrollView view = SingleChildScrollView(
-      controller: ScrollController(),
-    );
+    final SingleChildScrollView view = SingleChildScrollView(controller: ScrollController());
     expect(view.primary, isNull);
   });
 
-  testWidgets('Vertical SingleChildScrollViews use PrimaryScrollController by default on mobile', (WidgetTester tester) async {
-    final ScrollController controller = ScrollController();
-    await tester.pumpWidget(primaryScrollControllerBoilerplate(
-      child: const SingleChildScrollView(),
-      controller: controller,
-    ));
-    expect(controller.hasClients, isTrue);
-  }, variant: TargetPlatformVariant.mobile());
+  testWidgets(
+    'Vertical SingleChildScrollViews use PrimaryScrollController by default on mobile',
+    (WidgetTester tester) async {
+      final ScrollController controller = ScrollController();
+      await tester.pumpWidget(
+        primaryScrollControllerBoilerplate(child: const SingleChildScrollView(), controller: controller),
+      );
+      expect(controller.hasClients, isTrue);
+    },
+    variant: TargetPlatformVariant.mobile(),
+  );
 
-  testWidgets("Vertical SingleChildScrollViews don't use PrimaryScrollController by default on desktop", (WidgetTester tester) async {
-    final ScrollController controller = ScrollController();
-    await tester.pumpWidget(primaryScrollControllerBoilerplate(
-      child: const SingleChildScrollView(),
-      controller: controller,
-    ));
-    expect(controller.hasClients, isFalse);
-  }, variant: TargetPlatformVariant.desktop());
+  testWidgets(
+    "Vertical SingleChildScrollViews don't use PrimaryScrollController by default on desktop",
+    (WidgetTester tester) async {
+      final ScrollController controller = ScrollController();
+      await tester.pumpWidget(
+        primaryScrollControllerBoilerplate(child: const SingleChildScrollView(), controller: controller),
+      );
+      expect(controller.hasClients, isFalse);
+    },
+    variant: TargetPlatformVariant.desktop(),
+  );
 
   testWidgets('Nested scrollables have a null PrimaryScrollController', (WidgetTester tester) async {
     const Key innerKey = Key('inner');
     final ScrollController primaryScrollController = ScrollController();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: PrimaryScrollController(
-          controller: primaryScrollController,
-          child: SingleChildScrollView(
-            primary: true,
-            child: Container(
-              constraints: const BoxConstraints(maxHeight: 200.0),
-              child: ListView(key: innerKey, primary: true),
-            ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: PrimaryScrollController(
+        controller: primaryScrollController,
+        child: SingleChildScrollView(
+          primary: true,
+          child: Container(
+            constraints: const BoxConstraints(maxHeight: 200.0),
+            child: ListView(key: innerKey, primary: true),
           ),
         ),
       ),
-    );
+    ));
 
     final Scrollable innerScrollable = tester.widget(
-      find.descendant(
-        of: find.byKey(innerKey),
-        matching: find.byType(Scrollable),
-      ),
+      find.descendant(of: find.byKey(innerKey), matching: find.byType(Scrollable)),
     );
     expect(innerScrollable.controller, isNull);
   });
@@ -288,22 +235,17 @@ void main() {
     final SemanticsTester semantics = SemanticsTester(tester);
     final ScrollController controller = ScrollController();
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SingleChildScrollView(
-          controller: controller,
-          child: Column(
-            children: List<Widget>.generate(30, (int i) {
-              return SizedBox(
-                height: 200.0,
-                child: Text('Tile $i'),
-              );
-            }),
-          ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: SingleChildScrollView(
+        controller: controller,
+        child: Column(
+          children: List<Widget>.generate(30, (int i) {
+            return SizedBox(height: 200.0, child: Text('Tile $i'));
+          }),
         ),
       ),
-    );
+    ));
 
     List<TestSemantics> generateSemanticsChildren({int startHidden = -1, int endHidden = 30}) {
       final List<TestSemantics> children = <TestSemantics>[];
@@ -318,63 +260,41 @@ void main() {
       return children;
     }
 
-    expect(semantics, hasSemantics(
-      TestSemantics(
-        children: <TestSemantics>[
-          TestSemantics(
-            flags: <SemanticsFlag>[
-              SemanticsFlag.hasImplicitScrolling,
-            ],
-            actions: <SemanticsAction>[
-              SemanticsAction.scrollUp,
-            ],
-            children: generateSemanticsChildren(endHidden: 3),
-          ),
-        ],
-      ),
-      ignoreRect: true, ignoreTransform: true, ignoreId: true,
-    ));
+    expect(semantics, hasSemantics(TestSemantics(
+      children: <TestSemantics>[
+        TestSemantics(
+          flags: <SemanticsFlag>[SemanticsFlag.hasImplicitScrolling],
+          actions: <SemanticsAction>[SemanticsAction.scrollUp],
+          children: generateSemanticsChildren(endHidden: 3),
+        ),
+      ],
+    ), ignoreRect: true, ignoreTransform: true, ignoreId: true));
 
     controller.jumpTo(3000.0);
     await tester.pumpAndSettle();
 
-    expect(semantics, hasSemantics(
-      TestSemantics(
-        children: <TestSemantics>[
-          TestSemantics(
-            flags: <SemanticsFlag>[
-              SemanticsFlag.hasImplicitScrolling,
-            ],
-            actions: <SemanticsAction>[
-              SemanticsAction.scrollUp,
-              SemanticsAction.scrollDown,
-            ],
-            children: generateSemanticsChildren(startHidden: 14, endHidden: 18),
-          ),
-        ],
-      ),
-      ignoreRect: true, ignoreTransform: true, ignoreId: true,
-    ));
+    expect(semantics, hasSemantics(TestSemantics(
+      children: <TestSemantics>[
+        TestSemantics(
+          flags: <SemanticsFlag>[SemanticsFlag.hasImplicitScrolling],
+          actions: <SemanticsAction>[SemanticsAction.scrollUp, SemanticsAction.scrollDown],
+          children: generateSemanticsChildren(startHidden: 14, endHidden: 18),
+        ),
+      ],
+    ), ignoreRect: true, ignoreTransform: true, ignoreId: true));
 
     controller.jumpTo(6000.0);
     await tester.pumpAndSettle();
 
-    expect(semantics, hasSemantics(
-      TestSemantics(
-        children: <TestSemantics>[
-          TestSemantics(
-            flags: <SemanticsFlag>[
-              SemanticsFlag.hasImplicitScrolling,
-            ],
-            actions: <SemanticsAction>[
-              SemanticsAction.scrollDown,
-            ],
-            children: generateSemanticsChildren(startHidden: 26),
-          ),
-        ],
-      ),
-      ignoreRect: true, ignoreTransform: true, ignoreId: true,
-    ));
+    expect(semantics, hasSemantics(TestSemantics(
+      children: <TestSemantics>[
+        TestSemantics(
+          flags: <SemanticsFlag>[SemanticsFlag.hasImplicitScrolling],
+          actions: <SemanticsAction>[SemanticsAction.scrollDown],
+          children: generateSemanticsChildren(startHidden: 26),
+        ),
+      ],
+    ), ignoreRect: true, ignoreTransform: true, ignoreId: true));
 
     semantics.dispose();
   });
@@ -384,16 +304,14 @@ void main() {
     final UniqueKey scrollView = UniqueKey();
     final UniqueKey childBox = UniqueKey();
     const double length = 10000;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SingleChildScrollView(
-          key: scrollView,
-          controller: controller,
-          child: SizedBox(key: childBox, height: length),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: SingleChildScrollView(
+        key: scrollView,
+        controller: controller,
+        child: SizedBox(key: childBox, height: length),
       ),
-    );
+    ));
     final RenderObject scrollRenderObject = tester.renderObject(find.byKey(scrollView));
     RenderAbstractViewport? viewport;
     void findsRenderViewPort(RenderObject child) {
@@ -406,6 +324,7 @@ void main() {
       }
       child.visitChildren(findsRenderViewPort);
     }
+
     scrollRenderObject.visitChildren(findsRenderViewPort);
     expect(viewport, isNotNull);
     final RenderObject childRenderObject = tester.renderObject(find.byKey(childBox));
@@ -423,17 +342,15 @@ void main() {
     final UniqueKey scrollView = UniqueKey();
     final UniqueKey childBox = UniqueKey();
     const double length = 10000;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SingleChildScrollView(
-          key: scrollView,
-          scrollDirection: Axis.horizontal,
-          controller: controller,
-          child: SizedBox(key: childBox, width: length),
-        ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: SingleChildScrollView(
+        key: scrollView,
+        scrollDirection: Axis.horizontal,
+        controller: controller,
+        child: SizedBox(key: childBox, width: length),
       ),
-    );
+    ));
     final RenderObject scrollRenderObject = tester.renderObject(find.byKey(scrollView));
     RenderAbstractViewport? viewport;
     void findsRenderViewPort(RenderObject child) {
@@ -446,6 +363,7 @@ void main() {
       }
       child.visitChildren(findsRenderViewPort);
     }
+
     scrollRenderObject.visitChildren(findsRenderViewPort);
     expect(viewport, isNotNull);
     final RenderObject childRenderObject = tester.renderObject(find.byKey(childBox));
@@ -460,29 +378,23 @@ void main() {
 
   testWidgets('SingleChildScrollView getOffsetToReveal - down', (WidgetTester tester) async {
     List<Widget> children;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: SizedBox(
-            height: 200.0,
-            width: 300.0,
-            child: SingleChildScrollView(
-              controller: ScrollController(initialScrollOffset: 300.0),
-              child: Column(
-                children: children = List<Widget>.generate(20, (int i) {
-                  return SizedBox(
-                    height: 100.0,
-                    width: 300.0,
-                    child: Text('Tile $i'),
-                  );
-                }),
-              ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: SizedBox(
+          height: 200.0,
+          width: 300.0,
+          child: SingleChildScrollView(
+            controller: ScrollController(initialScrollOffset: 300.0),
+            child: Column(
+              children: children = List<Widget>.generate(20, (int i) {
+                return SizedBox(height: 100.0, width: 300.0, child: Text('Tile $i'));
+              }),
             ),
           ),
         ),
       ),
-    );
+    ));
 
     final RenderAbstractViewport viewport = tester.allRenderObjects.whereType<RenderAbstractViewport>().first;
 
@@ -506,30 +418,22 @@ void main() {
 
   testWidgets('SingleChildScrollView getOffsetToReveal - up', (WidgetTester tester) async {
     final List<Widget> children = List<Widget>.generate(20, (int i) {
-      return SizedBox(
-        height: 100.0,
-        width: 300.0,
-        child: Text('Tile $i'),
-      );
+      return SizedBox(height: 100.0, width: 300.0, child: Text('Tile $i'));
     });
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: SizedBox(
-            height: 200.0,
-            width: 300.0,
-            child: SingleChildScrollView(
-              controller: ScrollController(initialScrollOffset: 300.0),
-              reverse: true,
-              child: Column(
-                children: children.reversed.toList(),
-              ),
-            ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: SizedBox(
+          height: 200.0,
+          width: 300.0,
+          child: SingleChildScrollView(
+            controller: ScrollController(initialScrollOffset: 300.0),
+            reverse: true,
+            child: Column(children: children.reversed.toList()),
           ),
         ),
       ),
-    );
+    ));
 
     final RenderAbstractViewport viewport = tester.allRenderObjects.whereType<RenderAbstractViewport>().first;
 
@@ -554,30 +458,24 @@ void main() {
   testWidgets('SingleChildScrollView getOffsetToReveal - right', (WidgetTester tester) async {
     List<Widget> children;
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: SizedBox(
-            height: 300.0,
-            width: 200.0,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              controller: ScrollController(initialScrollOffset: 300.0),
-              child: Row(
-                children: children = List<Widget>.generate(20, (int i) {
-                  return SizedBox(
-                    height: 300.0,
-                    width: 100.0,
-                    child: Text('Tile $i'),
-                  );
-                }),
-              ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: SizedBox(
+          height: 300.0,
+          width: 200.0,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            controller: ScrollController(initialScrollOffset: 300.0),
+            child: Row(
+              children: children = List<Widget>.generate(20, (int i) {
+                return SizedBox(height: 300.0, width: 100.0, child: Text('Tile $i'));
+              }),
             ),
           ),
         ),
       ),
-    );
+    ));
 
     final RenderAbstractViewport viewport = tester.allRenderObjects.whereType<RenderAbstractViewport>().first;
 
@@ -601,32 +499,24 @@ void main() {
 
   testWidgets('SingleChildScrollView getOffsetToReveal - left', (WidgetTester tester) async {
     final List<Widget> children = List<Widget>.generate(20, (int i) {
-      return SizedBox(
-        height: 300.0,
-        width: 100.0,
-        child: Text('Tile $i'),
-      );
+      return SizedBox(height: 300.0, width: 100.0, child: Text('Tile $i'));
     });
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: SizedBox(
-            height: 300.0,
-            width: 200.0,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              reverse: true,
-              controller: ScrollController(initialScrollOffset: 300.0),
-              child: Row(
-                children: children.reversed.toList(),
-              ),
-            ),
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: SizedBox(
+          height: 300.0,
+          width: 200.0,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            reverse: true,
+            controller: ScrollController(initialScrollOffset: 300.0),
+            child: Row(children: children.reversed.toList()),
           ),
         ),
       ),
-    );
+    ));
 
     final RenderAbstractViewport viewport = tester.allRenderObjects.whereType<RenderAbstractViewport>().first;
 
@@ -651,11 +541,7 @@ void main() {
   testWidgets('Nested SingleChildScrollView showOnScreen', (WidgetTester tester) async {
     final List<List<Widget>> children = List<List<Widget>>.generate(10, (int x) {
       return List<Widget>.generate(10, (int y) {
-        return SizedBox(
-          key: UniqueKey(),
-          height: 100.0,
-          width: 100.0,
-        );
+        return SizedBox(key: UniqueKey(), height: 100.0, width: 100.0);
       });
     });
     ScrollController controllerX;
@@ -679,31 +565,27 @@ void main() {
     /// Each c is a 100x100 container, v are containers visible in initial
     /// viewport.
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: SizedBox(
-            height: 200.0,
-            width: 200.0,
+    await tester.pumpWidget(Directionality(
+      textDirection: TextDirection.ltr,
+      child: Center(
+        child: SizedBox(
+          height: 200.0,
+          width: 200.0,
+          child: SingleChildScrollView(
+            controller: controllerY = ScrollController(initialScrollOffset: 400.0),
             child: SingleChildScrollView(
-              controller: controllerY = ScrollController(initialScrollOffset: 400.0),
-              child: SingleChildScrollView(
-                controller: controllerX = ScrollController(initialScrollOffset: 400.0),
-                scrollDirection: Axis.horizontal,
-                child: Column(
-                  children: children.map((List<Widget> widgets) {
-                    return Row(
-                      children: widgets,
-                    );
-                  }).toList(),
-                ),
+              controller: controllerX = ScrollController(initialScrollOffset: 400.0),
+              scrollDirection: Axis.horizontal,
+              child: Column(
+                children: children.map((List<Widget> widgets) {
+                  return Row(children: widgets);
+                }).toList(),
               ),
             ),
           ),
         ),
       ),
-    );
+    ));
 
     expect(controllerX.offset, 400.0);
     expect(controllerY.offset, 400.0);
@@ -815,57 +697,43 @@ void main() {
   group('Nested SingleChildScrollView (same orientation) showOnScreen', () {
     late List<Widget> children;
 
-    Future<void> buildNestedScroller({ required WidgetTester tester, ScrollController? inner, ScrollController? outer }) {
-      return tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Center(
-            child: SizedBox(
-              height: 200.0,
-              width: 300.0,
-              child: SingleChildScrollView(
-                controller: outer,
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 200.0,
-                    ),
-                    SizedBox(
-                      height: 200.0,
-                      width: 300.0,
-                      child: SingleChildScrollView(
-                        controller: inner,
-                        child: Column(
-                          children: children = List<Widget>.generate(10, (int i) {
-                            return SizedBox(
-                              height: 100.0,
-                              width: 300.0,
-                              child: Text('$i'),
-                            );
-                          }),
-                        ),
+    Future<void> buildNestedScroller({required WidgetTester tester, ScrollController? inner, ScrollController? outer}) {
+      return tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: SizedBox(
+            height: 200.0,
+            width: 300.0,
+            child: SingleChildScrollView(
+              controller: outer,
+              child: Column(
+                children: <Widget>[
+                  const SizedBox(height: 200.0),
+                  SizedBox(
+                    height: 200.0,
+                    width: 300.0,
+                    child: SingleChildScrollView(
+                      controller: inner,
+                      child: Column(
+                        children: children = List<Widget>.generate(10, (int i) {
+                          return SizedBox(height: 100.0, width: 300.0, child: Text('$i'));
+                        }),
                       ),
                     ),
-                    const SizedBox(
-                      height: 200.0,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 200.0),
+                ],
               ),
             ),
           ),
         ),
-      );
+      ));
     }
 
     testWidgets('in view in inner, but not in outer', (WidgetTester tester) async {
       final ScrollController inner = ScrollController();
       final ScrollController outer = ScrollController();
-      await buildNestedScroller(
-        tester: tester,
-        inner: inner,
-        outer: outer,
-      );
+      await buildNestedScroller(tester: tester, inner: inner, outer: outer);
       expect(outer.offset, 0.0);
       expect(inner.offset, 0.0);
 
@@ -878,11 +746,7 @@ void main() {
     testWidgets('not in view of neither inner nor outer', (WidgetTester tester) async {
       final ScrollController inner = ScrollController();
       final ScrollController outer = ScrollController();
-      await buildNestedScroller(
-        tester: tester,
-        inner: inner,
-        outer: outer,
-      );
+      await buildNestedScroller(tester: tester, inner: inner, outer: outer);
       expect(outer.offset, 0.0);
       expect(inner.offset, 0.0);
 
@@ -895,11 +759,7 @@ void main() {
     testWidgets('in view in inner and outer', (WidgetTester tester) async {
       final ScrollController inner = ScrollController(initialScrollOffset: 200.0);
       final ScrollController outer = ScrollController(initialScrollOffset: 200.0);
-      await buildNestedScroller(
-        tester: tester,
-        inner: inner,
-        outer: outer,
-      );
+      await buildNestedScroller(tester: tester, inner: inner, outer: outer);
       expect(outer.offset, 200.0);
       expect(inner.offset, 200.0);
 
@@ -912,11 +772,7 @@ void main() {
     testWidgets('inner shown in outer, but item not visible', (WidgetTester tester) async {
       final ScrollController inner = ScrollController(initialScrollOffset: 200.0);
       final ScrollController outer = ScrollController(initialScrollOffset: 200.0);
-      await buildNestedScroller(
-        tester: tester,
-        inner: inner,
-        outer: outer,
-      );
+      await buildNestedScroller(tester: tester, inner: inner, outer: outer);
       expect(outer.offset, 200.0);
       expect(inner.offset, 200.0);
 
@@ -929,11 +785,7 @@ void main() {
     testWidgets('inner half shown in outer, item only visible in inner', (WidgetTester tester) async {
       final ScrollController inner = ScrollController();
       final ScrollController outer = ScrollController(initialScrollOffset: 100.0);
-      await buildNestedScroller(
-        tester: tester,
-        inner: inner,
-        outer: outer,
-      );
+      await buildNestedScroller(tester: tester, inner: inner, outer: outer);
       expect(outer.offset, 100.0);
       expect(inner.offset, 0.0);
 
@@ -948,24 +800,19 @@ void main() {
     final List<FocusNode> focusNodes = List<FocusNode>.generate(50, (int i) => FocusNode());
 
     Future<void> boilerplate(ScrollViewKeyboardDismissBehavior behavior) {
-      return tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SingleChildScrollView(
-              padding: EdgeInsets.zero,
-              keyboardDismissBehavior: behavior,
-              child: Column(
-                children: focusNodes.map((FocusNode focusNode) {
-                  return SizedBox(
-                    height: 50,
-                    child: TextField(focusNode: focusNode),
-                  );
-                }).toList(),
-              ),
+      return tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            padding: EdgeInsets.zero,
+            keyboardDismissBehavior: behavior,
+            child: Column(
+              children: focusNodes.map((FocusNode focusNode) {
+                return SizedBox(height: 50, child: TextField(focusNode: focusNode));
+              }).toList(),
             ),
           ),
         ),
-      );
+      ));
     }
 
     // ScrollViewKeyboardDismissBehavior.onDrag dismiss keyboard on drag

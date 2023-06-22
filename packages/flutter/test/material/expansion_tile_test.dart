@@ -58,9 +58,7 @@ void main() {
     const Clip clipBehavior = Clip.antiAlias;
 
     await tester.pumpWidget(MaterialApp(
-      theme: ThemeData(
-        dividerColor: dividerColor,
-      ),
+      theme: ThemeData(dividerColor: dividerColor),
       home: Material(
         child: SingleChildScrollView(
           child: Column(
@@ -72,29 +70,17 @@ void main() {
                 title: const Text('Expanded'),
                 backgroundColor: Colors.red,
                 clipBehavior: clipBehavior,
-                children: <Widget>[
-                  ListTile(
-                    key: tileKey,
-                    title: const Text('0'),
-                  ),
-                ],
+                children: <Widget>[ListTile(key: tileKey, title: const Text('0'))],
               ),
               ExpansionTile(
                 key: collapsedKey,
                 title: const Text('Collapsed'),
-                children: <Widget>[
-                  ListTile(
-                    key: tileKey,
-                    title: const Text('0'),
-                  ),
-                ],
+                children: <Widget>[ListTile(key: tileKey, title: const Text('0'))],
               ),
               const ExpansionTile(
                 key: defaultKey,
                 title: Text('Default'),
-                children: <Widget>[
-                  ListTile(title: Text('0')),
-                ],
+                children: <Widget>[ListTile(title: Text('0'))],
               ),
             ],
           ),
@@ -103,10 +89,9 @@ void main() {
     ));
 
     double getHeight(Key key) => tester.getSize(find.byKey(key)).height;
-    Container getContainer(Key key) => tester.firstWidget(find.descendant(
-      of: find.byKey(key),
-      matching: find.byType(Container),
-    ));
+    Container getContainer(Key key) => tester.firstWidget(
+      find.descendant(of: find.byKey(key), matching: find.byType(Container)),
+    );
 
     expect(getHeight(topKey), getHeight(expandedKey) - getHeight(tileKey) - 2.0);
     expect(getHeight(topKey), getHeight(collapsedKey) - 2.0);
@@ -156,7 +141,7 @@ void main() {
     expect(collapsedContainerDecoration.color, Colors.transparent);
     expect((collapsedContainerDecoration.shape as Border).top.color, dividerColor);
     expect((collapsedContainerDecoration.shape as Border).bottom.color, dividerColor);
-  }, variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.iOS,  TargetPlatform.macOS }));
+  }, variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.iOS, TargetPlatform.macOS}));
 
   testWidgets('ExpansionTile Theme dependencies', (WidgetTester tester) async {
     final Key expandedTitleKey = UniqueKey();
@@ -164,37 +149,35 @@ void main() {
     final Key expandedIconKey = UniqueKey();
     final Key collapsedIconKey = UniqueKey();
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          useMaterial3: false,
-          colorScheme: ColorScheme.fromSwatch().copyWith(primary: foregroundColor),
-          unselectedWidgetColor: unselectedWidgetColor,
-          textTheme: const TextTheme(titleMedium: TextStyle(color: headerColor)),
-        ),
-        home: Material(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                const ListTile(title: Text('Top')),
-                ExpansionTile(
-                  initiallyExpanded: true,
-                  title: TestText('Expanded', key: expandedTitleKey),
-                  backgroundColor: Colors.red,
-                  trailing: TestIcon(key: expandedIconKey),
-                  children: const <Widget>[ListTile(title: Text('0'))],
-                ),
-                ExpansionTile(
-                  title: TestText('Collapsed', key: collapsedTitleKey),
-                  trailing: TestIcon(key: collapsedIconKey),
-                  children: const <Widget>[ListTile(title: Text('0'))],
-                ),
-              ],
-            ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(
+        useMaterial3: false,
+        colorScheme: ColorScheme.fromSwatch().copyWith(primary: foregroundColor),
+        unselectedWidgetColor: unselectedWidgetColor,
+        textTheme: const TextTheme(titleMedium: TextStyle(color: headerColor)),
+      ),
+      home: Material(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              const ListTile(title: Text('Top')),
+              ExpansionTile(
+                initiallyExpanded: true,
+                title: TestText('Expanded', key: expandedTitleKey),
+                backgroundColor: Colors.red,
+                trailing: TestIcon(key: expandedIconKey),
+                children: const <Widget>[ListTile(title: Text('0'))],
+              ),
+              ExpansionTile(
+                title: TestText('Collapsed', key: collapsedTitleKey),
+                trailing: TestIcon(key: collapsedIconKey),
+                children: const <Widget>[ListTile(title: Text('0'))],
+              ),
+            ],
           ),
         ),
       ),
-    );
+    ));
 
     Color iconColor(Key key) => tester.state<TestIconState>(find.byKey(key)).iconTheme.color!;
     Color textColor(Key key) => tester.state<TestTextState>(find.byKey(key)).textStyle.color!;
@@ -215,7 +198,7 @@ void main() {
     expect(textColor(collapsedTitleKey), foregroundColor);
     expect(iconColor(expandedIconKey), unselectedWidgetColor);
     expect(iconColor(collapsedIconKey), foregroundColor);
-  }, variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.iOS,  TargetPlatform.macOS }));
+  }, variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.iOS, TargetPlatform.macOS}));
 
   testWidgets('ExpansionTile subtitle', (WidgetTester tester) async {
     await tester.pumpWidget(
@@ -234,54 +217,35 @@ void main() {
   });
 
   testWidgets('ExpansionTile maintainState', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(
-          platform: TargetPlatform.iOS,
-          dividerColor: dividerColor,
-        ),
-        home: const Material(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                ExpansionTile(
-                  title: Text('Tile 1'),
-                  maintainState: true,
-                  children: <Widget>[
-                    Text('Maintaining State'),
-                  ],
-                ),
-                ExpansionTile(
-                  title: Text('Title 2'),
-                  children: <Widget>[
-                    Text('Discarding State'),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-
-     // This text should be offstage while ExpansionTile collapsed
-     expect(find.text('Maintaining State', skipOffstage: false), findsOneWidget);
-     expect(find.text('Maintaining State'), findsNothing);
-     // This text shouldn't be there while ExpansionTile collapsed
-     expect(find.text('Discarding State'), findsNothing);
-   });
-
-  testWidgets('ExpansionTile padding test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: Center(
-          child: ExpansionTile(
-            title: Text('Hello'),
-            tilePadding: EdgeInsets.fromLTRB(8, 12, 4, 10),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(platform: TargetPlatform.iOS, dividerColor: dividerColor),
+      home: const Material(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              ExpansionTile(title: Text('Tile 1'), maintainState: true, children: <Widget>[Text('Maintaining State')]),
+              ExpansionTile(title: Text('Title 2'), children: <Widget>[Text('Discarding State')]),
+            ],
           ),
         ),
       ),
     ));
+
+    // This text should be offstage while ExpansionTile collapsed
+    expect(find.text('Maintaining State', skipOffstage: false), findsOneWidget);
+    expect(find.text('Maintaining State'), findsNothing);
+    // This text shouldn't be there while ExpansionTile collapsed
+    expect(find.text('Discarding State'), findsNothing);
+  });
+
+  testWidgets('ExpansionTile padding test', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: Center(child: ExpansionTile(title: Text('Hello'), tilePadding: EdgeInsets.fromLTRB(8, 12, 4, 10))),
+        ),
+      ),
+    );
 
     final Rect titleRect = tester.getRect(find.text('Hello'));
     final Rect trailingRect = tester.getRect(find.byIcon(Icons.expand_more));
@@ -299,20 +263,19 @@ void main() {
   });
 
   testWidgets('ExpansionTile expandedAlignment test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: Center(
-          child: ExpansionTile(
-            title: Text('title'),
-            expandedAlignment: Alignment.centerLeft,
-            children: <Widget>[
-              SizedBox(height: 100, width: 100),
-              SizedBox(height: 100, width: 80),
-            ],
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: Center(
+            child: ExpansionTile(
+              title: Text('title'),
+              expandedAlignment: Alignment.centerLeft,
+              children: <Widget>[SizedBox(height: 100, width: 100), SizedBox(height: 100, width: 80)],
+            ),
           ),
         ),
       ),
-    ));
+    );
 
     await tester.tap(find.text('title'));
     await tester.pumpAndSettle();
@@ -331,24 +294,26 @@ void main() {
     const Key child0Key = Key('child0');
     const Key child1Key = Key('child1');
 
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: Center(
-          child: ExpansionTile(
-            title: Text('title'),
-            // Set the column's alignment to Alignment.centerRight to test CrossAxisAlignment
-            // of children widgets. This helps distinguish the effect of expandedAlignment
-            // and expandedCrossAxisAlignment later in the test.
-            expandedAlignment: Alignment.centerRight,
-            expandedCrossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(height: 100, width: 100, key: child0Key),
-              SizedBox(height: 100, width: 80, key: child1Key),
-            ],
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: Center(
+            child: ExpansionTile(
+              title: Text('title'),
+              // Set the column's alignment to Alignment.centerRight to test CrossAxisAlignment
+              // of children widgets. This helps distinguish the effect of expandedAlignment
+              // and expandedCrossAxisAlignment later in the test.
+              expandedAlignment: Alignment.centerRight,
+              expandedCrossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 100, width: 100, key: child0Key),
+                SizedBox(height: 100, width: 80, key: child1Key),
+              ],
+            ),
           ),
         ),
       ),
-    ));
+    );
 
     await tester.tap(find.text('title'));
     await tester.pumpAndSettle();
@@ -394,20 +359,18 @@ void main() {
   testWidgets('expandedCrossAxisAlignment and expandedAlignment default values', (WidgetTester tester) async {
     const Key child1Key = Key('child1');
 
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: Center(
-          child: ExpansionTile(
-            title: Text('title'),
-            children: <Widget>[
-              SizedBox(height: 100, width: 100),
-              SizedBox(height: 100, width: 80, key: child1Key),
-            ],
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: Center(
+            child: ExpansionTile(
+              title: Text('title'),
+              children: <Widget>[SizedBox(height: 100, width: 100), SizedBox(height: 100, width: 80, key: child1Key)],
+            ),
           ),
         ),
       ),
-    ));
-
+    );
 
     await tester.tap(find.text('title'));
     await tester.pumpAndSettle();
@@ -423,21 +386,14 @@ void main() {
     // By default the value of extendedCrossAxisAlignment is CrossAxisAlignment.center, hence
     // the offset of left and right edges from Column should be equal.
     expect(child1Rect.left - columnRect.left, columnRect.right - child1Rect.right);
-
   });
 
   testWidgets('childrenPadding default value', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Material(
-          child: Center(
-            child: ExpansionTile(
-              title: Text('title'),
-              children: <Widget>[
-                SizedBox(height: 100, width: 100),
-              ],
-            ),
-          ),
+          child:
+              Center(child: ExpansionTile(title: Text('title'), children: <Widget>[SizedBox(height: 100, width: 100)])),
         ),
       ),
     );
@@ -464,9 +420,7 @@ void main() {
             child: ExpansionTile(
               title: Text('title'),
               childrenPadding: EdgeInsets.fromLTRB(10, 8, 12, 4),
-              children: <Widget>[
-                SizedBox(height: 100, width: 100),
-              ],
+              children: <Widget>[SizedBox(height: 100, width: 100)],
             ),
           ),
         ),
@@ -492,34 +446,32 @@ void main() {
     const Color backgroundColor = Colors.red;
     const Color collapsedBackgroundColor = Colors.brown;
 
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: ExpansionTile(
-          key: expansionTileKey,
-          title: Text('Title'),
-          backgroundColor: backgroundColor,
-          collapsedBackgroundColor: collapsedBackgroundColor,
-          children: <Widget>[
-            SizedBox(height: 100, width: 100),
-          ],
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: ExpansionTile(
+            key: expansionTileKey,
+            title: Text('Title'),
+            backgroundColor: backgroundColor,
+            collapsedBackgroundColor: collapsedBackgroundColor,
+            children: <Widget>[SizedBox(height: 100, width: 100)],
+          ),
         ),
       ),
-    ));
+    );
 
-    ShapeDecoration shapeDecoration =  tester.firstWidget<Container>(find.descendant(
-      of: find.byKey(expansionTileKey),
-      matching: find.byType(Container),
-    )).decoration! as ShapeDecoration;
+    ShapeDecoration shapeDecoration = tester.firstWidget<Container>(
+      find.descendant(of: find.byKey(expansionTileKey), matching: find.byType(Container)),
+    ).decoration! as ShapeDecoration;
 
     expect(shapeDecoration.color, collapsedBackgroundColor);
 
     await tester.tap(find.text('Title'));
     await tester.pumpAndSettle();
 
-    shapeDecoration =  tester.firstWidget<Container>(find.descendant(
-      of: find.byKey(expansionTileKey),
-      matching: find.byType(Container),
-    )).decoration! as ShapeDecoration;
+    shapeDecoration = tester.firstWidget<Container>(
+      find.descendant(of: find.byKey(expansionTileKey), matching: find.byType(Container)),
+    ).decoration! as ShapeDecoration;
 
     expect(shapeDecoration.color, backgroundColor);
   });
@@ -533,9 +485,7 @@ void main() {
         child: ExpansionTile(
           title: TestText('title'),
           trailing: TestIcon(),
-          children: <Widget>[
-            SizedBox(height: 100, width: 100),
-          ],
+          children: <Widget>[SizedBox(height: 100, width: 100)],
         ),
       ),
     ));
@@ -561,21 +511,21 @@ void main() {
     const Color textColor = Color(0xff00ffff);
     const Color collapsedTextColor = Color(0xffff00ff);
 
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: ExpansionTile(
-          iconColor: iconColor,
-          collapsedIconColor: collapsedIconColor,
-          textColor: textColor,
-          collapsedTextColor: collapsedTextColor,
-          title: TestText('title'),
-          trailing: TestIcon(),
-          children: <Widget>[
-            SizedBox(height: 100, width: 100),
-          ],
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: ExpansionTile(
+            iconColor: iconColor,
+            collapsedIconColor: collapsedIconColor,
+            textColor: textColor,
+            collapsedTextColor: collapsedTextColor,
+            title: TestText('title'),
+            trailing: TestIcon(),
+            children: <Widget>[SizedBox(height: 100, width: 100)],
+          ),
         ),
       ),
-    ));
+    );
 
     Color getIconColor() => tester.state<TestIconState>(find.byType(TestIcon)).iconTheme.color!;
     Color getTextColor() => tester.state<TestTextState>(find.byType(TestText)).textStyle.color!;
@@ -593,10 +543,7 @@ void main() {
   testWidgets('ExpansionTile Border', (WidgetTester tester) async {
     const Key expansionTileKey = PageStorageKey<String>('expansionTile');
 
-    const Border collapsedShape = Border(
-      top: BorderSide(color: Colors.blue),
-      bottom: BorderSide(color: Colors.green)
-    );
+    const Border collapsedShape = Border(top: BorderSide(color: Colors.blue), bottom: BorderSide(color: Colors.green));
     final Border shape = Border.all(color: Colors.red);
 
     await tester.pumpWidget(MaterialApp(
@@ -609,11 +556,7 @@ void main() {
                 title: const Text('ExpansionTile'),
                 collapsedShape: collapsedShape,
                 shape: shape,
-                children: const <Widget>[
-                  ListTile(
-                    title: Text('0'),
-                  ),
-                ],
+                children: const <Widget>[ListTile(title: Text('0'))],
               ),
             ],
           ),
@@ -621,10 +564,9 @@ void main() {
       ),
     ));
 
-    Container getContainer(Key key) => tester.firstWidget(find.descendant(
-      of: find.byKey(key),
-      matching: find.byType(Container),
-    ));
+    Container getContainer(Key key) => tester.firstWidget(
+      find.descendant(of: find.byKey(key), matching: find.byType(Container)),
+    );
 
     // expansionTile should be Collapsed now.
     ShapeDecoration expandedContainerDecoration = getContainer(expansionTileKey).decoration! as ShapeDecoration;
@@ -639,13 +581,7 @@ void main() {
   });
 
   testWidgets('ExpansionTile platform controlAffinity test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: ExpansionTile(
-          title: Text('Title'),
-        ),
-      ),
-    ));
+    await tester.pumpWidget(const MaterialApp(home: Material(child: ExpansionTile(title: Text('Title')))));
 
     final ListTile listTile = tester.widget(find.byType(ListTile));
     expect(listTile.leading, isNull);
@@ -653,14 +589,11 @@ void main() {
   });
 
   testWidgets('ExpansionTile trailing controlAffinity test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: ExpansionTile(
-          title: Text('Title'),
-          controlAffinity: ListTileControlAffinity.trailing,
-        ),
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(child: ExpansionTile(title: Text('Title'), controlAffinity: ListTileControlAffinity.trailing)),
       ),
-    ));
+    );
 
     final ListTile listTile = tester.widget(find.byType(ListTile));
     expect(listTile.leading, isNull);
@@ -668,14 +601,11 @@ void main() {
   });
 
   testWidgets('ExpansionTile leading controlAffinity test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: ExpansionTile(
-          title: Text('Title'),
-          controlAffinity: ListTileControlAffinity.leading,
-        ),
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(child: ExpansionTile(title: Text('Title'), controlAffinity: ListTileControlAffinity.leading)),
       ),
-    ));
+    );
 
     final ListTile listTile = tester.widget(find.byType(ListTile));
     expect(listTile.leading.runtimeType, RotationTransition);
@@ -683,15 +613,17 @@ void main() {
   });
 
   testWidgets('ExpansionTile override rotating icon test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: ExpansionTile(
-          title: Text('Title'),
-          leading: Icon(Icons.info),
-          controlAffinity: ListTileControlAffinity.leading,
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: ExpansionTile(
+            title: Text('Title'),
+            leading: Icon(Icons.info),
+            controlAffinity: ListTileControlAffinity.leading,
+          ),
         ),
       ),
-    ));
+    );
 
     final ListTile listTile = tester.widget(find.byType(ListTile));
     expect(listTile.leading.runtimeType, Icon);
@@ -702,21 +634,18 @@ void main() {
     tester.binding.focusManager.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
     final SemanticsHandle handle = tester.ensureSemantics();
 
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: Column(
-          children: <Widget>[
-            ExpansionTile(
-              title: Text('First Expansion Tile'),
-            ),
-            ExpansionTile(
-              initiallyExpanded: true,
-              title: Text('Second Expansion Tile'),
-            ),
-          ],
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              ExpansionTile(title: Text('First Expansion Tile')),
+              ExpansionTile(initiallyExpanded: true, title: Text('Second Expansion Tile')),
+            ],
+          ),
         ),
       ),
-    ));
+    );
 
     await tester.pumpAndSettle();
 
@@ -758,14 +687,8 @@ void main() {
     const DefaultMaterialLocalizations localizations = DefaultMaterialLocalizations();
     await tester.pumpWidget(
       const MaterialApp(
-        home: Material(
-          child: ExpansionTile(
-            title: Text('Title'),
-            children: <Widget>[
-              SizedBox(height: 100, width: 100),
-            ],
-          ),
-        ),
+        home:
+            Material(child: ExpansionTile(title: Text('Title'), children: <Widget>[SizedBox(height: 100, width: 100)])),
       ),
     );
 
@@ -797,27 +720,21 @@ void main() {
     final SemanticsHandle handle = tester.ensureSemantics();
     const DefaultMaterialLocalizations localizations = DefaultMaterialLocalizations();
 
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: Column(
-          children: <Widget>[
-            ExpansionTile(
-              title: Text('First Expansion Tile'),
-            ),
-            ExpansionTile(
-              initiallyExpanded: true,
-              title: Text('Second Expansion Tile'),
-            ),
-          ],
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              ExpansionTile(title: Text('First Expansion Tile')),
+              ExpansionTile(initiallyExpanded: true, title: Text('Second Expansion Tile')),
+            ],
+          ),
         ),
       ),
-    ));
+    );
 
     SemanticsNode semantics = tester.getSemantics(
-      find.ancestor(
-        of: find.byType(ListTile).first,
-        matching: find.byType(Semantics),
-      ).first,
+      find.ancestor(of: find.byType(ListTile).first, matching: find.byType(Semantics)).first,
     );
     expect(semantics, isNotNull);
     // The onTapHint is passed to semantics properties's hintOverrides.
@@ -828,10 +745,7 @@ void main() {
     expect(semantics.hintOverrides!.onTapHint, localizations.expansionTileCollapsedTapHint);
 
     semantics = tester.getSemantics(
-      find.ancestor(
-        of: find.byType(ListTile).last,
-        matching: find.byType(Semantics),
-      ).first,
+      find.ancestor(of: find.byType(ListTile).last, matching: find.byType(Semantics)).first,
     );
 
     expect(semantics, isNotNull);
@@ -848,49 +762,34 @@ void main() {
     final SemanticsHandle handle = tester.ensureSemantics();
     const DefaultMaterialLocalizations localizations = DefaultMaterialLocalizations();
 
-    await tester.pumpWidget(const MaterialApp(
-      home: Material(
-        child: Column(
-          children: <Widget>[
-            ExpansionTile(
-              title: Text('First Expansion Tile'),
-            ),
-            ExpansionTile(
-              initiallyExpanded: true,
-              title: Text('Second Expansion Tile'),
-            ),
-          ],
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              ExpansionTile(title: Text('First Expansion Tile')),
+              ExpansionTile(initiallyExpanded: true, title: Text('Second Expansion Tile')),
+            ],
+          ),
         ),
       ),
-    ));
+    );
 
     SemanticsNode semantics = tester.getSemantics(
-      find.ancestor(
-        of: find.byType(ListTile).first,
-        matching: find.byType(Semantics),
-      ).first,
+      find.ancestor(of: find.byType(ListTile).first, matching: find.byType(Semantics)).first,
     );
 
     expect(semantics, isNotNull);
-    expect(
-      semantics.hint,
-      '${localizations.expandedHint}\n ${localizations.expansionTileCollapsedHint}',
-    );
+    expect(semantics.hint, '${localizations.expandedHint}\n ${localizations.expansionTileCollapsedHint}');
 
     semantics = tester.getSemantics(
-      find.ancestor(
-        of: find.byType(ListTile).last,
-        matching: find.byType(Semantics),
-      ).first,
+      find.ancestor(of: find.byType(ListTile).last, matching: find.byType(Semantics)).first,
     );
 
     expect(semantics, isNotNull);
-    expect(
-      semantics.hint,
-      '${localizations.collapsedHint}\n ${localizations.expansionTileExpandedHint}',
-    );
+    expect(semantics.hint, '${localizations.collapsedHint}\n ${localizations.expansionTileExpandedHint}');
     handle.dispose();
-  }, variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.iOS, TargetPlatform.macOS }));
+  }, variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.iOS, TargetPlatform.macOS}));
 
   group('Material 2', () {
     // These tests are only relevant for Material 2. Once Material 2
@@ -906,9 +805,7 @@ void main() {
           child: ExpansionTile(
             title: TestText('title'),
             trailing: TestIcon(),
-            children: <Widget>[
-              SizedBox(height: 100, width: 100),
-            ],
+            children: <Widget>[SizedBox(height: 100, width: 100)],
           ),
         ),
       ));
@@ -935,9 +832,7 @@ void main() {
         child: ExpansionTile(
           controller: controller,
           title: const Text('Title'),
-          children: const <Widget>[
-            Text('Child 0'),
-          ],
+          children: const <Widget>[Text('Child 0')],
         ),
       ),
     ));
@@ -955,41 +850,42 @@ void main() {
     expect(find.text('Child 0'), findsNothing);
   });
 
-  testWidgets('Calling ExpansionTileController.expand/collapsed has no effect if it is already expanded/collapsed', (WidgetTester tester) async {
-    final ExpansionTileController controller = ExpansionTileController();
+  testWidgets(
+    'Calling ExpansionTileController.expand/collapsed has no effect if it is already expanded/collapsed',
+    (WidgetTester tester) async {
+      final ExpansionTileController controller = ExpansionTileController();
 
-    await tester.pumpWidget(MaterialApp(
-      home: Material(
-        child: ExpansionTile(
-          controller: controller,
-          title: const Text('Title'),
-          initiallyExpanded: true,
-          children: const <Widget>[
-            Text('Child 0'),
-          ],
+      await tester.pumpWidget(MaterialApp(
+        home: Material(
+          child: ExpansionTile(
+            controller: controller,
+            title: const Text('Title'),
+            initiallyExpanded: true,
+            children: const <Widget>[Text('Child 0')],
+          ),
         ),
-      ),
-    ));
+      ));
 
-    expect(find.text('Child 0'), findsOneWidget);
-    expect(controller.isExpanded, isTrue);
-    controller.expand();
-    expect(controller.isExpanded, isTrue);
-    await tester.pump();
-    expect(tester.hasRunningAnimations, isFalse);
-    expect(find.text('Child 0'), findsOneWidget);
-    controller.collapse();
-    expect(controller.isExpanded, isFalse);
-    await tester.pump();
-    expect(tester.hasRunningAnimations, isTrue);
-    await tester.pumpAndSettle();
-    expect(controller.isExpanded, isFalse);
-    expect(find.text('Child 0'), findsNothing);
-    controller.collapse();
-    expect(controller.isExpanded, isFalse);
-    await tester.pump();
-    expect(tester.hasRunningAnimations, isFalse);
-  });
+      expect(find.text('Child 0'), findsOneWidget);
+      expect(controller.isExpanded, isTrue);
+      controller.expand();
+      expect(controller.isExpanded, isTrue);
+      await tester.pump();
+      expect(tester.hasRunningAnimations, isFalse);
+      expect(find.text('Child 0'), findsOneWidget);
+      controller.collapse();
+      expect(controller.isExpanded, isFalse);
+      await tester.pump();
+      expect(tester.hasRunningAnimations, isTrue);
+      await tester.pumpAndSettle();
+      expect(controller.isExpanded, isFalse);
+      expect(find.text('Child 0'), findsNothing);
+      controller.collapse();
+      expect(controller.isExpanded, isFalse);
+      await tester.pump();
+      expect(tester.hasRunningAnimations, isFalse);
+    },
+  );
 
   testWidgets('Call to ExpansionTileController.of()', (WidgetTester tester) async {
     final GlobalKey titleKey = GlobalKey();
@@ -999,9 +895,7 @@ void main() {
         child: ExpansionTile(
           initiallyExpanded: true,
           title: Text('Title', key: titleKey),
-          children: <Widget>[
-            Text('Child 0', key: childKey),
-          ],
+          children: <Widget>[Text('Child 0', key: childKey)],
         ),
       ),
     ));
@@ -1022,12 +916,7 @@ void main() {
       home: Material(
         child: Column(
           children: <Widget>[
-            ExpansionTile(
-              title: Text('Title', key: titleKey),
-              children: const <Widget>[
-                Text('Child 0'),
-              ],
-            ),
+            ExpansionTile(title: Text('Title', key: titleKey), children: const <Widget>[Text('Child 0')]),
             Text('Non descendant', key: nonDescendantKey),
           ],
         ),

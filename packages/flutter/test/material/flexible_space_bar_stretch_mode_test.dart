@@ -16,29 +16,23 @@ final Key finderKey = UniqueKey();
 
 void main() {
   testWidgets('FlexibleSpaceBar stretch mode default zoomBackground', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            key: blockKey,
-            slivers: <Widget>[
-              SliverAppBar(
-                expandedHeight: expandedAppbarHeight,
-                pinned: true,
-                stretch: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    key: finderKey,
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(child: Container(height: 10000.0)),
-            ],
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          key: blockKey,
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: expandedAppbarHeight,
+              pinned: true,
+              stretch: true,
+              flexibleSpace: FlexibleSpaceBar(background: Container(key: finderKey)),
+            ),
+            SliverToBoxAdapter(child: Container(height: 10000.0)),
+          ],
         ),
       ),
-    );
+    ));
 
     // Scrolling up into the overscroll area causes the appBar to expand in size.
     // This overscroll effect enlarges the background in step with the appbar.
@@ -51,36 +45,34 @@ void main() {
   });
 
   testWidgets('FlexibleSpaceBar stretch mode blurBackground', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        home: Scaffold(
-          body: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            key: blockKey,
-            slivers: <Widget>[
-              SliverAppBar(
-                expandedHeight: expandedAppbarHeight,
-                pinned: true,
-                stretch: true,
-                flexibleSpace: RepaintBoundary(
-                  child: FlexibleSpaceBar(
-                    stretchModes: const <StretchMode>[StretchMode.blurBackground],
-                    background: Row(
-                      children: <Widget>[
-                        Expanded(child: Container(color: Colors.red)),
-                        Expanded(child:Container(color: Colors.blue)),
-                      ],
-                    ),
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: false),
+      home: Scaffold(
+        body: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          key: blockKey,
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: expandedAppbarHeight,
+              pinned: true,
+              stretch: true,
+              flexibleSpace: RepaintBoundary(
+                child: FlexibleSpaceBar(
+                  stretchModes: const <StretchMode>[StretchMode.blurBackground],
+                  background: Row(
+                    children: <Widget>[
+                      Expanded(child: Container(color: Colors.red)),
+                      Expanded(child: Container(color: Colors.blue)),
+                    ],
                   ),
                 ),
               ),
-              SliverToBoxAdapter(child: Container(height: 10000.0)),
-            ],
-          ),
+            ),
+            SliverToBoxAdapter(child: Container(height: 10000.0)),
+          ],
         ),
       ),
-    );
+    ));
 
     // Scrolling up into the overscroll area causes the background to blur.
     await slowDrag(tester, blockKey, const Offset(0.0, 100.0));
@@ -91,74 +83,57 @@ void main() {
   });
 
   testWidgets('FlexibleSpaceBar stretch mode fadeTitle', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            key: blockKey,
-            slivers: <Widget>[
-              SliverAppBar(
-                expandedHeight: expandedAppbarHeight,
-                pinned: true,
-                stretch: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  stretchModes: const <StretchMode>[StretchMode.fadeTitle],
-                  title: Text(
-                    'Title',
-                    key: finderKey,
-                  ),
-                ),
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          key: blockKey,
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: expandedAppbarHeight,
+              pinned: true,
+              stretch: true,
+              flexibleSpace: FlexibleSpaceBar(
+                stretchModes: const <StretchMode>[StretchMode.fadeTitle],
+                title: Text('Title', key: finderKey),
               ),
-              SliverToBoxAdapter(child: Container(height: 10000.0)),
-            ],
-          ),
+            ),
+            SliverToBoxAdapter(child: Container(height: 10000.0)),
+          ],
         ),
       ),
-    );
+    ));
     await slowDrag(tester, blockKey, const Offset(0.0, 10.0));
     Opacity opacityWidget = tester.widget<Opacity>(
-      find.ancestor(
-        of: find.text('Title'),
-        matching: find.byType(Opacity),
-      ).first,
+      find.ancestor(of: find.text('Title'), matching: find.byType(Opacity)).first,
     );
     expect(opacityWidget.opacity.round(), equals(1));
     await slowDrag(tester, blockKey, const Offset(0.0, 100.0));
-    opacityWidget = tester.widget<Opacity>(
-      find.ancestor(
-        of: find.text('Title'),
-        matching: find.byType(Opacity),
-      ).first,
-    );
+    opacityWidget = tester.widget<Opacity>(find.ancestor(of: find.text('Title'), matching: find.byType(Opacity)).first);
     expect(opacityWidget.opacity, equals(0.0));
   });
 
   testWidgets('FlexibleSpaceBar stretch mode ignored for non-overscroll physics', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            key: blockKey,
-            slivers: <Widget>[
-              SliverAppBar(
-                expandedHeight: expandedAppbarHeight,
-                stretch: true,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  stretchModes: const <StretchMode>[StretchMode.blurBackground],
-                  background: Container(
-                    key: finderKey,
-                  ),
-                ),
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: CustomScrollView(
+          physics: const ClampingScrollPhysics(),
+          key: blockKey,
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: expandedAppbarHeight,
+              stretch: true,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                stretchModes: const <StretchMode>[StretchMode.blurBackground],
+                background: Container(key: finderKey),
               ),
-              SliverToBoxAdapter(child: Container(height: 10000.0)),
-            ],
-          ),
+            ),
+            SliverToBoxAdapter(child: Container(height: 10000.0)),
+          ],
         ),
       ),
-    );
+    ));
 
     final Finder appbarContainer = find.byKey(finderKey);
     final Size sizeBeforeScroll = tester.getSize(appbarContainer);

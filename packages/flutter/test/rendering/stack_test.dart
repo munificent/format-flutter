@@ -11,27 +11,13 @@ void main() {
   TestRenderingFlutterBinding.ensureInitialized();
 
   test('Stack can layout with top, right, bottom, left 0.0', () {
-    final RenderBox size = RenderConstrainedBox(
-      additionalConstraints: BoxConstraints.tight(const Size(100.0, 100.0)),
-    );
+    final RenderBox size = RenderConstrainedBox(additionalConstraints: BoxConstraints.tight(const Size(100.0, 100.0)));
 
-    final RenderBox red = RenderDecoratedBox(
-      decoration: const BoxDecoration(
-        color: Color(0xFFFF0000),
-      ),
-      child: size,
-    );
+    final RenderBox red = RenderDecoratedBox(decoration: const BoxDecoration(color: Color(0xFFFF0000)), child: size);
 
-    final RenderBox green = RenderDecoratedBox(
-      decoration: const BoxDecoration(
-        color: Color(0xFFFF0000),
-      ),
-    );
+    final RenderBox green = RenderDecoratedBox(decoration: const BoxDecoration(color: Color(0xFFFF0000)));
 
-    final RenderBox stack = RenderStack(
-      textDirection: TextDirection.ltr,
-      children: <RenderBox>[red, green],
-    );
+    final RenderBox stack = RenderStack(textDirection: TextDirection.ltr, children: <RenderBox>[red, green]);
     final StackParentData greenParentData = green.parentData! as StackParentData;
     greenParentData
       ..top = 0.0
@@ -52,10 +38,7 @@ void main() {
   });
 
   test('Stack can layout with no children', () {
-    final RenderBox stack = RenderStack(
-      textDirection: TextDirection.ltr,
-      children: <RenderBox>[],
-    );
+    final RenderBox stack = RenderStack(textDirection: TextDirection.ltr, children: <RenderBox>[]);
 
     layout(stack, constraints: BoxConstraints.tight(const Size(100.0, 100.0)));
 
@@ -70,23 +53,17 @@ void main() {
       final TestClipPaintingContext context = TestClipPaintingContext();
       final RenderBox child = box200x200;
       final RenderStack stack;
-      switch (clip){
+      switch (clip) {
         case Clip.none:
         case Clip.hardEdge:
         case Clip.antiAlias:
         case Clip.antiAliasWithSaveLayer:
-          stack = RenderStack(
-            textDirection: TextDirection.ltr,
-            children: <RenderBox>[child],
-            clipBehavior: clip!,
-          );
+          stack = RenderStack(textDirection: TextDirection.ltr, children: <RenderBox>[child], clipBehavior: clip!);
         case null:
-          stack = RenderStack(
-            textDirection: TextDirection.ltr,
-            children: <RenderBox>[child],
-          );
+          stack = RenderStack(textDirection: TextDirection.ltr, children: <RenderBox>[child]);
       }
-      { // Make sure that the child is positioned so the stack will consider it as overflowed.
+      {
+        // Make sure that the child is positioned so the stack will consider it as overflowed.
         final StackParentData parentData = child.parentData! as StackParentData;
         parentData.left = parentData.right = 0;
       }
@@ -136,10 +113,7 @@ void main() {
         additionalConstraints: BoxConstraints.tight(const Size(100.0, 100.0)),
       );
 
-      final RenderBox stack = RenderIndexedStack(
-        index: 2,
-        children: <RenderBox>[child1, child2, child3],
-      );
+      final RenderBox stack = RenderIndexedStack(index: 2, children: <RenderBox>[child1, child2, child3]);
 
       final List<DiagnosticsNode> diagnosticNodes = stack.debugDescribeChildren();
 
@@ -164,10 +138,7 @@ void main() {
         additionalConstraints: BoxConstraints.tight(const Size(100.0, 100.0)),
       );
 
-      final RenderBox stack = RenderIndexedStack(
-        index: null,
-        children: <RenderBox>[child1, child2, child3],
-      );
+      final RenderBox stack = RenderIndexedStack(index: null, children: <RenderBox>[child1, child2, child3]);
 
       final List<DiagnosticsNode> diagnosticNodes = stack.debugDescribeChildren();
 
@@ -187,12 +158,7 @@ void main() {
     final RenderFlex flex = RenderFlex(
       textDirection: TextDirection.ltr,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <RenderBox>[
-        RenderStack(
-          textDirection: TextDirection.ltr,
-          children: <RenderBox>[],
-        ),
-      ]
+      children: <RenderBox>[RenderStack(textDirection: TextDirection.ltr, children: <RenderBox>[])],
     );
 
     bool stackFlutterErrorThrown = false;
@@ -201,7 +167,7 @@ void main() {
       constraints: BoxConstraints.tight(const Size(100.0, 100.0)),
       onErrors: () {
         stackFlutterErrorThrown = true;
-      }
+      },
     );
 
     expect(stackFlutterErrorThrown, false);
