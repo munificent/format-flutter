@@ -31,7 +31,7 @@ void main() {
       // Tests a different first day of week.
       const Locale('ru', 'RU'): <String, dynamic>{
         'textDirection': TextDirection.ltr,
-        'expectedDaysOfWeek': <String>['В', 'П', 'В', 'С', 'Ч', 'П', 'С',],
+        'expectedDaysOfWeek': <String>['В', 'П', 'В', 'С', 'Ч', 'П', 'С'],
         'expectedDaysOfMonth': List<String>.generate(30, (int i) => '${i + 1}'),
         'expectedMonthYearHeader': 'сентябрь 2017 г.',
       },
@@ -81,9 +81,17 @@ void main() {
           final Offset offset = tester.getCenter(dayCell);
           if (previousCellOffset != null) {
             if (textDirection == TextDirection.ltr) {
-              expect(offset.dx > previousCellOffset.dx && offset.dy == previousCellOffset.dy || offset.dy > previousCellOffset.dy, true);
+              expect(
+                offset.dx > previousCellOffset.dx && offset.dy == previousCellOffset.dy ||
+                    offset.dy > previousCellOffset.dy,
+                true,
+              );
             } else {
-              expect(offset.dx < previousCellOffset.dx && offset.dy == previousCellOffset.dy || offset.dy > previousCellOffset.dy, true);
+              expect(
+                offset.dx < previousCellOffset.dx && offset.dy == previousCellOffset.dy ||
+                    offset.dy > previousCellOffset.dy,
+                true,
+              );
             }
           }
           previousCellOffset = offset;
@@ -97,10 +105,7 @@ void main() {
       return MaterialApp(
         theme: ThemeData(useMaterial3: useMaterial3),
         locale: const Locale('en', 'US'),
-        supportedLocales: const <Locale>[
-          Locale('en', 'US'),
-          Locale('fr', 'CA'),
-        ],
+        supportedLocales: const <Locale>[Locale('en', 'US'), Locale('fr', 'CA')],
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         home: Material(
           child: Builder(
@@ -129,14 +134,8 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    expect(
-      Localizations.localeOf(getPicker()),
-      const Locale('fr', 'CA'),
-    );
-    expect(
-      Directionality.of(getPicker()),
-      TextDirection.ltr,
-    );
+    expect(Localizations.localeOf(getPicker()), const Locale('fr', 'CA'));
+    expect(Directionality.of(getPicker()), TextDirection.ltr);
 
     await tester.tap(find.text('Annuler'));
 
@@ -148,17 +147,10 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    expect(
-      Localizations.localeOf(getPicker()),
-      const Locale('fr', 'CA'),
-    );
-    expect(
-      Directionality.of(getPicker()),
-      TextDirection.ltr,
-    );
+    expect(Localizations.localeOf(getPicker()), const Locale('fr', 'CA'));
+    expect(Directionality.of(getPicker()), TextDirection.ltr);
 
     await tester.tap(find.text('ANNULER'));
-
   });
 
   testWidgets('textDirection parameter overrides ambient textDirection', (WidgetTester tester) async {
@@ -193,10 +185,7 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    expect(
-      Directionality.of(getPicker()),
-      TextDirection.rtl,
-    );
+    expect(Directionality.of(getPicker()), TextDirection.rtl);
 
     await tester.tap(find.text('Cancel'));
 
@@ -208,10 +197,7 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    expect(
-      Directionality.of(getPicker()),
-      TextDirection.rtl,
-    );
+    expect(Directionality.of(getPicker()), TextDirection.rtl);
 
     await tester.tap(find.text('CANCEL'));
   });
@@ -221,10 +207,7 @@ void main() {
       return MaterialApp(
         theme: ThemeData(useMaterial3: useMaterial3),
         locale: const Locale('en', 'US'),
-        supportedLocales: const <Locale>[
-          Locale('en', 'US'),
-          Locale('fr', 'CA'),
-        ],
+        supportedLocales: const <Locale>[Locale('en', 'US'), Locale('fr', 'CA')],
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         home: Material(
           child: Builder(
@@ -254,15 +237,9 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle(const Duration(seconds: 1));
 
-    expect(
-      Localizations.localeOf(getPicker()),
-      const Locale('fr', 'CA'),
-    );
+    expect(Localizations.localeOf(getPicker()), const Locale('fr', 'CA'));
 
-    expect(
-      Directionality.of(getPicker()),
-      TextDirection.rtl,
-    );
+    expect(Directionality.of(getPicker()), TextDirection.rtl);
 
     await tester.tap(find.text('Annuler'));
 
@@ -274,15 +251,9 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    expect(
-      Localizations.localeOf(getPicker()),
-      const Locale('fr', 'CA'),
-    );
+    expect(Localizations.localeOf(getPicker()), const Locale('fr', 'CA'));
 
-    expect(
-      Directionality.of(getPicker()),
-      TextDirection.rtl,
-    );
+    expect(Directionality.of(getPicker()), TextDirection.rtl);
 
     await tester.tap(find.text('ANNULER'));
   });
@@ -299,29 +270,22 @@ void main() {
       tester.view.physicalSize = size;
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder: (BuildContext context) {
-              return Localizations(
-                locale: locale,
-                delegates: GlobalMaterialLocalizations.delegates,
-                child: TextButton(
-                  child: const Text('X'),
-                  onPressed: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: initialDate,
-                      firstDate: firstDate,
-                      lastDate: lastDate,
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        )
-      );
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (BuildContext context) {
+            return Localizations(
+              locale: locale,
+              delegates: GlobalMaterialLocalizations.delegates,
+              child: TextButton(
+                child: const Text('X'),
+                onPressed: () {
+                  showDatePicker(context: context, initialDate: initialDate, firstDate: firstDate, lastDate: lastDate);
+                },
+              ),
+            );
+          },
+        ),
+      ));
       await tester.tap(find.text('X'));
       await tester.pumpAndSettle();
     }
@@ -347,7 +311,6 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   });
-
 }
 
 Future<void> _pumpBoilerplate(
@@ -362,9 +325,7 @@ Future<void> _pumpBoilerplate(
       child: Localizations(
         locale: locale,
         delegates: GlobalMaterialLocalizations.delegates,
-        child: Material(
-          child: child,
-        ),
+        child: Material(child: child),
       ),
     ),
   ));

@@ -1380,7 +1380,8 @@ class WidgetsLocalizationKn extends GlobalWidgetsLocalizations {
   String get reorderItemToEnd => '\u{c95}\u{cca}\u{ca8}\u{cc6}\u{c97}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
 
   @override
-  String get reorderItemToStart => '\u{caa}\u{ccd}\u{cb0}\u{cbe}\u{cb0}\u{c82}\u{cad}\u{c95}\u{ccd}\u{c95}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
+  String get reorderItemToStart =>
+      '\u{caa}\u{ccd}\u{cb0}\u{cbe}\u{cb0}\u{c82}\u{cad}\u{c95}\u{ccd}\u{c95}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
 
   @override
   String get reorderItemUp => '\u{cae}\u{cc7}\u{cb2}\u{cc6}\u{20}\u{cb8}\u{cb0}\u{cbf}\u{cb8}\u{cbf}';
@@ -2713,9 +2714,7 @@ final Set<String> kWidgetsSupportedLanguages = HashSet<String>.from(const <Strin
 ///
 /// Generally speaking, this method is only intended to be used by
 /// [GlobalWidgetsLocalizations.delegate].
-GlobalWidgetsLocalizations? getWidgetsTranslation(
-  Locale locale,
-) {
+GlobalWidgetsLocalizations? getWidgetsTranslation(Locale locale) {
   switch (locale.languageCode) {
     case 'af':
       return const WidgetsLocalizationAf();
@@ -2743,81 +2742,84 @@ GlobalWidgetsLocalizations? getWidgetsTranslation(
       return const WidgetsLocalizationCy();
     case 'da':
       return const WidgetsLocalizationDa();
-    case 'de': {
-      switch (locale.countryCode) {
-        case 'CH':
-          return const WidgetsLocalizationDeCh();
+    case 'de':
+      {
+        switch (locale.countryCode) {
+          case 'CH':
+            return const WidgetsLocalizationDeCh();
+        }
+        return const WidgetsLocalizationDe();
       }
-      return const WidgetsLocalizationDe();
-    }
     case 'el':
       return const WidgetsLocalizationEl();
-    case 'en': {
-      switch (locale.countryCode) {
-        case 'AU':
-          return const WidgetsLocalizationEnAu();
-        case 'CA':
-          return const WidgetsLocalizationEnCa();
-        case 'GB':
-          return const WidgetsLocalizationEnGb();
-        case 'IE':
-          return const WidgetsLocalizationEnIe();
-        case 'IN':
-          return const WidgetsLocalizationEnIn();
-        case 'NZ':
-          return const WidgetsLocalizationEnNz();
-        case 'SG':
-          return const WidgetsLocalizationEnSg();
-        case 'ZA':
-          return const WidgetsLocalizationEnZa();
+    case 'en':
+      {
+        switch (locale.countryCode) {
+          case 'AU':
+            return const WidgetsLocalizationEnAu();
+          case 'CA':
+            return const WidgetsLocalizationEnCa();
+          case 'GB':
+            return const WidgetsLocalizationEnGb();
+          case 'IE':
+            return const WidgetsLocalizationEnIe();
+          case 'IN':
+            return const WidgetsLocalizationEnIn();
+          case 'NZ':
+            return const WidgetsLocalizationEnNz();
+          case 'SG':
+            return const WidgetsLocalizationEnSg();
+          case 'ZA':
+            return const WidgetsLocalizationEnZa();
+        }
+        return const WidgetsLocalizationEn();
       }
-      return const WidgetsLocalizationEn();
-    }
-    case 'es': {
-      switch (locale.countryCode) {
-        case '419':
-          return const WidgetsLocalizationEs419();
-        case 'AR':
-          return const WidgetsLocalizationEsAr();
-        case 'BO':
-          return const WidgetsLocalizationEsBo();
-        case 'CL':
-          return const WidgetsLocalizationEsCl();
-        case 'CO':
-          return const WidgetsLocalizationEsCo();
-        case 'CR':
-          return const WidgetsLocalizationEsCr();
-        case 'DO':
-          return const WidgetsLocalizationEsDo();
-        case 'EC':
-          return const WidgetsLocalizationEsEc();
-        case 'GT':
-          return const WidgetsLocalizationEsGt();
-        case 'HN':
-          return const WidgetsLocalizationEsHn();
-        case 'MX':
-          return const WidgetsLocalizationEsMx();
-        case 'NI':
-          return const WidgetsLocalizationEsNi();
-        case 'PA':
-          return const WidgetsLocalizationEsPa();
-        case 'PE':
-          return const WidgetsLocalizationEsPe();
-        case 'PR':
-          return const WidgetsLocalizationEsPr();
-        case 'PY':
-          return const WidgetsLocalizationEsPy();
-        case 'SV':
-          return const WidgetsLocalizationEsSv();
-        case 'US':
-          return const WidgetsLocalizationEsUs();
-        case 'UY':
-          return const WidgetsLocalizationEsUy();
-        case 'VE':
-          return const WidgetsLocalizationEsVe();
+    case 'es':
+      {
+        switch (locale.countryCode) {
+          case '419':
+            return const WidgetsLocalizationEs419();
+          case 'AR':
+            return const WidgetsLocalizationEsAr();
+          case 'BO':
+            return const WidgetsLocalizationEsBo();
+          case 'CL':
+            return const WidgetsLocalizationEsCl();
+          case 'CO':
+            return const WidgetsLocalizationEsCo();
+          case 'CR':
+            return const WidgetsLocalizationEsCr();
+          case 'DO':
+            return const WidgetsLocalizationEsDo();
+          case 'EC':
+            return const WidgetsLocalizationEsEc();
+          case 'GT':
+            return const WidgetsLocalizationEsGt();
+          case 'HN':
+            return const WidgetsLocalizationEsHn();
+          case 'MX':
+            return const WidgetsLocalizationEsMx();
+          case 'NI':
+            return const WidgetsLocalizationEsNi();
+          case 'PA':
+            return const WidgetsLocalizationEsPa();
+          case 'PE':
+            return const WidgetsLocalizationEsPe();
+          case 'PR':
+            return const WidgetsLocalizationEsPr();
+          case 'PY':
+            return const WidgetsLocalizationEsPy();
+          case 'SV':
+            return const WidgetsLocalizationEsSv();
+          case 'US':
+            return const WidgetsLocalizationEsUs();
+          case 'UY':
+            return const WidgetsLocalizationEsUy();
+          case 'VE':
+            return const WidgetsLocalizationEsVe();
+        }
+        return const WidgetsLocalizationEs();
       }
-      return const WidgetsLocalizationEs();
-    }
     case 'et':
       return const WidgetsLocalizationEt();
     case 'eu':
@@ -2828,13 +2830,14 @@ GlobalWidgetsLocalizations? getWidgetsTranslation(
       return const WidgetsLocalizationFi();
     case 'fil':
       return const WidgetsLocalizationFil();
-    case 'fr': {
-      switch (locale.countryCode) {
-        case 'CA':
-          return const WidgetsLocalizationFrCa();
+    case 'fr':
+      {
+        switch (locale.countryCode) {
+          case 'CA':
+            return const WidgetsLocalizationFrCa();
+        }
+        return const WidgetsLocalizationFr();
       }
-      return const WidgetsLocalizationFr();
-    }
     case 'gl':
       return const WidgetsLocalizationGl();
     case 'gsw':
@@ -2905,13 +2908,14 @@ GlobalWidgetsLocalizations? getWidgetsTranslation(
       return const WidgetsLocalizationPl();
     case 'ps':
       return const WidgetsLocalizationPs();
-    case 'pt': {
-      switch (locale.countryCode) {
-        case 'PT':
-          return const WidgetsLocalizationPtPt();
+    case 'pt':
+      {
+        switch (locale.countryCode) {
+          case 'PT':
+            return const WidgetsLocalizationPtPt();
+        }
+        return const WidgetsLocalizationPt();
       }
-      return const WidgetsLocalizationPt();
-    }
     case 'ro':
       return const WidgetsLocalizationRo();
     case 'ru':
@@ -2924,17 +2928,20 @@ GlobalWidgetsLocalizations? getWidgetsTranslation(
       return const WidgetsLocalizationSl();
     case 'sq':
       return const WidgetsLocalizationSq();
-    case 'sr': {
-      switch (locale.scriptCode) {
-        case 'Cyrl': {
-          return const WidgetsLocalizationSrCyrl();
+    case 'sr':
+      {
+        switch (locale.scriptCode) {
+          case 'Cyrl':
+            {
+              return const WidgetsLocalizationSrCyrl();
+            }
+          case 'Latn':
+            {
+              return const WidgetsLocalizationSrLatn();
+            }
         }
-        case 'Latn': {
-          return const WidgetsLocalizationSrLatn();
-        }
+        return const WidgetsLocalizationSr();
       }
-      return const WidgetsLocalizationSr();
-    }
     case 'sv':
       return const WidgetsLocalizationSv();
     case 'sw':
@@ -2957,29 +2964,32 @@ GlobalWidgetsLocalizations? getWidgetsTranslation(
       return const WidgetsLocalizationUz();
     case 'vi':
       return const WidgetsLocalizationVi();
-    case 'zh': {
-      switch (locale.scriptCode) {
-        case 'Hans': {
-          return const WidgetsLocalizationZhHans();
+    case 'zh':
+      {
+        switch (locale.scriptCode) {
+          case 'Hans':
+            {
+              return const WidgetsLocalizationZhHans();
+            }
+          case 'Hant':
+            {
+              switch (locale.countryCode) {
+                case 'HK':
+                  return const WidgetsLocalizationZhHantHk();
+                case 'TW':
+                  return const WidgetsLocalizationZhHantTw();
+              }
+              return const WidgetsLocalizationZhHant();
+            }
         }
-        case 'Hant': {
-          switch (locale.countryCode) {
-            case 'HK':
-              return const WidgetsLocalizationZhHantHk();
-            case 'TW':
-              return const WidgetsLocalizationZhHantTw();
-          }
-          return const WidgetsLocalizationZhHant();
+        switch (locale.countryCode) {
+          case 'HK':
+            return const WidgetsLocalizationZhHantHk();
+          case 'TW':
+            return const WidgetsLocalizationZhHantTw();
         }
+        return const WidgetsLocalizationZh();
       }
-      switch (locale.countryCode) {
-        case 'HK':
-          return const WidgetsLocalizationZhHantHk();
-        case 'TW':
-          return const WidgetsLocalizationZhHantTw();
-      }
-      return const WidgetsLocalizationZh();
-    }
     case 'zu':
       return const WidgetsLocalizationZu();
   }

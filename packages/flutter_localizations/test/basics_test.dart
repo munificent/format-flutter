@@ -8,7 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Nested Localizations', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp( // Creates the outer Localizations widget.
+    await tester.pumpWidget(MaterialApp(
+      // Creates the outer Localizations widget.
       theme: ThemeData(useMaterial3: true),
       home: ListView(
         children: <Widget>[
@@ -23,51 +24,47 @@ void main() {
     ));
     // Most localized aspects of the TextTheme text styles are the same for the default US local and
     // for Chinese for Material3. The baselines for all text styles differ.
-    final LocalizationTrackerState outerTracker = tester.state(find.byKey(const ValueKey<String>('outer'), skipOffstage: false));
+    final LocalizationTrackerState outerTracker = tester.state(
+      find.byKey(const ValueKey<String>('outer'), skipOffstage: false),
+    );
     expect(outerTracker.textBaseline, TextBaseline.alphabetic);
-    final LocalizationTrackerState innerTracker = tester.state(find.byKey(const ValueKey<String>('inner'), skipOffstage: false));
+    final LocalizationTrackerState innerTracker = tester.state(
+      find.byKey(const ValueKey<String>('inner'), skipOffstage: false),
+    );
     expect(innerTracker.textBaseline, TextBaseline.ideographic);
   });
 
-  testWidgets('Localizations is compatible with ChangeNotifier.dispose() called during didChangeDependencies', (WidgetTester tester) async {
-    // PageView calls ScrollPosition.dispose() during didChangeDependencies.
-    await tester.pumpWidget(
-      MaterialApp(
-        supportedLocales: const <Locale>[
-          Locale('en', 'US'),
-          Locale('es', 'ES'),
-        ],
+  testWidgets(
+    'Localizations is compatible with ChangeNotifier.dispose() called during didChangeDependencies',
+    (WidgetTester tester) async {
+      // PageView calls ScrollPosition.dispose() during didChangeDependencies.
+      await tester.pumpWidget(MaterialApp(
+        supportedLocales: const <Locale>[Locale('en', 'US'), Locale('es', 'ES')],
         localizationsDelegates: <LocalizationsDelegate<dynamic>>[
           _DummyLocalizationsDelegate(),
           ...GlobalMaterialLocalizations.delegates,
         ],
         home: PageView(),
-      )
-    );
+      ));
 
-    await tester.binding.setLocale('es', 'US');
-    await tester.pump();
-    await tester.pumpWidget(Container());
-  });
+      await tester.binding.setLocale('es', 'US');
+      await tester.pump();
+      await tester.pumpWidget(Container());
+    },
+  );
 
   testWidgets('Locale without countryCode', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/pull/16782
-    await tester.pumpWidget(
-      MaterialApp(
-        localizationsDelegates: GlobalMaterialLocalizations.delegates,
-        supportedLocales: const <Locale>[
-          Locale('es', 'ES'),
-          Locale('zh'),
-        ],
-        home: Container(),
-      )
-    );
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const <Locale>[Locale('es', 'ES'), Locale('zh')],
+      home: Container(),
+    ));
 
     await tester.binding.setLocale('zh', '');
     await tester.pump();
     await tester.binding.setLocale('es', 'US');
     await tester.pump();
-
   });
 }
 
@@ -84,7 +81,7 @@ class _DummyLocalizationsDelegate extends LocalizationsDelegate<DummyLocalizatio
   bool shouldReload(_DummyLocalizationsDelegate old) => true;
 }
 
-class DummyLocalizations { }
+class DummyLocalizations {}
 
 class LocalizationTracker extends StatefulWidget {
   const LocalizationTracker({super.key});

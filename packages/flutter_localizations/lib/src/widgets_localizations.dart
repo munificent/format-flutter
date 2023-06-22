@@ -56,9 +56,7 @@ class _WidgetsLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocaliz
   Future<WidgetsLocalizations> load(Locale locale) {
     assert(isSupported(locale));
     return _loadedTranslations.putIfAbsent(locale, () {
-      return SynchronousFuture<WidgetsLocalizations>(getWidgetsTranslation(
-        locale,
-      )!);
+      return SynchronousFuture<WidgetsLocalizations>(getWidgetsTranslation(locale)!);
     });
   }
 

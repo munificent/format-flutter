@@ -19,7 +19,9 @@ void main() {
     ).first;
     final Finder hourControlFinder = find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_HourControl');
     final Finder minuteControlFinder = find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_MinuteControl');
-    final Finder dayPeriodControlFinder = find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_DayPeriodControl');
+    final Finder dayPeriodControlFinder = find.byWidgetPredicate(
+      (Widget w) => '${w.runtimeType}' == '_DayPeriodControl',
+    );
 
     // TODO(yjbanov): also test `HH.mm` (in_ID), `a h:mm` (ko_KR) and `HH:mm น.` (th_TH) when we have .arb files for them
     final List<Locale> locales = <Locale>[
@@ -32,7 +34,7 @@ void main() {
     ];
 
     for (final Locale locale in locales) {
-      final Offset center = await startPicker(tester, (TimeOfDay? time) { }, locale: locale);
+      final Offset center = await startPicker(tester, (TimeOfDay? time) {}, locale: locale);
       final Text stringFragmentText = tester.widget(stringFragmentTextFinder);
       final double hourLeftOffset = tester.getTopLeft(hourControlFinder).dx;
       final double minuteLeftOffset = tester.getTopLeft(minuteControlFinder).dx;
@@ -89,7 +91,9 @@ void main() {
     ).first;
     final Finder hourControlFinder = find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_HourControl');
     final Finder minuteControlFinder = find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_MinuteControl');
-    final Finder dayPeriodControlFinder = find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_DayPeriodControl');
+    final Finder dayPeriodControlFinder = find.byWidgetPredicate(
+      (Widget w) => '${w.runtimeType}' == '_DayPeriodControl',
+    );
 
     // TODO(yjbanov): also test `HH.mm` (in_ID), `a h:mm` (ko_KR) and `HH:mm น.` (th_TH) when we have .arb files for them
     final List<Locale> locales = <Locale>[
@@ -102,7 +106,7 @@ void main() {
     ];
 
     for (final Locale locale in locales) {
-      final Offset center = await startPicker(tester, (TimeOfDay? time) { }, locale: locale);
+      final Offset center = await startPicker(tester, (TimeOfDay? time) {}, locale: locale);
       final Text stringFragmentText = tester.widget(stringFragmentTextFinder);
       final double hourLeftOffset = tester.getTopLeft(hourControlFinder).dx;
       final double hourTopOffset = tester.getTopLeft(hourControlFinder).dy;
@@ -155,7 +159,9 @@ void main() {
   testWidgets('can localize input mode in all known formats', (WidgetTester tester) async {
     final Finder hourControlFinder = find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_HourTextField');
     final Finder minuteControlFinder = find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_MinuteTextField');
-    final Finder dayPeriodControlFinder = find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_DayPeriodControl');
+    final Finder dayPeriodControlFinder = find.byWidgetPredicate(
+      (Widget w) => '${w.runtimeType}' == '_DayPeriodControl',
+    );
     final Finder stringFragmentTextFinder = find.descendant(
       of: find.byWidgetPredicate((Widget w) => '${w.runtimeType}' == '_StringFragment'),
       matching: find.byType(Text),
@@ -172,7 +178,9 @@ void main() {
     ];
 
     for (final Locale locale in locales) {
-      await tester.pumpWidget(_TimePickerLauncher(onChanged: (TimeOfDay? time) { }, locale: locale, entryMode: TimePickerEntryMode.input));
+      await tester.pumpWidget(
+        _TimePickerLauncher(onChanged: (TimeOfDay? time) {}, locale: locale, entryMode: TimePickerEntryMode.input),
+      );
       await tester.tap(find.text('X'));
       await tester.pumpAndSettle(const Duration(seconds: 1));
 
@@ -232,7 +240,9 @@ void main() {
       // DatePicker no matter where you tap the time will be the same.
       for (int i = 1; i < 10; i++) {
         TimeOfDay? result;
-        final Offset center = await startPicker(tester, (TimeOfDay? time) { result = time; }, locale: locale, useMaterial3: false);
+        final Offset center = await startPicker(tester, (TimeOfDay? time) {
+          result = time;
+        }, locale: locale, useMaterial3: false);
         final Size size = tester.getSize(find.byKey(const Key('time-picker-dial')));
         final double dy = (size.height / 2.0 / 10) * i;
         await tester.tapAt(Offset(center.dx, center.dy - dy));
@@ -249,7 +259,9 @@ void main() {
       // should land on the outer ring's "00".
       for (int factor = startFactor; factor < endFactor; factor += 1) {
         TimeOfDay? result;
-        final Offset center = await startPicker(tester, (TimeOfDay? time) { result = time; }, locale: locale, useMaterial3: true);
+        final Offset center = await startPicker(tester, (TimeOfDay? time) {
+          result = time;
+        }, locale: locale, useMaterial3: true);
         final Size size = tester.getSize(find.byKey(const Key('time-picker-dial')));
         final double dy = (size.height / 2.0 / 10) * factor;
         await tester.tapAt(Offset(center.dx, center.dy - dy));
@@ -265,39 +277,56 @@ void main() {
   });
 
   const List<String> labels12To11 = <String>['12', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
-  const List<String> labels00To22TwoDigit = <String>['00', '02', '04', '06', '08', '10', '12', '14', '16', '18', '20', '22']; // Material 2
-  const List<String> labels00To23TwoDigit = <String>[ // Material 3
-    '00', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+  const List<String> labels00To22TwoDigit = <String>[
+    '00',
+    '02',
+    '04',
+    '06',
+    '08',
+    '10',
+    '12',
+    '14',
+    '16',
+    '18',
+    '20',
+    '22',
+  ]; // Material 2
+  const List<String> labels00To23TwoDigit = <String>[
+    // Material 3
+    '00', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+    '21', '22', '23',
+  ];
 
-  Future<void> mediaQueryBoilerplate(WidgetTester tester, {required bool alwaysUse24HourFormat, bool? useMaterial3}) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(useMaterial3: useMaterial3),
-        builder: (BuildContext context, Widget? child) {
-          return MediaQuery(
-            data: MediaQueryData(alwaysUse24HourFormat: alwaysUse24HourFormat),
-            child: child!,
-          );
-        },
-        home: Material(
-          child: Directionality(
-            textDirection: TextDirection.ltr,
-            child: Navigator(
-              onGenerateRoute: (RouteSettings settings) {
-                return MaterialPageRoute<void>(builder: (BuildContext context) {
+  Future<void> mediaQueryBoilerplate(
+    WidgetTester tester, {
+    required bool alwaysUse24HourFormat,
+    bool? useMaterial3,
+  }) async {
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(useMaterial3: useMaterial3),
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(data: MediaQueryData(alwaysUse24HourFormat: alwaysUse24HourFormat), child: child!);
+      },
+      home: Material(
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Navigator(
+            onGenerateRoute: (RouteSettings settings) {
+              return MaterialPageRoute<void>(
+                builder: (BuildContext context) {
                   return TextButton(
                     onPressed: () {
                       showTimePicker(context: context, initialTime: const TimeOfDay(hour: 7, minute: 0));
                     },
                     child: const Text('X'),
                   );
-                });
-              },
-            ),
+                },
+              );
+            },
           ),
         ),
       ),
-    );
+    ));
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -397,14 +426,16 @@ class _TimePickerLauncher extends StatelessWidget {
               return ElevatedButton(
                 child: const Text('X'),
                 onPressed: () async {
-                  onChanged?.call(await showTimePicker(
-                    context: context,
-                    initialEntryMode: entryMode,
-                    initialTime: const TimeOfDay(hour: 7, minute: 0),
-                  ));
+                  onChanged?.call(
+                    await showTimePicker(
+                      context: context,
+                      initialEntryMode: entryMode,
+                      initialTime: const TimeOfDay(hour: 7, minute: 0),
+                    ),
+                  );
                 },
               );
-            }
+            },
           ),
         ),
       ),
@@ -415,23 +446,19 @@ class _TimePickerLauncher extends StatelessWidget {
 Future<Offset> startPicker(
   WidgetTester tester,
   ValueChanged<TimeOfDay?> onChanged, {
-    Locale locale = const Locale('en', 'US'),
-    bool? useMaterial3,
+  Locale locale = const Locale('en', 'US'),
+  bool? useMaterial3,
 }) async {
-  await tester.pumpWidget(
-    _TimePickerLauncher(
-      onChanged: onChanged,
-      locale: locale,
-      useMaterial3: useMaterial3,
-    ),
-  );
+  await tester.pumpWidget(_TimePickerLauncher(onChanged: onChanged, locale: locale, useMaterial3: useMaterial3));
   await tester.tap(find.text('X'));
   await tester.pumpAndSettle(const Duration(seconds: 1));
   return tester.getCenter(find.byKey(const Key('time-picker-dial')));
 }
 
 Future<void> finishPicker(WidgetTester tester) async {
-  final MaterialLocalizations materialLocalizations = MaterialLocalizations.of(tester.element(find.byType(ElevatedButton)));
+  final MaterialLocalizations materialLocalizations = MaterialLocalizations.of(
+    tester.element(find.byType(ElevatedButton)),
+  );
   await tester.tap(find.text(materialLocalizations.okButtonLabel));
   await tester.pumpAndSettle(const Duration(seconds: 1));
 }

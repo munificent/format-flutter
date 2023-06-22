@@ -13,13 +13,13 @@ void main() {
   group(GlobalMaterialLocalizations, () {
     test('uses exact locale when exists', () async {
       final GlobalMaterialLocalizations localizations =
-        await GlobalMaterialLocalizations.delegate.load(const Locale('pt', 'PT')) as GlobalMaterialLocalizations;
+          await GlobalMaterialLocalizations.delegate.load(const Locale('pt', 'PT')) as GlobalMaterialLocalizations;
       expect(localizations.formatDecimal(10000), '10\u00A0000');
     });
 
     test('falls back to language code when exact locale is missing', () async {
       final GlobalMaterialLocalizations localizations =
-        await GlobalMaterialLocalizations.delegate.load(const Locale('pt', 'XX')) as GlobalMaterialLocalizations;
+          await GlobalMaterialLocalizations.delegate.load(const Locale('pt', 'XX')) as GlobalMaterialLocalizations;
       expect(localizations.formatDecimal(10000), '10.000');
     });
 
@@ -36,10 +36,12 @@ void main() {
           supportedLocales: <Locale>[locale],
           locale: locale,
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
-          home: Builder(builder: (BuildContext context) {
-            completer.complete(MaterialLocalizations.of(context).formatHour(timeOfDay));
-            return Container();
-          }),
+          home: Builder(
+            builder: (BuildContext context) {
+              completer.complete(MaterialLocalizations.of(context).formatHour(timeOfDay));
+              return Container();
+            },
+          ),
         ));
         return completer.future;
       }
@@ -69,7 +71,7 @@ void main() {
     group('formatMinute', () {
       test('formats English', () async {
         final GlobalMaterialLocalizations localizations =
-          await GlobalMaterialLocalizations.delegate.load(const Locale('en', 'US')) as GlobalMaterialLocalizations;
+            await GlobalMaterialLocalizations.delegate.load(const Locale('en', 'US')) as GlobalMaterialLocalizations;
         expect(localizations.formatMinute(const TimeOfDay(hour: 1, minute: 32)), '32');
       });
     });
@@ -81,10 +83,12 @@ void main() {
           supportedLocales: <Locale>[locale],
           locale: locale,
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
-          home: Builder(builder: (BuildContext context) {
-            completer.complete(MaterialLocalizations.of(context).formatTimeOfDay(timeOfDay));
-            return Container();
-          }),
+          home: Builder(
+            builder: (BuildContext context) {
+              completer.complete(MaterialLocalizations.of(context).formatTimeOfDay(timeOfDay));
+              return Container();
+            },
+          ),
         ));
         return completer.future;
       }
@@ -113,7 +117,10 @@ void main() {
       });
 
       testWidgets('formats ${TimeOfDayFormat.frenchCanadian}', (WidgetTester tester) async {
-        expect(await formatTimeOfDay(tester, const Locale('fr', 'CA'), const TimeOfDay(hour: 9, minute: 32)), '09 h 32');
+        expect(
+          await formatTimeOfDay(tester, const Locale('fr', 'CA'), const TimeOfDay(hour: 9, minute: 32)),
+          '09 h 32',
+        );
       });
 
       testWidgets('formats ${TimeOfDayFormat.a_space_h_colon_mm}', (WidgetTester tester) async {
@@ -129,16 +136,18 @@ void main() {
           supportedLocales: <Locale>[locale],
           locale: locale,
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
-          home: Builder(builder: (BuildContext context) {
-            final MaterialLocalizations localizations = MaterialLocalizations.of(context);
-            completer.complete(<DateType, String>{
-              DateType.year: localizations.formatYear(dateTime),
-              DateType.medium: localizations.formatMediumDate(dateTime),
-              DateType.full: localizations.formatFullDate(dateTime),
-              DateType.monthYear: localizations.formatMonthYear(dateTime),
-            });
-            return Container();
-          }),
+          home: Builder(
+            builder: (BuildContext context) {
+              final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+              completer.complete(<DateType, String>{
+                DateType.year: localizations.formatYear(dateTime),
+                DateType.medium: localizations.formatMediumDate(dateTime),
+                DateType.full: localizations.formatFullDate(dateTime),
+                DateType.monthYear: localizations.formatMonthYear(dateTime),
+              });
+              return Container();
+            },
+          ),
         ));
         return completer.future;
       }
@@ -168,8 +177,11 @@ void main() {
       });
 
       testWidgets('formats dates in Serbian (Latin)', (WidgetTester tester) async {
-        final Map<DateType, String> formatted = await formatDate(tester,
-          const Locale.fromSubtags(languageCode:'sr', scriptCode: 'Latn'), DateTime(2018, 8));
+        final Map<DateType, String> formatted = await formatDate(
+          tester,
+          const Locale.fromSubtags(languageCode: 'sr', scriptCode: 'Latn'),
+          DateTime(2018, 8),
+        );
         expect(formatted[DateType.year], '2018.');
         expect(formatted[DateType.medium], 'sre 1. avg');
         expect(formatted[DateType.full], 'sreda, 1. avgust 2018.');
@@ -185,10 +197,12 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       locale: const Locale('en', 'US'),
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      home: Builder(builder: (BuildContext context) {
-        dateFormat = DateFormat('EEE, d MMM yyyy HH:mm:ss', 'en_US');
-        return Container();
-      }),
+      home: Builder(
+        builder: (BuildContext context) {
+          dateFormat = DateFormat('EEE, d MMM yyyy HH:mm:ss', 'en_US');
+          return Container();
+        },
+      ),
     ));
 
     expect(dateFormat.locale, 'en_US');
@@ -200,10 +214,12 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       locale: const Locale('cy'),
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      home: Builder(builder: (BuildContext context) {
-        dateFormat = DateFormat.yMMMd('cy');
-        return Container();
-      }),
+      home: Builder(
+        builder: (BuildContext context) {
+          dateFormat = DateFormat.yMMMd('cy');
+          return Container();
+        },
+      ),
     ));
 
     expect(dateFormat.locale, 'cy');
