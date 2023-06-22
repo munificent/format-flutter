@@ -22,13 +22,7 @@ class FuchsiaPM {
   /// NB: The [buildPath] should probably be e.g. `build/fuchsia/pkg`, and the
   /// [appName] should probably be the name of the app from the pubspec file.
   Future<bool> init(String buildPath, String appName) {
-    return _runPMCommand(<String>[
-      '-o',
-      buildPath,
-      '-n',
-      appName,
-      'init',
-    ]);
+    return _runPMCommand(<String>['-o', buildPath, '-n', appName, 'init']);
   }
 
   /// Updates, signs, and seals a Fuchsia package.
@@ -47,13 +41,7 @@ class FuchsiaPM {
   /// where $APPNAME is the same [appName] passed to [init], and meta/package
   /// is set up to be the file `meta/package` created by [init].
   Future<bool> build(String buildPath, String manifestPath) {
-    return _runPMCommand(<String>[
-      '-o',
-      buildPath,
-      '-m',
-      manifestPath,
-      'build',
-    ]);
+    return _runPMCommand(<String>['-o', buildPath, '-m', manifestPath, 'build']);
   }
 
   /// Constructs a .far representation of the Fuchsia package.
@@ -64,23 +52,13 @@ class FuchsiaPM {
   /// [buildPath] should be the same path passed to [init], and [manifestPath]
   /// should be the same manifest passed to [build].
   Future<bool> archive(String buildPath, String manifestPath) {
-    return _runPMCommand(<String>[
-      '-o',
-      buildPath,
-      '-m',
-      manifestPath,
-      'archive',
-    ]);
+    return _runPMCommand(<String>['-o', buildPath, '-m', manifestPath, 'archive']);
   }
 
   /// Initializes a new package repository at [repoPath] to be later served by
   /// the 'serve' command.
   Future<bool> newrepo(String repoPath) {
-    return _runPMCommand(<String>[
-      'newrepo',
-      '-repo',
-      repoPath,
-    ]);
+    return _runPMCommand(<String>['newrepo', '-repo', repoPath]);
   }
 
   /// Spawns an http server in a new process for serving Fuchsia packages.
@@ -97,25 +75,10 @@ class FuchsiaPM {
     if (isIPv6Address(host.split('%').first)) {
       host = '[$host]';
     }
-    final List<String> command = <String>[
-      pm.path,
-      'serve',
-      '-repo',
-      repoPath,
-      '-l',
-      '$host:$port',
-      '-c',
-      '2',
-    ];
+    final List<String> command = <String>[pm.path, 'serve', '-repo', repoPath, '-l', '$host:$port', '-c', '2'];
     final Process process = await globals.processUtils.start(command);
-    process.stdout
-        .transform(utf8.decoder)
-        .transform(const LineSplitter())
-        .listen(globals.printTrace);
-    process.stderr
-        .transform(utf8.decoder)
-        .transform(const LineSplitter())
-        .listen(globals.printError);
+    process.stdout.transform(utf8.decoder).transform(const LineSplitter()).listen(globals.printTrace);
+    process.stderr.transform(utf8.decoder).transform(const LineSplitter()).listen(globals.printError);
     return process;
   }
 
@@ -126,14 +89,7 @@ class FuchsiaPM {
   /// the repo such that it will be visible to devices connecting to the
   /// package server.
   Future<bool> publish(String repoPath, String packagePath) {
-    return _runPMCommand(<String>[
-      'publish',
-      '-a',
-      '-r',
-      repoPath,
-      '-f',
-      packagePath,
-    ]);
+    return _runPMCommand(<String>['publish', '-a', '-r', repoPath, '-f', packagePath]);
   }
 
   Future<bool> _runPMCommand(List<String> args) async {
@@ -167,8 +123,7 @@ class FuchsiaPM {
 ///   server.stop();
 /// }
 class FuchsiaPackageServer {
-  factory FuchsiaPackageServer(
-      String repo, String name, String host, int port) {
+  factory FuchsiaPackageServer(String repo, String name, String host, int port) {
     return FuchsiaPackageServer._(repo, name, host, port);
   }
 
@@ -232,14 +187,12 @@ class FuchsiaPackageServer {
     if (_process == null) {
       return false;
     }
-    return (await globals.fuchsiaSdk?.fuchsiaPM.publish(_repo, package.path)) ??
-        false;
+    return (await globals.fuchsiaSdk?.fuchsiaPM.publish(_repo, package.path)) ?? false;
   }
 
   @override
   String toString() {
-    final String p =
-        (_process == null) ? 'stopped' : 'running ${_process?.pid}';
+    final String p = (_process == null) ? 'stopped' : 'running ${_process?.pid}';
     return 'FuchsiaPackageServer at $_host:$_port ($p)';
   }
 }

@@ -81,8 +81,8 @@ class AndroidPlugin extends PluginPlatform implements NativeOrDartPlugin {
     bool? ffiPlugin,
     this.defaultPackage,
     required FileSystem fileSystem,
-  })  : _fileSystem = fileSystem,
-        ffiPlugin = ffiPlugin ?? false;
+  }) : _fileSystem = fileSystem,
+       ffiPlugin = ffiPlugin ?? false;
 
   factory AndroidPlugin.fromYaml(String name, YamlMap yaml, String pluginPath, FileSystem fileSystem) {
     assert(validate(yaml));
@@ -145,9 +145,9 @@ class AndroidPlugin extends PluginPlatform implements NativeOrDartPlugin {
       'name': name,
       if (package != null) 'package': package,
       if (pluginClass != null) 'class': pluginClass,
-      if (dartPluginClass != null) kDartPluginClass : dartPluginClass,
+      if (dartPluginClass != null) kDartPluginClass: dartPluginClass,
       if (ffiPlugin) kFfiPlugin: true,
-      if (defaultPackage != null) kDefaultPackage : defaultPackage,
+      if (defaultPackage != null) kDefaultPackage: defaultPackage,
       // Mustache doesn't support complex types.
       'supportsEmbeddingV1': _supportedEmbeddings.contains('1'),
       'supportsEmbeddingV2': _supportedEmbeddings.contains('2'),
@@ -159,12 +159,7 @@ class AndroidPlugin extends PluginPlatform implements NativeOrDartPlugin {
 
   Set<String> _getSupportedEmbeddings() {
     final Set<String> supportedEmbeddings = <String>{};
-    final String baseMainPath = _fileSystem.path.join(
-      pluginPath,
-      'android',
-      'src',
-      'main',
-    );
+    final String baseMainPath = _fileSystem.path.join(pluginPath, 'android', 'src', 'main');
 
     final String? package = this.package;
     // Don't attempt to validate the native code if there isn't supposed to
@@ -203,19 +198,17 @@ class AndroidPlugin extends PluginPlatform implements NativeOrDartPlugin {
         "The plugin `$name` doesn't have a main class defined in ${mainClassCandidates.join(' or ')}. "
         "This is likely to due to an incorrect `androidPackage: $package` or `mainClass` entry in the plugin's pubspec.yaml.\n"
         'If you are the author of this plugin, fix the `androidPackage` entry or move the main class to any of locations used above. '
-        'Otherwise, please contact the author of this plugin and consider using a different plugin in the meanwhile. '
+        'Otherwise, please contact the author of this plugin and consider using a different plugin in the meanwhile. ',
       );
     }
 
     final String mainClassContent = mainPluginClass.readAsStringSync();
-    if (mainClassContent
-        .contains('io.flutter.embedding.engine.plugins.FlutterPlugin')) {
+    if (mainClassContent.contains('io.flutter.embedding.engine.plugins.FlutterPlugin')) {
       supportedEmbeddings.add('2');
     } else {
       supportedEmbeddings.add('1');
     }
-    if (mainClassContent.contains('PluginRegistry')
-        && mainClassContent.contains('registerWith')) {
+    if (mainClassContent.contains('PluginRegistry') && mainClassContent.contains('registerWith')) {
       supportedEmbeddings.add('1');
     }
     return supportedEmbeddings;
@@ -297,10 +290,10 @@ class IOSPlugin extends PluginPlatform implements NativeOrDartPlugin, DarwinPlug
       'name': name,
       'prefix': classPrefix,
       if (pluginClass != null) 'class': pluginClass,
-      if (dartPluginClass != null) kDartPluginClass : dartPluginClass,
+      if (dartPluginClass != null) kDartPluginClass: dartPluginClass,
       if (ffiPlugin) kFfiPlugin: true,
       if (sharedDarwinSource) kSharedDarwinSource: true,
-      if (defaultPackage != null) kDefaultPackage : defaultPackage,
+      if (defaultPackage != null) kDefaultPackage: defaultPackage,
     };
   }
 }
@@ -385,8 +378,7 @@ class MacOSPlugin extends PluginPlatform implements NativeOrDartPlugin, DarwinPl
 ///
 /// The [name] of the plugin is required. Either [dartPluginClass] or [pluginClass] are required.
 /// [pluginClass] will be the entry point to the plugin's native code.
-class WindowsPlugin extends PluginPlatform
-    implements NativeOrDartPlugin, VariantPlatformPlugin {
+class WindowsPlugin extends PluginPlatform implements NativeOrDartPlugin, VariantPlatformPlugin {
   const WindowsPlugin({
     required this.name,
     this.pluginClass,
@@ -394,8 +386,8 @@ class WindowsPlugin extends PluginPlatform
     bool? ffiPlugin,
     this.defaultPackage,
     this.variants = const <PluginPlatformVariant>{},
-  })  : ffiPlugin = ffiPlugin ?? false,
-        assert(pluginClass != null || dartPluginClass != null || defaultPackage != null);
+  }) : ffiPlugin = ffiPlugin ?? false,
+       assert(pluginClass != null || dartPluginClass != null || defaultPackage != null);
 
   factory WindowsPlugin.fromYaml(String name, YamlMap yaml) {
     assert(validate(yaml));
@@ -484,8 +476,8 @@ class LinuxPlugin extends PluginPlatform implements NativeOrDartPlugin {
     this.dartPluginClass,
     bool? ffiPlugin,
     this.defaultPackage,
-  })  : ffiPlugin = ffiPlugin ?? false,
-        assert(pluginClass != null || dartPluginClass != null || (ffiPlugin ?? false) || defaultPackage != null);
+  }) : ffiPlugin = ffiPlugin ?? false,
+       assert(pluginClass != null || dartPluginClass != null || (ffiPlugin ?? false) || defaultPackage != null);
 
   factory LinuxPlugin.fromYaml(String name, YamlMap yaml) {
     assert(validate(yaml));
@@ -546,11 +538,7 @@ class LinuxPlugin extends PluginPlatform implements NativeOrDartPlugin {
 /// be the entry point to the plugin's implementation, and the [fileName]
 /// containing the code.
 class WebPlugin extends PluginPlatform {
-  const WebPlugin({
-    required this.name,
-    required this.pluginClass,
-    required this.fileName,
-  });
+  const WebPlugin({required this.name, required this.pluginClass, required this.fileName});
 
   factory WebPlugin.fromYaml(String name, YamlMap yaml) {
     if (yaml['pluginClass'] is! String) {
@@ -559,11 +547,7 @@ class WebPlugin extends PluginPlatform {
     if (yaml['fileName'] is! String) {
       throwToolExit('The plugin `$name` is missing the required field `fileName` in pubspec.yaml');
     }
-    return WebPlugin(
-      name: name,
-      pluginClass: yaml['pluginClass'] as String,
-      fileName: yaml['fileName'] as String,
-    );
+    return WebPlugin(name: name, pluginClass: yaml['pluginClass'] as String, fileName: yaml['fileName'] as String);
   }
 
   static const String kConfigKey = 'web';
@@ -581,11 +565,7 @@ class WebPlugin extends PluginPlatform {
 
   @override
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'class': pluginClass,
-      'file': fileName,
-    };
+    return <String, dynamic>{'name': name, 'class': pluginClass, 'file': fileName};
   }
 }
 
@@ -594,5 +574,6 @@ String _filenameForCppClass(String className) {
   return className.splitMapJoin(
     _internalCapitalLetterRegex,
     onMatch: (_) => '_',
-    onNonMatch: (String n) => n.toLowerCase());
+    onNonMatch: (String n) => n.toLowerCase(),
+  );
 }

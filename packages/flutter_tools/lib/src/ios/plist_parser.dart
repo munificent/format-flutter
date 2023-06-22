@@ -12,13 +12,10 @@ import '../base/process.dart';
 import '../convert.dart';
 
 class PlistParser {
-  PlistParser({
-    required FileSystem fileSystem,
-    required Logger logger,
-    required ProcessManager processManager,
-  }) : _fileSystem = fileSystem,
-       _logger = logger,
-       _processUtils = ProcessUtils(logger: logger, processManager: processManager);
+  PlistParser({required FileSystem fileSystem, required Logger logger, required ProcessManager processManager})
+    : _fileSystem = fileSystem,
+      _logger = logger,
+      _processUtils = ProcessUtils(logger: logger, processManager: processManager);
 
   final FileSystem _fileSystem;
   final Logger _logger;
@@ -49,14 +46,9 @@ class PlistParser {
     if (!_fileSystem.isFileSync(_plutilExecutable)) {
       throw const FileNotFoundException(_plutilExecutable);
     }
-    final List<String> args = <String>[
-      _plutilExecutable, '-convert', 'xml1', '-o', '-', plistFilePath,
-    ];
+    final List<String> args = <String>[_plutilExecutable, '-convert', 'xml1', '-o', '-', plistFilePath];
     try {
-      final String xmlContent = _processUtils.runSync(
-        args,
-        throwOnError: true,
-      ).stdout.trim();
+      final String xmlContent = _processUtils.runSync(args, throwOnError: true).stdout.trim();
       return xmlContent;
     } on ProcessException catch (error) {
       _logger.printError('$error');
@@ -69,25 +61,18 @@ class PlistParser {
   /// If the value is null, then the key will be removed.
   ///
   /// Returns true if successful.
-  bool replaceKey(String plistFilePath, {required String key, String? value }) {
+  bool replaceKey(String plistFilePath, {required String key, String? value}) {
     if (!_fileSystem.isFileSync(_plutilExecutable)) {
       throw const FileNotFoundException(_plutilExecutable);
     }
     final List<String> args;
     if (value == null) {
-      args = <String>[
-        _plutilExecutable, '-remove', key, plistFilePath,
-      ];
+      args = <String>[_plutilExecutable, '-remove', key, plistFilePath];
     } else {
-      args = <String>[
-        _plutilExecutable, '-replace', key, '-string', value, plistFilePath,
-      ];
+      args = <String>[_plutilExecutable, '-replace', key, '-string', value, plistFilePath];
     }
     try {
-      _processUtils.runSync(
-        args,
-        throwOnError: true,
-      );
+      _processUtils.runSync(args, throwOnError: true);
     } on ProcessException catch (error) {
       _logger.printError('$error');
       return false;
@@ -145,7 +130,7 @@ class PlistParser {
   static final RegExp _nonBase64Pattern = RegExp('[^a-zA-Z0-9+/=]+');
 
   Object? _parseXmlNode(XmlElement node) {
-    switch (node.name.local){
+    switch (node.name.local) {
       case 'string':
         return node.innerText;
       case 'real':

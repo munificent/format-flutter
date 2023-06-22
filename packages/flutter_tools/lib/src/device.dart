@@ -36,11 +36,7 @@ enum Category {
   String toString() => value;
 
   static Category? fromString(String category) {
-    return const <String, Category>{
-      'web': web,
-      'desktop': desktop,
-      'mobile': mobile,
-    }[category];
+    return const <String, Category>{'web': web, 'desktop': desktop, 'mobile': mobile}[category];
   }
 }
 
@@ -78,9 +74,7 @@ enum PlatformType {
 
 /// A discovery mechanism for flutter-supported development devices.
 abstract class DeviceManager {
-  DeviceManager({
-    required Logger logger,
-  }) : _logger = logger;
+  DeviceManager({required Logger logger}) : _logger = logger;
 
   final Logger _logger;
 
@@ -103,9 +97,7 @@ abstract class DeviceManager {
   }
 
   /// A minimum duration to use when discovering wireless iOS devices.
-  static const Duration minimumWirelessDeviceDiscoveryTimeout = Duration(
-    seconds: 5,
-  );
+  static const Duration minimumWirelessDeviceDiscoveryTimeout = Duration(seconds: 5);
 
   /// True when the user has specified a single specific device.
   bool get hasSpecifiedDeviceId => specifiedDeviceId != null;
@@ -121,26 +113,20 @@ abstract class DeviceManager {
   ///
   /// If an exact match is found, return it immediately. Otherwise wait for all
   /// discoverers to complete and return any partial matches.
-  Future<List<Device>> getDevicesById(
-    String deviceId, {
-    DeviceDiscoveryFilter? filter,
-  }) async {
+  Future<List<Device>> getDevicesById(String deviceId, {DeviceDiscoveryFilter? filter}) async {
     filter ??= DeviceDiscoveryFilter();
 
     final String lowerDeviceId = deviceId.toLowerCase();
     bool exactlyMatchesDeviceId(Device device) =>
-        device.id.toLowerCase() == lowerDeviceId ||
-        device.name.toLowerCase() == lowerDeviceId;
+        device.id.toLowerCase() == lowerDeviceId || device.name.toLowerCase() == lowerDeviceId;
     bool startsWithDeviceId(Device device) =>
-        device.id.toLowerCase().startsWith(lowerDeviceId) ||
-        device.name.toLowerCase().startsWith(lowerDeviceId);
+        device.id.toLowerCase().startsWith(lowerDeviceId) || device.name.toLowerCase().startsWith(lowerDeviceId);
 
     // Some discoverers have hard-coded device IDs and return quickly, and others
     // shell out to other processes and can take longer.
     // If an ID was specified, first check if it was a "well-known" device id.
-    final Set<String> wellKnownIds = _platformDiscoverers
-      .expand((DeviceDiscovery discovery) => discovery.wellKnownIds)
-      .toSet();
+    final Set<String> wellKnownIds =
+        _platformDiscoverers.expand((DeviceDiscovery discovery) => discovery.wellKnownIds).toSet();
     final bool hasWellKnownId = hasSpecifiedDeviceId && wellKnownIds.contains(specifiedDeviceId);
 
     // Process discoverers as they can return results, so if an exact match is
@@ -150,30 +136,28 @@ abstract class DeviceManager {
     final List<Future<List<Device>?>> futureDevices = <Future<List<Device>?>>[
       for (final DeviceDiscovery discoverer in _platformDiscoverers)
         if (!hasWellKnownId || discoverer.wellKnownIds.contains(specifiedDeviceId))
-          discoverer
-          .devices(filter: filter)
-          .then((List<Device> devices) {
-            for (final Device device in devices) {
-              if (exactlyMatchesDeviceId(device)) {
-                exactMatchCompleter.complete(device);
-                return null;
+          discoverer.devices(filter: filter).then(
+            (List<Device> devices) {
+              for (final Device device in devices) {
+                if (exactlyMatchesDeviceId(device)) {
+                  exactMatchCompleter.complete(device);
+                  return null;
+                }
+                if (startsWithDeviceId(device)) {
+                  prefixMatches.add(device);
+                }
               }
-              if (startsWithDeviceId(device)) {
-                prefixMatches.add(device);
-              }
-            }
-            return null;
-          }, onError: (dynamic error, StackTrace stackTrace) {
-            // Return matches from other discoverers even if one fails.
-            _logger.printTrace('Ignored error discovering $deviceId: $error');
-          }),
+              return null;
+            },
+            onError: (dynamic error, StackTrace stackTrace) {
+              // Return matches from other discoverers even if one fails.
+              _logger.printTrace('Ignored error discovering $deviceId: $error');
+            },
+          ),
     ];
 
     // Wait for an exact match, or for all discoverers to return results.
-    await Future.any<Object>(<Future<Object>>[
-      exactMatchCompleter.future,
-      Future.wait<List<Device>?>(futureDevices),
-    ]);
+    await Future.any<Object>(<Future<Object>>[exactMatchCompleter.future, Future.wait<List<Device>?>(futureDevices)]);
 
     if (exactMatchCompleter.isCompleted) {
       return <Device>[await exactMatchCompleter.future];
@@ -186,9 +170,7 @@ abstract class DeviceManager {
   ///
   /// If [filter] is not provided, a default filter that requires devices to be
   /// connected will be used.
-  Future<List<Device>> getDevices({
-    DeviceDiscoveryFilter? filter,
-  }) {
+  Future<List<Device>> getDevices({DeviceDiscoveryFilter? filter}) {
     filter ??= DeviceDiscoveryFilter();
     final String? id = specifiedDeviceId;
     if (id == null) {
@@ -205,13 +187,10 @@ abstract class DeviceManager {
   ///
   /// If [filter] is not provided, a default filter that requires devices to be
   /// connected will be used.
-  Future<List<Device>> getAllDevices({
-    DeviceDiscoveryFilter? filter,
-  }) async {
+  Future<List<Device>> getAllDevices({DeviceDiscoveryFilter? filter}) async {
     filter ??= DeviceDiscoveryFilter();
     final List<List<Device>> devices = await Future.wait<List<Device>>(<Future<List<Device>>>[
-      for (final DeviceDiscovery discoverer in _platformDiscoverers)
-        discoverer.devices(filter: filter),
+      for (final DeviceDiscovery discoverer in _platformDiscoverers) discoverer.devices(filter: filter),
     ]);
 
     return devices.expand<Device>((List<Device> deviceList) => deviceList).toList();
@@ -223,10 +202,7 @@ abstract class DeviceManager {
   /// connected will be used.
   ///
   /// Search for devices to populate the cache for no longer than [timeout].
-  Future<List<Device>> refreshAllDevices({
-    Duration? timeout,
-    DeviceDiscoveryFilter? filter,
-  }) async {
+  Future<List<Device>> refreshAllDevices({Duration? timeout, DeviceDiscoveryFilter? filter}) async {
     filter ??= DeviceDiscoveryFilter();
     final List<List<Device>> devices = await Future.wait<List<Device>>(<Future<List<Device>>>[
       for (final DeviceDiscovery discoverer in _platformDiscoverers)
@@ -241,14 +217,10 @@ abstract class DeviceManager {
   ///
   /// Then, search for devices for those discoverers to populate the cache for
   /// no longer than [timeout].
-  Future<void> refreshExtendedWirelessDeviceDiscoverers({
-    Duration? timeout,
-    DeviceDiscoveryFilter? filter,
-  }) async {
+  Future<void> refreshExtendedWirelessDeviceDiscoverers({Duration? timeout, DeviceDiscoveryFilter? filter}) async {
     await Future.wait<List<Device>>(<Future<List<Device>>>[
       for (final DeviceDiscovery discoverer in _platformDiscoverers)
-        if (discoverer.requiresExtendedWirelessDeviceDiscovery)
-          discoverer.discoverDevices(timeout: timeout)
+        if (discoverer.requiresExtendedWirelessDeviceDiscovery) discoverer.discoverDevices(timeout: timeout),
     ]);
   }
 
@@ -260,8 +232,7 @@ abstract class DeviceManager {
   /// Get diagnostics about issues with any connected devices.
   Future<List<String>> getDeviceDiagnostics() async {
     return <String>[
-      for (final DeviceDiscovery discoverer in _platformDiscoverers)
-        ...await discoverer.getDiagnostics(),
+      for (final DeviceDiscovery discoverer in _platformDiscoverers) ...await discoverer.getDiagnostics(),
     ];
   }
 
@@ -279,9 +250,7 @@ abstract class DeviceManager {
   /// considered supported by the project, regardless of user specifications.
   ///
   /// This also exists to allow the check to be overridden for google3 clients.
-  DeviceDiscoverySupportFilter deviceSupportFilter({
-    bool includeDevicesUnsupportedByProject = false,
-  }) {
+  DeviceDiscoverySupportFilter deviceSupportFilter({bool includeDevicesUnsupportedByProject = false}) {
     FlutterProject? flutterProject;
     if (!includeDevicesUnsupportedByProject) {
       flutterProject = FlutterProject.current();
@@ -291,9 +260,7 @@ abstract class DeviceManager {
         flutterProject: flutterProject,
       );
     } else if (!hasSpecifiedDeviceId) {
-      return DeviceDiscoverySupportFilter.excludeDevicesUnsupportedByFlutterOrProject(
-        flutterProject: flutterProject,
-      );
+      return DeviceDiscoverySupportFilter.excludeDevicesUnsupportedByFlutterOrProject(flutterProject: flutterProject);
     } else {
       return DeviceDiscoverySupportFilter.excludeDevicesUnsupportedByFlutter();
     }
@@ -309,7 +276,7 @@ abstract class DeviceManager {
   ///
   /// Note: ephemeral is nullable for device types where this is not well
   /// defined.
-  Device? getSingleEphemeralDevice(List<Device> devices){
+  Device? getSingleEphemeralDevice(List<Device> devices) {
     if (!hasSpecifiedDeviceId) {
       try {
         return devices.singleWhere((Device device) => device.ephemeral);
@@ -325,20 +292,19 @@ abstract class DeviceManager {
 class DeviceDiscoverySupportFilter {
   /// Filter devices to only include those supported by Flutter.
   DeviceDiscoverySupportFilter.excludeDevicesUnsupportedByFlutter()
-      : _excludeDevicesNotSupportedByProject = false,
-        _excludeDevicesNotSupportedByAll = false,
-        _flutterProject = null;
+    : _excludeDevicesNotSupportedByProject = false,
+      _excludeDevicesNotSupportedByAll = false,
+      _flutterProject = null;
 
   /// Filter devices to only include those supported by Flutter and the
   /// provided [flutterProject].
   ///
   /// If [flutterProject] is null, all devices will be considered supported by
   /// the project.
-  DeviceDiscoverySupportFilter.excludeDevicesUnsupportedByFlutterOrProject({
-    required FlutterProject? flutterProject,
-  })  : _flutterProject = flutterProject,
-        _excludeDevicesNotSupportedByProject = true,
-        _excludeDevicesNotSupportedByAll = false;
+  DeviceDiscoverySupportFilter.excludeDevicesUnsupportedByFlutterOrProject({required FlutterProject? flutterProject})
+    : _flutterProject = flutterProject,
+      _excludeDevicesNotSupportedByProject = true,
+      _excludeDevicesNotSupportedByAll = false;
 
   /// Filter devices to only include those supported by Flutter, the provided
   /// [flutterProject], and `--device all`.
@@ -347,9 +313,9 @@ class DeviceDiscoverySupportFilter {
   /// the project.
   DeviceDiscoverySupportFilter.excludeDevicesUnsupportedByFlutterOrProjectOrAll({
     required FlutterProject? flutterProject,
-  })  : _flutterProject = flutterProject,
-        _excludeDevicesNotSupportedByProject = true,
-        _excludeDevicesNotSupportedByAll = true;
+  }) : _flutterProject = flutterProject,
+       _excludeDevicesNotSupportedByProject = true,
+       _excludeDevicesNotSupportedByAll = true;
 
   final FlutterProject? _flutterProject;
   final bool _excludeDevicesNotSupportedByProject;
@@ -357,12 +323,12 @@ class DeviceDiscoverySupportFilter {
 
   Future<bool> matchesRequirements(Device device) async {
     final bool meetsSupportByFlutterRequirement = device.isSupported();
-    final bool meetsSupportForProjectRequirement = !_excludeDevicesNotSupportedByProject || isDeviceSupportedForProject(device);
-    final bool meetsSupportForAllRequirement = !_excludeDevicesNotSupportedByAll || await isDeviceSupportedForAll(device);
+    final bool meetsSupportForProjectRequirement =
+        !_excludeDevicesNotSupportedByProject || isDeviceSupportedForProject(device);
+    final bool meetsSupportForAllRequirement =
+        !_excludeDevicesNotSupportedByAll || await isDeviceSupportedForAll(device);
 
-    return meetsSupportByFlutterRequirement &&
-        meetsSupportForProjectRequirement &&
-        meetsSupportForAllRequirement;
+    return meetsSupportByFlutterRequirement && meetsSupportForProjectRequirement && meetsSupportForAllRequirement;
   }
 
   /// User has specified `--device all`.
@@ -406,11 +372,7 @@ class DeviceDiscoverySupportFilter {
 ///
 /// If [deviceConnectionInterface] is provided, only devices matching the DeviceConnectionInterface will be included.
 class DeviceDiscoveryFilter {
-  DeviceDiscoveryFilter({
-    this.excludeDisconnected = true,
-    this.supportFilter,
-    this.deviceConnectionInterface,
-  });
+  DeviceDiscoveryFilter({this.excludeDisconnected = true, this.supportFilter, this.deviceConnectionInterface});
 
   final bool excludeDisconnected;
   final DeviceDiscoverySupportFilter? supportFilter;
@@ -420,12 +382,14 @@ class DeviceDiscoveryFilter {
     final DeviceDiscoverySupportFilter? localSupportFilter = supportFilter;
 
     final bool meetsConnectionRequirement = !excludeDisconnected || device.isConnected;
-    final bool meetsSupportRequirements = localSupportFilter == null || (await localSupportFilter.matchesRequirements(device));
-    final bool meetsConnectionInterfaceRequirement = matchesDeviceConnectionInterface(device, deviceConnectionInterface);
+    final bool meetsSupportRequirements =
+        localSupportFilter == null || (await localSupportFilter.matchesRequirements(device));
+    final bool meetsConnectionInterfaceRequirement = matchesDeviceConnectionInterface(
+      device,
+      deviceConnectionInterface,
+    );
 
-    return meetsConnectionRequirement &&
-        meetsSupportRequirements &&
-        meetsConnectionInterfaceRequirement;
+    return meetsConnectionRequirement && meetsSupportRequirements && meetsConnectionInterfaceRequirement;
   }
 
   Future<List<Device>> filterDevices(List<Device> devices) async {
@@ -436,10 +400,7 @@ class DeviceDiscoveryFilter {
     return devices;
   }
 
-  bool matchesDeviceConnectionInterface(
-    Device device,
-    DeviceConnectionInterface? deviceConnectionInterface,
-  ) {
+  bool matchesDeviceConnectionInterface(Device device, DeviceConnectionInterface? deviceConnectionInterface) {
     if (deviceConnectionInterface == null) {
       return true;
     }
@@ -463,10 +424,7 @@ abstract class DeviceDiscovery {
   Future<List<Device>> devices({DeviceDiscoveryFilter? filter});
 
   /// Return all connected devices. Discards existing cache of devices.
-  Future<List<Device>> discoverDevices({
-    Duration? timeout,
-    DeviceDiscoveryFilter? filter,
-  });
+  Future<List<Device>> discoverDevices({Duration? timeout, DeviceDiscoveryFilter? filter});
 
   /// Gets a list of diagnostic messages pertaining to issues with any connected
   /// devices (will be an empty list if there are no issues).
@@ -542,10 +500,7 @@ abstract class PollingDeviceDiscovery extends DeviceDiscovery {
   ///
   /// If [filter] is null, it may return devices that are not connected.
   @override
-  Future<List<Device>> discoverDevices({
-    Duration? timeout,
-    DeviceDiscoveryFilter? filter,
-  }) {
+  Future<List<Device>> discoverDevices({Duration? timeout, DeviceDiscoveryFilter? filter}) {
     return _populateDevices(timeout: timeout, filter: filter, resetCache: true);
   }
 
@@ -594,21 +549,14 @@ abstract class PollingDeviceDiscovery extends DeviceDiscovery {
 }
 
 /// How a device is connected.
-enum DeviceConnectionInterface {
-  attached,
-  wireless,
-}
+enum DeviceConnectionInterface { attached, wireless }
 
 /// A device is a physical hardware that can run a Flutter application.
 ///
 /// This may correspond to a connected iOS or Android device, or represent
 /// the host operating system in the case of Flutter Desktop.
 abstract class Device {
-  Device(this.id, {
-    required this.category,
-    required this.platformType,
-    required this.ephemeral,
-  });
+  Device(this.id, {required this.category, required this.platformType, required this.ephemeral});
 
   final String id;
 
@@ -623,11 +571,9 @@ abstract class Device {
 
   bool get isConnected => true;
 
-  DeviceConnectionInterface get connectionInterface =>
-      DeviceConnectionInterface.attached;
+  DeviceConnectionInterface get connectionInterface => DeviceConnectionInterface.attached;
 
-  bool get isWirelesslyConnected =>
-      connectionInterface == DeviceConnectionInterface.wireless;
+  bool get isWirelesslyConnected => connectionInterface == DeviceConnectionInterface.wireless;
 
   String get name;
 
@@ -665,10 +611,7 @@ abstract class Device {
   /// Check if a version of the given app is already installed.
   ///
   /// Specify [userIdentifier] to check if installed for a particular user (Android only).
-  Future<bool> isAppInstalled(
-    ApplicationPackage app, {
-    String? userIdentifier,
-  });
+  Future<bool> isAppInstalled(ApplicationPackage app, {String? userIdentifier});
 
   /// Check if the latest build of the [app] is already installed.
   Future<bool> isLatestBuildInstalled(ApplicationPackage app);
@@ -676,19 +619,13 @@ abstract class Device {
   /// Install an app package on the current device.
   ///
   /// Specify [userIdentifier] to install for a particular user (Android only).
-  Future<bool> installApp(
-    ApplicationPackage app, {
-    String? userIdentifier,
-  });
+  Future<bool> installApp(ApplicationPackage app, {String? userIdentifier});
 
   /// Uninstall an app package from the current device.
   ///
   /// Specify [userIdentifier] to uninstall for a particular user,
   /// defaults to all users (Android only).
-  Future<bool> uninstallApp(
-    ApplicationPackage app, {
-    String? userIdentifier,
-  });
+  Future<bool> uninstallApp(ApplicationPackage app, {String? userIdentifier});
 
   /// Check if the device is supported by Flutter.
   bool isSupported();
@@ -701,8 +638,7 @@ abstract class Device {
   Future<TargetPlatform> get targetPlatform;
 
   /// Platform name for display only.
-  Future<String> get targetPlatformDisplayName async =>
-      getNameForTargetPlatform(await targetPlatform);
+  Future<String> get targetPlatformDisplayName async => getNameForTargetPlatform(await targetPlatform);
 
   Future<String> get sdkNameAndVersion;
 
@@ -711,10 +647,7 @@ abstract class Device {
   ///
   /// For example, the desktop device classes can use a writer which
   /// copies the files across the local file system.
-  DevFSWriter? createDevFSWriter(
-    ApplicationPackage? app,
-    String? userIdentifier,
-  ) {
+  DevFSWriter? createDevFSWriter(ApplicationPackage? app, String? userIdentifier) {
     return null;
   }
 
@@ -726,10 +659,7 @@ abstract class Device {
   /// If `includePastLogs` is true and the device type supports it, the log
   /// reader will also include log messages from before the invocation time.
   /// Defaults to false.
-  FutureOr<DeviceLogReader> getLogReader({
-    ApplicationPackage? app,
-    bool includePastLogs = false,
-  });
+  FutureOr<DeviceLogReader> getLogReader({ApplicationPackage? app, bool includePastLogs = false});
 
   /// Get the port forwarder for this device.
   DevicePortForwarder? get portForwarder;
@@ -778,10 +708,7 @@ abstract class Device {
   /// Stop an app package on the current device.
   ///
   /// Specify [userIdentifier] to stop app installed to a profile (Android only).
-  Future<bool> stopApp(
-    ApplicationPackage? app, {
-    String? userIdentifier,
-  });
+  Future<bool> stopApp(ApplicationPackage? app, {String? userIdentifier});
 
   /// Query the current application memory usage..
   ///
@@ -805,8 +732,7 @@ abstract class Device {
     if (identical(this, other)) {
       return true;
     }
-    return other is Device
-        && other.id == id;
+    return other is Device && other.id == id;
   }
 
   @override
@@ -853,10 +779,7 @@ abstract class Device {
   }
 
   static List<String> devicesPlatformTypes(List<Device> devices) {
-    return devices
-        .map(
-          (Device d) => d.platformType.toString(),
-        ).toSet().toList()..sort();
+    return devices.map((Device d) => d.platformType.toString()).toSet().toList()..sort();
   }
 
   /// Convert the Device object to a JSON representation suitable for serialization.
@@ -972,56 +895,57 @@ class DebuggingOptions {
     this.enableDartProfiling = true,
     this.enableEmbedderApi = false,
     this.usingCISystem = false,
-   }) : debuggingEnabled = true;
+  }) : debuggingEnabled = true;
 
-  DebuggingOptions.disabled(this.buildInfo, {
-      this.dartEntrypointArgs = const <String>[],
-      this.port,
-      this.hostname,
-      this.webEnableExposeUrl,
-      this.webUseSseForDebugProxy = true,
-      this.webUseSseForDebugBackend = true,
-      this.webUseSseForInjectedClient = true,
-      this.webRunHeadless = false,
-      this.webBrowserDebugPort,
-      this.webBrowserFlags = const <String>[],
-      this.webLaunchUrl,
-      this.cacheSkSL = false,
-      this.traceAllowlist,
-      this.enableImpeller = ImpellerStatus.platformDefault,
-      this.enableVulkanValidation = false,
-      this.impellerForceGL = false,
-      this.uninstallFirst = false,
-      this.enableDartProfiling = true,
-      this.enableEmbedderApi = false,
-      this.usingCISystem = false,
-    }) : debuggingEnabled = false,
-      useTestFonts = false,
-      startPaused = false,
-      dartFlags = '',
-      disableServiceAuthCodes = false,
-      enableDds = true,
-      cacheStartupProfile = false,
-      enableSoftwareRendering = false,
-      skiaDeterministicRendering = false,
-      traceSkia = false,
-      traceSkiaAllowlist = null,
-      traceSystrace = false,
-      endlessTraceBuffer = false,
-      dumpSkpOnShaderCompilation = false,
-      purgePersistentCache = false,
-      verboseSystemLogs = false,
-      hostVmServicePort = null,
-      disablePortPublication = false,
-      deviceVmServicePort = null,
-      ddsPort = null,
-      devToolsServerAddress = null,
-      vmserviceOutFile = null,
-      fastStart = false,
-      webEnableExpressionEvaluation = false,
-      nullAssertions = false,
-      nativeNullAssertions = false,
-      serveObservatory = false;
+  DebuggingOptions.disabled(
+    this.buildInfo, {
+    this.dartEntrypointArgs = const <String>[],
+    this.port,
+    this.hostname,
+    this.webEnableExposeUrl,
+    this.webUseSseForDebugProxy = true,
+    this.webUseSseForDebugBackend = true,
+    this.webUseSseForInjectedClient = true,
+    this.webRunHeadless = false,
+    this.webBrowserDebugPort,
+    this.webBrowserFlags = const <String>[],
+    this.webLaunchUrl,
+    this.cacheSkSL = false,
+    this.traceAllowlist,
+    this.enableImpeller = ImpellerStatus.platformDefault,
+    this.enableVulkanValidation = false,
+    this.impellerForceGL = false,
+    this.uninstallFirst = false,
+    this.enableDartProfiling = true,
+    this.enableEmbedderApi = false,
+    this.usingCISystem = false,
+  }) : debuggingEnabled = false,
+       useTestFonts = false,
+       startPaused = false,
+       dartFlags = '',
+       disableServiceAuthCodes = false,
+       enableDds = true,
+       cacheStartupProfile = false,
+       enableSoftwareRendering = false,
+       skiaDeterministicRendering = false,
+       traceSkia = false,
+       traceSkiaAllowlist = null,
+       traceSystrace = false,
+       endlessTraceBuffer = false,
+       dumpSkpOnShaderCompilation = false,
+       purgePersistentCache = false,
+       verboseSystemLogs = false,
+       hostVmServicePort = null,
+       disablePortPublication = false,
+       deviceVmServicePort = null,
+       ddsPort = null,
+       devToolsServerAddress = null,
+       vmserviceOutFile = null,
+       fastStart = false,
+       webEnableExpressionEvaluation = false,
+       nullAssertions = false,
+       nativeNullAssertions = false,
+       serveObservatory = false;
 
   DebuggingOptions._({
     required this.buildInfo,
@@ -1164,15 +1088,10 @@ class DebuggingOptions {
       if (disablePortPublication) '--disable-vm-service-publication',
       if (startPaused) '--start-paused',
       // Wrap dart flags in quotes for physical devices
-      if (environmentType == EnvironmentType.physical && dartVmFlags.isNotEmpty)
-        '--dart-flags="$dartVmFlags"',
-      if (environmentType == EnvironmentType.simulator && dartVmFlags.isNotEmpty)
-        '--dart-flags=$dartVmFlags',
+      if (environmentType == EnvironmentType.physical && dartVmFlags.isNotEmpty) '--dart-flags="$dartVmFlags"',
+      if (environmentType == EnvironmentType.simulator && dartVmFlags.isNotEmpty) '--dart-flags=$dartVmFlags',
       if (useTestFonts) '--use-test-fonts',
-      if (debuggingEnabled) ...<String>[
-        '--enable-checked-mode',
-        '--verify-entry-points',
-      ],
+      if (debuggingEnabled) ...<String>['--enable-checked-mode', '--verify-entry-points'],
       if (enableSoftwareRendering) '--enable-software-rendering',
       if (traceSystrace) '--trace-systrace',
       if (skiaDeterministicRendering) '--skia-deterministic-rendering',
@@ -1195,8 +1114,7 @@ class DebuggingOptions {
       if (environmentType == EnvironmentType.simulator && hostVmServicePort != null)
         '--vm-service-port=$hostVmServicePort',
       // Tell the VM service to listen on all interfaces, don't restrict to the loopback.
-      if (interfaceType == DeviceConnectionInterface.wireless)
-        '--vm-service-host=${ipv6 ? '::0' : '0.0.0.0'}',
+      if (interfaceType == DeviceConnectionInterface.wireless) '--vm-service-host=${ipv6 ? '::0' : '0.0.0.0'}',
       if (enableEmbedderApi) '--enable-embedder-api',
     ];
   }
@@ -1250,67 +1168,66 @@ class DebuggingOptions {
     'usingCISystem': usingCISystem,
   };
 
-  static DebuggingOptions fromJson(Map<String, Object?> json, BuildInfo buildInfo) =>
-    DebuggingOptions._(
-      buildInfo: buildInfo,
-      debuggingEnabled: json['debuggingEnabled']! as bool,
-      startPaused: json['startPaused']! as bool,
-      dartFlags: json['dartFlags']! as String,
-      dartEntrypointArgs: (json['dartEntrypointArgs']! as List<dynamic>).cast<String>(),
-      disableServiceAuthCodes: json['disableServiceAuthCodes']! as bool,
-      enableDds: json['enableDds']! as bool,
-      cacheStartupProfile: json['cacheStartupProfile']! as bool,
-      enableSoftwareRendering: json['enableSoftwareRendering']! as bool,
-      skiaDeterministicRendering: json['skiaDeterministicRendering']! as bool,
-      traceSkia: json['traceSkia']! as bool,
-      traceAllowlist: json['traceAllowlist'] as String?,
-      traceSkiaAllowlist: json['traceSkiaAllowlist'] as String?,
-      traceSystrace: json['traceSystrace']! as bool,
-      endlessTraceBuffer: json['endlessTraceBuffer']! as bool,
-      dumpSkpOnShaderCompilation: json['dumpSkpOnShaderCompilation']! as bool,
-      cacheSkSL: json['cacheSkSL']! as bool,
-      purgePersistentCache: json['purgePersistentCache']! as bool,
-      useTestFonts: json['useTestFonts']! as bool,
-      verboseSystemLogs: json['verboseSystemLogs']! as bool,
-      hostVmServicePort: json['hostVmServicePort'] as int? ,
-      deviceVmServicePort: json['deviceVmServicePort'] as int?,
-      disablePortPublication: json['disablePortPublication']! as bool,
-      ddsPort: json['ddsPort'] as int?,
-      devToolsServerAddress: json['devToolsServerAddress'] != null ? Uri.parse(json['devToolsServerAddress']! as String) : null,
-      port: json['port'] as String?,
-      hostname: json['hostname'] as String?,
-      webEnableExposeUrl: json['webEnableExposeUrl'] as bool?,
-      webUseSseForDebugProxy: json['webUseSseForDebugProxy']! as bool,
-      webUseSseForDebugBackend: json['webUseSseForDebugBackend']! as bool,
-      webUseSseForInjectedClient: json['webUseSseForInjectedClient']! as bool,
-      webRunHeadless: json['webRunHeadless']! as bool,
-      webBrowserDebugPort: json['webBrowserDebugPort'] as int?,
-      webBrowserFlags: (json['webBrowserFlags']! as List<dynamic>).cast<String>(),
-      webEnableExpressionEvaluation: json['webEnableExpressionEvaluation']! as bool,
-      webLaunchUrl: json['webLaunchUrl'] as String?,
-      vmserviceOutFile: json['vmserviceOutFile'] as String?,
-      fastStart: json['fastStart']! as bool,
-      nullAssertions: json['nullAssertions']! as bool,
-      nativeNullAssertions: json['nativeNullAssertions']! as bool,
-      enableImpeller: ImpellerStatus.fromBool(json['enableImpeller'] as bool?),
-      enableVulkanValidation: (json['enableVulkanValidation'] as bool?) ?? false,
-      impellerForceGL: (json['impellerForceGL'] as bool?) ?? false,
-      uninstallFirst: (json['uninstallFirst'] as bool?) ?? false,
-      serveObservatory: (json['serveObservatory'] as bool?) ?? false,
-      enableDartProfiling: (json['enableDartProfiling'] as bool?) ?? true,
-      enableEmbedderApi: (json['enableEmbedderApi'] as bool?) ?? false,
-      usingCISystem: (json['usingCISystem'] as bool?) ?? false,
-    );
+  static DebuggingOptions fromJson(Map<String, Object?> json, BuildInfo buildInfo) => DebuggingOptions._(
+    buildInfo: buildInfo,
+    debuggingEnabled: json['debuggingEnabled']! as bool,
+    startPaused: json['startPaused']! as bool,
+    dartFlags: json['dartFlags']! as String,
+    dartEntrypointArgs: (json['dartEntrypointArgs']! as List<dynamic>).cast<String>(),
+    disableServiceAuthCodes: json['disableServiceAuthCodes']! as bool,
+    enableDds: json['enableDds']! as bool,
+    cacheStartupProfile: json['cacheStartupProfile']! as bool,
+    enableSoftwareRendering: json['enableSoftwareRendering']! as bool,
+    skiaDeterministicRendering: json['skiaDeterministicRendering']! as bool,
+    traceSkia: json['traceSkia']! as bool,
+    traceAllowlist: json['traceAllowlist'] as String?,
+    traceSkiaAllowlist: json['traceSkiaAllowlist'] as String?,
+    traceSystrace: json['traceSystrace']! as bool,
+    endlessTraceBuffer: json['endlessTraceBuffer']! as bool,
+    dumpSkpOnShaderCompilation: json['dumpSkpOnShaderCompilation']! as bool,
+    cacheSkSL: json['cacheSkSL']! as bool,
+    purgePersistentCache: json['purgePersistentCache']! as bool,
+    useTestFonts: json['useTestFonts']! as bool,
+    verboseSystemLogs: json['verboseSystemLogs']! as bool,
+    hostVmServicePort: json['hostVmServicePort'] as int?,
+    deviceVmServicePort: json['deviceVmServicePort'] as int?,
+    disablePortPublication: json['disablePortPublication']! as bool,
+    ddsPort: json['ddsPort'] as int?,
+    devToolsServerAddress: json['devToolsServerAddress'] != null
+        ? Uri.parse(json['devToolsServerAddress']! as String)
+        : null,
+    port: json['port'] as String?,
+    hostname: json['hostname'] as String?,
+    webEnableExposeUrl: json['webEnableExposeUrl'] as bool?,
+    webUseSseForDebugProxy: json['webUseSseForDebugProxy']! as bool,
+    webUseSseForDebugBackend: json['webUseSseForDebugBackend']! as bool,
+    webUseSseForInjectedClient: json['webUseSseForInjectedClient']! as bool,
+    webRunHeadless: json['webRunHeadless']! as bool,
+    webBrowserDebugPort: json['webBrowserDebugPort'] as int?,
+    webBrowserFlags: (json['webBrowserFlags']! as List<dynamic>).cast<String>(),
+    webEnableExpressionEvaluation: json['webEnableExpressionEvaluation']! as bool,
+    webLaunchUrl: json['webLaunchUrl'] as String?,
+    vmserviceOutFile: json['vmserviceOutFile'] as String?,
+    fastStart: json['fastStart']! as bool,
+    nullAssertions: json['nullAssertions']! as bool,
+    nativeNullAssertions: json['nativeNullAssertions']! as bool,
+    enableImpeller: ImpellerStatus.fromBool(json['enableImpeller'] as bool?),
+    enableVulkanValidation: (json['enableVulkanValidation'] as bool?) ?? false,
+    impellerForceGL: (json['impellerForceGL'] as bool?) ?? false,
+    uninstallFirst: (json['uninstallFirst'] as bool?) ?? false,
+    serveObservatory: (json['serveObservatory'] as bool?) ?? false,
+    enableDartProfiling: (json['enableDartProfiling'] as bool?) ?? true,
+    enableEmbedderApi: (json['enableEmbedderApi'] as bool?) ?? false,
+    usingCISystem: (json['usingCISystem'] as bool?) ?? false,
+  );
 }
 
 class LaunchResult {
-  LaunchResult.succeeded({ Uri? vmServiceUri, Uri? observatoryUri }) :
-    started = true,
-    vmServiceUri = vmServiceUri ?? observatoryUri;
+  LaunchResult.succeeded({Uri? vmServiceUri, Uri? observatoryUri})
+    : started = true,
+      vmServiceUri = vmServiceUri ?? observatoryUri;
 
-  LaunchResult.failed()
-    : started = false,
-      vmServiceUri = null;
+  LaunchResult.failed() : started = false, vmServiceUri = null;
 
   bool get hasVmService => vmServiceUri != null;
 
@@ -1372,16 +1289,14 @@ class NoOpDeviceLogReader implements DeviceLogReader {
   Stream<String> get logLines => const Stream<String>.empty();
 
   @override
-  void dispose() { }
+  void dispose() {}
 }
 
 /// Append --null_assertions to any existing Dart VM flags if
 /// [debuggingOptions.nullAssertions] is true.
 String computeDartVmFlags(DebuggingOptions debuggingOptions) {
   return <String>[
-    if (debuggingOptions.dartFlags.isNotEmpty)
-      debuggingOptions.dartFlags,
-    if (debuggingOptions.nullAssertions)
-      '--null_assertions',
+    if (debuggingOptions.dartFlags.isNotEmpty) debuggingOptions.dartFlags,
+    if (debuggingOptions.nullAssertions) '--null_assertions',
   ].join(',');
 }

@@ -15,14 +15,9 @@ import '../project.dart';
 import '../runner/flutter_command.dart';
 
 class CleanCommand extends FlutterCommand {
-  CleanCommand({
-    bool verbose = false,
-  }) : _verbose = verbose {
+  CleanCommand({bool verbose = false}) : _verbose = verbose {
     requiresPubspecYaml();
-    argParser.addOption(
-      'scheme',
-      help: 'When cleaning Xcode schemes, clean only the specified scheme.',
-    );
+    argParser.addOption('scheme', help: 'When cleaning Xcode schemes, clean only the specified scheme.');
   }
 
   final bool _verbose;
@@ -80,9 +75,7 @@ class CleanCommand extends FlutterCommand {
     if (xcodeWorkspace == null) {
       return;
     }
-    final Status xcodeStatus = globals.logger.startProgress(
-      'Cleaning Xcode workspace...',
-    );
+    final Status xcodeStatus = globals.logger.startProgress('Cleaning Xcode workspace...');
     try {
       final XcodeProjectInterpreter xcodeProjectInterpreter = globals.xcodeProjectInterpreter!;
       final XcodeProjectInfo projectInfo = (await xcodeProjectInterpreter.getInfo(xcodeWorkspace.parent.path))!;
@@ -123,18 +116,18 @@ class CleanCommand extends FlutterCommand {
       globals.printError('Cannot clean ${file.path}.\n$err');
       return;
     }
-    final Status deletionStatus = globals.logger.startProgress(
-      'Deleting ${file.basename}...',
-    );
+    final Status deletionStatus = globals.logger.startProgress('Deleting ${file.basename}...');
     try {
       file.deleteSync(recursive: true);
     } on FileSystemException catch (error) {
       final String path = file.path;
       if (globals.platform.isWindows) {
-        globals.printError('Failed to remove $path. '
-            'A program may still be using a file in the directory or the directory itself. '
-            'To find and stop such a program, see: '
-            'https://superuser.com/questions/1333118/cant-delete-empty-folder-because-it-is-used');
+        globals.printError(
+          'Failed to remove $path. '
+          'A program may still be using a file in the directory or the directory itself. '
+          'To find and stop such a program, see: '
+          'https://superuser.com/questions/1333118/cant-delete-empty-folder-because-it-is-used',
+        );
       } else {
         globals.printError('Failed to remove $path: $error');
       }

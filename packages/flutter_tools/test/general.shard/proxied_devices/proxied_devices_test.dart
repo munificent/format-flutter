@@ -23,15 +23,9 @@ void main() {
   setUp(() {
     bufferLogger = BufferLogger.test();
     final FakeDaemonStreams serverDaemonStreams = FakeDaemonStreams();
-    serverDaemonConnection = DaemonConnection(
-      daemonStreams: serverDaemonStreams,
-      logger: bufferLogger,
-    );
+    serverDaemonConnection = DaemonConnection(daemonStreams: serverDaemonStreams, logger: bufferLogger);
     final FakeDaemonStreams clientDaemonStreams = FakeDaemonStreams();
-    clientDaemonConnection = DaemonConnection(
-      daemonStreams: clientDaemonStreams,
-      logger: bufferLogger,
-    );
+    clientDaemonConnection = DaemonConnection(daemonStreams: clientDaemonStreams, logger: bufferLogger);
 
     serverDaemonStreams.inputs.addStream(clientDaemonStreams.outputs.stream);
     clientDaemonStreams.inputs.addStream(serverDaemonStreams.outputs.stream);
@@ -48,8 +42,7 @@ void main() {
       final ProxiedPortForwarder portForwarder = ProxiedPortForwarder(
         clientDaemonConnection,
         logger: bufferLogger,
-        createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async =>
-            fakeServerSocket,
+        createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async => fakeServerSocket,
       );
       final int result = await portForwarder.forward(100);
       expect(result, 200);
@@ -75,7 +68,9 @@ void main() {
       expect(message.data['params'], <String, Object?>{'id': id});
       expect(message.binary, isNotNull);
       final List<List<int>> binary = await message.binary!.toList();
-      expect(binary, <List<int>>[<int>[1, 2, 3]]);
+      expect(binary, <List<int>>[
+        <int>[1, 2, 3],
+      ]);
 
       // Forwards data received as event to socket.
       expect(fakeSocket.addedData.isEmpty, true);
@@ -100,8 +95,7 @@ void main() {
           },
         ),
         logger: bufferLogger,
-        createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async =>
-            fakeServerSocket,
+        createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async => fakeServerSocket,
       );
       final int result = await portForwarder.forward(100);
       expect(result, 200);
@@ -119,8 +113,7 @@ void main() {
         clientDaemonConnection,
         deviceId: 'device_id',
         logger: bufferLogger,
-        createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async =>
-            fakeServerSocket,
+        createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async => fakeServerSocket,
       );
 
       final Stream<DaemonMessage> broadcastOutput = serverDaemonConnection.incomingCommands.asBroadcastStream();
@@ -155,11 +148,7 @@ void main() {
 
       expect(message.data['id'], isNotNull);
       expect(message.data['method'], 'device.unforward');
-      expect(message.data['params'], <String, Object?>{
-        'deviceId': 'device_id',
-        'devicePort': 300,
-        'hostPort': 350,
-      });
+      expect(message.data['params'], <String, Object?>{'deviceId': 'device_id', 'devicePort': 300, 'hostPort': 350});
     });
 
     group('socket done', () {
@@ -173,8 +162,7 @@ void main() {
           clientDaemonConnection,
           deviceId: 'device_id',
           logger: bufferLogger,
-          createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async =>
-              fakeServerSocket,
+          createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async => fakeServerSocket,
         );
 
         broadcastOutput = serverDaemonConnection.incomingCommands.asBroadcastStream();
@@ -203,21 +191,16 @@ void main() {
 
         expect(message.data['id'], isNotNull);
         expect(message.data['method'], 'proxy.disconnect');
-        expect(message.data['params'], <String, Object?>{
-          'id': 'random_id',
-        });
+        expect(message.data['params'], <String, Object?>{'id': 'random_id'});
       });
 
       testWithoutContext('with error, should also calls proxy.disconnect', () async {
-
         fakeSocket.doneCompleter.complete(true);
         final DaemonMessage message = await broadcastOutput.first;
 
         expect(message.data['id'], isNotNull);
         expect(message.data['method'], 'proxy.disconnect');
-        expect(message.data['params'], <String, Object?>{
-          'id': 'random_id',
-        });
+        expect(message.data['params'], <String, Object?>{'id': 'random_id'});
 
         // Send an error response and make sure that it won't crash the client.
         serverDaemonConnection.sendErrorResponse(message.data['id']!, 'some error', StackTrace.current);
@@ -232,8 +215,7 @@ void main() {
       final ProxiedPortForwarder portForwarder = ProxiedPortForwarder(
         clientDaemonConnection,
         logger: bufferLogger,
-        createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async =>
-            fakeServerSocket,
+        createSocketServer: (Logger logger, int? hostPort, bool? ipv6) async => fakeServerSocket,
       );
       final int result = await portForwarder.forward(100);
       expect(result, 200);
@@ -316,10 +298,7 @@ void main() {
   group('ProxiedDevice', () {
     testWithoutContext('calls stopApp without application package if not passed', () async {
       bufferLogger = BufferLogger.test();
-      final ProxiedDevices proxiedDevices = ProxiedDevices(
-        clientDaemonConnection,
-        logger: bufferLogger,
-      );
+      final ProxiedDevices proxiedDevices = ProxiedDevices(clientDaemonConnection, logger: bufferLogger);
       final ProxiedDevice device = proxiedDevices.deviceFromDaemonResult(fakeDevice);
       unawaited(device.stopApp(null, userIdentifier: 'user-id'));
       final DaemonMessage message = await serverDaemonConnection.incomingCommands.first;
@@ -332,17 +311,12 @@ void main() {
   group('ProxiedDevices', () {
     testWithoutContext('devices respects the filter passed in', () async {
       bufferLogger = BufferLogger.test();
-      final ProxiedDevices proxiedDevices = ProxiedDevices(
-        clientDaemonConnection,
-        logger: bufferLogger,
-      );
+      final ProxiedDevices proxiedDevices = ProxiedDevices(clientDaemonConnection, logger: bufferLogger);
 
       final FakeDeviceDiscoveryFilter fakeFilter = FakeDeviceDiscoveryFilter();
 
       final FakeDevice supportedDevice = FakeDevice('Device', 'supported');
-      fakeFilter.filteredDevices = <Device>[
-        supportedDevice,
-      ];
+      fakeFilter.filteredDevices = <Device>[supportedDevice];
 
       final Future<List<Device>> resultFuture = proxiedDevices.devices(filter: fakeFilter);
 
@@ -350,10 +324,7 @@ void main() {
       expect(message.data['id'], isNotNull);
       expect(message.data['method'], 'device.discoverDevices');
 
-      serverDaemonConnection.sendResponse(message.data['id']!, <Map<String, Object?>>[
-        fakeDevice,
-        fakeDevice2,
-      ]);
+      serverDaemonConnection.sendResponse(message.data['id']!, <Map<String, Object?>>[fakeDevice, fakeDevice2]);
 
       final List<Device> result = await resultFuture;
       expect(result.length, 1);
@@ -481,7 +452,11 @@ void main() {
         'disableServiceAuthCodes': true,
       });
 
-      serverDaemonConnection.sendErrorResponse(startMessage.data['id']!, 'command not understood: device.startDartDevelopmentService', StackTrace.current);
+      serverDaemonConnection.sendErrorResponse(
+        startMessage.data['id']!,
+        'command not understood: device.startDartDevelopmentService',
+        StackTrace.current,
+      );
 
       await startFuture;
       expect(localDds.startCalled, true);
@@ -535,8 +510,7 @@ class FakeServerSocket extends Fake implements ServerSocket {
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    return controller.stream.listen(onData,
-        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+    return controller.stream.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
   @override
@@ -559,8 +533,7 @@ class FakeSocket extends Fake implements Socket {
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    return controller.stream.listen(onData,
-        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+    return controller.stream.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
   @override

@@ -19,10 +19,7 @@ void main() {
     });
 
     testWithoutContext('exits with specified stderr, stdout', () async {
-      final FakeProcess process = FakeProcess(
-        stderr: 'stderr\u{FFFD}'.codeUnits,
-        stdout: 'stdout\u{FFFD}'.codeUnits,
-      );
+      final FakeProcess process = FakeProcess(stderr: 'stderr\u{FFFD}'.codeUnits, stdout: 'stdout\u{FFFD}'.codeUnits);
       await process.exitCode;
 
       // Verify that no encoding changes have been applied to output.
@@ -37,12 +34,12 @@ void main() {
 
     testWithoutContext('exits after specified delay (if no completer specified)', () {
       final bool done = FakeAsync().run<bool>((FakeAsync time) {
-        final FakeProcess process = FakeProcess(
-          duration: const Duration(seconds: 30),
-        );
+        final FakeProcess process = FakeProcess(duration: const Duration(seconds: 30));
 
         bool hasExited = false;
-        unawaited(process.exitCode.then((int _) { hasExited = true; }));
+        unawaited(process.exitCode.then((int _) {
+          hasExited = true;
+        }));
 
         // Verify process hasn't exited before specified delay.
         time.elapse(const Duration(seconds: 15));
@@ -60,12 +57,12 @@ void main() {
     testWithoutContext('exits when completer completes (if no duration specified)', () {
       final bool done = FakeAsync().run<bool>((FakeAsync time) {
         final Completer<void> completer = Completer<void>();
-        final FakeProcess process = FakeProcess(
-          completer: completer,
-        );
+        final FakeProcess process = FakeProcess(completer: completer);
 
         bool hasExited = false;
-        unawaited(process.exitCode.then((int _) { hasExited = true; }));
+        unawaited(process.exitCode.then((int _) {
+          hasExited = true;
+        }));
 
         // Verify process hasn't exited when all async tasks flushed.
         time.elapse(Duration.zero);
@@ -84,13 +81,12 @@ void main() {
     testWithoutContext('when completer and duration are specified, does not exit until completer is completed', () {
       final bool done = FakeAsync().run<bool>((FakeAsync time) {
         final Completer<void> completer = Completer<void>();
-        final FakeProcess process = FakeProcess(
-          duration: const Duration(seconds: 30),
-          completer: completer,
-        );
+        final FakeProcess process = FakeProcess(duration: const Duration(seconds: 30), completer: completer);
 
         bool hasExited = false;
-        unawaited(process.exitCode.then((int _) { hasExited = true; }));
+        unawaited(process.exitCode.then((int _) {
+          hasExited = true;
+        }));
 
         // Verify process hasn't exited before specified delay.
         time.elapse(const Duration(seconds: 15));
@@ -113,13 +109,12 @@ void main() {
     testWithoutContext('when completer and duration are specified, does not exit until duration has elapsed', () {
       final bool done = FakeAsync().run<bool>((FakeAsync time) {
         final Completer<void> completer = Completer<void>();
-        final FakeProcess process = FakeProcess(
-          duration: const Duration(seconds: 30),
-          completer: completer,
-        );
+        final FakeProcess process = FakeProcess(duration: const Duration(seconds: 30), completer: completer);
 
         bool hasExited = false;
-        unawaited(process.exitCode.then((int _) { hasExited = true; }));
+        unawaited(process.exitCode.then((int _) {
+          hasExited = true;
+        }));
 
         // Verify process hasn't exited before specified delay.
         time.elapse(const Duration(seconds: 15));
@@ -142,7 +137,9 @@ void main() {
       final FakeProcess process = FakeProcess();
 
       bool hasExited = false;
-      unawaited(process.exitCode.then((int _) { hasExited = true; }));
+      unawaited(process.exitCode.then((int _) {
+        hasExited = true;
+      }));
 
       // Verify process hasn't completed.
       expect(hasExited, isFalse);
@@ -194,20 +191,21 @@ void main() {
       });
 
       testWithoutContext('outputFollowsExit delays stderr, stdout until after process exit', () async {
-        manager.addCommand(const FakeCommand(
-          command: <String>['faketool'],
-          stderr: 'hello',
-          stdout: 'world',
-          outputFollowsExit: true,
-        ));
+        manager.addCommand(
+          const FakeCommand(command: <String>['faketool'], stderr: 'hello', stdout: 'world', outputFollowsExit: true),
+        );
 
         final List<int> stderrBytes = <int>[];
         final List<int> stdoutBytes = <int>[];
 
         // Start the process.
         final Process process = await manager.start(<String>['faketool']);
-        final StreamSubscription<List<int>> stderrSubscription = process.stderr.listen((List<int> chunk) { stderrBytes.addAll(chunk); });
-        final StreamSubscription<List<int>> stdoutSubscription = process.stdout.listen((List<int> chunk) { stdoutBytes.addAll(chunk); });
+        final StreamSubscription<List<int>> stderrSubscription = process.stderr.listen((List<int> chunk) {
+          stderrBytes.addAll(chunk);
+        });
+        final StreamSubscription<List<int>> stdoutSubscription = process.stdout.listen((List<int> chunk) {
+          stdoutBytes.addAll(chunk);
+        });
 
         // Immediately after exit, no output is emitted.
         await process.exitCode;
@@ -215,10 +213,7 @@ void main() {
         expect(utf8.decode(stdoutBytes), isEmpty);
 
         // Output is emitted asynchronously after process exit.
-        await Future.wait(<Future<void>>[
-          stderrSubscription.asFuture(),
-          stdoutSubscription.asFuture(),
-        ]);
+        await Future.wait(<Future<void>>[stderrSubscription.asFuture(), stdoutSubscription.asFuture()]);
         expect(utf8.decode(stderrBytes), 'hello');
         expect(utf8.decode(stdoutBytes), 'world');
 
@@ -250,11 +245,8 @@ void main() {
       testWithoutContext('stderr, stdout are List<int> if encoding is null', () async {
         manager.addCommand(const FakeCommand(command: <String>['faketool']));
 
-        final ProcessResult result = await manager.run(
-          <String>['faketool'],
-          stderrEncoding: null,
-          stdoutEncoding: null,
-        );
+        final ProcessResult result = await manager
+            .run(<String>['faketool'], stderrEncoding: null, stdoutEncoding: null);
         expect(result.exitCode, 0);
         expect(result.stdout, isA<List<int>>());
         expect(result.stderr, isA<List<int>>());
@@ -263,11 +255,8 @@ void main() {
       testWithoutContext('stderr, stdout are String if encoding is specified', () async {
         manager.addCommand(const FakeCommand(command: <String>['faketool']));
 
-        final ProcessResult result = await manager.run(
-          <String>['faketool'],
-          stderrEncoding: utf8,
-          stdoutEncoding: utf8,
-        );
+        final ProcessResult result = await manager
+            .run(<String>['faketool'], stderrEncoding: utf8, stdoutEncoding: utf8);
         expect(result.exitCode, 0);
         expect(result.stdout, isA<String>());
         expect(result.stderr, isA<String>());
@@ -296,11 +285,7 @@ void main() {
       testWithoutContext('stderr, stdout are List<int> if encoding is null', () {
         manager.addCommand(const FakeCommand(command: <String>['faketool']));
 
-        final ProcessResult result = manager.runSync(
-          <String>['faketool'],
-          stderrEncoding: null,
-          stdoutEncoding: null,
-        );
+        final ProcessResult result = manager.runSync(<String>['faketool'], stderrEncoding: null, stdoutEncoding: null);
         expect(result.exitCode, 0);
         expect(result.stdout, isA<List<int>>());
         expect(result.stderr, isA<List<int>>());
@@ -309,11 +294,7 @@ void main() {
       testWithoutContext('stderr, stdout are String if encoding is specified', () {
         manager.addCommand(const FakeCommand(command: <String>['faketool']));
 
-        final ProcessResult result = manager.runSync(
-          <String>['faketool'],
-          stderrEncoding: utf8,
-          stdoutEncoding: utf8,
-        );
+        final ProcessResult result = manager.runSync(<String>['faketool'], stderrEncoding: utf8, stdoutEncoding: utf8);
         expect(result.exitCode, 0);
         expect(result.stdout, isA<String>());
         expect(result.stderr, isA<String>());

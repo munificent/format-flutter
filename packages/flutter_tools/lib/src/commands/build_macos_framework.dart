@@ -49,13 +49,8 @@ class BuildMacOSFrameworkCommand extends BuildFrameworkCommand {
 
   @override
   Future<FlutterCommandResult> runCommand() async {
-    final String outputArgument = stringArg('output') ??
-        globals.fs.path.join(
-          globals.fs.currentDirectory.path,
-          'build',
-          'macos',
-          'framework',
-        );
+    final String outputArgument =
+        stringArg('output') ?? globals.fs.path.join(globals.fs.currentDirectory.path, 'build', 'macos', 'framework');
 
     if (outputArgument.isEmpty) {
       throwToolExit('--output is required.');
@@ -65,8 +60,9 @@ class BuildMacOSFrameworkCommand extends BuildFrameworkCommand {
       throwToolExit('Project does not support macOS');
     }
 
-    final Directory outputDirectory =
-        globals.fs.directory(globals.fs.path.absolute(globals.fs.path.normalize(outputArgument)));
+    final Directory outputDirectory = globals.fs.directory(
+      globals.fs.path.absolute(globals.fs.path.normalize(outputArgument)),
+    );
 
     final List<BuildInfo> buildInfos = await getBuildInfos();
     displayNullSafetyMode(buildInfos.first);
@@ -129,7 +125,8 @@ class BuildMacOSFrameworkCommand extends BuildFrameworkCommand {
               gitTagVersion.z == null ||
               gitTagVersion.commits != 0)) {
         throwToolExit(
-            '--cocoapods is only supported on the beta or stable channel. Detected version is ${flutterVersion.frameworkVersion}');
+          '--cocoapods is only supported on the beta or stable channel. Detected version is ${flutterVersion.frameworkVersion}',
+        );
       }
 
       // Podspecs use semantic versioning, which don't support hotfixes.
@@ -176,13 +173,8 @@ end
     }
   }
 
-  Future<void> _produceAppFramework(
-    BuildInfo buildInfo,
-    Directory outputBuildDirectory,
-  ) async {
-    final Status status = globals.logger.startProgress(
-      ' ├─Building App.xcframework and FlutterMacOS.xcframework...',
-    );
+  Future<void> _produceAppFramework(BuildInfo buildInfo, Directory outputBuildDirectory) async {
+    final Status status = globals.logger.startProgress(' ├─Building App.xcframework and FlutterMacOS.xcframework...');
 
     try {
       final Environment environment = Environment(
@@ -194,9 +186,7 @@ end
         defines: <String, String>{
           kTargetFile: targetFile,
           kTargetPlatform: getNameForTargetPlatform(TargetPlatform.darwin),
-          kDarwinArchs: defaultMacOSArchsForEnvironment(globals.artifacts!)
-              .map((DarwinArch e) => e.name)
-              .join(' '),
+          kDarwinArchs: defaultMacOSArchsForEnvironment(globals.artifacts!).map((DarwinArch e) => e.name).join(' '),
           ...buildInfo.toBuildSystemEnvironment(),
         },
         artifacts: globals.artifacts!,
@@ -230,32 +220,22 @@ end
     }
 
     final Directory appFramework = outputBuildDirectory.childDirectory('App.framework');
-    await BuildFrameworkCommand.produceXCFramework(
-      <Directory>[appFramework],
-      'App',
-      outputBuildDirectory,
-      globals.processManager,
-    );
+    await BuildFrameworkCommand.produceXCFramework(<Directory>[
+      appFramework,
+    ], 'App', outputBuildDirectory, globals.processManager);
     appFramework.deleteSync(recursive: true);
     final Directory flutterFramework = outputBuildDirectory.childDirectory('FlutterMacOS.framework');
 
     // If FlutterMacOS.podspec was generated, do not generate XCFramework.
     if (!boolArg('cocoapods')) {
-      await BuildFrameworkCommand.produceXCFramework(
-        <Directory>[flutterFramework],
-        'FlutterMacOS',
-        outputBuildDirectory,
-        globals.processManager,
-      );
+      await BuildFrameworkCommand.produceXCFramework(<Directory>[
+        flutterFramework,
+      ], 'FlutterMacOS', outputBuildDirectory, globals.processManager);
     }
     flutterFramework.deleteSync(recursive: true);
   }
 
-  Future<void> _producePlugins(
-    String xcodeBuildConfiguration,
-    Directory buildOutput,
-    Directory modeDirectory,
-  ) async {
+  Future<void> _producePlugins(String xcodeBuildConfiguration, Directory buildOutput, Directory modeDirectory) async {
     final Status status = globals.logger.startProgress(' ├─Building plugins...');
     try {
       final List<String> pluginsBuildCommand = <String>[
@@ -292,14 +272,9 @@ end
           }
           final String binaryName = globals.fs.path.basenameWithoutExtension(podFrameworkName);
 
-          await BuildFrameworkCommand.produceXCFramework(
-            <Directory>[
-              podProduct as Directory,
-            ],
-            binaryName,
-            modeDirectory,
-            globals.processManager,
-          );
+          await BuildFrameworkCommand.produceXCFramework(<Directory>[
+            podProduct as Directory,
+          ], binaryName, modeDirectory, globals.processManager);
         }
       }
     } finally {

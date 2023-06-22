@@ -49,19 +49,19 @@ class XcodeProjectInterpreter {
     Version? version,
     String? build,
   }) : _platform = platform,
-        _fileSystem = fileSystem,
-        _logger = logger,
-        _processUtils = ProcessUtils(logger: logger, processManager: processManager),
-        _operatingSystemUtils = OperatingSystemUtils(
-          fileSystem: fileSystem,
-          logger: logger,
-          platform: platform,
-          processManager: processManager,
-        ),
-        _version = version,
-        _build = build,
-        _versionText = version?.toString(),
-        _usage = usage;
+       _fileSystem = fileSystem,
+       _logger = logger,
+       _processUtils = ProcessUtils(logger: logger, processManager: processManager),
+       _operatingSystemUtils = OperatingSystemUtils(
+         fileSystem: fileSystem,
+         logger: logger,
+         platform: platform,
+         processManager: processManager,
+       ),
+       _version = version,
+       _build = build,
+       _versionText = version?.toString(),
+       _usage = usage;
 
   /// Create an [XcodeProjectInterpreter] for testing.
   ///
@@ -74,10 +74,7 @@ class XcodeProjectInterpreter {
     Version? version = const Version.withText(1000, 0, 0, '1000.0.0'),
     String? build = '13C100',
   }) {
-    final Platform platform = FakePlatform(
-      operatingSystem: 'macos',
-      environment: <String, String>{},
-    );
+    final Platform platform = FakePlatform(operatingSystem: 'macos', environment: <String, String>{});
     return XcodeProjectInterpreter._(
       fileSystem: MemoryFileSystem.test(),
       platform: platform,
@@ -103,9 +100,7 @@ class XcodeProjectInterpreter {
     }
     try {
       if (_versionText == null) {
-        final RunResult result = _processUtils.runSync(
-          <String>[...xcrunCommand(), 'xcodebuild', '-version'],
-        );
+        final RunResult result = _processUtils.runSync(<String>[...xcrunCommand(), 'xcodebuild', '-version']);
         if (result.exitCode != 0) {
           return;
         }
@@ -163,10 +158,7 @@ class XcodeProjectInterpreter {
     final List<String> xcrunCommand = <String>[];
     if (_operatingSystemUtils.hostPlatform == HostPlatform.darwin_arm64) {
       // Force Xcode commands to run outside Rosetta.
-      xcrunCommand.addAll(<String>[
-        '/usr/bin/arch',
-        '-arm64e',
-      ]);
+      xcrunCommand.addAll(<String>['/usr/bin/arch', '-arm64e']);
     }
     xcrunCommand.add('xcrun');
     return xcrunCommand;
@@ -192,14 +184,10 @@ class XcodeProjectInterpreter {
       'xcodebuild',
       '-project',
       _fileSystem.path.absolute(projectPath),
-      if (scheme != null)
-        ...<String>['-scheme', scheme],
-      if (configuration != null)
-        ...<String>['-configuration', configuration],
-      if (target != null)
-        ...<String>['-target', target],
-      if (buildContext.environmentType == EnvironmentType.simulator)
-        ...<String>['-sdk', 'iphonesimulator'],
+      if (scheme != null) ...<String>['-scheme', scheme],
+      if (configuration != null) ...<String>['-configuration', configuration],
+      if (target != null) ...<String>['-target', target],
+      if (buildContext.environmentType == EnvironmentType.simulator) ...<String>['-sdk', 'iphonesimulator'],
       '-destination',
       if (buildContext.isWatch && buildContext.environmentType == EnvironmentType.physical)
         'generic/platform=watchOS'
@@ -230,7 +218,8 @@ class XcodeProjectInterpreter {
       return parseXcodeBuildSettings(out);
     } on Exception catch (error) {
       if (error is ProcessException && error.toString().contains('timed out')) {
-        BuildEvent('xcode-show-build-settings-timeout',
+        BuildEvent(
+          'xcode-show-build-settings-timeout',
           type: 'ios',
           command: showBuildSettingsCommand.join(' '),
           flutterUsage: _usage,
@@ -247,9 +236,9 @@ class XcodeProjectInterpreter {
   ///
   /// Returns the stdout of the Xcode command.
   Future<String?> pluginsBuildSettingsOutput(
-      Directory podXcodeProject, {
-        Duration timeout = const Duration(minutes: 1),
-      }) async {
+    Directory podXcodeProject, {
+    Duration timeout = const Duration(minutes: 1),
+  }) async {
     if (!podXcodeProject.existsSync()) {
       // No plugins.
       return null;
@@ -285,7 +274,8 @@ class XcodeProjectInterpreter {
       return result.stdout.trim();
     } on Exception catch (error) {
       if (error is ProcessException && error.toString().contains('timed out')) {
-        BuildEvent('xcode-show-build-settings-timeout',
+        BuildEvent(
+          'xcode-show-build-settings-timeout',
           type: 'ios',
           command: showBuildSettingsCommand.join(' '),
           flutterUsage: _usage,
@@ -298,7 +288,7 @@ class XcodeProjectInterpreter {
     }
   }
 
-  Future<void> cleanWorkspace(String workspacePath, String scheme, { bool verbose = false }) async {
+  Future<void> cleanWorkspace(String workspacePath, String scheme, {bool verbose = false}) async {
     await _processUtils.run(<String>[
       ...xcrunCommand(),
       'xcodebuild',
@@ -306,8 +296,7 @@ class XcodeProjectInterpreter {
       workspacePath,
       '-scheme',
       scheme,
-      if (!verbose)
-        '-quiet',
+      if (!verbose) '-quiet',
       'clean',
       ...environmentVariablesAsXcodeBuildSettings(_platform),
     ], workingDirectory: _fileSystem.currentDirectory.path);
@@ -321,17 +310,12 @@ class XcodeProjectInterpreter {
     // The exit code returned by 'xcodebuild -list' when the project is corrupted.
     const int corruptedProjectExitCode = 74;
     bool allowedFailures(int c) => c == missingProjectExitCode || c == corruptedProjectExitCode;
-    final RunResult result = await _processUtils.run(
-      <String>[
-        ...xcrunCommand(),
-        'xcodebuild',
-        '-list',
-        if (projectFilename != null) ...<String>['-project', projectFilename],
-      ],
-      throwOnError: true,
-      allowedFailures: allowedFailures,
-      workingDirectory: projectPath,
-    );
+    final RunResult result = await _processUtils.run(<String>[
+      ...xcrunCommand(),
+      'xcodebuild',
+      '-list',
+      if (projectFilename != null) ...<String>['-project', projectFilename],
+    ], throwOnError: true, allowedFailures: allowedFailures, workingDirectory: projectPath);
     if (allowedFailures(result.exitCode)) {
       // User configuration error, tool exit instead of crashing.
       throwToolExit('Unable to get Xcode project information:\n ${result.stderr}');
@@ -426,17 +410,11 @@ class XcodeUniversalLinkSettings {
   final List<String> associatedDomains;
 }
 
-
 /// Information about an Xcode project.
 ///
 /// Represents the output of `xcodebuild -list`.
 class XcodeProjectInfo {
-  const XcodeProjectInfo(
-    this.targets,
-    this.buildConfigurations,
-    this.schemes,
-    Logger logger
-  ) : _logger = logger;
+  const XcodeProjectInfo(this.targets, this.buildConfigurations, this.schemes, Logger logger) : _logger = logger;
 
   factory XcodeProjectInfo.fromXcodeBuildOutput(String output, Logger logger) {
     final List<String> targets = <String>[];

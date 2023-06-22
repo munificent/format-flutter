@@ -23,8 +23,16 @@ class MockFlutterDebugAdapter extends FlutterDebugAdapter {
   }) {
     final StreamController<List<int>> stdinController = StreamController<List<int>>();
     final StreamController<List<int>> stdoutController = StreamController<List<int>>();
-    final ByteStreamServerChannel channel = ByteStreamServerChannel(stdinController.stream, stdoutController.sink, null);
-    final ByteStreamServerChannel clientChannel = ByteStreamServerChannel(stdoutController.stream, stdinController.sink, null);
+    final ByteStreamServerChannel channel = ByteStreamServerChannel(
+      stdinController.stream,
+      stdoutController.sink,
+      null,
+    );
+    final ByteStreamServerChannel clientChannel = ByteStreamServerChannel(
+      stdoutController.stream,
+      stdinController.sink,
+      null,
+    );
 
     return MockFlutterDebugAdapter._(
       channel,
@@ -66,7 +74,8 @@ class MockFlutterDebugAdapter extends FlutterDebugAdapter {
   @override
   bool get sendLogsToClient => false;
 
-  final StreamController<Map<String, Object?>> _dapToClientMessagesController = StreamController<Map<String, Object?>>.broadcast();
+  final StreamController<Map<String, Object?>> _dapToClientMessagesController =
+      StreamController<Map<String, Object?>>.broadcast();
 
   /// A stream of all messages sent from the adapter back to the client.
   Stream<Map<String, Object?>> get dapToClientMessages => _dapToClientMessagesController.stream;
@@ -75,8 +84,9 @@ class MockFlutterDebugAdapter extends FlutterDebugAdapter {
   Stream<Map<String, Object?>> get dapToClientProgressEvents {
     const List<String> progressEventTypes = <String>['progressStart', 'progressUpdate', 'progressEnd'];
 
-    return dapToClientMessages
-        .where((Map<String, Object?> message) => progressEventTypes.contains(message['event'] as String?));
+    return dapToClientMessages.where(
+      (Map<String, Object?> message) => progressEventTypes.contains(message['event'] as String?),
+    );
   }
 
   /// A list of all messages sent from the adapter to the `flutter run` processes `stdin`.
@@ -84,10 +94,8 @@ class MockFlutterDebugAdapter extends FlutterDebugAdapter {
 
   /// The `method`s of all messages sent to the `flutter run` processes `stdin`
   /// by the debug adapter.
-  List<String> get dapToFlutterRequests => dapToFlutterMessages
-      .map((Map<String, Object?> message) => message['method'] as String?)
-      .whereNotNull()
-      .toList();
+  List<String> get dapToFlutterRequests =>
+      dapToFlutterMessages.map((Map<String, Object?> message) => message['method'] as String?).whereNotNull().toList();
 
   /// A handler for the 'app.exposeUrl' reverse-request.
   String Function(String)? exposeUrlHandler;
@@ -114,11 +122,9 @@ class MockFlutterDebugAdapter extends FlutterDebugAdapter {
           'supportsRestart': supportsRestart,
           'deviceId': 'flutter-tester',
           'mode': 'debug',
-        }
+        },
       });
-      simulateStdoutMessage(<String, Object?>{
-        'event': 'app.started',
-      });
+      simulateStdoutMessage(<String, Object?>{'event': 'app.started'});
     }
   }
 
@@ -139,10 +145,7 @@ class MockFlutterDebugAdapter extends FlutterDebugAdapter {
       clientChannel.sendRequest(Request(
         seq: _seq++,
         command: 'flutter.sendForwardedRequestResponse',
-        arguments: <String, Object?>{
-          'id': body['id'],
-          'result': result,
-        },
+        arguments: <String, Object?>{'id': body['id'], 'result': result},
       ));
     }
   }
@@ -193,13 +196,14 @@ class MockFlutterDebugAdapter extends FlutterDebugAdapter {
 
 /// A [FlutterTestDebugAdapter] that captures what process/args will be launched.
 class MockFlutterTestDebugAdapter extends FlutterTestDebugAdapter {
-  factory MockFlutterTestDebugAdapter({
-    required FileSystem fileSystem,
-    required Platform platform,
-  }) {
+  factory MockFlutterTestDebugAdapter({required FileSystem fileSystem, required Platform platform}) {
     final StreamController<List<int>> stdinController = StreamController<List<int>>();
     final StreamController<List<int>> stdoutController = StreamController<List<int>>();
-    final ByteStreamServerChannel channel = ByteStreamServerChannel(stdinController.stream, stdoutController.sink, null);
+    final ByteStreamServerChannel channel = ByteStreamServerChannel(
+      stdinController.stream,
+      stdoutController.sink,
+      null,
+    );
 
     return MockFlutterTestDebugAdapter._(
       stdinController.sink,
@@ -246,12 +250,7 @@ class MockFlutterTestDebugAdapter extends FlutterTestDebugAdapter {
 }
 
 class MockRequest extends Request {
-  MockRequest()
-      : super.fromMap(<String, Object?>{
-          'command': 'mock_command',
-          'type': 'mock_type',
-          'seq': _requestId++,
-        });
+  MockRequest() : super.fromMap(<String, Object?>{'command': 'mock_command', 'type': 'mock_type', 'seq': _requestId++});
 
   static int _requestId = 1;
 }

@@ -19,7 +19,8 @@ import '../globals.dart' as globals;
 
 /// Common behavior for `flutter analyze` and `flutter analyze --watch`
 abstract class AnalyzeBase {
-  AnalyzeBase(this.argResults, {
+  AnalyzeBase(
+    this.argResults, {
     required this.repoPackages,
     required this.fileSystem,
     required this.logger,
@@ -89,19 +90,15 @@ abstract class AnalyzeBase {
     }
     return artifacts.getArtifactPath(Artifact.engineDartSdkPath);
   }
+
   bool get isBenchmarking => argResults['benchmark'] as bool;
   String? get protocolTrafficLog => argResults['protocol-traffic-log'] as String?;
 
   /// Generate an analysis summary for both [AnalyzeOnce], [AnalyzeContinuously].
-  static String generateErrorsMessage({
-    required int issueCount,
-    int? issueDiff,
-    int? files,
-    required String seconds,
-  }) {
-    final StringBuffer errorsMessage = StringBuffer(issueCount > 0
-      ? '$issueCount ${pluralize('issue', issueCount)} found.'
-      : 'No issues found!');
+  static String generateErrorsMessage({required int issueCount, int? issueDiff, int? files, required String seconds}) {
+    final StringBuffer errorsMessage = StringBuffer(
+      issueCount > 0 ? '$issueCount ${pluralize('issue', issueCount)} found.' : 'No issues found!',
+    );
 
     // Only [AnalyzeContinuously] has issueDiff message.
     if (issueDiff != null) {
@@ -131,9 +128,11 @@ class PackageDependency {
     add(packagePath, pubSpecYamlPath);
     canonicalSource = pubSpecYamlPath;
   }
+
   void add(String packagePath, String sourcePath) {
     values.putIfAbsent(packagePath, () => <String>[]).add(sourcePath);
   }
+
   bool get hasConflict => values.length > 1;
   bool get hasConflictAffectingFlutterRepo {
     final String? flutterRoot = Cache.flutterRoot;
@@ -148,6 +147,7 @@ class PackageDependency {
     }
     return false;
   }
+
   void describeConflict(StringBuffer result) {
     assert(hasConflict);
     final List<String> targets = values.keys.toList();
@@ -164,10 +164,13 @@ class PackageDependency {
         }
       }
       if (canonical) {
-        result.writeln('    (This is the actual package definition, so it is considered the canonical "right answer".)');
+        result.writeln(
+          '    (This is the actual package definition, so it is considered the canonical "right answer".)',
+        );
       }
     }
   }
+
   String get target => values.keys.single;
 }
 
@@ -189,20 +192,23 @@ class PackageDependencyTracker {
     final File dotPackages = globals.fs.file(dotPackagesPath);
     if (dotPackages.existsSync()) {
       // this directory has opinions about what we should be using
-      final Iterable<String> lines = dotPackages
-        .readAsStringSync()
-        .split('\n')
-        .where((String line) => !line.startsWith(RegExp(r'^ *#')));
+      final Iterable<String> lines = dotPackages.readAsStringSync().split('\n').where(
+        (String line) => !line.startsWith(RegExp(r'^ *#')),
+      );
       for (final String line in lines) {
         final int colon = line.indexOf(':');
         if (colon > 0) {
           final String packageName = line.substring(0, colon);
-          final String packagePath = globals.fs.path.fromUri(line.substring(colon+1));
+          final String packagePath = globals.fs.path.fromUri(line.substring(colon + 1));
           // Ensure that we only add `analyzer` and dependent packages defined in the vended SDK (and referred to with a local
           // globals.fs.path. directive). Analyzer package versions reached via transitive dependencies (e.g., via `test`) are ignored
           // since they would produce spurious conflicts.
           if (!_vendedSdkPackages.contains(packageName) || packagePath.startsWith('..')) {
-            add(packageName, globals.fs.path.normalize(globals.fs.path.absolute(directory.path, packagePath)), dotPackagesPath);
+            add(
+              packageName,
+              globals.fs.path.normalize(globals.fs.path.absolute(directory.path, packagePath)),
+              dotPackagesPath,
+            );
           }
         }
       }
@@ -229,7 +235,9 @@ class PackageDependencyTracker {
         if (pubSpecYaml is yaml.YamlMap) {
           final dynamic packageName = pubSpecYaml['name'];
           if (packageName is String) {
-            final String packagePath = globals.fs.path.normalize(globals.fs.path.absolute(globals.fs.path.join(directory.path, 'lib')));
+            final String packagePath = globals.fs.path.normalize(
+              globals.fs.path.absolute(globals.fs.path.join(directory.path, 'lib')),
+            );
             dependencies.addCanonicalCase(packageName, packagePath, pubSpecYamlPath);
           } else {
             throwToolExit('pubspec.yaml is malformed. The name should be a String.');
@@ -250,12 +258,12 @@ class PackageDependencyTracker {
         message.writeln(
           'For packages in the flutter repository, try using "flutter update-packages" to do all of them at once.\n'
           'If you need to actually upgrade them, consider "flutter update-packages --force-upgrade". '
-          '(This will update your pubspec.yaml files as well, so you may wish to do this on a separate branch.)'
+          '(This will update your pubspec.yaml files as well, so you may wish to do this on a separate branch.)',
         );
       }
       message.write(
         'If this does not help, to track down the conflict you can use '
-        '"pub deps --style=list" and "pub upgrade --verbosity=solver" in the affected directories.'
+        '"pub deps --style=list" and "pub upgrade --verbosity=solver" in the affected directories.',
       );
       throwToolExit(message.toString());
     }
@@ -292,8 +300,9 @@ class PackageDependencyTracker {
 
 /// Find directories or files from argResults.rest.
 Set<String> findDirectories(ArgResults argResults, FileSystem fileSystem) {
-  final Set<String> items = Set<String>.of(argResults.rest
-      .map<String>((String path) => fileSystem.path.canonicalize(path)));
+  final Set<String> items = Set<String>.of(
+    argResults.rest.map<String>((String path) => fileSystem.path.canonicalize(path)),
+  );
   if (items.isNotEmpty) {
     for (final String item in items) {
       final FileSystemEntityType type = fileSystem.typeSync(item);

@@ -46,9 +46,7 @@ class CopyFlutterBundle extends Target {
   ];
 
   @override
-  List<String> get depfiles => <String>[
-    'flutter_assets.d',
-  ];
+  List<String> get depfiles => <String>['flutter_assets.d'];
 
   @override
   Future<void> build(Environment environment) async {
@@ -61,14 +59,19 @@ class CopyFlutterBundle extends Target {
 
     // Only copy the prebuilt runtimes and kernel blob in debug mode.
     if (buildMode == BuildMode.debug) {
-      final String vmSnapshotData = environment.artifacts.getArtifactPath(Artifact.vmSnapshotData, mode: BuildMode.debug);
-      final String isolateSnapshotData = environment.artifacts.getArtifactPath(Artifact.isolateSnapshotData, mode: BuildMode.debug);
-      environment.buildDir.childFile('app.dill')
-          .copySync(environment.outputDir.childFile('kernel_blob.bin').path);
-      environment.fileSystem.file(vmSnapshotData)
-          .copySync(environment.outputDir.childFile('vm_snapshot_data').path);
-      environment.fileSystem.file(isolateSnapshotData)
-          .copySync(environment.outputDir.childFile('isolate_snapshot_data').path);
+      final String vmSnapshotData = environment.artifacts.getArtifactPath(
+        Artifact.vmSnapshotData,
+        mode: BuildMode.debug,
+      );
+      final String isolateSnapshotData = environment.artifacts.getArtifactPath(
+        Artifact.isolateSnapshotData,
+        mode: BuildMode.debug,
+      );
+      environment.buildDir.childFile('app.dill').copySync(environment.outputDir.childFile('kernel_blob.bin').path);
+      environment.fileSystem.file(vmSnapshotData).copySync(environment.outputDir.childFile('vm_snapshot_data').path);
+      environment.fileSystem.file(isolateSnapshotData).copySync(
+        environment.outputDir.childFile('isolate_snapshot_data').path,
+      );
     }
     final Depfile assetDepfile = await copyAssets(
       environment,
@@ -77,16 +80,11 @@ class CopyFlutterBundle extends Target {
       buildMode: buildMode,
       shaderTarget: ShaderTarget.sksl,
     );
-    environment.depFileService.writeToFile(
-      assetDepfile,
-      environment.buildDir.childFile('flutter_assets.d'),
-    );
+    environment.depFileService.writeToFile(assetDepfile, environment.buildDir.childFile('flutter_assets.d'));
   }
 
   @override
-  List<Target> get dependencies => const <Target>[
-    KernelSnapshot(),
-  ];
+  List<Target> get dependencies => const <Target>[KernelSnapshot()];
 }
 
 /// Copies the pre-built flutter bundle for release mode.
@@ -103,9 +101,7 @@ class ReleaseCopyFlutterBundle extends CopyFlutterBundle {
   List<Source> get outputs => const <Source>[];
 
   @override
-  List<String> get depfiles => const <String>[
-    'flutter_assets.d',
-  ];
+  List<String> get depfiles => const <String>['flutter_assets.d'];
 
   @override
   List<Target> get dependencies => const <Target>[];
@@ -136,15 +132,10 @@ class KernelSnapshot extends Target {
   List<Source> get outputs => const <Source>[];
 
   @override
-  List<String> get depfiles => <String>[
-    'kernel_snapshot.d',
-  ];
+  List<String> get depfiles => <String>['kernel_snapshot.d'];
 
   @override
-  List<Target> get dependencies => const <Target>[
-    GenerateLocalizationsTarget(),
-    DartPluginRegistrantTarget(),
-  ];
+  List<Target> get dependencies => const <Target>[GenerateLocalizationsTarget(), DartPluginRegistrantTarget()];
 
   @override
   Future<void> build(Environment environment) async {
@@ -165,9 +156,7 @@ class KernelSnapshot extends Target {
     }
     final BuildMode buildMode = BuildMode.fromCliName(buildModeEnvironment);
     final String targetFile = environment.defines[kTargetFile] ?? environment.fileSystem.path.join('lib', 'main.dart');
-    final File packagesFile = environment.projectDir
-      .childDirectory('.dart_tool')
-      .childFile('package_config.json');
+    final File packagesFile = environment.projectDir.childDirectory('.dart_tool').childFile('package_config.json');
     final String targetFileAbsolute = environment.fileSystem.file(targetFile).absolute.path;
     // everything besides 'false' is considered to be enabled.
     final bool trackWidgetCreation = environment.defines[kTrackWidgetCreation] != 'false';
@@ -179,8 +168,7 @@ class KernelSnapshot extends Target {
     final String? fileSystemScheme = environment.defines[kFileSystemScheme];
 
     TargetModel targetModel = TargetModel.flutter;
-    if (targetPlatform == TargetPlatform.fuchsia_x64 ||
-        targetPlatform == TargetPlatform.fuchsia_arm64) {
+    if (targetPlatform == TargetPlatform.fuchsia_x64 || targetPlatform == TargetPlatform.fuchsia_arm64) {
       targetModel = TargetModel.flutterRunner;
     }
     // Force linking of the platform for desktop embedder targets since these
@@ -221,10 +209,7 @@ class KernelSnapshot extends Target {
       TargetPlatform.tester || TargetPlatform.web_javascript => null,
     };
 
-    final PackageConfig packageConfig = await loadPackageConfigWithLogging(
-      packagesFile,
-      logger: environment.logger,
-    );
+    final PackageConfig packageConfig = await loadPackageConfigWithLogging(packagesFile, logger: environment.logger);
 
     final CompilerOutput? output = await compiler.compile(
       sdkRoot: environment.artifacts.getArtifactPath(
@@ -237,8 +222,7 @@ class KernelSnapshot extends Target {
       trackWidgetCreation: trackWidgetCreation && buildMode != BuildMode.release,
       targetModel: targetModel,
       outputFilePath: environment.buildDir.childFile('app.dill').path,
-      initializeFromDill: buildMode.isPrecompiled ? null :
-          environment.buildDir.childFile('app.dill').path,
+      initializeFromDill: buildMode.isPrecompiled ? null : environment.buildDir.childFile('app.dill').path,
       packagesPath: packagesFile.path,
       linkPlatformKernelIn: forceLinkPlatform || buildMode.isPrecompiled,
       mainPath: targetFileAbsolute,
@@ -291,12 +275,12 @@ abstract class AotElfBase extends Target {
     final String? codeSizeDirectory = environment.defines[kCodeSizeDirectory];
 
     if (codeSizeDirectory != null) {
-      final File codeSizeFile = environment.fileSystem
-        .directory(codeSizeDirectory)
-        .childFile('snapshot.${environment.defines[kTargetPlatform]}.json');
-      final File precompilerTraceFile = environment.fileSystem
-        .directory(codeSizeDirectory)
-        .childFile('trace.${environment.defines[kTargetPlatform]}.json');
+      final File codeSizeFile = environment.fileSystem.directory(codeSizeDirectory).childFile(
+        'snapshot.${environment.defines[kTargetPlatform]}.json',
+      );
+      final File precompilerTraceFile = environment.fileSystem.directory(codeSizeDirectory).childFile(
+        'trace.${environment.defines[kTargetPlatform]}.json',
+      );
       extraGenSnapshotOptions.add('--write-v8-snapshot-profile-to=${codeSizeFile.path}');
       extraGenSnapshotOptions.add('--trace-precompiler-to=${precompilerTraceFile.path}');
     }
@@ -329,21 +313,14 @@ class AotElfProfile extends AotElfBase {
     const Source.pattern('{BUILD_DIR}/app.dill'),
     const Source.artifact(Artifact.engineDartBinary),
     const Source.artifact(Artifact.skyEnginePath),
-    Source.artifact(Artifact.genSnapshot,
-      platform: targetPlatform,
-      mode: BuildMode.profile,
-    ),
+    Source.artifact(Artifact.genSnapshot, platform: targetPlatform, mode: BuildMode.profile),
   ];
 
   @override
-  List<Source> get outputs => const <Source>[
-    Source.pattern('{BUILD_DIR}/app.so'),
-  ];
+  List<Source> get outputs => const <Source>[Source.pattern('{BUILD_DIR}/app.so')];
 
   @override
-  List<Target> get dependencies => const <Target>[
-    KernelSnapshot(),
-  ];
+  List<Target> get dependencies => const <Target>[KernelSnapshot()];
 
   final TargetPlatform targetPlatform;
 }
@@ -361,21 +338,14 @@ class AotElfRelease extends AotElfBase {
     const Source.pattern('{BUILD_DIR}/app.dill'),
     const Source.artifact(Artifact.engineDartBinary),
     const Source.artifact(Artifact.skyEnginePath),
-    Source.artifact(Artifact.genSnapshot,
-      platform: targetPlatform,
-      mode: BuildMode.release,
-    ),
+    Source.artifact(Artifact.genSnapshot, platform: targetPlatform, mode: BuildMode.release),
   ];
 
   @override
-  List<Source> get outputs => const <Source>[
-    Source.pattern('{BUILD_DIR}/app.so'),
-  ];
+  List<Source> get outputs => const <Source>[Source.pattern('{BUILD_DIR}/app.so')];
 
   @override
-  List<Target> get dependencies => const <Target>[
-    KernelSnapshot(),
-  ];
+  List<Target> get dependencies => const <Target>[KernelSnapshot()];
 
   final TargetPlatform targetPlatform;
 }
@@ -386,14 +356,10 @@ abstract class CopyFlutterAotBundle extends Target {
   const CopyFlutterAotBundle();
 
   @override
-  List<Source> get inputs => const <Source>[
-    Source.pattern('{BUILD_DIR}/app.so'),
-  ];
+  List<Source> get inputs => const <Source>[Source.pattern('{BUILD_DIR}/app.so')];
 
   @override
-  List<Source> get outputs => const <Source>[
-    Source.pattern('{OUTPUT_DIR}/app.so'),
-  ];
+  List<Source> get outputs => const <Source>[Source.pattern('{OUTPUT_DIR}/app.so')];
 
   @override
   Future<void> build(Environment environment) async {
@@ -418,12 +384,11 @@ abstract final class Lipo {
     required String inputDir,
     bool skipMissingInputs = false,
   }) async {
-
     final String resultPath = environment.fileSystem.path.join(environment.buildDir.path, relativePath);
     environment.fileSystem.directory(resultPath).parent.createSync(recursive: true);
 
     Iterable<String> inputPaths = darwinArchs.map(
-      (DarwinArch iosArch) => environment.fileSystem.path.join(inputDir, iosArch.name, relativePath)
+      (DarwinArch iosArch) => environment.fileSystem.path.join(inputDir, iosArch.name, relativePath),
     );
     if (skipMissingInputs) {
       inputPaths = inputPaths.where(environment.fileSystem.isFileSync);
@@ -432,13 +397,7 @@ abstract final class Lipo {
       }
     }
 
-    final List<String> lipoArgs = <String>[
-      'lipo',
-      ...inputPaths,
-      '-create',
-      '-output',
-      resultPath,
-    ];
+    final List<String> lipoArgs = <String>['lipo', ...inputPaths, '-create', '-output', resultPath];
 
     final ProcessResult result = await environment.processManager.run(lipoArgs);
     if (result.exitCode != 0) {

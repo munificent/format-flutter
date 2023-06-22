@@ -19,11 +19,8 @@ void main() {
     );
     final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
 
-    await processManager.run(<String>[
-      flutterBin,
-      ...getLocalEngineArguments(),
-      'clean',
-    ], workingDirectory: workingDirectory);
+    await processManager
+        .run(<String>[flutterBin, ...getLocalEngineArguments(), 'clean'], workingDirectory: workingDirectory);
     final List<String> buildCommand = <String>[
       flutterBin,
       ...getLocalEngineArguments(),
@@ -39,26 +36,18 @@ void main() {
 
     expect(firstRunResult, const ProcessResultMatcher(stdoutPattern: 'Running pod install'));
 
-    final File generatedConfig = fileSystem.file(fileSystem.path.join(
-      workingDirectory,
-      'ios',
-      'Flutter',
-      'Generated.xcconfig',
-    ));
+    final File generatedConfig = fileSystem.file(
+      fileSystem.path.join(workingDirectory, 'ios', 'Flutter', 'Generated.xcconfig'),
+    );
 
     // Config is updated if command succeeded.
     expect(generatedConfig, exists);
     expect(generatedConfig.readAsStringSync(), contains('DART_OBFUSCATION=true'));
 
     // file that only exists if app was fully built.
-    final File frameworkPlist = fileSystem.file(fileSystem.path.join(
-      workingDirectory,
-      'build',
-      'ios',
-      'iphoneos',
-      'Runner.app',
-      'AppFrameworkInfo.plist',
-    ));
+    final File frameworkPlist = fileSystem.file(
+      fileSystem.path.join(workingDirectory, 'build', 'ios', 'iphoneos', 'Runner.app', 'AppFrameworkInfo.plist'),
+    );
 
     expect(frameworkPlist, isNot(exists));
 

@@ -24,9 +24,7 @@ void main() {
         : '/fake/flutter/bin/flutter';
 
     setUpAll(() {
-      Cache.flutterRoot = platform.isWindows
-          ? r'C:\fake\flutter'
-          : '/fake/flutter';
+      Cache.flutterRoot = platform.isWindows ? r'C:\fake\flutter' : '/fake/flutter';
     });
 
     test('includes toolArgs', () async {
@@ -61,9 +59,7 @@ void main() {
       final FlutterLaunchRequestArguments args = FlutterLaunchRequestArguments(
         cwd: '/project',
         program: 'foo.dart',
-        env: <String, String>{
-          'MY_TEST_ENV': 'MY_TEST_VALUE',
-        },
+        env: <String, String>{'MY_TEST_ENV': 'MY_TEST_VALUE'},
       );
 
       await adapter.configurationDoneRequest(request, null, () {});

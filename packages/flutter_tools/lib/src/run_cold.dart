@@ -13,6 +13,7 @@ import 'tracing.dart';
 import 'vmservice.dart';
 
 const String kFlutterTestOutputsDirEnvName = 'FLUTTER_TEST_OUTPUTS_DIR';
+
 class ColdRunner extends ResidentRunner {
   ColdRunner(
     super.flutterDevices, {
@@ -26,9 +27,7 @@ class ColdRunner extends ResidentRunner {
     super.stayResident,
     super.machine,
     super.devtoolsHandler,
-  }) : super(
-          hotMode: false,
-        );
+  }) : super(hotMode: false);
 
   final bool traceStartup;
   final bool awaitFirstFrameWhenTracing;
@@ -54,10 +53,7 @@ class ColdRunner extends ResidentRunner {
   }) async {
     try {
       for (final FlutterDevice? device in flutterDevices) {
-        final int result = await device!.runCold(
-          coldRunner: this,
-          route: route,
-        );
+        final int result = await device!.runCold(coldRunner: this, route: route);
         if (result != 0) {
           appFailedToStart();
           return result;
@@ -148,10 +144,7 @@ class ColdRunner extends ResidentRunner {
   }) async {
     _didAttach = true;
     try {
-      await connectToServiceProtocol(
-        getSkSLMethod: writeSkSL,
-        allowExistingDdsInstance: allowExistingDdsInstance,
-      );
+      await connectToServiceProtocol(getSkSLMethod: writeSkSL, allowExistingDdsInstance: allowExistingDdsInstance);
     } on Exception catch (error) {
       globals.printError('Error connecting to the service protocol: $error');
       return 2;
@@ -208,7 +201,7 @@ class ColdRunner extends ResidentRunner {
   }
 
   @override
-  void printHelp({ required bool details }) {
+  void printHelp({required bool details}) {
     globals.printStatus('Flutter run key commands.');
     if (details) {
       printHelpDetails();

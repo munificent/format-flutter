@@ -88,11 +88,7 @@ void main() {
 
   testWithoutContext('listNetworkInterfaces() uses overrides', () async {
     setNetworkInterfaceLister(
-      ({
-        bool? includeLoopback,
-        bool? includeLinkLocal,
-        InternetAddressType? type,
-      }) async => <NetworkInterface>[],
+      ({bool? includeLoopback, bool? includeLinkLocal, InternetAddressType? type}) async => <NetworkInterface>[],
     );
 
     expect(await listNetworkInterfaces(), isEmpty);

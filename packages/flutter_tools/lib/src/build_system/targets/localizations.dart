@@ -67,27 +67,21 @@ class GenerateLocalizationsTarget extends Target {
       processManager: environment.processManager,
     );
 
-    final Map<String, Object?> dependencies = json.decode(
-      environment.buildDir.childFile(_kDependenciesFileName).readAsStringSync()
-    ) as Map<String, Object?>;
+    final Map<String, Object?> dependencies =
+        json.decode(environment.buildDir.childFile(_kDependenciesFileName).readAsStringSync()) as Map<String, Object?>;
     final List<Object?>? inputs = dependencies['inputs'] as List<Object?>?;
     final List<Object?>? outputs = dependencies['outputs'] as List<Object?>?;
     final Depfile depfile = Depfile(
       <File>[
         configFile,
         if (inputs != null)
-          for (final Object inputFile in inputs.whereType<Object>())
-            environment.fileSystem.file(inputFile),
+          for (final Object inputFile in inputs.whereType<Object>()) environment.fileSystem.file(inputFile),
       ],
       <File>[
         if (outputs != null)
-          for (final Object outputFile in outputs.whereType<Object>())
-            environment.fileSystem.file(outputFile),
+          for (final Object outputFile in outputs.whereType<Object>()) environment.fileSystem.file(outputFile),
       ],
     );
-    environment.depFileService.writeToFile(
-      depfile,
-      environment.buildDir.childFile('gen_localizations.d'),
-    );
+    environment.depFileService.writeToFile(depfile, environment.buildDir.childFile('gen_localizations.d'));
   }
 }

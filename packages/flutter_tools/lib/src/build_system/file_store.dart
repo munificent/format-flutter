@@ -36,9 +36,7 @@ class FileStorage {
   List<int> toBuffer() {
     final Map<String, Object> json = <String, Object>{
       'version': version,
-      'files': <Object>[
-        for (final FileHash file in files) file.toJson(),
-      ],
+      'files': <Object>[for (final FileHash file in files) file.toJson()],
     };
     return utf8.encode(jsonEncode(json));
   }
@@ -59,10 +57,7 @@ class FileHash {
   final String hash;
 
   Object toJson() {
-    return <String, Object>{
-      'path': path,
-      'hash': hash,
-    };
+    return <String, Object>{'path': path, 'hash': hash};
   }
 }
 
@@ -90,13 +85,10 @@ enum FileStoreStrategy {
 ///
 /// The format of the file store is subject to change and not part of its API.
 class FileStore {
-  FileStore({
-    required File cacheFile,
-    required Logger logger,
-    FileStoreStrategy strategy = FileStoreStrategy.hash,
-  }) : _logger = logger,
-       _strategy = strategy,
-       _cacheFile = cacheFile;
+  FileStore({required File cacheFile, required Logger logger, FileStoreStrategy strategy = FileStoreStrategy.hash})
+    : _logger = logger,
+      _strategy = strategy,
+      _cacheFile = cacheFile;
 
   final File _cacheFile;
   final Logger _logger;
@@ -158,10 +150,7 @@ class FileStore {
     for (final MapEntry<String, String> entry in currentAssetKeys.entries) {
       fileHashes.add(FileHash(entry.key, entry.value));
     }
-    final FileStorage fileStorage = FileStorage(
-      _kVersion,
-      fileHashes,
-    );
+    final FileStorage fileStorage = FileStorage(_kVersion, fileHashes);
     final List<int> buffer = fileStorage.toBuffer();
     try {
       _cacheFile.writeAsBytesSync(buffer);

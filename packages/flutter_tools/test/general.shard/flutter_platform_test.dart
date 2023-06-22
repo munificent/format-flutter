@@ -26,25 +26,19 @@ void main() {
 
   group('FlutterPlatform', () {
     testUsingContext('ensureConfiguration throws an error if an '
-      'explicitVmServicePort is specified and more than one test file', () async {
+        'explicitVmServicePort is specified and more than one test file', () async {
       final FlutterPlatform flutterPlatform = FlutterPlatform(
         shellPath: '/',
-        debuggingOptions: DebuggingOptions.enabled(
-          BuildInfo.debug,
-          hostVmServicePort: 1234,
-        ),
+        debuggingOptions: DebuggingOptions.enabled(BuildInfo.debug, hostVmServicePort: 1234),
         enableVmService: false,
       );
       flutterPlatform.loadChannel('test1.dart', FakeSuitePlatform());
 
       expect(() => flutterPlatform.loadChannel('test2.dart', FakeSuitePlatform()), throwsToolExit());
-    }, overrides: <Type, Generator>{
-      FileSystem: () => fileSystem,
-      ProcessManager: () => FakeProcessManager.any(),
-    });
+    }, overrides: <Type, Generator>{FileSystem: () => fileSystem, ProcessManager: () => FakeProcessManager.any()});
 
     testUsingContext('ensureConfiguration throws an error if a precompiled '
-      'entrypoint is specified and more that one test file', () {
+        'entrypoint is specified and more that one test file', () {
       final FlutterPlatform flutterPlatform = FlutterPlatform(
         debuggingOptions: DebuggingOptions.enabled(BuildInfo.debug),
         shellPath: '/',
@@ -54,28 +48,24 @@ void main() {
       flutterPlatform.loadChannel('test1.dart', FakeSuitePlatform());
 
       expect(() => flutterPlatform.loadChannel('test2.dart', FakeSuitePlatform()), throwsToolExit());
-    }, overrides: <Type, Generator>{
-      FileSystem: () => fileSystem,
-      ProcessManager: () => FakeProcessManager.any(),
-    });
+    }, overrides: <Type, Generator>{FileSystem: () => fileSystem, ProcessManager: () => FakeProcessManager.any()});
 
     testUsingContext('installHook creates a FlutterPlatform', () {
-      expect(() => installHook(
-        shellPath: 'abc',
-        debuggingOptions: DebuggingOptions.enabled(
-          BuildInfo.debug,
-          startPaused: true,
+      expect(
+        () => installHook(
+          shellPath: 'abc',
+          debuggingOptions: DebuggingOptions.enabled(BuildInfo.debug, startPaused: true),
         ),
-      ), throwsAssertionError);
+        throwsAssertionError,
+      );
 
-      expect(() => installHook(
-        shellPath: 'abc',
-        debuggingOptions: DebuggingOptions.enabled(
-          BuildInfo.debug,
-          startPaused: true,
-          hostVmServicePort: 123,
+      expect(
+        () => installHook(
+          shellPath: 'abc',
+          debuggingOptions: DebuggingOptions.enabled(BuildInfo.debug, startPaused: true, hostVmServicePort: 123),
         ),
-      ), throwsAssertionError);
+        throwsAssertionError,
+      );
 
       FlutterPlatform? capturedPlatform;
       final Map<String, String> expectedPrecompiledDillFiles = <String, String>{'Key': 'Value'};
@@ -120,4 +110,4 @@ void main() {
   });
 }
 
-class FakeSuitePlatform extends Fake implements SuitePlatform { }
+class FakeSuitePlatform extends Fake implements SuitePlatform {}

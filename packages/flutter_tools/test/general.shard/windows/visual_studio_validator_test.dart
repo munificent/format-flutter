@@ -118,12 +118,10 @@ void main() {
       configureMockVisualStudioAsTooOld();
 
       final ValidationResult result = await validator.validate();
-      final ValidationMessage expectedMessage = ValidationMessage.error(
-        userMessages.visualStudioTooOld(
-          fakeVisualStudio.minimumVersionDescription,
-          fakeVisualStudio.workloadDescription,
-        ),
-      );
+      final ValidationMessage expectedMessage = ValidationMessage.error(userMessages.visualStudioTooOld(
+        fakeVisualStudio.minimumVersionDescription,
+        fakeVisualStudio.workloadDescription,
+      ));
 
       expect(result.messages.contains(expectedMessage), true);
       expect(result.type, ValidationType.partial);
@@ -162,7 +160,8 @@ void main() {
 
       final ValidationResult result = await validator.validate();
       final ValidationMessage expectedDisplayNameMessage = ValidationMessage(
-        userMessages.visualStudioVersion(fakeVisualStudio.displayName!, fakeVisualStudio.fullVersion!));
+        userMessages.visualStudioVersion(fakeVisualStudio.displayName!, fakeVisualStudio.fullVersion!),
+      );
 
       expect(result.messages.contains(expectedDisplayNameMessage), true);
       expect(result.type, ValidationType.success);
@@ -177,9 +176,7 @@ void main() {
 
       final ValidationResult result = await validator.validate();
       final ValidationMessage expectedMessage = ValidationMessage.error(
-        userMessages.visualStudioMissing(
-          fakeVisualStudio.workloadDescription,
-        ),
+        userMessages.visualStudioMissing(fakeVisualStudio.workloadDescription),
       );
 
       expect(result.messages.contains(expectedMessage), true);

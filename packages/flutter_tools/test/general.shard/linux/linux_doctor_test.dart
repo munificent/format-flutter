@@ -40,28 +40,19 @@ CMake suite maintained and supported by Kitware (kitware.com/cmake).
 // A command that will return typical-looking 'ninja --version' output with the
 // given version number.
 FakeCommand _ninjaPresentCommand(String version) {
-  return FakeCommand(
-    command: const <String>['ninja', '--version'],
-    stdout: version,
-  );
+  return FakeCommand(command: const <String>['ninja', '--version'], stdout: version);
 }
 
 // A command that will return typical-looking 'pkg-config --version' output with
 // the given version number.
 FakeCommand _pkgConfigPresentCommand(String version) {
-  return FakeCommand(
-    command: const <String>['pkg-config', '--version'],
-    stdout: version,
-  );
+  return FakeCommand(command: const <String>['pkg-config', '--version'], stdout: version);
 }
 
 /// A command that returns either success or failure for a pkg-config query
 /// for [library], depending on [exists].
 FakeCommand _libraryCheckCommand(String library, {bool exists = true}) {
-  return FakeCommand(
-    command: <String>['pkg-config', '--exists', library],
-    exitCode: exists ? 0 : 1,
-  );
+  return FakeCommand(command: <String>['pkg-config', '--exists', library], exitCode: exists ? 0 : 1);
 }
 
 // Commands that give positive replies for all the GTK library pkg-config queries.
@@ -85,22 +76,19 @@ List<FakeCommand> _gtkLibrariesMissingCommands() {
 
 // A command that will failure when running '[binary] --version'.
 FakeCommand _missingBinaryCommand(String binary) {
-  return FakeCommand(
-    command: <String>[binary, '--version'],
-    exitCode: 1,
-  );
+  return FakeCommand(command: <String>[binary, '--version'], exitCode: 1);
 }
 
 FakeCommand _missingBinaryException(String binary) {
   return FakeCommand(
     command: <String>[binary, '--version'],
     exitCode: 1,
-    exception: ProcessException(binary, <String>[])
+    exception: ProcessException(binary, <String>[]),
   );
 }
 
 void main() {
-  testWithoutContext('Full validation when everything is available at the necessary version',() async {
+  testWithoutContext('Full validation when everything is available at the necessary version', () async {
     final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
       _clangPresentCommand('4.0.1'),
       _cmakePresentCommand('3.16.3'),

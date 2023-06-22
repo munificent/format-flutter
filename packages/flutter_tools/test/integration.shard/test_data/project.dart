@@ -9,7 +9,7 @@ import 'package:flutter_tools/src/web/file_generators/flutter_js.dart';
 import '../test_utils.dart';
 import 'deferred_components_config.dart';
 
-const String _kDefaultHtml  = '''
+const String _kDefaultHtml = '''
 <html>
     <head>
         <title>Hello, World</title>
@@ -60,8 +60,7 @@ abstract class Project {
     }
     deferredComponents?.setUpIn(dir);
 
-    final String fileGeneratorsPath =
-        Artifacts.test().getArtifactPath(Artifact.flutterToolsFileGenerators);
+    final String fileGeneratorsPath = Artifacts.test().getArtifactPath(Artifact.flutterToolsFileGenerators);
     final String flutterJsContents = generateFlutterJsFile(fileGeneratorsPath);
 
     // Setup for different flutter web initializations

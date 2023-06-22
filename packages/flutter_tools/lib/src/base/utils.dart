@@ -18,9 +18,7 @@ final path.Context urlContext = path.url;
 String camelCase(String str) {
   int index = str.indexOf('_');
   while (index != -1 && index < str.length - 2) {
-    str = str.substring(0, index) +
-      str.substring(index + 1, index + 2).toUpperCase() +
-      str.substring(index + 2);
+    str = str.substring(0, index) + str.substring(index + 1, index + 2).toUpperCase() + str.substring(index + 2);
     index = str.indexOf('_');
   }
   return str;
@@ -34,21 +32,17 @@ String kebabCase(String str) {
 final RegExp _upperRegex = RegExp(r'[A-Z]');
 
 /// Convert `fooBar` to `foo_bar`.
-String snakeCase(String str, [ String sep = '_' ]) {
-  return str.replaceAllMapped(_upperRegex,
-      (Match m) => '${m.start == 0 ? '' : sep}${m[0]!.toLowerCase()}');
+String snakeCase(String str, [String sep = '_']) {
+  return str.replaceAllMapped(_upperRegex, (Match m) => '${m.start == 0 ? '' : sep}${m[0]!.toLowerCase()}');
 }
 
 abstract interface class CliEnum implements Enum {
   String get cliName;
   String get helpText;
 
-  static Map<String, String> allowedHelp<T extends CliEnum>(List<T> values) =>
-      Map<String, String>.fromEntries(
-        values.map(
-          (T e) => MapEntry<String, String>(e.cliName, e.helpText),
-        ),
-      );
+  static Map<String, String> allowedHelp<T extends CliEnum>(List<T> values) => Map<String, String>.fromEntries(
+    values.map((T e) => MapEntry<String, String>(e.cliName, e.helpText)),
+  );
 }
 
 /// Converts `fooBar` to `FooBar`.
@@ -96,7 +90,7 @@ String getSizeAsMB(int bytesLength) {
 /// removed, and calculate a diff of changes when a new list of items is
 /// available.
 class ItemListNotifier<T> {
-  ItemListNotifier(): _items = <T>{};
+  ItemListNotifier() : _items = <T>{};
 
   ItemListNotifier.from(List<T> items) : _items = Set<T>.of(items);
 
@@ -210,12 +204,7 @@ const int kMinColumnWidth = 10;
 /// If the amount of indentation (from the text, [indent], and [hangingIndent])
 /// is such that less than [kMinColumnWidth] characters can fit in the
 /// [columnWidth], then the indent is truncated to allow the text to fit.
-String wrapText(String text, {
-  required int columnWidth,
-  required bool shouldWrap,
-  int? hangingIndent,
-  int? indent,
-}) {
+String wrapText(String text, {required int columnWidth, required bool shouldWrap, int? hangingIndent, int? indent}) {
   assert(columnWidth >= 0);
   if (text.isEmpty) {
     return '';
@@ -255,21 +244,19 @@ String wrapText(String text, {
     }
     String? hangingIndentString;
     final String indentString = ' ' * indent;
-    result.addAll(notIndented.map<String>(
-      (String line) {
-        // Don't return any lines with just whitespace on them.
-        if (line.isEmpty) {
-          return '';
-        }
-        String truncatedIndent = '$indentString${hangingIndentString ?? ''}$leadingWhitespace';
-        if (truncatedIndent.length > columnWidth - kMinColumnWidth) {
-          truncatedIndent = truncatedIndent.substring(0, math.max(columnWidth - kMinColumnWidth, 0));
-        }
-        final String result = '$truncatedIndent$line';
-        hangingIndentString ??= ' ' * hangingIndent!;
-        return result;
-      },
-    ));
+    result.addAll(notIndented.map<String>((String line) {
+      // Don't return any lines with just whitespace on them.
+      if (line.isEmpty) {
+        return '';
+      }
+      String truncatedIndent = '$indentString${hangingIndentString ?? ''}$leadingWhitespace';
+      if (truncatedIndent.length > columnWidth - kMinColumnWidth) {
+        truncatedIndent = truncatedIndent.substring(0, math.max(columnWidth - kMinColumnWidth, 0));
+      }
+      final String result = '$truncatedIndent$line';
+      hangingIndentString ??= ' ' * hangingIndent!;
+      return result;
+    }));
   }
   return result.join('\n');
 }
@@ -300,11 +287,7 @@ class _AnsiRun {
 /// If [outputPreferences.wrapText] is false, then the text will be returned
 /// split at the newlines, but not wrapped. If [shouldWrap] is specified,
 /// then it overrides the [outputPreferences.wrapText] setting.
-List<String> _wrapTextAsLines(String text, {
-  int start = 0,
-  required int columnWidth,
-  required bool shouldWrap,
-}) {
+List<String> _wrapTextAsLines(String text, {int start = 0, required int columnWidth, required bool shouldWrap}) {
   if (text.isEmpty) {
     return <String>[''];
   }
@@ -341,7 +324,7 @@ List<String> _wrapTextAsLines(String text, {
     return result;
   }
 
-  String joinRun(List<_AnsiRun> list, int start, [ int? end ]) {
+  String joinRun(List<_AnsiRun> list, int start, [int? end]) {
     return list.sublist(start, end).map<String>((_AnsiRun run) => run.original).join().trim();
   }
 

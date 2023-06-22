@@ -54,9 +54,11 @@ class FuchsiaSdk {
   Stream<String>? syslogs(String id) {
     Process? process;
     try {
-      final StreamController<String> controller = StreamController<String>(onCancel: () {
-        process?.kill();
-      });
+      final StreamController<String> controller = StreamController<String>(
+        onCancel: () {
+          process?.kill();
+        },
+      );
       final File? sshConfig = globals.fuchsiaArtifacts?.sshConfig;
       if (sshConfig == null || !sshConfig.existsSync()) {
         globals.printError('Cannot read device logs: No ssh config.');
@@ -77,9 +79,7 @@ class FuchsiaSdk {
         }
         process = newProcess;
         process?.exitCode.whenComplete(controller.close);
-        controller.addStream(process!.stdout
-            .transform(utf8.decoder)
-            .transform(const LineSplitter()));
+        controller.addStream(process!.stdout.transform(utf8.decoder).transform(const LineSplitter()));
       });
       return controller.stream;
     } on Exception catch (exception) {
@@ -92,11 +92,7 @@ class FuchsiaSdk {
 /// Fuchsia-specific artifacts used to interact with a device.
 class FuchsiaArtifacts {
   /// Creates a new [FuchsiaArtifacts].
-  FuchsiaArtifacts({
-    this.sshConfig,
-    this.ffx,
-    this.pm,
-  });
+  FuchsiaArtifacts({this.sshConfig, this.ffx, this.pm});
 
   /// Creates a new [FuchsiaArtifacts] using the cached Fuchsia SDK.
   ///
@@ -114,8 +110,9 @@ class FuchsiaArtifacts {
     // TODO(zanderso): Consider passing the ssh config path in with a flag.
     File? sshConfig;
     if (globals.platform.environment.containsKey(_kFuchsiaBuildDir)) {
-      sshConfig = globals.fs.file(globals.fs.path.join(
-          globals.platform.environment[_kFuchsiaBuildDir]!, 'ssh-keys', 'ssh_config'));
+      sshConfig = globals.fs.file(
+        globals.fs.path.join(globals.platform.environment[_kFuchsiaBuildDir]!, 'ssh-keys', 'ssh_config'),
+      );
     } else if (globals.platform.environment.containsKey(_kFuchsiaSshConfig)) {
       sshConfig = globals.fs.file(globals.platform.environment[_kFuchsiaSshConfig]);
     }
@@ -125,11 +122,7 @@ class FuchsiaArtifacts {
     final File ffx = globals.fs.file(globals.fs.path.join(tools, 'x64/ffx'));
     final File pm = globals.fs.file(globals.fs.path.join(tools, 'pm'));
 
-    return FuchsiaArtifacts(
-      sshConfig: sshConfig,
-      ffx: ffx.existsSync() ? ffx : null,
-      pm: pm.existsSync() ? pm : null,
-    );
+    return FuchsiaArtifacts(sshConfig: sshConfig, ffx: ffx.existsSync() ? ffx : null, pm: pm.existsSync() ? pm : null);
   }
 
   static const String _kFuchsiaSshConfig = 'FUCHSIA_SSH_CONFIG';

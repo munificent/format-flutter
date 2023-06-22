@@ -37,7 +37,7 @@ void main() {
   group('DDS in flutter run', () {
     late FlutterRunTestDriver flutterRun, flutterAttach;
     setUp(() {
-      flutterRun = FlutterRunTestDriver(tempDir,    logPrefix: '   RUN  ');
+      flutterRun = FlutterRunTestDriver(tempDir, logPrefix: '   RUN  ');
       flutterAttach = FlutterRunTestDriver(
         tempDir,
         logPrefix: 'ATTACH  ',
@@ -71,11 +71,7 @@ void main() {
       await flutterRun.run(withDebugger: true);
       await flutterAttach.attach(flutterRun.vmServicePort!);
       await flutterAttach.quit();
-      flutterAttach = FlutterRunTestDriver(
-        tempDir,
-        logPrefix: 'ATTACH-2',
-        spawnDdsInstance: false,
-      );
+      flutterAttach = FlutterRunTestDriver(tempDir, logPrefix: 'ATTACH-2', spawnDdsInstance: false);
       await flutterAttach.attach(flutterRun.vmServicePort!);
       await flutterAttach.hotReload();
     });
@@ -126,15 +122,8 @@ void main() {
   group('DDS in flutter attach', () {
     late FlutterRunTestDriver flutterRun, flutterAttach;
     setUp(() {
-      flutterRun = FlutterRunTestDriver(
-        tempDir,
-        logPrefix: '   RUN  ',
-        spawnDdsInstance: false,
-      );
-      flutterAttach = FlutterRunTestDriver(
-        tempDir,
-        logPrefix: 'ATTACH  ',
-      );
+      flutterRun = FlutterRunTestDriver(tempDir, logPrefix: '   RUN  ', spawnDdsInstance: false);
+      flutterAttach = FlutterRunTestDriver(tempDir, logPrefix: 'ATTACH  ');
     });
 
     tearDown(() async {
@@ -146,12 +135,7 @@ void main() {
       final int ddsPort = await getFreePort();
 
       await flutterRun.run(withDebugger: true);
-      await flutterAttach.attach(
-        flutterRun.vmServicePort!,
-        additionalCommandArgs: <String>[
-          '--dds-port=$ddsPort',
-        ],
-      );
+      await flutterAttach.attach(flutterRun.vmServicePort!, additionalCommandArgs: <String>['--dds-port=$ddsPort']);
 
       final Response response = await flutterAttach.callServiceExtension('ext.flutter.connectedVmServiceUri');
       final String vmServiceUriString = response.json!['value'] as String;
@@ -164,7 +148,7 @@ void main() {
     late FlutterRunTestDriver flutterRun, flutterAttach;
 
     setUp(() async {
-      flutterRun = FlutterRunTestDriver(tempDir,    logPrefix: '   RUN  ');
+      flutterRun = FlutterRunTestDriver(tempDir, logPrefix: '   RUN  ');
       flutterAttach = FlutterRunTestDriver(
         tempDir,
         logPrefix: 'ATTACH  ',
@@ -195,11 +179,8 @@ void main() {
     }
 
     testWithoutContext('enables Observatory on run', () async {
-        await flutterRun.run(
-          withDebugger: true,
-          serveObservatory: true,
-        );
-        expect(await isObservatoryAvailable(), true);
+      await flutterRun.run(withDebugger: true, serveObservatory: true);
+      expect(await isObservatoryAvailable(), true);
     });
 
     testWithoutContext('enables Observatory on attach', () async {
@@ -210,10 +191,7 @@ void main() {
       if (await isObservatoryAvailable()) {
         return;
       }
-      await flutterAttach.attach(
-        flutterRun.vmServicePort!,
-        serveObservatory: true,
-      );
+      await flutterAttach.attach(flutterRun.vmServicePort!, serveObservatory: true);
       expect(await isObservatoryAvailable(), true);
     });
   });

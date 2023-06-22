@@ -15,9 +15,7 @@ const String xcodeBackendPath = 'bin/xcode_backend.sh';
 const String xcodeBackendErrorHeader = '========================================================================';
 
 // Acceptable $CONFIGURATION/$FLUTTER_BUILD_MODE values should be debug, profile, or release
-const Map<String, String> unknownConfiguration = <String, String>{
-  'CONFIGURATION': 'Custom',
-};
+const Map<String, String> unknownConfiguration = <String, String>{'CONFIGURATION': 'Custom'};
 
 // $FLUTTER_BUILD_MODE will override $CONFIGURATION
 const Map<String, String> unknownFlutterBuildMode = <String, String>{
@@ -27,11 +25,7 @@ const Map<String, String> unknownFlutterBuildMode = <String, String>{
 
 void main() {
   Future<void> expectXcodeBackendFails(Map<String, String> environment) async {
-    final ProcessResult result = await Process.run(
-      xcodeBackendPath,
-      <String>['build'],
-      environment: environment,
-    );
+    final ProcessResult result = await Process.run(xcodeBackendPath, <String>['build'], environment: environment);
     expect(result.stderr, startsWith(xcodeBackendErrorHeader));
     expect(result.exitCode, isNot(0));
   }
@@ -40,10 +34,7 @@ void main() {
     final ProcessResult result = await Process.run(
       xcodeBackendPath,
       <String>[],
-      environment: <String, String>{
-        'SOURCE_ROOT': '../examples/hello_world',
-        'FLUTTER_ROOT': '../..',
-      },
+      environment: <String, String>{'SOURCE_ROOT': '../examples/hello_world', 'FLUTTER_ROOT': '../..'},
     );
     expect(result.stderr, startsWith('error: Your Xcode project is incompatible with this version of Flutter.'));
     expect(result.exitCode, isNot(0));
@@ -58,10 +49,7 @@ void main() {
     final ProcessResult result = await Process.run(
       xcodeBackendPath,
       <String>['build'],
-      environment: <String, String>{
-        'CONFIGURATION': 'Debug',
-        'ACTION': 'install',
-      },
+      environment: <String, String>{'CONFIGURATION': 'Debug', 'ACTION': 'install'},
     );
     expect(result.stdout, contains('warning: Flutter archive not built in Release mode.'));
     expect(result.exitCode, isNot(0));

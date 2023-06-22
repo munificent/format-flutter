@@ -137,13 +137,7 @@ void main() {
       expect(hashes.blockSize, 4);
       expect(hashes.totalSize, content1.length);
       expect(hashes.adler32, hasLength(5));
-      expect(hashes.adler32, <int>[
-        0x029c00ec,
-        0x02a000ed,
-        0x02a400ee,
-        0x02a800ef,
-        0x00fa0094,
-      ]);
+      expect(hashes.adler32, <int>[0x029c00ec, 0x02a000ed, 0x02a400ee, 0x02a800ef, 0x00fa0094]);
       expect(hashes.md5, hasLength(5));
       expect(hashes.md5, <String>[
         'zB0S8R/fGt05GcI5v8AjIQ==',
@@ -183,7 +177,11 @@ void main() {
 
     test('rebuildFile can rebuild the correct file', () async {
       final File file = fileSystem.file('file')..writeAsStringSync(content1);
-      await FileTransfer().rebuildFile(file, expectedDelta, Stream<List<int>>.fromIterable(<List<int>>[utf8.encode(expectedBinaryForRebuilding)]));
+      await FileTransfer().rebuildFile(
+        file,
+        expectedDelta,
+        Stream<List<int>>.fromIterable(<List<int>>[utf8.encode(expectedBinaryForRebuilding)]),
+      );
       expect(file.readAsStringSync(), content2);
     });
   });

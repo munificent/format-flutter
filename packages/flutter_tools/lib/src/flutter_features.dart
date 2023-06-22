@@ -8,13 +8,10 @@ import 'features.dart';
 import 'version.dart';
 
 class FlutterFeatureFlags implements FeatureFlags {
-  FlutterFeatureFlags({
-    required FlutterVersion flutterVersion,
-    required Config config,
-    required Platform platform,
-  }) : _flutterVersion = flutterVersion,
-       _config = config,
-       _platform = platform;
+  FlutterFeatureFlags({required FlutterVersion flutterVersion, required Config config, required Platform platform})
+    : _flutterVersion = flutterVersion,
+      _config = config,
+      _platform = platform;
 
   final FlutterVersion _flutterVersion;
   final Config _config;

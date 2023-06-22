@@ -31,15 +31,11 @@ void main() {
 
     setUp(() {
       fs = MemoryFileSystem.test();
-      fsUtils = FileSystemUtils(
-        fileSystem: fs,
-        platform: FakePlatform(),
-      );
+      fsUtils = FileSystemUtils(fileSystem: fs, platform: FakePlatform());
     });
 
     testWithoutContext('getUniqueFile creates a unique file name', () async {
-      final File fileA = fsUtils.getUniqueFile(fs.currentDirectory, 'foo', 'json')
-        ..createSync();
+      final File fileA = fsUtils.getUniqueFile(fs.currentDirectory, 'foo', 'json')..createSync();
       final File fileB = fsUtils.getUniqueFile(fs.currentDirectory, 'foo', 'json');
 
       expect(fileA.path, '/foo_01.json');
@@ -47,8 +43,7 @@ void main() {
     });
 
     testWithoutContext('getUniqueDirectory creates a unique directory name', () async {
-      final Directory directoryA = fsUtils.getUniqueDirectory(fs.currentDirectory, 'foo')
-        ..createSync();
+      final Directory directoryA = fsUtils.getUniqueDirectory(fs.currentDirectory, 'foo')..createSync();
       final Directory directoryB = fsUtils.getUniqueDirectory(fs.currentDirectory, 'foo');
 
       expect(directoryA.path, '/foo_01');
@@ -98,9 +93,13 @@ void main() {
       fileSystem.file(fileSystem.path.join('origin', 'nested', 'b.txt')).writeAsStringSync('irrelevant');
 
       final Directory destination = fileSystem.directory('/destination');
-      copyDirectory(origin, destination, shouldCopyFile: (File origin, File dest) {
-        return origin.basename == 'b.txt';
-      });
+      copyDirectory(
+        origin,
+        destination,
+        shouldCopyFile: (File origin, File dest) {
+          return origin.basename == 'b.txt';
+        },
+      );
 
       expect(destination.existsSync(), isTrue);
       expect(destination.childDirectory('nested').existsSync(), isTrue);
@@ -120,13 +119,17 @@ void main() {
       fileSystem.file(fileSystem.path.join('origin', 'nested', 'b.txt')).writeAsStringSync('irrelevant');
 
       final Directory destination = fileSystem.directory('/destination');
-      copyDirectory(origin, destination, shouldCopyDirectory: (Directory directory) {
-        return !directory.path.endsWith('nested');
-      });
+      copyDirectory(
+        origin,
+        destination,
+        shouldCopyDirectory: (Directory directory) {
+          return !directory.path.endsWith('nested');
+        },
+      );
 
       expect(destination, exists);
       expect(destination.childDirectory('nested'), isNot(exists));
-      expect(destination.childDirectory('nested').childFile('b.txt'),isNot(exists));
+      expect(destination.childDirectory('nested').childFile('b.txt'), isNot(exists));
     });
   });
 
@@ -144,10 +147,7 @@ void main() {
 
     testWithoutContext('on Linux', () {
       final MemoryFileSystem fileSystem = MemoryFileSystem.test();
-      final FileSystemUtils fsUtils = FileSystemUtils(
-        fileSystem: fileSystem,
-        platform: FakePlatform(),
-      );
+      final FileSystemUtils fsUtils = FileSystemUtils(fileSystem: fileSystem, platform: FakePlatform());
       expect(fsUtils.escapePath('/foo/bar/cool.dart'), '/foo/bar/cool.dart');
       expect(fsUtils.escapePath('foo/bar/cool.dart'), 'foo/bar/cool.dart');
       expect(fsUtils.escapePath(r'foo\cool.dart'), r'foo\cool.dart');
@@ -165,9 +165,7 @@ void main() {
 
     testWithoutContext('runs shutdown hooks', () async {
       final Signals signals = Signals.test();
-      final LocalFileSystem localFileSystem = LocalFileSystem.test(
-        signals: signals,
-      );
+      final LocalFileSystem localFileSystem = LocalFileSystem.test(signals: signals);
       final Directory temp = localFileSystem.systemTempDirectory;
 
       expect(temp.existsSync(), isTrue);
@@ -201,17 +199,17 @@ void main() {
 
     testWithoutContext('throwToolExit when temp not found', () async {
       final Signals signals = Signals.test();
-      final LocalFileSystemFake localFileSystem = LocalFileSystemFake.test(
-        signals: signals,
-      );
+      final LocalFileSystemFake localFileSystem = LocalFileSystemFake.test(signals: signals);
 
       try {
         localFileSystem.systemTempDirectory;
         fail('expected tool exit');
       } on ToolExit catch (e) {
-        expect(e.message, 'Your system temp directory (/does_not_exist) does not exist. '
-            'Did you set an invalid override in your environment? '
-            'See issue https://github.com/flutter/flutter/issues/74042 for more context.'
+        expect(
+          e.message,
+          'Your system temp directory (/does_not_exist) does not exist. '
+          'Did you set an invalid override in your environment? '
+          'See issue https://github.com/flutter/flutter/issues/74042 for more context.',
         );
       }
     });

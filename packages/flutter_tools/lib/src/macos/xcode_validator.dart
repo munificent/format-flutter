@@ -7,10 +7,8 @@ import '../doctor_validator.dart';
 import 'xcode.dart';
 
 class XcodeValidator extends DoctorValidator {
-  XcodeValidator({
-    required Xcode xcode,
-    required UserMessages userMessages,
-  }) : _xcode = xcode,
+  XcodeValidator({required Xcode xcode, required UserMessages userMessages})
+    : _xcode = xcode,
       _userMessages = userMessages,
       super('Xcode - develop for iOS and macOS');
 
@@ -56,7 +54,6 @@ class XcodeValidator extends DoctorValidator {
         xcodeStatus = ValidationType.partial;
         messages.add(ValidationMessage.error(_userMessages.xcodeMissingSimct));
       }
-
     } else {
       xcodeStatus = ValidationType.missing;
       if (xcodeSelectPath == null || xcodeSelectPath.isEmpty) {

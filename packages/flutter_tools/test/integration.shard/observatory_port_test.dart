@@ -22,21 +22,17 @@ Future<int> getFreePort() async {
 
 Future<void> waitForVmServiceMessage(Process process, int port) async {
   final Completer<void> completer = Completer<void>();
-  process.stdout
-    .transform(utf8.decoder)
-    .listen((String line) {
-      printOnFailure(line);
-      if (line.contains('A Dart VM Service on Flutter test device is available at')) {
-        if (line.contains('http://127.0.0.1:$port')) {
-          completer.complete();
-        } else {
-          completer.completeError(Exception('Did not forward to provided port $port, instead found $line'));
-        }
+  process.stdout.transform(utf8.decoder).listen((String line) {
+    printOnFailure(line);
+    if (line.contains('A Dart VM Service on Flutter test device is available at')) {
+      if (line.contains('http://127.0.0.1:$port')) {
+        completer.complete();
+      } else {
+        completer.completeError(Exception('Did not forward to provided port $port, instead found $line'));
       }
-    });
-  process.stderr
-    .transform(utf8.decoder)
-    .listen(printOnFailure);
+    }
+  });
+  process.stderr.transform(utf8.decoder).listen(printOnFailure);
   return completer.future;
 }
 
@@ -111,5 +107,4 @@ void main() {
     process.kill();
     await process.exitCode;
   });
-
 }

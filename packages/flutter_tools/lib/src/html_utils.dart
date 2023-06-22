@@ -32,9 +32,7 @@ class IndexHtml {
   /// Parses the base href from the index.html file.
   String getBaseHref() {
     final Element? baseElement = _getDocument().querySelector('base');
-    final String? baseHref = baseElement?.attributes == null
-        ? null
-        : baseElement!.attributes['href'];
+    final String? baseHref = baseElement?.attributes == null ? null : baseElement!.attributes['href'];
 
     if (baseHref == null || baseHref == kBaseHrefPlaceholder) {
       return '';
@@ -59,10 +57,7 @@ class IndexHtml {
   }
 
   /// Applies substitutions to the content of the index.html file.
-  void applySubstitutions({
-    required String baseHref,
-    required String? serviceWorkerVersion,
-  }) {
+  void applySubstitutions({required String baseHref, required String? serviceWorkerVersion}) {
     if (_content.contains(kBaseHrefPlaceholder)) {
       _content = _content.replaceAll(kBaseHrefPlaceholder, baseHref);
     }

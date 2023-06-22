@@ -26,6 +26,7 @@ const String _kFontManifest = 'FontManifest.json';
 class DevFSConfig {
   /// Should DevFS assume that symlink targets are stable?
   bool cacheSymlinks = false;
+
   /// Should DevFS assume that there are no symlinks to directories?
   bool noDirectorySymlinks = false;
 }
@@ -49,9 +50,7 @@ abstract class DevFSContent {
 
   Stream<List<int>> contentsAsStream();
 
-  Stream<List<int>> contentsAsCompressedStream(
-    OperatingSystemUtils osUtils,
-  ) {
+  Stream<List<int>> contentsAsCompressedStream(OperatingSystemUtils osUtils) {
     return osUtils.gzipLevel1Stream(contentsAsStream());
   }
 }
@@ -124,9 +123,7 @@ class DevFSFileContent extends DevFSContent {
     if (oldFileStat == null && newFileStat == null) {
       return false;
     }
-    return oldFileStat == null
-        || newFileStat == null
-        || newFileStat.modified.isAfter(time);
+    return oldFileStat == null || newFileStat == null || newFileStat.modified.isAfter(time);
   }
 
   @override
@@ -182,15 +179,12 @@ class DevFSByteContent extends DevFSContent {
   Future<List<int>> contentsAsBytes() async => _bytes;
 
   @override
-  Stream<List<int>> contentsAsStream() =>
-      Stream<List<int>>.fromIterable(<List<int>>[_bytes]);
+  Stream<List<int>> contentsAsStream() => Stream<List<int>>.fromIterable(<List<int>>[_bytes]);
 }
 
 /// String content to be copied to the device.
 class DevFSStringContent extends DevFSByteContent {
-  DevFSStringContent(String string)
-    : _string = string,
-      super(utf8.encode(string));
+  DevFSStringContent(String string) : _string = string, super(utf8.encode(string));
 
   String _string;
 
@@ -218,14 +212,8 @@ class DevFSStringContent extends DevFSByteContent {
 /// The `hintString` parameter is a zlib dictionary hinting mechanism to suggest
 /// the most common string occurrences to potentially assist with compression.
 class DevFSStringCompressingBytesContent extends DevFSContent {
-  DevFSStringCompressingBytesContent(this._string, { String? hintString })
-    : _compressor = ZLibEncoder(
-      dictionary: hintString == null
-          ? null
-          : utf8.encode(hintString),
-      gzip: true,
-      level: 9,
-    );
+  DevFSStringCompressingBytesContent(this._string, {String? hintString})
+    : _compressor = ZLibEncoder(dictionary: hintString == null ? null : utf8.encode(hintString), gzip: true, level: 9);
 
   final String _string;
   final ZLibEncoder _compressor;
@@ -289,12 +277,11 @@ class _DevFSHttpWriter implements DevFSWriter {
     required HttpClient httpClient,
     required Logger logger,
     Duration? uploadRetryThrottle,
-  })
-    : httpAddress = serviceProtocol.httpAddress,
-      _client = httpClient,
-      _osUtils = osUtils,
-      _uploadRetryThrottle = uploadRetryThrottle,
-      _logger = logger;
+  }) : httpAddress = serviceProtocol.httpAddress,
+       _client = httpClient,
+       _osUtils = osUtils,
+       _uploadRetryThrottle = uploadRetryThrottle,
+       _logger = logger;
 
   final HttpClient _client;
   final OperatingSystemUtils _osUtils;
@@ -343,27 +330,21 @@ class _DevFSHttpWriter implements DevFSWriter {
     }
   }
 
-  Future<void> _startWrite(
-    Uri deviceUri,
-    DevFSContent content, {
-    int retry = 0,
-  }) async {
+  Future<void> _startWrite(Uri deviceUri, DevFSContent content, {int retry = 0}) async {
     while (true) {
       try {
         final HttpClientRequest request = await _client.putUrl(httpAddress!);
         request.headers.removeAll(HttpHeaders.acceptEncodingHeader);
         request.headers.add('dev_fs_name', fsName);
         request.headers.add('dev_fs_uri_b64', base64.encode(utf8.encode('$deviceUri')));
-        final Stream<List<int>> contents = content.contentsAsCompressedStream(
-          _osUtils,
-        );
+        final Stream<List<int>> contents = content.contentsAsCompressedStream(_osUtils);
         await request.addStream(contents);
         // Once the bug in Dart is solved we can remove the timeout
         // (https://github.com/dart-lang/sdk/issues/43525).
         try {
-          final HttpClientResponse response = await request.close().timeout(
-            const Duration(seconds: 60));
-          response.listen((_) {},
+          final HttpClientResponse response = await request.close().timeout(const Duration(seconds: 60));
+          response.listen(
+            (_) {},
             onError: (dynamic error) {
               _logger.printTrace('error: $error');
             },
@@ -463,14 +444,14 @@ class DevFS {
        _logger = logger,
        _fileSystem = fileSystem,
        _httpWriter = _DevFSHttpWriter(
-        fsName,
-        serviceProtocol,
-        osUtils: osUtils,
-        logger: logger,
-        uploadRetryThrottle: uploadRetryThrottle,
-        httpClient: httpClient ?? ((context.get<HttpClientFactory>() == null)
-          ? HttpClient()
-          : context.get<HttpClientFactory>()!())),
+         fsName,
+         serviceProtocol,
+         osUtils: osUtils,
+         logger: logger,
+         uploadRetryThrottle: uploadRetryThrottle,
+         httpClient: httpClient ??
+             ((context.get<HttpClientFactory>() == null) ? HttpClient() : context.get<HttpClientFactory>()!()),
+       ),
        _stopwatchFactory = stopwatchFactory;
 
   final FlutterVmService _vmService;
@@ -555,7 +536,6 @@ class DevFS {
     lastCompiled = _previousCompiled;
   }
 
-
   /// If the build method of a single widget was modified, return the widget name.
   ///
   /// If any other changes were made, or there is an error scanning the file,
@@ -614,19 +594,21 @@ class DevFS {
     // Await the compiler response after checking if the bundle is updated. This allows the file
     // stating to be done while waiting for the frontend_server response.
     final Stopwatch compileTimer = _stopwatchFactory.createStopwatch('compile')..start();
-    final Future<CompilerOutput?> pendingCompilerOutput = generator.recompile(
-      mainUri,
-      invalidatedFiles,
-      outputPath: dillOutputPath,
-      fs: _fileSystem,
-      projectRootPath: projectRootPath,
-      packageConfig: packageConfig,
-      checkDartPluginRegistry: true, // The entry point is assumed not to have changed.
-      dartPluginRegistrant: dartPluginRegistrant,
-    ).then((CompilerOutput? result) {
-      compileTimer.stop();
-      return result;
-    });
+    final Future<CompilerOutput?> pendingCompilerOutput = generator
+        .recompile(
+          mainUri,
+          invalidatedFiles,
+          outputPath: dillOutputPath,
+          fs: _fileSystem,
+          projectRootPath: projectRootPath,
+          packageConfig: packageConfig,
+          checkDartPluginRegistry: true, // The entry point is assumed not to have changed.
+          dartPluginRegistrant: dartPluginRegistrant,
+        )
+        .then((CompilerOutput? result) {
+          compileTimer.stop();
+          return result;
+        });
 
     if (bundle != null) {
       // Mark processing of bundle started for testability of starting the compile
@@ -760,9 +742,7 @@ class DevFS {
 ///
 /// Requires that the file system is the same for both the tool and application.
 class LocalDevFSWriter implements DevFSWriter {
-  LocalDevFSWriter({
-    required FileSystem fileSystem,
-  }) : _fileSystem = fileSystem;
+  LocalDevFSWriter({required FileSystem fileSystem}) : _fileSystem = fileSystem;
 
   final FileSystem _fileSystem;
 

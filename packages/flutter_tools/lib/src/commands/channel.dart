@@ -13,7 +13,7 @@ import '../version.dart';
 import 'upgrade.dart' show precacheArtifacts;
 
 class ChannelCommand extends FlutterCommand {
-  ChannelCommand({ bool verboseHelp = false }) {
+  ChannelCommand({bool verboseHelp = false}) {
     argParser.addFlag(
       'all',
       abbr: 'a',
@@ -23,7 +23,7 @@ class ChannelCommand extends FlutterCommand {
     argParser.addFlag(
       'cache-artifacts',
       help: 'After switching channels, download all required binary artifacts. '
-            'This is the equivalent of running "flutter precache" with the "--all-platforms" flag.',
+          'This is the equivalent of running "flutter precache" with the "--all-platforms" flag.',
       defaultsTo: true,
     );
   }
@@ -61,10 +61,15 @@ class ChannelCommand extends FlutterCommand {
     }
   }
 
-  Future<void> _listChannels({ required bool showAll, required bool verbose }) async {
+  Future<void> _listChannels({required bool showAll, required bool verbose}) async {
     // Beware: currentBranch could contain PII. See getBranchName().
     final String currentChannel = globals.flutterVersion.channel; // limited to known branch names
-    assert(kOfficialChannels.contains(currentChannel) || kObsoleteBranches.containsKey(currentChannel) || currentChannel == kUserBranch, 'potential PII leak in channel name: "$currentChannel"');
+    assert(
+      kOfficialChannels.contains(currentChannel) ||
+          kObsoleteBranches.containsKey(currentChannel) ||
+          currentChannel == kUserBranch,
+      'potential PII leak in channel name: "$currentChannel"',
+    );
     final String currentBranch = globals.flutterVersion.getBranchName();
     final Set<String> seenUnofficialChannels = <String>{};
     final List<String> rawOutput = <String>[];
@@ -128,7 +133,10 @@ class ChannelCommand extends FlutterCommand {
     }
 
     if (!currentChannelIsOfficial) {
-      assert(currentChannel == kUserBranch, 'Current channel is "$currentChannel", which is not an official branch. (Current branch is "$currentBranch".)');
+      assert(
+        currentChannel == kUserBranch,
+        'Current channel is "$currentChannel", which is not an official branch. (Current branch is "$currentBranch".)',
+      );
       globals.printStatus('');
       globals.printStatus('Currently not on an official channel.');
     }
@@ -161,35 +169,34 @@ class ChannelCommand extends FlutterCommand {
 
   static Future<void> _checkout(String branchName) async {
     // Get latest refs from upstream.
-    RunResult runResult = await globals.processUtils.run(
-      <String>['git', 'fetch'],
-      workingDirectory: Cache.flutterRoot,
-    );
+    RunResult runResult = await globals.processUtils.run(<String>['git', 'fetch'], workingDirectory: Cache.flutterRoot);
 
     if (runResult.processResult.exitCode == 0) {
-      runResult = await globals.processUtils.run(
-        <String>['git', 'show-ref', '--verify', '--quiet', 'refs/heads/$branchName'],
-        workingDirectory: Cache.flutterRoot,
-      );
+      runResult = await globals.processUtils.run(<String>[
+        'git',
+        'show-ref',
+        '--verify',
+        '--quiet',
+        'refs/heads/$branchName',
+      ], workingDirectory: Cache.flutterRoot);
       if (runResult.processResult.exitCode == 0) {
         // branch already exists, try just switching to it
-        runResult = await globals.processUtils.run(
-          <String>['git', 'checkout', branchName, '--'],
-          workingDirectory: Cache.flutterRoot,
-        );
+        runResult = await globals.processUtils
+            .run(<String>['git', 'checkout', branchName, '--'], workingDirectory: Cache.flutterRoot);
       } else {
         // branch does not exist, we have to create it
-        runResult = await globals.processUtils.run(
-          <String>['git', 'checkout', '--track', '-b', branchName, 'origin/$branchName'],
-          workingDirectory: Cache.flutterRoot,
-        );
+        runResult = await globals.processUtils.run(<String>[
+          'git',
+          'checkout',
+          '--track',
+          '-b',
+          branchName,
+          'origin/$branchName',
+        ], workingDirectory: Cache.flutterRoot);
       }
     }
     if (runResult.processResult.exitCode != 0) {
-      throwToolExit(
-        'Switching channels failed\n$runResult.',
-        exitCode: runResult.processResult.exitCode,
-      );
+      throwToolExit('Switching channels failed\n$runResult.', exitCode: runResult.processResult.exitCode);
     } else {
       // Remove the version check stamp, since it could contain out-of-date
       // information that pertains to the previous channel.

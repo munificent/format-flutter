@@ -31,11 +31,7 @@ void main() {
   });
 
   testWithoutContext('flutter run in non-machine mode reports an early error in an application', () async {
-    final String flutterBin = fileSystem.path.join(
-      getFlutterRoot(),
-      'bin',
-      'flutter',
-    );
+    final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
 
     final StringBuffer stdout = StringBuffer();
 
@@ -56,8 +52,7 @@ void main() {
         final RegExp exp = RegExp(r'http://127.0.0.1:(\d+)/');
         final RegExpMatch match = exp.firstMatch(line)!;
         final String port = match.group(1)!;
-        final VmService vmService =
-            await vmServiceConnectUri('ws://localhost:$port/ws');
+        final VmService vmService = await vmServiceConnectUri('ws://localhost:$port/ws');
         final VM vm = await vmService.getVM();
         for (final IsolateRef isolate in vm.isolates!) {
           await vmService.resume(isolate.id!);
@@ -77,11 +72,7 @@ void main() {
   testWithoutContext('flutter run in machine mode does not print an error', () async {
     final StringBuffer stdout = StringBuffer();
 
-    await flutter.run(
-      startPaused: true,
-      withDebugger: true,
-      structuredErrors: true,
-    );
+    await flutter.run(startPaused: true, withDebugger: true, structuredErrors: true);
     await flutter.resume();
 
     final Completer<void> completer = Completer<void>();
@@ -91,10 +82,13 @@ void main() {
         stdout.writeln(line);
       });
       await completer.future;
-    }).timeout(const Duration(seconds: 5), onTimeout: () {
-      // We don't expect to see any output but want to write to stdout anyway.
-      completer.complete();
-    });
+    }).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        // We don't expect to see any output but want to write to stdout anyway.
+        completer.complete();
+      },
+    );
     await flutter.stop();
 
     expect(stdout.toString(), isNot(contains(exceptionStart)));

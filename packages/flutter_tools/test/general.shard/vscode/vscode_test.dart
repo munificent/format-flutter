@@ -58,38 +58,32 @@ void main() {
     const String home = '/home/me';
     final Platform platform = FakePlatform(operatingSystem: 'macos', environment: <String, String>{'HOME': home});
 
-    final String randomLocation = fileSystem.path.join(
-      '/',
-      'random',
-      'Visual Studio Code.app',
-    );
+    final String randomLocation = fileSystem.path.join('/', 'random', 'Visual Studio Code.app');
     fileSystem.directory(fileSystem.path.join(randomLocation, 'Contents')).createSync(recursive: true);
 
-    final String randomInsidersLocation = fileSystem.path.join(
-      '/',
-      'random',
-      'Visual Studio Code - Insiders.app',
-    );
+    final String randomInsidersLocation = fileSystem.path.join('/', 'random', 'Visual Studio Code - Insiders.app');
     fileSystem.directory(fileSystem.path.join(randomInsidersLocation, 'Contents')).createSync(recursive: true);
 
-    fileSystem.directory(fileSystem.path.join('/', 'Applications', 'Visual Studio Code.app', 'Contents')).createSync(recursive: true);
-    fileSystem.directory(fileSystem.path.join('/', 'Applications', 'Visual Studio Code - Insiders.app', 'Contents')).createSync(recursive: true);
-    fileSystem.directory(fileSystem.path.join(home, 'Applications', 'Visual Studio Code.app', 'Contents')).createSync(recursive: true);
-    fileSystem.directory(fileSystem.path.join(home, 'Applications', 'Visual Studio Code - Insiders.app', 'Contents')).createSync(recursive: true);
+    fileSystem.directory(fileSystem.path.join('/', 'Applications', 'Visual Studio Code.app', 'Contents')).createSync(
+      recursive: true,
+    );
+    fileSystem.directory(
+      fileSystem.path.join('/', 'Applications', 'Visual Studio Code - Insiders.app', 'Contents'),
+    ).createSync(recursive: true);
+    fileSystem.directory(fileSystem.path.join(home, 'Applications', 'Visual Studio Code.app', 'Contents')).createSync(
+      recursive: true,
+    );
+    fileSystem.directory(
+      fileSystem.path.join(home, 'Applications', 'Visual Studio Code - Insiders.app', 'Contents'),
+    ).createSync(recursive: true);
 
     final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
       FakeCommand(
-        command: const <String>[
-          'mdfind',
-          'kMDItemCFBundleIdentifier="com.microsoft.VSCode"',
-        ],
+        command: const <String>['mdfind', 'kMDItemCFBundleIdentifier="com.microsoft.VSCode"'],
         stdout: randomLocation,
       ),
       FakeCommand(
-        command: const <String>[
-          'mdfind',
-          'kMDItemCFBundleIdentifier="com.microsoft.VSCodeInsiders"',
-        ],
+        command: const <String>['mdfind', 'kMDItemCFBundleIdentifier="com.microsoft.VSCodeInsiders"'],
         stdout: randomInsidersLocation,
       ),
     ]);

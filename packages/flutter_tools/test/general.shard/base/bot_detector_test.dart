@@ -126,11 +126,14 @@ void main() {
         );
 
         expect(await botDetector.isRunningOnBot, isTrue);
-        expect(await BotDetector(
-          platform: fakePlatform,
-          httpClientFactory: () => FakeHttpClient.list(<FakeRequest>[]),
-          persistentToolState: persistentToolState,
-        ).isRunningOnBot, isTrue);
+        expect(
+          await BotDetector(
+            platform: fakePlatform,
+            httpClientFactory: () => FakeHttpClient.list(<FakeRequest>[]),
+            persistentToolState: persistentToolState,
+          ).isRunningOnBot,
+          isTrue,
+        );
       });
 
       testWithoutContext('returns true when running on borg', () async {
@@ -153,8 +156,8 @@ void main() {
       final AzureDetector azureDetector = AzureDetector(
         httpClientFactory: () => FakeHttpClient.list(<FakeRequest>[
           FakeRequest(azureUrl, responseError: const SocketException('HTTP connection timed out')),
-        ],
-      ));
+        ]),
+      );
 
       expect(await azureDetector.isRunningOnAzure, isFalse);
     });
@@ -163,18 +166,16 @@ void main() {
       final AzureDetector azureDetector = AzureDetector(
         httpClientFactory: () => FakeHttpClient.list(<FakeRequest>[
           FakeRequest(azureUrl, responseError: const OSError('Connection Refused', 111)),
-        ],
-      ));
+        ]),
+      );
 
       expect(await azureDetector.isRunningOnAzure, isFalse);
     });
 
     testWithoutContext('isRunningOnAzure returns true when azure metadata is reachable', () async {
       final AzureDetector azureDetector = AzureDetector(
-        httpClientFactory: () => FakeHttpClient.list(<FakeRequest>[
-          FakeRequest(azureUrl),
-        ],
-      ));
+        httpClientFactory: () => FakeHttpClient.list(<FakeRequest>[FakeRequest(azureUrl)]),
+      );
 
       expect(await azureDetector.isRunningOnAzure, isTrue);
     });

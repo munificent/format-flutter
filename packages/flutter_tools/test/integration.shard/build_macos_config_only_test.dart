@@ -19,11 +19,8 @@ void main() {
     );
     final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
 
-    await processManager.run(<String>[
-      flutterBin,
-      ...getLocalEngineArguments(),
-      'clean',
-    ], workingDirectory: workingDirectory);
+    await processManager
+        .run(<String>[flutterBin, ...getLocalEngineArguments(), 'clean'], workingDirectory: workingDirectory);
     final List<String> buildCommand = <String>[
       flutterBin,
       ...getLocalEngineArguments(),
@@ -44,13 +41,9 @@ void main() {
     expect(firstRunResult.exitCode, 0);
     expect(firstRunStdout, contains('Running pod install'));
 
-    final File generatedConfig = fileSystem.file(fileSystem.path.join(
-      workingDirectory,
-      'macos',
-      'Flutter',
-      'ephemeral',
-      'Flutter-Generated.xcconfig',
-    ));
+    final File generatedConfig = fileSystem.file(
+      fileSystem.path.join(workingDirectory, 'macos', 'Flutter', 'ephemeral', 'Flutter-Generated.xcconfig'),
+    );
 
     // Config is updated if command succeeded.
     expect(generatedConfig, exists);
@@ -66,7 +59,7 @@ void main() {
       'Release',
       'App.framework',
       'Resources',
-      'Info.plist'
+      'Info.plist',
     ));
 
     expect(frameworkPlist, isNot(exists));

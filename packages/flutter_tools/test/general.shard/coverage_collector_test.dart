@@ -23,34 +23,22 @@ void main() {
         FakeVmServiceRequest(
           method: 'getVM',
           jsonResponse: (VM.parse(<String, Object>{})!
-            ..isolates = <IsolateRef>[
-              IsolateRef.parse(<String, Object>{
-                'id': '1',
-              })!,
-            ]
-          ).toJson(),
+                ..isolates = <IsolateRef>[
+                  IsolateRef.parse(<String, Object>{'id': '1'})!,
+                ])
+              .toJson(),
         ),
-        FakeVmServiceRequest(
-          method: 'getVersion',
-          jsonResponse: Version(major: 3, minor: 51).toJson(),
-        ),
+        FakeVmServiceRequest(method: 'getVersion', jsonResponse: Version(major: 3, minor: 51).toJson()),
         const FakeVmServiceRequest(
           method: 'getScripts',
-          args: <String, Object>{
-            'isolateId': '1',
-          },
-          jsonResponse: <String, Object>{
-            'type': 'Sentinel',
-          },
+          args: <String, Object>{'isolateId': '1'},
+          jsonResponse: <String, Object>{'type': 'Sentinel'},
         ),
       ],
     );
 
-    final Map<String, Object?> result = await collect(
-      Uri(),
-      <String>{'foo'},
-      serviceOverride: fakeVmServiceHost.vmService,
-    );
+    final Map<String, Object?> result =
+        await collect(Uri(), <String>{'foo'}, serviceOverride: fakeVmServiceHost.vmService);
 
     expect(result, <String, Object>{'type': 'CodeCoverage', 'coverage': <Object>[]});
     expect(fakeVmServiceHost.hasRemainingExpectations, false);
@@ -62,26 +50,21 @@ void main() {
         FakeVmServiceRequest(
           method: 'getVM',
           jsonResponse: (VM.parse(<String, Object>{})!
-            ..isolates = <IsolateRef>[
-              IsolateRef.parse(<String, Object>{
-                'id': '1',
-              })!,
-            ]
-          ).toJson(),
+                ..isolates = <IsolateRef>[
+                  IsolateRef.parse(<String, Object>{'id': '1'})!,
+                ])
+              .toJson(),
         ),
-        FakeVmServiceRequest(
-          method: 'getVersion',
-          jsonResponse: Version(major: 3, minor: 51).toJson(),
-        ),
+        FakeVmServiceRequest(method: 'getVersion', jsonResponse: Version(major: 3, minor: 51).toJson()),
         FakeVmServiceRequest(
           method: 'getScripts',
-          args: <String, Object>{
-            'isolateId': '1',
-          },
-          jsonResponse: ScriptList(scripts: <ScriptRef>[
-            ScriptRef(uri: 'package:foo/foo.dart', id: '1'),
-            ScriptRef(uri: 'package:bar/bar.dart', id: '2'),
-          ]).toJson(),
+          args: <String, Object>{'isolateId': '1'},
+          jsonResponse: ScriptList(
+            scripts: <ScriptRef>[
+              ScriptRef(uri: 'package:foo/foo.dart', id: '1'),
+              ScriptRef(uri: 'package:bar/bar.dart', id: '2'),
+            ],
+          ).toJson(),
         ),
         FakeVmServiceRequest(
           method: 'getSourceReport',
@@ -99,28 +82,17 @@ void main() {
                 startPos: 0,
                 endPos: 0,
                 compiled: true,
-                coverage: SourceReportCoverage(
-                  hits: <int>[1, 3],
-                  misses: <int>[2],
-                ),
+                coverage: SourceReportCoverage(hits: <int>[1, 3], misses: <int>[2]),
               ),
             ],
-            scripts: <ScriptRef>[
-              ScriptRef(
-                uri: 'package:foo/foo.dart',
-                id: '1',
-              ),
-            ],
+            scripts: <ScriptRef>[ScriptRef(uri: 'package:foo/foo.dart', id: '1')],
           ).toJson(),
         ),
       ],
     );
 
-    final Map<String, Object?> result = await collect(
-      Uri(),
-      <String>{'foo'},
-      serviceOverride: fakeVmServiceHost.vmService,
-    );
+    final Map<String, Object?> result =
+        await collect(Uri(), <String>{'foo'}, serviceOverride: fakeVmServiceHost.vmService);
 
     expect(result, <String, Object>{
       'type': 'CodeCoverage',
@@ -144,11 +116,7 @@ void main() {
   testWithoutContext('Coverage collector with null libraryNames accepts all libraries', () async {
     final FakeVmServiceHost fakeVmServiceHost = createFakeVmServiceHostWithFooAndBar();
 
-    final Map<String, Object?> result = await collect(
-      Uri(),
-      null,
-      serviceOverride: fakeVmServiceHost.vmService,
-    );
+    final Map<String, Object?> result = await collect(Uri(), null, serviceOverride: fakeVmServiceHost.vmService);
 
     expect(result, <String, Object>{
       'type': 'CodeCoverage',
@@ -186,17 +154,12 @@ void main() {
         FakeVmServiceRequest(
           method: 'getVM',
           jsonResponse: (VM.parse(<String, Object>{})!
-            ..isolates = <IsolateRef>[
-              IsolateRef.parse(<String, Object>{
-                'id': '1',
-              })!,
-            ]
-          ).toJson(),
+                ..isolates = <IsolateRef>[
+                  IsolateRef.parse(<String, Object>{'id': '1'})!,
+                ])
+              .toJson(),
         ),
-        FakeVmServiceRequest(
-          method: 'getVersion',
-          jsonResponse: Version(major: 3, minor: 57).toJson(),
-        ),
+        FakeVmServiceRequest(method: 'getVersion', jsonResponse: Version(major: 3, minor: 57).toJson()),
         FakeVmServiceRequest(
           method: 'getSourceReport',
           args: <String, Object>{
@@ -213,28 +176,17 @@ void main() {
                 startPos: 0,
                 endPos: 0,
                 compiled: true,
-                coverage: SourceReportCoverage(
-                  hits: <int>[1, 3],
-                  misses: <int>[2],
-                ),
+                coverage: SourceReportCoverage(hits: <int>[1, 3], misses: <int>[2]),
               ),
             ],
-            scripts: <ScriptRef>[
-              ScriptRef(
-                uri: 'package:foo/foo.dart',
-                id: '1',
-              ),
-            ],
+            scripts: <ScriptRef>[ScriptRef(uri: 'package:foo/foo.dart', id: '1')],
           ).toJson(),
         ),
       ],
     );
 
-    final Map<String, Object?> result = await collect(
-      Uri(),
-      <String>{'foo'},
-      serviceOverride: fakeVmServiceHost.vmService,
-    );
+    final Map<String, Object?> result =
+        await collect(Uri(), <String>{'foo'}, serviceOverride: fakeVmServiceHost.vmService);
 
     expect(result, <String, Object>{
       'type': 'CodeCoverage',
@@ -261,17 +213,12 @@ void main() {
         FakeVmServiceRequest(
           method: 'getVM',
           jsonResponse: (VM.parse(<String, Object>{})!
-            ..isolates = <IsolateRef>[
-              IsolateRef.parse(<String, Object>{
-                'id': '1',
-              })!,
-            ]
-          ).toJson(),
+                ..isolates = <IsolateRef>[
+                  IsolateRef.parse(<String, Object>{'id': '1'})!,
+                ])
+              .toJson(),
         ),
-        FakeVmServiceRequest(
-          method: 'getVersion',
-          jsonResponse: Version(major: 3, minor: 57).toJson(),
-        ),
+        FakeVmServiceRequest(method: 'getVersion', jsonResponse: Version(major: 3, minor: 57).toJson()),
         FakeVmServiceRequest(
           method: 'getSourceReport',
           args: <String, Object>{
@@ -287,28 +234,16 @@ void main() {
                 startPos: 0,
                 endPos: 0,
                 compiled: true,
-                coverage: SourceReportCoverage(
-                  hits: <int>[1, 3],
-                  misses: <int>[2],
-                ),
+                coverage: SourceReportCoverage(hits: <int>[1, 3], misses: <int>[2]),
               ),
             ],
-            scripts: <ScriptRef>[
-              ScriptRef(
-                uri: 'package:foo/foo.dart',
-                id: '1',
-              ),
-            ],
+            scripts: <ScriptRef>[ScriptRef(uri: 'package:foo/foo.dart', id: '1')],
           ).toJson(),
         ),
       ],
     );
 
-    final Map<String, Object?> result = await collect(
-      Uri(),
-      null,
-      serviceOverride: fakeVmServiceHost.vmService,
-    );
+    final Map<String, Object?> result = await collect(Uri(), null, serviceOverride: fakeVmServiceHost.vmService);
 
     expect(result, <String, Object>{
       'type': 'CodeCoverage',
@@ -335,26 +270,21 @@ void main() {
         FakeVmServiceRequest(
           method: 'getVM',
           jsonResponse: (VM.parse(<String, Object>{})!
-            ..isolates = <IsolateRef>[
-              IsolateRef.parse(<String, Object>{
-                'id': '1',
-              })!,
-            ]
-          ).toJson(),
+                ..isolates = <IsolateRef>[
+                  IsolateRef.parse(<String, Object>{'id': '1'})!,
+                ])
+              .toJson(),
         ),
-        FakeVmServiceRequest(
-          method: 'getVersion',
-          jsonResponse: Version(major: 3, minor: 56).toJson(),
-        ),
+        FakeVmServiceRequest(method: 'getVersion', jsonResponse: Version(major: 3, minor: 56).toJson()),
         FakeVmServiceRequest(
           method: 'getScripts',
-          args: <String, Object>{
-            'isolateId': '1',
-          },
-          jsonResponse: ScriptList(scripts: <ScriptRef>[
-            ScriptRef(uri: 'package:foo/foo.dart', id: '1'),
-            ScriptRef(uri: 'package:bar/bar.dart', id: '2'),
-          ]).toJson(),
+          args: <String, Object>{'isolateId': '1'},
+          jsonResponse: ScriptList(
+            scripts: <ScriptRef>[
+              ScriptRef(uri: 'package:foo/foo.dart', id: '1'),
+              ScriptRef(uri: 'package:bar/bar.dart', id: '2'),
+            ],
+          ).toJson(),
         ),
         FakeVmServiceRequest(
           method: 'getSourceReport',
@@ -372,33 +302,18 @@ void main() {
                 startPos: 0,
                 endPos: 0,
                 compiled: true,
-                coverage: SourceReportCoverage(
-                  hits: <int>[1, 3],
-                  misses: <int>[2],
-                ),
-                branchCoverage: SourceReportCoverage(
-                  hits: <int>[4, 6],
-                  misses: <int>[5],
-                ),
+                coverage: SourceReportCoverage(hits: <int>[1, 3], misses: <int>[2]),
+                branchCoverage: SourceReportCoverage(hits: <int>[4, 6], misses: <int>[5]),
               ),
             ],
-            scripts: <ScriptRef>[
-              ScriptRef(
-                uri: 'package:foo/foo.dart',
-                id: '1',
-              ),
-            ],
+            scripts: <ScriptRef>[ScriptRef(uri: 'package:foo/foo.dart', id: '1')],
           ).toJson(),
         ),
       ],
     );
 
-    final Map<String, Object?> result = await collect(
-      Uri(),
-      <String>{'foo'},
-      serviceOverride: fakeVmServiceHost.vmService,
-      branchCoverage: true,
-    );
+    final Map<String, Object?> result =
+        await collect(Uri(), <String>{'foo'}, serviceOverride: fakeVmServiceHost.vmService, branchCoverage: true);
 
     expect(result, <String, Object>{
       'type': 'CodeCoverage',
@@ -432,22 +347,25 @@ void main() {
 
       final String packagesPath = packagesFile.path;
       final CoverageCollector collector = CoverageCollector(
-          libraryNames: <String>{'foo', 'bar'},
-          verbose: false,
-          packagesPath: packagesPath,
-          resolver: await CoverageCollector.getResolver(packagesPath)
-        );
+        libraryNames: <String>{'foo', 'bar'},
+        verbose: false,
+        packagesPath: packagesPath,
+        resolver: await CoverageCollector.getResolver(packagesPath),
+      );
       await collector.collectCoverage(
-          TestTestDevice(),
-          serviceOverride: createFakeVmServiceHostWithFooAndBar(libraryFilters: <String>['package:foo/', 'package:bar/']).vmService,
-        );
+        TestTestDevice(),
+        serviceOverride:
+            createFakeVmServiceHostWithFooAndBar(libraryFilters: <String>['package:foo/', 'package:bar/']).vmService,
+      );
 
       Future<void> getHitMapAndVerify() async {
         final Map<String, HitMap> gottenHitmap = <String, HitMap>{};
-        await collector.finalizeCoverage(formatter: (Map<String, HitMap> hitmap) {
-          gottenHitmap.addAll(hitmap);
-          return '';
-        });
+        await collector.finalizeCoverage(
+          formatter: (Map<String, HitMap> hitmap) {
+            gottenHitmap.addAll(hitmap);
+            return '';
+          },
+        );
         expect(gottenHitmap.keys.toList()..sort(), <String>['package:bar/bar.dart', 'package:foo/foo.dart']);
         expect(gottenHitmap['package:foo/foo.dart']!.lineHits, <int, int>{1: 1, /* 2: 0, is ignored in file */ 3: 1});
         expect(gottenHitmap['package:bar/bar.dart']!.lineHits, <int, int>{21: 1, 32: 0, 47: 1, 86: 0});
@@ -455,10 +373,12 @@ void main() {
 
       Future<void> verifyHitmapEmpty() async {
         final Map<String, HitMap> gottenHitmap = <String, HitMap>{};
-        await collector.finalizeCoverage(formatter: (Map<String, HitMap> hitmap) {
-          gottenHitmap.addAll(hitmap);
-          return '';
-        });
+        await collector.finalizeCoverage(
+          formatter: (Map<String, HitMap> hitmap) {
+            gottenHitmap.addAll(hitmap);
+            return '';
+          },
+        );
         expect(gottenHitmap.isEmpty, isTrue);
       }
 
@@ -472,9 +392,10 @@ void main() {
       // This means that the fact that line 2 was ignored has been cached.
       fooFile.deleteSync();
       await collector.collectCoverage(
-          TestTestDevice(),
-          serviceOverride: createFakeVmServiceHostWithFooAndBar(libraryFilters: <String>['package:foo/', 'package:bar/']).vmService,
-        );
+        TestTestDevice(),
+        serviceOverride:
+            createFakeVmServiceHostWithFooAndBar(libraryFilters: <String>['package:foo/', 'package:bar/']).vmService,
+      );
       await getHitMapAndVerify();
     } finally {
       tempDir?.deleteSync(recursive: true);
@@ -493,21 +414,24 @@ void main() {
 
       final String packagesPath = packagesFile.path;
       final CoverageCollector collector = CoverageCollector(
-          libraryNames: <String>{'foo', 'bar'},
-          verbose: false,
-          packagesPath: packagesPath,
-          resolver: await CoverageCollector.getResolver(packagesPath)
-        );
+        libraryNames: <String>{'foo', 'bar'},
+        verbose: false,
+        packagesPath: packagesPath,
+        resolver: await CoverageCollector.getResolver(packagesPath),
+      );
       await collector.collectCoverage(
-          TestTestDevice(),
-          serviceOverride: createFakeVmServiceHostWithFooAndBar(libraryFilters: <String>['package:foo/', 'package:bar/']).vmService,
-        );
+        TestTestDevice(),
+        serviceOverride:
+            createFakeVmServiceHostWithFooAndBar(libraryFilters: <String>['package:foo/', 'package:bar/']).vmService,
+      );
 
       final Map<String, HitMap> gottenHitmap = <String, HitMap>{};
-      await collector.finalizeCoverage(formatter: (Map<String, HitMap> hitmap) {
-        gottenHitmap.addAll(hitmap);
-        return '';
-      });
+      await collector.finalizeCoverage(
+        formatter: (Map<String, HitMap> hitmap) {
+          gottenHitmap.addAll(hitmap);
+          return '';
+        },
+      );
       expect(gottenHitmap.keys.toList()..sort(), <String>['package:bar/bar.dart']);
       expect(gottenHitmap['package:bar/bar.dart']!.lineHits, <int, int>{21: 1, 32: 0, 47: 1, 86: 0});
     } finally {
@@ -529,24 +453,27 @@ void main() {
       final LoggingLogger logger = LoggingLogger();
       final TestTimeRecorder testTimeRecorder = TestTimeRecorder(logger);
       final CoverageCollector collector = CoverageCollector(
-          libraryNames: <String>{'foo', 'bar'},
-          verbose: false,
-          packagesPath: packagesPath,
-          resolver: await CoverageCollector.getResolver(packagesPath),
-          testTimeRecorder: testTimeRecorder
-        );
+        libraryNames: <String>{'foo', 'bar'},
+        verbose: false,
+        packagesPath: packagesPath,
+        resolver: await CoverageCollector.getResolver(packagesPath),
+        testTimeRecorder: testTimeRecorder,
+      );
       await collector.collectCoverage(
-          TestTestDevice(),
-          serviceOverride: createFakeVmServiceHostWithFooAndBar(libraryFilters: <String>['package:foo/', 'package:bar/']).vmService,
-        );
+        TestTestDevice(),
+        serviceOverride:
+            createFakeVmServiceHostWithFooAndBar(libraryFilters: <String>['package:foo/', 'package:bar/']).vmService,
+      );
 
       // Expect one message for each phase.
-      final List<String> logPhaseMessages = testTimeRecorder.getPrintAsListForTesting().where((String m) => m.startsWith('Runtime for phase ')).toList();
+      final List<String> logPhaseMessages =
+          testTimeRecorder.getPrintAsListForTesting().where((String m) => m.startsWith('Runtime for phase ')).toList();
       expect(logPhaseMessages, hasLength(TestTimePhases.values.length));
 
       // Several phases actually does something, but here we just expect at
       // least one phase to take a non-zero amount of time.
-      final List<String> logPhaseMessagesNonZero = logPhaseMessages.where((String m) => !m.contains(Duration.zero.toString())).toList();
+      final List<String> logPhaseMessagesNonZero =
+          logPhaseMessages.where((String m) => !m.contains(Duration.zero.toString())).toList();
       expect(logPhaseMessagesNonZero, isNotEmpty);
     } finally {
       tempDir?.deleteSync(recursive: true);
@@ -559,38 +486,25 @@ File writeFooBarPackagesJson(Directory tempDir) {
   file.writeAsStringSync(jsonEncode(<String, dynamic>{
     'configVersion': 2,
     'packages': <Map<String, String>>[
-      <String, String>{
-        'name': 'foo',
-        'rootUri': 'foo',
-      },
-      <String, String>{
-        'name': 'bar',
-        'rootUri': 'bar',
-      },
+      <String, String>{'name': 'foo', 'rootUri': 'foo'},
+      <String, String>{'name': 'bar', 'rootUri': 'bar'},
     ],
   }));
   return file;
 }
 
-FakeVmServiceHost createFakeVmServiceHostWithFooAndBar({
-    List<String>? libraryFilters,
-  }) {
+FakeVmServiceHost createFakeVmServiceHostWithFooAndBar({List<String>? libraryFilters}) {
   return FakeVmServiceHost(
     requests: <VmServiceExpectation>[
       FakeVmServiceRequest(
         method: 'getVM',
         jsonResponse: (VM.parse(<String, Object>{})!
-          ..isolates = <IsolateRef>[
-            IsolateRef.parse(<String, Object>{
-              'id': '1',
-            })!,
-          ]
-        ).toJson(),
+              ..isolates = <IsolateRef>[
+                IsolateRef.parse(<String, Object>{'id': '1'})!,
+              ])
+            .toJson(),
       ),
-      FakeVmServiceRequest(
-        method: 'getVersion',
-        jsonResponse: Version(major: 3, minor: 61).toJson(),
-      ),
+      FakeVmServiceRequest(method: 'getVersion', jsonResponse: Version(major: 3, minor: 61).toJson()),
       FakeVmServiceRequest(
         method: 'getSourceReport',
         args: <String, Object>{
@@ -607,31 +521,19 @@ FakeVmServiceHost createFakeVmServiceHostWithFooAndBar({
               startPos: 0,
               endPos: 0,
               compiled: true,
-              coverage: SourceReportCoverage(
-                hits: <int>[1, 3],
-                misses: <int>[2],
-              ),
+              coverage: SourceReportCoverage(hits: <int>[1, 3], misses: <int>[2]),
             ),
             SourceReportRange(
               scriptIndex: 1,
               startPos: 0,
               endPos: 0,
               compiled: true,
-              coverage: SourceReportCoverage(
-                hits: <int>[47, 21],
-                misses: <int>[32, 86],
-              ),
+              coverage: SourceReportCoverage(hits: <int>[47, 21], misses: <int>[32, 86]),
             ),
           ],
           scripts: <ScriptRef>[
-            ScriptRef(
-              uri: 'package:foo/foo.dart',
-              id: '1',
-            ),
-            ScriptRef(
-              uri: 'package:bar/bar.dart',
-              id: '2',
-            ),
+            ScriptRef(uri: 'package:foo/foo.dart', id: '1'),
+            ScriptRef(uri: 'package:bar/bar.dart', id: '2'),
           ],
         ).toJson(),
       ),

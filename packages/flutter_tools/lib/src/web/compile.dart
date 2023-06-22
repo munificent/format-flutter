@@ -36,12 +36,12 @@ class WebBuilder {
     required Usage usage,
     required FlutterVersion flutterVersion,
     required FileSystem fileSystem,
-  })  : _logger = logger,
-        _processManager = processManager,
-        _buildSystem = buildSystem,
-        _flutterUsage = usage,
-        _flutterVersion = flutterVersion,
-        _fileSystem = fileSystem;
+  }) : _logger = logger,
+       _processManager = processManager,
+       _buildSystem = buildSystem,
+       _flutterUsage = usage,
+       _flutterVersion = flutterVersion,
+       _fileSystem = fileSystem;
 
   final Logger _logger;
   final ProcessManager _processManager;
@@ -60,16 +60,14 @@ class WebBuilder {
     String? outputDirectoryPath,
   }) async {
     if (compilerConfig.isWasm) {
-      globals.logger.printBox(
-        title: 'Experimental feature',
-        '''
+      globals.logger.printBox(title: 'Experimental feature', '''
   WebAssembly compilation is experimental.
-  $kWasmMoreInfo''',
-      );
+  $kWasmMoreInfo''');
     }
 
-    final bool hasWebPlugins =
-        (await findPlugins(flutterProject)).any((Plugin p) => p.platforms.containsKey(WebPlugin.kConfigKey));
+    final bool hasWebPlugins = (await findPlugins(flutterProject)).any(
+      (Plugin p) => p.platforms.containsKey(WebPlugin.kConfigKey),
+    );
     final Directory outputDirectory = outputDirectoryPath == null
         ? _fileSystem.directory(getWebBuildDirectory(compilerConfig.isWasm))
         : _fileSystem.directory(outputDirectoryPath);
@@ -87,32 +85,33 @@ class WebBuilder {
     final Stopwatch sw = Stopwatch()..start();
     try {
       final BuildResult result = await _buildSystem.build(
-          WebServiceWorker(_fileSystem, buildInfo.webRenderer, isWasm: compilerConfig.isWasm),
-          Environment(
-            projectDir: _fileSystem.currentDirectory,
-            outputDir: outputDirectory,
-            buildDir: flutterProject.directory.childDirectory('.dart_tool').childDirectory('flutter_build'),
-            defines: <String, String>{
-              kTargetFile: target,
-              kHasWebPlugins: hasWebPlugins.toString(),
-              if (baseHref != null) kBaseHref: baseHref,
-              kServiceWorkerStrategy: serviceWorkerStrategy.cliName,
-              ...compilerConfig.toBuildSystemEnvironment(),
-              ...buildInfo.toBuildSystemEnvironment(),
-            },
-            artifacts: globals.artifacts!,
-            fileSystem: _fileSystem,
-            logger: _logger,
-            processManager: _processManager,
-            platform: globals.platform,
-            usage: _flutterUsage,
-            cacheDir: globals.cache.getRoot(),
-            engineVersion: globals.artifacts!.isLocalEngine ? null : _flutterVersion.engineRevision,
-            flutterRootDir: _fileSystem.directory(Cache.flutterRoot),
-            // Web uses a different Dart plugin registry.
-            // https://github.com/flutter/flutter/issues/80406
-            generateDartPluginRegistry: false,
-          ));
+        WebServiceWorker(_fileSystem, buildInfo.webRenderer, isWasm: compilerConfig.isWasm),
+        Environment(
+          projectDir: _fileSystem.currentDirectory,
+          outputDir: outputDirectory,
+          buildDir: flutterProject.directory.childDirectory('.dart_tool').childDirectory('flutter_build'),
+          defines: <String, String>{
+            kTargetFile: target,
+            kHasWebPlugins: hasWebPlugins.toString(),
+            if (baseHref != null) kBaseHref: baseHref,
+            kServiceWorkerStrategy: serviceWorkerStrategy.cliName,
+            ...compilerConfig.toBuildSystemEnvironment(),
+            ...buildInfo.toBuildSystemEnvironment(),
+          },
+          artifacts: globals.artifacts!,
+          fileSystem: _fileSystem,
+          logger: _logger,
+          processManager: _processManager,
+          platform: globals.platform,
+          usage: _flutterUsage,
+          cacheDir: globals.cache.getRoot(),
+          engineVersion: globals.artifacts!.isLocalEngine ? null : _flutterVersion.engineRevision,
+          flutterRootDir: _fileSystem.directory(Cache.flutterRoot),
+          // Web uses a different Dart plugin registry.
+          // https://github.com/flutter/flutter/issues/80406
+          generateDartPluginRegistry: false,
+        ),
+      );
       if (!result.success) {
         for (final ExceptionMeasurement measurement in result.exceptions.values) {
           _logger.printError(
@@ -130,10 +129,7 @@ class WebBuilder {
     BuildEvent(
       'web-compile',
       type: 'web',
-      settings: _buildEventAnalyticsSettings(
-        config: compilerConfig,
-        buildInfo: buildInfo,
-      ),
+      settings: _buildEventAnalyticsSettings(config: compilerConfig, buildInfo: buildInfo),
       flutterUsage: _flutterUsage,
     ).send();
 
@@ -164,79 +160,66 @@ enum WebRendererMode implements CliEnum {
 
   @override
   String get helpText => switch (this) {
-        auto =>
-          'Use the HTML renderer on mobile devices, and CanvasKit on desktop devices.',
-        canvaskit =>
-          'Always use the CanvasKit renderer. This renderer uses WebGL and WebAssembly to render graphics.',
+        auto => 'Use the HTML renderer on mobile devices, and CanvasKit on desktop devices.',
+        canvaskit => 'Always use the CanvasKit renderer. This renderer uses WebGL and WebAssembly to render graphics.',
         html =>
           'Always use the HTML renderer. This renderer uses a combination of HTML, CSS, SVG, 2D Canvas, and WebGL.',
-        skwasm => 'Always use the experimental skwasm renderer.'
+        skwasm => 'Always use the experimental skwasm renderer.',
       };
 
   Iterable<String> get dartDefines => switch (this) {
-        WebRendererMode.auto => <String>[
-            'FLUTTER_WEB_AUTO_DETECT=true',
-          ],
-        WebRendererMode.canvaskit => <String>[
-            'FLUTTER_WEB_AUTO_DETECT=false',
-            'FLUTTER_WEB_USE_SKIA=true',
-          ],
-        WebRendererMode.html => <String>[
-            'FLUTTER_WEB_AUTO_DETECT=false',
-            'FLUTTER_WEB_USE_SKIA=false',
-          ],
+        WebRendererMode.auto => <String>['FLUTTER_WEB_AUTO_DETECT=true'],
+        WebRendererMode.canvaskit => <String>['FLUTTER_WEB_AUTO_DETECT=false', 'FLUTTER_WEB_USE_SKIA=true'],
+        WebRendererMode.html => <String>['FLUTTER_WEB_AUTO_DETECT=false', 'FLUTTER_WEB_USE_SKIA=false'],
         WebRendererMode.skwasm => <String>[
             'FLUTTER_WEB_AUTO_DETECT=false',
             'FLUTTER_WEB_USE_SKIA=false',
             'FLUTTER_WEB_USE_SKWASM=true',
-          ]
+          ],
       };
 }
 
 /// The correct precompiled artifact to use for each build and render mode.
-const Map<WebRendererMode, Map<NullSafetyMode, HostArtifact>> kDartSdkJsArtifactMap = <WebRendererMode, Map<NullSafetyMode, HostArtifact>>{
-  WebRendererMode.auto: <NullSafetyMode, HostArtifact> {
+const Map<WebRendererMode, Map<NullSafetyMode, HostArtifact>> kDartSdkJsArtifactMap =
+    <WebRendererMode, Map<NullSafetyMode, HostArtifact>>{
+  WebRendererMode.auto: <NullSafetyMode, HostArtifact>{
     NullSafetyMode.sound: HostArtifact.webPrecompiledCanvaskitAndHtmlSoundSdk,
     NullSafetyMode.unsound: HostArtifact.webPrecompiledCanvaskitAndHtmlSdk,
   },
-  WebRendererMode.canvaskit: <NullSafetyMode, HostArtifact> {
+  WebRendererMode.canvaskit: <NullSafetyMode, HostArtifact>{
     NullSafetyMode.sound: HostArtifact.webPrecompiledCanvaskitSoundSdk,
     NullSafetyMode.unsound: HostArtifact.webPrecompiledCanvaskitSdk,
   },
-  WebRendererMode.html: <NullSafetyMode, HostArtifact> {
+  WebRendererMode.html: <NullSafetyMode, HostArtifact>{
     NullSafetyMode.sound: HostArtifact.webPrecompiledSoundSdk,
     NullSafetyMode.unsound: HostArtifact.webPrecompiledSdk,
   },
 };
 
 /// The correct source map artifact to use for each build and render mode.
-const Map<WebRendererMode, Map<NullSafetyMode, HostArtifact>> kDartSdkJsMapArtifactMap = <WebRendererMode, Map<NullSafetyMode, HostArtifact>>{
-  WebRendererMode.auto: <NullSafetyMode, HostArtifact> {
+const Map<WebRendererMode, Map<NullSafetyMode, HostArtifact>> kDartSdkJsMapArtifactMap =
+    <WebRendererMode, Map<NullSafetyMode, HostArtifact>>{
+  WebRendererMode.auto: <NullSafetyMode, HostArtifact>{
     NullSafetyMode.sound: HostArtifact.webPrecompiledCanvaskitAndHtmlSoundSdkSourcemaps,
     NullSafetyMode.unsound: HostArtifact.webPrecompiledCanvaskitAndHtmlSdkSourcemaps,
   },
-  WebRendererMode.canvaskit: <NullSafetyMode, HostArtifact> {
+  WebRendererMode.canvaskit: <NullSafetyMode, HostArtifact>{
     NullSafetyMode.sound: HostArtifact.webPrecompiledCanvaskitSoundSdkSourcemaps,
     NullSafetyMode.unsound: HostArtifact.webPrecompiledCanvaskitSdkSourcemaps,
   },
-  WebRendererMode.html: <NullSafetyMode, HostArtifact> {
+  WebRendererMode.html: <NullSafetyMode, HostArtifact>{
     NullSafetyMode.sound: HostArtifact.webPrecompiledSoundSdkSourcemaps,
     NullSafetyMode.unsound: HostArtifact.webPrecompiledSdkSourcemaps,
   },
 };
 
-String _buildEventAnalyticsSettings({
-  required WebCompilerConfig config,
-  required BuildInfo buildInfo,
-}) {
+String _buildEventAnalyticsSettings({required WebCompilerConfig config, required BuildInfo buildInfo}) {
   final Map<String, Object> values = <String, Object>{
     ...config.buildEventAnalyticsValues,
     'web-renderer': buildInfo.webRenderer.cliName,
   };
 
-  final List<String> sortedList = values.entries
-      .map((MapEntry<String, Object> e) => '${e.key}: ${e.value};')
-      .toList()
+  final List<String> sortedList = values.entries.map((MapEntry<String, Object> e) => '${e.key}: ${e.value};').toList()
     ..sort();
 
   return sortedList.join(' ');

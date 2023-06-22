@@ -16,10 +16,7 @@ void main() {
     final BufferLogger logger = BufferLogger.test();
     final WebDriverService service = WebDriverService(
       logger: logger,
-      processUtils: ProcessUtils(
-        logger: logger,
-        processManager: FakeProcessManager.empty(),
-      ),
+      processUtils: ProcessUtils(logger: logger, processManager: FakeProcessManager.empty()),
       dartSdkPath: 'dart',
     );
     const String link = 'https://flutter.dev/docs/testing/integration-tests#running-in-a-browser';

@@ -18,9 +18,7 @@ abstract class FuchsiaApp extends ApplicationPackage {
       // create is accurate.
       return null;
     }
-    return BuildableFuchsiaApp(
-      project: project,
-    );
+    return BuildableFuchsiaApp(project: project);
   }
 
   /// Creates a new [FuchsiaApp] from an existing .far archive.
@@ -32,9 +30,7 @@ abstract class FuchsiaApp extends ApplicationPackage {
       globals.printError('File "${applicationBinary.path}" does not exist or is not a .far file. Use far archive.');
       return null;
     }
-    return PrebuiltFuchsiaApp(
-      applicationPackage: applicationBinary,
-    );
+    return PrebuiltFuchsiaApp(applicationPackage: applicationBinary);
   }
 
   @override
@@ -61,8 +57,7 @@ class PrebuiltFuchsiaApp extends FuchsiaApp implements PrebuiltApplicationPackag
 }
 
 class BuildableFuchsiaApp extends FuchsiaApp {
-  BuildableFuchsiaApp({required this.project}) :
-      super(projectBundleId: project.project.manifest.appName);
+  BuildableFuchsiaApp({required this.project}) : super(projectBundleId: project.project.manifest.appName);
 
   final FuchsiaProject project;
 

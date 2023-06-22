@@ -13,26 +13,19 @@ import 'convert.dart';
 import 'device.dart';
 import 'globals.dart' as globals;
 
-Future<String?> sharedSkSlWriter(Device device, Map<String, Object?>? data, {
-  File? outputFile,
-  Logger? logger,
-}) async {
+Future<String?> sharedSkSlWriter(Device device, Map<String, Object?>? data, {File? outputFile, Logger? logger}) async {
   logger ??= globals.logger;
   if (data == null || data.isEmpty) {
     logger.printStatus(
       'No data was received. To ensure SkSL data can be generated use a '
       'physical device then:\n'
       '  1. Pass "--cache-sksl" as an argument to flutter run.\n'
-      '  2. Interact with the application to force shaders to be compiled.\n'
+      '  2. Interact with the application to force shaders to be compiled.\n',
     );
     return null;
   }
   if (outputFile == null) {
-    outputFile = globals.fsUtils.getUniqueFile(
-      globals.fs.currentDirectory,
-      'flutter',
-      'sksl.json',
-    );
+    outputFile = globals.fsUtils.getUniqueFile(globals.fs.currentDirectory, 'flutter', 'sksl.json');
   } else if (!outputFile.parent.existsSync()) {
     outputFile.parent.createSync(recursive: true);
   }

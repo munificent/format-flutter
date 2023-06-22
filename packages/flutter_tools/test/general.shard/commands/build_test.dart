@@ -68,11 +68,7 @@ void main() {
       BuildIOSFrameworkCommand(
         logger: BufferLogger.test(),
         verboseHelp: false,
-        buildSystem: FlutterBuildSystem(
-          fileSystem: fileSystem,
-          platform: platform,
-          logger: logger,
-        ),
+        buildSystem: FlutterBuildSystem(fileSystem: fileSystem, platform: platform, logger: logger),
       ),
       AttachCommand(
         artifacts: Artifacts.test(),
@@ -87,18 +83,15 @@ void main() {
     ];
 
     for (final FlutterCommand command in commands) {
-      final ArgResults results = command.argParser.parse(<String>[
-        '--sound-null-safety',
-        '--enable-experiment=non-nullable',
-      ]);
+      final ArgResults results = command.argParser
+          .parse(<String>['--sound-null-safety', '--enable-experiment=non-nullable']);
 
       expect(results.wasParsed('sound-null-safety'), true);
       expect(results.wasParsed('enable-experiment'), true);
     }
   });
 
-  testUsingContext('BuildSubCommand displays current null safety mode',
-      () async {
+  testUsingContext('BuildSubCommand displays current null safety mode', () async {
     const BuildInfo unsound = BuildInfo(
       BuildMode.debug,
       '',
@@ -108,8 +101,7 @@ void main() {
 
     final BufferLogger logger = BufferLogger.test();
     FakeBuildSubCommand(logger).test(unsound);
-    expect(logger.statusText,
-        contains('Building without sound null safety ⚠️'));
+    expect(logger.statusText, contains('Building without sound null safety ⚠️'));
   });
 
   testUsingContext('Include only supported sub commands', () {

@@ -10,18 +10,10 @@ import '../integration.shard/test_utils.dart';
 import '../src/common.dart';
 
 void main() {
-  final String flutterBin = fileSystem.path.join(
-    getFlutterRoot(),
-    'bin',
-    'flutter',
-  );
+  final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
 
   setUpAll(() {
-    processManager.runSync(<String>[
-      flutterBin,
-      'config',
-      '--enable-macos-desktop',
-    ]);
+    processManager.runSync(<String>[flutterBin, 'config', '--enable-macos-desktop']);
   });
 
   for (final String buildMode in <String>['Debug', 'Release']) {
@@ -35,11 +27,8 @@ void main() {
         'flutter_gallery',
       );
 
-      processManager.runSync(<String>[
-        flutterBin,
-        ...getLocalEngineArguments(),
-        'clean',
-      ], workingDirectory: workingDirectory);
+      processManager
+          .runSync(<String>[flutterBin, ...getLocalEngineArguments(), 'clean'], workingDirectory: workingDirectory);
 
       final File podfile = fileSystem.file(fileSystem.path.join(workingDirectory, 'macos', 'Podfile'));
       final File podfileLock = fileSystem.file(fileSystem.path.join(workingDirectory, 'macos', 'Podfile.lock'));
@@ -68,27 +57,17 @@ void main() {
       expect(result.stdout, contains('Running pod install'));
       expect(podfile.lastModifiedSync().isBefore(podfileLock.lastModifiedSync()), isTrue);
 
-      final Directory buildPath = fileSystem.directory(fileSystem.path.join(
-        workingDirectory,
-        'build',
-        'macos',
-        'Build',
-        'Products',
-        buildMode,
-      ));
+      final Directory buildPath = fileSystem.directory(
+        fileSystem.path.join(workingDirectory, 'build', 'macos', 'Build', 'Products', buildMode),
+      );
 
       final Directory outputApp = buildPath.childDirectory('Flutter Gallery.app');
-      final Directory outputAppFramework =
-          fileSystem.directory(fileSystem.path.join(
-        outputApp.path,
-        'Contents',
-        'Frameworks',
-        'App.framework',
-      ));
+      final Directory outputAppFramework = fileSystem.directory(
+        fileSystem.path.join(outputApp.path, 'Contents', 'Frameworks', 'App.framework'),
+      );
 
       final File libBinary = outputAppFramework.childFile('App');
-      final File libDsymBinary =
-        buildPath.childFile('App.framework.dSYM/Contents/Resources/DWARF/App');
+      final File libDsymBinary = buildPath.childFile('App.framework.dSYM/Contents/Resources/DWARF/App');
 
       _checkFatBinary(libBinary, buildModeLower, 'dynamically linked shared library');
 
@@ -101,8 +80,7 @@ void main() {
       } else {
         _checkFatBinary(libDsymBinary, buildModeLower, 'dSYM companion file');
         expect(libSymbols, equals(AppleTestUtils.requiredSymbols));
-        final List<String> dSymSymbols =
-            AppleTestUtils.getExportedSymbols(libDsymBinary.path);
+        final List<String> dSymSymbols = AppleTestUtils.getExportedSymbols(libDsymBinary.path);
         expect(dSymSymbols, containsAll(AppleTestUtils.requiredSymbols));
         // The actual number of symbols is going to vary but there should
         // be "many" in the dSYM. At the time of writing, it was 19195.
@@ -124,12 +102,7 @@ void main() {
       expect(vmSnapshot.existsSync(), buildMode == 'Debug');
 
       final Directory outputFlutterFramework = fileSystem.directory(
-        fileSystem.path.join(
-          outputApp.path,
-          'Contents',
-          'Frameworks',
-          'FlutterMacOS.framework',
-        ),
+        fileSystem.path.join(outputApp.path, 'Contents', 'Frameworks', 'FlutterMacOS.framework'),
       );
 
       // Check complicated macOS framework symlink structure.
@@ -137,12 +110,16 @@ void main() {
 
       expect(current.targetSync(), 'A');
 
-      expect(outputFlutterFramework.childLink('FlutterMacOS').targetSync(),
-          fileSystem.path.join('Versions', 'Current', 'FlutterMacOS'));
+      expect(
+        outputFlutterFramework.childLink('FlutterMacOS').targetSync(),
+        fileSystem.path.join('Versions', 'Current', 'FlutterMacOS'),
+      );
 
       expect(outputFlutterFramework.childLink('Resources'), exists);
-      expect(outputFlutterFramework.childLink('Resources').targetSync(),
-          fileSystem.path.join('Versions', 'Current', 'Resources'));
+      expect(
+        outputFlutterFramework.childLink('Resources').targetSync(),
+        fileSystem.path.join('Versions', 'Current', 'Resources'),
+      );
 
       expect(outputFlutterFramework.childLink('Headers'), isNot(exists));
       expect(outputFlutterFramework.childDirectory('Headers'), isNot(exists));
@@ -159,19 +136,14 @@ void main() {
 
       expect(secondBuild.stdout, isNot(contains('Running pod install')));
 
-      processManager.runSync(<String>[
-        flutterBin,
-        ...getLocalEngineArguments(),
-        'clean',
-      ], workingDirectory: workingDirectory);
+      processManager
+          .runSync(<String>[flutterBin, ...getLocalEngineArguments(), 'clean'], workingDirectory: workingDirectory);
     }, skip: !platform.isMacOS); // [intended] only makes sense for macos platform.
   }
 }
 
 void _checkFatBinary(File file, String buildModeLower, String expectedType) {
-  final String archs = processManager.runSync(
-    <String>['file', file.path],
-  ).stdout as String;
+  final String archs = processManager.runSync(<String>['file', file.path]).stdout as String;
 
   final bool containsX64 = archs.contains('Mach-O 64-bit $expectedType x86_64');
   final bool containsArm = archs.contains('Mach-O 64-bit $expectedType arm64');

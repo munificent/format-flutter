@@ -26,16 +26,16 @@ class MacOSDesignedForIPadDevice extends DesktopDevice {
     required Logger logger,
     required FileSystem fileSystem,
     required OperatingSystemUtils operatingSystemUtils,
-  })  : _operatingSystemUtils = operatingSystemUtils,
-        super(
-          'designed-for-ipad',
-          platformType: PlatformType.macos,
-          ephemeral: false,
-          processManager: processManager,
-          logger: logger,
-          fileSystem: fileSystem,
-          operatingSystemUtils: operatingSystemUtils,
-        );
+  }) : _operatingSystemUtils = operatingSystemUtils,
+       super(
+         'designed-for-ipad',
+         platformType: PlatformType.macos,
+         ephemeral: false,
+         processManager: processManager,
+         logger: logger,
+         fileSystem: fileSystem,
+         operatingSystemUtils: operatingSystemUtils,
+       );
 
   final OperatingSystemUtils _operatingSystemUtils;
 
@@ -72,16 +72,10 @@ class MacOSDesignedForIPadDevice extends DesktopDevice {
   }
 
   @override
-  Future<bool> stopApp(
-    ApplicationPackage? app, {
-    String? userIdentifier,
-  }) async => false;
+  Future<bool> stopApp(ApplicationPackage? app, {String? userIdentifier}) async => false;
 
   @override
-  Future<void> buildForDevice({
-    String? mainPath,
-    required BuildInfo buildInfo,
-  }) async {
+  Future<void> buildForDevice({String? mainPath, required BuildInfo buildInfo}) async {
     // Only attaching to a running app launched from Xcode is supported.
     throw UnimplementedError('Building for "$name" is not supported.');
   }
@@ -95,13 +89,13 @@ class MacOSDesignedForIPadDevices extends PollingDeviceDiscovery {
     required Logger logger,
     required FileSystem fileSystem,
     required OperatingSystemUtils operatingSystemUtils,
-  })  : _logger = logger,
-        _platform = platform,
-        _iosWorkflow = iosWorkflow,
-        _processManager = processManager,
-        _fileSystem = fileSystem,
-        _operatingSystemUtils = operatingSystemUtils,
-        super('Mac designed for iPad devices');
+  }) : _logger = logger,
+       _platform = platform,
+       _iosWorkflow = iosWorkflow,
+       _processManager = processManager,
+       _fileSystem = fileSystem,
+       _operatingSystemUtils = operatingSystemUtils,
+       super('Mac designed for iPad devices');
 
   final IOSWorkflow _iosWorkflow;
   final Platform _platform;

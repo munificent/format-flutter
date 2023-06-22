@@ -25,19 +25,15 @@ class SnapshotType {
 
 /// Interface to the gen_snapshot command-line tool.
 class GenSnapshot {
-  GenSnapshot({
-    required Artifacts artifacts,
-    required ProcessManager processManager,
-    required Logger logger,
-  }) : _artifacts = artifacts,
-       _processUtils = ProcessUtils(logger: logger, processManager: processManager);
+  GenSnapshot({required Artifacts artifacts, required ProcessManager processManager, required Logger logger})
+    : _artifacts = artifacts,
+      _processUtils = ProcessUtils(logger: logger, processManager: processManager);
 
   final Artifacts _artifacts;
   final ProcessUtils _processUtils;
 
   String getSnapshotterPath(SnapshotType snapshotType) {
-    return _artifacts.getArtifactPath(
-        Artifact.genSnapshot, platform: snapshotType.platform, mode: snapshotType.mode);
+    return _artifacts.getArtifactPath(Artifact.genSnapshot, platform: snapshotType.platform, mode: snapshotType.mode);
   }
 
   /// Ignored warning messages from gen_snapshot.
@@ -58,24 +54,21 @@ class GenSnapshot {
   }) {
     assert(darwinArch != DarwinArch.armv7);
     assert(snapshotType.platform != TargetPlatform.ios || darwinArch != null);
-    final List<String> args = <String>[
-      ...additionalArgs,
-    ];
+    final List<String> args = <String>[...additionalArgs];
 
     String snapshotterPath = getSnapshotterPath(snapshotType);
 
     // iOS and macOS have separate gen_snapshot binaries for each target
     // architecture (iOS: armv7, arm64; macOS: x86_64, arm64). Select the right
     // one for the target architecture in question.
-    if (snapshotType.platform == TargetPlatform.ios ||
-        snapshotType.platform == TargetPlatform.darwin) {
+    if (snapshotType.platform == TargetPlatform.ios || snapshotType.platform == TargetPlatform.darwin) {
       snapshotterPath += '_${darwinArch!.dartName}';
     }
 
-    return _processUtils.stream(
-      <String>[snapshotterPath, ...args],
-      mapFunction: (String line) =>  kIgnoredWarnings.contains(line) ? null : line,
-    );
+    return _processUtils.stream(<String>[
+      snapshotterPath,
+      ...args,
+    ], mapFunction: (String line) => kIgnoredWarnings.contains(line) ? null : line);
   }
 }
 
@@ -88,13 +81,9 @@ class AOTSnapshotter {
     required ProcessManager processManager,
     required Artifacts artifacts,
   }) : _logger = logger,
-      _fileSystem = fileSystem,
-      _xcode = xcode,
-      _genSnapshot = GenSnapshot(
-        artifacts: artifacts,
-        processManager: processManager,
-        logger: logger,
-      );
+       _fileSystem = fileSystem,
+       _xcode = xcode,
+       _genSnapshot = GenSnapshot(artifacts: artifacts, processManager: processManager, logger: logger);
 
   final Logger _logger;
   final FileSystem _fileSystem;
@@ -129,16 +118,12 @@ class AOTSnapshotter {
     final Directory outputDir = _fileSystem.directory(outputPath);
     outputDir.createSync(recursive: true);
 
-    final List<String> genSnapshotArgs = <String>[
-      '--deterministic',
-    ];
+    final List<String> genSnapshotArgs = <String>['--deterministic'];
 
-    final bool targetingApplePlatform =
-        platform == TargetPlatform.ios || platform == TargetPlatform.darwin;
+    final bool targetingApplePlatform = platform == TargetPlatform.ios || platform == TargetPlatform.darwin;
     _logger.printTrace('targetingApplePlatform = $targetingApplePlatform');
 
-    final bool extractAppleDebugSymbols =
-        buildMode == BuildMode.profile || buildMode == BuildMode.release;
+    final bool extractAppleDebugSymbols = buildMode == BuildMode.profile || buildMode == BuildMode.release;
     _logger.printTrace('extractAppleDebugSymbols = $extractAppleDebugSymbols');
 
     // We strip snapshot by default, but allow to suppress this behavior
@@ -157,16 +142,10 @@ class AOTSnapshotter {
 
     final String assembly = _fileSystem.path.join(outputDir.path, 'snapshot_assembly.S');
     if (targetingApplePlatform) {
-      genSnapshotArgs.addAll(<String>[
-        '--snapshot_kind=app-aot-assembly',
-        '--assembly=$assembly',
-      ]);
+      genSnapshotArgs.addAll(<String>['--snapshot_kind=app-aot-assembly', '--assembly=$assembly']);
     } else {
       final String aotSharedLibrary = _fileSystem.path.join(outputDir.path, 'app.so');
-      genSnapshotArgs.addAll(<String>[
-        '--snapshot_kind=app-aot-elf',
-        '--elf=$aotSharedLibrary',
-      ]);
+      genSnapshotArgs.addAll(<String>['--snapshot_kind=app-aot-elf', '--elf=$aotSharedLibrary']);
     }
 
     // When building for iOS and splitting out debug info, we want to strip
@@ -201,8 +180,7 @@ class AOTSnapshotter {
     final String debugFilename = 'app.$archName.symbols';
     final bool shouldSplitDebugInfo = splitDebugInfo?.isNotEmpty ?? false;
     if (shouldSplitDebugInfo) {
-      _fileSystem.directory(splitDebugInfo)
-        .createSync(recursive: true);
+      _fileSystem.directory(splitDebugInfo).createSync(recursive: true);
     }
 
     // Debugging information.
@@ -212,18 +190,14 @@ class AOTSnapshotter {
         '--resolve-dwarf-paths',
         '--save-debugging-info=${_fileSystem.path.join(splitDebugInfo!, debugFilename)}',
       ],
-      if (dartObfuscation)
-        '--obfuscate',
+      if (dartObfuscation) '--obfuscate',
     ]);
 
     genSnapshotArgs.add(mainPath);
 
     final SnapshotType snapshotType = SnapshotType(platform, buildMode);
-    final int genSnapshotExitCode = await _genSnapshot.run(
-      snapshotType: snapshotType,
-      additionalArgs: genSnapshotArgs,
-      darwinArch: darwinArch,
-    );
+    final int genSnapshotExitCode =
+        await _genSnapshot.run(snapshotType: snapshotType, additionalArgs: genSnapshotArgs, darwinArch: darwinArch);
     if (genSnapshotExitCode != 0) {
       _logger.printError('Dart snapshot generator failed with exit code $genSnapshotExitCode');
       return genSnapshotExitCode;
@@ -240,7 +214,7 @@ class AOTSnapshotter {
         outputPath: outputDir.path,
         quiet: quiet,
         stripAfterBuild: stripAfterBuild,
-        extractAppleDebugSymbols: extractAppleDebugSymbols
+        extractAppleDebugSymbols: extractAppleDebugSymbols,
       );
     } else {
       return 0;
@@ -257,7 +231,7 @@ class AOTSnapshotter {
     required String outputPath,
     required bool quiet,
     required bool stripAfterBuild,
-    required bool extractAppleDebugSymbols
+    required bool extractAppleDebugSymbols,
   }) async {
     final String targetArch = appleArch.name;
     if (!quiet) {
@@ -272,23 +246,17 @@ class AOTSnapshotter {
         // template MinimumOSVersion.
         // https://github.com/flutter/flutter/pull/62902
         '-miphoneos-version-min=11.0',
-      if (sdkRoot != null) ...<String>[
-        '-isysroot',
-        sdkRoot,
-      ],
+      if (sdkRoot != null) ...<String>['-isysroot', sdkRoot],
     ];
 
     final String assemblyO = _fileSystem.path.join(outputPath, 'snapshot_assembly.o');
 
-    final RunResult compileResult = await _xcode.cc(<String>[
-      ...commonBuildOptions,
-      '-c',
-      assemblyPath,
-      '-o',
-      assemblyO,
-    ]);
+    final RunResult compileResult = await _xcode
+        .cc(<String>[...commonBuildOptions, '-c', assemblyPath, '-o', assemblyO]);
     if (compileResult.exitCode != 0) {
-      _logger.printError('Failed to compile AOT snapshot. Compiler terminated with exit code ${compileResult.exitCode}');
+      _logger.printError(
+        'Failed to compile AOT snapshot. Compiler terminated with exit code ${compileResult.exitCode}',
+      );
       return compileResult.exitCode;
     }
 
@@ -298,11 +266,19 @@ class AOTSnapshotter {
     final List<String> linkArgs = <String>[
       ...commonBuildOptions,
       '-dynamiclib',
-      '-Xlinker', '-rpath', '-Xlinker', '@executable_path/Frameworks',
-      '-Xlinker', '-rpath', '-Xlinker', '@loader_path/Frameworks',
+      '-Xlinker',
+      '-rpath',
+      '-Xlinker',
+      '@executable_path/Frameworks',
+      '-Xlinker',
+      '-rpath',
+      '-Xlinker',
+      '@loader_path/Frameworks',
       '-fapplication-extension',
-      '-install_name', '@rpath/App.framework/App',
-      '-o', appLib,
+      '-install_name',
+      '@rpath/App.framework/App',
+      '-o',
+      appLib,
       assemblyO,
     ];
 
@@ -323,7 +299,9 @@ class AOTSnapshotter {
         // See https://www.unix.com/man-page/osx/1/strip/ for arguments
         final RunResult stripResult = await _xcode.strip(<String>['-x', appLib, '-o', appLib]);
         if (stripResult.exitCode != 0) {
-          _logger.printError('Failed to strip debugging symbols from the generated AOT snapshot - strip terminated with exit code ${stripResult.exitCode}');
+          _logger.printError(
+            'Failed to strip debugging symbols from the generated AOT snapshot - strip terminated with exit code ${stripResult.exitCode}',
+          );
           return stripResult.exitCode;
         }
       }

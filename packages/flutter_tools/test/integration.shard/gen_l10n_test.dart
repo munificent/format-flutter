@@ -49,7 +49,8 @@ void main() {
   }
 
   void expectOutput(StringBuffer stdout) {
-    expect(stdout.toString(),
+    expect(
+      stdout.toString(),
       '#l10n 0 (--- supportedLocales tests ---)\n'
       '#l10n 1 (supportedLocales[0]: languageCode: en, countryCode: null, scriptCode: null)\n'
       '#l10n 2 (supportedLocales[1]: languageCode: en, countryCode: CA, scriptCode: null)\n'
@@ -165,7 +166,7 @@ void main() {
       '#l10n 112 (ES 419 - Hello)\n'
       '#l10n 113 (ES 419 - Hello World)\n'
       '#l10n 114 (ES 419 - Hello two worlds)\n'
-      '#l10n END\n'
+      '#l10n END\n',
     );
   }
 

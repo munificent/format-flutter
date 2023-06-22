@@ -154,11 +154,10 @@ class FakeProcess implements io.Process {
          }
          return exitCode;
        }),
-      _stderr = stderr,
-      stdin = stdin ?? IOSink(StreamController<List<int>>().sink),
-      _stdout = stdout,
-      _completer = completer
-  {
+       _stderr = stderr,
+       stdin = stdin ?? IOSink(StreamController<List<int>>().sink),
+       _stdout = stdout,
+       _completer = completer {
     if (_stderr.isEmpty) {
       this.stderr = const Stream<List<int>>.empty();
     } else if (outputFollowsExit) {
@@ -287,13 +286,7 @@ abstract class FakeProcessManager implements ProcessManager {
     io.ProcessStartMode? mode,
   }) {
     _pid += 1;
-    final FakeCommand fakeCommand = findCommand(
-      command,
-      workingDirectory,
-      environment,
-      encoding,
-      mode,
-    );
+    final FakeCommand fakeCommand = findCommand(command, workingDirectory, environment, encoding, mode);
     if (fakeCommand.exception != null) {
       assert(fakeCommand.exception is Exception || fakeCommand.exception is Error);
       throw fakeCommand.exception!; // ignore: only_throw_errors
@@ -428,7 +421,7 @@ class _FakeAnyProcessManager extends FakeProcessManager {
   }
 
   @override
-  void addCommand(FakeCommand command) { }
+  void addCommand(FakeCommand command) {}
 
   @override
   bool get hasRemainingExpectations => true;
@@ -450,9 +443,11 @@ class _SequenceProcessManager extends FakeProcessManager {
     Encoding? encoding,
     io.ProcessStartMode? mode,
   ) {
-    expect(_commands, isNotEmpty,
+    expect(
+      _commands,
+      isNotEmpty,
       reason: 'ProcessManager was told to execute $command (in $workingDirectory) '
-              'but the FakeProcessManager.list expected no more processes.'
+          'but the FakeProcessManager.list expected no more processes.',
     );
     _commands.first._matches(command, workingDirectory, environment, encoding, mode);
     return _commands.removeAt(0);
@@ -482,18 +477,17 @@ class _HasNoRemainingExpectations extends Matcher {
       item is FakeProcessManager && !item.hasRemainingExpectations;
 
   @override
-  Description describe(Description description) =>
-      description.add('a fake process manager with no remaining expectations');
+  Description describe(Description description) => description.add(
+    'a fake process manager with no remaining expectations',
+  );
 
   @override
-  Description describeMismatch(
-      dynamic item,
-      Description description,
-      Map<dynamic, dynamic> matchState,
-      bool verbose,
-      ) {
+  Description describeMismatch(dynamic item, Description description, Map<dynamic, dynamic> matchState, bool verbose) {
     final FakeProcessManager fakeProcessManager = item as FakeProcessManager;
     return description.add(
-        'has remaining expectations:\n${fakeProcessManager._remainingExpectations.map((FakeCommand command) => command.command).join('\n')}');
+      'has remaining expectations:\n${fakeProcessManager._remainingExpectations.map(
+        (FakeCommand command) => command.command,
+      ).join('\n')}',
+    );
   }
 }

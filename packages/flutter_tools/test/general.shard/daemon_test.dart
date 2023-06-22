@@ -20,7 +20,7 @@ class FakeDaemonStreams implements DaemonStreams {
   }
 
   @override
-  void send(Map<String, dynamic> message, [ List<int>? binary ]) {
+  void send(Map<String, dynamic> message, [List<int>? binary]) {
     outputs.add(DaemonMessage(message, binary != null ? Stream<List<int>>.value(binary) : null));
   }
 
@@ -39,10 +39,7 @@ void main() {
   setUp(() {
     bufferLogger = BufferLogger.test();
     daemonStreams = FakeDaemonStreams();
-    daemonConnection = DaemonConnection(
-      daemonStreams: daemonStreams,
-      logger: bufferLogger,
-    );
+    daemonConnection = DaemonConnection(daemonStreams: daemonStreams, logger: bufferLogger);
   });
 
   tearDown(() async {
@@ -172,7 +169,8 @@ void main() {
       expect(message.data['params'], 'param');
 
       final String id = message.data['id']! as String;
-      daemonStreams.inputs.add(DaemonMessage(<String, dynamic>{'id': id, 'error': 'some_error', 'trace': 'stack trace'}));
+      daemonStreams.inputs
+          .add(DaemonMessage(<String, dynamic>{'id': id, 'error': 'some_error', 'trace': 'stack trace'}));
       expect(requestFuture, throwsA('some_error'));
     });
   });
@@ -181,15 +179,14 @@ void main() {
     Map<String, Object?> testCommand(int id, [int? binarySize]) => <String, Object?>{
       'id': id,
       'method': 'test',
-      if (binarySize != null)
-        '_binaryLength': binarySize,
+      if (binarySize != null) '_binaryLength': binarySize,
     };
-    List<int> testCommandBinary(int id, [int? binarySize]) => utf8.encode('[${json.encode(testCommand(id, binarySize))}]\n');
+    List<int> testCommandBinary(int id, [int? binarySize]) => utf8.encode(
+      '[${json.encode(testCommand(id, binarySize))}]\n',
+    );
 
     testWithoutContext('can parse a single message', () async {
-      final Stream<List<int>> inputStream = Stream<List<int>>.fromIterable(<List<int>>[
-        testCommandBinary(10),
-      ]);
+      final Stream<List<int>> inputStream = Stream<List<int>>.fromIterable(<List<int>>[testCommandBinary(10)]);
       final DaemonInputStreamConverter converter = DaemonInputStreamConverter(inputStream);
       final Stream<DaemonMessage> outputStream = converter.convertedStream;
       final List<DaemonMessage> outputs = await outputStream.toList();
@@ -251,9 +248,7 @@ void main() {
     testWithoutContext('can parse multiple messages even when they are combined in a single packet', () async {
       final List<int> binary1 = testCommandBinary(10);
       final List<int> binary2 = testCommandBinary(20);
-      final Stream<List<int>> inputStream = Stream<List<int>>.fromIterable(<List<int>>[
-        binary1 + binary2,
-      ]);
+      final Stream<List<int>> inputStream = Stream<List<int>>.fromIterable(<List<int>>[binary1 + binary2]);
       final DaemonInputStreamConverter converter = DaemonInputStreamConverter(inputStream);
       final Stream<DaemonMessage> outputStream = converter.convertedStream;
       final List<DaemonMessage> outputs = await outputStream.toList();
@@ -265,7 +260,7 @@ void main() {
     });
 
     testWithoutContext('can parse a single message with binary stream', () async {
-      final List<int> binary = <int>[1,2,3,4,5];
+      final List<int> binary = <int>[1, 2, 3, 4, 5];
       final Stream<List<int>> inputStream = Stream<List<int>>.fromIterable(<List<int>>[
         testCommandBinary(10, binary.length),
         binary,
@@ -278,22 +273,25 @@ void main() {
       expect(allOutputs[0].binary, binary);
     });
 
-    testWithoutContext('can parse a single message with binary stream when messages are combined in a single packet', () async {
-      final List<int> binary = <int>[1,2,3,4,5];
-      final Stream<List<int>> inputStream = Stream<List<int>>.fromIterable(<List<int>>[
-        testCommandBinary(10, binary.length) + binary,
-      ]);
-      final DaemonInputStreamConverter converter = DaemonInputStreamConverter(inputStream);
-      final Stream<DaemonMessage> outputStream = converter.convertedStream;
-      final List<_DaemonMessageAndBinary> allOutputs = await _readAllBinaries(outputStream);
-      expect(allOutputs, hasLength(1));
-      expect(allOutputs[0].message.data, testCommand(10, binary.length));
-      expect(allOutputs[0].binary, binary);
-    });
+    testWithoutContext(
+      'can parse a single message with binary stream when messages are combined in a single packet',
+      () async {
+        final List<int> binary = <int>[1, 2, 3, 4, 5];
+        final Stream<List<int>> inputStream = Stream<List<int>>.fromIterable(<List<int>>[
+          testCommandBinary(10, binary.length) + binary,
+        ]);
+        final DaemonInputStreamConverter converter = DaemonInputStreamConverter(inputStream);
+        final Stream<DaemonMessage> outputStream = converter.convertedStream;
+        final List<_DaemonMessageAndBinary> allOutputs = await _readAllBinaries(outputStream);
+        expect(allOutputs, hasLength(1));
+        expect(allOutputs[0].message.data, testCommand(10, binary.length));
+        expect(allOutputs[0].binary, binary);
+      },
+    );
 
     testWithoutContext('can parse multiple messages with binary stream', () async {
-      final List<int> binary1 = <int>[1,2,3,4,5];
-      final List<int> binary2 = <int>[6,7,8,9,10,11,12];
+      final List<int> binary1 = <int>[1, 2, 3, 4, 5];
+      final List<int> binary2 = <int>[6, 7, 8, 9, 10, 11, 12];
       final Stream<List<int>> inputStream = Stream<List<int>>.fromIterable(<List<int>>[
         testCommandBinary(10, binary1.length),
         binary1,
@@ -311,9 +309,9 @@ void main() {
     });
 
     testWithoutContext('can parse multiple messages with binary stream when messages are split', () async {
-      final List<int> binary1 = <int>[1,2,3,4,5];
+      final List<int> binary1 = <int>[1, 2, 3, 4, 5];
       final List<int> message1 = testCommandBinary(10, binary1.length);
-      final List<int> binary2 = <int>[6,7,8,9,10,11,12];
+      final List<int> binary2 = <int>[6, 7, 8, 9, 10, 11, 12];
       final List<int> message2 = testCommandBinary(20, binary2.length);
       final Stream<List<int>> inputStream = Stream<List<int>>.fromIterable(<List<int>>[
         message1.sublist(0, 10),
@@ -334,10 +332,7 @@ void main() {
   });
 
   group('DaemonStreams', () {
-    final Map<String, Object?> testCommand = <String, Object?>{
-      'id': 100,
-      'method': 'test',
-    };
+    final Map<String, Object?> testCommand = <String, Object?>{'id': 100, 'method': 'test'};
     late StreamController<List<int>> inputStream;
     late StreamController<List<int>> outputStream;
     late DaemonStreams daemonStreams;
@@ -373,9 +368,7 @@ void main() {
       daemonStreams.send(testCommand);
       expect(
         bufferLogger.errorText,
-        contains(
-          'Failed to write daemon command response: Bad state: Cannot add event after closing',
-        ),
+        contains('Failed to write daemon command response: Bad state: Cannot add event after closing'),
       );
     });
   });

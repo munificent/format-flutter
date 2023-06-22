@@ -10,11 +10,8 @@ void main(List<String> arguments) {
   if (scriptOutputStreamFileEnv != null && scriptOutputStreamFileEnv.isNotEmpty) {
     scriptOutputStreamFile = File(scriptOutputStreamFileEnv);
   }
-  Context(
-    arguments: arguments,
-    environment: Platform.environment,
-    scriptOutputStreamFile: scriptOutputStreamFile,
-  ).run();
+  Context(arguments: arguments, environment: Platform.environment, scriptOutputStreamFile: scriptOutputStreamFile)
+      .run();
 }
 
 /// Container for script arguments and environment variables.
@@ -22,11 +19,7 @@ void main(List<String> arguments) {
 /// All interactions with the platform are broken into individual methods that
 /// can be overridden in tests.
 class Context {
-  Context({
-    required this.arguments,
-    required this.environment,
-    File? scriptOutputStreamFile,
-  }) {
+  Context({required this.arguments, required this.environment, File? scriptOutputStreamFile}) {
     if (scriptOutputStreamFile != null) {
       scriptOutputStream = scriptOutputStreamFile.openSync(mode: FileMode.write);
     }
@@ -40,8 +33,9 @@ class Context {
     if (arguments.isEmpty) {
       // Named entry points were introduced in Flutter v0.0.7.
       stderr.write(
-          'error: Your Xcode project is incompatible with this version of Flutter. '
-          'Run "rm -rf ios/Runner.xcodeproj" and "flutter create ." to regenerate.\n');
+        'error: Your Xcode project is incompatible with this version of Flutter. '
+        'Run "rm -rf ios/Runner.xcodeproj" and "flutter create ." to regenerate.\n',
+      );
       exit(-1);
     }
 
@@ -86,11 +80,7 @@ class Context {
     if (verbose) {
       print('♦ $bin ${args.join(' ')}');
     }
-    final ProcessResult result = Process.runSync(
-      bin,
-      args,
-      workingDirectory: workingDirectory,
-    );
+    final ProcessResult result = Process.runSync(bin, args, workingDirectory: workingDirectory);
     if (verbose) {
       print((result.stdout as String).trim());
     }
@@ -105,9 +95,7 @@ class Context {
       echoError(errorOutput.toString());
     }
     if (!allowFail && result.exitCode != 0) {
-      throw Exception(
-        'Command "$bin ${args.join(' ')}" exited with code ${result.exitCode}',
-      );
+      throw Exception('Command "$bin ${args.join(' ')}" exited with code ${result.exitCode}');
     }
     return result;
   }
@@ -133,9 +121,7 @@ class Context {
   String environmentEnsure(String key) {
     final String? value = environment[key];
     if (value == null) {
-      throw Exception(
-        'Expected the environment variable "$key" to exist, but it was not found',
-      );
+      throw Exception('Expected the environment variable "$key" to exist, but it was not found');
     }
     return value;
   }
@@ -182,40 +168,27 @@ class Context {
     // Embed App.framework from Flutter into the app (after creating the Frameworks directory
     // if it doesn't already exist).
     final String xcodeFrameworksDir = '${environment['TARGET_BUILD_DIR']}/${environment['FRAMEWORKS_FOLDER_PATH']}';
-    runSync(
-      'mkdir',
-      <String>[
-        '-p',
-        '--',
-        xcodeFrameworksDir,
-      ]
-    );
-    runSync(
-      'rsync',
-      <String>[
-        '-8', // Avoid mangling filenames with encodings that do not match the current locale.
-        '-av',
-        '--delete',
-        '--filter',
-        '- .DS_Store',
-        '${environment['BUILT_PRODUCTS_DIR']}/App.framework',
-        xcodeFrameworksDir,
-      ],
-    );
+    runSync('mkdir', <String>['-p', '--', xcodeFrameworksDir]);
+    runSync('rsync', <String>[
+      '-8', // Avoid mangling filenames with encodings that do not match the current locale.
+      '-av',
+      '--delete',
+      '--filter',
+      '- .DS_Store',
+      '${environment['BUILT_PRODUCTS_DIR']}/App.framework',
+      xcodeFrameworksDir,
+    ]);
 
     // Embed the actual Flutter.framework that the Flutter app expects to run against,
     // which could be a local build or an arch/type specific build.
-    runSync(
-      'rsync',
-      <String>[
-        '-av',
-        '--delete',
-        '--filter',
-        '- .DS_Store',
-        '${environment['BUILT_PRODUCTS_DIR']}/Flutter.framework',
-        '$xcodeFrameworksDir/',
-      ],
-    );
+    runSync('rsync', <String>[
+      '-av',
+      '--delete',
+      '--filter',
+      '- .DS_Store',
+      '${environment['BUILT_PRODUCTS_DIR']}/Flutter.framework',
+      '$xcodeFrameworksDir/',
+    ]);
 
     addVmServiceBonjourService();
   }
@@ -229,7 +202,8 @@ class Context {
       return;
     }
 
-    final String builtProductsPlist = '${environment['BUILT_PRODUCTS_DIR'] ?? ''}/${environment['INFOPLIST_PATH'] ?? ''}';
+    final String builtProductsPlist =
+        '${environment['BUILT_PRODUCTS_DIR'] ?? ''}/${environment['INFOPLIST_PATH'] ?? ''}';
 
     if (!existsFile(builtProductsPlist)) {
       // Very occasionally Xcode hasn't created an Info.plist when this runs.
@@ -237,47 +211,38 @@ class Context {
       echo(
         '${environment['INFOPLIST_PATH'] ?? ''} does not exist. Skipping '
         '_dartVmService._tcp NSBonjourServices insertion. Try re-building to '
-        'enable "flutter attach".');
+        'enable "flutter attach".',
+      );
       return;
     }
 
     // If there are already NSBonjourServices specified by the app (uncommon),
     // insert the vmService service name to the existing list.
-    ProcessResult result = runSync(
-      'plutil',
-      <String>[
-        '-extract',
-        'NSBonjourServices',
-        'xml1',
-        '-o',
-        '-',
-        builtProductsPlist,
-      ],
-      allowFail: true,
-    );
+    ProcessResult result = runSync('plutil', <String>[
+      '-extract',
+      'NSBonjourServices',
+      'xml1',
+      '-o',
+      '-',
+      builtProductsPlist,
+    ], allowFail: true);
     if (result.exitCode == 0) {
-      runSync(
-        'plutil',
-        <String>[
-          '-insert',
-          'NSBonjourServices.0',
-          '-string',
-          '_dartVmService._tcp',
-          builtProductsPlist,
-        ],
-      );
+      runSync('plutil', <String>[
+        '-insert',
+        'NSBonjourServices.0',
+        '-string',
+        '_dartVmService._tcp',
+        builtProductsPlist,
+      ]);
     } else {
       // Otherwise, add the NSBonjourServices key and vmService service name.
-      runSync(
-        'plutil',
-        <String>[
-          '-insert',
-          'NSBonjourServices',
-          '-json',
-          '["_dartVmService._tcp"]',
-          builtProductsPlist,
-        ],
-      );
+      runSync('plutil', <String>[
+        '-insert',
+        'NSBonjourServices',
+        '-json',
+        '["_dartVmService._tcp"]',
+        builtProductsPlist,
+      ]);
       //fi
     }
 
@@ -285,29 +250,22 @@ class Context {
     // specified (uncommon). This text will appear below the "Your app would
     // like to find and connect to devices on your local network" permissions
     // popup.
-    result = runSync(
-      'plutil',
-      <String>[
-        '-extract',
-        'NSLocalNetworkUsageDescription',
-        'xml1',
-        '-o',
-        '-',
-        builtProductsPlist,
-      ],
-      allowFail: true,
-    );
+    result = runSync('plutil', <String>[
+      '-extract',
+      'NSLocalNetworkUsageDescription',
+      'xml1',
+      '-o',
+      '-',
+      builtProductsPlist,
+    ], allowFail: true);
     if (result.exitCode != 0) {
-      runSync(
-        'plutil',
-        <String>[
-          '-insert',
-          'NSLocalNetworkUsageDescription',
-          '-string',
-          'Allow Flutter tools on your computer to connect and debug your application. This prompt will not appear on release builds.',
-          builtProductsPlist,
-        ],
-      );
+      runSync('plutil', <String>[
+        '-insert',
+        'NSLocalNetworkUsageDescription',
+        '-string',
+        'Allow Flutter tools on your computer to connect and debug your application. This prompt will not appear on release builds.',
+        builtProductsPlist,
+      ]);
     }
   }
 
@@ -369,12 +327,15 @@ class Context {
       '--ExtraFrontEndOptions=${environment['EXTRA_FRONT_END_OPTIONS'] ?? ''}',
     ]);
 
-    if (environment['PERFORMANCE_MEASUREMENT_FILE'] != null && environment['PERFORMANCE_MEASUREMENT_FILE']!.isNotEmpty) {
+    if (environment['PERFORMANCE_MEASUREMENT_FILE'] != null &&
+        environment['PERFORMANCE_MEASUREMENT_FILE']!.isNotEmpty) {
       flutterArgs.add('--performance-measurement-file=${environment['PERFORMANCE_MEASUREMENT_FILE']}');
     }
 
     final String? expandedCodeSignIdentity = environment['EXPANDED_CODE_SIGN_IDENTITY'];
-    if (expandedCodeSignIdentity != null && expandedCodeSignIdentity.isNotEmpty && environment['CODE_SIGNING_REQUIRED'] != 'NO') {
+    if (expandedCodeSignIdentity != null &&
+        expandedCodeSignIdentity.isNotEmpty &&
+        environment['CODE_SIGNING_REQUIRED'] != 'NO') {
       flutterArgs.add('-dCodesignIdentity=$expandedCodeSignIdentity');
     }
 

@@ -43,7 +43,7 @@ const String protocolVersion = '0.6.1';
 /// It can be shutdown with a `daemon.shutdown` command (or by killing the
 /// process).
 class DaemonCommand extends FlutterCommand {
-  DaemonCommand({ this.hidden = false }) {
+  DaemonCommand({this.hidden = false}) {
     argParser.addOption(
       'listen-on-tcp-port',
       help: 'If specified, the daemon will be listening for commands on the specified port instead of stdio.',
@@ -101,11 +101,7 @@ class DaemonCommand extends FlutterCommand {
 }
 
 class _DaemonServer {
-  _DaemonServer({
-    this.port,
-    required this.logger,
-    this.notifyingLogger,
-  });
+  _DaemonServer({this.port, required this.logger, this.notifyingLogger});
 
   final int? port;
 
@@ -119,28 +115,24 @@ class _DaemonServer {
     final ServerSocket serverSocket = await ServerSocket.bind(InternetAddress.loopbackIPv4, port!);
     logger.printStatus('Daemon server listening on ${serverSocket.port}');
 
-    final StreamSubscription<Socket> subscription = serverSocket.listen(
-      (Socket socket) async {
-        // We have to listen to socket.done. Otherwise when the connection is
-        // reset, we will receive an uncatchable exception.
-        // https://github.com/dart-lang/sdk/issues/25518
-        final Future<void> socketDone = socket.done.then<void>(
-          (_) {},
-          onError: (Object error, StackTrace stackTrace) {
-            logger.printError('Socket error: $error');
-            logger.printTrace('$stackTrace');
-          });
-        final Daemon daemon = Daemon(
-          DaemonConnection(
-            daemonStreams: DaemonStreams.fromSocket(socket, logger: logger),
-            logger: logger,
-          ),
-          notifyingLogger: notifyingLogger,
-        );
-        await daemon.onExit;
-        await socketDone;
-      },
-    );
+    final StreamSubscription<Socket> subscription = serverSocket.listen((Socket socket) async {
+      // We have to listen to socket.done. Otherwise when the connection is
+      // reset, we will receive an uncatchable exception.
+      // https://github.com/dart-lang/sdk/issues/25518
+      final Future<void> socketDone = socket.done.then<void>(
+        (_) {},
+        onError: (Object error, StackTrace stackTrace) {
+          logger.printError('Socket error: $error');
+          logger.printTrace('$stackTrace');
+        },
+      );
+      final Daemon daemon = Daemon(
+        DaemonConnection(daemonStreams: DaemonStreams.fromSocket(socket, logger: logger), logger: logger),
+        notifyingLogger: notifyingLogger,
+      );
+      await daemon.onExit;
+      await socketDone;
+    });
 
     // Wait indefinitely until the server closes.
     await subscription.asFuture<void>();
@@ -152,11 +144,7 @@ typedef CommandHandler = Future<Object?>? Function(Map<String, Object?> args);
 typedef CommandHandlerWithBinary = Future<Object?> Function(Map<String, Object?> args, Stream<List<int>>? binary);
 
 class Daemon {
-  Daemon(
-    this.connection, {
-    this.notifyingLogger,
-    this.logToStdout = false,
-  }) {
+  Daemon(this.connection, {this.notifyingLogger, this.logToStdout = false}) {
     // Set up domains.
     registerDomain(daemonDomain = DaemonDomain(this));
     registerDomain(appDomain = AppDomain(this));
@@ -223,13 +211,18 @@ class Daemon {
         throw DaemonException('no domain for method: $method');
       }
 
-      _domainMap[prefix]!.handleCommand(name, id, castStringKeyedMap(request.data['params']) ?? const <String, Object?>{}, request.binary);
+      _domainMap[prefix]!.handleCommand(
+        name,
+        id,
+        castStringKeyedMap(request.data['params']) ?? const <String, Object?>{},
+        request.binary,
+      );
     } on Exception catch (error, trace) {
       connection.sendErrorResponse(id, _toJsonable(error), trace);
     }
   }
 
-  Future<void> shutdown({ Object? error }) async {
+  Future<void> shutdown({Object? error}) async {
     await devToolsDomain?.dispose();
     await _commandSubscription?.cancel();
     await connection.dispose();
@@ -248,7 +241,6 @@ class Daemon {
 
 abstract class Domain {
   Domain(this.daemon, this.name);
-
 
   final Daemon daemon;
   final String name;
@@ -278,20 +270,23 @@ abstract class Domain {
         return _handlersWithBinary[command]!(args, binary);
       }
       throw DaemonException('command not understood: $name.$command');
-    }).then<Object?>((Object? result) {
-      daemon.connection.sendResponse(id, _toJsonable(result));
-      return null;
-    }, onError: (Object error, StackTrace stackTrace) {
-      daemon.connection.sendErrorResponse(id, _toJsonable(error), stackTrace);
-      return null;
-    });
+    }).then<Object?>(
+      (Object? result) {
+        daemon.connection.sendResponse(id, _toJsonable(result));
+        return null;
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        daemon.connection.sendErrorResponse(id, _toJsonable(error), stackTrace);
+        return null;
+      },
+    );
   }
 
-  void sendEvent(String name, [ Object? args, List<int>? binary ]) {
+  void sendEvent(String name, [Object? args, List<int>? binary]) {
     daemon.connection.sendEvent(name, _toJsonable(args), binary);
   }
 
-  String? _getStringArg(Map<String, Object?> args, String name, { bool required = false }) {
+  String? _getStringArg(Map<String, Object?> args, String name, {bool required = false}) {
     if (required && !args.containsKey(name)) {
       throw DaemonException('$name is required');
     }
@@ -302,7 +297,7 @@ abstract class Domain {
     return val as String?;
   }
 
-  bool? _getBoolArg(Map<String, Object?> args, String name, { bool required = false }) {
+  bool? _getBoolArg(Map<String, Object?> args, String name, {bool required = false}) {
     if (required && !args.containsKey(name)) {
       throw DaemonException('$name is required');
     }
@@ -313,7 +308,7 @@ abstract class Domain {
     return val as bool?;
   }
 
-  int? _getIntArg(Map<String, Object?> args, String name, { bool required = false }) {
+  int? _getIntArg(Map<String, Object?> args, String name, {bool required = false}) {
     if (required && !args.containsKey(name)) {
       throw DaemonException('$name is required');
     }
@@ -324,7 +319,7 @@ abstract class Domain {
     return val as int?;
   }
 
-  Future<void> dispose() async { }
+  Future<void> dispose() async {}
 }
 
 /// This domain responds to methods like [version] and [shutdown].
@@ -336,13 +331,7 @@ class DaemonDomain extends Domain {
     registerHandler('shutdown', shutdown);
     registerHandler('getSupportedPlatforms', getSupportedPlatforms);
 
-    sendEvent(
-      'daemon.connected',
-      <String, Object?>{
-        'version': protocolVersion,
-        'pid': pid,
-      },
-    );
+    sendEvent('daemon.connected', <String, Object?>{'version': protocolVersion, 'pid': pid});
 
     _subscription = daemon.notifyingLogger!.onMessage.listen((LogMessage message) {
       if (daemon.logToStdout) {
@@ -354,9 +343,7 @@ class DaemonDomain extends Domain {
         } else if (message.level == 'error' || message.level == 'warning') {
           globals.stdio.stderrWrite('${message.message}\n');
           if (message.stackTrace != null) {
-            globals.stdio.stderrWrite(
-              '${message.stackTrace.toString().trimRight()}\n',
-            );
+            globals.stdio.stderrWrite('${message.stackTrace.toString().trimRight()}\n');
           }
         }
       } else {
@@ -367,10 +354,7 @@ class DaemonDomain extends Domain {
             'stackTrace': message.stackTrace.toString(),
           });
         } else {
-          sendEvent('daemon.logMessage', <String, Object?>{
-            'level': message.level,
-            'message': message.message,
-          });
+          sendEvent('daemon.logMessage', <String, Object?>{'level': message.level, 'message': message.message});
         }
       }
     });
@@ -442,9 +426,7 @@ class DaemonDomain extends Domain {
       if (featureFlags.areCustomDevicesEnabled) {
         result.add('custom');
       }
-      return <String, Object>{
-        'platforms': result,
-      };
+      return <String, Object>{'platforms': result};
     } on Exception catch (err, stackTrace) {
       sendEvent('log', <String, Object?>{
         'log': 'Failed to parse project metadata',
@@ -454,10 +436,7 @@ class DaemonDomain extends Domain {
       // On any sort of failure, fall back to Android and iOS for backwards
       // comparability.
       return <String, Object>{
-        'platforms': <String>[
-          'android',
-          'ios',
-        ],
+        'platforms': <String>['android', 'ios'],
       };
     }
   }
@@ -485,7 +464,8 @@ class AppDomain extends Domain {
 
   final List<AppInstance> _apps = <AppInstance>[];
 
-  final DebounceOperationQueue<OperationResult, OperationType> operationQueue = DebounceOperationQueue<OperationResult, OperationType>();
+  final DebounceOperationQueue<OperationResult, OperationType> operationQueue =
+      DebounceOperationQueue<OperationResult, OperationType>();
 
   Future<AppInstance> startApp(
     Device device,
@@ -570,10 +550,7 @@ class AppDomain extends Domain {
 
     return launch(
       runner,
-      ({
-        Completer<DebugConnectionInfo>? connectionInfoCompleter,
-        Completer<void>? appStartedCompleter,
-      }) {
+      ({Completer<DebugConnectionInfo>? connectionInfoCompleter, Completer<void>? appStartedCompleter}) {
         return runner.run(
           connectionInfoCompleter: connectionInfoCompleter,
           appStartedCompleter: appStartedCompleter,
@@ -600,8 +577,12 @@ class AppDomain extends Domain {
     LaunchMode launchMode,
     AppRunLogger logger,
   ) async {
-    final AppInstance app = AppInstance(_getNewAppId(),
-        runner: runner, logToStdout: daemon.logToStdout, logger: logger);
+    final AppInstance app = AppInstance(
+      _getNewAppId(),
+      runner: runner,
+      logToStdout: daemon.logToStdout,
+      logger: logger,
+    );
     _apps.add(app);
 
     // Set the domain and app for the given AppRunLogger. This allows the logger
@@ -623,19 +604,17 @@ class AppDomain extends Domain {
       connectionInfoCompleter = Completer<DebugConnectionInfo>();
       // We don't want to wait for this future to complete and callbacks won't fail.
       // As it just writes to stdout.
-      unawaited(connectionInfoCompleter.future.then<void>(
-        (DebugConnectionInfo info) {
-          final Map<String, Object?> params = <String, Object?>{
-            // The web vmservice proxy does not have an http address.
-            'port': info.httpUri?.port ?? info.wsUri!.port,
-            'wsUri': info.wsUri.toString(),
-          };
-          if (info.baseUri != null) {
-            params['baseUri'] = info.baseUri;
-          }
-          _sendAppEvent(app, 'debugPort', params);
-        },
-      ));
+      unawaited(connectionInfoCompleter.future.then<void>((DebugConnectionInfo info) {
+        final Map<String, Object?> params = <String, Object?>{
+          // The web vmservice proxy does not have an http address.
+          'port': info.httpUri?.port ?? info.wsUri!.port,
+          'wsUri': info.wsUri.toString(),
+        };
+        if (info.baseUri != null) {
+          params['baseUri'] = info.baseUri;
+        }
+        _sendAppEvent(app, 'debugPort', params);
+      }));
     }
     final Completer<void> appStartedCompleter = Completer<void>();
     // We don't want to wait for this future to complete, and callbacks won't fail,
@@ -646,16 +625,10 @@ class AppDomain extends Domain {
 
     await app._runInZone<void>(this, () async {
       try {
-        await runOrAttach(
-          connectionInfoCompleter: connectionInfoCompleter,
-          appStartedCompleter: appStartedCompleter,
-        );
+        await runOrAttach(connectionInfoCompleter: connectionInfoCompleter, appStartedCompleter: appStartedCompleter);
         _sendAppEvent(app, 'stop');
       } on Exception catch (error, trace) {
-        _sendAppEvent(app, 'stop', <String, Object?>{
-          'error': _toJsonable(error),
-          'trace': '$trace',
-        });
+        _sendAppEvent(app, 'stop', <String, Object?>{'error': _toJsonable(error), 'trace': '$trace'});
       } finally {
         // If the full directory is used instead of the path then this causes
         // a TypeError with the ErrorHandlingFileSystem.
@@ -666,8 +639,7 @@ class AppDomain extends Domain {
     return app;
   }
 
-  bool isRestartSupported(bool enableHotReload, Device device) =>
-      enableHotReload && device.supportsHotRestart;
+  bool isRestartSupported(bool enableHotReload, Device device) => enableHotReload && device.supportsHotRestart;
 
   final int _hotReloadDebounceDurationMs = 50;
 
@@ -687,14 +659,11 @@ class AppDomain extends Domain {
 
     return _queueAndDebounceReloadAction(
       app,
-      fullRestart ? OperationType.restart: OperationType.reload,
+      fullRestart ? OperationType.restart : OperationType.reload,
       debounce,
       debounceDurationOverrideMs,
       () {
-        return app.restart(
-            fullRestart: fullRestart,
-            pause: pauseAfterRestart,
-            reason: restartReason);
+        return app.restart(fullRestart: fullRestart, pause: pauseAfterRestart, reason: restartReason);
       },
     )!;
   }
@@ -736,7 +705,9 @@ class AppDomain extends Domain {
   Future<Map<String, Object?>> callServiceExtension(Map<String, Object?> args) async {
     final String? appId = _getStringArg(args, 'appId', required: true);
     final String methodName = _getStringArg(args, 'methodName')!;
-    final Map<String, Object?>? params = args['params'] == null ? <String, Object?>{} : castStringKeyedMap(args['params']);
+    final Map<String, Object?>? params = args['params'] == null
+        ? <String, Object?>{}
+        : castStringKeyedMap(args['params']);
 
     final AppInstance? app = _getApp(appId);
     if (app == null) {
@@ -744,14 +715,11 @@ class AppDomain extends Domain {
     }
     final FlutterDevice device = app.runner!.flutterDevices.first;
     final List<FlutterView> views = await device.vmService!.getFlutterViews();
-    final Map<String, Object?>? result = await device
-      .vmService!
-      .invokeFlutterExtensionRpcRaw(
-        methodName,
-        args: params,
-        isolateId: views
-          .first.uiIsolate!.id!
-      );
+    final Map<String, Object?>? result = await device.vmService!.invokeFlutterExtensionRpcRaw(
+      methodName,
+      args: params,
+      isolateId: views.first.uiIsolate!.id!,
+    );
     if (result == null) {
       throw DaemonException('method not available: $methodName');
     }
@@ -811,11 +779,8 @@ class AppDomain extends Domain {
     return null;
   }
 
-  void _sendAppEvent(AppInstance app, String name, [ Map<String, Object?>? args ]) {
-    sendEvent('app.$name', <String, Object?>{
-      'appId': app.id,
-      ...?args,
-    });
+  void _sendAppEvent(AppInstance app, String name, [Map<String, Object?>? args]) {
+    sendEvent('app.$name', <String, Object?>{'appId': app.id, ...?args});
   }
 }
 
@@ -885,7 +850,7 @@ class DeviceDomain extends Domain {
 
   /// Return a list of the currently connected devices, with each device
   /// represented as a map of properties (id, name, platform, ...).
-  Future<List<Map<String, Object?>>> getDevices([ Map<String, Object?>? args ]) async {
+  Future<List<Map<String, Object?>>> getDevices([Map<String, Object?>? args]) async {
     return <Map<String, Object?>>[
       for (final PollingDeviceDiscovery discoverer in _discoverers)
         for (final Device device in await discoverer.devices(filter: DeviceDiscoveryFilter()))
@@ -894,11 +859,10 @@ class DeviceDomain extends Domain {
   }
 
   /// Return a list of the current devices, discarding existing cache of devices.
-  Future<List<Map<String, Object?>>> discoverDevices([ Map<String, Object?>? args ]) async {
+  Future<List<Map<String, Object?>>> discoverDevices([Map<String, Object?>? args]) async {
     return <Map<String, Object?>>[
       for (final PollingDeviceDiscovery discoverer in _discoverers)
-        for (final Device device in await discoverer.discoverDevices())
-          await _deviceToMap(device),
+        for (final Device device in await discoverer.discoverDevices()) await _deviceToMap(device),
     ];
   }
 
@@ -959,8 +923,12 @@ class DeviceDomain extends Domain {
 
   /// Creates an application package from a file in the temp directory.
   Future<String> uploadApplicationPackage(Map<String, Object?> args) async {
-    final TargetPlatform targetPlatform = getTargetPlatformForName(_getStringArg(args, 'targetPlatform', required: true)!);
-    final File applicationBinary = daemon.proxyDomain.tempDirectory.childFile(_getStringArg(args, 'applicationBinary', required: true)!);
+    final TargetPlatform targetPlatform = getTargetPlatformForName(
+      _getStringArg(args, 'targetPlatform', required: true)!,
+    );
+    final File applicationBinary = daemon.proxyDomain.tempDirectory.childFile(
+      _getStringArg(args, 'applicationBinary', required: true)!,
+    );
     final ApplicationPackage? applicationPackage = await ApplicationPackageFactory.instance!.getPackageForPlatform(
       targetPlatform,
       applicationBinary: applicationBinary,
@@ -978,7 +946,9 @@ class DeviceDomain extends Domain {
       throw DaemonException("device '$deviceId' not found");
     }
     final String? applicationPackageId = _getStringArg(args, 'applicationPackageId');
-    final ApplicationPackage? applicationPackage = applicationPackageId != null ? _applicationPackages[applicationPackageId] : null;
+    final ApplicationPackage? applicationPackage = applicationPackageId != null
+        ? _applicationPackages[applicationPackageId]
+        : null;
     final String id = '${deviceId}_${_id++}';
 
     final DeviceLogReader logReader = await device.getLogReader(app: applicationPackage);
@@ -1039,10 +1009,7 @@ class DeviceDomain extends Domain {
     if (applicationPackageId != null) {
       applicationPackage = _applicationPackages[applicationPackageId];
     }
-    return device.stopApp(
-      applicationPackage,
-      userIdentifier: _getStringArg(args, 'userIdentifier'),
-    );
+    return device.stopApp(applicationPackage, userIdentifier: _getStringArg(args, 'userIdentifier'));
   }
 
   /// Takes a screenshot.
@@ -1118,9 +1085,7 @@ class DeviceDomain extends Domain {
   /// Return the connected device matching the deviceId field in the args.
   Future<Device?> _getDevice(String? deviceId) async {
     for (final PollingDeviceDiscovery discoverer in _discoverers) {
-      final List<Device> devices = await discoverer.devices(
-        filter: DeviceDiscoveryFilter(),
-      );
+      final List<Device> devices = await discoverer.devices(filter: DeviceDiscoveryFilter());
       Device? device;
       for (final Device localDevice in devices) {
         if (localDevice.id == deviceId) {
@@ -1142,13 +1107,10 @@ class DevToolsDomain extends Domain {
 
   DevtoolsLauncher? _devtoolsLauncher;
 
-  Future<Map<String, Object?>> serve([ Map<String, Object?>? args ]) async {
+  Future<Map<String, Object?>> serve([Map<String, Object?>? args]) async {
     _devtoolsLauncher ??= DevtoolsLauncher.instance;
     final DevToolsServerAddress? server = await _devtoolsLauncher?.serve();
-    return<String, Object?>{
-      'host': server?.host,
-      'port': server?.port,
-    };
+    return <String, Object?>{'host': server?.host, 'port': server?.port};
   }
 
   @override
@@ -1190,14 +1152,16 @@ Map<String, Object?> _emulatorToMap(Emulator emulator) {
 }
 
 Map<String, Object?> _operationResultToMap(OperationResult result) {
-  return <String, Object?>{
-    'code': result.code,
-    'message': result.message,
-  };
+  return <String, Object?>{'code': result.code, 'message': result.message};
 }
 
 Object? _toJsonable(Object? obj) {
-  if (obj is String || obj is int || obj is bool || obj is Map<Object?, Object?> || obj is List<Object?> || obj == null) {
+  if (obj is String ||
+      obj is int ||
+      obj is bool ||
+      obj is Map<Object?, Object?> ||
+      obj is List<Object?> ||
+      obj == null) {
     return obj;
   }
   if (obj is OperationResult) {
@@ -1210,10 +1174,8 @@ Object? _toJsonable(Object? obj) {
 }
 
 class NotifyingLogger extends DelegatingLogger {
-  NotifyingLogger({ required this.verbose, required Logger parent }) : super(parent) {
-    _messageController = StreamController<LogMessage>.broadcast(
-      onListen: _onListen,
-    );
+  NotifyingLogger({required this.verbose, required Logger parent}) : super(parent) {
+    _messageController = StreamController<LogMessage>.broadcast(onListen: _onListen);
   }
 
   final bool verbose;
@@ -1269,9 +1231,7 @@ class NotifyingLogger extends DelegatingLogger {
   }
 
   @override
-  void printBox(String message, {
-    String? title,
-  }) {
+  void printBox(String message, {String? title}) {
     _sendMessage(LogMessage('status', title == null ? message : '$title: $message'));
   }
 
@@ -1294,9 +1254,7 @@ class NotifyingLogger extends DelegatingLogger {
   }) {
     assert(timeout != null);
     printStatus(message);
-    return SilentStatus(
-      stopwatch: Stopwatch(),
-    );
+    return SilentStatus(stopwatch: Stopwatch());
   }
 
   void _sendMessage(LogMessage logMessage) {
@@ -1311,7 +1269,7 @@ class NotifyingLogger extends DelegatingLogger {
   }
 
   @override
-  void sendEvent(String name, [Map<String, Object?>? args]) { }
+  void sendEvent(String name, [Map<String, Object?>? args]) {}
 
   @override
   bool get supportsColor => false;
@@ -1321,20 +1279,19 @@ class NotifyingLogger extends DelegatingLogger {
 
   // This method is only relevant for terminals.
   @override
-  void clear() { }
+  void clear() {}
 }
 
 /// A running application, started by this daemon.
 class AppInstance {
-  AppInstance(this.id, { this.runner, this.logToStdout = false, required AppRunLogger logger })
-    : _logger = logger;
+  AppInstance(this.id, {this.runner, this.logToStdout = false, required AppRunLogger logger}) : _logger = logger;
 
   final String id;
   final ResidentRunner? runner;
   final bool logToStdout;
   final AppRunLogger _logger;
 
-  Future<OperationResult> restart({ bool fullRestart = false, bool pause = false, String? reason }) {
+  Future<OperationResult> restart({bool fullRestart = false, bool pause = false, String? reason}) {
     return runner!.restart(fullRestart: fullRestart, pause: pause, reason: reason);
   }
 
@@ -1367,7 +1324,7 @@ class EmulatorDomain extends Domain {
     androidWorkflow: androidWorkflow!,
   );
 
-  Future<List<Map<String, Object?>>> getEmulators([ Map<String, Object?>? args ]) async {
+  Future<List<Map<String, Object?>>> getEmulators([Map<String, Object?>? args]) async {
     final List<Emulator> list = await emulators.getAllAvailableEmulators();
     return list.map<Map<String, Object?>>(_emulatorToMap).toList();
   }
@@ -1375,8 +1332,7 @@ class EmulatorDomain extends Domain {
   Future<void> launch(Map<String, Object?> args) async {
     final String emulatorId = _getStringArg(args, 'emulatorId', required: true)!;
     final bool coldBoot = _getBoolArg(args, 'coldBoot') ?? false;
-    final List<Emulator> matches =
-        await emulators.getEmulatorsMatching(emulatorId);
+    final List<Emulator> matches = await emulators.getEmulatorsMatching(emulatorId);
     if (matches.isEmpty) {
       throw DaemonException("emulator '$emulatorId' not found");
     } else if (matches.length > 1) {
@@ -1389,11 +1345,7 @@ class EmulatorDomain extends Domain {
   Future<Map<String, Object?>> create(Map<String, Object?> args) async {
     final String? name = _getStringArg(args, 'name');
     final CreateEmulatorResult res = await emulators.createEmulator(name: name);
-    return <String, Object?>{
-      'success': res.success,
-      'emulatorName': res.emulatorName,
-      'error': res.error,
-    };
+    return <String, Object?>{'success': res.success, 'emulatorName': res.emulatorName, 'error': res.error};
   }
 }
 
@@ -1466,21 +1418,27 @@ class ProxyDomain extends Domain {
     }
 
     _forwardedConnections[id] = socket;
-    debounceDataStream(socket).listen((List<int> data) {
-      sendEvent('proxy.data.$id', null, data);
-    }, onError: (Object error, StackTrace stackTrace) {
-      // Socket error, probably disconnected.
-      globals.logger.printTrace('Socket error: $error, $stackTrace');
-    });
-
-    unawaited(socket.done.then<Object?>(
-      (Object? obj) => obj,
+    debounceDataStream(socket).listen(
+      (List<int> data) {
+        sendEvent('proxy.data.$id', null, data);
+      },
       onError: (Object error, StackTrace stackTrace) {
-      // Socket error, probably disconnected.
-      globals.logger.printTrace('Socket error: $error, $stackTrace');
-    }).then((Object? _) {
-      sendEvent('proxy.disconnected.$id');
-    }));
+        // Socket error, probably disconnected.
+        globals.logger.printTrace('Socket error: $error, $stackTrace');
+      },
+    );
+
+    unawaited(socket.done
+        .then<Object?>(
+          (Object? obj) => obj,
+          onError: (Object error, StackTrace stackTrace) {
+            // Socket error, probably disconnected.
+            globals.logger.printTrace('Socket error: $error, $stackTrace');
+          },
+        )
+        .then((Object? _) {
+          sendEvent('proxy.disconnected.$id');
+        }));
     return id;
   }
 
@@ -1517,7 +1475,8 @@ class ProxyDomain extends Domain {
   }
 
   Directory? _tempDirectory;
-  Directory get tempDirectory => _tempDirectory ??= globals.fs.systemTempDirectory.childDirectory('flutter_tool_daemon')..createSync();
+  Directory get tempDirectory =>
+      _tempDirectory ??= globals.fs.systemTempDirectory.childDirectory('flutter_tool_daemon')..createSync();
 }
 
 /// A [Logger] which sends log messages to a listening daemon client.
@@ -1529,7 +1488,7 @@ class ProxyDomain extends Domain {
 // TODO(devoncarew): To simplify this code a bit, we could choose to specialize
 // this class into two, one for each of the above use cases.
 class AppRunLogger extends DelegatingLogger {
-  AppRunLogger({ required Logger parent }) : super(parent);
+  AppRunLogger({required Logger parent}) : super(parent);
 
   AppDomain? domain;
   late AppInstance app;
@@ -1548,21 +1507,15 @@ class AppRunLogger extends DelegatingLogger {
   }) {
     final int id = _nextProgressId++;
 
-    _sendProgressEvent(
-      eventId: id.toString(),
-      eventType: progressId,
-      message: message,
-    );
+    _sendProgressEvent(eventId: id.toString(), eventType: progressId, message: message);
 
     _status = SilentStatus(
       onFinish: () {
         _status = null;
-        _sendProgressEvent(
-          eventId: id.toString(),
-          eventType: progressId,
-          finished: true,
-        );
-      }, stopwatch: Stopwatch())..start();
+        _sendProgressEvent(eventId: id.toString(), eventType: progressId, finished: true);
+      },
+      stopwatch: Stopwatch(),
+    )..start();
     return _status!;
   }
 
@@ -1611,7 +1564,7 @@ class AppRunLogger extends DelegatingLogger {
 
   // This method is only relevant for terminals.
   @override
-  void clear() { }
+  void clear() {}
 }
 
 class LogMessage {
@@ -1635,10 +1588,7 @@ enum LaunchMode {
   String toString() => _value;
 }
 
-enum OperationType {
-  reload,
-  restart
-}
+enum OperationType { reload, restart }
 
 /// A queue that debounces operations for a period and merges operations of the same type.
 /// Only one action (or any type) will run at a time. Actions of the same type requested
@@ -1650,11 +1600,7 @@ class DebounceOperationQueue<T, K> {
   final Map<K, Future<T>> _operationQueue = <K, Future<T>>{};
   Future<void>? _inProgressAction;
 
-  Future<T> queueAndDebounce(
-    K operationType,
-    Duration debounceDuration,
-    Future<T> Function() action,
-  ) {
+  Future<T> queueAndDebounce(K operationType, Duration debounceDuration, Future<T> Function() action) {
     // If there is already an operation of this type waiting to run, reset its
     // debounce timer and return its future.
     if (_operationQueue[operationType] != null) {
@@ -1665,24 +1611,21 @@ class DebounceOperationQueue<T, K> {
     // Otherwise, put one in the queue with a timer.
     final Completer<T> completer = Completer<T>();
     _operationQueue[operationType] = completer.future;
-    _debounceTimers[operationType] = RestartableTimer(
-      debounceDuration,
-      () async {
-        // Remove us from the queue so we can't be reset now we've started.
-        unawaited(_operationQueue.remove(operationType));
-        _debounceTimers.remove(operationType);
+    _debounceTimers[operationType] = RestartableTimer(debounceDuration, () async {
+      // Remove us from the queue so we can't be reset now we've started.
+      unawaited(_operationQueue.remove(operationType));
+      _debounceTimers.remove(operationType);
 
-        // No operations should be allowed to run concurrently even if they're
-        // different types.
-        while (_inProgressAction != null) {
-          await _inProgressAction;
-        }
+      // No operations should be allowed to run concurrently even if they're
+      // different types.
+      while (_inProgressAction != null) {
+        await _inProgressAction;
+      }
 
-        _inProgressAction = action()
-            .then(completer.complete, onError: completer.completeError)
-            .whenComplete(() => _inProgressAction = null);
-      },
-    );
+      _inProgressAction = action().then(completer.complete, onError: completer.completeError).whenComplete(
+        () => _inProgressAction = null,
+      );
+    });
 
     return completer.future;
   }

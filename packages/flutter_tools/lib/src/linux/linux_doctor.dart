@@ -29,12 +29,10 @@ class _VersionInfo {
 
 /// A validator that checks for Clang and Make build dependencies.
 class LinuxDoctorValidator extends DoctorValidator {
-  LinuxDoctorValidator({
-    required ProcessManager processManager,
-    required UserMessages userMessages,
-  }) : _processManager = processManager,
-       _userMessages = userMessages,
-       super('Linux toolchain - develop for Linux desktop');
+  LinuxDoctorValidator({required ProcessManager processManager, required UserMessages userMessages})
+    : _processManager = processManager,
+      _userMessages = userMessages,
+      super('Linux toolchain - develop for Linux desktop');
 
   final ProcessManager _processManager;
   final UserMessages _userMessages;
@@ -51,11 +49,7 @@ class LinuxDoctorValidator extends DoctorValidator {
     kPkgConfigBinary: Version(0, 29, 0),
   };
 
-  final List<String> _requiredGtkLibraries = <String>[
-    'gtk+-3.0',
-    'glib-2.0',
-    'gio-2.0',
-  ];
+  final List<String> _requiredGtkLibraries = <String>['gtk+-3.0', 'glib-2.0', 'gio-2.0'];
 
   @override
   Future<ValidationResult> validate() async {
@@ -71,8 +65,9 @@ class LinuxDoctorValidator extends DoctorValidator {
     // Determine overall validation level.
     if (installedVersions.values.any((_VersionInfo? versionInfo) => versionInfo?.number == null)) {
       validationType = ValidationType.missing;
-    } else if (installedVersions.keys.any((String binary) =>
-          installedVersions[binary]!.number! < _requiredBinaryVersions[binary]!)) {
+    } else if (installedVersions.keys.any(
+      (String binary) => installedVersions[binary]!.number! < _requiredBinaryVersions[binary]!,
+    )) {
       validationType = ValidationType.partial;
     }
 
@@ -165,10 +160,7 @@ class LinuxDoctorValidator extends DoctorValidator {
   Future<_VersionInfo?> _getBinaryVersion(String binary) async {
     ProcessResult? result;
     try {
-      result = await _processManager.run(<String>[
-        binary,
-        '--version',
-      ]);
+      result = await _processManager.run(<String>[binary, '--version']);
     } on ArgumentError {
       // ignore error.
     } on ProcessException {
@@ -185,11 +177,7 @@ class LinuxDoctorValidator extends DoctorValidator {
   Future<bool> _libraryIsPresent(String library) async {
     ProcessResult? result;
     try {
-      result = await _processManager.run(<String>[
-        'pkg-config',
-        '--exists',
-        library,
-      ]);
+      result = await _processManager.run(<String>['pkg-config', '--exists', library]);
     } on ArgumentError {
       // ignore error.
     }

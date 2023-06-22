@@ -257,7 +257,7 @@ void main() {
           fileSystem.file('/.tmp_rand0/0.8255140718871702.temp')
             ..createSync()
             ..writeAsBytesSync(<int>[1, 2, 3, 4]);
-        }
+        },
       ),
     ]);
     fileSystem.file(fragPath).writeAsBytesSync(<int>[1, 2, 3, 4]);
@@ -273,13 +273,10 @@ void main() {
       random: math.Random(0),
     );
 
-    developmentShaderCompiler.configureCompiler(
-      TargetPlatform.android,
-      impellerStatus: ImpellerStatus.disabled,
-    );
+    developmentShaderCompiler.configureCompiler(TargetPlatform.android, impellerStatus: ImpellerStatus.disabled);
 
-    final DevFSContent? content = await developmentShaderCompiler
-      .recompileShader(DevFSFileContent(fileSystem.file(fragPath)));
+    final DevFSContent? content =
+        await developmentShaderCompiler.recompileShader(DevFSFileContent(fileSystem.file(fragPath)));
 
     expect(await content!.contentsAsBytes(), <int>[1, 2, 3, 4]);
     expect(fileSystem.file('/.tmp_rand0/0.8255140718871702.temp.spirv'), isNot(exists));
@@ -305,7 +302,7 @@ void main() {
           fileSystem.file('/.tmp_rand0/0.8255140718871702.temp')
             ..createSync()
             ..writeAsBytesSync(<int>[1, 2, 3, 4]);
-        }
+        },
       ),
     ]);
     fileSystem.file(fragPath).writeAsBytesSync(<int>[1, 2, 3, 4]);
@@ -321,13 +318,10 @@ void main() {
       random: math.Random(0),
     );
 
-    developmentShaderCompiler.configureCompiler(
-      TargetPlatform.android,
-      impellerStatus: ImpellerStatus.enabled,
-    );
+    developmentShaderCompiler.configureCompiler(TargetPlatform.android, impellerStatus: ImpellerStatus.enabled);
 
-    final DevFSContent? content = await developmentShaderCompiler
-      .recompileShader(DevFSFileContent(fileSystem.file(fragPath)));
+    final DevFSContent? content =
+        await developmentShaderCompiler.recompileShader(DevFSFileContent(fileSystem.file(fragPath)));
 
     expect(await content!.contentsAsBytes(), <int>[1, 2, 3, 4]);
     expect(fileSystem.file('/.tmp_rand0/0.8255140718871702.temp.spirv'), isNot(exists));
@@ -354,7 +348,7 @@ void main() {
           fileSystem.file('/.tmp_rand0/0.8255140718871702.temp')
             ..createSync()
             ..writeAsBytesSync(<int>[1, 2, 3, 4]);
-        }
+        },
       ),
     ]);
     fileSystem.file(fragPath).writeAsBytesSync(<int>[1, 2, 3, 4]);
@@ -370,13 +364,10 @@ void main() {
       random: math.Random(0),
     );
 
-    developmentShaderCompiler.configureCompiler(
-      TargetPlatform.web_javascript,
-      impellerStatus: ImpellerStatus.disabled,
-    );
+    developmentShaderCompiler.configureCompiler(TargetPlatform.web_javascript, impellerStatus: ImpellerStatus.disabled);
 
-    final DevFSContent? content = await developmentShaderCompiler
-      .recompileShader(DevFSFileContent(fileSystem.file(fragPath)));
+    final DevFSContent? content =
+        await developmentShaderCompiler.recompileShader(DevFSFileContent(fileSystem.file(fragPath)));
 
     expect(await content!.contentsAsBytes(), <int>[1, 2, 3, 4]);
     expect(fileSystem.file('/.tmp_rand0/0.8255140718871702.temp.spirv'), isNot(exists));

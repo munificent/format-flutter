@@ -16,22 +16,17 @@ import 'plugins.dart';
 /// Whether or not Impeller Scene 3D model import is enabled.
 const bool kIs3dSceneSupported = true;
 
-const Set<String> _kValidPluginPlatforms = <String>{
-  'android', 'ios', 'web', 'windows', 'linux', 'macos',
-};
+const Set<String> _kValidPluginPlatforms = <String>{'android', 'ios', 'web', 'windows', 'linux', 'macos'};
 
 /// A wrapper around the `flutter` section in the `pubspec.yaml` file.
 class FlutterManifest {
   FlutterManifest._({required Logger logger}) : _logger = logger;
 
   /// Returns an empty manifest.
-  factory FlutterManifest.empty({ required Logger logger }) = FlutterManifest._;
+  factory FlutterManifest.empty({required Logger logger}) = FlutterManifest._;
 
   /// Returns null on invalid manifest. Returns empty manifest on missing file.
-  static FlutterManifest? createFromPath(String path, {
-    required FileSystem fileSystem,
-    required Logger logger,
-  }) {
+  static FlutterManifest? createFromPath(String path, {required FileSystem fileSystem, required Logger logger}) {
     if (!fileSystem.isFileSync(path)) {
       return _createFromYaml(null, logger);
     }
@@ -41,7 +36,7 @@ class FlutterManifest {
 
   /// Returns null on missing or invalid manifest.
   @visibleForTesting
-  static FlutterManifest? createFromString(String manifest, { required Logger logger }) {
+  static FlutterManifest? createFromString(String manifest, {required Logger logger}) {
     return _createFromYaml(loadYaml(manifest), logger);
   }
 
@@ -248,14 +243,13 @@ class FlutterManifest {
           }
         }
       }
-      components.add(
-        DeferredComponent(
-          name: component['name'] as String,
-          libraries: component['libraries'] == null ?
-              <String>[] : (component['libraries'] as List<dynamic>).cast<String>(),
-          assets: assetsUri,
-        )
-      );
+      components.add(DeferredComponent(
+        name: component['name'] as String,
+        libraries: component['libraries'] == null
+            ? <String>[]
+            : (component['libraries'] as List<dynamic>).cast<String>(),
+        assets: assetsUri,
+      ));
     }
     return components;
   }
@@ -360,11 +354,9 @@ class FlutterManifest {
           continue;
         }
 
-        fontAssets.add(FontAsset(
-          Uri.parse(asset),
-          weight: fontFile['weight'] as int?,
-          style: fontFile['style'] as String?,
-        ));
+        fontAssets.add(
+          FontAsset(Uri.parse(asset), weight: fontFile['weight'] as int?, style: fontFile['style'] as String?),
+        );
       }
       if (fontAssets.isNotEmpty) {
         fonts.add(Font(familyName, fontAssets));
@@ -421,8 +413,10 @@ class FlutterManifest {
 }
 
 class Font {
-  Font(this.familyName, this.fontAssets)
-    : assert(fontAssets.isNotEmpty);
+  Font(
+    this.familyName,
+    this.fontAssets,
+  ) : assert(fontAssets.isNotEmpty);
 
   final String familyName;
   final List<FontAsset> fontAssets;
@@ -463,7 +457,6 @@ class FontAsset {
   String toString() => '$runtimeType(asset: ${assetUri.path}, weight; $weight, style: $style)';
 }
 
-
 bool _validate(Object? manifest, Logger logger) {
   final List<String> errors = <String>[];
   if (manifest is! YamlMap) {
@@ -489,7 +482,7 @@ bool _validate(Object? manifest, Logger logger) {
             _validateFlutter(kvp.value as YamlMap?, errors);
           }
         default:
-        // additionalProperties are allowed.
+          // additionalProperties are allowed.
           break;
       }
     }
@@ -625,7 +618,9 @@ void _validateDeferredComponents(MapEntry<Object?, Object?> kvp, List<String> er
       final Object? valueMap = yamlList[i];
       if (valueMap is! YamlMap) {
         // ignore: avoid_dynamic_calls
-        errors.add('Expected the $i element in "${kvp.key}" to be a map, but got ${yamlList[i]} (${yamlList[i].runtimeType}).');
+        errors.add(
+          'Expected the $i element in "${kvp.key}" to be a map, but got ${yamlList[i]} (${yamlList[i].runtimeType}).',
+        );
         continue;
       }
       if (!valueMap.containsKey('name') || valueMap['name'] is! String) {
@@ -634,15 +629,24 @@ void _validateDeferredComponents(MapEntry<Object?, Object?> kvp, List<String> er
       if (valueMap.containsKey('libraries')) {
         final Object? libraries = valueMap['libraries'];
         if (libraries is! YamlList) {
-          errors.add('Expected "libraries" key in the $i element of "${kvp.key}" to be a list, but got $libraries (${libraries.runtimeType}).');
+          errors.add(
+            'Expected "libraries" key in the $i element of "${kvp.key}" to be a list, but got $libraries (${libraries.runtimeType}).',
+          );
         } else {
-          _validateListType<String>(libraries, errors, '"libraries" key in the $i element of "${kvp.key}"', 'dart library Strings');
+          _validateListType<String>(
+            libraries,
+            errors,
+            '"libraries" key in the $i element of "${kvp.key}"',
+            'dart library Strings',
+          );
         }
       }
       if (valueMap.containsKey('assets')) {
         final Object? assets = valueMap['assets'];
         if (assets is! YamlList) {
-          errors.add('Expected "assets" key in the $i element of "${kvp.key}" to be a list, but got $assets (${assets.runtimeType}).');
+          errors.add(
+            'Expected "assets" key in the $i element of "${kvp.key}" to be a list, but got $assets (${assets.runtimeType}).',
+          );
         } else {
           _validateListType<String>(assets, errors, '"assets" key in the $i element of "${kvp.key}"', 'file paths');
         }
@@ -652,9 +656,7 @@ void _validateDeferredComponents(MapEntry<Object?, Object?> kvp, List<String> er
 }
 
 void _validateFonts(YamlList fonts, List<String> errors) {
-  const Set<int> fontWeights = <int>{
-    100, 200, 300, 400, 500, 600, 700, 800, 900,
-  };
+  const Set<int> fontWeights = <int>{100, 200, 300, 400, 500, 600, 700, 800, 900};
   for (final Object? fontMap in fonts) {
     if (fontMap is! YamlMap) {
       errors.add('Unexpected child "$fontMap" found under "fonts". Expected a map.');

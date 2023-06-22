@@ -20,17 +20,8 @@ void main() {
 
   setUp(() {
     memoryFileSystem = MemoryFileSystem.test();
-    fakePlatform = FakePlatform(
-      environment: <String, String>{
-        'HOME': '/',
-      },
-    );
-    config = Config(
-      'example',
-      fileSystem: memoryFileSystem,
-      logger: BufferLogger.test(),
-      platform: fakePlatform,
-    );
+    fakePlatform = FakePlatform(environment: <String, String>{'HOME': '/'});
+    config = Config('example', fileSystem: memoryFileSystem, logger: BufferLogger.test(), platform: fakePlatform);
   });
 
   testWithoutContext('Config get set value', () async {
@@ -65,8 +56,7 @@ void main() {
 
   testWithoutContext('Config does not error on a file with a deprecated field', () {
     final BufferLogger bufferLogger = BufferLogger.test();
-    final File file = memoryFileSystem.file('.flutter_example')
-      ..writeAsStringSync('''
+    final File file = memoryFileSystem.file('.flutter_example')..writeAsStringSync('''
 {
   "is-bot": false,
   "license-hash": "3e8c85e63b26ce223cda96a9a8fbb410",
@@ -75,12 +65,7 @@ void main() {
   "last-active-stable-version": "b22742018b3edf16c6cadd7b76d9db5e7f9064b5"
 }
 ''');
-    config = Config(
-      'example',
-      fileSystem: memoryFileSystem,
-      logger: bufferLogger,
-      platform: fakePlatform,
-    );
+    config = Config('example', fileSystem: memoryFileSystem, logger: bufferLogger, platform: fakePlatform);
 
     expect(file.existsSync(), isTrue);
     expect(bufferLogger.errorText, isEmpty);
@@ -88,14 +73,8 @@ void main() {
 
   testWithoutContext('Config parse error', () {
     final BufferLogger bufferLogger = BufferLogger.test();
-    final File file = memoryFileSystem.file('.flutter_example')
-      ..writeAsStringSync('{"hello":"bar');
-    config = Config(
-      'example',
-      fileSystem: memoryFileSystem,
-      logger: bufferLogger,
-      platform: fakePlatform,
-    );
+    final File file = memoryFileSystem.file('.flutter_example')..writeAsStringSync('{"hello":"bar');
+    config = Config('example', fileSystem: memoryFileSystem, logger: bufferLogger, platform: fakePlatform);
 
     expect(file.existsSync(), false);
     expect(bufferLogger.errorText, contains('Failed to decode preferences'));
@@ -104,12 +83,7 @@ void main() {
   testWithoutContext('Config does not error on missing file', () {
     final BufferLogger bufferLogger = BufferLogger.test();
     final File file = memoryFileSystem.file('example');
-    config = Config(
-      'example',
-      fileSystem: memoryFileSystem,
-      logger: bufferLogger,
-      platform: fakePlatform,
-    );
+    config = Config('example', fileSystem: memoryFileSystem, logger: bufferLogger, platform: fakePlatform);
 
     expect(file.existsSync(), false);
     expect(bufferLogger.errorText, isEmpty);
@@ -136,8 +110,8 @@ void main() {
     final FileExceptionHandler handler = FileExceptionHandler();
     final MemoryFileSystem fs = MemoryFileSystem.test(opHandle: handler.opHandle);
     final File file = fs.file('testfile')
-        // We write invalid JSON so that we test catching a `FormatException`
-        ..writeAsStringSync('{"This is not valid JSON"');
+      // We write invalid JSON so that we test catching a `FormatException`
+      ..writeAsStringSync('{"This is not valid JSON"');
     handler.addError(
       file,
       FileSystemOp.delete,
@@ -152,23 +126,13 @@ void main() {
 
   testWithoutContext('Config in home dir is used if it exists', () {
     memoryFileSystem.file('.flutter_example').writeAsStringSync('{"hello":"bar"}');
-    config = Config(
-      'example',
-      fileSystem: memoryFileSystem,
-      logger: BufferLogger.test(),
-      platform: fakePlatform,
-    );
+    config = Config('example', fileSystem: memoryFileSystem, logger: BufferLogger.test(), platform: fakePlatform);
     expect(config.getValue('hello'), 'bar');
     expect(memoryFileSystem.file('.config/flutter/example').existsSync(), false);
   });
 
   testWithoutContext('Config is created in config dir if it does not already exist in home dir', () {
-    config = Config(
-      'example',
-      fileSystem: memoryFileSystem,
-      logger: BufferLogger.test(),
-      platform: fakePlatform,
-    );
+    config = Config('example', fileSystem: memoryFileSystem, logger: BufferLogger.test(), platform: fakePlatform);
 
     config.setValue('foo', 'bar');
     expect(memoryFileSystem.file('.config/flutter/example').existsSync(), true);

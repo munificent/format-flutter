@@ -15,8 +15,8 @@ import 'flutter_adapter_args.dart';
 import 'mixins.dart';
 
 /// A base DAP Debug Adapter for Flutter applications and tests.
-abstract class FlutterBaseDebugAdapter extends DartDebugAdapter<FlutterLaunchRequestArguments, FlutterAttachRequestArguments>
-    with PidTracker {
+abstract class FlutterBaseDebugAdapter
+    extends DartDebugAdapter<FlutterLaunchRequestArguments, FlutterAttachRequestArguments> with PidTracker {
   FlutterBaseDebugAdapter(
     super.channel, {
     required this.fileSystem,
@@ -27,11 +27,11 @@ abstract class FlutterBaseDebugAdapter extends DartDebugAdapter<FlutterLaunchReq
     super.logger,
     super.onError,
   }) : flutterSdkRoot = Cache.flutterRoot!,
-      // Always disable in the DAP layer as it's handled in the spawned
-      // 'flutter' process.
-      super(enableDds: false) {
-        configureOrgDartlangSdkMappings();
-      }
+       // Always disable in the DAP layer as it's handled in the spawned
+       // 'flutter' process.
+       super(enableDds: false) {
+    configureOrgDartlangSdkMappings();
+  }
 
   FileSystem fileSystem;
   Platform platform;
@@ -46,12 +46,12 @@ abstract class FlutterBaseDebugAdapter extends DartDebugAdapter<FlutterLaunchReq
   final bool enableFlutterDds;
 
   @override
-  final FlutterLaunchRequestArguments Function(Map<String, Object?> obj)
-      parseLaunchArgs = FlutterLaunchRequestArguments.fromJson;
+  final FlutterLaunchRequestArguments Function(Map<String, Object?> obj) parseLaunchArgs =
+      FlutterLaunchRequestArguments.fromJson;
 
   @override
-  final FlutterAttachRequestArguments Function(Map<String, Object?> obj)
-      parseAttachArgs = FlutterAttachRequestArguments.fromJson;
+  final FlutterAttachRequestArguments Function(Map<String, Object?> obj) parseAttachArgs =
+      FlutterAttachRequestArguments.fromJson;
 
   /// Whether the VM Service closing should be used as a signal to terminate the debug session.
   ///
@@ -132,18 +132,11 @@ abstract class FlutterBaseDebugAdapter extends DartDebugAdapter<FlutterLaunchReq
     required List<String> processArgs,
     required Map<String, String>? env,
   }) async {
-    final Process process = await (
-      String executable,
-      List<String> processArgs, {
-      required Map<String, String>? env,
-    }) async {
+    final Process process =
+        await (String executable, List<String> processArgs, {required Map<String, String>? env}) async {
       logger?.call('Spawning $executable with $processArgs in ${args.cwd}');
-      final Process process = await Process.start(
-        executable,
-        processArgs,
-        workingDirectory: args.cwd,
-        environment: env,
-      );
+      final Process process =
+          await Process.start(executable, processArgs, workingDirectory: args.cwd, environment: env);
       pidsToTerminate.add(process.pid);
       return process;
     }(executable, processArgs, env: env);

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
-
 import 'dart:async';
 
 import 'package:dds/dds.dart';
@@ -70,16 +68,17 @@ FlutterPlatform installHook({
   TestTimeRecorder? testTimeRecorder,
   UriConverter? uriConverter,
 }) {
-  assert(enableVmService || enableObservatory || (!debuggingOptions.startPaused && debuggingOptions.hostVmServicePort == null));
+  assert(
+    enableVmService ||
+        enableObservatory ||
+        (!debuggingOptions.startPaused && debuggingOptions.hostVmServicePort == null),
+  );
 
   // registerPlatformPlugin can be injected for testing since it's not very mock-friendly.
   platformPluginRegistration ??= (FlutterPlatform platform) {
-    testWrapper.registerPlatformPlugin(
-      <Runtime>[Runtime.vm],
-      () {
-        return platform;
-      },
-    );
+    testWrapper.registerPlatformPlugin(<Runtime>[Runtime.vm], () {
+      return platform;
+    });
   };
   final FlutterPlatform platform = FlutterPlatform(
     shellPath: shellPath,
@@ -135,10 +134,7 @@ String generateTestBootstrap({
   bool flutterTestDep = true,
   bool integrationTest = false,
 }) {
-
-  final String websocketUrl = host.type == InternetAddressType.IPv4
-      ? 'ws://${host.address}'
-      : 'ws://[${host.address}]';
+  final String websocketUrl = host.type == InternetAddressType.IPv4 ? 'ws://${host.address}' : 'ws://[${host.address}]';
   final String encodedWebsocketUrl = Uri.encodeComponent(websocketUrl);
 
   final StringBuffer buffer = StringBuffer();
@@ -339,19 +335,20 @@ class FlutterPlatform extends PlatformPlugin {
   int _testCount = 0;
 
   @override
-  Future<RunnerSuite> load(
-    String path,
-    SuitePlatform platform,
-    SuiteConfiguration suiteConfig,
-    Object message,
-  ) async {
+  Future<RunnerSuite> load(String path, SuitePlatform platform, SuiteConfiguration suiteConfig, Object message) async {
     // loadChannel may throw an exception. That's fine; it will cause the
     // LoadSuite to emit an error, which will be presented to the user.
     // Except for the Declarer error, which is a specific test incompatibility
     // error we need to catch.
     final StreamChannel<dynamic> channel = loadChannel(path, platform);
-    final RunnerSuiteController controller = deserializeSuite(path, platform,
-      suiteConfig, const PluginEnvironment(), channel, message);
+    final RunnerSuiteController controller = deserializeSuite(
+      path,
+      platform,
+      suiteConfig,
+      const PluginEnvironment(),
+      channel,
+      message,
+    );
     return controller.suite;
   }
 
@@ -359,11 +356,15 @@ class FlutterPlatform extends PlatformPlugin {
     if (_testCount > 0) {
       // Fail if there will be a port conflict.
       if (debuggingOptions.hostVmServicePort != null) {
-        throwToolExit('installHook() was called with a VM Service port or debugger mode enabled, but then more than one test suite was run.');
+        throwToolExit(
+          'installHook() was called with a VM Service port or debugger mode enabled, but then more than one test suite was run.',
+        );
       }
       // Fail if we're passing in a precompiled entry-point.
       if (precompiledDillPath != null) {
-        throwToolExit('installHook() was called with a precompiled test entry-point, but then more than one test suite was run.');
+        throwToolExit(
+          'installHook() was called with a precompiled test entry-point, but then more than one test suite was run.',
+        );
       }
     }
 
@@ -404,10 +405,18 @@ class FlutterPlatform extends PlatformPlugin {
     if (compiler == null || compiler!.compiler == null) {
       throw Exception('Compiler is not set up properly to compile $expression');
     }
-    final CompilerOutput? compilerOutput =
-      await compiler!.compiler!.compileExpression(expression, definitions,
-        definitionTypes, typeDefinitions, typeBounds, typeDefaults, libraryUri,
-        klass, method, isStatic);
+    final CompilerOutput? compilerOutput = await compiler!.compiler!.compileExpression(
+      expression,
+      definitions,
+      definitionTypes,
+      typeDefinitions,
+      typeBounds,
+      typeDefaults,
+      libraryUri,
+      klass,
+      method,
+      isStatic,
+    );
     if (compilerOutput != null && compilerOutput.expressionData != null) {
       return base64.encode(compilerOutput.expressionData!);
     }
@@ -421,7 +430,7 @@ class FlutterPlatform extends PlatformPlugin {
         debuggingOptions: debuggingOptions,
         device: integrationTestDevice!,
         userIdentifier: integrationTestUserIdentifier,
-        compileExpression: _compileExpressionService
+        compileExpression: _compileExpressionService,
       );
     }
     return FlutterTesterTestDevice(
@@ -444,11 +453,7 @@ class FlutterPlatform extends PlatformPlugin {
     );
   }
 
-  Future<_AsyncError?> _startTest(
-    String testPath,
-    StreamChannel<dynamic> testHarnessChannel,
-    int ourTestCount,
-  ) async {
+  Future<_AsyncError?> _startTest(String testPath, StreamChannel<dynamic> testHarnessChannel, int ourTestCount) async {
     globals.printTrace('test $ourTestCount: starting test $testPath');
 
     _AsyncError? outOfBandError; // error that we couldn't send to the harness that we need to send via our future
@@ -466,7 +471,12 @@ class FlutterPlatform extends PlatformPlugin {
         // running this with a debugger attached. Initialize the resident
         // compiler in this case.
         if (debuggingOptions.startPaused) {
-          compiler ??= TestCompiler(debuggingOptions.buildInfo, flutterProject, precompiledDillPath: precompiledDillPath, testTimeRecorder: testTimeRecorder);
+          compiler ??= TestCompiler(
+            debuggingOptions.buildInfo,
+            flutterProject,
+            precompiledDillPath: precompiledDillPath,
+            testTimeRecorder: testTimeRecorder,
+          );
           final Uri uri = globals.fs.file(path).uri;
           // Trigger a compilation to initialize the resident compiler.
           unawaited(compiler!.compile(uri));
@@ -541,7 +551,7 @@ class FlutterPlatform extends PlatformPlugin {
           final Stopwatch? watchTestTimeRecorderStopwatch = testTimeRecorder?.start(TestTimePhases.WatcherFinishedTest);
           await watcher?.handleFinishedTest(testDevice);
           testTimeRecorder?.stop(TestTimePhases.WatcherFinishedTest, watchTestTimeRecorderStopwatch!);
-        }()
+        }(),
       ]);
     } on Exception catch (error, stackTrace) {
       Object reportedError = error;
@@ -551,7 +561,9 @@ class FlutterPlatform extends PlatformPlugin {
         reportedStackTrace = error.stackTrace;
       }
 
-      globals.printTrace('test $ourTestCount: error caught during test; ${controllerSinkClosed ? "reporting to console" : "sending to test framework"}');
+      globals.printTrace(
+        'test $ourTestCount: error caught during test; ${controllerSinkClosed ? "reporting to console" : "sending to test framework"}',
+      );
       if (!controllerSinkClosed) {
         testHarnessChannel.sink.addError(reportedError, reportedStackTrace);
       } else {
@@ -565,7 +577,9 @@ class FlutterPlatform extends PlatformPlugin {
         try {
           await finalizer();
         } on Exception catch (error, stack) {
-          globals.printTrace('test $ourTestCount: error while cleaning up; ${controllerSinkClosed ? "reporting to console" : "sending to test framework"}');
+          globals.printTrace(
+            'test $ourTestCount: error while cleaning up; ${controllerSinkClosed ? "reporting to console" : "sending to test framework"}',
+          );
           if (!controllerSinkClosed) {
             testHarnessChannel.sink.addError(error, stack);
           } else {
@@ -590,11 +604,7 @@ class FlutterPlatform extends PlatformPlugin {
     return outOfBandError;
   }
 
-  String _createListenerDart(
-    List<Finalizer> finalizers,
-    int ourTestCount,
-    String testPath,
-  ) {
+  String _createListenerDart(List<Finalizer> finalizers, int ourTestCount, String testPath) {
     // Prepare a temporary directory to store the Dart file that will talk to us.
     final Directory tempDir = globals.fs.systemTempDirectory.createTempSync('flutter_test_listener.');
     finalizers.add(() async {
@@ -605,15 +615,13 @@ class FlutterPlatform extends PlatformPlugin {
     // Prepare the Dart file that will talk to us and start the test.
     final File listenerFile = globals.fs.file('${tempDir.path}/listener.dart');
     listenerFile.createSync();
-    listenerFile.writeAsStringSync(_generateTestMain(
-      testUrl: globals.fs.path.toUri(globals.fs.path.absolute(testPath)),
-    ));
+    listenerFile.writeAsStringSync(
+      _generateTestMain(testUrl: globals.fs.path.toUri(globals.fs.path.absolute(testPath))),
+    );
     return listenerFile.path;
   }
 
-  String _generateTestMain({
-    required Uri testUrl,
-  }) {
+  String _generateTestMain({required Uri testUrl}) {
     assert(testUrl.scheme == 'file');
     final File file = globals.fs.file(testUrl);
     final PackageConfig packageConfig = debuggingOptions.buildInfo.packageConfig;
@@ -669,10 +677,7 @@ class _FlutterPlatformStreamSinkWrapper<S> implements StreamSink<S> {
 
   @override
   Future<dynamic> close() {
-    Future.wait<dynamic>(<Future<dynamic>>[
-      _parent.close(),
-      _shellProcessClosed,
-    ]).then<void>(
+    Future.wait<dynamic>(<Future<dynamic>>[_parent.close(), _shellProcessClosed]).then<void>(
       (List<dynamic> futureResults) {
         assert(futureResults.length == 2);
         assert(futureResults.first == null);
@@ -692,7 +697,7 @@ class _FlutterPlatformStreamSinkWrapper<S> implements StreamSink<S> {
   @override
   void add(S event) => _parent.add(event);
   @override
-  void addError(Object errorEvent, [ StackTrace? stackTrace ]) => _parent.addError(errorEvent, stackTrace);
+  void addError(Object errorEvent, [StackTrace? stackTrace]) => _parent.addError(errorEvent, stackTrace);
   @override
   Future<dynamic> addStream(Stream<S> stream) => _parent.addStream(stream);
 }
@@ -716,17 +721,11 @@ Future<void> _pipeHarnessToRemote({
   globals.printTrace('test $id: Waiting for test harness or tests to finish');
 
   await Future.any<void>(<Future<void>>[
-    harnessChannel.stream
-      .map<String>(json.encode)
-      .pipe(remoteChannel.sink)
-      .then<void>((void value) {
-        globals.printTrace('test $id: Test process is no longer needed by test harness');
-      }),
-    remoteChannel.stream
-      .map<dynamic>(json.decode)
-      .pipe(harnessChannel.sink)
-      .then<void>((void value) {
-        globals.printTrace('test $id: Test harness is no longer needed by test process');
-      }),
+    harnessChannel.stream.map<String>(json.encode).pipe(remoteChannel.sink).then<void>((void value) {
+      globals.printTrace('test $id: Test process is no longer needed by test harness');
+    }),
+    remoteChannel.stream.map<dynamic>(json.decode).pipe(harnessChannel.sink).then<void>((void value) {
+      globals.printTrace('test $id: Test harness is no longer needed by test process');
+    }),
   ]);
 }

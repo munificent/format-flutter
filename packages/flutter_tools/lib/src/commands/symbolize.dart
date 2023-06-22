@@ -32,19 +32,15 @@ class SymbolizeCommand extends FlutterCommand {
       'debug-info',
       abbr: 'd',
       valueHelp: '/out/android/app.arm64.symbols',
-      help: 'A path to the symbols file generated with "--split-debug-info".'
+      help: 'A path to the symbols file generated with "--split-debug-info".',
     );
     argParser.addOption(
       'input',
       abbr: 'i',
       valueHelp: '/crashes/stack_trace.err',
-      help: 'A file path containing a Dart stack trace.'
+      help: 'A file path containing a Dart stack trace.',
     );
-    argParser.addOption(
-      'output',
-      abbr: 'o',
-      help: 'A file path for a symbolized stack trace to be written to.'
-    );
+    argParser.addOption('output', abbr: 'o', help: 'A file path for a symbolized stack trace to be written to.');
   }
 
   final Stdio _stdio;
@@ -94,10 +90,7 @@ class SymbolizeCommand extends FlutterCommand {
       output = outputFile.openWrite();
     } else {
       final StreamController<List<int>> outputController = StreamController<List<int>>();
-      outputController
-        .stream
-        .transform(utf8.decoder)
-        .listen(_stdio.stdoutWrite);
+      outputController.stream.transform(utf8.decoder).listen(_stdio.stdoutWrite);
       output = IOSink(outputController);
     }
 
@@ -113,10 +106,10 @@ class SymbolizeCommand extends FlutterCommand {
     // If it's a dSYM container, expand the path to the actual DWARF.
     if (debugInfoPath.endsWith('.dSYM')) {
       final Directory debugInfoDir = _fileSystem
-        .directory(debugInfoPath)
-        .childDirectory('Contents')
-        .childDirectory('Resources')
-        .childDirectory('DWARF');
+          .directory(debugInfoPath)
+          .childDirectory('Contents')
+          .childDirectory('Resources')
+          .childDirectory('DWARF');
 
       final List<FileSystemEntity> dwarfFiles = debugInfoDir.listSync().whereType<File>().toList();
       if (dwarfFiles.length == 1) {
@@ -127,11 +120,7 @@ class SymbolizeCommand extends FlutterCommand {
     }
 
     final Uint8List symbols = _fileSystem.file(debugInfoPath).readAsBytesSync();
-    await _dwarfSymbolizationService.decode(
-      input: input,
-      output: output,
-      symbols: symbols,
-    );
+    await _dwarfSymbolizationService.decode(input: input, output: output, symbols: symbols);
 
     return FlutterCommandResult.success();
   }
@@ -158,22 +147,19 @@ StreamTransformer<String, String> _testTransformer(Uint8List buffer) {
     },
     handleError: (Object error, StackTrace stackTrace, EventSink<String> sink) {
       sink.addError(error, stackTrace);
-    }
+    },
   );
 }
 
 /// A service which decodes stack traces from Dart applications.
 class DwarfSymbolizationService {
-  const DwarfSymbolizationService({
-    SymbolsTransformer symbolsTransformer = _defaultTransformer,
-  }) : _transformer = symbolsTransformer;
+  const DwarfSymbolizationService({SymbolsTransformer symbolsTransformer = _defaultTransformer})
+    : _transformer = symbolsTransformer;
 
   /// Create a DwarfSymbolizationService with a no-op transformer for testing.
   @visibleForTesting
   factory DwarfSymbolizationService.test() {
-    return const DwarfSymbolizationService(
-      symbolsTransformer: _testTransformer
-    );
+    return const DwarfSymbolizationService(symbolsTransformer: _testTransformer);
   }
 
   final SymbolsTransformer _transformer;
@@ -185,29 +171,22 @@ class DwarfSymbolizationService {
   ///
   /// Throws a [ToolExit] if the symbols cannot be parsed or the stack trace
   /// cannot be decoded.
-  Future<void> decode({
-    required Stream<List<int>> input,
-    required IOSink output,
-    required Uint8List symbols,
-  }) async {
+  Future<void> decode({required Stream<List<int>> input, required IOSink output, required Uint8List symbols}) async {
     final Completer<void> onDone = Completer<void>();
     StreamSubscription<void>? subscription;
-    subscription = input
-      .cast<List<int>>()
-      .transform(const Utf8Decoder())
-      .transform(const LineSplitter())
-      .transform(_transformer(symbols))
-      .listen((String line) {
-        try {
-          output.writeln(line);
-        } on Exception catch (e, s) {
-          subscription?.cancel().whenComplete(() {
-            if (!onDone.isCompleted) {
-              onDone.completeError(e, s);
-            }
-          });
-        }
-      }, onDone: onDone.complete, onError: onDone.completeError);
+    subscription = input.cast<List<int>>().transform(const Utf8Decoder()).transform(const LineSplitter()).transform(
+      _transformer(symbols),
+    ).listen((String line) {
+      try {
+        output.writeln(line);
+      } on Exception catch (e, s) {
+        subscription?.cancel().whenComplete(() {
+          if (!onDone.isCompleted) {
+            onDone.completeError(e, s);
+          }
+        });
+      }
+    }, onDone: onDone.complete, onError: onDone.completeError);
 
     try {
       await onDone.future;

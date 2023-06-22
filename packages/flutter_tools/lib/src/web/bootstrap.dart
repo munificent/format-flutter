@@ -13,10 +13,7 @@ import 'package:package_config/package_config.dart';
 /// This file is served when the browser requests "main.dart.js" in debug mode,
 /// and is responsible for bootstrapping the RequireJS modules and attaching
 /// the hot reload hooks.
-String generateBootstrapScript({
-  required String requireUrl,
-  required String mapperUrl,
-}) {
+String generateBootstrapScript({required String requireUrl, required String mapperUrl}) {
   return '''
 "use strict";
 
@@ -265,8 +262,7 @@ String generateTestEntrypoint({
 }
 
 /// Generate the unit test bootstrap file.
-String generateTestBootstrapFileContents(
-    String mainUri, String requireUrl, String mapperUrl) {
+String generateTestBootstrapFileContents(String mainUri, String requireUrl, String mapperUrl) {
   return '''
 (function() {
   if (typeof document != 'undefined') {

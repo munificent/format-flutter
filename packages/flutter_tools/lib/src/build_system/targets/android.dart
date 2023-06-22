@@ -27,18 +27,13 @@ abstract class AndroidAssetBundle extends Target {
   const AndroidAssetBundle();
 
   @override
-  List<Source> get inputs => const <Source>[
-    Source.pattern('{BUILD_DIR}/app.dill'),
-    ...IconTreeShaker.inputs,
-  ];
+  List<Source> get inputs => const <Source>[Source.pattern('{BUILD_DIR}/app.dill'), ...IconTreeShaker.inputs];
 
   @override
   List<Source> get outputs => const <Source>[];
 
   @override
-  List<String> get depfiles => <String>[
-    'flutter_assets.d',
-  ];
+  List<String> get depfiles => <String>['flutter_assets.d'];
 
   @override
   Future<void> build(Environment environment) async {
@@ -47,20 +42,24 @@ abstract class AndroidAssetBundle extends Target {
       throw MissingDefineException(kBuildMode, name);
     }
     final BuildMode buildMode = BuildMode.fromCliName(buildModeEnvironment);
-    final Directory outputDirectory = environment.outputDir
-      .childDirectory('flutter_assets')
+    final Directory outputDirectory = environment.outputDir.childDirectory('flutter_assets')
       ..createSync(recursive: true);
 
     // Only copy the prebuilt runtimes and kernel blob in debug mode.
     if (buildMode == BuildMode.debug) {
-      final String vmSnapshotData = environment.artifacts.getArtifactPath(Artifact.vmSnapshotData, mode: BuildMode.debug);
-      final String isolateSnapshotData = environment.artifacts.getArtifactPath(Artifact.isolateSnapshotData, mode: BuildMode.debug);
-      environment.buildDir.childFile('app.dill')
-          .copySync(outputDirectory.childFile('kernel_blob.bin').path);
-      environment.fileSystem.file(vmSnapshotData)
-          .copySync(outputDirectory.childFile('vm_snapshot_data').path);
-      environment.fileSystem.file(isolateSnapshotData)
-          .copySync(outputDirectory.childFile('isolate_snapshot_data').path);
+      final String vmSnapshotData = environment.artifacts.getArtifactPath(
+        Artifact.vmSnapshotData,
+        mode: BuildMode.debug,
+      );
+      final String isolateSnapshotData = environment.artifacts.getArtifactPath(
+        Artifact.isolateSnapshotData,
+        mode: BuildMode.debug,
+      );
+      environment.buildDir.childFile('app.dill').copySync(outputDirectory.childFile('kernel_blob.bin').path);
+      environment.fileSystem.file(vmSnapshotData).copySync(outputDirectory.childFile('vm_snapshot_data').path);
+      environment.fileSystem.file(isolateSnapshotData).copySync(
+        outputDirectory.childFile('isolate_snapshot_data').path,
+      );
     }
     final Depfile assetDepfile = await copyAssets(
       environment,
@@ -69,16 +68,11 @@ abstract class AndroidAssetBundle extends Target {
       buildMode: buildMode,
       shaderTarget: ShaderTarget.impellerAndroid,
     );
-    environment.depFileService.writeToFile(
-      assetDepfile,
-      environment.buildDir.childFile('flutter_assets.d'),
-    );
+    environment.depFileService.writeToFile(assetDepfile, environment.buildDir.childFile('flutter_assets.d'));
   }
 
   @override
-  List<Target> get dependencies => const <Target>[
-    KernelSnapshot(),
-  ];
+  List<Target> get dependencies => const <Target>[KernelSnapshot()];
 }
 
 /// An implementation of [AndroidAssetBundle] that includes dependencies on vm
@@ -121,10 +115,7 @@ class ProfileAndroidApplication extends CopyFlutterAotBundle {
   String get name => 'profile_android_application';
 
   @override
-  List<Target> get dependencies => const <Target>[
-    AotElfProfile(TargetPlatform.android_arm),
-    AotAndroidAssetBundle(),
-  ];
+  List<Target> get dependencies => const <Target>[AotElfProfile(TargetPlatform.android_arm), AotAndroidAssetBundle()];
 }
 
 /// Build a release android application's Dart artifacts.
@@ -135,10 +126,7 @@ class ReleaseAndroidApplication extends CopyFlutterAotBundle {
   String get name => 'release_android_application';
 
   @override
-  List<Target> get dependencies => const <Target>[
-    AotElfRelease(TargetPlatform.android_arm),
-    AotAndroidAssetBundle(),
-  ];
+  List<Target> get dependencies => const <Target>[AotElfRelease(TargetPlatform.android_arm), AotAndroidAssetBundle()];
 }
 
 /// Generate an ELF binary from a dart kernel file in release mode.
@@ -163,7 +151,7 @@ class AndroidAot extends AotElfBase {
 
   @override
   String get name => 'android_aot_${buildMode.cliName}_'
-    '${getNameForTargetPlatform(targetPlatform)}';
+      '${getNameForTargetPlatform(targetPlatform)}';
 
   /// The specific Android ABI we are building for.
   final TargetPlatform targetPlatform;
@@ -179,26 +167,17 @@ class AndroidAot extends AotElfBase {
     const Source.pattern('{BUILD_DIR}/app.dill'),
     const Source.artifact(Artifact.engineDartBinary),
     const Source.artifact(Artifact.skyEnginePath),
-    Source.artifact(Artifact.genSnapshot,
-      mode: buildMode,
-      platform: targetPlatform,
-     ),
+    Source.artifact(Artifact.genSnapshot, mode: buildMode, platform: targetPlatform),
   ];
 
   @override
-  List<Source> get outputs => <Source>[
-    Source.pattern('{BUILD_DIR}/$_androidAbiName/app.so'),
-  ];
+  List<Source> get outputs => <Source>[Source.pattern('{BUILD_DIR}/$_androidAbiName/app.so')];
 
   @override
-  List<String> get depfiles => <String>[
-    'flutter_$name.d',
-  ];
+  List<String> get depfiles => <String>['flutter_$name.d'];
 
   @override
-  List<Target> get dependencies => const <Target>[
-    KernelSnapshot(),
-  ];
+  List<Target> get dependencies => const <Target>[KernelSnapshot()];
 
   @override
   Future<void> build(Environment environment) async {
@@ -229,12 +208,12 @@ class AndroidAot extends AotElfBase {
     final String? codeSizeDirectory = environment.defines[kCodeSizeDirectory];
 
     if (codeSizeDirectory != null) {
-      final File codeSizeFile = environment.fileSystem
-        .directory(codeSizeDirectory)
-        .childFile('snapshot.$_androidAbiName.json');
-      final File precompilerTraceFile = environment.fileSystem
-        .directory(codeSizeDirectory)
-        .childFile('trace.$_androidAbiName.json');
+      final File codeSizeFile = environment.fileSystem.directory(codeSizeDirectory).childFile(
+        'snapshot.$_androidAbiName.json',
+      );
+      final File precompilerTraceFile = environment.fileSystem.directory(codeSizeDirectory).childFile(
+        'trace.$_androidAbiName.json',
+      );
       extraGenSnapshotOptions.add('--write-v8-snapshot-profile-to=${codeSizeFile.path}');
       extraGenSnapshotOptions.add('--trace-precompiler-to=${precompilerTraceFile.path}');
     }
@@ -254,7 +233,10 @@ class AndroidAot extends AotElfBase {
     }
     if (environment.defines[kDeferredComponents] == 'true') {
       // Parse the manifest for .so paths
-      final List<LoadingUnit> loadingUnits = LoadingUnit.parseLoadingUnitManifest(environment.fileSystem.file(manifestPath), environment.logger);
+      final List<LoadingUnit> loadingUnits = LoadingUnit.parseLoadingUnitManifest(
+        environment.fileSystem.file(manifestPath),
+        environment.logger,
+      );
       for (final LoadingUnit unit in loadingUnits) {
         outputs.add(environment.fileSystem.file(unit.path));
       }
@@ -268,10 +250,10 @@ class AndroidAot extends AotElfBase {
 }
 
 // AndroidAot instances used by the bundle rules below.
-const AndroidAot androidArmProfile = AndroidAot(TargetPlatform.android_arm,  BuildMode.profile);
+const AndroidAot androidArmProfile = AndroidAot(TargetPlatform.android_arm, BuildMode.profile);
 const AndroidAot androidArm64Profile = AndroidAot(TargetPlatform.android_arm64, BuildMode.profile);
 const AndroidAot androidx64Profile = AndroidAot(TargetPlatform.android_x64, BuildMode.profile);
-const AndroidAot androidArmRelease = AndroidAot(TargetPlatform.android_arm,  BuildMode.release);
+const AndroidAot androidArmRelease = AndroidAot(TargetPlatform.android_arm, BuildMode.release);
 const AndroidAot androidArm64Release = AndroidAot(TargetPlatform.android_arm64, BuildMode.release);
 const AndroidAot androidx64Release = AndroidAot(TargetPlatform.android_x64, BuildMode.release);
 
@@ -290,7 +272,7 @@ class AndroidAotBundle extends Target {
 
   @override
   String get name => 'android_aot_bundle_${dependency.buildMode.cliName}_'
-    '${getNameForTargetPlatform(dependency.targetPlatform)}';
+      '${getNameForTargetPlatform(dependency.targetPlatform)}';
 
   TargetPlatform get targetPlatform => dependency.targetPlatform;
 
@@ -300,32 +282,22 @@ class AndroidAotBundle extends Target {
   BuildMode get buildMode => dependency.buildMode;
 
   @override
-  List<Source> get inputs => <Source>[
-    Source.pattern('{BUILD_DIR}/$_androidAbiName/app.so'),
-  ];
+  List<Source> get inputs => <Source>[Source.pattern('{BUILD_DIR}/$_androidAbiName/app.so')];
 
   // flutter.gradle has been updated to correctly consume it.
   @override
-  List<Source> get outputs => <Source>[
-    Source.pattern('{OUTPUT_DIR}/$_androidAbiName/app.so'),
-  ];
+  List<Source> get outputs => <Source>[Source.pattern('{OUTPUT_DIR}/$_androidAbiName/app.so')];
 
   @override
-  List<String> get depfiles => <String>[
-    'flutter_$name.d',
-  ];
+  List<String> get depfiles => <String>['flutter_$name.d'];
 
   @override
-  List<Target> get dependencies => <Target>[
-    dependency,
-    const AotAndroidAssetBundle(),
-  ];
+  List<Target> get dependencies => <Target>[dependency, const AotAndroidAssetBundle()];
 
   @override
   Future<void> build(Environment environment) async {
     final Directory buildDir = environment.buildDir.childDirectory(_androidAbiName);
-    final Directory outputDirectory = environment.outputDir
-      .childDirectory(_androidAbiName);
+    final Directory outputDirectory = environment.outputDir.childDirectory(_androidAbiName);
     if (!outputDirectory.existsSync()) {
       outputDirectory.createSync(recursive: true);
     }
@@ -376,7 +348,7 @@ class AndroidAotDeferredComponentsBundle extends Target {
 
   @override
   String get name => 'android_aot_deferred_components_bundle_${dependency.buildMode.cliName}_'
-    '${getNameForTargetPlatform(dependency.targetPlatform)}';
+      '${getNameForTargetPlatform(dependency.targetPlatform)}';
 
   TargetPlatform get targetPlatform => dependency.targetPlatform;
 
@@ -394,24 +366,31 @@ class AndroidAotDeferredComponentsBundle extends Target {
   List<Source> get outputs => const <Source>[];
 
   @override
-  List<String> get depfiles => <String>[
-    'flutter_$name.d',
-  ];
+  List<String> get depfiles => <String>['flutter_$name.d'];
 
   @override
-  List<Target> get dependencies => <Target>[
-    dependency,
-  ];
+  List<Target> get dependencies => <Target>[dependency];
 
   @override
   Future<void> build(Environment environment) async {
     _components ??= FlutterProject.current().manifest.deferredComponents ?? <DeferredComponent>[];
     final List<String> abis = <String>[_androidAbiName];
-    final List<LoadingUnit> generatedLoadingUnits = LoadingUnit.parseGeneratedLoadingUnits(environment.outputDir, environment.logger, abis: abis);
+    final List<LoadingUnit> generatedLoadingUnits = LoadingUnit.parseGeneratedLoadingUnits(
+      environment.outputDir,
+      environment.logger,
+      abis: abis,
+    );
     for (final DeferredComponent component in _components!) {
       component.assignLoadingUnits(generatedLoadingUnits);
     }
-    final Depfile libDepfile = copyDeferredComponentSoFiles(environment, _components!, generatedLoadingUnits, environment.projectDir.childDirectory('build'), abis, dependency.buildMode);
+    final Depfile libDepfile = copyDeferredComponentSoFiles(
+      environment,
+      _components!,
+      generatedLoadingUnits,
+      environment.projectDir.childDirectory('build'),
+      abis,
+      dependency.buildMode,
+    );
 
     final File manifestFile = environment.outputDir.childDirectory(_androidAbiName).childFile('manifest.json');
     if (manifestFile.existsSync()) {
@@ -500,7 +479,7 @@ Depfile copyDeferredComponentSoFiles(
       if (usedLoadingUnits.contains(unit.id)) {
         continue;
       }
-        // ensure the abi for the unit is one of the abis we build for.
+      // ensure the abi for the unit is one of the abis we build for.
       final List<String>? splitPath = unit.path?.split(env.fileSystem.path.separator);
       if (splitPath == null || splitPath[splitPath.length - 2] != abi) {
         continue;
@@ -510,8 +489,8 @@ Depfile copyDeferredComponentSoFiles(
           // Omit 'lib' prefix here as it is added by the gradle task that adds 'lib' to 'app.so'.
           .childFile('app.so-${unit.id}.part.so');
       if (!destination.existsSync()) {
-          destination.createSync(recursive: true);
-        }
+        destination.createSync(recursive: true);
+      }
       final File source = env.fileSystem.file(unit.path);
       source.copySync(destination.path);
       inputs.add(source);

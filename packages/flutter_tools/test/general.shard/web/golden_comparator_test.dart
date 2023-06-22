@@ -20,11 +20,10 @@ import '../../src/context.dart';
 final Uri goldenKey = Uri.parse('file://golden_key');
 final Uri goldenKey2 = Uri.parse('file://second_golden_key');
 final Uri testUri = Uri.parse('file://test_uri');
-final Uri testUri2  = Uri.parse('file://second_test_uri');
+final Uri testUri2 = Uri.parse('file://second_test_uri');
 final Uint8List imageBytes = Uint8List.fromList(<int>[1, 2, 3, 4, 5]);
 
 void main() {
-
   group('Test that TestGoldenComparator', () {
     late FakeProcessManager processManager;
 
@@ -33,10 +32,7 @@ void main() {
     });
 
     testWithoutContext('succeed when golden comparison succeed', () async {
-      final Map<String, dynamic> expectedResponse = <String, dynamic>{
-        'success': true,
-        'message': 'some message',
-      };
+      final Map<String, dynamic> expectedResponse = <String, dynamic>{'success': true, 'message': 'some message'};
       processManager.addCommand(FakeCommand(
         command: const <String>[
           'shell',
@@ -46,10 +42,7 @@ void main() {
           'compiler_output',
         ],
         stdout: '${jsonEncode(expectedResponse)}\n',
-        environment: const <String, String>{
-          'FLUTTER_TEST_BROWSER': 'chrome',
-          'FLUTTER_WEB_RENDERER': 'html',
-        },
+        environment: const <String, String>{'FLUTTER_TEST_BROWSER': 'chrome', 'FLUTTER_WEB_RENDERER': 'html'},
       ));
 
       final TestGoldenComparator comparator = TestGoldenComparator(
@@ -66,10 +59,7 @@ void main() {
     });
 
     testWithoutContext('fail with error message when golden comparison failed', () async {
-      final Map<String, dynamic> expectedResponse = <String, dynamic>{
-        'success': false,
-        'message': 'some message',
-      };
+      final Map<String, dynamic> expectedResponse = <String, dynamic>{'success': false, 'message': 'some message'};
 
       processManager.addCommand(FakeCommand(
         command: const <String>[
@@ -78,7 +68,8 @@ void main() {
           '--non-interactive',
           '--packages=.dart_tool/package_config.json',
           'compiler_output',
-        ], stdout: '${jsonEncode(expectedResponse)}\n',
+        ],
+        stdout: '${jsonEncode(expectedResponse)}\n',
       ));
 
       final TestGoldenComparator comparator = TestGoldenComparator(
@@ -95,10 +86,7 @@ void main() {
     });
 
     testWithoutContext('reuse the process for the same test file', () async {
-      final Map<String, dynamic> expectedResponse1 = <String, dynamic>{
-        'success': false,
-        'message': 'some message',
-      };
+      final Map<String, dynamic> expectedResponse1 = <String, dynamic>{'success': false, 'message': 'some message'};
       final Map<String, dynamic> expectedResponse2 = <String, dynamic>{
         'success': false,
         'message': 'some other message',
@@ -111,7 +99,8 @@ void main() {
           '--non-interactive',
           '--packages=.dart_tool/package_config.json',
           'compiler_output',
-        ], stdout: '${jsonEncode(expectedResponse1)}\n${jsonEncode(expectedResponse2)}\n',
+        ],
+        stdout: '${jsonEncode(expectedResponse1)}\n${jsonEncode(expectedResponse2)}\n',
       ));
 
       final TestGoldenComparator comparator = TestGoldenComparator(
@@ -131,10 +120,7 @@ void main() {
     });
 
     testWithoutContext('does not reuse the process for different test file', () async {
-      final Map<String, dynamic> expectedResponse1 = <String, dynamic>{
-        'success': false,
-        'message': 'some message',
-      };
+      final Map<String, dynamic> expectedResponse1 = <String, dynamic>{'success': false, 'message': 'some message'};
       final Map<String, dynamic> expectedResponse2 = <String, dynamic>{
         'success': false,
         'message': 'some other message',
@@ -147,7 +133,8 @@ void main() {
           '--non-interactive',
           '--packages=.dart_tool/package_config.json',
           'compiler_output',
-        ], stdout: '${jsonEncode(expectedResponse1)}\n',
+        ],
+        stdout: '${jsonEncode(expectedResponse1)}\n',
       ));
       processManager.addCommand(FakeCommand(
         command: const <String>[
@@ -156,7 +143,8 @@ void main() {
           '--non-interactive',
           '--packages=.dart_tool/package_config.json',
           'compiler_output',
-        ], stdout: '${jsonEncode(expectedResponse2)}\n',
+        ],
+        stdout: '${jsonEncode(expectedResponse2)}\n',
       ));
 
       final TestGoldenComparator comparator = TestGoldenComparator(
@@ -177,10 +165,7 @@ void main() {
 
     testWithoutContext('removes all temporary files when closed', () async {
       final FileSystem fileSystem = MemoryFileSystem.test();
-      final Map<String, dynamic> expectedResponse = <String, dynamic>{
-        'success': true,
-        'message': 'some message',
-      };
+      final Map<String, dynamic> expectedResponse = <String, dynamic>{'success': true, 'message': 'some message'};
       final StreamController<List<int>> controller = StreamController<List<int>>();
       final IOSink stdin = IOSink(controller.sink);
       processManager.addCommand(FakeCommand(
@@ -190,7 +175,8 @@ void main() {
           '--non-interactive',
           '--packages=.dart_tool/package_config.json',
           'compiler_output',
-        ], stdout: '${jsonEncode(expectedResponse)}\n',
+        ],
+        stdout: '${jsonEncode(expectedResponse)}\n',
         stdin: stdin,
       ));
 
@@ -219,5 +205,5 @@ class FakeTestCompiler extends Fake implements TestCompiler {
   }
 
   @override
-  Future<void> dispose() async { }
+  Future<void> dispose() async {}
 }

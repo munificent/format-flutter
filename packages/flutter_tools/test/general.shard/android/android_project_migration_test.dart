@@ -60,9 +60,7 @@ void main() {
       setUp(() {
         memoryFileSystem = MemoryFileSystem.test();
         bufferLogger = BufferLogger.test();
-        project = FakeAndroidProject(
-          root: memoryFileSystem.currentDirectory.childDirectory('android')..createSync(),
-        );
+        project = FakeAndroidProject(root: memoryFileSystem.currentDirectory.childDirectory('android')..createSync());
         topLevelGradleBuildFile = project.hostAppGradleRoot.childFile('build.gradle');
       });
 
@@ -73,7 +71,10 @@ void main() {
         );
         androidProjectMigration.migrate();
         expect(topLevelGradleBuildFile.existsSync(), isFalse);
-        expect(bufferLogger.traceText, contains('Top-level Gradle build file not found, skipping migration of task "clean".'));
+        expect(
+          bufferLogger.traceText,
+          contains('Top-level Gradle build file not found, skipping migration of task "clean".'),
+        );
       });
 
       testUsingContext('skipped if nothing to upgrade', () {
@@ -125,10 +126,9 @@ tasks.register("clean", Delete) {
       setUp(() {
         memoryFileSystem = MemoryFileSystem.test();
         bufferLogger = BufferLogger.test();
-        project = FakeAndroidProject(
-          root: memoryFileSystem.currentDirectory.childDirectory('android')..createSync(),
-        );
-        project.hostAppGradleRoot.childDirectory(gradleDirectoryName)
+        project = FakeAndroidProject(root: memoryFileSystem.currentDirectory.childDirectory('android')..createSync());
+        project.hostAppGradleRoot
+            .childDirectory(gradleDirectoryName)
             .childDirectory(gradleWrapperDirectoryName)
             .createSync(recursive: true);
         gradleWrapperPropertiesFile = project.hostAppGradleRoot
@@ -149,7 +149,6 @@ tasks.register("clean", Delete) {
         expect(bufferLogger.traceText, contains(gradleWrapperNotFound));
       });
 
-
       testWithoutContext('skipped if android studio is null', () {
         final AndroidStudioJavaGradleConflictMigration migration = AndroidStudioJavaGradleConflictMigration(
           java: FakeJava(version: _javaVersion17),
@@ -159,8 +158,7 @@ tasks.register("clean", Delete) {
         gradleWrapperPropertiesFile.writeAsStringSync(gradleWrapperToMigrate);
         migration.migrate();
         expect(bufferLogger.traceText, contains(androidStudioNotFound));
-        expect(gradleWrapperPropertiesFile.readAsStringSync(),
-            gradleWrapperToMigrate);
+        expect(gradleWrapperPropertiesFile.readAsStringSync(), gradleWrapperToMigrate);
       });
 
       testWithoutContext('skipped if android studio version is null', () {
@@ -173,8 +171,7 @@ tasks.register("clean", Delete) {
         gradleWrapperPropertiesFile.writeAsStringSync(gradleWrapperToMigrate);
         migration.migrate();
         expect(bufferLogger.traceText, contains(androidStudioNotFound));
-        expect(gradleWrapperPropertiesFile.readAsStringSync(),
-            gradleWrapperToMigrate);
+        expect(gradleWrapperPropertiesFile.readAsStringSync(), gradleWrapperToMigrate);
       });
 
       testWithoutContext('skipped if error is encountered in migrate()', () {
@@ -187,8 +184,7 @@ tasks.register("clean", Delete) {
         gradleWrapperPropertiesFile.writeAsStringSync(gradleWrapperToMigrate);
         migration.migrate();
         expect(bufferLogger.traceText, contains(errorWhileMigrating));
-        expect(gradleWrapperPropertiesFile.readAsStringSync(),
-            gradleWrapperToMigrate);
+        expect(gradleWrapperPropertiesFile.readAsStringSync(), gradleWrapperToMigrate);
       });
 
       testWithoutContext('skipped if android studio version is less than flamingo', () {
@@ -242,9 +238,11 @@ tasks.register("clean", Delete) {
         gradleWrapperPropertiesFile.writeAsStringSync(gradleWrapperToMigrate);
         migration.migrate();
         expect(gradleWrapperPropertiesFile.readAsStringSync(), gradleWrapperToMigrateTo);
-        expect(bufferLogger.statusText, contains('Conflict detected between '
-            'Android Studio Java version and Gradle version, upgrading Gradle '
-            'version from 6.7 to $gradleVersion7_6_1.'));
+        expect(bufferLogger.statusText, contains(
+          'Conflict detected between '
+          'Android Studio Java version and Gradle version, upgrading Gradle '
+          'version from 6.7 to $gradleVersion7_6_1.',
+        ));
       });
 
       testWithoutContext('change is not made when opt out flag is set', () {
@@ -289,6 +287,9 @@ class FakeErroringJava extends FakeJava {
 }
 
 class FakeFileSystem extends Fake implements FileSystem {}
+
 class FakeProcessUtils extends Fake implements ProcessUtils {}
+
 class FakePlatform extends Fake implements Platform {}
+
 class FakeOperatingSystemUtils extends Fake implements OperatingSystemUtils {}

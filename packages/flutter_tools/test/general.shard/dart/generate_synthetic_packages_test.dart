@@ -42,9 +42,16 @@ void main() {
       processManager: FakeProcessManager.any(),
     );
     final Completer<void> completer = Completer<void>();
-    final BuildResult exception = BuildResult(success: false, exceptions: <String, ExceptionMeasurement>{
-      'hello': ExceptionMeasurement('hello', const FormatException('illegal character in input string'), StackTrace.current),
-    });
+    final BuildResult exception = BuildResult(
+      success: false,
+      exceptions: <String, ExceptionMeasurement>{
+        'hello': ExceptionMeasurement(
+          'hello',
+          const FormatException('illegal character in input string'),
+          StackTrace.current,
+        ),
+      },
+    );
     final TestBuildSystem buildSystem = TestBuildSystem.all(exception, (Target target, Environment environment) {
       expect(target, const GenerateLocalizationsTarget());
       expect(environment, environment);
@@ -52,14 +59,11 @@ void main() {
     });
 
     await expectLater(
-      () => generateLocalizationsSyntheticPackage(
-        environment: environment,
-        buildSystem: buildSystem,
-      ),
-      throwsToolExit(message:
-        'Generating synthetic localizations package failed with 1 error:'
-        '\n\n'
-        'FormatException: illegal character in input string',
+      () => generateLocalizationsSyntheticPackage(environment: environment, buildSystem: buildSystem),
+      throwsToolExit(
+        message: 'Generating synthetic localizations package failed with 1 error:'
+            '\n\n'
+            'FormatException: illegal character in input string',
       ),
     );
     await completer.future;
@@ -91,9 +95,16 @@ void main() {
       processManager: fakeProcessManager,
     );
     final Completer<void> completer = Completer<void>();
-    final BuildResult exception = BuildResult(success: false, exceptions: <String, ExceptionMeasurement>{
-      'hello': ExceptionMeasurement('hello', const FormatException('illegal character in input string'), StackTrace.current),
-    });
+    final BuildResult exception = BuildResult(
+      success: false,
+      exceptions: <String, ExceptionMeasurement>{
+        'hello': ExceptionMeasurement(
+          'hello',
+          const FormatException('illegal character in input string'),
+          StackTrace.current,
+        ),
+      },
+    );
     final TestBuildSystem buildSystem = TestBuildSystem.all(exception, (Target target, Environment environment) {
       expect(target, const GenerateLocalizationsTarget());
       expect(environment, environment);
@@ -101,14 +112,11 @@ void main() {
     });
 
     await expectLater(
-      () => generateLocalizationsSyntheticPackage(
-        environment: environment,
-        buildSystem: buildSystem,
-      ),
-      throwsToolExit(message:
-        'Generating synthetic localizations package failed with 1 error:'
-        '\n\n'
-        'FormatException: illegal character in input string',
+      () => generateLocalizationsSyntheticPackage(environment: environment, buildSystem: buildSystem),
+      throwsToolExit(
+        message: 'Generating synthetic localizations package failed with 1 error:'
+            '\n\n'
+            'FormatException: illegal character in input string',
       ),
     );
     await completer.future;
@@ -138,9 +146,16 @@ void main() {
       processManager: FakeProcessManager.any(),
     );
     final Completer<void> completer = Completer<void>();
-    final BuildResult exception = BuildResult(success: false, exceptions: <String, ExceptionMeasurement>{
-      'hello': ExceptionMeasurement('hello', const FormatException('illegal character in input string'), StackTrace.current),
-    });
+    final BuildResult exception = BuildResult(
+      success: false,
+      exceptions: <String, ExceptionMeasurement>{
+        'hello': ExceptionMeasurement(
+          'hello',
+          const FormatException('illegal character in input string'),
+          StackTrace.current,
+        ),
+      },
+    );
     final TestBuildSystem buildSystem = TestBuildSystem.all(exception, (Target target, Environment environment) {
       expect(target, const GenerateLocalizationsTarget());
       expect(environment, environment);
@@ -148,14 +163,11 @@ void main() {
     });
 
     await expectLater(
-      () => generateLocalizationsSyntheticPackage(
-        environment: environment,
-        buildSystem: buildSystem,
-      ),
-      throwsToolExit(message:
-        'Generating synthetic localizations package failed with 1 error:'
-        '\n\n'
-        'FormatException: illegal character in input string',
+      () => generateLocalizationsSyntheticPackage(environment: environment, buildSystem: buildSystem),
+      throwsToolExit(
+        message: 'Generating synthetic localizations package failed with 1 error:'
+            '\n\n'
+            'FormatException: illegal character in input string',
       ),
     );
     await completer.future;
@@ -184,10 +196,7 @@ void main() {
     // Will throw if build is called.
     final TestBuildSystem buildSystem = TestBuildSystem.all(null);
 
-    await generateLocalizationsSyntheticPackage(
-      environment: environment,
-      buildSystem: buildSystem,
-    );
+    await generateLocalizationsSyntheticPackage(environment: environment, buildSystem: buildSystem);
   });
 
   testWithoutContext('does not call buildSystem.build with incorrect l10n.yaml format', () async {
@@ -217,10 +226,7 @@ void main() {
     final TestBuildSystem buildSystem = TestBuildSystem.all(null);
 
     await expectLater(
-      () => generateLocalizationsSyntheticPackage(
-        environment: environment,
-        buildSystem: buildSystem,
-      ),
+      () => generateLocalizationsSyntheticPackage(environment: environment, buildSystem: buildSystem),
       throwsToolExit(message: 'to contain a map, instead was helloWorld'),
     );
   });
@@ -252,10 +258,7 @@ void main() {
     final TestBuildSystem buildSystem = TestBuildSystem.all(null);
 
     await expectLater(
-      () => generateLocalizationsSyntheticPackage(
-        environment: environment,
-        buildSystem: buildSystem,
-      ),
+      () => generateLocalizationsSyntheticPackage(environment: environment, buildSystem: buildSystem),
       throwsToolExit(message: 'to have a bool value, instead was "nonBoolValue"'),
     );
   });

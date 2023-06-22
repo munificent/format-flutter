@@ -36,7 +36,7 @@ void main() {
         ),
       ]);
       final Xcode xcode = Xcode.test(
-      processManager: processManager,
+        processManager: processManager,
         xcodeProjectInterpreter: XcodeProjectInterpreter.test(processManager: processManager, version: null),
       );
       final XcodeValidator validator = XcodeValidator(xcode: xcode, userMessages: UserMessages());
@@ -50,7 +50,8 @@ void main() {
       final ProcessManager processManager = FakeProcessManager.any();
       final Xcode xcode = Xcode.test(
         processManager: processManager,
-        xcodeProjectInterpreter: XcodeProjectInterpreter.test(processManager: processManager, version: Version(7, 0, 1)),
+        xcodeProjectInterpreter:
+            XcodeProjectInterpreter.test(processManager: processManager, version: Version(7, 0, 1)),
       );
       final XcodeValidator validator = XcodeValidator(xcode: xcode, userMessages: UserMessages());
       final ValidationResult result = await validator.validate();
@@ -63,7 +64,8 @@ void main() {
       final ProcessManager processManager = FakeProcessManager.any();
       final Xcode xcode = Xcode.test(
         processManager: processManager,
-        xcodeProjectInterpreter: XcodeProjectInterpreter.test(processManager: processManager, version: Version(12, 4, null)),
+        xcodeProjectInterpreter:
+            XcodeProjectInterpreter.test(processManager: processManager, version: Version(12, 4, null)),
       );
       final XcodeValidator validator = XcodeValidator(xcode: xcode, userMessages: UserMessages());
       final ValidationResult result = await validator.validate();
@@ -78,28 +80,14 @@ void main() {
           command: <String>['/usr/bin/xcode-select', '--print-path'],
           stdout: '/Library/Developer/CommandLineTools',
         ),
-        const FakeCommand(
-          command: <String>[
-            'which',
-            'sysctl',
-          ],
-        ),
-        const FakeCommand(
-          command: <String>[
-            'sysctl',
-            'hw.optional.arm64',
-          ],
-          exitCode: 1,
-        ),
+        const FakeCommand(command: <String>['which', 'sysctl']),
+        const FakeCommand(command: <String>['sysctl', 'hw.optional.arm64'], exitCode: 1),
         const FakeCommand(
           command: <String>['xcrun', 'clang'],
           exitCode: 1,
-          stderr:
-          'Xcode EULA has not been accepted.\nLaunch Xcode and accept the license.',
+          stderr: 'Xcode EULA has not been accepted.\nLaunch Xcode and accept the license.',
         ),
-        const FakeCommand(
-          command: <String>['xcrun', 'simctl', 'list', 'devices', 'booted'],
-        ),
+        const FakeCommand(command: <String>['xcrun', 'simctl', 'list', 'devices', 'booted']),
       ]);
       final Xcode xcode = Xcode.test(
         processManager: processManager,
@@ -118,26 +106,10 @@ void main() {
           command: <String>['/usr/bin/xcode-select', '--print-path'],
           stdout: '/Library/Developer/CommandLineTools',
         ),
-        const FakeCommand(
-          command: <String>[
-            'which',
-            'sysctl',
-          ],
-        ),
-        const FakeCommand(
-          command: <String>[
-            'sysctl',
-            'hw.optional.arm64',
-          ],
-          exitCode: 1,
-        ),
-        const FakeCommand(
-          command: <String>['xcrun', 'clang'],
-        ),
-        const FakeCommand(
-          command: <String>['xcrun', 'simctl', 'list', 'devices', 'booted'],
-          exitCode: 1,
-        ),
+        const FakeCommand(command: <String>['which', 'sysctl']),
+        const FakeCommand(command: <String>['sysctl', 'hw.optional.arm64'], exitCode: 1),
+        const FakeCommand(command: <String>['xcrun', 'clang']),
+        const FakeCommand(command: <String>['xcrun', 'simctl', 'list', 'devices', 'booted'], exitCode: 1),
       ]);
       final Xcode xcode = Xcode.test(
         processManager: processManager,
@@ -156,25 +128,10 @@ void main() {
           command: <String>['/usr/bin/xcode-select', '--print-path'],
           stdout: '/Library/Developer/CommandLineTools',
         ),
-        const FakeCommand(
-          command: <String>[
-            'which',
-            'sysctl',
-          ],
-        ),
-        const FakeCommand(
-          command: <String>[
-            'sysctl',
-            'hw.optional.arm64',
-          ],
-          exitCode: 1,
-        ),
-        const FakeCommand(
-          command: <String>['xcrun', 'clang'],
-        ),
-        const FakeCommand(
-          command: <String>['xcrun', 'simctl', 'list', 'devices', 'booted'],
-        ),
+        const FakeCommand(command: <String>['which', 'sysctl']),
+        const FakeCommand(command: <String>['sysctl', 'hw.optional.arm64'], exitCode: 1),
+        const FakeCommand(command: <String>['xcrun', 'clang']),
+        const FakeCommand(command: <String>['xcrun', 'simctl', 'list', 'devices', 'booted']),
       ]);
       final Xcode xcode = Xcode.test(
         processManager: processManager,

@@ -91,14 +91,7 @@ class HotReloadProject extends Project {
   int get buildBreakpointLine => lineContaining(main, '// BUILD BREAKPOINT');
 
   void uncommentHotReloadPrint() {
-    final String newMainContents = main.replaceAll(
-      '// printHotReloadWorked();',
-      'printHotReloadWorked();',
-    );
-    writeFile(
-      fileSystem.path.join(dir.path, 'lib', 'main.dart'),
-      newMainContents,
-      writeFutureModifiedDate: true,
-    );
+    final String newMainContents = main.replaceAll('// printHotReloadWorked();', 'printHotReloadWorked();');
+    writeFile(fileSystem.path.join(dir.path, 'lib', 'main.dart'), newMainContents, writeFutureModifiedDate: true);
   }
 }

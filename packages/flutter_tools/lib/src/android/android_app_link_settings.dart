@@ -9,10 +9,7 @@ import 'package:meta/meta.dart';
 /// See https://developer.android.com/training/app-links.
 @immutable
 class AndroidAppLinkSettings {
-  const AndroidAppLinkSettings({
-    required this.applicationId,
-    required this.domains,
-  });
+  const AndroidAppLinkSettings({required this.applicationId, required this.domains});
 
   /// The application id of the android sub-project.
   final String applicationId;

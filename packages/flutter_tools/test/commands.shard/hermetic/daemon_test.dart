@@ -56,7 +56,7 @@ class FakeDaemonStreams implements DaemonStreams {
   }
 
   @override
-  void send(Map<String, Object?> message, [ List<int>? binary ]) {
+  void send(Map<String, Object?> message, [List<int>? binary]) {
     outputs.add(DaemonMessage(message, binary != null ? Stream<List<int>>.value(binary) : null));
   }
 
@@ -80,10 +80,7 @@ void main() {
       bufferLogger = BufferLogger.test();
       notifyingLogger = NotifyingLogger(verbose: false, parent: bufferLogger);
       daemonStreams = FakeDaemonStreams();
-      daemonConnection = DaemonConnection(
-        daemonStreams: daemonStreams,
-        logger: bufferLogger,
-      );
+      daemonConnection = DaemonConnection(daemonStreams: daemonStreams, logger: bufferLogger);
     });
 
     tearDown(() async {
@@ -93,10 +90,7 @@ void main() {
     });
 
     testUsingContext('daemon.version command should succeed', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'daemon.version'}));
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
       expect(response.data['id'], 0);
@@ -104,102 +98,85 @@ void main() {
       expect(response.data['result'], isA<String>());
     });
 
-    testUsingContext('daemon.getSupportedPlatforms command should succeed', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
-      // Use the flutter_gallery project which has a known set of supported platforms.
-      final String projectPath = globals.fs.path.join(getFlutterRoot(), 'dev', 'integration_tests', 'flutter_gallery');
+    testUsingContext(
+      'daemon.getSupportedPlatforms command should succeed',
+      () async {
+        daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
+        // Use the flutter_gallery project which has a known set of supported platforms.
+        final String projectPath = globals.fs.path.join(
+          getFlutterRoot(),
+          'dev',
+          'integration_tests',
+          'flutter_gallery',
+        );
 
-      daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
-        'id': 0,
-        'method': 'daemon.getSupportedPlatforms',
-        'params': <String, Object>{'projectRoot': projectPath},
-      }));
-      final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
+        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
+          'id': 0,
+          'method': 'daemon.getSupportedPlatforms',
+          'params': <String, Object>{'projectRoot': projectPath},
+        }));
+        final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
 
-      expect(response.data['id'], 0);
-      expect(response.data['result'], isNotEmpty);
-      expect((response.data['result']! as Map<String, Object?>)['platforms'], <String>{'macos'});
-    }, overrides: <Type, Generator>{
-      // Disable Android/iOS and enable macOS to make sure result is consistent and defaults are tested off.
-      FeatureFlags: () => TestFeatureFlags(isAndroidEnabled: false, isIOSEnabled: false, isMacOSEnabled: true),
-    });
+        expect(response.data['id'], 0);
+        expect(response.data['result'], isNotEmpty);
+        expect((response.data['result']! as Map<String, Object?>)['platforms'], <String>{'macos'});
+      },
+      overrides: <Type, Generator>{
+        // Disable Android/iOS and enable macOS to make sure result is consistent and defaults are tested off.
+        FeatureFlags: () => TestFeatureFlags(isAndroidEnabled: false, isIOSEnabled: false, isMacOSEnabled: true),
+      },
+    );
 
     testUsingContext('printError should send daemon.logMessage event', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       globals.printError('daemon.logMessage test');
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere((DaemonMessage message) {
-        return message.data['event'] == 'daemon.logMessage' && (message.data['params']! as Map<String, Object?>)['level'] == 'error';
+        return message.data['event'] == 'daemon.logMessage' &&
+            (message.data['params']! as Map<String, Object?>)['level'] == 'error';
       });
       expect(response.data['id'], isNull);
       expect(response.data['event'], 'daemon.logMessage');
       final Map<String, String> logMessage = castStringKeyedMap(response.data['params'])!.cast<String, String>();
       expect(logMessage['level'], 'error');
       expect(logMessage['message'], 'daemon.logMessage test');
-    }, overrides: <Type, Generator>{
-      Logger: () => notifyingLogger,
-    });
+    }, overrides: <Type, Generator>{Logger: () => notifyingLogger});
 
     testUsingContext('printWarning should send daemon.logMessage event', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       globals.printWarning('daemon.logMessage test');
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere((DaemonMessage message) {
-        return message.data['event'] == 'daemon.logMessage' && (message.data['params']! as Map<String, Object?>)['level'] == 'warning';
+        return message.data['event'] == 'daemon.logMessage' &&
+            (message.data['params']! as Map<String, Object?>)['level'] == 'warning';
       });
       expect(response.data['id'], isNull);
       expect(response.data['event'], 'daemon.logMessage');
       final Map<String, String> logMessage = castStringKeyedMap(response.data['params'])!.cast<String, String>();
       expect(logMessage['level'], 'warning');
       expect(logMessage['message'], 'daemon.logMessage test');
-    }, overrides: <Type, Generator>{
-      Logger: () => notifyingLogger,
-    });
+    }, overrides: <Type, Generator>{Logger: () => notifyingLogger});
 
     testUsingContext('printStatus should log to stdout when logToStdout is enabled', () async {
       final StringBuffer buffer = await capturedConsolePrint(() {
-        daemon = Daemon(
-          daemonConnection,
-          notifyingLogger: notifyingLogger,
-          logToStdout: true,
-        );
+        daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger, logToStdout: true);
         globals.printStatus('daemon.logMessage test');
         return Future<void>.value();
       });
 
       expect(buffer.toString().trim(), 'daemon.logMessage test');
-    }, overrides: <Type, Generator>{
-      Logger: () => notifyingLogger,
-    });
+    }, overrides: <Type, Generator>{Logger: () => notifyingLogger});
 
     testUsingContext('printBox should log to stdout when logToStdout is enabled', () async {
       final StringBuffer buffer = await capturedConsolePrint(() {
-        daemon = Daemon(
-          daemonConnection,
-          notifyingLogger: notifyingLogger,
-          logToStdout: true,
-        );
+        daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger, logToStdout: true);
         globals.printBox('This is the box message', title: 'Sample title');
         return Future<void>.value();
       });
 
       expect(buffer.toString().trim(), contains('Sample title: This is the box message'));
-    }, overrides: <Type, Generator>{
-      Logger: () => notifyingLogger,
-    });
+    }, overrides: <Type, Generator>{Logger: () => notifyingLogger});
 
     testUsingContext('daemon.shutdown command should stop daemon', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'daemon.shutdown'}));
       return daemon.onExit.then<void>((int code) async {
         await daemonStreams.inputs.close();
@@ -208,10 +185,7 @@ void main() {
     });
 
     testUsingContext('app.restart without an appId should report an error', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
 
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'app.restart'}));
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
@@ -220,17 +194,12 @@ void main() {
     });
 
     testUsingContext('ext.flutter.debugPaint via service extension without an appId should report an error', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
 
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
         'id': 0,
         'method': 'app.callServiceExtension',
-        'params': <String, String>{
-          'methodName': 'ext.flutter.debugPaint',
-        },
+        'params': <String, String>{'methodName': 'ext.flutter.debugPaint'},
       }));
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
       expect(response.data['id'], 0);
@@ -238,10 +207,7 @@ void main() {
     });
 
     testUsingContext('app.stop without appId should report an error', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
 
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'app.stop'}));
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
@@ -250,10 +216,7 @@ void main() {
     });
 
     testUsingContext('device.getDevices should respond with list', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'device.getDevices'}));
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
       expect(response.data['id'], 0);
@@ -261,10 +224,7 @@ void main() {
     });
 
     testUsingContext('device.getDevices reports available devices', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       final FakePollingDeviceDiscovery discoverer = FakePollingDeviceDiscovery();
       daemon.deviceDomain.addDeviceDiscoverer(discoverer);
       discoverer.addDevice(FakeAndroidDevice());
@@ -276,34 +236,34 @@ void main() {
       expect(result, isNotEmpty);
     });
 
-    testUsingContext('should send device.added event when device is discovered', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+    testUsingContext(
+      'should send device.added event when device is discovered',
+      () async {
+        daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
 
-      final FakePollingDeviceDiscovery discoverer = FakePollingDeviceDiscovery();
-      daemon.deviceDomain.addDeviceDiscoverer(discoverer);
-      discoverer.addDevice(FakeAndroidDevice());
+        final FakePollingDeviceDiscovery discoverer = FakePollingDeviceDiscovery();
+        daemon.deviceDomain.addDeviceDiscoverer(discoverer);
+        discoverer.addDevice(FakeAndroidDevice());
 
-      return daemonStreams.outputs.stream.skipWhile(_isConnectedEvent).first.then<void>((DaemonMessage response) async {
-        expect(response.data['event'], 'device.added');
-        expect(response.data['params'], isMap);
+        return daemonStreams.outputs.stream.skipWhile(_isConnectedEvent).first.then<void>(
+          (DaemonMessage response) async {
+            expect(response.data['event'], 'device.added');
+            expect(response.data['params'], isMap);
 
-        final Map<String, Object?> params = castStringKeyedMap(response.data['params'])!;
-        expect(params['platform'], isNotEmpty); // the fake device has a platform of 'android-arm'
-      });
-    }, overrides: <Type, Generator>{
-      AndroidWorkflow: () => FakeAndroidWorkflow(),
-      IOSWorkflow: () => FakeIOSWorkflow(),
-      FuchsiaWorkflow: () => FakeFuchsiaWorkflow(),
-    });
+            final Map<String, Object?> params = castStringKeyedMap(response.data['params'])!;
+            expect(params['platform'], isNotEmpty); // the fake device has a platform of 'android-arm'
+          },
+        );
+      },
+      overrides: <Type, Generator>{
+        AndroidWorkflow: () => FakeAndroidWorkflow(),
+        IOSWorkflow: () => FakeIOSWorkflow(),
+        FuchsiaWorkflow: () => FakeFuchsiaWorkflow(),
+      },
+    );
 
     testUsingContext('device.discoverDevices should respond with list', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'device.discoverDevices'}));
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
       expect(response.data['id'], 0);
@@ -311,10 +271,7 @@ void main() {
     });
 
     testUsingContext('device.discoverDevices reports available devices', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       final FakePollingDeviceDiscovery discoverer = FakePollingDeviceDiscovery();
       daemon.deviceDomain.addDeviceDiscoverer(discoverer);
       discoverer.addDevice(FakeAndroidDevice());
@@ -328,10 +285,7 @@ void main() {
     });
 
     testUsingContext('device.supportsRuntimeMode returns correct value', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       final FakePollingDeviceDiscovery discoverer = FakePollingDeviceDiscovery();
       daemon.deviceDomain.addDeviceDiscoverer(discoverer);
       final FakeAndroidDevice device = FakeAndroidDevice();
@@ -339,10 +293,7 @@ void main() {
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
         'id': 0,
         'method': 'device.supportsRuntimeMode',
-        'params': <String, Object?>{
-          'deviceId': 'device',
-          'buildMode': 'profile',
-        },
+        'params': <String, Object?>{'deviceId': 'device', 'buildMode': 'profile'},
       }));
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
       expect(response.data['id'], 0);
@@ -352,10 +303,7 @@ void main() {
     });
 
     testUsingContext('device.logReader.start and .stop starts and stops log reader', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       final FakePollingDeviceDiscovery discoverer = FakePollingDeviceDiscovery();
       daemon.deviceDomain.addDeviceDiscoverer(discoverer);
       final FakeAndroidDevice device = FakeAndroidDevice();
@@ -365,9 +313,7 @@ void main() {
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
         'id': 0,
         'method': 'device.logReader.start',
-        'params': <String, Object?>{
-          'deviceId': 'device',
-        },
+        'params': <String, Object?>{'deviceId': 'device'},
       }));
       final Stream<DaemonMessage> broadcastOutput = daemonStreams.outputs.stream.asBroadcastStream();
       final DaemonMessage firstResponse = await broadcastOutput.firstWhere(_notEvent);
@@ -387,9 +333,7 @@ void main() {
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
         'id': 1,
         'method': 'device.logReader.stop',
-        'params': <String, Object?>{
-          'id': logReaderId,
-        },
+        'params': <String, Object?>{'id': logReaderId},
       }));
       final DaemonMessage stopResponse = await broadcastOutput.firstWhere(_notEvent);
       expect(stopResponse.data['id'], 1);
@@ -403,10 +347,7 @@ void main() {
       });
 
       testUsingContext('device.startApp and .stopApp starts and stops an app', () async {
-        daemon = Daemon(
-          daemonConnection,
-          notifyingLogger: notifyingLogger,
-        );
+        daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
         final FakePollingDeviceDiscovery discoverer = FakePollingDeviceDiscovery();
         daemon.deviceDomain.addDeviceDiscoverer(discoverer);
         final FakeAndroidDevice device = FakeAndroidDevice();
@@ -419,10 +360,7 @@ void main() {
         daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
           'id': 0,
           'method': 'device.uploadApplicationPackage',
-          'params': <String, Object?>{
-            'targetPlatform': 'android',
-            'applicationBinary': 'test_file',
-          },
+          'params': <String, Object?>{'targetPlatform': 'android', 'applicationBinary': 'test_file'},
         }));
         final DaemonMessage applicationPackageIdResponse = await broadcastOutput.firstWhere(_notEvent);
         expect(applicationPackageIdResponse.data['id'], 0);
@@ -453,84 +391,74 @@ void main() {
         daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
           'id': 2,
           'method': 'device.stopApp',
-          'params': <String, Object?>{
-            'deviceId': 'device',
-            'applicationPackageId': applicationPackageId,
-          },
+          'params': <String, Object?>{'deviceId': 'device', 'applicationPackageId': applicationPackageId},
         }));
         final DaemonMessage stopAppResponse = await broadcastOutput.firstWhere(_notEvent);
         expect(stopAppResponse.data['id'], 2);
         expect(device.stopAppPackage, applicationPackage);
         final bool? stopAppResult = stopAppResponse.data['result'] as bool?;
         expect(stopAppResult, true);
-      }, overrides: <Type, Generator>{
-        ApplicationPackageFactory: () => applicationPackageFactory,
-      });
+      }, overrides: <Type, Generator>{ApplicationPackageFactory: () => applicationPackageFactory});
     });
 
-    testUsingContext('device.startDartDevelopmentService and .shutdownDartDevelopmentService starts and stops DDS', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
-      final FakePollingDeviceDiscovery discoverer = FakePollingDeviceDiscovery();
-      daemon.deviceDomain.addDeviceDiscoverer(discoverer);
-      final FakeAndroidDevice device = FakeAndroidDevice();
-      discoverer.addDevice(device);
+    testUsingContext(
+      'device.startDartDevelopmentService and .shutdownDartDevelopmentService starts and stops DDS',
+      () async {
+        daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
+        final FakePollingDeviceDiscovery discoverer = FakePollingDeviceDiscovery();
+        daemon.deviceDomain.addDeviceDiscoverer(discoverer);
+        final FakeAndroidDevice device = FakeAndroidDevice();
+        discoverer.addDevice(device);
 
-      final Completer<void> ddsDoneCompleter = Completer<void>();
-      device.dds.done = ddsDoneCompleter.future;
-      final Uri fakeDdsUri = Uri.parse('http://fake_dds_uri');
-      device.dds.uri = fakeDdsUri;
+        final Completer<void> ddsDoneCompleter = Completer<void>();
+        device.dds.done = ddsDoneCompleter.future;
+        final Uri fakeDdsUri = Uri.parse('http://fake_dds_uri');
+        device.dds.uri = fakeDdsUri;
 
-      // Try starting DDS.
-      expect(device.dds.startCalled, false);
-      daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
-        'id': 0,
-        'method': 'device.startDartDevelopmentService',
-        'params': <String, Object?>{
-          'deviceId': 'device',
-          'disableServiceAuthCodes': false,
-          'vmServiceUri': 'http://fake_uri/auth_code',
-        },
-      }));
-      final Stream<DaemonMessage> broadcastOutput = daemonStreams.outputs.stream.asBroadcastStream();
-      final DaemonMessage startResponse = await broadcastOutput.firstWhere(_notEvent);
-      expect(startResponse.data['id'], 0);
-      expect(startResponse.data['error'], isNull);
-      final String? ddsUri = startResponse.data['result'] as String?;
-      expect(ddsUri, fakeDdsUri.toString());
-      expect(device.dds.startCalled, true);
-      expect(device.dds.startDisableServiceAuthCodes, false);
-      expect(device.dds.startVMServiceUri, Uri.parse('http://fake_uri/auth_code'));
+        // Try starting DDS.
+        expect(device.dds.startCalled, false);
+        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
+          'id': 0,
+          'method': 'device.startDartDevelopmentService',
+          'params': <String, Object?>{
+            'deviceId': 'device',
+            'disableServiceAuthCodes': false,
+            'vmServiceUri': 'http://fake_uri/auth_code',
+          },
+        }));
+        final Stream<DaemonMessage> broadcastOutput = daemonStreams.outputs.stream.asBroadcastStream();
+        final DaemonMessage startResponse = await broadcastOutput.firstWhere(_notEvent);
+        expect(startResponse.data['id'], 0);
+        expect(startResponse.data['error'], isNull);
+        final String? ddsUri = startResponse.data['result'] as String?;
+        expect(ddsUri, fakeDdsUri.toString());
+        expect(device.dds.startCalled, true);
+        expect(device.dds.startDisableServiceAuthCodes, false);
+        expect(device.dds.startVMServiceUri, Uri.parse('http://fake_uri/auth_code'));
 
-      // dds.done event should be sent to the client.
-      ddsDoneCompleter.complete();
-      final DaemonMessage startEvent = await broadcastOutput.firstWhere(
-        (DaemonMessage message) => message.data['event'] != null && message.data['event'] == 'device.dds.done.device',
-      );
-      expect(startEvent, isNotNull);
+        // dds.done event should be sent to the client.
+        ddsDoneCompleter.complete();
+        final DaemonMessage startEvent = await broadcastOutput.firstWhere(
+          (DaemonMessage message) => message.data['event'] != null && message.data['event'] == 'device.dds.done.device',
+        );
+        expect(startEvent, isNotNull);
 
-      // Try stopping DDS.
-      expect(device.dds.shutdownCalled, false);
-      daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
-        'id': 1,
-        'method': 'device.shutdownDartDevelopmentService',
-        'params': <String, Object?>{
-          'deviceId': 'device',
-        },
-      }));
-      final DaemonMessage stopResponse = await broadcastOutput.firstWhere(_notEvent);
-      expect(stopResponse.data['id'], 1);
-      expect(stopResponse.data['error'], isNull);
-      expect(device.dds.shutdownCalled, true);
-    });
+        // Try stopping DDS.
+        expect(device.dds.shutdownCalled, false);
+        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
+          'id': 1,
+          'method': 'device.shutdownDartDevelopmentService',
+          'params': <String, Object?>{'deviceId': 'device'},
+        }));
+        final DaemonMessage stopResponse = await broadcastOutput.firstWhere(_notEvent);
+        expect(stopResponse.data['id'], 1);
+        expect(stopResponse.data['error'], isNull);
+        expect(device.dds.shutdownCalled, true);
+      },
+    );
 
     testUsingContext('emulator.launch without an emulatorId should report an error', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
 
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'emulator.launch'}));
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
@@ -539,22 +467,17 @@ void main() {
     });
 
     testUsingContext('emulator.launch coldboot parameter must be boolean', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       final Map<String, Object?> params = <String, Object?>{'emulatorId': 'device', 'coldBoot': 1};
-      daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'emulator.launch', 'params': params}));
+      daemonStreams.inputs
+          .add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'emulator.launch', 'params': params}));
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
       expect(response.data['id'], 0);
       expect(response.data['error'], contains('coldBoot is not a bool'));
     });
 
     testUsingContext('emulator.getEmulators should respond with list', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'emulator.getEmulators'}));
       final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere(_notEvent);
       expect(response.data['id'], 0);
@@ -565,114 +488,124 @@ void main() {
       const String originalUrl = 'http://localhost:1234/';
       const String mappedUrl = 'https://publichost:4321/';
 
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
 
       // Respond to any requests from the daemon to expose a URL.
       unawaited(daemonStreams.outputs.stream
-        .firstWhere((DaemonMessage request) => request.data['method'] == 'app.exposeUrl')
-        .then((DaemonMessage request) {
-          expect((request.data['params']! as Map<String, Object?>)['url'], equals(originalUrl));
-          daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': request.data['id'], 'result': <String, Object?>{'url': mappedUrl}}));
-        })
-      );
+          .firstWhere((DaemonMessage request) => request.data['method'] == 'app.exposeUrl')
+          .then((DaemonMessage request) {
+            expect((request.data['params']! as Map<String, Object?>)['url'], equals(originalUrl));
+            daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
+              'id': request.data['id'],
+              'result': <String, Object?>{'url': mappedUrl},
+            }));
+          }));
 
       final String exposedUrl = await daemon.daemonDomain.exposeUrl(originalUrl);
       expect(exposedUrl, equals(mappedUrl));
     });
 
-    testUsingContext('devtools.serve command should return host and port on success', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+    testUsingContext(
+      'devtools.serve command should return host and port on success',
+      () async {
+        daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
 
-      daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'devtools.serve'}));
-      final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere((DaemonMessage response) => response.data['id'] == 0);
-      final Map<String, Object?> result = response.data['result']! as Map<String, Object?>;
-      expect(result, isNotEmpty);
-      expect(result['host'], '127.0.0.1');
-      expect(result['port'], 1234);
-    }, overrides: <Type, Generator>{
-      DevtoolsLauncher: () => FakeDevtoolsLauncher(DevToolsServerAddress('127.0.0.1', 1234)),
-    });
+        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'devtools.serve'}));
+        final DaemonMessage response =
+            await daemonStreams.outputs.stream.firstWhere((DaemonMessage response) => response.data['id'] == 0);
+        final Map<String, Object?> result = response.data['result']! as Map<String, Object?>;
+        expect(result, isNotEmpty);
+        expect(result['host'], '127.0.0.1');
+        expect(result['port'], 1234);
+      },
+      overrides: <Type, Generator>{
+        DevtoolsLauncher: () => FakeDevtoolsLauncher(DevToolsServerAddress('127.0.0.1', 1234)),
+      },
+    );
 
     testUsingContext('devtools.serve command should return null fields if null returned', () async {
-      daemon = Daemon(
-        daemonConnection,
-        notifyingLogger: notifyingLogger,
-      );
+      daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
 
       daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'devtools.serve'}));
-      final DaemonMessage response = await daemonStreams.outputs.stream.firstWhere((DaemonMessage response) => response.data['id'] == 0);
+      final DaemonMessage response =
+          await daemonStreams.outputs.stream.firstWhere((DaemonMessage response) => response.data['id'] == 0);
       final Map<String, Object?> result = response.data['result']! as Map<String, Object?>;
       expect(result, isNotEmpty);
       expect(result['host'], null);
       expect(result['port'], null);
-    }, overrides: <Type, Generator>{
-      DevtoolsLauncher: () => FakeDevtoolsLauncher(null),
-    });
+    }, overrides: <Type, Generator>{DevtoolsLauncher: () => FakeDevtoolsLauncher(null)});
 
-    testUsingContext('proxy.connect tries to connect to an ipv4 address and proxies the connection correctly', () async {
-      final TestIOOverrides ioOverrides = TestIOOverrides();
-      await io.IOOverrides.runWithIOOverrides(() async {
-        final FakeSocket socket = FakeSocket();
-        bool connectCalled = false;
-        int? connectPort;
-        ioOverrides.connectCallback = (Object? host, int port) async {
-          connectCalled = true;
-          connectPort = port;
-          if (host == io.InternetAddress.loopbackIPv4) {
-            return socket;
-          }
-          throw const io.SocketException('fail');
-        };
+    testUsingContext(
+      'proxy.connect tries to connect to an ipv4 address and proxies the connection correctly',
+      () async {
+        final TestIOOverrides ioOverrides = TestIOOverrides();
+        await io.IOOverrides.runWithIOOverrides(() async {
+          final FakeSocket socket = FakeSocket();
+          bool connectCalled = false;
+          int? connectPort;
+          ioOverrides.connectCallback = (Object? host, int port) async {
+            connectCalled = true;
+            connectPort = port;
+            if (host == io.InternetAddress.loopbackIPv4) {
+              return socket;
+            }
+            throw const io.SocketException('fail');
+          };
 
-        daemon = Daemon(
-          daemonConnection,
-          notifyingLogger: notifyingLogger,
-        );
-        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'proxy.connect', 'params': <String, Object?>{'port': 123}}));
+          daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
+          daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
+            'id': 0,
+            'method': 'proxy.connect',
+            'params': <String, Object?>{'port': 123},
+          }));
 
-        final Stream<DaemonMessage> broadcastOutput = daemonStreams.outputs.stream.asBroadcastStream();
-        final DaemonMessage firstResponse = await broadcastOutput.firstWhere(_notEvent);
-        expect(firstResponse.data['id'], 0);
-        expect(firstResponse.data['result'], isNotNull);
-        expect(connectCalled, true);
-        expect(connectPort, 123);
+          final Stream<DaemonMessage> broadcastOutput = daemonStreams.outputs.stream.asBroadcastStream();
+          final DaemonMessage firstResponse = await broadcastOutput.firstWhere(_notEvent);
+          expect(firstResponse.data['id'], 0);
+          expect(firstResponse.data['result'], isNotNull);
+          expect(connectCalled, true);
+          expect(connectPort, 123);
 
-        final Object? id = firstResponse.data['result'];
+          final Object? id = firstResponse.data['result'];
 
-        // Can send received data as event.
-        socket.controller.add(Uint8List.fromList(<int>[10, 11, 12]));
-        final DaemonMessage dataEvent = await broadcastOutput.firstWhere(
-          (DaemonMessage message) => message.data['event'] != null && message.data['event'] == 'proxy.data.$id',
-        );
-        expect(dataEvent.binary, isNotNull);
-        final List<List<int>> data = await dataEvent.binary!.toList();
-        expect(data[0], <int>[10, 11, 12]);
+          // Can send received data as event.
+          socket.controller.add(Uint8List.fromList(<int>[10, 11, 12]));
+          final DaemonMessage dataEvent = await broadcastOutput.firstWhere(
+            (DaemonMessage message) => message.data['event'] != null && message.data['event'] == 'proxy.data.$id',
+          );
+          expect(dataEvent.binary, isNotNull);
+          final List<List<int>> data = await dataEvent.binary!.toList();
+          expect(data[0], <int>[10, 11, 12]);
 
-        // Can proxy data to the socket.
-        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'proxy.write', 'params': <String, Object?>{'id': id}}, Stream<List<int>>.value(<int>[21, 22, 23])));
-        await pumpEventQueue();
-        expect(socket.addedData[0], <int>[21, 22, 23]);
+          // Can proxy data to the socket.
+          daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
+            'id': 0,
+            'method': 'proxy.write',
+            'params': <String, Object?>{'id': id},
+          }, Stream<List<int>>.value(<int>[21, 22, 23])));
+          await pumpEventQueue();
+          expect(socket.addedData[0], <int>[21, 22, 23]);
 
-        // Closes the connection when disconnect request received.
-        expect(socket.closeCalled, false);
-        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'proxy.disconnect', 'params': <String, Object?>{'id': id}}));
-        await pumpEventQueue();
-        expect(socket.closeCalled, true);
+          // Closes the connection when disconnect request received.
+          expect(socket.closeCalled, false);
+          daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
+            'id': 0,
+            'method': 'proxy.disconnect',
+            'params': <String, Object?>{'id': id},
+          }));
+          await pumpEventQueue();
+          expect(socket.closeCalled, true);
 
-        // Sends disconnected event when socket.done completer finishes.
-        socket.doneCompleter.complete(true);
-        final DaemonMessage disconnectEvent = await broadcastOutput.firstWhere(
-          (DaemonMessage message) => message.data['event'] != null && message.data['event'] == 'proxy.disconnected.$id',
-        );
-        expect(disconnectEvent.data, isNotNull);
-      }, ioOverrides);
-    });
+          // Sends disconnected event when socket.done completer finishes.
+          socket.doneCompleter.complete(true);
+          final DaemonMessage disconnectEvent = await broadcastOutput.firstWhere(
+            (DaemonMessage message) =>
+                message.data['event'] != null && message.data['event'] == 'proxy.disconnected.$id',
+          );
+          expect(disconnectEvent.data, isNotNull);
+        }, ioOverrides);
+      },
+    );
 
     testUsingContext('proxy.connect connects to ipv6 if ipv4 failed', () async {
       final TestIOOverrides ioOverrides = TestIOOverrides();
@@ -690,11 +623,12 @@ void main() {
           throw const io.SocketException('fail');
         };
 
-        daemon = Daemon(
-          daemonConnection,
-          notifyingLogger: notifyingLogger,
-        );
-        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'proxy.connect', 'params': <String, Object?>{'port': 123}}));
+        daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
+        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
+          'id': 0,
+          'method': 'proxy.connect',
+          'params': <String, Object?>{'port': 123},
+        }));
 
         final Stream<DaemonMessage> broadcastOutput = daemonStreams.outputs.stream.asBroadcastStream();
         final DaemonMessage firstResponse = await broadcastOutput.firstWhere(_notEvent);
@@ -710,11 +644,12 @@ void main() {
       await io.IOOverrides.runWithIOOverrides(() async {
         ioOverrides.connectCallback = (Object? host, int port) => throw const io.SocketException('fail');
 
-        daemon = Daemon(
-          daemonConnection,
-          notifyingLogger: notifyingLogger,
-        );
-        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{'id': 0, 'method': 'proxy.connect', 'params': <String, Object?>{'port': 123}}));
+        daemon = Daemon(daemonConnection, notifyingLogger: notifyingLogger);
+        daemonStreams.inputs.add(DaemonMessage(<String, Object?>{
+          'id': 0,
+          'method': 'proxy.connect',
+          'params': <String, Object?>{'port': 123},
+        }));
 
         final Stream<DaemonMessage> broadcastOutput = daemonStreams.outputs.stream.asBroadcastStream();
         final DaemonMessage firstResponse = await broadcastOutput.firstWhere(_notEvent);
@@ -780,9 +715,7 @@ void main() {
       queue = DebounceOperationQueue<int, String>();
     });
 
-    testWithoutContext(
-        'debounces/merges same operation type and returns same result',
-        () async {
+    testWithoutContext('debounces/merges same operation type and returns same result', () async {
       await _runFakeAsync((FakeAsync time) async {
         final List<Future<int>> operations = <Future<int>>[
           queue.queueAndDebounce('OP1', debounceDuration, () async => 1),
@@ -796,13 +729,13 @@ void main() {
       });
     });
 
-    testWithoutContext('does not merge results outside of the debounce duration',
-        () async {
+    testWithoutContext('does not merge results outside of the debounce duration', () async {
       await _runFakeAsync((FakeAsync time) async {
         final List<Future<int>> operations = <Future<int>>[
           queue.queueAndDebounce('OP1', debounceDuration, () async => 1),
-          Future<void>.delayed(debounceDuration * 2).then((_) =>
-              queue.queueAndDebounce('OP1', debounceDuration, () async => 2)),
+          Future<void>.delayed(debounceDuration * 2).then(
+            (_) => queue.queueAndDebounce('OP1', debounceDuration, () async => 2),
+          ),
         ];
 
         time.elapse(debounceDuration * 5);
@@ -812,8 +745,7 @@ void main() {
       });
     });
 
-    testWithoutContext('does not merge results of different operations',
-        () async {
+    testWithoutContext('does not merge results of different operations', () async {
       await _runFakeAsync((FakeAsync time) async {
         final List<Future<int>> operations = <Future<int>>[
           queue.queueAndDebounce('OP1', debounceDuration, () async => 1),
@@ -861,21 +793,21 @@ bool _notEvent(DaemonMessage message) => message.data['event'] == null;
 bool _isConnectedEvent(DaemonMessage message) => message.data['event'] == 'daemon.connected';
 
 class FakeFuchsiaWorkflow extends Fake implements FuchsiaWorkflow {
-  FakeFuchsiaWorkflow({ this.canListDevices = true });
+  FakeFuchsiaWorkflow({this.canListDevices = true});
 
   @override
   final bool canListDevices;
 }
 
 class FakeAndroidWorkflow extends Fake implements AndroidWorkflow {
-  FakeAndroidWorkflow({ this.canListDevices = true });
+  FakeAndroidWorkflow({this.canListDevices = true});
 
   @override
   final bool canListDevices;
 }
 
 class FakeIOSWorkflow extends Fake implements IOSWorkflow {
-  FakeIOSWorkflow({ this.canListDevices = true });
+  FakeIOSWorkflow({this.canListDevices = true});
 
   @override
   final bool canListDevices;
@@ -948,10 +880,7 @@ class FakeAndroidDevice extends Fake implements AndroidDevice {
 
   late DeviceLogReader logReader;
   @override
-  FutureOr<DeviceLogReader> getLogReader({
-    ApplicationPackage? app,
-    bool includePastLogs = false,
-  }) => logReader;
+  FutureOr<DeviceLogReader> getLogReader({ApplicationPackage? app, bool includePastLogs = false}) => logReader;
 
   ApplicationPackage? startAppPackage;
   late LaunchResult launchResult;
@@ -973,10 +902,7 @@ class FakeAndroidDevice extends Fake implements AndroidDevice {
 
   ApplicationPackage? stopAppPackage;
   @override
-  Future<bool> stopApp(
-    ApplicationPackage? app, {
-    String? userIdentifier,
-  }) async {
+  Future<bool> stopApp(ApplicationPackage? app, {String? userIdentifier}) async {
     stopAppPackage = app;
     return true;
   }
@@ -1035,7 +961,6 @@ class FakeDeviceLogReader implements DeviceLogReader {
 
   @override
   String get name => 'device';
-
 }
 
 class FakeDevtoolsLauncher extends Fake implements DevtoolsLauncher {
@@ -1056,7 +981,11 @@ class FakeApplicationPackageFactory implements ApplicationPackageFactory {
   ApplicationPackage? applicationPackage;
 
   @override
-  Future<ApplicationPackage?> getPackageForPlatform(TargetPlatform platform, {BuildInfo? buildInfo, File? applicationBinary}) async {
+  Future<ApplicationPackage?> getPackageForPlatform(
+    TargetPlatform platform, {
+    BuildInfo? buildInfo,
+    File? applicationBinary,
+  }) async {
     platformRequested = platform;
     applicationBinaryRequested = applicationBinary;
     return applicationPackage;
@@ -1069,8 +998,13 @@ class TestIOOverrides extends io.IOOverrides {
   late Future<io.Socket> Function(Object? host, int port) connectCallback;
 
   @override
-  Future<io.Socket> socketConnect(Object? host, int port,
-      {Object? sourceAddress, int sourcePort = 0, Duration? timeout}) {
+  Future<io.Socket> socketConnect(
+    Object? host,
+    int port, {
+    Object? sourceAddress,
+    int sourcePort = 0,
+    Duration? timeout,
+  }) {
     return connectCallback(host, port);
   }
 }

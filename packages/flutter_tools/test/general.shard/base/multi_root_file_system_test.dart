@@ -11,11 +11,7 @@ import 'package:flutter_tools/src/base/multi_root_file_system.dart';
 
 import '../../src/common.dart';
 
-void setupFileSystem({
-  required MemoryFileSystem fs,
-  required List<String> directories,
-  required List<String> files,
-}) {
+void setupFileSystem({required MemoryFileSystem fs, required List<String> directories, required List<String> files}) {
   for (final String directory in directories) {
     fs.directory(directory).createSync(recursive: true);
   }
@@ -63,14 +59,7 @@ void runTest(FileSystemStyle style) {
       ],
     );
 
-    fs = MultiRootFileSystem(
-      delegate: memory,
-      scheme: 'scheme',
-      roots: <String>[
-        '${root}foo$sep',
-        '${root}bar',
-      ],
-    );
+    fs = MultiRootFileSystem(delegate: memory, scheme: 'scheme', roots: <String>['${root}foo$sep', '${root}bar']);
   });
 
   testWithoutContext('file inside root', () {
@@ -89,8 +78,7 @@ void runTest(FileSystemStyle style) {
 
   testWithoutContext('file outside root', () {
     final File file = fs.file('${root}other${sep}directory${sep}file');
-    expect(file.readAsStringSync(),
-        'Content: ${root}other${sep}directory${sep}file');
+    expect(file.readAsStringSync(), 'Content: ${root}other${sep}directory${sep}file');
     expect(file.path, '${root}other${sep}directory${sep}file');
     expect(file.uri, Uri.parse('file:///${rootUri}other/directory/file'));
   });
@@ -132,16 +120,14 @@ void runTest(FileSystemStyle style) {
 
   testWithoutContext('file with scheme in subdirectory', () {
     final File file = fs.file(Uri.parse('scheme:///subdir/in_subdir'));
-    expect(file.readAsStringSync(),
-        'Content: ${root}foo${sep}subdir${sep}in_subdir');
+    expect(file.readAsStringSync(), 'Content: ${root}foo${sep}subdir${sep}in_subdir');
     expect(file.path, '${root}foo${sep}subdir${sep}in_subdir');
     expect(file.uri, Uri.parse('scheme:///subdir/in_subdir'));
   });
 
   testWithoutContext('file in second root with scheme in subdirectory', () {
     final File file = fs.file(Uri.parse('scheme:///bar_subdir/in_subdir'));
-    expect(file.readAsStringSync(),
-        'Content: ${root}bar${sep}bar_subdir${sep}in_subdir');
+    expect(file.readAsStringSync(), 'Content: ${root}bar${sep}bar_subdir${sep}in_subdir');
     expect(file.path, '${root}bar${sep}bar_subdir${sep}in_subdir');
     expect(file.uri, Uri.parse('scheme:///bar_subdir/in_subdir'));
   });

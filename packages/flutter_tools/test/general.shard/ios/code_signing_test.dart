@@ -51,9 +51,7 @@ void main() {
 
     testWithoutContext('No discovery if development team specified in Xcode project', () async {
       final Map<String, String>? signingConfigs = await getCodeSigningIdentityDevelopmentTeamBuildSetting(
-        buildSettings: <String, String>{
-          'DEVELOPMENT_TEAM': 'abc',
-        },
+        buildSettings: <String, String>{'DEVELOPMENT_TEAM': 'abc'},
         platform: macosPlatform,
         processManager: FakeProcessManager.empty(),
         logger: logger,
@@ -62,16 +60,13 @@ void main() {
       );
       expect(signingConfigs, isNull);
       expect(logger.statusText, equals(
-        'Automatically signing iOS for device deployment using specified development team in Xcode project: abc\n'
+        'Automatically signing iOS for device deployment using specified development team in Xcode project: abc\n',
       ));
     });
 
     testWithoutContext('No auto-sign if security or openssl not available', () async {
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-          exitCode: 1,
-        ),
+        const FakeCommand(command: <String>['which', 'security'], exitCode: 1),
       ]);
 
       final String? developmentTeam = await getCodeSigningIdentityDevelopmentTeam(
@@ -87,15 +82,9 @@ void main() {
 
     testWithoutContext('No valid code signing certificates', () async {
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
-        const FakeCommand(
-          command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
+        const FakeCommand(command: <String>['security', 'find-identity', '-p', 'codesigning', '-v']),
       ]);
 
       final String? developmentTeam = await getCodeSigningIdentityDevelopmentTeam(
@@ -112,25 +101,22 @@ void main() {
 
     testWithoutContext('No valid code signing certificates shows instructions', () async {
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
-        const FakeCommand(
-          command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
+        const FakeCommand(command: <String>['security', 'find-identity', '-p', 'codesigning', '-v']),
       ]);
 
-      await expectLater(() => getCodeSigningIdentityDevelopmentTeamBuildSetting(
-        buildSettings: <String, String>{},
-        platform: macosPlatform,
-        processManager: processManager,
-        logger: logger,
-        config: testConfig,
-        terminal: testTerminal,
-      ), throwsToolExit(message: 'No development certificates available to code sign app for device deployment'));
+      await expectLater(
+        () => getCodeSigningIdentityDevelopmentTeamBuildSetting(
+          buildSettings: <String, String>{},
+          platform: macosPlatform,
+          processManager: processManager,
+          logger: logger,
+          config: testConfig,
+          terminal: testTerminal,
+        ),
+        throwsToolExit(message: 'No development certificates available to code sign app for device deployment'),
+      );
     });
 
     testWithoutContext('No valid code signing certificates on non-macOS platform', () async {
@@ -155,12 +141,8 @@ void main() {
 1) 86f7e437faa5a7fce15d1ddcb9eaeaea377667b8 "iPhone Developer: Profile 1 (1111AAAA11)"
     1 valid identities found''';
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
         const FakeCommand(
           command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
           stdout: certificates,
@@ -185,9 +167,7 @@ void main() {
       });
 
       final Map<String, String>? signingConfigs = await getCodeSigningIdentityDevelopmentTeamBuildSetting(
-        buildSettings: <String, String>{
-          'bogus': 'bogus',
-        },
+        buildSettings: <String, String>{'bogus': 'bogus'},
         platform: macosPlatform,
         processManager: processManager,
         logger: logger,
@@ -209,12 +189,8 @@ void main() {
 1) 86f7e437faa5a7fce15d1ddcb9eaeaea377667b8 "iPhone Developer: Profile 1 (1111AAAA11)"
     1 valid identities found''';
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
         const FakeCommand(
           command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
           stdout: certificates,
@@ -260,12 +236,8 @@ void main() {
 1) 86f7e437faa5a7fce15d1ddcb9eaeaea377667b8 "Apple Development: Profile 1 (1111AAAA11)"
     1 valid identities found''';
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
         const FakeCommand(
           command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
           stdout: certificates,
@@ -309,12 +281,8 @@ void main() {
       final StreamController<List<int>> controller = StreamController<List<int>>();
       mockTerminalStdInStream = Stream<String>.value('3');
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
         const FakeCommand(
           command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
           stdout: kCertificates,
@@ -346,14 +314,10 @@ void main() {
         terminal: testTerminal,
       );
 
-      expect(
-        logger.statusText,
-        contains('Please select a certificate for code signing [<bold>1</bold>|2|3|a]: 3'),
-      );
-      expect(
-        logger.statusText,
-        contains('Signing iOS app for device deployment using developer identity: "iPhone Developer: Profile 3 (3333CCCC33)"'),
-      );
+      expect(logger.statusText, contains('Please select a certificate for code signing [<bold>1</bold>|2|3|a]: 3'));
+      expect(logger.statusText, contains(
+        'Signing iOS app for device deployment using developer identity: "iPhone Developer: Profile 3 (3333CCCC33)"',
+      ));
       expect(logger.errorText, isEmpty);
       expect(stdin, 'This is a fake certificate');
       expect(developmentTeam, '4444DDDD44');
@@ -366,12 +330,8 @@ void main() {
       final Completer<void> completer = Completer<void>();
       final StreamController<List<int>> controller = StreamController<List<int>>();
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
         const FakeCommand(
           command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
           stdout: kCertificates,
@@ -403,10 +363,9 @@ void main() {
         terminal: testTerminal,
       );
 
-      expect(
-        logger.statusText,
-        contains('Signing iOS app for device deployment using developer identity: "iPhone Developer: Profile 1 (1111AAAA11)"'),
-      );
+      expect(logger.statusText, contains(
+        'Signing iOS app for device deployment using developer identity: "iPhone Developer: Profile 1 (1111AAAA11)"',
+      ));
       expect(logger.errorText, isEmpty);
       expect(stdin, 'This is a fake certificate');
       expect(developmentTeam, '5555EEEE55');
@@ -418,12 +377,8 @@ void main() {
       final Completer<void> completer = Completer<void>();
       final StreamController<List<int>> controller = StreamController<List<int>>();
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
         const FakeCommand(
           command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
           stdout: kCertificates,
@@ -455,14 +410,12 @@ void main() {
         terminal: testTerminal,
       );
 
-      expect(
-        logger.statusText,
-        contains('Found saved certificate choice "iPhone Developer: Profile 3 (3333CCCC33)". To clear, use "flutter config"'),
-      );
-      expect(
-        logger.statusText,
-        contains('Signing iOS app for device deployment using developer identity: "iPhone Developer: Profile 3 (3333CCCC33)"'),
-      );
+      expect(logger.statusText, contains(
+        'Found saved certificate choice "iPhone Developer: Profile 3 (3333CCCC33)". To clear, use "flutter config"',
+      ));
+      expect(logger.statusText, contains(
+        'Signing iOS app for device deployment using developer identity: "iPhone Developer: Profile 3 (3333CCCC33)"',
+      ));
       expect(logger.errorText, isEmpty);
       expect(stdin, 'This is a fake certificate');
       expect(developmentTeam, '4444DDDD44');
@@ -475,12 +428,8 @@ void main() {
       final Completer<void> completer = Completer<void>();
       final StreamController<List<int>> controller = StreamController<List<int>>();
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
         const FakeCommand(
           command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
           stdout: kCertificates,
@@ -512,14 +461,10 @@ void main() {
         terminal: testTerminal,
       );
 
-      expect(
-        logger.errorText,
-        containsIgnoringWhitespace('Saved signing certificate "iPhone Developer: Invalid Profile" is not a valid development certificate'),
-      );
-      expect(
-        logger.statusText,
-        contains('Certificate choice "iPhone Developer: Profile 3 (3333CCCC33)"'),
-      );
+      expect(logger.errorText, containsIgnoringWhitespace(
+        'Saved signing certificate "iPhone Developer: Invalid Profile" is not a valid development certificate',
+      ));
+      expect(logger.statusText, contains('Certificate choice "iPhone Developer: Profile 3 (3333CCCC33)"'));
       expect(developmentTeam, '4444DDDD44');
       expect(stdin, 'This is a fake certificate');
       expect(testConfig.getValue('ios-signing-cert'), 'iPhone Developer: Profile 3 (3333CCCC33)');
@@ -528,16 +473,9 @@ void main() {
 
     testWithoutContext('find-identity failure', () async {
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
-        const FakeCommand(
-          command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
-          exitCode: 1,
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
+        const FakeCommand(command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'], exitCode: 1),
       ]);
 
       final String? developmentTeam = await getCodeSigningIdentityDevelopmentTeam(
@@ -555,20 +493,13 @@ void main() {
       mockTerminalStdInStream = Stream<String>.value('3');
 
       final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['which', 'security'],
-        ),
-        const FakeCommand(
-          command: <String>['which', 'openssl'],
-        ),
+        const FakeCommand(command: <String>['which', 'security']),
+        const FakeCommand(command: <String>['which', 'openssl']),
         const FakeCommand(
           command: <String>['security', 'find-identity', '-p', 'codesigning', '-v'],
           stdout: kCertificates,
         ),
-        const FakeCommand(
-          command: <String>['security', 'find-certificate', '-c', '3333CCCC33', '-p'],
-          exitCode: 1,
-        ),
+        const FakeCommand(command: <String>['security', 'find-certificate', '-c', '3333CCCC33', '-p'], exitCode: 1),
       ]);
 
       final String? developmentTeam = await getCodeSigningIdentityDevelopmentTeam(

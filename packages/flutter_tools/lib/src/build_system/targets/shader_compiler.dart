@@ -52,7 +52,7 @@ class DevelopmentShaderCompiler {
 
   /// Configure the output format of the shader compiler for a particular
   /// flutter device.
-  void configureCompiler(TargetPlatform? platform, { required ImpellerStatus impellerStatus }) {
+  void configureCompiler(TargetPlatform? platform, {required ImpellerStatus impellerStatus}) {
     switch (platform) {
       case TargetPlatform.ios:
         _shaderTarget = ShaderTarget.impelleriOS;
@@ -61,9 +61,7 @@ class DevelopmentShaderCompiler {
       case TargetPlatform.android_x86:
       case TargetPlatform.android_arm:
       case TargetPlatform.android:
-        _shaderTarget = impellerStatus == ImpellerStatus.enabled
-          ? ShaderTarget.impellerAndroid
-          : ShaderTarget.sksl;
+        _shaderTarget = impellerStatus == ImpellerStatus.enabled ? ShaderTarget.impellerAndroid : ShaderTarget.sksl;
       case TargetPlatform.darwin:
       case TargetPlatform.linux_x64:
       case TargetPlatform.linux_arm64:
@@ -164,9 +162,7 @@ class ShaderCompiler {
     bool fatal = true,
     required bool json,
   }) async {
-    final File impellerc = _fs.file(
-      _artifacts.getHostArtifact(HostArtifact.impellerc),
-    );
+    final File impellerc = _fs.file(_artifacts.getHostArtifact(HostArtifact.impellerc));
     if (!impellerc.existsSync()) {
       throw ShaderCompilerException._(
         'The impellerc utility is missing at "${impellerc.path}". '
@@ -179,8 +175,7 @@ class ShaderCompiler {
       impellerc.path,
       target.target,
       '--iplr',
-      if (json)
-        '--json',
+      if (json) '--json',
       '--sl=$outputPath',
       '--spirv=$outputPath.spirv',
       '--input=${input.path}',

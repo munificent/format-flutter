@@ -8,16 +8,8 @@ class MakeHostAppEditableCommand extends FlutterCommand {
   MakeHostAppEditableCommand() {
     requiresPubspecYaml();
 
-    argParser.addFlag(
-      'ios',
-      help: "Whether to make this project's iOS app editable.",
-      negatable: false,
-    );
-    argParser.addFlag(
-      'android',
-      help: "Whether ot make this project's Android app editable.",
-      negatable: false,
-    );
+    argParser.addFlag('ios', help: "Whether to make this project's iOS app editable.", negatable: false);
+    argParser.addFlag('android', help: "Whether ot make this project's Android app editable.", negatable: false);
   }
 
   @override
@@ -27,7 +19,8 @@ class MakeHostAppEditableCommand extends FlutterCommand {
   bool get deprecated => true;
 
   @override
-  final String description = 'Moves host apps from generated directories to non-generated directories so that they can be edited by developers.';
+  final String description =
+      'Moves host apps from generated directories to non-generated directories so that they can be edited by developers.';
 
   @override
   Future<FlutterCommandResult> runCommand() async {

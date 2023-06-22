@@ -63,7 +63,8 @@ const String _resourceFileAfter = '''
 /// See https://github.com/flutter/flutter/issues/73652.
 class VersionMigration extends ProjectMigrator {
   VersionMigration(WindowsProject project, super.logger)
-    : _cmakeFile = project.runnerCmakeFile, _resourceFile = project.runnerResourceFile;
+    : _cmakeFile = project.runnerCmakeFile,
+      _resourceFile = project.runnerResourceFile;
 
   final File _cmakeFile;
   final File _resourceFile;
@@ -97,11 +98,7 @@ This indicates non-trivial changes have been made to the Windows runner in the
 
     // Migrate the windows/runner/CMakeLists.txt file.
     final String originalCmakeContents = _cmakeFile.readAsStringSync();
-    final String newCmakeContents = replaceFirst(
-      originalCmakeContents,
-      _cmakeFileBefore,
-      _cmakeFileAfter,
-    );
+    final String newCmakeContents = replaceFirst(originalCmakeContents, _cmakeFileBefore, _cmakeFileAfter);
     if (originalCmakeContents != newCmakeContents) {
       logger.printStatus('windows/runner/CMakeLists.txt does not define version information, updating.');
       _cmakeFile.writeAsStringSync(newCmakeContents);
@@ -115,9 +112,7 @@ This indicates non-trivial changes have been made to the Windows runner in the
       _resourceFileAfter,
     );
     if (originalResourceFileContents != newResourceFileContents) {
-      logger.printStatus(
-        'windows/runner/Runner.rc does not use Flutter version information, updating.',
-      );
+      logger.printStatus('windows/runner/Runner.rc does not use Flutter version information, updating.');
       _resourceFile.writeAsStringSync(newResourceFileContents);
     }
   }

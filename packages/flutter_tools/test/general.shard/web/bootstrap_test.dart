@@ -9,10 +9,7 @@ import '../../src/common.dart';
 
 void main() {
   test('generateBootstrapScript embeds urls correctly', () {
-    final String result = generateBootstrapScript(
-      requireUrl: 'require.js',
-      mapperUrl: 'mapper.js',
-    );
+    final String result = generateBootstrapScript(requireUrl: 'require.js', mapperUrl: 'mapper.js');
     // require js source is interpolated correctly.
     expect(result, contains('"requireJs": "require.js"'));
     expect(result, contains('requireEl.src = getTTScriptUrl("requireJs");'));
@@ -24,20 +21,14 @@ void main() {
   });
 
   test('generateBootstrapScript includes loading indicator', () {
-    final String result = generateBootstrapScript(
-      requireUrl: 'require.js',
-      mapperUrl: 'mapper.js',
-    );
+    final String result = generateBootstrapScript(requireUrl: 'require.js', mapperUrl: 'mapper.js');
     expect(result, contains('"flutter-loader"'));
     expect(result, contains('"indeterminate"'));
   });
 
   // https://github.com/flutter/flutter/issues/107742
   test('generateBootstrapScript loading indicator does not trigger scrollbars', () {
-    final String result = generateBootstrapScript(
-      requireUrl: 'require.js',
-      mapperUrl: 'mapper.js',
-    );
+    final String result = generateBootstrapScript(requireUrl: 'require.js', mapperUrl: 'mapper.js');
 
     // See: https://regexr.com/6q0ft
     final RegExp regex = RegExp(r'(?:\.flutter-loader\s*\{)[^}]+(?:overflow\:\s*hidden;)[^}]+}');
@@ -56,8 +47,9 @@ void main() {
     // See: https://regexr.com/6q0kp
     final RegExp regex = RegExp(
       r'(?:require\.config\(\{)(?:.|\s(?!\}\);))*'
-        r'(?:waitSeconds\:\s*0[,]?)'
-      r'(?:(?!\}\);).|\s)*\}\);');
+      r'(?:waitSeconds\:\s*0[,]?)'
+      r'(?:(?!\}\);).|\s)*\}\);',
+    );
 
     expect(result, matches(regex), reason: 'require.config must have a waitSeconds: 0 config entry');
   });
@@ -69,8 +61,10 @@ void main() {
       nativeNullAssertions: false,
     );
     // bootstrap main module has correct defined module.
-    expect(result, contains('define("main_module.bootstrap", ["foo/bar/main.js", "dart_sdk"], '
-      'function(app, dart_sdk) {'));
+    expect(result, contains(
+      'define("main_module.bootstrap", ["foo/bar/main.js", "dart_sdk"], '
+      'function(app, dart_sdk) {',
+    ));
   });
 
   test('generateMainModule can set bootstrap name', () {
@@ -81,8 +75,10 @@ void main() {
       bootstrapModule: 'foo_module.bootstrap',
     );
     // bootstrap main module has correct defined module.
-    expect(result, contains('define("foo_module.bootstrap", ["foo/bar/main.js", "dart_sdk"], '
-      'function(app, dart_sdk) {'));
+    expect(result, contains(
+      'define("foo_module.bootstrap", ["foo/bar/main.js", "dart_sdk"], '
+      'function(app, dart_sdk) {',
+    ));
   });
 
   test('generateMainModule includes null safety switches', () {

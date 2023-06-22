@@ -28,14 +28,14 @@ class MacOSDevice extends DesktopDevice {
        _logger = logger,
        _operatingSystemUtils = operatingSystemUtils,
        super(
-        'macos',
-        platformType: PlatformType.macos,
-        ephemeral: false,
-        processManager: processManager,
-        logger: logger,
-        fileSystem: fileSystem,
-        operatingSystemUtils: operatingSystemUtils,
-      );
+         'macos',
+         platformType: PlatformType.macos,
+         ephemeral: false,
+         processManager: processManager,
+         logger: logger,
+         fileSystem: fileSystem,
+         operatingSystemUtils: operatingSystemUtils,
+       );
 
   final ProcessManager _processManager;
   final Logger _logger;
@@ -67,10 +67,7 @@ class MacOSDevice extends DesktopDevice {
   }
 
   @override
-  Future<void> buildForDevice({
-    required BuildInfo buildInfo,
-    String? mainPath,
-  }) async {
+  Future<void> buildForDevice({required BuildInfo buildInfo, String? mainPath}) async {
     await buildMacOS(
       flutterProject: FlutterProject.current(),
       buildInfo: buildInfo,
@@ -95,9 +92,7 @@ class MacOSDevice extends DesktopDevice {
       _logger.printError('Failed to foreground app; application bundle not found');
       return;
     }
-    _processManager.run(<String>[
-      'open', applicationBundle,
-    ]).then((ProcessResult result) {
+    _processManager.run(<String>['open', applicationBundle]).then((ProcessResult result) {
       if (result.exitCode != 0) {
         _logger.printError('Failed to foreground app; open returned ${result.exitCode}');
       }
@@ -135,7 +130,7 @@ class MacOSDevices extends PollingDeviceDiscovery {
   bool get canListAnything => _macOSWorkflow.canListDevices;
 
   @override
-  Future<List<Device>> pollingGetDevices({ Duration? timeout }) async {
+  Future<List<Device>> pollingGetDevices({Duration? timeout}) async {
     if (!canListAnything) {
       return const <Device>[];
     }

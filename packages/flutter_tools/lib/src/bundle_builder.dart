@@ -51,9 +51,7 @@ class BundleBuilder {
       buildDir: project.dartTool.childDirectory('flutter_build'),
       cacheDir: globals.cache.getRoot(),
       flutterRootDir: globals.fs.directory(Cache.flutterRoot),
-      engineVersion: globals.artifacts!.isLocalEngine
-          ? null
-          : globals.flutterVersion.engineRevision,
+      engineVersion: globals.artifacts!.isLocalEngine ? null : globals.flutterVersion.engineRevision,
       defines: <String, String>{
         // used by the KernelSnapshot target
         kTargetPlatform: getNameForTargetPlatform(platform),
@@ -76,10 +74,9 @@ class BundleBuilder {
 
     if (!result.success) {
       for (final ExceptionMeasurement measurement in result.exceptions.values) {
-        globals.printError('Target ${measurement.target} failed: ${measurement.exception}',
-          stackTrace: measurement.fatal
-              ? measurement.stackTrace
-              : null,
+        globals.printError(
+          'Target ${measurement.target} failed: ${measurement.exception}',
+          stackTrace: measurement.fatal ? measurement.stackTrace : null,
         );
       }
       throwToolExit('Failed to build bundle.');
@@ -113,11 +110,8 @@ Future<AssetBundle?> buildAssets({
 
   // Build the asset bundle.
   final AssetBundle assetBundle = AssetBundleFactory.instance.createBundle();
-  final int result = await assetBundle.build(
-    manifestPath: manifestPath,
-    packagesPath: packagesPath,
-    targetPlatform: targetPlatform,
-  );
+  final int result =
+      await assetBundle.build(manifestPath: manifestPath, packagesPath: packagesPath, targetPlatform: targetPlatform);
   if (result != 0) {
     return null;
   }
@@ -139,7 +133,7 @@ Future<void> writeBundle(
     } on FileSystemException catch (err) {
       loggerOverride.printWarning(
         'Failed to clean up asset directory ${bundleDir.path}: $err\n'
-        'To clean build artifacts, use the command "flutter clean".'
+        'To clean build artifacts, use the command "flutter clean".',
       );
     }
   }
@@ -161,48 +155,44 @@ Future<void> writeBundle(
 
   // Limit number of open files to avoid running out of file descriptors.
   final Pool pool = Pool(64);
-  await Future.wait<void>(
-    assetEntries.entries.map<Future<void>>((MapEntry<String, DevFSContent> entry) async {
-      final PoolResource resource = await pool.request();
-      try {
-        // This will result in strange looking files, for example files with `/`
-        // on Windows or files that end up getting URI encoded such as `#.ext`
-        // to `%23.ext`. However, we have to keep it this way since the
-        // platform channels in the framework will URI encode these values,
-        // and the native APIs will look for files this way.
-        final File file = globals.fs.file(globals.fs.path.join(bundleDir.path, entry.key));
-        final AssetKind assetKind = entryKinds[entry.key] ?? AssetKind.regular;
-        file.parent.createSync(recursive: true);
-        final DevFSContent devFSContent = entry.value;
-        if (devFSContent is DevFSFileContent) {
-          final File input = devFSContent.file as File;
-          bool doCopy = true;
-          switch (assetKind) {
-            case AssetKind.regular:
-              break;
-            case AssetKind.font:
-              break;
-            case AssetKind.shader:
-              doCopy = !await shaderCompiler.compileShader(
-                input: input,
-                outputPath: file.path,
-                target: ShaderTarget.sksl, // TODO(zanderso): configure impeller target when enabled.
-                json: targetPlatform == TargetPlatform.web_javascript,
-              );
-            case AssetKind.model:
-              doCopy = !await sceneImporter.importScene(
-                input: input,
-                outputPath: file.path,
-              );
-          }
-          if (doCopy) {
-            input.copySync(file.path);
-          }
-        } else {
-          await file.writeAsBytes(await entry.value.contentsAsBytes());
+  await Future.wait<void>(assetEntries.entries.map<Future<void>>((MapEntry<String, DevFSContent> entry) async {
+    final PoolResource resource = await pool.request();
+    try {
+      // This will result in strange looking files, for example files with `/`
+      // on Windows or files that end up getting URI encoded such as `#.ext`
+      // to `%23.ext`. However, we have to keep it this way since the
+      // platform channels in the framework will URI encode these values,
+      // and the native APIs will look for files this way.
+      final File file = globals.fs.file(globals.fs.path.join(bundleDir.path, entry.key));
+      final AssetKind assetKind = entryKinds[entry.key] ?? AssetKind.regular;
+      file.parent.createSync(recursive: true);
+      final DevFSContent devFSContent = entry.value;
+      if (devFSContent is DevFSFileContent) {
+        final File input = devFSContent.file as File;
+        bool doCopy = true;
+        switch (assetKind) {
+          case AssetKind.regular:
+            break;
+          case AssetKind.font:
+            break;
+          case AssetKind.shader:
+            doCopy = !await shaderCompiler.compileShader(
+              input: input,
+              outputPath: file.path,
+              target: ShaderTarget.sksl, // TODO(zanderso): configure impeller target when enabled.
+              json: targetPlatform == TargetPlatform.web_javascript,
+            );
+          case AssetKind.model:
+            doCopy = !await sceneImporter.importScene(input: input, outputPath: file.path);
         }
-      } finally {
-        resource.release();
+        if (doCopy) {
+          input.copySync(file.path);
+        }
+      } else {
+        await file.writeAsBytes(await entry.value.contentsAsBytes());
       }
-    }));
+    } finally {
+      resource.release();
+    }
+  }));
 }

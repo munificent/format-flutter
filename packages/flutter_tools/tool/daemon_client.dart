@@ -21,10 +21,9 @@ Future<void> main() async {
   daemon = await Process.start('dart', <String>['bin/flutter_tools.dart', 'daemon']);
   print('daemon process started, pid: ${daemon.pid}');
 
-  daemon.stdout
-    .transform<String>(utf8.decoder)
-    .transform<String>(const LineSplitter())
-    .listen((String line) => print('<== $line'));
+  daemon.stdout.transform<String>(utf8.decoder).transform<String>(const LineSplitter()).listen(
+    (String line) => print('<== $line'),
+  );
   daemon.stderr.listen(stderr.add);
 
   stdout.write('> ');
@@ -38,11 +37,7 @@ Future<void> main() async {
     } else if (words.first == 'start') {
       _send(<String, dynamic>{
         'method': 'app.start',
-        'params': <String, dynamic>{
-          'deviceId': words[1],
-          'projectDirectory': words[2],
-          'launchMode': words[3],
-        },
+        'params': <String, dynamic>{'deviceId': words[1], 'projectDirectory': words[2], 'launchMode': words[3]},
       });
     } else if (words.first == 'stop') {
       if (words.length > 1) {
@@ -69,11 +64,7 @@ Future<void> main() async {
     } else if (words.first == 'emulator-launch') {
       _send(<String, dynamic>{
         'method': 'emulator.launch',
-        'params': <String, dynamic>{
-          'emulatorId': words[1],
-          if (words.contains('coldBoot'))
-            'coldBoot': true,
-        },
+        'params': <String, dynamic>{'emulatorId': words[1], if (words.contains('coldBoot')) 'coldBoot': true},
       });
     } else if (line == 'enable') {
       _send(<String, dynamic>{'method': 'device.enable'});

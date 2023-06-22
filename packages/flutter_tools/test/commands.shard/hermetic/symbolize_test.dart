@@ -38,19 +38,13 @@ void main() {
     final StreamController<List<int>> output = StreamController<List<int>>();
 
     unawaited(symbolizationService.decode(
-      input: Stream<Uint8List>.fromIterable(<Uint8List>[
-        utf8.encode('Hello, World\n') as Uint8List,
-      ]),
+      input: Stream<Uint8List>.fromIterable(<Uint8List>[utf8.encode('Hello, World\n') as Uint8List]),
       symbols: Uint8List(0),
       output: IOSink(output.sink),
     ));
 
-    await expectLater(
-      output.stream.transform(utf8.decoder),
-      emits('Hello, World'),
-    );
+    await expectLater(output.stream.transform(utf8.decoder), emits('Hello, World'));
   });
-
 
   testUsingContext('symbolize exits when --debug-info argument is missing', () async {
     final SymbolizeCommand command = SymbolizeCommand(
@@ -58,13 +52,10 @@ void main() {
       fileSystem: fileSystem,
       dwarfSymbolizationService: DwarfSymbolizationService.test(),
     );
-    final Future<void> result = createTestCommandRunner(command)
-      .run(const <String>['symbolize']);
+    final Future<void> result = createTestCommandRunner(command).run(const <String>['symbolize']);
 
     expect(result, throwsToolExit(message: '"--debug-info" is required to symbolize stack traces.'));
-  }, overrides: <Type, Generator>{
-    OutputPreferences: () => OutputPreferences.test(),
-  });
+  }, overrides: <Type, Generator>{OutputPreferences: () => OutputPreferences.test()});
 
   testUsingContext('symbolize exits when --debug-info dwarf file is missing', () async {
     final SymbolizeCommand command = SymbolizeCommand(
@@ -73,12 +64,10 @@ void main() {
       dwarfSymbolizationService: DwarfSymbolizationService.test(),
     );
     final Future<void> result = createTestCommandRunner(command)
-      .run(const <String>['symbolize', '--debug-info=app.debug']);
+        .run(const <String>['symbolize', '--debug-info=app.debug']);
 
     expect(result, throwsToolExit(message: 'app.debug does not exist.'));
-  }, overrides: <Type, Generator>{
-    OutputPreferences: () => OutputPreferences.test(),
-  });
+  }, overrides: <Type, Generator>{OutputPreferences: () => OutputPreferences.test()});
 
   testUsingContext('symbolize exits when --debug-info dSYM is missing', () async {
     final SymbolizeCommand command = SymbolizeCommand(
@@ -87,12 +76,10 @@ void main() {
       dwarfSymbolizationService: DwarfSymbolizationService.test(),
     );
     final Future<void> result = createTestCommandRunner(command)
-      .run(const <String>['symbolize', '--debug-info=app.dSYM']);
+        .run(const <String>['symbolize', '--debug-info=app.dSYM']);
 
     expect(result, throwsToolExit(message: 'app.dSYM does not exist.'));
-  }, overrides: <Type, Generator>{
-    OutputPreferences: () => OutputPreferences.test(),
-  });
+  }, overrides: <Type, Generator>{OutputPreferences: () => OutputPreferences.test()});
 
   testUsingContext('symbolize exits when --input file is missing', () async {
     final SymbolizeCommand command = SymbolizeCommand(
@@ -102,12 +89,10 @@ void main() {
     );
     fileSystem.file('app.debug').createSync();
     final Future<void> result = createTestCommandRunner(command)
-      .run(const <String>['symbolize', '--debug-info=app.debug', '--input=foo.stack', '--output=results/foo.result']);
+        .run(const <String>['symbolize', '--debug-info=app.debug', '--input=foo.stack', '--output=results/foo.result']);
 
     expect(result, throwsToolExit(message: ''));
-  }, overrides: <Type, Generator>{
-    OutputPreferences: () => OutputPreferences.test(),
-  });
+  }, overrides: <Type, Generator>{OutputPreferences: () => OutputPreferences.test()});
 
   testUsingContext('symbolize succeeds when DwarfSymbolizationService does not throw', () async {
     final SymbolizeCommand command = SymbolizeCommand(
@@ -119,13 +104,11 @@ void main() {
     fileSystem.file('foo.stack').writeAsStringSync('hello');
 
     await createTestCommandRunner(command)
-      .run(const <String>['symbolize', '--debug-info=app.debug', '--input=foo.stack', '--output=results/foo.result']);
+        .run(const <String>['symbolize', '--debug-info=app.debug', '--input=foo.stack', '--output=results/foo.result']);
 
     expect(fileSystem.file('results/foo.result'), exists);
     expect(fileSystem.file('results/foo.result').readAsBytesSync(), <int>[104, 101, 108, 108, 111, 10]); // hello
-  }, overrides: <Type, Generator>{
-    OutputPreferences: () => OutputPreferences.test(),
-  });
+  }, overrides: <Type, Generator>{OutputPreferences: () => OutputPreferences.test()});
 
   testUsingContext('symbolize throws when DwarfSymbolizationService throws', () async {
     final SymbolizeCommand command = SymbolizeCommand(
@@ -139,22 +122,19 @@ void main() {
 
     expect(
       createTestCommandRunner(command).run(const <String>[
-        'symbolize', '--debug-info=app.debug', '--input=foo.stack', '--output=results/foo.result',
+        'symbolize',
+        '--debug-info=app.debug',
+        '--input=foo.stack',
+        '--output=results/foo.result',
       ]),
       throwsToolExit(message: 'test'),
     );
-  }, overrides: <Type, Generator>{
-    OutputPreferences: () => OutputPreferences.test(),
-  });
+  }, overrides: <Type, Generator>{OutputPreferences: () => OutputPreferences.test()});
 }
 
 class ThrowingDwarfSymbolizationService extends Fake implements DwarfSymbolizationService {
   @override
-  Future<void> decode({
-    required Stream<List<int>> input,
-    required IOSink output,
-    required Uint8List symbols,
-  }) async {
+  Future<void> decode({required Stream<List<int>> input, required IOSink output, required Uint8List symbols}) async {
     throwToolExit('test');
   }
 }

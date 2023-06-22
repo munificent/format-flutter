@@ -9,10 +9,7 @@ import 'project.dart';
 
 class GenL10nProject extends Project {
   @override
-  Future<void> setUpIn(Directory dir, {
-    bool useDeferredLoading = false,
-    bool useSyntheticPackage = false,
-  }) {
+  Future<void> setUpIn(Directory dir, {bool useDeferredLoading = false, bool useSyntheticPackage = false}) {
     this.dir = dir;
     writeFile(fileSystem.path.join(dir.path, 'lib', 'l10n', 'app_en.arb'), appEn);
     writeFile(fileSystem.path.join(dir.path, 'lib', 'l10n', 'app_en_CA.arb'), appEnCa);
@@ -23,10 +20,10 @@ class GenL10nProject extends Project {
     writeFile(fileSystem.path.join(dir.path, 'lib', 'l10n', 'app_zh_Hant.arb'), appZhHant);
     writeFile(fileSystem.path.join(dir.path, 'lib', 'l10n', 'app_zh_Hans.arb'), appZhHans);
     writeFile(fileSystem.path.join(dir.path, 'lib', 'l10n', 'app_zh_Hant_TW.arb'), appZhHantTw);
-    writeFile(fileSystem.path.join(dir.path, 'l10n.yaml'), l10nYaml(
-      useDeferredLoading: useDeferredLoading,
-      useSyntheticPackage: useSyntheticPackage,
-    ));
+    writeFile(
+      fileSystem.path.join(dir.path, 'l10n.yaml'),
+      l10nYaml(useDeferredLoading: useDeferredLoading, useSyntheticPackage: useSyntheticPackage),
+    );
     return super.setUpIn(dir);
   }
 
@@ -773,10 +770,7 @@ void main() {
 }
 ''';
 
-  String l10nYaml({
-    required bool useDeferredLoading,
-    required bool useSyntheticPackage,
-  }) {
+  String l10nYaml({required bool useDeferredLoading, required bool useSyntheticPackage}) {
     String l10nYamlString = '';
 
     if (useDeferredLoading) {

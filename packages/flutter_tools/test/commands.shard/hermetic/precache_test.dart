@@ -37,10 +37,7 @@ void main() {
   testUsingContext('precache should not re-entrantly acquire lock', () async {
     final Platform platform = FakePlatform(
       operatingSystem: 'windows',
-      environment: <String, String>{
-        'FLUTTER_ROOT': 'flutter',
-        'FLUTTER_ALREADY_LOCKED': 'true',
-      },
+      environment: <String, String>{'FLUTTER_ROOT': 'flutter', 'FLUTTER_ALREADY_LOCKED': 'true'},
     );
     final PrecacheCommand command = PrecacheCommand(
       cache: cache,
@@ -62,10 +59,10 @@ void main() {
     );
     await createTestCommandRunner(command).run(const <String>['precache', '--web', '--no-android', '--no-ios']);
 
-    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
-      DevelopmentArtifact.universal,
-      DevelopmentArtifact.web,
-    }));
+    expect(
+      cache.artifacts,
+      unorderedEquals(<DevelopmentArtifact>{DevelopmentArtifact.universal, DevelopmentArtifact.web}),
+    );
   });
 
   testUsingContext('precache does not download web artifacts on dev branch when feature is enabled.', () async {
@@ -77,9 +74,7 @@ void main() {
     );
     await createTestCommandRunner(command).run(const <String>['precache', '--web', '--no-android', '--no-ios']);
 
-    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
-      DevelopmentArtifact.universal,
-    }));
+    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{DevelopmentArtifact.universal}));
   });
 
   testUsingContext('precache downloads macOS artifacts on dev branch when macOS is enabled.', () async {
@@ -91,10 +86,10 @@ void main() {
     );
     await createTestCommandRunner(command).run(const <String>['precache', '--macos', '--no-android', '--no-ios']);
 
-    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
-      DevelopmentArtifact.universal,
-      DevelopmentArtifact.macOS,
-    }));
+    expect(
+      cache.artifacts,
+      unorderedEquals(<DevelopmentArtifact>{DevelopmentArtifact.universal, DevelopmentArtifact.macOS}),
+    );
   });
 
   testUsingContext('precache does not download macOS artifacts on dev branch when feature is enabled.', () async {
@@ -106,9 +101,7 @@ void main() {
     );
     await createTestCommandRunner(command).run(const <String>['precache', '--macos', '--no-android', '--no-ios']);
 
-    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
-      DevelopmentArtifact.universal,
-    }));
+    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{DevelopmentArtifact.universal}));
   });
 
   testUsingContext('precache downloads Windows artifacts on dev branch when feature is enabled.', () async {
@@ -120,10 +113,10 @@ void main() {
     );
     await createTestCommandRunner(command).run(const <String>['precache', '--windows', '--no-android', '--no-ios']);
 
-    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
-      DevelopmentArtifact.universal,
-      DevelopmentArtifact.windows,
-    }));
+    expect(
+      cache.artifacts,
+      unorderedEquals(<DevelopmentArtifact>{DevelopmentArtifact.universal, DevelopmentArtifact.windows}),
+    );
   });
 
   testUsingContext('precache does not download Windows artifacts on dev branch when feature is enabled.', () async {
@@ -135,9 +128,7 @@ void main() {
     );
     await createTestCommandRunner(command).run(const <String>['precache', '--windows', '--no-android', '--no-ios']);
 
-    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
-      DevelopmentArtifact.universal,
-    }));
+    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{DevelopmentArtifact.universal}));
   });
 
   testUsingContext('precache downloads Linux artifacts on dev branch when feature is enabled.', () async {
@@ -149,10 +140,10 @@ void main() {
     );
     await createTestCommandRunner(command).run(const <String>['precache', '--linux', '--no-android', '--no-ios']);
 
-    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
-      DevelopmentArtifact.universal,
-      DevelopmentArtifact.linux,
-    }));
+    expect(
+      cache.artifacts,
+      unorderedEquals(<DevelopmentArtifact>{DevelopmentArtifact.universal, DevelopmentArtifact.linux}),
+    );
   });
 
   testUsingContext('precache does not download Linux artifacts on dev branch when feature is enabled.', () async {
@@ -164,9 +155,7 @@ void main() {
     );
     await createTestCommandRunner(command).run(const <String>['precache', '--linux', '--no-android', '--no-ios']);
 
-    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
-      DevelopmentArtifact.universal,
-    }));
+    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{DevelopmentArtifact.universal}));
   });
 
   testUsingContext('precache exits if requesting mismatched artifacts.', () async {
@@ -177,10 +166,10 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    expect(createTestCommandRunner(command).run(const <String>['precache',
-      '--no-android',
-      '--android_gen_snapshot',
-    ]), throwsToolExit(message: '--android_gen_snapshot requires --android'));
+    expect(
+      createTestCommandRunner(command).run(const <String>['precache', '--no-android', '--android_gen_snapshot']),
+      throwsToolExit(message: '--android_gen_snapshot requires --android'),
+    );
   });
 
   testUsingContext('precache adds artifact flags to requested artifacts', () async {
@@ -196,19 +185,17 @@ void main() {
       ),
       platform: FakePlatform(environment: <String, String>{}),
     );
-    await createTestCommandRunner(command).run(
-      const <String>[
-        'precache',
-        '--ios',
-        '--android',
-        '--web',
-        '--macos',
-        '--linux',
-        '--windows',
-        '--fuchsia',
-        '--flutter_runner',
-      ],
-    );
+    await createTestCommandRunner(command).run(const <String>[
+      'precache',
+      '--ios',
+      '--android',
+      '--web',
+      '--macos',
+      '--linux',
+      '--windows',
+      '--fuchsia',
+      '--flutter_runner',
+    ]);
     expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
       DevelopmentArtifact.universal,
       DevelopmentArtifact.iOS,
@@ -231,13 +218,7 @@ void main() {
       featureFlags: TestFeatureFlags(),
       platform: FakePlatform(environment: <String, String>{}),
     );
-    await createTestCommandRunner(command).run(
-      const <String>[
-        'precache',
-        '--no-ios',
-        '--android',
-      ],
-    );
+    await createTestCommandRunner(command).run(const <String>['precache', '--no-ios', '--android']);
     expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
       DevelopmentArtifact.universal,
       DevelopmentArtifact.androidGenSnapshot,
@@ -253,16 +234,14 @@ void main() {
       featureFlags: TestFeatureFlags(),
       platform: FakePlatform(environment: <String, String>{}),
     );
-    await createTestCommandRunner(command).run(
-      const <String>[
-        'precache',
-        '--no-ios',
-        '--android',
-        '--android_gen_snapshot',
-        '--android_maven',
-        '--android_internal_build',
-      ],
-    );
+    await createTestCommandRunner(command).run(const <String>[
+      'precache',
+      '--no-ios',
+      '--android',
+      '--android_gen_snapshot',
+      '--android_maven',
+      '--android_internal_build',
+    ]);
     expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
       DevelopmentArtifact.universal,
       DevelopmentArtifact.androidGenSnapshot,
@@ -279,11 +258,7 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    await createTestCommandRunner(command).run(
-      const <String>[
-        'precache',
-      ],
-    );
+    await createTestCommandRunner(command).run(const <String>['precache']);
 
     expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
       DevelopmentArtifact.universal,
@@ -308,12 +283,7 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    await createTestCommandRunner(command).run(
-      const <String>[
-        'precache',
-        '--all-platforms',
-      ],
-    );
+    await createTestCommandRunner(command).run(const <String>['precache', '--all-platforms']);
 
     expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
       DevelopmentArtifact.universal,
@@ -338,11 +308,7 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    await createTestCommandRunner(command).run(
-      const <String>[
-        'precache',
-      ],
-    );
+    await createTestCommandRunner(command).run(const <String>['precache']);
 
     expect(cache.platformOverrideArtifacts, <String>{});
   });
@@ -351,31 +317,19 @@ void main() {
     final PrecacheCommand command = PrecacheCommand(
       cache: cache,
       logger: BufferLogger.test(),
-        featureFlags: TestFeatureFlags(
-        isMacOSEnabled: true,
-      ),
+      featureFlags: TestFeatureFlags(isMacOSEnabled: true),
       platform: FakePlatform(
         operatingSystem: 'windows',
-        environment: <String, String>{
-          'FLUTTER_ROOT': 'flutter',
-          'FLUTTER_ALREADY_LOCKED': 'true',
-        },
+        environment: <String, String>{'FLUTTER_ROOT': 'flutter', 'FLUTTER_ALREADY_LOCKED': 'true'},
       ),
     );
 
-    await createTestCommandRunner(command).run(
-      const <String>[
-        'precache',
-        '--no-ios',
-        '--no-android',
-        '--macos',
-      ],
-    );
+    await createTestCommandRunner(command).run(const <String>['precache', '--no-ios', '--no-android', '--macos']);
 
-    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
-      DevelopmentArtifact.universal,
-      DevelopmentArtifact.macOS,
-    }));
+    expect(
+      cache.artifacts,
+      unorderedEquals(<DevelopmentArtifact>{DevelopmentArtifact.universal, DevelopmentArtifact.macOS}),
+    );
     expect(cache.platformOverrideArtifacts, <String>{'macos'});
   });
 
@@ -384,9 +338,7 @@ void main() {
     final PrecacheCommand command = PrecacheCommand(
       cache: cache,
       logger: BufferLogger.test(),
-      featureFlags: TestFeatureFlags(
-        isMacOSEnabled: true,
-      ),
+      featureFlags: TestFeatureFlags(isMacOSEnabled: true),
       platform: FakePlatform(environment: <String, String>{}),
     );
     await createTestCommandRunner(command).run(const <String>['precache', '--force']);
@@ -410,16 +362,14 @@ void main() {
     );
     await createTestCommandRunner(command).run(const <String>['precache']);
 
-    expect(
-      cache.artifacts,
-      unorderedEquals(<DevelopmentArtifact>{
-        DevelopmentArtifact.web,
-        DevelopmentArtifact.macOS,
-        DevelopmentArtifact.windows,
-        DevelopmentArtifact.linux,
-        DevelopmentArtifact.universal,
-        // iOS and android specifically excluded
-      }));
+    expect(cache.artifacts, unorderedEquals(<DevelopmentArtifact>{
+      DevelopmentArtifact.web,
+      DevelopmentArtifact.macOS,
+      DevelopmentArtifact.windows,
+      DevelopmentArtifact.linux,
+      DevelopmentArtifact.universal,
+      // iOS and android specifically excluded
+    }));
   });
 }
 

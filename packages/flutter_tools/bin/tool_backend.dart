@@ -17,8 +17,7 @@ Future<void> main(List<String> arguments) async {
   final String? extraGenSnapshotOptions = Platform.environment['EXTRA_GEN_SNAPSHOT_OPTIONS'];
   final String? flutterEngine = Platform.environment['FLUTTER_ENGINE'];
   final String? flutterRoot = Platform.environment['FLUTTER_ROOT'];
-  final String flutterTarget = Platform.environment['FLUTTER_TARGET']
-    ?? pathJoin(<String>['lib', 'main.dart']);
+  final String flutterTarget = Platform.environment['FLUTTER_TARGET'] ?? pathJoin(<String>['lib', 'main.dart']);
   final String? codeSizeDirectory = Platform.environment['CODE_SIZE_DIRECTORY'];
   final String? localEngine = Platform.environment['LOCAL_ENGINE'];
   final String? projectDirectory = Platform.environment['PROJECT_DIR'];
@@ -56,54 +55,34 @@ or
   final String flutterExecutable = pathJoin(<String>[
     flutterRoot,
     'bin',
-    if (Platform.isWindows)
-      'flutter.bat'
-    else
-      'flutter',
+    if (Platform.isWindows) 'flutter.bat' else 'flutter',
   ]);
   final String bundlePlatform = targetPlatform.startsWith('windows') ? 'windows' : targetPlatform;
   final String target = '${buildMode}_bundle_${bundlePlatform}_assets';
-  final Process assembleProcess = await Process.start(
-    flutterExecutable,
-    <String>[
-      if (verbose)
-        '--verbose',
-      if (prefixedErrors)
-        '--prefixed-errors',
-      if (flutterEngine != null) '--local-engine-src-path=$flutterEngine',
-      if (localEngine != null) '--local-engine=$localEngine',
-      'assemble',
-      '--no-version-check',
-      '--output=build',
-      '-dTargetPlatform=$targetPlatform',
-      '-dTrackWidgetCreation=$trackWidgetCreation',
-      '-dBuildMode=$buildMode',
-      '-dTargetFile=$flutterTarget',
-      '-dTreeShakeIcons="$treeShakeIcons"',
-      '-dDartObfuscation=$dartObfuscation',
-      if (bundleSkSLPath != null)
-        '-dBundleSkSLPath=$bundleSkSLPath',
-      if (codeSizeDirectory != null)
-        '-dCodeSizeDirectory=$codeSizeDirectory',
-      if (splitDebugInfo != null)
-        '-dSplitDebugInfo=$splitDebugInfo',
-      if (dartDefines != null)
-        '--DartDefines=$dartDefines',
-      if (extraGenSnapshotOptions != null)
-        '--ExtraGenSnapshotOptions=$extraGenSnapshotOptions',
-      if (extraFrontEndOptions != null)
-        '--ExtraFrontEndOptions=$extraFrontEndOptions',
-      target,
-    ],
-  );
-  assembleProcess.stdout
-    .transform(utf8.decoder)
-    .transform(const LineSplitter())
-    .listen(stdout.writeln);
-  assembleProcess.stderr
-    .transform(utf8.decoder)
-    .transform(const LineSplitter())
-    .listen(stderr.writeln);
+  final Process assembleProcess = await Process.start(flutterExecutable, <String>[
+    if (verbose) '--verbose',
+    if (prefixedErrors) '--prefixed-errors',
+    if (flutterEngine != null) '--local-engine-src-path=$flutterEngine',
+    if (localEngine != null) '--local-engine=$localEngine',
+    'assemble',
+    '--no-version-check',
+    '--output=build',
+    '-dTargetPlatform=$targetPlatform',
+    '-dTrackWidgetCreation=$trackWidgetCreation',
+    '-dBuildMode=$buildMode',
+    '-dTargetFile=$flutterTarget',
+    '-dTreeShakeIcons="$treeShakeIcons"',
+    '-dDartObfuscation=$dartObfuscation',
+    if (bundleSkSLPath != null) '-dBundleSkSLPath=$bundleSkSLPath',
+    if (codeSizeDirectory != null) '-dCodeSizeDirectory=$codeSizeDirectory',
+    if (splitDebugInfo != null) '-dSplitDebugInfo=$splitDebugInfo',
+    if (dartDefines != null) '--DartDefines=$dartDefines',
+    if (extraGenSnapshotOptions != null) '--ExtraGenSnapshotOptions=$extraGenSnapshotOptions',
+    if (extraFrontEndOptions != null) '--ExtraFrontEndOptions=$extraFrontEndOptions',
+    target,
+  ]);
+  assembleProcess.stdout.transform(utf8.decoder).transform(const LineSplitter()).listen(stdout.writeln);
+  assembleProcess.stderr.transform(utf8.decoder).transform(const LineSplitter()).listen(stderr.writeln);
 
   if (await assembleProcess.exitCode != 0) {
     exit(1);

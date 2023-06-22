@@ -17,7 +17,6 @@ const String _javaExecutable = 'java';
 
 /// Represents an installation of Java.
 class Java {
-
   Java({
     required this.javaHome,
     required this.binaryPath,
@@ -26,12 +25,12 @@ class Java {
     required OperatingSystemUtils os,
     required Platform platform,
     required ProcessManager processManager,
-  }): _logger = logger,
-      _fileSystem = fileSystem,
-      _os = os,
-      _platform = platform,
-      _processManager = processManager,
-      _processUtils = ProcessUtils(processManager: processManager, logger: logger);
+  }) : _logger = logger,
+       _fileSystem = fileSystem,
+       _os = os,
+       _platform = platform,
+       _processManager = processManager,
+       _processUtils = ProcessUtils(processManager: processManager, logger: logger);
 
   /// Within the Java ecosystem, this environment variable is typically set
   /// the install location of a Java Runtime Environment (JRE) or Java
@@ -64,20 +63,20 @@ class Java {
       fileSystem: fileSystem,
       logger: logger,
       platform: platform,
-      processManager: processManager
+      processManager: processManager,
     );
     final String? home = _findJavaHome(
       config: config,
       logger: logger,
       androidStudio: androidStudio,
-      platform: platform
+      platform: platform,
     );
     final String? binary = _findJavaBinary(
       logger: logger,
       javaHome: home,
       fileSystem: fileSystem,
       operatingSystemUtils: os,
-      platform: platform
+      platform: platform,
     );
 
     if (binary == null) {
@@ -127,22 +126,19 @@ class Java {
   Map<String, String> get environment {
     return <String, String>{
       if (javaHome != null) javaHomeEnvironmentVariable: javaHome!,
-      'PATH': _fileSystem.path.dirname(binaryPath) +
-                        _os.pathVarSeparator +
-                        _platform.environment['PATH']!,
+      'PATH': _fileSystem.path.dirname(binaryPath) + _os.pathVarSeparator + _platform.environment['PATH']!,
     };
   }
 
   /// Returns the version of java in the format \d(.\d)+(.\d)+
   /// Returns null if version could not be determined.
   late final Version? version = (() {
-    final RunResult result = _processUtils.runSync(
-      <String>[binaryPath, '--version'],
-      environment: environment,
-    );
+    final RunResult result = _processUtils.runSync(<String>[binaryPath, '--version'], environment: environment);
     if (result.exitCode != 0) {
-      _logger.printTrace('java --version failed: exitCode: ${result.exitCode}'
-        ' stdout: ${result.stdout} stderr: ${result.stderr}');
+      _logger.printTrace(
+        'java --version failed: exitCode: ${result.exitCode}'
+        ' stdout: ${result.stdout} stderr: ${result.stderr}',
+      );
     }
     final String rawVersionOutput = result.stdout;
     final List<String> versionLines = rawVersionOutput.split('\n');
@@ -151,8 +147,7 @@ class Java {
 
     // The contents that matter come in the format '11.0.18' or '1.8.0_202'.
     final RegExp jdkVersionRegex = RegExp(r'\d+\.\d+(\.\d+(?:_\d+)?)?');
-    final Iterable<RegExpMatch> matches =
-        jdkVersionRegex.allMatches(rawVersionOutput);
+    final Iterable<RegExpMatch> matches = jdkVersionRegex.allMatches(rawVersionOutput);
     if (matches.isEmpty) {
       _logger.printWarning(_formatJavaVersionWarning(rawVersionOutput));
       return null;
@@ -170,12 +165,7 @@ class Java {
     if (parsedVersion == null) {
       return null;
     }
-    return Version.withText(
-      parsedVersion.major,
-      parsedVersion.minor,
-      parsedVersion.patch,
-      longVersionText,
-    );
+    return Version.withText(parsedVersion.major, parsedVersion.minor, parsedVersion.patch, longVersionText);
   })();
 
   bool canRun() {
@@ -225,8 +215,8 @@ String? _findJavaBinary({
 // the version of java along with the output.
 String _formatJavaVersionWarning(String javaVersionRaw) {
   return 'Could not parse java version from: \n'
-    '$javaVersionRaw \n'
-    'If there is a version please look for an existing bug '
-    'https://github.com/flutter/flutter/issues/ '
-    'and if one does not exist file a new issue.';
+      '$javaVersionRaw \n'
+      'If there is a version please look for an existing bug '
+      'https://github.com/flutter/flutter/issues/ '
+      'and if one does not exist file a new issue.';
 }

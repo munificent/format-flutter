@@ -76,11 +76,12 @@ Map<ST, List<List<ST>>> grammar = <ST, List<List<ST>>>{
 };
 
 class Node {
-  Node(this.type, this.positionInMessage, { this.expectedSymbolCount = 0, this.value, List<Node>? children }): children = children ?? <Node>[];
+  Node(this.type, this.positionInMessage, {this.expectedSymbolCount = 0, this.value, List<Node>? children})
+    : children = children ?? <Node>[];
 
   // Token constructors.
-  Node.openBrace(this.positionInMessage): type = ST.openBrace, value = '{';
-  Node.closeBrace(this.positionInMessage): type = ST.closeBrace, value = '}';
+  Node.openBrace(this.positionInMessage) : type = ST.openBrace, value = '{';
+  Node.closeBrace(this.positionInMessage) : type = ST.closeBrace, value = '}';
   Node.brace(this.positionInMessage, String this.value) {
     if (value == '{') {
       type = ST.openBrace;
@@ -91,15 +92,15 @@ class Node {
       throw L10nException('Provided value $value is not a brace.');
     }
   }
-  Node.equalSign(this.positionInMessage): type = ST.equalSign, value = '=';
-  Node.comma(this.positionInMessage): type = ST.comma, value = ',';
-  Node.string(this.positionInMessage, String this.value): type = ST.string;
-  Node.number(this.positionInMessage, String this.value): type = ST.number;
-  Node.identifier(this.positionInMessage, String this.value): type = ST.identifier;
-  Node.pluralKeyword(this.positionInMessage): type = ST.plural, value = 'plural';
-  Node.selectKeyword(this.positionInMessage): type = ST.select, value = 'select';
-  Node.otherKeyword(this.positionInMessage): type = ST.other, value = 'other';
-  Node.empty(this.positionInMessage): type = ST.empty, value = '';
+  Node.equalSign(this.positionInMessage) : type = ST.equalSign, value = '=';
+  Node.comma(this.positionInMessage) : type = ST.comma, value = ',';
+  Node.string(this.positionInMessage, String this.value) : type = ST.string;
+  Node.number(this.positionInMessage, String this.value) : type = ST.number;
+  Node.identifier(this.positionInMessage, String this.value) : type = ST.identifier;
+  Node.pluralKeyword(this.positionInMessage) : type = ST.plural, value = 'plural';
+  Node.selectKeyword(this.positionInMessage) : type = ST.select, value = 'select';
+  Node.otherKeyword(this.positionInMessage) : type = ST.other, value = 'other';
+  Node.empty(this.positionInMessage) : type = ST.empty, value = '';
 
   String? value;
   late ST type;
@@ -130,12 +131,11 @@ $indent])''';
   // have meaning after calling compress.
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes, hash_and_equals
-  bool operator==(covariant Node other) {
-    if (value != other.value
-      || type != other.type
-      || positionInMessage != other.positionInMessage
-      || children.length != other.children.length
-    ) {
+  bool operator ==(covariant Node other) {
+    if (value != other.value ||
+        type != other.type ||
+        positionInMessage != other.positionInMessage ||
+        children.length != other.children.length) {
       return false;
     }
     for (int i = 0; i < children.length; i++) {
@@ -173,15 +173,7 @@ Map<ST, RegExp> matchers = <ST, RegExp>{
 };
 
 class Parser {
-  Parser(
-    this.messageId,
-    this.filename,
-    this.messageString,
-    {
-      this.useEscaping = false,
-      this.logger
-    }
-  );
+  Parser(this.messageId, this.filename, this.messageString, {this.useEscaping = false, this.logger});
 
   final String messageId;
   final String messageString;
@@ -291,7 +283,7 @@ class Parser {
             filename,
             messageId,
             messageString,
-            startIndex
+            startIndex,
           );
         } else if (matchedType == ST.empty) {
           // Do not add whitespace as a token.
@@ -376,12 +368,8 @@ class Parser {
         case ST.pluralExpr:
           parseAndConstructNode(ST.pluralExpr, 0);
         case ST.pluralParts:
-          if (tokens.isNotEmpty && (
-              tokens[0].type == ST.identifier ||
-              tokens[0].type == ST.other ||
-              tokens[0].type == ST.equalSign
-            )
-          ) {
+          if (tokens.isNotEmpty &&
+              (tokens[0].type == ST.identifier || tokens[0].type == ST.other || tokens[0].type == ST.equalSign)) {
             parseAndConstructNode(ST.pluralParts, 0);
           } else {
             parseAndConstructNode(ST.pluralParts, 1);
@@ -405,11 +393,8 @@ class Parser {
         case ST.selectExpr:
           parseAndConstructNode(ST.selectExpr, 0);
         case ST.selectParts:
-          if (tokens.isNotEmpty && (
-            tokens[0].type == ST.identifier ||
-            tokens[0].type == ST.number ||
-            tokens[0].type == ST.other
-          )) {
+          if (tokens.isNotEmpty &&
+              (tokens[0].type == ST.identifier || tokens[0].type == ST.number || tokens[0].type == ST.other)) {
             parseAndConstructNode(ST.selectParts, 0);
           } else {
             parseAndConstructNode(ST.selectParts, 1);
@@ -427,7 +412,7 @@ class Parser {
               filename,
               messageId,
               messageString,
-              tokens[0].positionInMessage
+              tokens[0].positionInMessage,
             );
           }
         // At this point, we are only handling terminal symbols.
@@ -539,7 +524,7 @@ class Parser {
             filename,
             messageId,
             messageString,
-            syntaxTree.positionInMessage
+            syntaxTree.positionInMessage,
           );
         }
         // Identifier must be one of "zero", "one", "two", "few", "many".

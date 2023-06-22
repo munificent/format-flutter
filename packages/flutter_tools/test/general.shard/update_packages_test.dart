@@ -88,8 +88,7 @@ void main() {
     // Create version file
     flutterSdk.childFile('version').writeAsStringSync('1.2.3');
     // Create a pubspec file
-    flutter = flutterSdk.childDirectory('packages').childDirectory('flutter')
-      ..createSync(recursive: true);
+    flutter = flutterSdk.childDirectory('packages').childDirectory('flutter')..createSync(recursive: true);
     flutter.childFile('pubspec.yaml').writeAsStringSync(kFlutterPubspecYaml);
   });
 
@@ -99,58 +98,42 @@ void main() {
       isNot(contains(anyOf('any', startsWith('^'), startsWith('>'), startsWith('<')))),
       reason: 'Version pins in kManuallyPinnedDependencies must be specific pins, not ranges.',
     );
-    expect(
-      kManuallyPinnedDependencies.keys,
-      unorderedEquals(const <String>[
-        'flutter_gallery_assets',
-        'flutter_template_images',
-        'video_player',
-        'material_color_utilities',
-        'url_launcher_android',
-        'archive',
-        'path_provider_android',
-      ]),
-    );
+    expect(kManuallyPinnedDependencies.keys, unorderedEquals(const <String>[
+      'flutter_gallery_assets',
+      'flutter_template_images',
+      'video_player',
+      'material_color_utilities',
+      'url_launcher_android',
+      'archive',
+      'path_provider_android',
+    ]));
   });
 
-  testWithoutContext(
-      'createTemporaryFlutterSdk creates an unpinned flutter SDK', () {
+  testWithoutContext('createTemporaryFlutterSdk creates an unpinned flutter SDK', () {
     // A stray extra package should not cause a crash.
-    final Directory extra = flutterSdk
-        .childDirectory('packages')
-        .childDirectory('extra')
-      ..createSync(recursive: true);
+    final Directory extra = flutterSdk.childDirectory('packages').childDirectory('extra')..createSync(recursive: true);
     extra.childFile('pubspec.yaml').writeAsStringSync(kExtraPubspecYaml);
 
     // Create already parsed pubspecs.
     final PubspecYaml flutterPubspec = PubspecYaml(flutter);
 
-    final PubspecDependency gitDependency = flutterPubspec.dependencies
-        .firstWhere((PubspecDependency dep) => dep.kind == DependencyKind.git);
-    expect(
-      gitDependency.lockLine,
-      '''
+    final PubspecDependency gitDependency = flutterPubspec.dependencies.firstWhere(
+      (PubspecDependency dep) => dep.kind == DependencyKind.git,
+    );
+    expect(gitDependency.lockLine, '''
     git:
       url: https://github.com/flutter/gallery.git
       ref: d00362e6bdd0f9b30bba337c358b9e4a6e4ca950
-''',
-    );
+''');
     final BufferLogger bufferLogger = BufferLogger.test();
-    final Directory result = createTemporaryFlutterSdk(
-      bufferLogger,
-      fileSystem,
-      flutterSdk,
-      <PubspecYaml>[flutterPubspec],
-      fileSystem.systemTempDirectory,
-    );
+    final Directory result = createTemporaryFlutterSdk(bufferLogger, fileSystem, flutterSdk, <PubspecYaml>[
+      flutterPubspec,
+    ], fileSystem.systemTempDirectory);
 
     expect(result, exists);
 
     // We get a warning about the unexpected package.
-    expect(
-      bufferLogger.warningText,
-      contains("Unexpected package 'extra' found in packages directory"),
-    );
+    expect(bufferLogger.warningText, contains("Unexpected package 'extra' found in packages directory"));
 
     // The version file exists.
     expect(result.childFile('version'), exists);
@@ -174,54 +157,54 @@ void main() {
     // Create an invalid pubspec file.
     flutter.childFile('pubspec.yaml').writeAsStringSync(kInvalidGitPubspec);
 
-    expect(
-      () => PubspecYaml(flutter),
-      throwsStateError,
-    );
+    expect(() => PubspecYaml(flutter), throwsStateError);
   });
 
   testWithoutContext('PubspecYaml Loads dependencies', () async {
     final PubspecYaml pubspecYaml = PubspecYaml(flutter);
     expect(
-        pubspecYaml.allDependencies
-            .map<String>((PubspecDependency dependency) => '${dependency.name}: ${dependency.version}')
-            .toSet(),
-        equals(<String>{
-          'collection: 1.14.11',
-          'meta: 1.1.8',
-          'typed_data: 1.1.6',
-          'vector_math: 2.0.8',
-          'sky_engine: ',
-          'gallery: ',
-          'flutter_test: ',
-          'flutter_goldens: ',
-          'archive: 2.0.11',
-        }));
+      pubspecYaml.allDependencies.map<String>(
+        (PubspecDependency dependency) => '${dependency.name}: ${dependency.version}',
+      ).toSet(),
+      equals(<String>{
+        'collection: 1.14.11',
+        'meta: 1.1.8',
+        'typed_data: 1.1.6',
+        'vector_math: 2.0.8',
+        'sky_engine: ',
+        'gallery: ',
+        'flutter_test: ',
+        'flutter_goldens: ',
+        'archive: 2.0.11',
+      }),
+    );
     expect(
-        pubspecYaml.allExplicitDependencies
-            .map<String>((PubspecDependency dependency) => '${dependency.name}: ${dependency.version}')
-            .toSet(),
-        equals(<String>{
-          'collection: 1.14.11',
-          'meta: 1.1.8',
-          'typed_data: 1.1.6',
-          'vector_math: 2.0.8',
-          'sky_engine: ',
-          'gallery: ',
-          'flutter_test: ',
-          'flutter_goldens: ',
-        }));
+      pubspecYaml.allExplicitDependencies.map<String>(
+        (PubspecDependency dependency) => '${dependency.name}: ${dependency.version}',
+      ).toSet(),
+      equals(<String>{
+        'collection: 1.14.11',
+        'meta: 1.1.8',
+        'typed_data: 1.1.6',
+        'vector_math: 2.0.8',
+        'sky_engine: ',
+        'gallery: ',
+        'flutter_test: ',
+        'flutter_goldens: ',
+      }),
+    );
     expect(
-        pubspecYaml.dependencies
-            .map<String>((PubspecDependency dependency) => '${dependency.name}: ${dependency.version}')
-            .toSet(),
-        equals(<String>{
-          'collection: 1.14.11',
-          'meta: 1.1.8',
-          'typed_data: 1.1.6',
-          'vector_math: 2.0.8',
-          'sky_engine: ',
-          'gallery: ',
-        }));
+      pubspecYaml.dependencies.map<String>(
+        (PubspecDependency dependency) => '${dependency.name}: ${dependency.version}',
+      ).toSet(),
+      equals(<String>{
+        'collection: 1.14.11',
+        'meta: 1.1.8',
+        'typed_data: 1.1.6',
+        'vector_math: 2.0.8',
+        'sky_engine: ',
+        'gallery: ',
+      }),
+    );
   });
 }

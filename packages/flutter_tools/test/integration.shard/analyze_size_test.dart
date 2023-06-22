@@ -30,22 +30,19 @@ void main() {
       '--target-platform=android-arm64',
     ], workingDirectory: workingDirectory);
 
-    expect(
-      result,
-      const ProcessResultMatcher(stdoutPattern: 'app-release.apk (total compressed)'),
-    );
+    expect(result, const ProcessResultMatcher(stdoutPattern: 'app-release.apk (total compressed)'));
 
-    final String line = result.stdout.toString()
-      .split('\n')
-      .firstWhere((String line) => line.contains(apkDebugMessage));
+    final String line = result.stdout.toString().split('\n').firstWhere(
+      (String line) => line.contains(apkDebugMessage),
+    );
 
     final String outputFilePath = line.split(apkDebugMessage).last.trim();
     expect(fileSystem.file(fileSystem.path.join(workingDirectory, outputFilePath)), exists);
     expect(outputFilePath, contains('.flutter-devtools'));
 
-    final String devToolsCommand = result.stdout.toString()
-        .split('\n')
-        .firstWhere((String line) => line.contains(runDevToolsMessage));
+    final String devToolsCommand = result.stdout.toString().split('\n').firstWhere(
+      (String line) => line.contains(runDevToolsMessage),
+    );
     final String commandArguments = devToolsCommand.split(runDevToolsMessage).last.trim();
     final String relativeAppSizePath = outputFilePath.split('.flutter-devtools/').last.trim();
     expect(commandArguments.contains('--appSizeBase=$relativeAppSizePath'), isTrue);
@@ -66,21 +63,18 @@ void main() {
       '--no-codesign',
     ], workingDirectory: workingDirectory);
 
-    expect(
-      result,
-      const ProcessResultMatcher(stdoutPattern: 'Dart AOT symbols accounted decompressed size'),
-    );
+    expect(result, const ProcessResultMatcher(stdoutPattern: 'Dart AOT symbols accounted decompressed size'));
 
-    final String line = result.stdout.toString()
-      .split('\n')
-      .firstWhere((String line) => line.contains(iosDebugMessage));
+    final String line = result.stdout.toString().split('\n').firstWhere(
+      (String line) => line.contains(iosDebugMessage),
+    );
 
     final String outputFilePath = line.split(iosDebugMessage).last.trim();
     expect(fileSystem.file(fileSystem.path.join(workingDirectory, outputFilePath)), exists);
 
-    final String devToolsCommand = result.stdout.toString()
-        .split('\n')
-        .firstWhere((String line) => line.contains(runDevToolsMessage));
+    final String devToolsCommand = result.stdout.toString().split('\n').firstWhere(
+      (String line) => line.contains(runDevToolsMessage),
+    );
     final String commandArguments = devToolsCommand.split(runDevToolsMessage).last.trim();
     final String relativeAppSizePath = outputFilePath.split('.flutter-devtools/').last.trim();
 
@@ -95,17 +89,10 @@ void main() {
     final Directory tempDir = fileSystem.systemTempDirectory.createTempSync('flutter_size_test.');
     final Directory codeSizeDir = tempDir.childDirectory('code size dir')..createSync();
 
-    final ProcessResult configResult = await processManager.run(<String>[
-      flutterBin,
-      'config',
-      '--verbose',
-      '--enable-macos-desktop',
-    ], workingDirectory: workingDirectory);
+    final ProcessResult configResult = await processManager
+        .run(<String>[flutterBin, 'config', '--verbose', '--enable-macos-desktop'], workingDirectory: workingDirectory);
 
-    expect(
-      configResult,
-      const ProcessResultMatcher(),
-    );
+    expect(configResult, const ProcessResultMatcher());
 
     printOnFailure('Output of flutter config:');
     printOnFailure(configResult.stdout.toString());
@@ -119,21 +106,18 @@ void main() {
       '--code-size-directory=${codeSizeDir.path}',
     ], workingDirectory: workingDirectory);
 
-    expect(
-      result,
-      const ProcessResultMatcher(stdoutPattern: 'Dart AOT symbols accounted decompressed size'),
-    );
+    expect(result, const ProcessResultMatcher(stdoutPattern: 'Dart AOT symbols accounted decompressed size'));
 
-    final String line = result.stdout.toString()
-      .split('\n')
-      .firstWhere((String line) => line.contains(macOSDebugMessage));
+    final String line = result.stdout.toString().split('\n').firstWhere(
+      (String line) => line.contains(macOSDebugMessage),
+    );
 
     final String outputFilePath = line.split(macOSDebugMessage).last.trim();
     expect(fileSystem.file(fileSystem.path.join(workingDirectory, outputFilePath)), exists);
 
-    final String devToolsCommand = result.stdout.toString()
-        .split('\n')
-        .firstWhere((String line) => line.contains(runDevToolsMessage));
+    final String devToolsCommand = result.stdout.toString().split('\n').firstWhere(
+      (String line) => line.contains(runDevToolsMessage),
+    );
     final String commandArguments = devToolsCommand.split(runDevToolsMessage).last.trim();
     final String relativeAppSizePath = outputFilePath.split('.flutter-devtools/').last.trim();
 
@@ -155,10 +139,7 @@ void main() {
     ], workingDirectory: fileSystem.path.join(getFlutterRoot(), 'examples', 'hello_world'));
     expect(
       result,
-      const ProcessResultMatcher(
-        exitCode: 1,
-        stderrPattern: '"--analyze-size" can only be used on release builds',
-      ),
+      const ProcessResultMatcher(exitCode: 1, stderrPattern: '"--analyze-size" can only be used on release builds'),
     );
   });
 
@@ -173,10 +154,8 @@ void main() {
       '--target-platform=android-arm64',
       '--split-debug-info=infos',
     ];
-    final String workingDirectory =
-        fileSystem.path.join(getFlutterRoot(), 'examples', 'hello_world');
-    final ProcessResult result =
-        await processManager.run(command, workingDirectory: workingDirectory);
+    final String workingDirectory = fileSystem.path.join(getFlutterRoot(), 'examples', 'hello_world');
+    final ProcessResult result = await processManager.run(command, workingDirectory: workingDirectory);
 
     expect(
       result,
@@ -201,20 +180,10 @@ void main() {
       '--target-platform=android-arm64',
       '--release',
     ];
-    final String workingDirectory = fileSystem.path.join(
-      getFlutterRoot(),
-      'examples',
-      'hello_world',
-    );
-    final ProcessResult result = await processManager.run(
-      command,
-      workingDirectory: workingDirectory,
-    );
+    final String workingDirectory = fileSystem.path.join(getFlutterRoot(), 'examples', 'hello_world');
+    final ProcessResult result = await processManager.run(command, workingDirectory: workingDirectory);
 
-    expect(
-      result,
-      const ProcessResultMatcher(),
-    );
+    expect(result, const ProcessResultMatcher());
 
     expect(tempDir, exists);
     expect(tempDir.childFile('snapshot.arm64-v8a.json'), exists);

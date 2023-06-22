@@ -11,15 +11,12 @@ import '../../src/fake_process_manager.dart';
 
 void main() {
   testWithoutContext('AndroidDevicePortForwarder returns the generated host '
-    'port from stdout', () async {
+      'port from stdout', () async {
     final AndroidDevicePortForwarder forwarder = AndroidDevicePortForwarder(
       adbPath: 'adb',
       deviceId: '1',
       processManager: FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['adb', '-s', '1', 'forward', 'tcp:0', 'tcp:123'],
-          stdout: '456',
-        ),
+        const FakeCommand(command: <String>['adb', '-s', '1', 'forward', 'tcp:0', 'tcp:123'], stdout: '456'),
       ]),
       logger: BufferLogger.test(),
     );
@@ -28,14 +25,12 @@ void main() {
   });
 
   testWithoutContext('AndroidDevicePortForwarder returns the supplied host '
-    'port when stdout is empty', () async {
+      'port when stdout is empty', () async {
     final AndroidDevicePortForwarder forwarder = AndroidDevicePortForwarder(
       adbPath: 'adb',
       deviceId: '1',
       processManager: FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['adb', '-s', '1', 'forward', 'tcp:456', 'tcp:123'],
-        ),
+        const FakeCommand(command: <String>['adb', '-s', '1', 'forward', 'tcp:456', 'tcp:123']),
       ]),
       logger: BufferLogger.test(),
     );
@@ -44,15 +39,12 @@ void main() {
   });
 
   testWithoutContext('AndroidDevicePortForwarder returns the supplied host port '
-    'when stdout is the host port', () async {
+      'when stdout is the host port', () async {
     final AndroidDevicePortForwarder forwarder = AndroidDevicePortForwarder(
       adbPath: 'adb',
       deviceId: '1',
       processManager: FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['adb', '-s', '1', 'forward', 'tcp:456', 'tcp:123'],
-          stdout: '456',
-        ),
+        const FakeCommand(command: <String>['adb', '-s', '1', 'forward', 'tcp:456', 'tcp:123'], stdout: '456'),
       ]),
       logger: BufferLogger.test(),
     );
@@ -61,15 +53,12 @@ void main() {
   });
 
   testWithoutContext('AndroidDevicePortForwarder throws an exception when stdout '
-    'is not blank nor the host port', () async {
+      'is not blank nor the host port', () async {
     final AndroidDevicePortForwarder forwarder = AndroidDevicePortForwarder(
       adbPath: 'adb',
       deviceId: '1',
       processManager: FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['adb', '-s', '1', 'forward', 'tcp:456', 'tcp:123'],
-          stdout: '123456',
-        ),
+        const FakeCommand(command: <String>['adb', '-s', '1', 'forward', 'tcp:456', 'tcp:123'], stdout: '123456'),
       ]),
       logger: BufferLogger.test(),
     );
@@ -78,15 +67,12 @@ void main() {
   });
 
   testWithoutContext('AndroidDevicePortForwarder forwardedPorts returns empty '
-    'list when forward failed', () {
+      'list when forward failed', () {
     final AndroidDevicePortForwarder forwarder = AndroidDevicePortForwarder(
       adbPath: 'adb',
       deviceId: '1',
       processManager: FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['adb', '-s', '1', 'forward', '--list'],
-          exitCode: 1,
-        ),
+        const FakeCommand(command: <String>['adb', '-s', '1', 'forward', '--list'], exitCode: 1),
       ]),
       logger: BufferLogger.test(),
     );
@@ -96,17 +82,9 @@ void main() {
 
   testWithoutContext('disposing device disposes the portForwarder', () async {
     final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-      const FakeCommand(
-        command: <String>['adb', '-s', '1', 'forward', 'tcp:0', 'tcp:123'],
-        stdout: '456',
-      ),
-      const FakeCommand(
-        command: <String>['adb', '-s', '1', 'forward', '--list'],
-        stdout: '1234 tcp:456 tcp:123',
-      ),
-      const FakeCommand(
-        command: <String>['adb', '-s', '1', 'forward', '--remove', 'tcp:456'],
-      ),
+      const FakeCommand(command: <String>['adb', '-s', '1', 'forward', 'tcp:0', 'tcp:123'], stdout: '456'),
+      const FakeCommand(command: <String>['adb', '-s', '1', 'forward', '--list'], stdout: '1234 tcp:456 tcp:123'),
+      const FakeCommand(command: <String>['adb', '-s', '1', 'forward', '--remove', 'tcp:456']),
     ]);
     final AndroidDevicePortForwarder forwarder = AndroidDevicePortForwarder(
       adbPath: 'adb',

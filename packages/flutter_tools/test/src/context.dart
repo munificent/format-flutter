@@ -64,7 +64,7 @@ void testUsingContext(
     throw StateError(
       'If you override the FileSystem context you must also provide a ProcessManager, '
       'otherwise the processes you launch will not be dealing with the same file system '
-      'that you are dealing with in your test.'
+      'that you are dealing with in your test.',
     );
   }
   if (overrides.containsKey(ProcessUtils)) {
@@ -82,86 +82,87 @@ void testUsingContext(
   });
   Config buildConfig(FileSystem fs) {
     configDir ??= globals.fs.systemTempDirectory.createTempSync('flutter_config_dir_test.');
-    return Config.test(
-      name: Config.kFlutterSettings,
-      directory: configDir,
-      logger: globals.logger,
-    );
+    return Config.test(name: Config.kFlutterSettings, directory: configDir, logger: globals.logger);
   }
+
   PersistentToolState buildPersistentToolState(FileSystem fs) {
     configDir ??= globals.fs.systemTempDirectory.createTempSync('flutter_config_dir_test.');
-    return PersistentToolState.test(
-      directory: configDir!,
-      logger: globals.logger,
-    );
+    return PersistentToolState.test(directory: configDir!, logger: globals.logger);
   }
 
   test(description, () async {
-    await runInContext<dynamic>(() {
-      return context.run<dynamic>(
-        name: 'mocks',
-        overrides: <Type, Generator>{
-          AnsiTerminal: () => AnsiTerminal(platform: globals.platform, stdio: globals.stdio),
-          Config: () => buildConfig(globals.fs),
-          DeviceManager: () => FakeDeviceManager(),
-          Doctor: () => FakeDoctor(globals.logger),
-          FlutterVersion: () => FakeFlutterVersion(),
-          HttpClient: () => FakeHttpClient.any(),
-          IOSSimulatorUtils: () => const NoopIOSSimulatorUtils(),
-          OutputPreferences: () => OutputPreferences.test(),
-          Logger: () => BufferLogger.test(),
-          OperatingSystemUtils: () => FakeOperatingSystemUtils(),
-          PersistentToolState: () => buildPersistentToolState(globals.fs),
-          Usage: () => TestUsage(),
-          XcodeProjectInterpreter: () => FakeXcodeProjectInterpreter(),
-          FileSystem: () => LocalFileSystemBlockingSetCurrentDirectory(),
-          PlistParser: () => FakePlistParser(),
-          Signals: () => FakeSignals(),
-          Pub: () => ThrowingPub(), // prevent accidentally using pub.
-          CrashReporter: () => const NoopCrashReporter(),
-          TemplateRenderer: () => const MustacheTemplateRenderer(),
-        },
-        body: () {
-          return runZonedGuarded<Future<dynamic>>(() {
-            try {
-              return context.run<dynamic>(
-                // Apply the overrides to the test context in the zone since their
-                // instantiation may reference items already stored on the context.
-                overrides: overrides,
-                name: 'test-specific overrides',
-                body: () async {
-                  if (initializeFlutterRoot) {
-                    // Provide a sane default for the flutterRoot directory. Individual
-                    // tests can override this either in the test or during setup.
-                    Cache.flutterRoot ??= getFlutterRoot();
-                  }
-                  return await testMethod();
-                },
-              );
-            // This catch rethrows, so doesn't need to catch only Exception.
-            } catch (error) { // ignore: avoid_catches_without_on_clauses
-              _printBufferedErrors(context);
-              rethrow;
-            }
-          }, (Object error, StackTrace stackTrace) {
-            // When things fail, it's ok to print to the console!
-            print(error); // ignore: avoid_print
-            print(stackTrace); // ignore: avoid_print
-            _printBufferedErrors(context);
-            throw error; //ignore: only_throw_errors
-          });
-        },
-      );
-    }, overrides: <Type, Generator>{
-      // This has to go here so that runInContext will pick it up when it tries
-      // to do bot detection before running the closure. This is important
-      // because the test may be giving us a fake HttpClientFactory, which may
-      // throw in unexpected/abnormal ways.
-      // If a test needs a BotDetector that does not always return true, it
-      // can provide the AlwaysFalseBotDetector in the overrides, or its own
-      // BotDetector implementation in the overrides.
-      BotDetector: overrides[BotDetector] ?? () => const FakeBotDetector(true),
-    });
+    await runInContext<dynamic>(
+      () {
+        return context.run<dynamic>(
+          name: 'mocks',
+          overrides: <Type, Generator>{
+            AnsiTerminal: () => AnsiTerminal(platform: globals.platform, stdio: globals.stdio),
+            Config: () => buildConfig(globals.fs),
+            DeviceManager: () => FakeDeviceManager(),
+            Doctor: () => FakeDoctor(globals.logger),
+            FlutterVersion: () => FakeFlutterVersion(),
+            HttpClient: () => FakeHttpClient.any(),
+            IOSSimulatorUtils: () => const NoopIOSSimulatorUtils(),
+            OutputPreferences: () => OutputPreferences.test(),
+            Logger: () => BufferLogger.test(),
+            OperatingSystemUtils: () => FakeOperatingSystemUtils(),
+            PersistentToolState: () => buildPersistentToolState(globals.fs),
+            Usage: () => TestUsage(),
+            XcodeProjectInterpreter: () => FakeXcodeProjectInterpreter(),
+            FileSystem: () => LocalFileSystemBlockingSetCurrentDirectory(),
+            PlistParser: () => FakePlistParser(),
+            Signals: () => FakeSignals(),
+            Pub: () => ThrowingPub(), // prevent accidentally using pub.
+            CrashReporter: () => const NoopCrashReporter(),
+            TemplateRenderer: () => const MustacheTemplateRenderer(),
+          },
+          body: () {
+            return runZonedGuarded<Future<dynamic>>(
+              () {
+                try {
+                  return context.run<dynamic>(
+                    // Apply the overrides to the test context in the zone since their
+                    // instantiation may reference items already stored on the context.
+                    overrides: overrides,
+                    name: 'test-specific overrides',
+                    body: () async {
+                      if (initializeFlutterRoot) {
+                        // Provide a sane default for the flutterRoot directory. Individual
+                        // tests can override this either in the test or during setup.
+                        Cache.flutterRoot ??= getFlutterRoot();
+                      }
+                      return await testMethod();
+                    },
+                  );
+                  // This catch rethrows, so doesn't need to catch only Exception.
+                } catch (error) {
+                  // ignore: avoid_catches_without_on_clauses
+                  _printBufferedErrors(context);
+                  rethrow;
+                }
+              },
+              (Object error, StackTrace stackTrace) {
+                // When things fail, it's ok to print to the console!
+                print(error); // ignore: avoid_print
+                print(stackTrace); // ignore: avoid_print
+                _printBufferedErrors(context);
+                throw error; //ignore: only_throw_errors
+              },
+            );
+          },
+        );
+      },
+      overrides: <Type, Generator>{
+        // This has to go here so that runInContext will pick it up when it tries
+        // to do bot detection before running the closure. This is important
+        // because the test may be giving us a fake HttpClientFactory, which may
+        // throw in unexpected/abnormal ways.
+        // If a test needs a BotDetector that does not always return true, it
+        // can provide the AlwaysFalseBotDetector in the overrides, or its own
+        // BotDetector implementation in the overrides.
+        BotDetector: overrides[BotDetector] ?? () => const FakeBotDetector(true),
+      },
+    );
   }, testOn: testOn, skip: skip);
   // We don't support "timeout"; see ../../dart_test.yaml which
   // configures all tests to have a 15 minute timeout which should
@@ -208,15 +209,12 @@ class FakeDeviceManager implements DeviceManager {
   }
 
   @override
-  Future<List<Device>> getAllDevices({
-    DeviceDiscoveryFilter? filter,
-  }) async => filteredDevices(filter);
+  Future<List<Device>> getAllDevices({DeviceDiscoveryFilter? filter}) async => filteredDevices(filter);
 
   @override
-  Future<List<Device>> refreshAllDevices({
-    Duration? timeout,
-    DeviceDiscoveryFilter? filter,
-  }) async => filteredDevices(filter);
+  Future<List<Device>> refreshAllDevices({Duration? timeout, DeviceDiscoveryFilter? filter}) async => filteredDevices(
+    filter,
+  );
 
   @override
   Future<List<Device>> refreshExtendedWirelessDeviceDiscoverers({
@@ -236,13 +234,8 @@ class FakeDeviceManager implements DeviceManager {
   }
 
   @override
-  Future<List<Device>> getDevices({
-    DeviceDiscoveryFilter? filter,
-    bool waitForDeviceToConnect = false,
-  }) {
-    return hasSpecifiedDeviceId
-        ? getDevicesById(specifiedDeviceId!, filter: filter)
-        : getAllDevices(filter: filter);
+  Future<List<Device>> getDevices({DeviceDiscoveryFilter? filter, bool waitForDeviceToConnect = false}) {
+    return hasSpecifiedDeviceId ? getDevicesById(specifiedDeviceId!, filter: filter) : getAllDevices(filter: filter);
   }
 
   void addAttachedDevice(Device device) => attachedDevices.add(device);
@@ -300,6 +293,7 @@ class FakeDoctor extends Doctor {
   bool get canLaunchAnything => true;
 
   @override
+
   /// Replaces the android workflow with a version that overrides licensesAccepted,
   /// to prevent individual tests from having to mock out the process for
   /// the Doctor.
@@ -345,23 +339,18 @@ class FakeXcodeProjectInterpreter implements XcodeProjectInterpreter {
 
   @override
   Future<String> pluginsBuildSettingsOutput(
-      Directory podXcodeProject, {
-        Duration timeout = const Duration(minutes: 1),
-      }) async {
+    Directory podXcodeProject, {
+    Duration timeout = const Duration(minutes: 1),
+  }) async {
     return '';
   }
 
   @override
-  Future<void> cleanWorkspace(String workspacePath, String scheme, { bool verbose = false }) async { }
+  Future<void> cleanWorkspace(String workspacePath, String scheme, {bool verbose = false}) async {}
 
   @override
   Future<XcodeProjectInfo> getInfo(String projectPath, {String? projectFilename}) async {
-    return XcodeProjectInfo(
-      <String>['Runner'],
-      <String>['Debug', 'Release'],
-      <String>['Runner'],
-      BufferLogger.test(),
-    );
+    return XcodeProjectInfo(<String>['Runner'], <String>['Debug', 'Release'], <String>['Runner'], BufferLogger.test());
   }
 
   @override
@@ -373,20 +362,20 @@ class NoopCrashReporter implements CrashReporter {
   const NoopCrashReporter();
 
   @override
-  Future<void> informUser(CrashDetails details, File crashFile) async { }
+  Future<void> informUser(CrashDetails details, File crashFile) async {}
 }
 
 class LocalFileSystemBlockingSetCurrentDirectory extends LocalFileSystem {
-  LocalFileSystemBlockingSetCurrentDirectory() : super.test(
-    signals: LocalSignals.instance,
-  );
+  LocalFileSystemBlockingSetCurrentDirectory() : super.test(signals: LocalSignals.instance);
 
   @override
   set currentDirectory(dynamic value) {
-    throw Exception('globals.fs.currentDirectory should not be set on the local file system during '
-          'tests as this can cause race conditions with concurrent tests. '
-          'Consider using a MemoryFileSystem for testing if possible or refactor '
-          'code to not require setting globals.fs.currentDirectory.');
+    throw Exception(
+      'globals.fs.currentDirectory should not be set on the local file system during '
+      'tests as this can cause race conditions with concurrent tests. '
+      'Consider using a MemoryFileSystem for testing if possible or refactor '
+      'code to not require setting globals.fs.currentDirectory.',
+    );
   }
 }
 

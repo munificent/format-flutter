@@ -48,16 +48,13 @@ class AndroidApk extends ApplicationPackage implements PrebuiltApplicationPackag
 
     String apptStdout;
     try {
-      apptStdout = processUtils.runSync(
-        <String>[
-          aaptPath,
-          'dump',
-          'xmltree',
-          apk.path,
-          'AndroidManifest.xml',
-        ],
-        throwOnError: true,
-      ).stdout.trim();
+      apptStdout = processUtils.runSync(<String>[
+        aaptPath,
+        'dump',
+        'xmltree',
+        apk.path,
+        'AndroidManifest.xml',
+      ], throwOnError: true).stdout.trim();
     } on ProcessException catch (error) {
       logger.printError('Failed to extract manifest from APK: $error.');
       return null;
@@ -156,7 +153,13 @@ class AndroidApk extends ApplicationPackage implements PrebuiltApplicationPackag
     } on XmlException catch (exception) {
       String manifestLocation;
       if (androidProject.isUsingGradle) {
-        manifestLocation = fileSystem.path.join(androidProject.hostAppGradleRoot.path, 'app', 'src', 'main', 'AndroidManifest.xml');
+        manifestLocation = fileSystem.path.join(
+          androidProject.hostAppGradleRoot.path,
+          'app',
+          'src',
+          'main',
+          'AndroidManifest.xml',
+        );
       } else {
         manifestLocation = fileSystem.path.join(androidProject.hostAppGradleRoot.path, 'AndroidManifest.xml');
       }
@@ -211,12 +214,7 @@ class AndroidApk extends ApplicationPackage implements PrebuiltApplicationPackag
       return null;
     }
 
-    return AndroidApk(
-      id: packageId,
-      applicationPackage: apkFile,
-      versionCode: null,
-      launchActivity: launchActivity,
-    );
+    return AndroidApk(id: packageId, applicationPackage: apkFile, versionCode: null, launchActivity: launchActivity);
   }
 
   @override
@@ -287,14 +285,15 @@ class ApkManifestData {
   ApkManifestData._(this._data);
 
   static bool _isAttributeWithValuePresent(
-      _Element baseElement, String childElement, String attributeName, String attributeValue) {
+    _Element baseElement,
+    String childElement,
+    String attributeName,
+    String attributeValue,
+  ) {
     final Iterable<_Element> allElements = baseElement.allElements(childElement);
     for (final _Element oneElement in allElements) {
-      final String? elementAttributeValue = oneElement
-          .firstAttribute(attributeName)
-          ?.value;
-      if (elementAttributeValue != null &&
-          elementAttributeValue.startsWith(attributeValue)) {
+      final String? elementAttributeValue = oneElement.firstAttribute(attributeName)?.value;
+      if (elementAttributeValue != null && elementAttributeValue.startsWith(attributeValue)) {
         return true;
       }
     }
@@ -325,8 +324,7 @@ class ApkManifestData {
       if (level > currentElement.level) {
         switch (trimLine[0]) {
           case 'A':
-            currentElement
-                .addChild(_Attribute.fromLine(line, currentElement));
+            currentElement.addChild(_Attribute.fromLine(line, currentElement));
           case 'E':
             final _Element element = _Element.fromLine(line, currentElement);
             currentElement.addChild(element);
@@ -354,13 +352,20 @@ class ApkManifestData {
 
       for (final _Element element in intentFilters) {
         final bool isMainAction = _isAttributeWithValuePresent(
-            element, 'action', 'android:name', '"android.intent.action.MAIN"');
+          element,
+          'action',
+          'android:name',
+          '"android.intent.action.MAIN"',
+        );
         if (!isMainAction) {
           continue;
         }
         final bool isLauncherCategory = _isAttributeWithValuePresent(
-            element, 'category', 'android:name',
-            '"android.intent.category.LAUNCHER"');
+          element,
+          'category',
+          'android:name',
+          '"android.intent.category.LAUNCHER"',
+        );
         if (!isLauncherCategory) {
           continue;
         }
@@ -402,11 +407,9 @@ class ApkManifestData {
     }
 
     final Map<String, Map<String, String>> map = <String, Map<String, String>>{
-      if (packageName != null)
-        'package': <String, String>{'name': packageName},
+      if (packageName != null) 'package': <String, String>{'name': packageName},
       'version-code': <String, String>{'name': versionCode.toString()},
-      if (activityName != null)
-        'launchable-activity': <String, String>{'name': activityName},
+      if (activityName != null) 'launchable-activity': <String, String>{'name': activityName},
     };
 
     return ApkManifestData._(map);
@@ -415,8 +418,7 @@ class ApkManifestData {
   final Map<String, Map<String, String>> _data;
 
   @visibleForTesting
-  Map<String, Map<String, String>> get data =>
-      UnmodifiableMapView<String, Map<String, String>>(_data);
+  Map<String, Map<String, String>> get data => UnmodifiableMapView<String, Map<String, String>>(_data);
 
   String? get packageName => _data['package'] == null ? null : _data['package']?['name'];
 

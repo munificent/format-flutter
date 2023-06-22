@@ -44,9 +44,8 @@ class FlutterTesterTestDevice extends TestDevice {
     required this.compileExpression,
     required this.fontConfigManager,
     required this.uriConverter,
-  })  : assert(!debuggingOptions.startPaused || enableVmService),
-        _gotProcessVmServiceUri = enableVmService
-            ? Completer<Uri?>() : (Completer<Uri?>()..complete());
+  }) : assert(!debuggingOptions.startPaused || enableVmService),
+       _gotProcessVmServiceUri = enableVmService ? Completer<Uri?>() : (Completer<Uri?>()..complete());
 
   /// Used for logging to identify the test that is currently being executed.
   final int id;
@@ -99,11 +98,10 @@ class FlutterTesterTestDevice extends TestDevice {
         //
         // I mention this only so that you won't be tempted, as I was, to apply
         // the obvious simplification to this code and remove this entire feature.
-        '--vm-service-port=${debuggingOptions.enableDds ? 0 : debuggingOptions.hostVmServicePort }',
+        '--vm-service-port=${debuggingOptions.enableDds ? 0 : debuggingOptions.hostVmServicePort}',
         if (debuggingOptions.startPaused) '--start-paused',
         if (debuggingOptions.disableServiceAuthCodes) '--disable-service-auth-codes',
-      ]
-      else
+      ] else
         '--disable-vm-service',
       if (host!.type == InternetAddressType.IPv6) '--ipv6',
       if (icudtlPath != null) '--icu-data-file-path=$icudtlPath',
@@ -111,16 +109,13 @@ class FlutterTesterTestDevice extends TestDevice {
       '--verify-entry-points',
       '--enable-software-rendering',
       '--skia-deterministic-rendering',
-      if (debuggingOptions.enableDartProfiling)
-        '--enable-dart-profiling',
+      if (debuggingOptions.enableDartProfiling) '--enable-dart-profiling',
       '--non-interactive',
       '--use-test-fonts',
       '--disable-asset-fonts',
       '--packages=${debuggingOptions.buildInfo.packagesPath}',
-      if (testAssetDirectory != null)
-        '--flutter-assets-dir=$testAssetDirectory',
-      if (debuggingOptions.nullAssertions)
-        '--dart-flags=--null_assertions',
+      if (testAssetDirectory != null) '--flutter-assets-dir=$testAssetDirectory',
+      if (debuggingOptions.nullAssertions) '--dart-flags=--null_assertions',
       ...debuggingOptions.dartEntrypointArgs,
       entrypointPath,
     ];
@@ -138,8 +133,7 @@ class FlutterTesterTestDevice extends TestDevice {
       'FONTCONFIG_FILE': fontConfigManager.fontConfigFile.path,
       'SERVER_PORT': _server!.port.toString(),
       'APP_NAME': flutterProject?.manifest.appName ?? '',
-      if (testAssetDirectory != null)
-        'UNIT_TEST_ASSETS': testAssetDirectory!,
+      if (testAssetDirectory != null) 'UNIT_TEST_ASSETS': testAssetDirectory!,
     };
 
     logger.printTrace('test $id: Starting flutter_tester process with command=$command, environment=$environment');
@@ -159,30 +153,25 @@ class FlutterTesterTestDevice extends TestDevice {
       process: _process!,
       reportVmServiceUri: (Uri detectedUri) async {
         assert(!_gotProcessVmServiceUri.isCompleted);
-        assert(debuggingOptions.hostVmServicePort == null ||
-            debuggingOptions.hostVmServicePort == detectedUri.port);
+        assert(debuggingOptions.hostVmServicePort == null || debuggingOptions.hostVmServicePort == detectedUri.port);
 
         Uri? forwardingUri;
         DartDevelopmentService? dds;
 
         if (debuggingOptions.enableDds) {
           logger.printTrace('test $id: Starting Dart Development Service');
-          dds = await startDds(
-            detectedUri,
-            uriConverter: uriConverter,
-          );
+          dds = await startDds(detectedUri, uriConverter: uriConverter);
           forwardingUri = dds.uri;
-          logger.printTrace('test $id: Dart Development Service started at ${dds.uri}, forwarding to VM service at ${dds.remoteVmServiceUri}.');
+          logger.printTrace(
+            'test $id: Dart Development Service started at ${dds.uri}, forwarding to VM service at ${dds.remoteVmServiceUri}.',
+          );
         } else {
           forwardingUri = detectedUri;
         }
 
         logger.printTrace('Connecting to service protocol: $forwardingUri');
-        final FlutterVmService vmService = await connectToVmServiceImpl(
-          forwardingUri!,
-          compileExpression: compileExpression,
-          logger: logger,
-        );
+        final FlutterVmService vmService =
+            await connectToVmServiceImpl(forwardingUri!, compileExpression: compileExpression, logger: logger);
         logger.printTrace('test $id: Successfully connected to service protocol: $forwardingUri');
         if (debuggingOptions.serveObservatory) {
           try {
@@ -196,7 +185,9 @@ class FlutterTesterTestDevice extends TestDevice {
           logger.printStatus('The Dart VM service is listening on $forwardingUri');
           await _startDevTools(forwardingUri, dds);
           logger.printStatus('');
-          logger.printStatus('The test process has been started. Set any relevant breakpoints and then resume the test in the debugger.');
+          logger.printStatus(
+            'The test process has been started. Set any relevant breakpoints and then resume the test in the debugger.',
+          );
         }
         _gotProcessVmServiceUri.complete(forwardingUri);
       },
@@ -244,10 +235,7 @@ class FlutterTesterTestDevice extends TestDevice {
   Uri get _ddsServiceUri {
     return Uri(
       scheme: 'http',
-      host: (host!.type == InternetAddressType.IPv6 ?
-        InternetAddress.loopbackIPv6 :
-        InternetAddress.loopbackIPv4
-      ).host,
+      host: (host!.type == InternetAddressType.IPv6 ? InternetAddress.loopbackIPv6 : InternetAddress.loopbackIPv4).host,
       port: debuggingOptions.hostVmServicePort ?? 0,
     );
   }
@@ -271,11 +259,7 @@ class FlutterTesterTestDevice extends TestDevice {
     CompileExpression? compileExpression,
     required Logger logger,
   }) {
-    return connectToVmService(
-      httpUri,
-      compileExpression: compileExpression,
-      logger: logger,
-    );
+    return connectToVmService(httpUri, compileExpression: compileExpression, logger: logger);
   }
 
   Future<void> _startDevTools(Uri forwardingUri, DartDevelopmentService? dds) async {
@@ -334,15 +318,9 @@ class FlutterTesterTestDevice extends TestDevice {
     required Process process,
     required Future<void> Function(Uri uri) reportVmServiceUri,
   }) {
-    for (final Stream<List<int>> stream in <Stream<List<int>>>[
-      process.stderr,
-      process.stdout,
-    ]) {
-      stream
-          .transform<String>(utf8.decoder)
-          .transform<String>(const LineSplitter())
-          .listen(
-            (String line) async {
+    for (final Stream<List<int>> stream in <Stream<List<int>>>[process.stderr, process.stdout]) {
+      stream.transform<String>(utf8.decoder).transform<String>(const LineSplitter()).listen(
+        (String line) async {
           logger.printTrace('test $id: Shell: $line');
 
           final Match? match = globals.kVMServiceMessageRegExp.firstMatch(line);
@@ -356,10 +334,11 @@ class FlutterTesterTestDevice extends TestDevice {
           } else {
             logger.printStatus('Shell: $line');
           }
-
         },
         onError: (dynamic error) {
-          logger.printError('shell console stream for process pid ${process.pid} experienced an unexpected error: $error');
+          logger.printError(
+            'shell console stream for process pid ${process.pid} experienced an unexpected error: $error',
+          );
         },
         cancelOnError: true,
       );
@@ -389,9 +368,7 @@ String _getExitCodeMessage(int exitCode) {
 StreamChannel<String> _webSocketToStreamChannel(WebSocket webSocket) {
   final StreamChannelController<String> controller = StreamChannelController<String>();
 
-  controller.local.stream
-      .map<dynamic>((String message) => message as dynamic)
-      .pipe(webSocket);
+  controller.local.stream.map<dynamic>((String message) => message as dynamic).pipe(webSocket);
   webSocket
       // We're only communicating with string encoded JSON.
       .map<String>((dynamic message) => message as String)

@@ -8,12 +8,10 @@ import '../../xcode_project.dart';
 
 /// Update the minimum iOS deployment version to the minimum allowed by Xcode without causing a warning.
 class IOSDeploymentTargetMigration extends ProjectMigrator {
-  IOSDeploymentTargetMigration(
-    IosProject project,
-    super.logger,
-  )   : _xcodeProjectInfoFile = project.xcodeProjectInfoFile,
-        _podfile = project.podfile,
-        _appFrameworkInfoPlist = project.appFrameworkInfoPlist;
+  IOSDeploymentTargetMigration(IosProject project, super.logger)
+    : _xcodeProjectInfoFile = project.xcodeProjectInfoFile,
+      _podfile = project.podfile,
+      _appFrameworkInfoPlist = project.appFrameworkInfoPlist;
 
   final File _xcodeProjectInfoFile;
   final File _podfile;
@@ -55,9 +53,10 @@ class IOSDeploymentTargetMigration extends ProjectMigrator {
   <string>11.0</string>
 ''';
 
-    return fileContents
-        .replaceAll(minimumOSVersionOriginal8, minimumOSVersionReplacement)
-        .replaceAll(minimumOSVersionOriginal9, minimumOSVersionReplacement);
+    return fileContents.replaceAll(minimumOSVersionOriginal8, minimumOSVersionReplacement).replaceAll(
+      minimumOSVersionOriginal9,
+      minimumOSVersionReplacement,
+    );
   }
 
   @override
@@ -69,9 +68,9 @@ class IOSDeploymentTargetMigration extends ProjectMigrator {
     // Podfile changes.
     const String podfilePlatformVersionOriginal = "platform :ios, '9.0'";
 
-    if (line.contains(deploymentTargetOriginal8)
-        || line.contains(deploymentTargetOriginal9)
-        || line.contains(podfilePlatformVersionOriginal)) {
+    if (line.contains(deploymentTargetOriginal8) ||
+        line.contains(deploymentTargetOriginal9) ||
+        line.contains(podfilePlatformVersionOriginal)) {
       if (!migrationRequired) {
         // Only print for the first discovered change found.
         logger.printStatus('Updating minimum iOS deployment target to 11.0.');

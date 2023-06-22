@@ -20,13 +20,16 @@ void main() {
     final FileExceptionHandler handler = FileExceptionHandler();
     final MemoryFileSystem fileSystem = MemoryFileSystem.test(opHandle: handler.opHandle);
 
-    expect(() => Template(
-      fileSystem.directory('doesNotExist'),
-      fileSystem.currentDirectory,
-      fileSystem: fileSystem,
-      logger: BufferLogger.test(),
-      templateRenderer: FakeTemplateRenderer(),
-    ), throwsToolExit());
+    expect(
+      () => Template(
+        fileSystem.directory('doesNotExist'),
+        fileSystem.currentDirectory,
+        fileSystem: fileSystem,
+        logger: BufferLogger.test(),
+        templateRenderer: FakeTemplateRenderer(),
+      ),
+      throwsToolExit(),
+    );
   });
 
   testWithoutContext('Template.render throws ToolExit when FileSystem exception is raised', () {
@@ -42,8 +45,7 @@ void main() {
     final Directory directory = fileSystem.directory('foo');
     handler.addError(directory, FileSystemOp.create, const FileSystemException());
 
-    expect(() => template.render(directory, <String, Object>{}),
-      throwsToolExit());
+    expect(() => template.render(directory, <String, Object>{}), throwsToolExit());
   });
 
   group('template image directory', () {
@@ -77,11 +79,8 @@ void main() {
 }
 ''');
       expect(
-          (await templateImageDirectory(null, globals.fs, globals.logger)).path,
-          globals.fs.path.absolute(
-            'flutter_template_images',
-            'templates',
-          ),
+        (await templateImageDirectory(null, globals.fs, globals.logger)).path,
+        globals.fs.path.absolute('flutter_template_images', 'templates'),
       );
     }, overrides: overrides);
 
@@ -110,11 +109,7 @@ void main() {
 ''');
       expect(
         (await templateImageDirectory('app_shared', globals.fs, globals.logger)).path,
-        globals.fs.path.absolute(
-          'flutter_template_images',
-          'templates',
-          'app_shared',
-        ),
+        globals.fs.path.absolute('flutter_template_images', 'templates', 'app_shared'),
       );
     }, overrides: overrides);
   });

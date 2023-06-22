@@ -17,7 +17,6 @@ import '../../src/common.dart';
 const TemplateRenderer renderer = MustacheTemplateRenderer();
 
 void main() {
-
   testWithoutContext('Win32 injects Win32 plugins', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
     setUpProject(fileSystem);
@@ -44,10 +43,7 @@ void main() {
     final Directory managed = flutterProject.windows.managedDirectory;
     expect(flutterProject.windows.generatedPluginCmakeFile, exists);
     expect(managed.childFile('generated_plugin_registrant.h'), exists);
-    expect(
-      managed.childFile('generated_plugin_registrant.cc').readAsStringSync(),
-      contains('#include <test/foo.h>'),
-    );
+    expect(managed.childFile('generated_plugin_registrant.cc').readAsStringSync(), contains('#include <test/foo.h>'));
   });
 }
 

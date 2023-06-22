@@ -31,9 +31,7 @@ void main() {
       outputDir: fileSystem.directory('out')..createSync(),
       buildDir: fileSystem.directory('build')..createSync(),
       projectDir: fileSystem.directory('project')..createSync(),
-      defines: <String, String>{
-        kDeferredComponents: 'true',
-      },
+      defines: <String, String>{kDeferredComponents: 'true'},
       artifacts: Artifacts.test(),
       processManager: FakeProcessManager.empty(),
       fileSystem: fileSystem,
@@ -64,9 +62,7 @@ void main() {
       outputDir: fileSystem.directory('out')..createSync(),
       buildDir: fileSystem.directory('build')..createSync(),
       projectDir: fileSystem.directory('project')..createSync(),
-      defines: <String, String>{
-        kDeferredComponents: 'true',
-      },
+      defines: <String, String>{kDeferredComponents: 'true'},
       artifacts: Artifacts.test(),
       processManager: FakeProcessManager.empty(),
       fileSystem: fileSystem,
@@ -96,9 +92,7 @@ void main() {
       outputDir: fileSystem.directory('out')..createSync(),
       buildDir: fileSystem.directory('build')..createSync(),
       projectDir: fileSystem.directory('project')..createSync(),
-      defines: <String, String>{
-        kDeferredComponents: 'true',
-      },
+      defines: <String, String>{kDeferredComponents: 'true'},
       artifacts: Artifacts.test(),
       processManager: FakeProcessManager.empty(),
       fileSystem: fileSystem,

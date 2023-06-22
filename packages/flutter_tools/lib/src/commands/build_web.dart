@@ -10,19 +10,16 @@ import '../features.dart';
 import '../globals.dart' as globals;
 import '../html_utils.dart';
 import '../project.dart';
-import '../runner/flutter_command.dart'
-    show DevelopmentArtifact, FlutterCommandResult, FlutterOptions;
+import '../runner/flutter_command.dart' show DevelopmentArtifact, FlutterCommandResult, FlutterOptions;
 import '../web/compile.dart';
 import '../web/file_generators/flutter_service_worker_js.dart';
 import '../web/web_constants.dart';
 import 'build.dart';
 
 class BuildWebCommand extends BuildSubCommand {
-  BuildWebCommand({
-    required super.logger,
-    required FileSystem fileSystem,
-    required bool verboseHelp,
-  }) : _fileSystem = fileSystem, super(verboseHelp: verboseHelp) {
+  BuildWebCommand({required super.logger, required FileSystem fileSystem, required bool verboseHelp})
+    : _fileSystem = fileSystem,
+      super(verboseHelp: verboseHelp) {
     addTreeShakeIconsFlag();
     usesTargetOption();
     usesOutputDir();
@@ -39,11 +36,12 @@ class BuildWebCommand extends BuildSubCommand {
     // Flutter web-specific options
     //
     argParser.addSeparator('Flutter web options');
-    argParser.addOption('base-href',
+    argParser.addOption(
+      'base-href',
       help: 'Overrides the href attribute of the <base> tag in web/index.html. '
           'No change is done to web/index.html file if this flag is not provided. '
           'The value has to start and end with a slash "/". '
-          'For more information: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base'
+          'For more information: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base',
     );
     argParser.addOption(
       'pwa-strategy',
@@ -59,29 +57,35 @@ class BuildWebCommand extends BuildSubCommand {
     // JavaScript compilation options
     //
     argParser.addSeparator('JavaScript compilation options');
-    argParser.addFlag('csp',
+    argParser.addFlag(
+      'csp',
       negatable: false,
       help: 'Disable dynamic generation of code in the generated output. '
-            'This is necessary to satisfy CSP restrictions (see http://www.w3.org/TR/CSP/).'
+          'This is necessary to satisfy CSP restrictions (see http://www.w3.org/TR/CSP/).',
     );
     argParser.addFlag(
       'source-maps',
       help: 'Generate a sourcemap file. These can be used by browsers '
-            'to view and debug the original source code of a compiled and minified Dart '
-            'application.'
+          'to view and debug the original source code of a compiled and minified Dart '
+          'application.',
     );
-    argParser.addOption('dart2js-optimization',
+    argParser.addOption(
+      'dart2js-optimization',
       help: 'Sets the optimization level used for Dart compilation to JavaScript. '
           'Valid values range from O0 to O4.',
-          defaultsTo: JsCompilerConfig.kDart2jsDefaultOptimizationLevel
+      defaultsTo: JsCompilerConfig.kDart2jsDefaultOptimizationLevel,
     );
-    argParser.addFlag('dump-info', negatable: false,
+    argParser.addFlag(
+      'dump-info',
+      negatable: false,
       help: 'Passes "--dump-info" to the Javascript compiler which generates '
-          'information about the generated code is a .js.info.json file.'
+          'information about the generated code is a .js.info.json file.',
     );
-    argParser.addFlag('no-frequency-based-minification', negatable: false,
+    argParser.addFlag(
+      'no-frequency-based-minification',
+      negatable: false,
       help: 'Disables the frequency based minifier. '
-          'Useful for comparing the output between builds.'
+          'Useful for comparing the output between builds.',
     );
 
     //
@@ -105,8 +109,7 @@ class BuildWebCommand extends BuildSubCommand {
     );
     argParser.addOption(
       'wasm-opt',
-      help:
-          'Optimize output wasm using the Binaryen (https://github.com/WebAssembly/binaryen) tool.',
+      help: 'Optimize output wasm using the Binaryen (https://github.com/WebAssembly/binaryen) tool.',
       defaultsTo: WasmOptLevel.defaultValue.cliName,
       allowed: WasmOptLevel.values.map<String>((WasmOptLevel e) => e.cliName),
       allowedHelp: CliEnum.allowedHelp(WasmOptLevel.values),
@@ -117,10 +120,7 @@ class BuildWebCommand extends BuildSubCommand {
   final FileSystem _fileSystem;
 
   @override
-  Future<Set<DevelopmentArtifact>> get requiredArtifacts async =>
-      const <DevelopmentArtifact>{
-        DevelopmentArtifact.web,
-      };
+  Future<Set<DevelopmentArtifact>> get requiredArtifacts async => const <DevelopmentArtifact>{DevelopmentArtifact.web};
 
   @override
   final String name = 'web';
@@ -170,15 +170,13 @@ class BuildWebCommand extends BuildSubCommand {
     if (!flutterProject.web.existsSync()) {
       throwToolExit('Missing index.html.');
     }
-    if (!_fileSystem.currentDirectory
-        .childDirectory('web')
-        .childFile('index.html')
-        .readAsStringSync()
-        .contains(kBaseHrefPlaceholder) &&
+    if (!_fileSystem.currentDirectory.childDirectory('web').childFile('index.html').readAsStringSync().contains(
+          kBaseHrefPlaceholder,
+        ) &&
         baseHref != null) {
       throwToolExit(
         "Couldn't find the placeholder for base href. "
-        'Please add `<base href="$kBaseHrefPlaceholder">` to web/index.html'
+        'Please add `<base href="$kBaseHrefPlaceholder">` to web/index.html',
       );
     }
 

@@ -19,21 +19,14 @@ void main() {
   });
 
   testWithoutContext('Decode a normal string', () async {
-
     expect(decoder.convert(passedString.codeUnits), passedString);
   });
 
   testWithoutContext('Decode a malformed string', () async {
-
-    expect(
-      () => decoder.convert(nonpassString.codeUnits),
-      throwsA(
-        isA<ToolExit>().having(
-          (ToolExit error) => error.message,
-          'message',
-          contains('(U+FFFD; REPLACEMENT CHARACTER)'), // Added paragraph
-        ),
-      ),
-    );
+    expect(() => decoder.convert(nonpassString.codeUnits), throwsA(isA<ToolExit>().having(
+      (ToolExit error) => error.message,
+      'message',
+      contains('(U+FFFD; REPLACEMENT CHARACTER)'), // Added paragraph
+    )));
   });
 }

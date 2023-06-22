@@ -13,11 +13,7 @@ import '../runner/flutter_command.dart';
 
 class LogsCommand extends FlutterCommand {
   LogsCommand() {
-    argParser.addFlag('clear',
-      negatable: false,
-      abbr: 'c',
-      help: 'Clear log history before reading from logs.',
-    );
+    argParser.addFlag('clear', negatable: false, abbr: 'c', help: 'Clear log history before reading from logs.');
     usesDeviceTimeoutOption();
     usesDeviceConnectionOption();
   }
@@ -55,9 +51,7 @@ class LogsCommand extends FlutterCommand {
       cachedDevice.clearLogs();
     }
 
-    final ApplicationPackage? app = await applicationPackages?.getPackageForPlatform(
-      await cachedDevice.targetPlatform,
-    );
+    final ApplicationPackage? app = await applicationPackages?.getPackageForPlatform(await cachedDevice.targetPlatform);
 
     final DeviceLogReader logReader = await cachedDevice.getLogReader(app: app);
 

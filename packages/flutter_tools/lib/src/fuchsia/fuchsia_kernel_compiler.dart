@@ -33,7 +33,7 @@ class FuchsiaKernelCompiler {
     final String manifestPath = globals.fs.path.join(outDir, '$appName.dilpmanifest');
     final String? kernelCompiler = globals.artifacts?.getArtifactPath(
       Artifact.fuchsiaKernelCompiler,
-      platform: TargetPlatform.fuchsia_arm64,  // This file is not arch-specific.
+      platform: TargetPlatform.fuchsia_arm64, // This file is not arch-specific.
       mode: buildInfo.mode,
     );
     if (kernelCompiler == null || !globals.fs.isFileSync(kernelCompiler)) {
@@ -66,23 +66,14 @@ class FuchsiaKernelCompiler {
       ...getBuildInfoFlags(buildInfo: buildInfo, manifestPath: manifestPath),
     ];
 
-    flags += <String>[
-      '$multiRootScheme:///$target',
-    ];
+    flags += <String>['$multiRootScheme:///$target'];
 
     final String? engineDartBinaryPath = globals.artifacts?.getArtifactPath(Artifact.engineDartBinary);
     if (engineDartBinaryPath == null) {
       throwToolExit('Engine dart binary not found at "$engineDartBinaryPath"');
     }
-    final List<String> command = <String>[
-      engineDartBinaryPath,
-      '--disable-dart-dev',
-      kernelCompiler,
-      ...flags,
-    ];
-    final Status status = globals.logger.startProgress(
-      'Building Fuchsia application...',
-    );
+    final List<String> command = <String>[engineDartBinaryPath, '--disable-dart-dev', kernelCompiler, ...flags];
+    final Status status = globals.logger.startProgress('Building Fuchsia application...');
     int result;
     try {
       result = await globals.processUtils.stream(command, trace: true);
@@ -96,10 +87,7 @@ class FuchsiaKernelCompiler {
 
   /// Provide flags that are affected by [BuildInfo]
   @visibleForTesting
-  static List<String> getBuildInfoFlags({
-    required BuildInfo buildInfo,
-    required String manifestPath,
-  }) {
+  static List<String> getBuildInfoFlags({required BuildInfo buildInfo, required String manifestPath}) {
     return <String>[
       // AOT/JIT:
       if (buildInfo.usesAot) ...<String>[
@@ -113,23 +101,13 @@ class FuchsiaKernelCompiler {
       ],
 
       // debug, profile, jit release, release:
-      if (buildInfo.isDebug)
-        '--embed-sources'
-      else
-        '--no-embed-sources',
+      if (buildInfo.isDebug) '--embed-sources' else '--no-embed-sources',
 
-      if (buildInfo.isProfile) ...<String>[
-        '-Ddart.vm.profile=true',
-        '-Ddart.vm.product=false',
-      ],
+      if (buildInfo.isProfile) ...<String>['-Ddart.vm.profile=true', '-Ddart.vm.product=false'],
 
-      if (buildInfo.mode.isRelease) ...<String>[
-        '-Ddart.vm.profile=false',
-        '-Ddart.vm.product=true',
-      ],
+      if (buildInfo.mode.isRelease) ...<String>['-Ddart.vm.profile=false', '-Ddart.vm.product=true'],
 
-      for (final String dartDefine in buildInfo.dartDefines)
-        '-D$dartDefine',
+      for (final String dartDefine in buildInfo.dartDefines) '-D$dartDefine',
     ];
   }
 }

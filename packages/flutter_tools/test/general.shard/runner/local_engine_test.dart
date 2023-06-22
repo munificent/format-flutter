@@ -18,20 +18,16 @@ const String kDotPackages = '.packages';
 
 void main() {
   testWithoutContext('works if --local-engine is specified and --local-engine-src-path '
-    'is determined by sky_engine', () async {
+      'is determined by sky_engine', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
-    fileSystem
-      .directory('$kArbitraryEngineRoot/src/out/ios_debug/gen/dart-pkg/sky_engine/lib/')
-      .createSync(recursive: true);
-    fileSystem
-      .directory('$kArbitraryEngineRoot/src/out/host_debug')
-      .createSync(recursive: true);
-    fileSystem
-      .file(kDotPackages)
-      .writeAsStringSync('sky_engine:file://$kArbitraryEngineRoot/src/out/ios_debug/gen/dart-pkg/sky_engine/lib/');
-    fileSystem
-      .file('bin/cache/pkg/sky_engine/lib')
-      .createSync(recursive: true);
+    fileSystem.directory('$kArbitraryEngineRoot/src/out/ios_debug/gen/dart-pkg/sky_engine/lib/').createSync(
+      recursive: true,
+    );
+    fileSystem.directory('$kArbitraryEngineRoot/src/out/host_debug').createSync(recursive: true);
+    fileSystem.file(kDotPackages).writeAsStringSync(
+      'sky_engine:file://$kArbitraryEngineRoot/src/out/ios_debug/gen/dart-pkg/sky_engine/lib/',
+    );
+    fileSystem.file('bin/cache/pkg/sky_engine/lib').createSync(recursive: true);
 
     final BufferLogger logger = BufferLogger.test();
     final LocalEngineLocator localEngineLocator = LocalEngineLocator(
@@ -42,33 +38,27 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    expect(
-      await localEngineLocator.findEnginePath(localEngine: 'ios_debug'),
-      matchesEngineBuildPaths(
-        hostEngine: '/arbitrary/engine/src/out/host_debug',
-        targetEngine: '/arbitrary/engine/src/out/ios_debug',
-      ),
-    );
+    expect(await localEngineLocator.findEnginePath(localEngine: 'ios_debug'), matchesEngineBuildPaths(
+      hostEngine: '/arbitrary/engine/src/out/host_debug',
+      targetEngine: '/arbitrary/engine/src/out/ios_debug',
+    ));
     expect(logger.traceText, contains('Local engine source at /arbitrary/engine/src'));
 
     // Verify that this also works if the sky_engine path is a symlink to the engine root.
     fileSystem.link('/symlink').createSync(kArbitraryEngineRoot);
-    fileSystem
-      .file(kDotPackages)
-      .writeAsStringSync('sky_engine:file:///symlink/src/out/ios_debug/gen/dart-pkg/sky_engine/lib/');
+    fileSystem.file(kDotPackages).writeAsStringSync(
+      'sky_engine:file:///symlink/src/out/ios_debug/gen/dart-pkg/sky_engine/lib/',
+    );
 
     expect(
       await localEngineLocator.findEnginePath(localEngine: 'ios_debug'),
-      matchesEngineBuildPaths(
-        hostEngine: '/symlink/src/out/host_debug',
-        targetEngine: '/symlink/src/out/ios_debug',
-      ),
+      matchesEngineBuildPaths(hostEngine: '/symlink/src/out/host_debug', targetEngine: '/symlink/src/out/ios_debug'),
     );
     expect(logger.traceText, contains('Local engine source at /symlink/src'));
   });
 
   testWithoutContext('works if --local-engine is specified and --local-engine-src-path '
-    'is specified', () async {
+      'is specified', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
     // Intentionally do not create a package_config to verify that it is not required.
     fileSystem.directory('$kArbitraryEngineRoot/src/out/ios_debug').createSync(recursive: true);
@@ -96,9 +86,8 @@ void main() {
   testWithoutContext('works if --local-engine is specified and --local-engine-src-path '
       'is determined by --local-engine', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
-    final Directory localEngine = fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/ios_debug/')
-        ..createSync(recursive: true);
+    final Directory localEngine = fileSystem.directory('$kArbitraryEngineRoot/src/out/ios_debug/')
+      ..createSync(recursive: true);
     fileSystem.directory('$kArbitraryEngineRoot/src/out/host_debug/').createSync(recursive: true);
 
     final BufferLogger logger = BufferLogger.test();
@@ -110,21 +99,17 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path),
-      matchesEngineBuildPaths(
-        hostEngine: '/arbitrary/engine/src/out/host_debug',
-        targetEngine: '/arbitrary/engine/src/out/ios_debug',
-      ),
-    );
+    expect(await localEngineLocator.findEnginePath(localEngine: localEngine.path), matchesEngineBuildPaths(
+      hostEngine: '/arbitrary/engine/src/out/host_debug',
+      targetEngine: '/arbitrary/engine/src/out/ios_debug',
+    ));
     expect(logger.traceText, contains('Parsed engine source from local engine as /arbitrary/engine/src'));
     expect(logger.traceText, contains('Local engine source at /arbitrary/engine/src'));
   });
 
   testWithoutContext('works if local engine is host engine', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
-    final Directory localEngine = fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/host_debug/')
+    final Directory localEngine = fileSystem.directory('$kArbitraryEngineRoot/src/out/host_debug/')
       ..createSync(recursive: true);
 
     final BufferLogger logger = BufferLogger.test();
@@ -136,20 +121,16 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path),
-      matchesEngineBuildPaths(
-        hostEngine: '/arbitrary/engine/src/out/host_debug',
-        targetEngine: '/arbitrary/engine/src/out/host_debug',
-      ),
-    );
+    expect(await localEngineLocator.findEnginePath(localEngine: localEngine.path), matchesEngineBuildPaths(
+      hostEngine: '/arbitrary/engine/src/out/host_debug',
+      targetEngine: '/arbitrary/engine/src/out/host_debug',
+    ));
     expect(logger.traceText, contains('Local engine source at /arbitrary/engine/src'));
   });
 
   testWithoutContext('works if local engine is host engine with suffixes', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
-    final Directory localEngine = fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/host_debug_unopt_arm64/')
+    final Directory localEngine = fileSystem.directory('$kArbitraryEngineRoot/src/out/host_debug_unopt_arm64/')
       ..createSync(recursive: true);
 
     final BufferLogger logger = BufferLogger.test();
@@ -161,23 +142,17 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path),
-      matchesEngineBuildPaths(
-        hostEngine: '/arbitrary/engine/src/out/host_debug_unopt_arm64',
-        targetEngine: '/arbitrary/engine/src/out/host_debug_unopt_arm64',
-      ),
-    );
+    expect(await localEngineLocator.findEnginePath(localEngine: localEngine.path), matchesEngineBuildPaths(
+      hostEngine: '/arbitrary/engine/src/out/host_debug_unopt_arm64',
+      targetEngine: '/arbitrary/engine/src/out/host_debug_unopt_arm64',
+    ));
   });
 
   testWithoutContext('works if local engine is simulator', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
-    final Directory localEngine = fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/ios_debug_sim/')
+    final Directory localEngine = fileSystem.directory('$kArbitraryEngineRoot/src/out/ios_debug_sim/')
       ..createSync(recursive: true);
-    fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/host_debug/')
-        .createSync(recursive: true);
+    fileSystem.directory('$kArbitraryEngineRoot/src/out/host_debug/').createSync(recursive: true);
 
     final BufferLogger logger = BufferLogger.test();
     final LocalEngineLocator localEngineLocator = LocalEngineLocator(
@@ -188,24 +163,17 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path),
-      matchesEngineBuildPaths(
-        hostEngine: '/arbitrary/engine/src/out/host_debug',
-        targetEngine: '/arbitrary/engine/src/out/ios_debug_sim',
-      ),
-    );
+    expect(await localEngineLocator.findEnginePath(localEngine: localEngine.path), matchesEngineBuildPaths(
+      hostEngine: '/arbitrary/engine/src/out/host_debug',
+      targetEngine: '/arbitrary/engine/src/out/ios_debug_sim',
+    ));
   });
 
-  testWithoutContext('works if local engine is simulator unoptimized',
-      () async {
+  testWithoutContext('works if local engine is simulator unoptimized', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
-    final Directory localEngine = fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/ios_debug_sim_unopt/')
+    final Directory localEngine = fileSystem.directory('$kArbitraryEngineRoot/src/out/ios_debug_sim_unopt/')
       ..createSync(recursive: true);
-    fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/host_debug_unopt/')
-        .createSync(recursive: true);
+    fileSystem.directory('$kArbitraryEngineRoot/src/out/host_debug_unopt/').createSync(recursive: true);
 
     final BufferLogger logger = BufferLogger.test();
     final LocalEngineLocator localEngineLocator = LocalEngineLocator(
@@ -216,19 +184,15 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path),
-      matchesEngineBuildPaths(
-        hostEngine: '/arbitrary/engine/src/out/host_debug_unopt',
-        targetEngine: '/arbitrary/engine/src/out/ios_debug_sim_unopt',
-      ),
-    );
+    expect(await localEngineLocator.findEnginePath(localEngine: localEngine.path), matchesEngineBuildPaths(
+      hostEngine: '/arbitrary/engine/src/out/host_debug_unopt',
+      targetEngine: '/arbitrary/engine/src/out/ios_debug_sim_unopt',
+    ));
   });
 
   testWithoutContext('fails if host_debug does not exist', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
-    final Directory localEngine = fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/ios_debug/')
+    final Directory localEngine = fileSystem.directory('$kArbitraryEngineRoot/src/out/ios_debug/')
       ..createSync(recursive: true);
 
     final LocalEngineLocator localEngineLocator = LocalEngineLocator(
@@ -246,18 +210,12 @@ void main() {
   });
 
   testWithoutContext('works if --local-engine is specified and --local-engine-src-path '
-    'is determined by flutter root', () async {
+      'is determined by flutter root', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
     fileSystem.file(kDotPackages).writeAsStringSync('\n');
-    fileSystem
-      .directory('$kEngineRoot/src/out/ios_debug')
-      .createSync(recursive: true);
-    fileSystem
-      .directory('$kEngineRoot/src/out/host_debug')
-      .createSync(recursive: true);
-    fileSystem
-      .file('bin/cache/pkg/sky_engine/lib')
-      .createSync(recursive: true);
+    fileSystem.directory('$kEngineRoot/src/out/ios_debug').createSync(recursive: true);
+    fileSystem.directory('$kEngineRoot/src/out/host_debug').createSync(recursive: true);
+    fileSystem.file('bin/cache/pkg/sky_engine/lib').createSync(recursive: true);
 
     final BufferLogger logger = BufferLogger.test();
     final LocalEngineLocator localEngineLocator = LocalEngineLocator(
@@ -268,13 +226,10 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    expect(
-      await localEngineLocator.findEnginePath(localEngine: 'ios_debug'),
-      matchesEngineBuildPaths(
-        hostEngine: 'flutter/engine/src/out/host_debug',
-        targetEngine: 'flutter/engine/src/out/ios_debug',
-      ),
-    );
+    expect(await localEngineLocator.findEnginePath(localEngine: 'ios_debug'), matchesEngineBuildPaths(
+      hostEngine: 'flutter/engine/src/out/host_debug',
+      targetEngine: 'flutter/engine/src/out/ios_debug',
+    ));
     expect(logger.traceText, contains('Local engine source at flutter/engine/src'));
   });
 
@@ -298,11 +253,9 @@ void main() {
 
   testWithoutContext('works for local web engine', () async {
     final FileSystem fileSystem = MemoryFileSystem.test();
-    final Directory localWasmEngine = fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/wasm_whatever/')
+    final Directory localWasmEngine = fileSystem.directory('$kArbitraryEngineRoot/src/out/wasm_whatever/')
       ..createSync(recursive: true);
-    final Directory localWebEngine = fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/web_whatever/')
+    final Directory localWebEngine = fileSystem.directory('$kArbitraryEngineRoot/src/out/web_whatever/')
       ..createSync(recursive: true);
 
     final BufferLogger wasmLogger = BufferLogger.test();
@@ -314,13 +267,10 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    expect(
-      await localWasmEngineLocator.findEnginePath(localEngine: localWasmEngine.path),
-      matchesEngineBuildPaths(
-        hostEngine: '/arbitrary/engine/src/out/wasm_whatever',
-        targetEngine: '/arbitrary/engine/src/out/wasm_whatever',
-      ),
-    );
+    expect(await localWasmEngineLocator.findEnginePath(localEngine: localWasmEngine.path), matchesEngineBuildPaths(
+      hostEngine: '/arbitrary/engine/src/out/wasm_whatever',
+      targetEngine: '/arbitrary/engine/src/out/wasm_whatever',
+    ));
     expect(wasmLogger.traceText, contains('Local engine source at /arbitrary/engine/src'));
 
     final BufferLogger webLogger = BufferLogger.test();
@@ -332,13 +282,10 @@ void main() {
       platform: FakePlatform(environment: <String, String>{}),
     );
 
-    expect(
-      await localWebEngineLocator.findEnginePath(localEngine: localWebEngine.path),
-      matchesEngineBuildPaths(
-        hostEngine: '/arbitrary/engine/src/out/web_whatever',
-        targetEngine: '/arbitrary/engine/src/out/web_whatever',
-      ),
-    );
+    expect(await localWebEngineLocator.findEnginePath(localEngine: localWebEngine.path), matchesEngineBuildPaths(
+      hostEngine: '/arbitrary/engine/src/out/web_whatever',
+      targetEngine: '/arbitrary/engine/src/out/web_whatever',
+    ));
     expect(webLogger.traceText, contains('Local engine source at /arbitrary/engine/src'));
   });
 
@@ -371,11 +318,8 @@ void main() {
   });
 }
 
-Matcher matchesEngineBuildPaths({
-  String? hostEngine,
-  String? targetEngine,
-}) {
+Matcher matchesEngineBuildPaths({String? hostEngine, String? targetEngine}) {
   return const TypeMatcher<EngineBuildPaths>()
-    .having((EngineBuildPaths paths) => paths.hostEngine, 'hostEngine', hostEngine)
-    .having((EngineBuildPaths paths) => paths.targetEngine, 'targetEngine', targetEngine);
+      .having((EngineBuildPaths paths) => paths.hostEngine, 'hostEngine', hostEngine)
+      .having((EngineBuildPaths paths) => paths.targetEngine, 'targetEngine', targetEngine);
 }

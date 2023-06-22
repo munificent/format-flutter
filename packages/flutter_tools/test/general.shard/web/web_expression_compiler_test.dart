@@ -24,8 +24,7 @@ void main() {
     final ExpressionCompiler expressionCompiler = WebExpressionCompiler(residentCompiler, fileSystem: fileSystem);
 
     final ExpressionCompilationResult result =
-      await expressionCompiler.compileExpressionToJs(
-        '', '', 1, 1, <String, String>{}, <String, String>{}, '', '');
+        await expressionCompiler.compileExpressionToJs('', '', 1, 1, <String, String>{}, <String, String>{}, '', '');
 
     expectResult(result, false, 'a');
   });
@@ -36,8 +35,7 @@ void main() {
     final ExpressionCompiler expressionCompiler = WebExpressionCompiler(residentCompiler, fileSystem: fileSystem);
 
     final ExpressionCompilationResult result =
-      await expressionCompiler.compileExpressionToJs(
-        '', '', 1, 1, <String, String>{}, <String, String>{}, '', '');
+        await expressionCompiler.compileExpressionToJs('', '', 1, 1, <String, String>{}, <String, String>{}, '', '');
 
     expectResult(result, true, 'Error: a');
   });
@@ -47,16 +45,14 @@ void main() {
     final ExpressionCompiler expressionCompiler = WebExpressionCompiler(residentCompiler, fileSystem: fileSystem);
 
     final ExpressionCompilationResult result =
-      await expressionCompiler.compileExpressionToJs(
-        '', '', 1, 1, <String, String>{}, <String, String>{}, '', 'a');
+        await expressionCompiler.compileExpressionToJs('', '', 1, 1, <String, String>{}, <String, String>{}, '', 'a');
 
     expectResult(result, true, "InternalError: frontend server failed to compile 'a'");
   });
 }
 
 void expectResult(ExpressionCompilationResult result, bool isError, String value) {
-  expect(result,
-    const TypeMatcher<ExpressionCompilationResult>()
+  expect(result, const TypeMatcher<ExpressionCompilationResult>()
       .having((ExpressionCompilationResult instance) => instance.isError, 'isError', isError)
       .having((ExpressionCompilationResult instance) => instance.result, 'result', value));
 }

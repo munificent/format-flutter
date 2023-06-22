@@ -108,10 +108,7 @@ void main() {
         final Future<Uri?> uriFuture = discoverer.uri;
         logReader.addLine('VM Service not listening...');
         final Uri timeoutUri = Uri.parse('http://timeout');
-        final Uri? actualUri = await uriFuture.timeout(
-          const Duration(milliseconds: 100),
-          onTimeout: () => timeoutUri,
-        );
+        final Uri? actualUri = await uriFuture.timeout(const Duration(milliseconds: 100), onTimeout: () => timeoutUri);
         expect(actualUri, timeoutUri);
       });
 
@@ -396,7 +393,7 @@ class MockPortForwarder extends DevicePortForwarder {
   final int? availablePort;
 
   @override
-  Future<int> forward(int devicePort, { int? hostPort }) async {
+  Future<int> forward(int devicePort, {int? hostPort}) async {
     hostPort ??= 0;
     if (hostPort == 0) {
       return availablePort!;

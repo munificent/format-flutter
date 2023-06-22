@@ -50,11 +50,7 @@ class DevelopmentSceneImporter {
         inputFile.writeAsBytesSync(await inputScene.contentsAsBytes());
         cleanupInput = true;
       }
-      final bool success = await _sceneImporter.importScene(
-        input: inputFile,
-        outputPath: output.path,
-        fatal: false,
-      );
+      final bool success = await _sceneImporter.importScene(input: inputFile, outputPath: output.path, fatal: false);
       if (!success) {
         return null;
       }
@@ -77,10 +73,10 @@ class SceneImporter {
     required Logger logger,
     required FileSystem fileSystem,
     required Artifacts artifacts,
-  })  : _processManager = processManager,
-        _logger = logger,
-        _fs = fileSystem,
-        _artifacts = artifacts;
+  }) : _processManager = processManager,
+       _logger = logger,
+       _fs = fileSystem,
+       _artifacts = artifacts;
 
   final ProcessManager _processManager;
   final Logger _logger;
@@ -91,8 +87,7 @@ class SceneImporter {
   ///
   /// See [Target.inputs].
   static const List<Source> inputs = <Source>[
-    Source.pattern(
-        '{FLUTTER_ROOT}/packages/flutter_tools/lib/src/build_system/targets/scene_importer.dart'),
+    Source.pattern('{FLUTTER_ROOT}/packages/flutter_tools/lib/src/build_system/targets/scene_importer.dart'),
     Source.hostArtifact(HostArtifact.scenec),
   ];
 
@@ -104,14 +99,8 @@ class SceneImporter {
   /// If the scene importer subprocess fails, it will print the stdout and
   /// stderr to the log and throw a [SceneImporterException]. Otherwise, it
   /// will return true.
-  Future<bool> importScene({
-    required File input,
-    required String outputPath,
-    bool fatal = true,
-  }) async {
-    final File scenec = _fs.file(
-      _artifacts.getHostArtifact(HostArtifact.scenec),
-    );
+  Future<bool> importScene({required File input, required String outputPath, bool fatal = true}) async {
+    final File scenec = _fs.file(_artifacts.getHostArtifact(HostArtifact.scenec));
     if (!scenec.existsSync()) {
       throw SceneImporterException._(
         'The scenec utility is missing at "${scenec.path}". '
@@ -119,11 +108,7 @@ class SceneImporter {
       );
     }
 
-    final List<String> cmd = <String>[
-      scenec.path,
-      '--input=${input.path}',
-      '--output=$outputPath',
-    ];
+    final List<String> cmd = <String>[scenec.path, '--input=${input.path}', '--output=$outputPath'];
     _logger.printTrace('scenec command: $cmd');
     final Process scenecProcess = await _processManager.start(cmd);
     final int code = await scenecProcess.exitCode;

@@ -37,7 +37,7 @@ class LocalEngineLocator {
        _logger = logger,
        _fileSystem = fileSystem,
        _flutterRoot = flutterRoot,
-        _userMessages = userMessages;
+       _userMessages = userMessages;
 
   final Platform _platform;
   final Logger _logger;
@@ -46,7 +46,12 @@ class LocalEngineLocator {
   final UserMessages _userMessages;
 
   /// Returns the engine build path of a local engine if one is located, otherwise `null`.
-  Future<EngineBuildPaths?> findEnginePath({String? engineSourcePath, String? localEngine, String? localWebSdk, String? packagePath}) async {
+  Future<EngineBuildPaths?> findEnginePath({
+    String? engineSourcePath,
+    String? localEngine,
+    String? localWebSdk,
+    String? packagePath,
+  }) async {
     engineSourcePath ??= _platform.environment[kFlutterEngineEnvironmentVariableName];
     if (engineSourcePath == null && localEngine == null && localWebSdk == null && packagePath == null) {
       return null;
@@ -73,10 +78,7 @@ class LocalEngineLocator {
     }
 
     if (engineSourcePath != null && _tryEnginePath(engineSourcePath) == null) {
-      throwToolExit(
-        _userMessages.runnerNoEngineBuildDirInPath(engineSourcePath),
-        exitCode: 2,
-      );
+      throwToolExit(_userMessages.runnerNoEngineBuildDirInPath(engineSourcePath), exitCode: 2);
     }
 
     if (engineSourcePath != null) {
@@ -85,10 +87,7 @@ class LocalEngineLocator {
     }
     if (localEngine != null || localWebSdk != null) {
       throwToolExit(
-        _userMessages.runnerNoEngineSrcDir(
-          kFlutterEnginePackageName,
-          kFlutterEngineEnvironmentVariableName,
-        ),
+        _userMessages.runnerNoEngineSrcDir(kFlutterEnginePackageName, kFlutterEngineEnvironmentVariableName),
         exitCode: 2,
       );
     }
@@ -112,17 +111,20 @@ class LocalEngineLocator {
   }
 
   Future<String?> _findEngineSourceByPackageConfig(String? packagePath) async {
-    final PackageConfig packageConfig = await loadPackageConfigWithLogging(
-      _fileSystem.file(
-        // TODO(zanderso): update to package_config
-        packagePath ?? _fileSystem.path.join('.packages'),
-      ),
-      logger: _logger,
-      throwOnError: false,
-    );
+    final PackageConfig packageConfig = await loadPackageConfigWithLogging(_fileSystem.file(
+      // TODO(zanderso): update to package_config
+      packagePath ?? _fileSystem.path.join('.packages'),
+    ), logger: _logger, throwOnError: false);
     // Skip if sky_engine is the version in bin/cache.
     Uri? engineUri = packageConfig[kFlutterEnginePackageName]?.packageUriRoot;
-    final String cachedPath = _fileSystem.path.join(_flutterRoot, 'bin', 'cache', 'pkg', kFlutterEnginePackageName, 'lib');
+    final String cachedPath = _fileSystem.path.join(
+      _flutterRoot,
+      'bin',
+      'cache',
+      'pkg',
+      kFlutterEnginePackageName,
+      'lib',
+    );
     if (engineUri != null && _fileSystem.identicalSync(cachedPath, engineUri.path)) {
       _logger.printTrace('Local engine auto-detection sky_engine in $packagePath is the same version in bin/cache.');
       engineUri = null;
@@ -134,21 +136,11 @@ class LocalEngineLocator {
     String? engineSourcePath;
     final String? engineUriPath = engineUri?.path;
     if (engineUriPath != null) {
-      engineSourcePath = _fileSystem.directory(engineUriPath)
-        .parent
-        .parent
-        .parent
-        .parent
-        .parent
-        .parent
-        .path;
+      engineSourcePath = _fileSystem.directory(engineUriPath).parent.parent.parent.parent.parent.parent.path;
       if (engineSourcePath == _fileSystem.path.dirname(engineSourcePath) || engineSourcePath.isEmpty) {
         engineSourcePath = null;
         throwToolExit(
-          _userMessages.runnerNoEngineSrcDir(
-            kFlutterEnginePackageName,
-            kFlutterEngineEnvironmentVariableName,
-          ),
+          _userMessages.runnerNoEngineSrcDir(kFlutterEnginePackageName, kFlutterEngineEnvironmentVariableName),
           exitCode: 2,
         );
       }

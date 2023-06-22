@@ -31,11 +31,7 @@ void main() {
       botDetector: const FakeBotDetector(false),
       processManager: FakeProcessManager.list(<FakeCommand>[
         FakeCommand(
-          command: const <String>[
-            'dart',
-            'devtools',
-            '--no-launch-browser',
-          ],
+          command: const <String>['dart', 'devtools', '--no-launch-browser'],
           stdout: 'Serving DevTools at http://127.0.0.1:9100\n',
           completer: completer,
         ),
@@ -55,11 +51,7 @@ void main() {
       botDetector: const FakeBotDetector(false),
       processManager: FakeProcessManager.list(<FakeCommand>[
         FakeCommand(
-          command: const <String>[
-            'dart',
-            'devtools',
-            '--no-launch-browser',
-          ],
+          command: const <String>['dart', 'devtools', '--no-launch-browser'],
           stdout: 'Serving DevTools at http://127.0.0.1:9100\n',
           completer: completer,
         ),
@@ -109,12 +101,7 @@ void main() {
       botDetector: const FakeBotDetector(false),
       processManager: FakeProcessManager.list(<FakeCommand>[
         const FakeCommand(
-          command: <String>[
-            'dart',
-            'devtools',
-            '--no-launch-browser',
-            '--vm-uri=http://127.0.0.1:1234/abcdefg',
-          ],
+          command: <String>['dart', 'devtools', '--no-launch-browser', '--vm-uri=http://127.0.0.1:1234/abcdefg'],
           exception: ProcessException('pub', <String>[]),
         ),
       ]),
@@ -133,11 +120,7 @@ void main() {
       botDetector: const FakeBotDetector(true),
       processManager: FakeProcessManager.list(<FakeCommand>[
         FakeCommand(
-          command: const <String>[
-            'dart',
-            'devtools',
-            '--no-launch-browser',
-          ],
+          command: const <String>['dart', 'devtools', '--no-launch-browser'],
           stdout: 'Serving DevTools at http://127.0.0.1:9100\n',
           completer: completer,
           exitCode: 255,

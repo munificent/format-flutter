@@ -8,12 +8,7 @@ import 'dart:collection';
 ///
 /// expected structure: {"name": "package name", "source": "hosted", "dependencies": [...]}
 class DartDependencyPackage {
-  DartDependencyPackage({
-    required this.name,
-    required this.version,
-    required this.source,
-    required this.dependencies,
-  });
+  DartDependencyPackage({required this.name, required this.version, required this.source, required this.dependencies});
 
   factory DartDependencyPackage.fromHashMap(dynamic packageInfo) {
     String name = '';
@@ -48,7 +43,6 @@ class DartDependencyPackage {
   final String version;
   final String source;
   final List<String> dependencies;
-
 }
 
 class DartPubJson {

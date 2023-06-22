@@ -43,7 +43,7 @@ void main() {
       print(
         'Warning: test isolate is still active after 5 minutes. This is likely an '
         'app-not-responding error and not a flake. See https://github.com/flutter/flutter/issues/79498 '
-        'for the bug this test is attempting to exercise.'
+        'for the bug this test is attempting to exercise.',
       );
     });
 
@@ -62,7 +62,6 @@ void main() {
       vmService.streamListen(EventStreams.kStderr),
     ]);
 
-
     // Verify that the app can be interacted with by querying the brightness
     // for 30 seconds. Once this time has elapsed, wait for any pending requests and
     // exit. If the app stops responding, the requests made will hang.
@@ -72,10 +71,8 @@ void main() {
     });
     final Isolate isolate = await waitForExtension(vmService, 'ext.flutter.brightnessOverride');
     while (!interactionCompleted) {
-      final Response response = await vmService.callServiceExtension(
-        'ext.flutter.brightnessOverride',
-        isolateId: isolate.id,
-      );
+      final Response response =
+          await vmService.callServiceExtension('ext.flutter.brightnessOverride', isolateId: isolate.id);
       expect(response.json!['value'], 'Brightness.light');
     }
     timer.cancel();

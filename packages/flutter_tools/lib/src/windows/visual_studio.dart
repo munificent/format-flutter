@@ -249,7 +249,7 @@ class VisualStudio {
   }
 
   /// The minimum supported major version.
-  static const int _minimumSupportedVersion = 16;  // '16' is VS 2019.
+  static const int _minimumSupportedVersion = 16; // '16' is VS 2019.
 
   /// vswhere argument to specify the minimum version.
   static const String _vswhereMinVersionArgument = '-version';
@@ -258,7 +258,8 @@ class VisualStudio {
   static const String _vswherePrereleaseArgument = '-prerelease';
 
   /// The registry path for Windows 10 SDK installation details.
-  static const String _windows10SdkRegistryPath = r'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v10.0';
+  static const String _windows10SdkRegistryPath =
+      r'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v10.0';
 
   /// The registry key in _windows10SdkRegistryPath for the folder where the
   /// SDKs are installed.
@@ -269,26 +270,18 @@ class VisualStudio {
   /// If [validateRequirements] is set, the search will be limited to versions
   /// that have all of the required workloads and components.
   VswhereDetails? _visualStudioDetails({
-      bool validateRequirements = false,
-      List<String>? additionalArguments,
-      String? requiredWorkload
-    }) {
+    bool validateRequirements = false,
+    List<String>? additionalArguments,
+    String? requiredWorkload,
+  }) {
     final List<String> requirementArguments = validateRequirements
         ? <String>[
-            if (requiredWorkload != null) ...<String>[
-              '-requires',
-              requiredWorkload,
-            ],
+            if (requiredWorkload != null) ...<String>['-requires', requiredWorkload],
             ..._requiredComponents(_minimumSupportedVersion).keys,
           ]
         : <String>[];
     try {
-      final List<String> defaultArguments = <String>[
-        '-format', 'json',
-        '-products', '*',
-        '-utf8',
-        '-latest',
-      ];
+      final List<String> defaultArguments = <String>['-format', 'json', '-products', '*', '-utf8', '-latest'];
       // Ignore replacement characters as vswhere.exe is known to output them.
       // See: https://github.com/flutter/flutter/issues/102451
       const Encoding encoding = Utf8Codec(reportErrors: false);
@@ -326,8 +319,10 @@ class VisualStudio {
         // See: https://github.com/flutter/flutter/issues/106601
         vswhereJson = vswhereJson.replaceFirst(_vswhereDescriptionProperty, '');
 
-        _logger.printTrace('Failed to decode vswhere.exe JSON output. $error'
-          'Retrying after removing the unused description property:\n$vswhereJson');
+        _logger.printTrace(
+          'Failed to decode vswhere.exe JSON output. $error'
+          'Retrying after removing the unused description property:\n$vswhereJson',
+        );
 
         originalError = error;
         result = json.decode(vswhereJson) as List<dynamic>;
@@ -335,8 +330,10 @@ class VisualStudio {
     } on FormatException {
       // Removing the description property didn't help.
       // Report the original decoding error on the unprocessed JSON.
-      _logger.printWarning('Warning: Unexpected vswhere.exe JSON output. $originalError'
-        'To see the full JSON, run flutter doctor -vv.');
+      _logger.printWarning(
+        'Warning: Unexpected vswhere.exe JSON output. $originalError'
+        'To see the full JSON, run flutter doctor -vv.',
+      );
       return null;
     }
 
@@ -348,7 +345,7 @@ class VisualStudio {
   /// If there's a version that has all the required components, that
   /// will be returned, otherwise returns the latest installed version regardless
   /// of components and version, or null if no such installation is found.
-  late final VswhereDetails?  _bestVisualStudioDetails = () {
+  late final VswhereDetails? _bestVisualStudioDetails = () {
     // First, attempt to find the latest version of Visual Studio that satisfies
     // both the minimum supported version and the required workloads.
     // Check in the order of stable VS, stable BT, pre-release VS, pre-release BT.
@@ -363,31 +360,26 @@ class VisualStudio {
           additionalArguments: checkForPrerelease
               ? <String>[...minimumVersionArguments, _vswherePrereleaseArgument]
               : minimumVersionArguments,
-          requiredWorkload: requiredWorkload);
+          requiredWorkload: requiredWorkload,
+        );
 
-          if (result != null) {
-            return result;
-          }
+        if (result != null) {
+          return result;
+        }
       }
     }
 
     // An installation that satisfies requirements could not be found.
     // Fallback to the latest Visual Studio installation.
-    return _visualStudioDetails(
-        additionalArguments: <String>[_vswherePrereleaseArgument, '-all']);
+    return _visualStudioDetails(additionalArguments: <String>[_vswherePrereleaseArgument, '-all']);
   }();
 
   /// Returns the installation location of the Windows 10 SDKs, or null if the
   /// registry doesn't contain that information.
   String? _getWindows10SdkLocation() {
     try {
-      final RunResult result = _processUtils.runSync(<String>[
-        'reg',
-        'query',
-        _windows10SdkRegistryPath,
-        '/v',
-        _windows10SdkRegistryKey,
-      ]);
+      final RunResult result = _processUtils
+          .runSync(<String>['reg', 'query', _windows10SdkRegistryPath, '/v', _windows10SdkRegistryKey]);
       if (result.exitCode == 0) {
         final RegExp pattern = RegExp(r'InstallationFolder\s+REG_SZ\s+(.+)');
         final RegExpMatch? match = pattern.firstMatch(result.stdout);
@@ -446,10 +438,7 @@ class VswhereDetails {
   });
 
   /// Create a `VswhereDetails` from the JSON output of vswhere.exe.
-  factory VswhereDetails.fromJson(
-    bool meetsRequirements,
-    Map<String, dynamic> details
-  ) {
+  factory VswhereDetails.fromJson(bool meetsRequirements, Map<String, dynamic> details) {
     final Map<String, dynamic>? catalog = details['catalog'] as Map<String, dynamic>?;
 
     return VswhereDetails(
@@ -482,7 +471,8 @@ class VswhereDetails {
         'Bad UTF-8 encoding (U+FFFD; REPLACEMENT CHARACTER) found in string: $value. '
         'The Flutter team would greatly appreciate if you could file a bug explaining '
         'exactly what you were doing when this happened:\n'
-        'https://github.com/flutter/flutter/issues/new/choose\n');
+        'https://github.com/flutter/flutter/issues/new/choose\n',
+      );
     }
 
     return value;

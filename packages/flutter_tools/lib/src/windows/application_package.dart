@@ -17,9 +17,7 @@ abstract class WindowsApp extends ApplicationPackage {
 
   /// Creates a new [WindowsApp] from a windows sub project.
   factory WindowsApp.fromWindowsProject(WindowsProject project) {
-    return BuildableWindowsApp(
-      project: project,
-    );
+    return BuildableWindowsApp(project: project);
   }
 
   /// Creates a new [WindowsApp] from an existing executable or a zip archive.
@@ -32,10 +30,7 @@ abstract class WindowsApp extends ApplicationPackage {
     }
 
     if (applicationBinary.path.endsWith('.exe')) {
-      return PrebuiltWindowsApp(
-        executable: applicationBinary.path,
-        applicationPackage: applicationBinary,
-      );
+      return PrebuiltWindowsApp(executable: applicationBinary.path, applicationPackage: applicationBinary);
     }
 
     if (!applicationBinary.path.endsWith('.zip')) {
@@ -69,10 +64,7 @@ abstract class WindowsApp extends ApplicationPackage {
       return null;
     }
 
-    return PrebuiltWindowsApp(
-      executable: exeFilesFound.single.path,
-      applicationPackage: applicationBinary,
-    );
+    return PrebuiltWindowsApp(executable: exeFilesFound.single.path, applicationPackage: applicationBinary);
   }
 
   @override
@@ -82,11 +74,9 @@ abstract class WindowsApp extends ApplicationPackage {
 }
 
 class PrebuiltWindowsApp extends WindowsApp implements PrebuiltApplicationPackage {
-  PrebuiltWindowsApp({
-    required String executable,
-    required this.applicationPackage,
-  }) : _executable = executable,
-       super(projectBundleId: executable);
+  PrebuiltWindowsApp({required String executable, required this.applicationPackage})
+    : _executable = executable,
+      super(projectBundleId: executable);
 
   final String _executable;
 
@@ -101,9 +91,7 @@ class PrebuiltWindowsApp extends WindowsApp implements PrebuiltApplicationPackag
 }
 
 class BuildableWindowsApp extends WindowsApp {
-  BuildableWindowsApp({
-    required this.project,
-  }) : super(projectBundleId: project.parent.manifest.appName);
+  BuildableWindowsApp({required this.project}) : super(projectBundleId: project.parent.manifest.appName);
 
   final WindowsProject project;
 
@@ -111,10 +99,10 @@ class BuildableWindowsApp extends WindowsApp {
   String executable(BuildMode buildMode) {
     final String? binaryName = getCmakeExecutableName(project);
     return globals.fs.path.join(
-        getWindowsBuildDirectory(),
-        'runner',
-        sentenceCase(buildMode.cliName),
-        '$binaryName.exe',
+      getWindowsBuildDirectory(),
+      'runner',
+      sentenceCase(buildMode.cliName),
+      '$binaryName.exe',
     );
   }
 

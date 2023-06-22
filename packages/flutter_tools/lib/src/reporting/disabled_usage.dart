@@ -9,34 +9,28 @@ class DisabledUsage implements Usage {
   bool get suppressAnalytics => true;
 
   @override
-  set suppressAnalytics(bool value) { }
+  set suppressAnalytics(bool value) {}
 
   @override
   bool get enabled => false;
 
   @override
-  set enabled(bool value) { }
+  set enabled(bool value) {}
 
   @override
   String get clientId => '';
 
   @override
-  void sendCommand(String command, { CustomDimensions? parameters }) { }
+  void sendCommand(String command, {CustomDimensions? parameters}) {}
 
   @override
-  void sendEvent(
-    String category,
-    String parameter, {
-    String? label,
-    int? value,
-    CustomDimensions? parameters,
-  }) { }
+  void sendEvent(String category, String parameter, {String? label, int? value, CustomDimensions? parameters}) {}
 
   @override
-  void sendTiming(String category, String variableName, Duration duration, { String? label }) { }
+  void sendTiming(String category, String variableName, Duration duration, {String? label}) {}
 
   @override
-  void sendException(dynamic exception) { }
+  void sendException(dynamic exception) {}
 
   @override
   Stream<Map<String, dynamic>> get onSend => const Stream<Map<String, dynamic>>.empty();
@@ -45,5 +39,5 @@ class DisabledUsage implements Usage {
   Future<void> ensureAnalyticsSent() => Future<void>.value();
 
   @override
-  void printWelcome() { }
+  void printWelcome() {}
 }

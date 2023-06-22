@@ -106,13 +106,17 @@ void main() {
 
         addToSource(1);
         time.flushMicrotasks();
-        expect(outputItems, <List<int>>[<int>[1]]);
+        expect(outputItems, <List<int>>[
+          <int>[1],
+        ]);
 
         time.elapse(smallDuration);
         addToSource(2);
         time.elapse(smallDuration);
         addToSource(3);
-        expect(outputItems, <List<int>>[<int>[1]]);
+        expect(outputItems, <List<int>>[
+          <int>[1],
+        ]);
 
         time.elapse(debounceDuration + smallDuration);
         expect(outputItems, <List<int>>[
@@ -141,13 +145,17 @@ void main() {
 
         addToSource(1);
         time.flushMicrotasks();
-        expect(outputItems, <List<int>>[<int>[1]]);
+        expect(outputItems, <List<int>>[
+          <int>[1],
+        ]);
 
         addToSource(2);
         source.close();
         time.elapse(smallDuration);
         expect(isDone, false);
-        expect(outputItems, <List<int>>[<int>[1]]);
+        expect(outputItems, <List<int>>[
+          <int>[1],
+        ]);
 
         time.elapse(debounceDuration + smallDuration);
         expect(outputItems, <List<int>>[

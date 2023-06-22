@@ -38,9 +38,18 @@ abstract class DeferredComponentsConfig {
     writeBytesFile(fileSystem.path.join(dir.path, 'android', 'app', 'key.jks'), androidKey);
     writeFile(fileSystem.path.join(dir.path, 'android', 'app', 'build.gradle'), appBuild);
     writeFile(fileSystem.path.join(dir.path, 'android', 'app', 'src', 'main', 'AndroidManifest.xml'), appManifest);
-    writeFile(fileSystem.path.join(dir.path, 'android', 'app', 'src', 'main', 'res', 'values', 'strings.xml'), appStrings);
-    writeFile(fileSystem.path.join(dir.path, 'android', 'app', 'src', 'main', 'res', 'values', 'styles.xml'), appStyles);
-    writeFile(fileSystem.path.join(dir.path, 'android', 'app', 'src', 'main', 'res', 'drawable', 'launch_background.xml'), appLaunchBackground);
+    writeFile(
+      fileSystem.path.join(dir.path, 'android', 'app', 'src', 'main', 'res', 'values', 'strings.xml'),
+      appStrings,
+    );
+    writeFile(
+      fileSystem.path.join(dir.path, 'android', 'app', 'src', 'main', 'res', 'values', 'styles.xml'),
+      appStyles,
+    );
+    writeFile(
+      fileSystem.path.join(dir.path, 'android', 'app', 'src', 'main', 'res', 'drawable', 'launch_background.xml'),
+      appLaunchBackground,
+    );
     writeFile(fileSystem.path.join(dir.path, 'test_assets/asset1.txt'), asset1);
     writeFile(fileSystem.path.join(dir.path, 'test_assets/asset2.txt'), asset2);
     for (final DeferredComponentModule component in deferredComponents) {

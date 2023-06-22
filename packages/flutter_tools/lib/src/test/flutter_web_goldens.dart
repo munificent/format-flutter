@@ -24,7 +24,9 @@ import 'test_config.dart';
 /// of golden files.
 class TestGoldenComparator {
   /// Creates a [TestGoldenComparator] instance.
-  TestGoldenComparator(this.shellPath, this.compilerFactory, {
+  TestGoldenComparator(
+    this.shellPath,
+    this.compilerFactory, {
     required Logger logger,
     required FileSystem fileSystem,
     required ProcessManager processManager,
@@ -59,7 +61,11 @@ class TestGoldenComparator {
       return _previousComparator!;
     }
 
-    final String bootstrap = TestGoldenComparatorProcess.generateBootstrap(_fileSystem.file(testUri), testUri, logger: _logger);
+    final String bootstrap = TestGoldenComparatorProcess.generateBootstrap(
+      _fileSystem.file(testUri),
+      testUri,
+      logger: _logger,
+    );
     final Process? process = await _startProcess(bootstrap);
     if (process == null) {
       return null;
@@ -120,22 +126,15 @@ class TestGoldenComparatorProcess {
     // Pipe stdout and stderr to printTrace and printError.
     // Also parse stdout as a stream of JSON objects.
     streamIterator = StreamIterator<Map<String, dynamic>>(
-      process.stdout
-        .transform<String>(utf8.decoder)
-        .transform<String>(const LineSplitter())
-        .where((String line) {
-          logger.printTrace('<<< $line');
-          return line.isNotEmpty && line[0] == '{';
-        })
-        .map<dynamic>(jsonDecode)
-        .cast<Map<String, dynamic>>());
+      process.stdout.transform<String>(utf8.decoder).transform<String>(const LineSplitter()).where((String line) {
+        logger.printTrace('<<< $line');
+        return line.isNotEmpty && line[0] == '{';
+      }).map<dynamic>(jsonDecode).cast<Map<String, dynamic>>(),
+    );
 
-    process.stderr
-        .transform<String>(utf8.decoder)
-        .transform<String>(const LineSplitter())
-        .forEach((String line) {
-          logger.printError('<<< $line');
-        });
+    process.stderr.transform<String>(utf8.decoder).transform<String>(const LineSplitter()).forEach((String line) {
+      logger.printError('<<< $line');
+    });
   }
 
   final Logger _logger;

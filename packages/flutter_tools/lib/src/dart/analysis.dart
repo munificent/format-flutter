@@ -45,21 +45,14 @@ class AnalysisServer {
   final bool suppressAnalytics;
 
   Process? _process;
-  final StreamController<bool> _analyzingController =
-      StreamController<bool>.broadcast();
-  final StreamController<FileAnalysisErrors> _errorsController =
-      StreamController<FileAnalysisErrors>.broadcast();
+  final StreamController<bool> _analyzingController = StreamController<bool>.broadcast();
+  final StreamController<FileAnalysisErrors> _errorsController = StreamController<FileAnalysisErrors>.broadcast();
   bool _didServerErrorOccur = false;
 
   int _id = 0;
 
   Future<void> start() async {
-    final String snapshot = _fileSystem.path.join(
-      sdkPath,
-      'bin',
-      'snapshots',
-      'analysis_server.dart.snapshot',
-    );
+    final String snapshot = _fileSystem.path.join(sdkPath, 'bin', 'snapshots', 'analysis_server.dart.snapshot');
     final List<String> command = <String>[
       _fileSystem.path.join(sdkPath, 'bin', 'dart'),
       '--disable-dart-dev',
@@ -69,8 +62,7 @@ class AnalysisServer {
       '--sdk',
       sdkPath,
       if (suppressAnalytics) '--suppress-analytics',
-      if (_protocolTrafficLog != null)
-        '--protocol-traffic-log=$_protocolTrafficLog',
+      if (_protocolTrafficLog != null) '--protocol-traffic-log=$_protocolTrafficLog',
     ];
 
     _logger.printTrace('dart ${command.skip(1).join(' ')}');
@@ -78,22 +70,21 @@ class AnalysisServer {
     // This callback hookup can't throw.
     unawaited(_process!.exitCode.whenComplete(() => _process = null));
 
-    final Stream<String> errorStream = _process!.stderr
-        .transform<String>(utf8.decoder)
-        .transform<String>(const LineSplitter());
+    final Stream<String> errorStream = _process!.stderr.transform<String>(utf8.decoder).transform<String>(
+      const LineSplitter(),
+    );
     errorStream.listen(_handleError);
 
-    final Stream<String> inStream = _process!.stdout
-        .transform<String>(utf8.decoder)
-        .transform<String>(const LineSplitter());
+    final Stream<String> inStream = _process!.stdout.transform<String>(utf8.decoder).transform<String>(
+      const LineSplitter(),
+    );
     inStream.listen(_handleServerResponse);
 
     _sendCommand('server.setSubscriptions', <String, dynamic>{
       'subscriptions': <String>['STATUS'],
     });
 
-    _sendCommand('analysis.setAnalysisRoots',
-        <String, dynamic>{'included': directories, 'excluded': <String>[]});
+    _sendCommand('analysis.setAnalysisRoots', <String, dynamic>{'included': directories, 'excluded': <String>[]});
   }
 
   final List<String> _logs = <String>[];
@@ -127,11 +118,7 @@ class AnalysisServer {
   Future<int?> get onExit async => _process?.exitCode;
 
   void _sendCommand(String method, Map<String, dynamic> params) {
-    final String message = json.encode(<String, dynamic>{
-      'id': (++_id).toString(),
-      'method': method,
-      'params': params,
-    });
+    final String message = json.encode(<String, dynamic>{'id': (++_id).toString(), 'method': method, 'params': params});
     _process?.stdin.writeln(message);
     _logger.printTrace('==> $message');
   }
@@ -163,8 +150,7 @@ class AnalysisServer {
       } else if (response['error'] != null) {
         // Fields are 'code', 'message', and 'stackTrace'.
         final Map<String, dynamic> error = castStringKeyedMap(response['error'])!;
-        _logger.printError(
-            'Error response from the server: ${error['code']} ${error['message']}');
+        _logger.printError('Error response from the server: ${error['code']} ${error['message']}');
         if (error['stackTrace'] != null) {
           _logger.printError(error['stackTrace'] as String);
         }
@@ -196,7 +182,8 @@ class AnalysisServer {
     final List<AnalysisError> errors = errorsList
         .map<Map<String, dynamic>>((dynamic e) => castStringKeyedMap(e) ?? <String, dynamic>{})
         .map<AnalysisError>((Map<String, dynamic> json) {
-          return AnalysisError(WrittenError.fromJson(json),
+          return AnalysisError(
+            WrittenError.fromJson(json),
             fileSystem: _fileSystem,
             platform: _platform,
             terminal: _terminal,
@@ -215,12 +202,7 @@ class AnalysisServer {
   }
 }
 
-enum AnalysisSeverity {
-  error,
-  warning,
-  info,
-  none,
-}
+enum AnalysisSeverity { error, warning, info, none }
 
 /// [AnalysisError] with command line style.
 class AnalysisError implements Comparable<AnalysisError> {
@@ -266,8 +248,7 @@ class AnalysisError implements Comparable<AnalysisError> {
       return writtenError.offset - other.writtenError.offset;
     }
 
-    final int diff = other.writtenError.severityLevel.index -
-        writtenError.severityLevel.index;
+    final int diff = other.writtenError.severityLevel.index - writtenError.severityLevel.index;
     if (diff != 0) {
       return diff;
     }
@@ -282,7 +263,9 @@ class AnalysisError implements Comparable<AnalysisError> {
     final String padding = ' ' * math.max(0, 7 - writtenError.severity.length);
     return '$padding${colorSeverity.toLowerCase()} $_separator '
         '${writtenError.messageSentenceFragment} $_separator '
-        '${_fileSystem.path.relative(writtenError.file)}:${writtenError.startLine}:${writtenError.startColumn} $_separator '
+        '${_fileSystem.path.relative(
+          writtenError.file,
+        )}:${writtenError.startLine}:${writtenError.startColumn} $_separator '
         '$code';
   }
 
@@ -347,8 +330,7 @@ class WrittenError {
     'ERROR': AnalysisSeverity.error,
   };
 
-  AnalysisSeverity get severityLevel =>
-      _severityMap[severity] ?? AnalysisSeverity.none;
+  AnalysisSeverity get severityLevel => _severityMap[severity] ?? AnalysisSeverity.none;
 
   String get messageSentenceFragment {
     if (message.endsWith('.')) {

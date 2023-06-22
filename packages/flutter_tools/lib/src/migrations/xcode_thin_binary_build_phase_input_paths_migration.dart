@@ -33,9 +33,9 @@ class XcodeThinBinaryBuildPhaseInputPathsMigration extends ProjectMigrator {
     //   alwaysOutOfDate = 1;
     //   buildActionMask = 2147483647;
     //   files = (
-		// 	 );
-		// 	 inputPaths = (
-		// 	 );
+    // 	 );
+    // 	 inputPaths = (
+    // 	 );
 
     String newProjectContents = originalProjectContents;
     const String thinBinaryBuildPhaseOriginal = '''

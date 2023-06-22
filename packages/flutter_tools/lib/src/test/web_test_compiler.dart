@@ -70,24 +70,25 @@ class WebTestCompiler {
 
     final String platformDillPath = _fileSystem.path.join(
       getWebPlatformBinariesDirectory(_artifacts, buildInfo.webRenderer).path,
-      platformDillName
+      platformDillName,
     );
 
-    final Directory outputDirectory = _fileSystem.directory(testOutputDir)
-      ..createSync(recursive: true);
+    final Directory outputDirectory = _fileSystem.directory(testOutputDir)..createSync(recursive: true);
     final List<File> generatedFiles = <File>[];
     for (final String testFilePath in testFiles) {
       final List<String> relativeTestSegments = _fileSystem.path.split(
-        _fileSystem.path.relative(testFilePath, from: projectDirectory.childDirectory('test').path));
+        _fileSystem.path.relative(testFilePath, from: projectDirectory.childDirectory('test').path),
+      );
       final File generatedFile = _fileSystem.file(
-        _fileSystem.path.join(outputDirectory.path, '${relativeTestSegments.join('_')}.test.dart'));
+        _fileSystem.path.join(outputDirectory.path, '${relativeTestSegments.join('_')}.test.dart'),
+      );
       generatedFile
         ..createSync(recursive: true)
         ..writeAsStringSync(generateTestEntrypoint(
-            relativeTestPath: relativeTestSegments.join('/'),
-            absolutePath: testFilePath,
-            testConfigPath: findTestConfigFile(_fileSystem.file(testFilePath), _logger)?.path,
-            languageVersion: languageVersion,
+          relativeTestPath: relativeTestSegments.join('/'),
+          absolutePath: testFilePath,
+          testConfigPath: findTestConfigFile(_fileSystem.file(testFilePath), _logger)?.path,
+          languageVersion: languageVersion,
         ));
       generatedFiles.add(generatedFile);
     }
@@ -113,10 +114,7 @@ class WebTestCompiler {
       _artifacts.getHostArtifact(HostArtifact.flutterWebSdk).path,
       buildMode: buildInfo.mode,
       trackWidgetCreation: buildInfo.trackWidgetCreation,
-      fileSystemRoots: <String>[
-        projectDirectory.childDirectory('test').path,
-        testOutputDir,
-      ],
+      fileSystemRoots: <String>[projectDirectory.childDirectory('test').path, testOutputDir],
       // Override the filesystem scheme so that the frontend_server can find
       // the generated entrypoint code.
       fileSystemScheme: 'org-dartlang-app',
@@ -153,7 +151,6 @@ class WebTestCompiler {
     final File manifestFile = outputDirectory.childFile('${output.outputFilename}.json');
     final File sourcemapFile = outputDirectory.childFile('${output.outputFilename}.map');
     final File metadataFile = outputDirectory.childFile('${output.outputFilename}.metadata');
-    return WebMemoryFS()
-      ..write(codeFile, manifestFile, sourcemapFile, metadataFile);
+    return WebMemoryFS()..write(codeFile, manifestFile, sourcemapFile, metadataFile);
   }
 }

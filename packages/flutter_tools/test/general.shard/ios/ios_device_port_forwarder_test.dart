@@ -9,9 +9,7 @@ import '../../src/common.dart';
 import '../../src/fake_process_manager.dart';
 import '../../src/fakes.dart';
 
-const Map<String, String> kDyLdLibEntry = <String, String>{
-  'DYLD_LIBRARY_PATH': '/path/to/libs',
-};
+const Map<String, String> kDyLdLibEntry = <String, String>{'DYLD_LIBRARY_PATH': '/path/to/libs'};
 
 void main() {
   // By default, the .forward() method will try every port between 1024
@@ -37,7 +35,7 @@ void main() {
     final IOSDevicePortForwarder portForwarder = IOSDevicePortForwarder.test(
       processManager: processManager,
       logger: BufferLogger.test(),
-        operatingSystemUtils: operatingSystemUtils,
+      operatingSystemUtils: operatingSystemUtils,
     );
     final int hostPort = await portForwarder.forward(456);
 

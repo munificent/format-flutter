@@ -21,20 +21,19 @@ import 'protocol_discovery.dart';
 /// A partial implementation of Device for desktop-class devices to inherit
 /// from, containing implementations that are common to all desktop devices.
 abstract class DesktopDevice extends Device {
-  DesktopDevice(super.id, {
-      required PlatformType super.platformType,
-      required super.ephemeral,
-      required Logger logger,
-      required ProcessManager processManager,
-      required FileSystem fileSystem,
-      required OperatingSystemUtils operatingSystemUtils,
-    }) : _logger = logger,
-         _processManager = processManager,
-         _fileSystem = fileSystem,
-         _operatingSystemUtils = operatingSystemUtils,
-         super(
-          category: Category.desktop,
-        );
+  DesktopDevice(
+    super.id, {
+    required PlatformType super.platformType,
+    required super.ephemeral,
+    required Logger logger,
+    required ProcessManager processManager,
+    required FileSystem fileSystem,
+    required OperatingSystemUtils operatingSystemUtils,
+  }) : _logger = logger,
+       _processManager = processManager,
+       _fileSystem = fileSystem,
+       _operatingSystemUtils = operatingSystemUtils,
+       super(category: Category.desktop);
 
   final Logger _logger;
   final ProcessManager _processManager;
@@ -51,10 +50,7 @@ abstract class DesktopDevice extends Device {
   // Since the host and target devices are the same, no work needs to be done
   // to install the application.
   @override
-  Future<bool> isAppInstalled(
-    ApplicationPackage app, {
-    String? userIdentifier,
-  }) async => true;
+  Future<bool> isAppInstalled(ApplicationPackage app, {String? userIdentifier}) async => true;
 
   // Since the host and target devices are the same, no work needs to be done
   // to install the application.
@@ -64,18 +60,12 @@ abstract class DesktopDevice extends Device {
   // Since the host and target devices are the same, no work needs to be done
   // to install the application.
   @override
-  Future<bool> installApp(
-    ApplicationPackage app, {
-    String? userIdentifier,
-  }) async => true;
+  Future<bool> installApp(ApplicationPackage app, {String? userIdentifier}) async => true;
 
   // Since the host and target devices are the same, no work needs to be done
   // to uninstall the application.
   @override
-  Future<bool> uninstallApp(
-    ApplicationPackage app, {
-    String? userIdentifier,
-  }) async => true;
+  Future<bool> uninstallApp(ApplicationPackage app, {String? userIdentifier}) async => true;
 
   @override
   Future<bool> get isLocalEmulator async => false;
@@ -93,10 +83,7 @@ abstract class DesktopDevice extends Device {
   bool supportsRuntimeMode(BuildMode buildMode) => buildMode != BuildMode.jitRelease;
 
   @override
-  DeviceLogReader getLogReader({
-    ApplicationPackage? app,
-    bool includePastLogs = false,
-  }) {
+  DeviceLogReader getLogReader({ApplicationPackage? app, bool includePastLogs = false}) {
     assert(!includePastLogs, 'Past log reading not supported on desktop.');
     return _deviceLogReader;
   }
@@ -116,10 +103,7 @@ abstract class DesktopDevice extends Device {
     String? userIdentifier,
   }) async {
     if (!prebuiltApplication) {
-      await buildForDevice(
-        buildInfo: debuggingOptions.buildInfo,
-        mainPath: mainPath,
-      );
+      await buildForDevice(buildInfo: debuggingOptions.buildInfo, mainPath: mainPath);
     }
 
     // Ensure that the executable is locatable.
@@ -132,15 +116,10 @@ abstract class DesktopDevice extends Device {
     }
 
     Process process;
-    final List<String> command = <String>[
-      executable,
-      ...debuggingOptions.dartEntrypointArgs,
-    ];
+    final List<String> command = <String>[executable, ...debuggingOptions.dartEntrypointArgs];
     try {
-      process = await _processManager.start(
-        command,
-        environment: _computeEnvironment(debuggingOptions, traceStartup, route),
-      );
+      process =
+          await _processManager.start(command, environment: _computeEnvironment(debuggingOptions, traceStartup, route));
     } on ProcessException catch (e) {
       _logger.printError('Unable to start executable "${command.join(' ')}": $e');
       rethrow;
@@ -152,7 +131,8 @@ abstract class DesktopDevice extends Device {
     if (debuggingOptions.buildInfo.isRelease) {
       return LaunchResult.succeeded();
     }
-    final ProtocolDiscovery vmServiceDiscovery = ProtocolDiscovery.vmService(_deviceLogReader,
+    final ProtocolDiscovery vmServiceDiscovery = ProtocolDiscovery.vmService(
+      _deviceLogReader,
       devicePort: debuggingOptions.deviceVmServicePort,
       hostPort: debuggingOptions.hostVmServicePort,
       ipv6: ipv6,
@@ -177,10 +157,7 @@ abstract class DesktopDevice extends Device {
   }
 
   @override
-  Future<bool> stopApp(
-    ApplicationPackage? app, {
-    String? userIdentifier,
-  }) async {
+  Future<bool> stopApp(ApplicationPackage? app, {String? userIdentifier}) async {
     bool succeeded = true;
     // Walk a copy of _runningProcesses, since the exit handler removes from the
     // set.
@@ -196,10 +173,7 @@ abstract class DesktopDevice extends Device {
   }
 
   /// Builds the current project for this device, with the given options.
-  Future<void> buildForDevice({
-    required BuildInfo buildInfo,
-    String? mainPath,
-  });
+  Future<void> buildForDevice({required BuildInfo buildInfo, String? mainPath});
 
   /// Returns the path to the executable to run for [package] on this device for
   /// the given [buildMode].
@@ -226,6 +200,7 @@ abstract class DesktopDevice extends Device {
       flags += 1;
       environment['FLUTTER_ENGINE_SWITCH_$flags'] = value;
     }
+
     void finish() {
       environment['FLUTTER_ENGINE_SWITCHES'] = flags.toString();
     }
@@ -316,12 +291,8 @@ class DesktopLogReader extends DeviceLogReader {
 
   /// Begin listening to the stdout and stderr streams of the provided [process].
   void initializeProcess(Process process) {
-    final StreamSubscription<List<int>> stdoutSub = process.stdout.listen(
-      _inputController.add,
-    );
-    final StreamSubscription<List<int>> stderrSub = process.stderr.listen(
-      _inputController.add,
-    );
+    final StreamSubscription<List<int>> stdoutSub = process.stdout.listen(_inputController.add);
+    final StreamSubscription<List<int>> stderrSub = process.stderr.listen(_inputController.add);
     final Future<void> stdioFuture = Future.wait<void>(<Future<void>>[
       stdoutSub.asFuture<void>(),
       stderrSub.asFuture<void>(),
@@ -339,9 +310,7 @@ class DesktopLogReader extends DeviceLogReader {
 
   @override
   Stream<String> get logLines {
-    return _inputController.stream
-      .transform(utf8.decoder)
-      .transform(const LineSplitter());
+    return _inputController.stream.transform(utf8.decoder).transform(const LineSplitter());
   }
 
   @override

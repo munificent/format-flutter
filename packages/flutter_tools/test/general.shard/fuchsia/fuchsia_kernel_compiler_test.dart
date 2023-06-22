@@ -11,42 +11,26 @@ void main() {
   group('Fuchsia Kernel Compiler', () {
     test('provide correct flags for release mode', () {
       expect(
-        FuchsiaKernelCompiler.getBuildInfoFlags(
-          buildInfo: BuildInfo.release,
-          manifestPath: '',
-        ),
-        allOf(<Matcher>[
-          contains('-Ddart.vm.profile=false'),
-          contains('-Ddart.vm.product=true'),
-        ]));
+        FuchsiaKernelCompiler.getBuildInfoFlags(buildInfo: BuildInfo.release, manifestPath: ''),
+        allOf(<Matcher>[contains('-Ddart.vm.profile=false'), contains('-Ddart.vm.product=true')]),
+      );
     });
 
     test('provide correct flags for profile mode', () {
       expect(
-        FuchsiaKernelCompiler.getBuildInfoFlags(
-          buildInfo: BuildInfo.profile,
-          manifestPath: '',
-        ),
-        allOf(<Matcher>[
-          contains('-Ddart.vm.profile=true'),
-          contains('-Ddart.vm.product=false'),
-        ]),
+        FuchsiaKernelCompiler.getBuildInfoFlags(buildInfo: BuildInfo.profile, manifestPath: ''),
+        allOf(<Matcher>[contains('-Ddart.vm.profile=true'), contains('-Ddart.vm.product=false')]),
       );
     });
 
     test('provide correct flags for custom dart define', () {
       expect(
         FuchsiaKernelCompiler.getBuildInfoFlags(
-          buildInfo: const BuildInfo(
-            BuildMode.debug,
-            null,
-            treeShakeIcons: true,
-            dartDefines: <String>['abc=efg'],
-          ),
-          manifestPath: ''),
-          allOf(<Matcher>[
-            contains('-Dabc=efg'),
-          ]));
+          buildInfo: const BuildInfo(BuildMode.debug, null, treeShakeIcons: true, dartDefines: <String>['abc=efg']),
+          manifestPath: '',
+        ),
+        allOf(<Matcher>[contains('-Dabc=efg')]),
+      );
     });
   });
 }

@@ -36,27 +36,29 @@ void main() {
   });
 
   testUsingContext('WebBuilder sets environment on success', () async {
-    final TestBuildSystem buildSystem =
-        TestBuildSystem.all(BuildResult(success: true), (Target target, Environment environment) {
-      final WebServiceWorker webServiceWorker = target as WebServiceWorker;
-      expect(webServiceWorker.isWasm, isTrue, reason: 'should be wasm');
-      expect(webServiceWorker.webRenderer, WebRendererMode.auto);
+    final TestBuildSystem buildSystem = TestBuildSystem.all(
+      BuildResult(success: true),
+      (Target target, Environment environment) {
+        final WebServiceWorker webServiceWorker = target as WebServiceWorker;
+        expect(webServiceWorker.isWasm, isTrue, reason: 'should be wasm');
+        expect(webServiceWorker.webRenderer, WebRendererMode.auto);
 
-      expect(environment.defines, <String, String>{
-        'TargetFile': 'target',
-        'HasWebPlugins': 'false',
-        'ServiceWorkerStrategy': ServiceWorkerStrategy.offlineFirst.cliName,
-        'WasmOmitTypeChecks': 'false',
-        'RunWasmOpt': 'none',
-        'BuildMode': 'debug',
-        'DartObfuscation': 'false',
-        'TrackWidgetCreation': 'true',
-        'TreeShakeIcons': 'false',
-      });
+        expect(environment.defines, <String, String>{
+          'TargetFile': 'target',
+          'HasWebPlugins': 'false',
+          'ServiceWorkerStrategy': ServiceWorkerStrategy.offlineFirst.cliName,
+          'WasmOmitTypeChecks': 'false',
+          'RunWasmOpt': 'none',
+          'BuildMode': 'debug',
+          'DartObfuscation': 'false',
+          'TrackWidgetCreation': 'true',
+          'TreeShakeIcons': 'false',
+        });
 
-      expect(environment.engineVersion, '9.8.7');
-      expect(environment.generateDartPluginRegistry, isFalse);
-    });
+        expect(environment.engineVersion, '9.8.7');
+        expect(environment.generateDartPluginRegistry, isFalse);
+      },
+    );
 
     final WebBuilder webBuilder = WebBuilder(
       logger: logger,
@@ -71,37 +73,25 @@ void main() {
       'target',
       BuildInfo.debug,
       ServiceWorkerStrategy.offlineFirst,
-      compilerConfig: const WasmCompilerConfig(
-        omitTypeChecks: false,
-        wasmOpt: WasmOptLevel.none,
-      ),
+      compilerConfig: const WasmCompilerConfig(omitTypeChecks: false, wasmOpt: WasmOptLevel.none),
     );
 
     expect(logger.statusText, contains('Compiling target for the Web...'));
     expect(logger.errorText, isEmpty);
     // Runs ScrubGeneratedPluginRegistrant migrator.
-    expect(
-      logger.traceText,
-      contains('generated_plugin_registrant.dart not found. Skipping.'),
-    );
+    expect(logger.traceText, contains('generated_plugin_registrant.dart not found. Skipping.'));
 
     // Sends build config event
-    expect(
-      testUsage.events,
-      unorderedEquals(
-        <TestUsageEvent>[
+    expect(testUsage.events, unorderedEquals(<TestUsageEvent>[
       const TestUsageEvent(
         'build',
         'web',
         label: 'web-compile',
-            parameters: CustomDimensions(
-              buildEventSettings:
-                  'RunWasmOpt: none; WasmOmitTypeChecks: false; wasm-compile: true; web-renderer: auto;',
+        parameters: CustomDimensions(
+          buildEventSettings: 'RunWasmOpt: none; WasmOmitTypeChecks: false; wasm-compile: true; web-renderer: auto;',
+        ),
       ),
-          ),
-        ],
-      ),
-    );
+    ]));
 
     // Sends timing event.
     final TestTimingEvent timingEvent = testUsage.timings.single;
@@ -130,14 +120,15 @@ void main() {
       fileSystem: fileSystem,
     );
     await expectLater(
-        () async => webBuilder.buildWeb(
-              flutterProject,
-              'target',
-              BuildInfo.debug,
-              ServiceWorkerStrategy.offlineFirst,
-              compilerConfig: const JsCompilerConfig.run(nativeNullAssertions: true),
-            ),
-        throwsToolExit(message: 'Failed to compile application for the Web.'));
+      () async => webBuilder.buildWeb(
+        flutterProject,
+        'target',
+        BuildInfo.debug,
+        ServiceWorkerStrategy.offlineFirst,
+        compilerConfig: const JsCompilerConfig.run(nativeNullAssertions: true),
+      ),
+      throwsToolExit(message: 'Failed to compile application for the Web.'),
+    );
 
     expect(logger.errorText, contains('Target hello failed: FormatException: illegal character in input string'));
     expect(testUsage.timings, isEmpty);

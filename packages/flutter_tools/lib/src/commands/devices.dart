@@ -13,8 +13,9 @@ import '../globals.dart' as globals;
 import '../runner/flutter_command.dart';
 
 class DevicesCommand extends FlutterCommand {
-  DevicesCommand({ bool verboseHelp = false }) {
-    argParser.addFlag('machine',
+  DevicesCommand({bool verboseHelp = false}) {
+    argParser.addFlag(
+      'machine',
       negatable: false,
       help: 'Output device information in machine readable structured JSON format.',
     );
@@ -52,7 +53,9 @@ class DevicesCommand extends FlutterCommand {
   @override
   Future<void> validateCommand() {
     if (argResults?['timeout'] != null) {
-      globals.printWarning('${globals.logger.terminal.warningMark} The "--timeout" argument is deprecated; use "--${FlutterOptions.kDeviceTimeout}" instead.');
+      globals.printWarning(
+        '${globals.logger.terminal.warningMark} The "--timeout" argument is deprecated; use "--${FlutterOptions.kDeviceTimeout}" instead.',
+      );
     }
     return super.validateCommand();
   }
@@ -63,7 +66,8 @@ class DevicesCommand extends FlutterCommand {
       throwToolExit(
         "Unable to locate a development device; please run 'flutter doctor' for "
         'information about installing additional components.',
-        exitCode: 1);
+        exitCode: 1,
+      );
     }
 
     final DevicesCommandOutput output = DevicesCommandOutput(
@@ -74,9 +78,7 @@ class DevicesCommand extends FlutterCommand {
       deviceConnectionInterface: deviceConnectionInterface,
     );
 
-    await output.findAndOutputAllTargetDevices(
-      machine: boolArg('machine'),
-    );
+    await output.findAndOutputAllTargetDevices(machine: boolArg('machine'));
 
     return FlutterCommandResult.success();
   }
@@ -111,8 +113,8 @@ class DevicesCommandOutput {
     required DeviceManager? deviceManager,
     required this.deviceDiscoveryTimeout,
     required this.deviceConnectionInterface,
-  })  : _deviceManager = deviceManager,
-        _logger = logger;
+  }) : _deviceManager = deviceManager,
+       _logger = logger;
 
   final DeviceManager? _deviceManager;
   final Logger _logger;
@@ -120,21 +122,17 @@ class DevicesCommandOutput {
   final DeviceConnectionInterface? deviceConnectionInterface;
 
   bool get _includeAttachedDevices =>
-      deviceConnectionInterface == null ||
-      deviceConnectionInterface == DeviceConnectionInterface.attached;
+      deviceConnectionInterface == null || deviceConnectionInterface == DeviceConnectionInterface.attached;
 
   bool get _includeWirelessDevices =>
-      deviceConnectionInterface == null ||
-      deviceConnectionInterface == DeviceConnectionInterface.wireless;
+      deviceConnectionInterface == null || deviceConnectionInterface == DeviceConnectionInterface.wireless;
 
   Future<List<Device>> _getAttachedDevices(DeviceManager deviceManager) async {
     if (!_includeAttachedDevices) {
       return <Device>[];
     }
     return deviceManager.getAllDevices(
-      filter: DeviceDiscoveryFilter(
-        deviceConnectionInterface: DeviceConnectionInterface.attached,
-      ),
+      filter: DeviceDiscoveryFilter(deviceConnectionInterface: DeviceConnectionInterface.attached),
     );
   }
 
@@ -143,9 +141,7 @@ class DevicesCommandOutput {
       return <Device>[];
     }
     return deviceManager.getAllDevices(
-      filter: DeviceDiscoveryFilter(
-        deviceConnectionInterface: DeviceConnectionInterface.wireless,
-      ),
+      filter: DeviceDiscoveryFilter(deviceConnectionInterface: DeviceConnectionInterface.wireless),
     );
   }
 
@@ -178,7 +174,9 @@ class DevicesCommandOutput {
         if (attachedDevices.isNotEmpty) {
           _logger.printStatus('');
         }
-        _logger.printStatus('${wirelessDevices.length} wirelessly connected ${pluralize('device', wirelessDevices.length)}:\n');
+        _logger.printStatus(
+          '${wirelessDevices.length} wirelessly connected ${pluralize('device', wirelessDevices.length)}:\n',
+        );
         await Device.printDevices(wirelessDevices, _logger);
       }
     }
@@ -191,9 +189,13 @@ class DevicesCommandOutput {
     status.writeln();
     status.writeln('Run "flutter emulators" to list and start any available device emulators.');
     status.writeln();
-    status.write('If you expected your device to be detected, please run "flutter doctor" to diagnose potential issues. ');
+    status.write(
+      'If you expected your device to be detected, please run "flutter doctor" to diagnose potential issues. ',
+    );
     if (deviceDiscoveryTimeout == null) {
-      status.write('You may also try increasing the time to wait for connected devices with the --${FlutterOptions.kDeviceTimeout} flag. ');
+      status.write(
+        'You may also try increasing the time to wait for connected devices with the --${FlutterOptions.kDeviceTimeout} flag. ',
+      );
     }
     status.write('Visit https://flutter.dev/setup/ for troubleshooting tips.');
 
@@ -212,9 +214,7 @@ class DevicesCommandOutput {
 
   Future<void> printDevicesAsJson(List<Device> devices) async {
     _logger.printStatus(
-      const JsonEncoder.withIndent('  ').convert(
-        await Future.wait(devices.map((Device d) => d.toJson()))
-      )
+      const JsonEncoder.withIndent('  ').convert(await Future.wait(devices.map((Device d) => d.toJson()))),
     );
   }
 }
@@ -241,11 +241,10 @@ class DevicesCommandOutputWithExtendedWirelessDeviceDiscovery extends DevicesCom
 
     if (machine) {
       final List<Device> devices = await _deviceManager?.refreshAllDevices(
-        filter: DeviceDiscoveryFilter(
-          deviceConnectionInterface: deviceConnectionInterface,
-        ),
-        timeout: DeviceManager.minimumWirelessDeviceDiscoveryTimeout,
-      ) ?? <Device>[];
+            filter: DeviceDiscoveryFilter(deviceConnectionInterface: deviceConnectionInterface),
+            timeout: DeviceManager.minimumWirelessDeviceDiscoveryTimeout,
+          ) ??
+          <Device>[];
       await printDevicesAsJson(devices);
       return;
     }
@@ -296,10 +295,7 @@ class DevicesCommandOutputWithExtendedWirelessDeviceDiscovery extends DevicesCom
         await Device.printDevices(attachedDevices, _logger);
       }
     } else if (terminal.supportsColor && terminal is AnsiTerminal) {
-      _logger.printStatus(
-        terminal.clearLines(numLinesToClear),
-        newline: false,
-      );
+      _logger.printStatus(terminal.clearLines(numLinesToClear), newline: false);
     }
 
     if (attachedDevices.isNotEmpty || !_logger.terminal.supportsColor) {
@@ -316,7 +312,9 @@ class DevicesCommandOutputWithExtendedWirelessDeviceDiscovery extends DevicesCom
       }
     } else {
       // Display list of wireless devices.
-      _logger.printStatus('${wirelessDevices.length} wirelessly connected ${pluralize('device', wirelessDevices.length)}:\n');
+      _logger.printStatus(
+        '${wirelessDevices.length} wirelessly connected ${pluralize('device', wirelessDevices.length)}:\n',
+      );
       await Device.printDevices(wirelessDevices, _logger);
     }
     await _printDiagnostics();

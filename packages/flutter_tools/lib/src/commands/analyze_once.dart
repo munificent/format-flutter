@@ -22,17 +22,14 @@ class AnalyzeOnce extends AnalyzeBase {
     required super.artifacts,
     required super.suppressAnalytics,
     this.workingDirectory,
-  }) : super(
-        repoPackages: repoPackages,
-      );
+  }) : super(repoPackages: repoPackages);
 
   /// The working directory for testing analysis using dartanalyzer.
   final Directory? workingDirectory;
 
   @override
   Future<void> analyze() async {
-    final String currentDirectory =
-        (workingDirectory ?? fileSystem.currentDirectory).path;
+    final String currentDirectory = (workingDirectory ?? fileSystem.currentDirectory).path;
     final Set<String> items = findDirectories(argResults, fileSystem);
 
     if (isFlutterRepo) {
@@ -97,9 +94,7 @@ class AnalyzeOnce extends AnalyzeBase {
         if (!analysisCompleter.isCompleted) {
           analysisCompleter.completeError(
             // Include the last 20 lines of server output in exception message
-            Exception(
-              'analysis server exited with code $exitCode and output:\n${server.getLogs(20)}',
-            ),
+            Exception('analysis server exited with code $exitCode and output:\n${server.getLogs(20)}'),
           );
         }
       }));
@@ -109,11 +104,7 @@ class AnalyzeOnce extends AnalyzeBase {
       final String message = items.length > 1
           ? '${items.length} ${items.length == 1 ? 'item' : 'items'}'
           : fileSystem.path.basename(items.first);
-      progress = argResults['preamble'] == true
-          ? logger.startProgress(
-            'Analyzing $message...',
-          )
-          : null;
+      progress = argResults['preamble'] == true ? logger.startProgress('Analyzing $message...') : null;
 
       await analysisCompleter.future;
     } finally {
@@ -141,10 +132,7 @@ class AnalyzeOnce extends AnalyzeBase {
 
     final int errorCount = errors.length;
     final String seconds = (timer.elapsedMilliseconds / 1000.0).toStringAsFixed(1);
-    final String errorsMessage = AnalyzeBase.generateErrorsMessage(
-      issueCount: errorCount,
-      seconds: seconds,
-    );
+    final String errorsMessage = AnalyzeBase.generateErrorsMessage(issueCount: errorCount, seconds: seconds);
 
     if (errorCount > 0) {
       logger.printStatus('');

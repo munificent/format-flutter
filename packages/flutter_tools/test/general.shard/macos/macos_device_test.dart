@@ -21,9 +21,7 @@ import '../../src/common.dart';
 import '../../src/fake_process_manager.dart';
 import '../../src/fakes.dart';
 
-final FakePlatform macOS = FakePlatform(
-  operatingSystem: 'macos',
-);
+final FakePlatform macOS = FakePlatform(operatingSystem: 'macos');
 
 final FakePlatform linux = FakePlatform();
 
@@ -83,17 +81,17 @@ void main() {
   });
 
   testWithoutContext('No devices listed if platform is unsupported', () async {
-    expect(await MacOSDevices(
-      fileSystem: MemoryFileSystem.test(),
-      processManager: FakeProcessManager.any(),
-      logger: BufferLogger.test(),
-      platform: linux,
-      operatingSystemUtils: FakeOperatingSystemUtils(),
-      macOSWorkflow: MacOSWorkflow(
-        featureFlags: TestFeatureFlags(isMacOSEnabled: true),
+    expect(
+      await MacOSDevices(
+        fileSystem: MemoryFileSystem.test(),
+        processManager: FakeProcessManager.any(),
+        logger: BufferLogger.test(),
         platform: linux,
-      ),
-    ).devices(), isEmpty);
+        operatingSystemUtils: FakeOperatingSystemUtils(),
+        macOSWorkflow: MacOSWorkflow(featureFlags: TestFeatureFlags(isMacOSEnabled: true), platform: linux),
+      ).devices(),
+      isEmpty,
+    );
   });
 
   testWithoutContext('No devices listed if platform is supported and feature is disabled', () async {
@@ -103,10 +101,7 @@ void main() {
       logger: BufferLogger.test(),
       platform: macOS,
       operatingSystemUtils: FakeOperatingSystemUtils(),
-      macOSWorkflow: MacOSWorkflow(
-        featureFlags: TestFeatureFlags(),
-        platform: macOS,
-      ),
+      macOSWorkflow: MacOSWorkflow(featureFlags: TestFeatureFlags(), platform: macOS),
     );
 
     expect(await macOSDevices.devices(), isEmpty);
@@ -119,10 +114,7 @@ void main() {
       logger: BufferLogger.test(),
       platform: macOS,
       operatingSystemUtils: FakeOperatingSystemUtils(),
-      macOSWorkflow: MacOSWorkflow(
-        featureFlags: TestFeatureFlags(isMacOSEnabled: true),
-        platform: macOS,
-      ),
+      macOSWorkflow: MacOSWorkflow(featureFlags: TestFeatureFlags(isMacOSEnabled: true), platform: macOS),
     );
 
     expect(await macOSDevices.devices(), hasLength(1));
@@ -135,10 +127,7 @@ void main() {
       logger: BufferLogger.test(),
       platform: macOS,
       operatingSystemUtils: FakeOperatingSystemUtils(),
-      macOSWorkflow: MacOSWorkflow(
-        featureFlags: TestFeatureFlags(isMacOSEnabled: true),
-        platform: macOS,
-      ),
+      macOSWorkflow: MacOSWorkflow(featureFlags: TestFeatureFlags(isMacOSEnabled: true), platform: macOS),
     );
 
     expect(macOSDevices.wellKnownIds, <String>['macos']);
@@ -151,10 +140,7 @@ void main() {
       logger: BufferLogger.test(),
       platform: macOS,
       operatingSystemUtils: FakeOperatingSystemUtils(),
-      macOSWorkflow: MacOSWorkflow(
-        featureFlags: TestFeatureFlags(isMacOSEnabled: true),
-        platform: macOS,
-      ),
+      macOSWorkflow: MacOSWorkflow(featureFlags: TestFeatureFlags(isMacOSEnabled: true), platform: macOS),
     );
 
     // Timeout ignored.
@@ -181,8 +167,7 @@ void main() {
   });
 
   testWithoutContext('target platform display name on x86_64', () async {
-    final FakeOperatingSystemUtils fakeOperatingSystemUtils =
-        FakeOperatingSystemUtils();
+    final FakeOperatingSystemUtils fakeOperatingSystemUtils = FakeOperatingSystemUtils();
     fakeOperatingSystemUtils.hostPlatform = HostPlatform.darwin_x64;
     final MacOSDevice device = MacOSDevice(
       fileSystem: MemoryFileSystem.test(),
@@ -195,8 +180,7 @@ void main() {
   });
 
   testWithoutContext('target platform display name on ARM', () async {
-    final FakeOperatingSystemUtils fakeOperatingSystemUtils =
-        FakeOperatingSystemUtils();
+    final FakeOperatingSystemUtils fakeOperatingSystemUtils = FakeOperatingSystemUtils();
     fakeOperatingSystemUtils.hostPlatform = HostPlatform.darwin_arm64;
     final MacOSDevice device = MacOSDevice(
       fileSystem: MemoryFileSystem.test(),
@@ -256,7 +240,7 @@ class FakeMacOSApp extends Fake implements MacOSApp {
       BuildInfo.debug => 'debug/executable',
       BuildInfo.profile => 'profile/executable',
       BuildInfo.release => 'release/executable',
-      _ => throw StateError('')
+      _ => throw StateError(''),
     };
   }
 }

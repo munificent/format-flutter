@@ -14,22 +14,14 @@ void main() {
       ST.placeholderExpr,
       0,
       expectedSymbolCount: 3,
-      children: <Node>[
-        Node.openBrace(0),
-        Node.string(1, 'var'),
-        Node.closeBrace(4),
-      ],
+      children: <Node>[Node.openBrace(0), Node.string(1, 'var'), Node.closeBrace(4)],
     );
 
     final Node expected = Node(
       ST.placeholderExpr,
       0,
       expectedSymbolCount: 3,
-      children: <Node>[
-        Node.openBrace(0),
-        Node.string(1, 'var'),
-        Node.closeBrace(4),
-      ],
+      children: <Node>[Node.openBrace(0), Node.string(1, 'var'), Node.closeBrace(4)],
     );
     expect(actual, equals(expected));
 
@@ -37,11 +29,7 @@ void main() {
       ST.pluralExpr,
       0,
       expectedSymbolCount: 3,
-      children: <Node>[
-        Node.openBrace(0),
-        Node.string(1, 'var'),
-        Node.closeBrace(4),
-      ],
+      children: <Node>[Node.openBrace(0), Node.string(1, 'var'), Node.closeBrace(4)],
     );
     expect(actual, isNot(equals(wrongType)));
 
@@ -49,11 +37,7 @@ void main() {
       ST.placeholderExpr,
       1,
       expectedSymbolCount: 3,
-      children: <Node>[
-        Node.openBrace(0),
-        Node.string(1, 'var'),
-        Node.closeBrace(4),
-      ],
+      children: <Node>[Node.openBrace(0), Node.string(1, 'var'), Node.closeBrace(4)],
     );
     expect(actual, isNot(equals(wrongPosition)));
 
@@ -61,10 +45,7 @@ void main() {
       ST.placeholderExpr,
       0,
       expectedSymbolCount: 3,
-      children: <Node>[
-        Node.string(1, 'var'),
-        Node.closeBrace(4),
-      ],
+      children: <Node>[Node.string(1, 'var'), Node.closeBrace(4)],
     );
     expect(actual, isNot(equals(wrongChildrenCount)));
 
@@ -72,33 +53,20 @@ void main() {
       ST.placeholderExpr,
       0,
       expectedSymbolCount: 3,
-      children: <Node>[
-        Node.closeBrace(0),
-        Node.string(1, 'var'),
-        Node.closeBrace(4),
-      ],
+      children: <Node>[Node.closeBrace(0), Node.string(1, 'var'), Node.closeBrace(4)],
     );
     expect(actual, isNot(equals(wrongChild)));
   });
 
   testWithoutContext('lexer basic', () {
-    final List<Node> tokens1 = Parser(
-      'helloWorld',
-      'app_en.arb',
-      'Hello {name}'
-    ).lexIntoTokens();
-    expect(tokens1, equals(<Node>[
-      Node.string(0, 'Hello '),
-      Node.openBrace(6),
-      Node.identifier(7, 'name'),
-      Node.closeBrace(11),
-    ]));
+    final List<Node> tokens1 = Parser('helloWorld', 'app_en.arb', 'Hello {name}').lexIntoTokens();
+    expect(
+      tokens1,
+      equals(<Node>[Node.string(0, 'Hello '), Node.openBrace(6), Node.identifier(7, 'name'), Node.closeBrace(11)]),
+    );
 
-    final List<Node> tokens2 = Parser(
-      'plural',
-      'app_en.arb',
-      'There are {count} {count, plural, =1{cat} other{cats}}'
-    ).lexIntoTokens();
+    final List<Node> tokens2 =
+        Parser('plural', 'app_en.arb', 'There are {count} {count, plural, =1{cat} other{cats}}').lexIntoTokens();
     expect(tokens2, equals(<Node>[
       Node.string(0, 'There are '),
       Node.openBrace(10),
@@ -122,11 +90,8 @@ void main() {
       Node.closeBrace(53),
     ]));
 
-    final List<Node> tokens3 = Parser(
-      'gender',
-      'app_en.arb',
-      '{gender, select, male{he} female{she} other{they}}'
-    ).lexIntoTokens();
+    final List<Node> tokens3 =
+        Parser('gender', 'app_en.arb', '{gender, select, male{he} female{she} other{they}}').lexIntoTokens();
     expect(tokens3, equals(<Node>[
       Node.openBrace(0),
       Node.identifier(1, 'gender'),
@@ -153,7 +118,7 @@ void main() {
     final List<Node> tokens = Parser(
       'plural',
       'app_en.arb',
-      '{count, plural, =1{{gender, select, male{he} female{she}}} other{they}}'
+      '{count, plural, =1{{gender, select, male{he} female{she}}} other{they}}',
     ).lexIntoTokens();
     expect(tokens, equals(<Node>[
       Node.openBrace(0),
@@ -191,10 +156,12 @@ void main() {
     final List<Node> tokens1 = Parser('escaping', 'app_en.arb', "''", useEscaping: true).lexIntoTokens();
     expect(tokens1, equals(<Node>[Node.string(0, "'")]));
 
-    final List<Node> tokens2 = Parser('escaping', 'app_en.arb', "'hello world { name }'", useEscaping: true).lexIntoTokens();
+    final List<Node> tokens2 =
+        Parser('escaping', 'app_en.arb', "'hello world { name }'", useEscaping: true).lexIntoTokens();
     expect(tokens2, equals(<Node>[Node.string(0, 'hello world { name }')]));
 
-    final List<Node> tokens3 = Parser('escaping', 'app_en.arb', "'{ escaped string }' { not escaped }", useEscaping: true).lexIntoTokens();
+    final List<Node> tokens3 =
+        Parser('escaping', 'app_en.arb', "'{ escaped string }' { not escaped }", useEscaping: true).lexIntoTokens();
     expect(tokens3, equals(<Node>[
       Node.string(0, '{ escaped string }'),
       Node.string(20, ' '),
@@ -204,22 +171,18 @@ void main() {
       Node.closeBrace(35),
     ]));
 
-    final List<Node> tokens4 = Parser('escaping', 'app_en.arb', "Flutter''s amazing!", useEscaping: true).lexIntoTokens();
-    expect(tokens4, equals(<Node>[
-      Node.string(0, 'Flutter'),
-      Node.string(7, "'"),
-      Node.string(9, 's amazing!'),
-    ]));
+    final List<Node> tokens4 =
+        Parser('escaping', 'app_en.arb', "Flutter''s amazing!", useEscaping: true).lexIntoTokens();
+    expect(tokens4, equals(<Node>[Node.string(0, 'Flutter'), Node.string(7, "'"), Node.string(9, 's amazing!')]));
 
-    final List<Node> tokens5 = Parser('escaping', 'app_en.arb', "'Flutter''s amazing!'", useEscaping: true).lexIntoTokens();
-    expect(tokens5, equals(<Node>[
-      Node(ST.string, 0, value: 'Flutter'),
-      Node(ST.string, 9, value: "'s amazing!"),
-    ]));
+    final List<Node> tokens5 =
+        Parser('escaping', 'app_en.arb', "'Flutter''s amazing!'", useEscaping: true).lexIntoTokens();
+    expect(tokens5, equals(<Node>[Node(ST.string, 0, value: 'Flutter'), Node(ST.string, 9, value: "'s amazing!")]));
   });
 
   testWithoutContext('lexer identifier names can be "select" or "plural"', () {
-    final List<Node> tokens = Parser('keywords', 'app_en.arb', '{ select } { plural, select, singular{test} other{hmm} }').lexIntoTokens();
+    final List<Node> tokens =
+        Parser('keywords', 'app_en.arb', '{ select } { plural, select, singular{test} other{hmm} }').lexIntoTokens();
     expect(tokens[1].value, equals('select'));
     expect(tokens[1].type, equals(ST.identifier));
     expect(tokens[5].value, equals('plural'));
@@ -227,15 +190,23 @@ void main() {
   });
 
   testWithoutContext('lexer identifier names can contain underscores', () {
-    final List<Node> tokens = Parser('keywords', 'app_en.arb', '{ test_placeholder } { test_select, select, singular{test} other{hmm} }').lexIntoTokens();
+    final List<Node> tokens = Parser(
+      'keywords',
+      'app_en.arb',
+      '{ test_placeholder } { test_select, select, singular{test} other{hmm} }',
+    ).lexIntoTokens();
     expect(tokens[1].value, equals('test_placeholder'));
     expect(tokens[1].type, equals(ST.identifier));
     expect(tokens[5].value, equals('test_select'));
     expect(tokens[5].type, equals(ST.identifier));
   });
 
-   testWithoutContext('lexer identifier names can contain the strings select or plural', () {
-    final List<Node> tokens = Parser('keywords', 'app_en.arb', '{ selectTest } { pluralTest, select, singular{test} other{hmm} }').lexIntoTokens();
+  testWithoutContext('lexer identifier names can contain the strings select or plural', () {
+    final List<Node> tokens = Parser(
+      'keywords',
+      'app_en.arb',
+      '{ selectTest } { pluralTest, select, singular{test} other{hmm} }',
+    ).lexIntoTokens();
     expect(tokens[1].value, equals('selectTest'));
     expect(tokens[1].type, equals(ST.identifier));
     expect(tokens[5].value, equals('pluralTest'));
@@ -243,11 +214,8 @@ void main() {
   });
 
   testWithoutContext('lexer: lexically correct but syntactically incorrect', () {
-    final List<Node> tokens = Parser(
-      'syntax',
-      'app_en.arb',
-      'string { identifier { string { identifier } } }'
-    ).lexIntoTokens();
+    final List<Node> tokens =
+        Parser('syntax', 'app_en.arb', 'string { identifier { string { identifier } } }').lexIntoTokens();
     expect(tokens, equals(<Node>[
       Node.string(0, 'string '),
       Node.openBrace(7),
@@ -271,11 +239,8 @@ void main() {
                                        ^''';
     expect(
       () => Parser('escaping', 'app_en.arb', message, useEscaping: true).lexIntoTokens(),
-      throwsA(isA<L10nException>().having(
-        (L10nException e) => e.message,
-        'message',
-        contains(expectedError),
-    )));
+      throwsA(isA<L10nException>().having((L10nException e) => e.message, 'message', contains(expectedError))),
+    );
   });
 
   testWithoutContext('lexer unexpected character', () {
@@ -286,199 +251,268 @@ void main() {
       ^''';
     expect(
       () => Parser('lex', 'app_en.arb', message).lexIntoTokens(),
-      throwsA(isA<L10nException>().having(
-        (L10nException e) => e.message,
-        'message',
-        contains(expectedError),
+      throwsA(isA<L10nException>().having((L10nException e) => e.message, 'message', contains(expectedError))),
+    );
+  });
+
+  testWithoutContext('parser basic', () {
+    expect(Parser('helloWorld', 'app_en.arb', 'Hello {name}').parse(), equals(Node(
+      ST.message,
+      0,
+      children: <Node>[
+        Node(ST.string, 0, value: 'Hello '),
+        Node(
+          ST.placeholderExpr,
+          6,
+          children: <Node>[
+            Node(ST.openBrace, 6, value: '{'),
+            Node(ST.identifier, 7, value: 'name'),
+            Node(ST.closeBrace, 11, value: '}'),
+          ],
+        ),
+      ],
+    )));
+
+    expect(
+      Parser('plural', 'app_en.arb', 'There are {count} {count, plural, =1{cat} other{cats}}').parse(),
+      equals(Node(
+        ST.message,
+        0,
+        children: <Node>[
+          Node(ST.string, 0, value: 'There are '),
+          Node(
+            ST.placeholderExpr,
+            10,
+            children: <Node>[
+              Node(ST.openBrace, 10, value: '{'),
+              Node(ST.identifier, 11, value: 'count'),
+              Node(ST.closeBrace, 16, value: '}'),
+            ],
+          ),
+          Node(ST.string, 17, value: ' '),
+          Node(
+            ST.pluralExpr,
+            18,
+            children: <Node>[
+              Node(ST.openBrace, 18, value: '{'),
+              Node(ST.identifier, 19, value: 'count'),
+              Node(ST.comma, 24, value: ','),
+              Node(ST.plural, 26, value: 'plural'),
+              Node(ST.comma, 32, value: ','),
+              Node(
+                ST.pluralParts,
+                34,
+                children: <Node>[
+                  Node(
+                    ST.pluralPart,
+                    34,
+                    children: <Node>[
+                      Node(ST.equalSign, 34, value: '='),
+                      Node(ST.number, 35, value: '1'),
+                      Node(ST.openBrace, 36, value: '{'),
+                      Node(ST.message, 37, children: <Node>[Node(ST.string, 37, value: 'cat')]),
+                      Node(ST.closeBrace, 40, value: '}'),
+                    ],
+                  ),
+                  Node(
+                    ST.pluralPart,
+                    42,
+                    children: <Node>[
+                      Node(ST.other, 42, value: 'other'),
+                      Node(ST.openBrace, 47, value: '{'),
+                      Node(ST.message, 48, children: <Node>[Node(ST.string, 48, value: 'cats')]),
+                      Node(ST.closeBrace, 52, value: '}'),
+                    ],
+                  ),
+                ],
+              ),
+              Node(ST.closeBrace, 53, value: '}'),
+            ],
+          ),
+        ],
+      )),
+    );
+
+    expect(Parser('gender', 'app_en.arb', '{gender, select, male{he} female{she} other{they}}').parse(), equals(Node(
+      ST.message,
+      0,
+      children: <Node>[
+        Node(
+          ST.selectExpr,
+          0,
+          children: <Node>[
+            Node(ST.openBrace, 0, value: '{'),
+            Node(ST.identifier, 1, value: 'gender'),
+            Node(ST.comma, 7, value: ','),
+            Node(ST.select, 9, value: 'select'),
+            Node(ST.comma, 15, value: ','),
+            Node(
+              ST.selectParts,
+              17,
+              children: <Node>[
+                Node(
+                  ST.selectPart,
+                  17,
+                  children: <Node>[
+                    Node(ST.identifier, 17, value: 'male'),
+                    Node(ST.openBrace, 21, value: '{'),
+                    Node(ST.message, 22, children: <Node>[Node(ST.string, 22, value: 'he')]),
+                    Node(ST.closeBrace, 24, value: '}'),
+                  ],
+                ),
+                Node(
+                  ST.selectPart,
+                  26,
+                  children: <Node>[
+                    Node(ST.identifier, 26, value: 'female'),
+                    Node(ST.openBrace, 32, value: '{'),
+                    Node(ST.message, 33, children: <Node>[Node(ST.string, 33, value: 'she')]),
+                    Node(ST.closeBrace, 36, value: '}'),
+                  ],
+                ),
+                Node(
+                  ST.selectPart,
+                  38,
+                  children: <Node>[
+                    Node(ST.other, 38, value: 'other'),
+                    Node(ST.openBrace, 43, value: '{'),
+                    Node(ST.message, 44, children: <Node>[Node(ST.string, 44, value: 'they')]),
+                    Node(ST.closeBrace, 48, value: '}'),
+                  ],
+                ),
+              ],
+            ),
+            Node(ST.closeBrace, 49, value: '}'),
+          ],
+        ),
+      ],
     )));
   });
 
-
-  testWithoutContext('parser basic', () {
-    expect(Parser('helloWorld', 'app_en.arb', 'Hello {name}').parse(), equals(
-      Node(ST.message, 0, children: <Node>[
-        Node(ST.string, 0, value: 'Hello '),
-          Node(ST.placeholderExpr, 6, children: <Node>[
-            Node(ST.openBrace, 6, value: '{'),
-            Node(ST.identifier, 7, value: 'name'),
-            Node(ST.closeBrace, 11, value: '}')
-          ])
-        ])
-    ));
-
-    expect(Parser(
-      'plural',
-      'app_en.arb',
-      'There are {count} {count, plural, =1{cat} other{cats}}'
-    ).parse(), equals(
-      Node(ST.message, 0, children: <Node>[
-        Node(ST.string, 0, value: 'There are '),
-        Node(ST.placeholderExpr, 10, children: <Node>[
-          Node(ST.openBrace, 10, value: '{'),
-          Node(ST.identifier, 11, value: 'count'),
-          Node(ST.closeBrace, 16, value: '}')
-        ]),
-        Node(ST.string, 17, value: ' '),
-        Node(ST.pluralExpr, 18, children: <Node>[
-          Node(ST.openBrace, 18, value: '{'),
-          Node(ST.identifier, 19, value: 'count'),
-          Node(ST.comma, 24, value: ','),
-          Node(ST.plural, 26, value: 'plural'),
-          Node(ST.comma, 32, value: ','),
-          Node(ST.pluralParts, 34, children: <Node>[
-            Node(ST.pluralPart, 34, children: <Node>[
-              Node(ST.equalSign, 34, value: '='),
-              Node(ST.number, 35, value: '1'),
-              Node(ST.openBrace, 36, value: '{'),
-              Node(ST.message, 37, children: <Node>[
-                Node(ST.string, 37, value: 'cat')
-              ]),
-              Node(ST.closeBrace, 40, value: '}')
-            ]),
-            Node(ST.pluralPart, 42, children: <Node>[
-              Node(ST.other, 42, value: 'other'),
-              Node(ST.openBrace, 47, value: '{'),
-              Node(ST.message, 48, children: <Node>[
-                Node(ST.string, 48, value: 'cats')
-              ]),
-              Node(ST.closeBrace, 52, value: '}')
-            ])
-          ]),
-          Node(ST.closeBrace, 53, value: '}')
-        ]),
-      ]),
-    ));
-
-    expect(Parser(
-      'gender',
-      'app_en.arb',
-      '{gender, select, male{he} female{she} other{they}}'
-    ).parse(), equals(
-      Node(ST.message, 0, children: <Node>[
-        Node(ST.selectExpr, 0, children: <Node>[
-          Node(ST.openBrace, 0, value: '{'),
-          Node(ST.identifier, 1, value: 'gender'),
-          Node(ST.comma, 7, value: ','),
-          Node(ST.select, 9, value: 'select'),
-          Node(ST.comma, 15, value: ','),
-          Node(ST.selectParts, 17, children: <Node>[
-            Node(ST.selectPart, 17, children: <Node>[
-              Node(ST.identifier, 17, value: 'male'),
-              Node(ST.openBrace, 21, value: '{'),
-              Node(ST.message, 22, children: <Node>[
-                Node(ST.string, 22, value: 'he'),
-              ]),
-              Node(ST.closeBrace, 24, value: '}'),
-            ]),
-            Node(ST.selectPart, 26, children: <Node>[
-              Node(ST.identifier, 26, value: 'female'),
-              Node(ST.openBrace, 32, value: '{'),
-              Node(ST.message, 33, children: <Node>[
-                Node(ST.string, 33, value: 'she'),
-              ]),
-              Node(ST.closeBrace, 36, value: '}'),
-            ]),
-            Node(ST.selectPart, 38, children: <Node>[
-              Node(ST.other, 38, value: 'other'),
-              Node(ST.openBrace, 43, value: '{'),
-              Node(ST.message, 44, children: <Node>[
-                Node(ST.string, 44, value: 'they'),
-              ]),
-              Node(ST.closeBrace, 48, value: '}'),
-            ]),
-          ]),
-          Node(ST.closeBrace, 49, value: '}'),
-        ]),
-      ])
-    ));
-  });
-
   testWithoutContext('parser escaping', () {
-    expect(Parser('escaping', 'app_en.arb', "Flutter''s amazing!", useEscaping: true).parse(), equals(
-      Node(ST.message, 0, children: <Node>[
+    expect(Parser('escaping', 'app_en.arb', "Flutter''s amazing!", useEscaping: true).parse(), equals(Node(
+      ST.message,
+      0,
+      children: <Node>[
         Node(ST.string, 0, value: 'Flutter'),
         Node(ST.string, 7, value: "'"),
         Node(ST.string, 9, value: 's amazing!'),
-      ])
-    ));
+      ],
+    )));
 
-    expect(Parser('escaping', 'app_en.arb', "'Flutter''s amazing!'", useEscaping: true).parse(), equals(
-      Node(ST.message, 0, children: <Node> [
-        Node(ST.string, 0, value: 'Flutter'),
-        Node(ST.string, 9, value: "'s amazing!"),
-      ])
-    ));
+    expect(Parser('escaping', 'app_en.arb', "'Flutter''s amazing!'", useEscaping: true).parse(), equals(Node(
+      ST.message,
+      0,
+      children: <Node>[Node(ST.string, 0, value: 'Flutter'), Node(ST.string, 9, value: "'s amazing!")],
+    )));
   });
 
   testWithoutContext('parser recursive', () {
-    expect(Parser(
-      'pluralGender',
-      'app_en.arb',
-      '{count, plural, =1{{gender, select, male{he} female{she} other{they}}} other{they}}'
-    ).parse(), equals(
-      Node(ST.message, 0, children: <Node>[
-        Node(ST.pluralExpr, 0, children: <Node>[
-          Node(ST.openBrace, 0, value: '{'),
-          Node(ST.identifier, 1, value: 'count'),
-          Node(ST.comma, 6, value: ','),
-          Node(ST.plural, 8, value: 'plural'),
-          Node(ST.comma, 14, value: ','),
-          Node(ST.pluralParts, 16, children: <Node>[
-            Node(ST.pluralPart, 16, children: <Node>[
-              Node(ST.equalSign, 16, value: '='),
-              Node(ST.number, 17, value: '1'),
-              Node(ST.openBrace, 18, value: '{'),
-              Node(ST.message, 19, children: <Node>[
-                Node(ST.selectExpr, 19, children: <Node>[
-                  Node(ST.openBrace, 19, value: '{'),
-                  Node(ST.identifier, 20, value: 'gender'),
-                  Node(ST.comma, 26, value: ','),
-                  Node(ST.select, 28, value: 'select'),
-                  Node(ST.comma, 34, value: ','),
-                  Node(ST.selectParts, 36, children: <Node>[
-                    Node(ST.selectPart, 36, children: <Node>[
-                      Node(ST.identifier, 36, value: 'male'),
-                      Node(ST.openBrace, 40, value: '{'),
-                      Node(ST.message, 41, children: <Node>[
-                        Node(ST.string, 41, value: 'he'),
-                      ]),
-                      Node(ST.closeBrace, 43, value: '}'),
-                    ]),
-                    Node(ST.selectPart, 45, children: <Node>[
-                      Node(ST.identifier, 45, value: 'female'),
-                      Node(ST.openBrace, 51, value: '{'),
-                      Node(ST.message, 52, children: <Node>[
-                        Node(ST.string, 52, value: 'she'),
-                      ]),
-                      Node(ST.closeBrace, 55, value: '}'),
-                    ]),
-                    Node(ST.selectPart, 57, children: <Node>[
-                      Node(ST.other, 57, value: 'other'),
-                      Node(ST.openBrace, 62, value: '{'),
-                      Node(ST.message, 63, children: <Node>[
-                        Node(ST.string, 63, value: 'they'),
-                      ]),
-                      Node(ST.closeBrace, 67, value: '}'),
-                    ]),
-                  ]),
-                  Node(ST.closeBrace, 68, value: '}'),
-                ]),
-              ]),
-              Node(ST.closeBrace, 69, value: '}'),
-            ]),
-            Node(ST.pluralPart, 71, children: <Node>[
-              Node(ST.other, 71, value: 'other'),
-              Node(ST.openBrace, 76, value: '{'),
-              Node(ST.message, 77, children: <Node>[
-                Node(ST.string, 77, value: 'they'),
-              ]),
-              Node(ST.closeBrace, 81, value: '}'),
-            ]),
-          ]),
-          Node(ST.closeBrace, 82, value: '}'),
-        ]),
-      ])
-    ));
+    expect(
+      Parser(
+        'pluralGender',
+        'app_en.arb',
+        '{count, plural, =1{{gender, select, male{he} female{she} other{they}}} other{they}}',
+      ).parse(),
+      equals(Node(
+        ST.message,
+        0,
+        children: <Node>[
+          Node(
+            ST.pluralExpr,
+            0,
+            children: <Node>[
+              Node(ST.openBrace, 0, value: '{'),
+              Node(ST.identifier, 1, value: 'count'),
+              Node(ST.comma, 6, value: ','),
+              Node(ST.plural, 8, value: 'plural'),
+              Node(ST.comma, 14, value: ','),
+              Node(
+                ST.pluralParts,
+                16,
+                children: <Node>[
+                  Node(
+                    ST.pluralPart,
+                    16,
+                    children: <Node>[
+                      Node(ST.equalSign, 16, value: '='),
+                      Node(ST.number, 17, value: '1'),
+                      Node(ST.openBrace, 18, value: '{'),
+                      Node(
+                        ST.message,
+                        19,
+                        children: <Node>[
+                          Node(
+                            ST.selectExpr,
+                            19,
+                            children: <Node>[
+                              Node(ST.openBrace, 19, value: '{'),
+                              Node(ST.identifier, 20, value: 'gender'),
+                              Node(ST.comma, 26, value: ','),
+                              Node(ST.select, 28, value: 'select'),
+                              Node(ST.comma, 34, value: ','),
+                              Node(
+                                ST.selectParts,
+                                36,
+                                children: <Node>[
+                                  Node(
+                                    ST.selectPart,
+                                    36,
+                                    children: <Node>[
+                                      Node(ST.identifier, 36, value: 'male'),
+                                      Node(ST.openBrace, 40, value: '{'),
+                                      Node(ST.message, 41, children: <Node>[Node(ST.string, 41, value: 'he')]),
+                                      Node(ST.closeBrace, 43, value: '}'),
+                                    ],
+                                  ),
+                                  Node(
+                                    ST.selectPart,
+                                    45,
+                                    children: <Node>[
+                                      Node(ST.identifier, 45, value: 'female'),
+                                      Node(ST.openBrace, 51, value: '{'),
+                                      Node(ST.message, 52, children: <Node>[Node(ST.string, 52, value: 'she')]),
+                                      Node(ST.closeBrace, 55, value: '}'),
+                                    ],
+                                  ),
+                                  Node(
+                                    ST.selectPart,
+                                    57,
+                                    children: <Node>[
+                                      Node(ST.other, 57, value: 'other'),
+                                      Node(ST.openBrace, 62, value: '{'),
+                                      Node(ST.message, 63, children: <Node>[Node(ST.string, 63, value: 'they')]),
+                                      Node(ST.closeBrace, 67, value: '}'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Node(ST.closeBrace, 68, value: '}'),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Node(ST.closeBrace, 69, value: '}'),
+                    ],
+                  ),
+                  Node(
+                    ST.pluralPart,
+                    71,
+                    children: <Node>[
+                      Node(ST.other, 71, value: 'other'),
+                      Node(ST.openBrace, 76, value: '{'),
+                      Node(ST.message, 77, children: <Node>[Node(ST.string, 77, value: 'they')]),
+                      Node(ST.closeBrace, 81, value: '}'),
+                    ],
+                  ),
+                ],
+              ),
+              Node(ST.closeBrace, 82, value: '}'),
+            ],
+          ),
+        ],
+      )),
+    );
   });
 
   testWithoutContext('parser unexpected token', () {
@@ -489,11 +523,8 @@ void main() {
                   ^''';
     expect(
       () => Parser('unexpectedToken', 'app_en.arb', '{ placeholder =').parseIntoTree(),
-      throwsA(isA<L10nException>().having(
-        (L10nException e) => e.message,
-        'message',
-        contains(expectedError1),
-    )));
+      throwsA(isA<L10nException>().having((L10nException e) => e.message, 'message', contains(expectedError1))),
+    );
 
     const String expectedError2 = '''
 [app_en.arb:unexpectedToken] ICU Syntax Error: Expected "number" but found "}".
@@ -501,11 +532,8 @@ void main() {
                        ^''';
     expect(
       () => Parser('unexpectedToken', 'app_en.arb', '{ count, plural, = }').parseIntoTree(),
-      throwsA(isA<L10nException>().having(
-        (L10nException e) => e.message,
-        'message',
-        contains(expectedError2),
-    )));
+      throwsA(isA<L10nException>().having((L10nException e) => e.message, 'message', contains(expectedError2))),
+    );
 
     const String expectedError3 = '''
 [app_en.arb:unexpectedToken] ICU Syntax Error: Expected "identifier" but found ",".
@@ -513,15 +541,13 @@ void main() {
       ^''';
     expect(
       () => Parser('unexpectedToken', 'app_en.arb', '{ , plural , = }').parseIntoTree(),
-      throwsA(isA<L10nException>().having(
-        (L10nException e) => e.message,
-        'message',
-        contains(expectedError3),
-    )));
+      throwsA(isA<L10nException>().having((L10nException e) => e.message, 'message', contains(expectedError3))),
+    );
   });
 
   testWithoutContext('parser allows select cases with numbers', () {
-    final Node node = Parser('numberSelect', 'app_en.arb', '{ count, select, 0{none} 100{perfect} other{required!} }').parse();
+    final Node node =
+        Parser('numberSelect', 'app_en.arb', '{ count, select, 0{none} 100{perfect} other{required!} }').parse();
     final Node selectExpr = node.children[0];
     final Node selectParts = selectExpr.children[5];
     final Node selectPart = selectParts.children[0];

@@ -15,10 +15,7 @@ void main() {
 
   setUp(() {
     fileSystem = MemoryFileSystem.test();
-    depfileService = DepfileService(
-      logger: BufferLogger.test(),
-      fileSystem: fileSystem,
-    );
+    depfileService = DepfileService(logger: BufferLogger.test(), fileSystem: fileSystem);
   });
   testWithoutContext('Can parse depfile from file', () {
     final File depfileSource = fileSystem.file('example.d')..writeAsStringSync('''
@@ -36,11 +33,7 @@ a.txt: b.txt c.txt d.txt
 ''');
     final Depfile depfile = depfileService.parse(depfileSource);
 
-    expect(depfile.inputs.map((File file) => file.path), <String>[
-      'b.txt',
-      'c.txt',
-      'd.txt',
-    ]);
+    expect(depfile.inputs.map((File file) => file.path), <String>['b.txt', 'c.txt', 'd.txt']);
     expect(depfile.outputs.single.path, 'a.txt');
   });
 
@@ -51,19 +44,12 @@ a.txt c.txt d.txt: b.txt
     final Depfile depfile = depfileService.parse(depfileSource);
 
     expect(depfile.inputs.single.path, 'b.txt');
-    expect(depfile.outputs.map((File file) => file.path), <String>[
-      'a.txt',
-      'c.txt',
-      'd.txt',
-    ]);
+    expect(depfile.outputs.map((File file) => file.path), <String>['a.txt', 'c.txt', 'd.txt']);
   });
 
   testWithoutContext('Can parse depfile with windows file paths', () {
     fileSystem = MemoryFileSystem.test(style: FileSystemStyle.windows);
-    depfileService = DepfileService(
-      logger: BufferLogger.test(),
-      fileSystem: fileSystem,
-    );
+    depfileService = DepfileService(logger: BufferLogger.test(), fileSystem: fileSystem);
     final File depfileSource = fileSystem.file('example.d')..writeAsStringSync(r'''
 C:\\a.txt: C:\\b.txt
 ''');
@@ -75,14 +61,10 @@ C:\\a.txt: C:\\b.txt
 
   testWithoutContext('Can escape depfile with windows file paths and spaces in directory names', () {
     fileSystem = MemoryFileSystem.test(style: FileSystemStyle.windows);
-    depfileService = DepfileService(
-      logger: BufferLogger.test(),
-      fileSystem: fileSystem,
-    );
+    depfileService = DepfileService(logger: BufferLogger.test(), fileSystem: fileSystem);
     final File inputFile = fileSystem.directory(r'Hello Flutter').childFile('a.txt').absolute
       ..createSync(recursive: true);
-    final File outputFile = fileSystem.directory(r'Hello Flutter').childFile('b.txt').absolute
-      ..createSync();
+    final File outputFile = fileSystem.directory(r'Hello Flutter').childFile('b.txt').absolute..createSync();
     final Depfile depfile = Depfile(<File>[inputFile], <File>[outputFile]);
     final File outputDepfile = fileSystem.file('depfile');
     depfileService.writeToFile(depfile, outputDepfile);
@@ -94,8 +76,7 @@ C:\\a.txt: C:\\b.txt
   testWithoutContext('Can escape depfile with spaces in directory names', () {
     final File inputFile = fileSystem.directory(r'Hello Flutter').childFile('a.txt').absolute
       ..createSync(recursive: true);
-    final File outputFile = fileSystem.directory(r'Hello Flutter').childFile('b.txt').absolute
-      ..createSync();
+    final File outputFile = fileSystem.directory(r'Hello Flutter').childFile('b.txt').absolute..createSync();
     final Depfile depfile = Depfile(<File>[inputFile], <File>[outputFile]);
     final File outputDepfile = fileSystem.file('depfile');
     depfileService.writeToFile(depfile, outputDepfile);
@@ -103,7 +84,6 @@ C:\\a.txt: C:\\b.txt
     expect(outputDepfile.readAsStringSync(), contains(r'/Hello\ Flutter/a.txt'));
     expect(outputDepfile.readAsStringSync(), contains(r'/Hello\ Flutter/b.txt'));
   });
-
 
   testWithoutContext('Resilient to weird whitespace', () {
     final File depfileSource = fileSystem.file('example.d')..writeAsStringSync(r'''

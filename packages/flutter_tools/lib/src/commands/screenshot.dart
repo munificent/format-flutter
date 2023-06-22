@@ -22,15 +22,10 @@ const String _kRasterizerType = 'rasterizer';
 
 class ScreenshotCommand extends FlutterCommand {
   ScreenshotCommand({required this.fs}) {
-    argParser.addOption(
-      _kOut,
-      abbr: 'o',
-      valueHelp: 'path/to/file',
-      help: 'Location to write the screenshot.',
-    );
+    argParser.addOption(_kOut, abbr: 'o', valueHelp: 'path/to/file', help: 'Location to write the screenshot.');
     argParser.addOption(
       _kVmServiceUrl,
-      aliases: <String>[ 'observatory-url' ], // for historical reasons
+      aliases: <String>['observatory-url'], // for historical reasons
       valueHelp: 'URI',
       help: 'The VM Service URL to which to connect.\n'
           'This is required when "--$_kType" is "$_kSkiaType" or "$_kRasterizerType".\n'
@@ -44,8 +39,8 @@ class ScreenshotCommand extends FlutterCommand {
       allowed: const <String>[_kDeviceType, _kSkiaType, _kRasterizerType],
       allowedHelp: const <String, String>{
         _kDeviceType: "Delegate to the device's native screenshot capabilities. This "
-                      'screenshots the entire screen currently being displayed (including content '
-                      'not rendered by Flutter, like the device status bar).',
+            'screenshots the entire screen currently being displayed (including content '
+            'not rendered by Flutter, like the device status bar).',
         _kSkiaType: 'Render the Flutter app as a Skia picture. Requires "--$_kVmServiceUrl".',
         _kRasterizerType: 'Render the Flutter app using the rasterizer. Requires "--$_kVmServiceUrl."',
       },
@@ -120,16 +115,11 @@ class ScreenshotCommand extends FlutterCommand {
         success = await runRasterizer(outputFile);
     }
 
-    return success ? FlutterCommandResult.success()
-                   : FlutterCommandResult.fail();
+    return success ? FlutterCommandResult.success() : FlutterCommandResult.fail();
   }
 
   Future<void> runScreenshot(File? outputFile) async {
-    outputFile ??= globals.fsUtils.getUniqueFile(
-      fs.currentDirectory,
-      'flutter',
-      'png',
-    );
+    outputFile ??= globals.fsUtils.getUniqueFile(fs.currentDirectory, 'flutter', 'png');
 
     try {
       await device!.takeScreenshot(outputFile);
@@ -144,7 +134,7 @@ class ScreenshotCommand extends FlutterCommand {
     } on Exception catch (error) {
       throwToolExit(
         'Error with provided file path: "${outputFile.path}"\n'
-        'Error: $error'
+        'Error: $error',
       );
     }
   }
@@ -160,11 +150,7 @@ class ScreenshotCommand extends FlutterCommand {
       );
       return false;
     }
-    outputFile ??= globals.fsUtils.getUniqueFile(
-      fs.currentDirectory,
-      'flutter',
-      'skp',
-    );
+    outputFile ??= globals.fsUtils.getUniqueFile(fs.currentDirectory, 'flutter', 'skp');
     final IOSink sink = outputFile.openWrite();
     sink.add(base64.decode(skp.json?['skp'] as String));
     await sink.close();
@@ -184,11 +170,7 @@ class ScreenshotCommand extends FlutterCommand {
       );
       return false;
     }
-    outputFile ??= globals.fsUtils.getUniqueFile(
-      fs.currentDirectory,
-      'flutter',
-      'png',
-    );
+    outputFile ??= globals.fsUtils.getUniqueFile(fs.currentDirectory, 'flutter', 'png');
     final IOSink sink = outputFile.openWrite();
     sink.add(base64.decode(response.json?['screenshot'] as String));
     await sink.close();
@@ -200,8 +182,8 @@ class ScreenshotCommand extends FlutterCommand {
   static void checkOutput(File outputFile, FileSystem fs) {
     if (!fs.file(outputFile.path).existsSync()) {
       throwToolExit(
-          'File was not created, ensure path is valid\n'
-          'Path provided: "${outputFile.path}"'
+        'File was not created, ensure path is valid\n'
+        'Path provided: "${outputFile.path}"',
       );
     }
   }
@@ -211,9 +193,7 @@ class ScreenshotCommand extends FlutterCommand {
     if (outputFile.lengthSync() >= 1000) {
       return;
     }
-    final String content = outputFile.readAsStringSync(
-      encoding: const AsciiCodec(allowInvalid: true),
-    );
+    final String content = outputFile.readAsStringSync(encoding: const AsciiCodec(allowInvalid: true));
     if (content.startsWith('{"jsonrpc":"2.0", "error"')) {
       throwToolExit('It appears the output file contains an error message, not valid output.');
     }

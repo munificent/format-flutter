@@ -92,7 +92,8 @@ void main() {
     setUp(() {
       buildSystem = TestBuildSystem.all(BuildResult(success: true));
       fakeProcessManager = FakeProcessManager.empty();
-      device = FlutterTesterDevice('flutter-tester',
+      device = FlutterTesterDevice(
+        'flutter-tester',
         fileSystem: fileSystem,
         processManager: fakeProcessManager,
         artifacts: Artifacts.test(),
@@ -120,15 +121,18 @@ void main() {
     });
 
     testWithoutContext('does not accept profile, release, or jit-release builds', () async {
-      final LaunchResult releaseResult = await device.startApp(FakeApplicationPackage(),
+      final LaunchResult releaseResult = await device.startApp(
+        FakeApplicationPackage(),
         mainPath: mainPath,
         debuggingOptions: DebuggingOptions.disabled(BuildInfo.release),
       );
-      final LaunchResult profileResult = await device.startApp(FakeApplicationPackage(),
+      final LaunchResult profileResult = await device.startApp(
+        FakeApplicationPackage(),
         mainPath: mainPath,
         debuggingOptions: DebuggingOptions.disabled(BuildInfo.profile),
       );
-      final LaunchResult jitReleaseResult = await device.startApp(FakeApplicationPackage(),
+      final LaunchResult jitReleaseResult = await device.startApp(
+        FakeApplicationPackage(),
         mainPath: mainPath,
         debuggingOptions: DebuggingOptions.disabled(BuildInfo.jitRelease),
       );
@@ -153,14 +157,14 @@ void main() {
           '/.tmp_rand0/flutter_tester.rand0/flutter-tester-app.dill',
         ],
         completer: completer,
-        stdout:
-        '''
+        stdout: '''
 The Dart VM service is listening on $vmServiceUri
 Hello!
 ''',
       ));
 
-      final LaunchResult result = await device.startApp(app,
+      final LaunchResult result = await device.startApp(
+        app,
         mainPath: mainPath,
         debuggingOptions: DebuggingOptions.enabled(const BuildInfo(BuildMode.debug, null, treeShakeIcons: false)),
       );
@@ -186,17 +190,14 @@ Hello!
           '/.tmp_rand0/flutter_tester.rand0/flutter-tester-app.dill.track.dill',
         ],
         completer: completer,
-        stdout:
-        '''
+        stdout: '''
 The Dart VM service is listening on $vmServiceUri
 Hello!
 ''',
       ));
 
-      final LaunchResult result = await device.startApp(app,
-        mainPath: mainPath,
-        debuggingOptions: DebuggingOptions.enabled(BuildInfo.debug),
-      );
+      final LaunchResult result =
+          await device.startApp(app, mainPath: mainPath, debuggingOptions: DebuggingOptions.enabled(BuildInfo.debug));
 
       expect(result.started, isTrue);
       expect(result.vmServiceUri, vmServiceUri);

@@ -21,14 +21,8 @@ void main() {
   group('flutter build windows command', () {
     setUpAll(() {
       tempDir = createResolvedTempDirectorySync('build_windows_test.');
-      flutterBin = fileSystem.path.join(
-        getFlutterRoot(),
-        'bin',
-        'flutter',
-      );
-      ProcessResult result = processManager.runSync(<String>[flutterBin, 'config',
-        '--enable-windows-desktop',
-      ]);
+      flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
+      ProcessResult result = processManager.runSync(<String>[flutterBin, 'config', '--enable-windows-desktop']);
       expect(result, const ProcessResultMatcher());
 
       result = processManager.runSync(<String>[
@@ -41,18 +35,11 @@ void main() {
 
       projectRoot = tempDir.childDirectory('hello');
 
-      releaseDir = fileSystem.directory(fileSystem.path.join(
-        projectRoot.path,
-        'build',
-        'windows',
-        'runner',
-        'Release',
-      ));
+      releaseDir = fileSystem.directory(
+        fileSystem.path.join(projectRoot.path, 'build', 'windows', 'runner', 'Release'),
+      );
 
-      exeFile = fileSystem.file(fileSystem.path.join(
-        releaseDir.path,
-        'hello.exe',
-      ));
+      exeFile = fileSystem.file(fileSystem.path.join(releaseDir.path, 'hello.exe'));
     });
 
     tearDownAll(() {
@@ -130,7 +117,7 @@ String _getFileVersion(File file) {
     '\$v = [System.Diagnostics.FileVersionInfo]::GetVersionInfo(\\"${file.path}\\"); '
     r'Write-Output \"$($v.FileMajorPart).$($v.FileMinorPart).$($v.FileBuildPart).$($v.FilePrivatePart)\" '
     '"',
-    <String>[]
+    <String>[],
   );
 
   expect(result, const ProcessResultMatcher());
@@ -143,7 +130,7 @@ String _getFileVersion(File file) {
 String _getProductVersion(File file) {
   final ProcessResult result = Process.runSync(
     'powershell.exe -command "[System.Diagnostics.FileVersionInfo]::GetVersionInfo(\\"${file.path}\\").ProductVersion"',
-    <String>[]
+    <String>[],
   );
 
   expect(result, const ProcessResultMatcher());

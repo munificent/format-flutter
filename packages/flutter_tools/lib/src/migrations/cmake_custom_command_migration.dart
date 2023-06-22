@@ -10,8 +10,7 @@ import '../cmake_project.dart';
 // and special characters correctly.
 // See https://github.com/flutter/flutter/issues/67270.
 class CmakeCustomCommandMigration extends ProjectMigrator {
-  CmakeCustomCommandMigration(CmakeBasedProject project, super.logger)
-    : _cmakeFile = project.managedCmakeFile;
+  CmakeCustomCommandMigration(CmakeBasedProject project, super.logger) : _cmakeFile = project.managedCmakeFile;
 
   final File _cmakeFile;
 
@@ -36,11 +35,7 @@ class CmakeCustomCommandMigration extends ProjectMigrator {
 
     // Match the whole add_custom_command() and append VERBATIM unless it
     // already exists.
-    final RegExp addCustomCommand = RegExp(
-      r'add_custom_command\(\s*(.*?)\s*\)',
-      multiLine: true,
-      dotAll: true,
-    );
+    final RegExp addCustomCommand = RegExp(r'add_custom_command\(\s*(.*?)\s*\)', multiLine: true, dotAll: true);
 
     String newProjectContents = originalProjectContents;
 

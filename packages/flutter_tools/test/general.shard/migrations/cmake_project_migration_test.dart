@@ -12,7 +12,7 @@ import 'package:test/fake.dart';
 
 import '../../src/common.dart';
 
-void main () {
+void main() {
   group('CMake project migration', () {
     group('migrate add_custom_command() to use VERBATIM', () {
       late MemoryFileSystem memoryFileSystem;
@@ -24,10 +24,7 @@ void main () {
         memoryFileSystem = MemoryFileSystem.test();
         managedCmakeFile = memoryFileSystem.file('CMakeLists.txtx');
 
-        testLogger = BufferLogger(
-          terminal: Terminal.test(),
-          outputPreferences: OutputPreferences.test(),
-        );
+        testLogger = BufferLogger(terminal: Terminal.test(), outputPreferences: OutputPreferences.test());
 
         mockCmakeProject = FakeCmakeProject(managedCmakeFile);
       });
@@ -40,7 +37,10 @@ void main () {
         cmakeProjectMigration.migrate();
         expect(managedCmakeFile.existsSync(), isFalse);
 
-        expect(testLogger.traceText, contains('CMake project not found, skipping add_custom_command() VERBATIM migration'));
+        expect(
+          testLogger.traceText,
+          contains('CMake project not found, skipping add_custom_command() VERBATIM migration'),
+        );
         expect(testLogger.statusText, isEmpty);
       });
 
@@ -118,7 +118,10 @@ add_custom_command(
 )
 ''');
 
-        expect(testLogger.statusText, contains('add_custom_command() missing VERBATIM or FLUTTER_TARGET_PLATFORM, updating.'));
+        expect(
+          testLogger.statusText,
+          contains('add_custom_command() missing VERBATIM or FLUTTER_TARGET_PLATFORM, updating.'),
+        );
       });
 
       testWithoutContext('is migrated to use FLUTTER_TARGET_PLATFORM', () {
@@ -152,7 +155,10 @@ add_custom_command(
 )
 ''');
 
-        expect(testLogger.statusText, contains('add_custom_command() missing VERBATIM or FLUTTER_TARGET_PLATFORM, updating.'));
+        expect(
+          testLogger.statusText,
+          contains('add_custom_command() missing VERBATIM or FLUTTER_TARGET_PLATFORM, updating.'),
+        );
       });
     });
   });

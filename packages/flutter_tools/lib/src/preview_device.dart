@@ -54,10 +54,10 @@ class PreviewDevice extends Device {
   final BundleBuilderFactory _bundleBuilderFactory;
 
   @override
-  void clearLogs() { }
+  void clearLogs() {}
 
   @override
-  Future<void> dispose() async { }
+  Future<void> dispose() async {}
 
   @override
   Future<String?> get emulatorId async => null;
@@ -97,7 +97,8 @@ class PreviewDevice extends Device {
   Process? _process;
 
   @override
-  Future<LaunchResult> startApp(ApplicationPackage? package, {
+  Future<LaunchResult> startApp(
+    ApplicationPackage? package, {
     String? mainPath,
     String? route,
     required DebuggingOptions debuggingOptions,
@@ -106,8 +107,7 @@ class PreviewDevice extends Device {
     bool ipv6 = false,
     String? userIdentifier,
   }) async {
-    final Directory assetDirectory = _fileSystem.systemTempDirectory
-      .createTempSync('flutter_preview.');
+    final Directory assetDirectory = _fileSystem.systemTempDirectory.createTempSync('flutter_preview.');
 
     // Build assets and perform initial compilation.
     Status? status;
@@ -119,8 +119,8 @@ class PreviewDevice extends Device {
         platform: TargetPlatform.tester,
         assetDirPath: getAssetBuildDirectory(),
       );
-      copyDirectory(_fileSystem.directory(
-        getAssetBuildDirectory()),
+      copyDirectory(
+        _fileSystem.directory(getAssetBuildDirectory()),
         assetDirectory.childDirectory('data').childDirectory('flutter_assets'),
       );
     } finally {
@@ -128,18 +128,17 @@ class PreviewDevice extends Device {
     }
 
     // Merge with precompiled executable.
-    final Directory precompiledDirectory = _fileSystem.directory(_fileSystem.path.join(Cache.flutterRoot!, 'artifacts_temp', 'Debug'));
+    final Directory precompiledDirectory = _fileSystem.directory(
+      _fileSystem.path.join(Cache.flutterRoot!, 'artifacts_temp', 'Debug'),
+    );
     copyDirectory(precompiledDirectory, assetDirectory);
 
-    final Process process = await _processManager.start(
-      <String>[
-        assetDirectory.childFile('splash').path,
-      ],
-    );
+    final Process process = await _processManager.start(<String>[assetDirectory.childFile('splash').path]);
     _process = process;
     _logReader.initializeProcess(process);
 
-    final ProtocolDiscovery vmServiceDiscovery = ProtocolDiscovery.vmService(_logReader,
+    final ProtocolDiscovery vmServiceDiscovery = ProtocolDiscovery.vmService(
+      _logReader,
       devicePort: debuggingOptions.deviceVmServicePort,
       hostPort: debuggingOptions.hostVmServicePort,
       ipv6: ipv6,

@@ -15,7 +15,8 @@ import '../base/logger.dart';
 ///
 /// If [throwOnError] is false, in the event of an error an empty package
 /// config is returned.
-Future<PackageConfig> loadPackageConfigWithLogging(File file, {
+Future<PackageConfig> loadPackageConfigWithLogging(
+  File file, {
   required Logger logger,
   bool throwOnError = true,
 }) async {
@@ -44,7 +45,7 @@ Future<PackageConfig> loadPackageConfigWithLogging(File file, {
       }
       logger.printError(message);
       didError = true;
-    }
+    },
   );
   if (didError) {
     throwToolExit('');

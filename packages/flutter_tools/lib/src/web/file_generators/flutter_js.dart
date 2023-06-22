@@ -9,10 +9,6 @@ import '../../globals.dart' as globals;
 /// flutter.js should be completely static, so **do not use any parameter or
 /// environment variable to generate this file**.
 String generateFlutterJsFile(String fileGeneratorsPath) {
-  final String flutterJsPath = globals.localFileSystem.path.join(
-    fileGeneratorsPath,
-    'js',
-    'flutter.js',
-  );
+  final String flutterJsPath = globals.localFileSystem.path.join(fileGeneratorsPath, 'js', 'flutter.js');
   return globals.localFileSystem.file(flutterJsPath).readAsStringSync();
 }

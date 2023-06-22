@@ -21,10 +21,7 @@ const String kFirstFrameBuiltEventName = 'Widgets built first useful frame';
 const String kFirstFrameRasterizedEventName = 'Rasterized first useful frame';
 
 class Tracing {
-  Tracing({
-    required this.vmService,
-    required Logger logger,
-  }) : _logger = logger;
+  Tracing({required this.vmService, required Logger logger}) : _logger = logger;
 
   static const String firstUsefulFrameEventName = kFirstFrameRasterizedEventName;
 
@@ -37,13 +34,9 @@ class Tracing {
   }
 
   /// Stops tracing; optionally wait for first frame.
-  Future<Map<String, Object?>> stopTracingAndDownloadTimeline({
-    bool awaitFirstFrame = false,
-  }) async {
+  Future<Map<String, Object?>> stopTracingAndDownloadTimeline({bool awaitFirstFrame = false}) async {
     if (awaitFirstFrame) {
-      final Status status = _logger.startProgress(
-        'Waiting for application to render first frame...',
-      );
+      final Status status = _logger.startProgress('Waiting for application to render first frame...');
       try {
         final Completer<void> whenFirstFrameRendered = Completer<void>();
         try {
@@ -64,10 +57,7 @@ class Tracing {
         final List<FlutterView> views = await vmService.getFlutterViews();
         for (final FlutterView view in views) {
           final String? uiIsolateId = view.uiIsolate?.id;
-          if (uiIsolateId != null && await vmService
-              .flutterAlreadyPaintedFirstUsefulFrame(
-                isolateId: uiIsolateId,
-              )) {
+          if (uiIsolateId != null && await vmService.flutterAlreadyPaintedFirstUsefulFrame(isolateId: uiIsolateId)) {
             done = true;
             break;
           }
@@ -101,8 +91,9 @@ class Tracing {
           await whenFirstFrameRendered.future;
           timer.cancel();
         }
-      // The exception is rethrown, so don't catch only Exceptions.
-      } catch (exception) { // ignore: avoid_catches_without_on_clauses
+        // The exception is rethrown, so don't catch only Exceptions.
+      } catch (exception) {
+        // ignore: avoid_catches_without_on_clauses
         status.cancel();
         rethrow;
       }
@@ -112,9 +103,7 @@ class Tracing {
     await vmService.setTimelineFlags(<String>[]);
     final Map<String, Object?>? timelineJson = timeline?.json;
     if (timelineJson == null) {
-      throwToolExit(
-        'The device disconnected before the timeline could be retrieved.',
-      );
+      throwToolExit('The device disconnected before the timeline could be retrieved.');
     }
     return timelineJson;
   }
@@ -122,7 +111,8 @@ class Tracing {
 
 /// Download the startup trace information from the given VM Service client and
 /// store it to `$output/start_up_info.json`.
-Future<void> downloadStartupTrace(FlutterVmService vmService, {
+Future<void> downloadStartupTrace(
+  FlutterVmService vmService, {
   bool awaitFirstFrame = true,
   required Logger logger,
   required Directory output,
@@ -139,9 +129,7 @@ Future<void> downloadStartupTrace(FlutterVmService vmService, {
 
   final Tracing tracing = Tracing(vmService: vmService, logger: logger);
 
-  final Map<String, Object?> timeline = await tracing.stopTracingAndDownloadTimeline(
-    awaitFirstFrame: awaitFirstFrame,
-  );
+  final Map<String, Object?> timeline = await tracing.stopTracingAndDownloadTimeline(awaitFirstFrame: awaitFirstFrame);
 
   final File traceTimelineFile = output.childFile('start_up_timeline.json');
   traceTimelineFile.writeAsStringSync(toPrettyJson(timeline));
@@ -171,9 +159,7 @@ Future<void> downloadStartupTrace(FlutterVmService vmService, {
     throwToolExit('Engine start event is missing in the timeline. Cannot compute startup time.');
   }
 
-  final Map<String, Object?> traceInfo = <String, Object?>{
-    'engineEnterTimestampMicros': engineEnterTimestampMicros,
-  };
+  final Map<String, Object?> traceInfo = <String, Object?>{'engineEnterTimestampMicros': engineEnterTimestampMicros};
 
   if (frameworkInitTimestampMicros != null) {
     final int timeToFrameworkInitMicros = frameworkInitTimestampMicros - engineEnterTimestampMicros;

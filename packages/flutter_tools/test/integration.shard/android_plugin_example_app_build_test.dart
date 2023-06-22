@@ -15,8 +15,7 @@ void main() {
 
   setUp(() async {
     tempDirPluginMethodChannels = createResolvedTempDirectorySync('flutter_plugin_test.');
-    tempDirPluginFfi =
-        createResolvedTempDirectorySync('flutter_ffi_plugin_test.');
+    tempDirPluginFfi = createResolvedTempDirectorySync('flutter_ffi_plugin_test.');
   });
 
   tearDown(() async {
@@ -24,15 +23,8 @@ void main() {
     tryToDelete(tempDirPluginFfi);
   });
 
-  Future<void> testPlugin({
-    required String template,
-    required Directory tempDir,
-  }) async {
-    final String flutterBin = fileSystem.path.join(
-      getFlutterRoot(),
-      'bin',
-      'flutter',
-    );
+  Future<void> testPlugin({required String template, required Directory tempDir}) async {
+    final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
 
     final String testName = '${template}_test';
 
@@ -48,19 +40,16 @@ void main() {
       throw Exception('flutter create failed: ${result.exitCode}\n${result.stderr}\n${result.stdout}');
     }
 
-    final Directory exampleAppDir =
-        tempDir.childDirectory(testName).childDirectory('example');
+    final Directory exampleAppDir = tempDir.childDirectory(testName).childDirectory('example');
 
     final File buildGradleFile = exampleAppDir.childDirectory('android').childFile('build.gradle');
     expect(buildGradleFile, exists);
 
     final String buildGradle = buildGradleFile.readAsStringSync();
-    final RegExp androidPluginRegExp =
-        RegExp(r'com\.android\.tools\.build:gradle:(\d+\.\d+\.\d+)');
+    final RegExp androidPluginRegExp = RegExp(r'com\.android\.tools\.build:gradle:(\d+\.\d+\.\d+)');
 
     // Use AGP 7.2.0
-    final String newBuildGradle = buildGradle.replaceAll(
-        androidPluginRegExp, 'com.android.tools.build:gradle:7.2.0');
+    final String newBuildGradle = buildGradle.replaceAll(androidPluginRegExp, 'com.android.tools.build:gradle:7.2.0');
     buildGradleFile.writeAsStringSync(newBuildGradle);
 
     // Run flutter build apk using AGP 7.2.0
@@ -75,14 +64,9 @@ void main() {
       throw Exception('flutter build failed: ${result.exitCode}\n${result.stderr}\n${result.stdout}');
     }
 
-    final File exampleApk = fileSystem.file(fileSystem.path.join(
-      exampleAppDir.path,
-      'build',
-      'app',
-      'outputs',
-      'flutter-apk',
-      'app-release.apk',
-    ));
+    final File exampleApk = fileSystem.file(
+      fileSystem.path.join(exampleAppDir.path, 'build', 'app', 'outputs', 'flutter-apk', 'app-release.apk'),
+    );
     expect(exampleApk, exists);
 
     if (template == 'plugin_ffi') {
@@ -91,24 +75,19 @@ void main() {
     }
 
     // Clean
-    result = processManager.runSync(<String>[
-      flutterBin,
-      ...getLocalEngineArguments(),
-      'clean',
-    ], workingDirectory: exampleAppDir.path);
+    result = processManager
+        .runSync(<String>[flutterBin, ...getLocalEngineArguments(), 'clean'], workingDirectory: exampleAppDir.path);
     if (result.exitCode != 0) {
       throw Exception('flutter clean failed: ${result.exitCode}\n${result.stderr}\n${result.stdout}');
     }
 
     // Remove Gradle wrapper
-    fileSystem
-        .directory(fileSystem.path
-            .join(exampleAppDir.path, 'android', 'gradle', 'wrapper'))
-        .deleteSync(recursive: true);
+    fileSystem.directory(fileSystem.path.join(exampleAppDir.path, 'android', 'gradle', 'wrapper')).deleteSync(
+      recursive: true,
+    );
 
     // Enable R8 in gradle.properties
-    final File gradleProperties =
-        exampleAppDir.childDirectory('android').childFile('gradle.properties');
+    final File gradleProperties = exampleAppDir.childDirectory('android').childFile('gradle.properties');
     expect(gradleProperties, exists);
 
     gradleProperties.writeAsStringSync('''
@@ -131,19 +110,11 @@ android.enableR8=true''');
     expect(exampleApk, exists);
   }
 
-  test('plugin example can be built using current Flutter Gradle plugin',
-      () async {
-    await testPlugin(
-      template: 'plugin',
-      tempDir: tempDirPluginMethodChannels,
-    );
+  test('plugin example can be built using current Flutter Gradle plugin', () async {
+    await testPlugin(template: 'plugin', tempDir: tempDirPluginMethodChannels);
   });
 
-  test('FFI plugin example can be built using current Flutter Gradle plugin',
-      () async {
-    await testPlugin(
-      template: 'plugin_ffi',
-      tempDir: tempDirPluginFfi,
-    );
+  test('FFI plugin example can be built using current Flutter Gradle plugin', () async {
+    await testPlugin(template: 'plugin_ffi', tempDir: tempDirPluginFfi);
   });
 }

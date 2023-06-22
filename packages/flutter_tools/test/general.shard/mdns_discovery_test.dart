@@ -21,11 +21,7 @@ void main() {
 
     setUp(() {
       setNetworkInterfaceLister(
-        ({
-          bool? includeLoopback,
-          bool? includeLinkLocal,
-          InternetAddressType? type,
-        }) async => <NetworkInterface>[],
+        ({bool? includeLoopback, bool? includeLinkLocal, InternetAddressType? type}) async => <NetworkInterface>[],
       );
     });
 
@@ -42,9 +38,7 @@ void main() {
 
       testWithoutContext('Find result in preliminary client', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'bar'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'bar')],
           <String, List<SrvResourceRecord>>{
             'bar': <SrvResourceRecord>[
               SrvResourceRecord('bar', future, port: 123, weight: 1, priority: 1, target: 'appId'),
@@ -65,9 +59,7 @@ void main() {
 
       testWithoutContext('Do not find result in preliminary client, but find in main client', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'bar'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'bar')],
           <String, List<SrvResourceRecord>>{
             'bar': <SrvResourceRecord>[
               SrvResourceRecord('bar', future, port: 123, weight: 1, priority: 1, target: 'appId'),
@@ -182,19 +174,14 @@ void main() {
           logger: logger,
           flutterUsage: TestUsage(),
         );
-        final Uri? uri = await portDiscovery.getVMServiceUriForAttach(
-          '',
-          FakeIOSDevice(),
-        );
+        final Uri? uri = await portDiscovery.getVMServiceUriForAttach('', FakeIOSDevice());
         expect(uri, isNull);
         expect(logger.errorText, contains('Personal Hotspot'));
       });
 
       testWithoutContext('One port available, no appId', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'bar'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'bar')],
           <String, List<SrvResourceRecord>>{
             'bar': <SrvResourceRecord>[
               SrvResourceRecord('bar', future, port: 123, weight: 1, priority: 1, target: 'appId'),
@@ -214,18 +201,14 @@ void main() {
 
       testWithoutContext('One port available, no appId, with authCode', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'bar'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'bar')],
           <String, List<SrvResourceRecord>>{
             'bar': <SrvResourceRecord>[
               SrvResourceRecord('bar', future, port: 123, weight: 1, priority: 1, target: 'appId'),
             ],
           },
           txtResponse: <String, List<TxtResourceRecord>>{
-            'bar': <TxtResourceRecord>[
-              TxtResourceRecord('bar', future, text: 'authCode=xyz\n'),
-            ],
+            'bar': <TxtResourceRecord>[TxtResourceRecord('bar', future, text: 'authCode=xyz\n')],
           },
         );
 
@@ -296,7 +279,8 @@ void main() {
 
       testWithoutContext('Throws Exception when client throws OSError on start', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[], <String, List<SrvResourceRecord>>{},
+          <PtrResourceRecord>[],
+          <String, List<SrvResourceRecord>>{},
           osErrorOnStart: true,
         );
 
@@ -306,17 +290,12 @@ void main() {
           logger: BufferLogger.test(),
           flutterUsage: TestUsage(),
         );
-        expect(
-          () async => portDiscovery.queryForAttach(),
-          throwsException,
-        );
+        expect(() async => portDiscovery.queryForAttach(), throwsException);
       });
 
       testWithoutContext('Correctly builds VM Service URI with hostVmservicePort == 0', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'bar'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'bar')],
           <String, List<SrvResourceRecord>>{
             'bar': <SrvResourceRecord>[
               SrvResourceRecord('bar', future, port: 123, weight: 1, priority: 1, target: 'appId'),
@@ -337,9 +316,7 @@ void main() {
 
       testWithoutContext('Get wireless device IP (iPv4)', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'bar'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'bar')],
           <String, List<SrvResourceRecord>>{
             'bar': <SrvResourceRecord>[
               SrvResourceRecord('bar', future, port: 1234, weight: 1, priority: 1, target: 'appId'),
@@ -351,9 +328,7 @@ void main() {
             ],
           },
           txtResponse: <String, List<TxtResourceRecord>>{
-            'bar': <TxtResourceRecord>[
-              TxtResourceRecord('bar', future, text: 'authCode=xyz\n'),
-            ],
+            'bar': <TxtResourceRecord>[TxtResourceRecord('bar', future, text: 'authCode=xyz\n')],
           },
         );
 
@@ -364,19 +339,13 @@ void main() {
           logger: BufferLogger.test(),
           flutterUsage: TestUsage(),
         );
-        final Uri? uri = await portDiscovery.getVMServiceUriForAttach(
-          'bar',
-          device,
-          useDeviceIPAsHost: true,
-        );
+        final Uri? uri = await portDiscovery.getVMServiceUriForAttach('bar', device, useDeviceIPAsHost: true);
         expect(uri.toString(), 'http://111.111.111.111:1234/xyz/');
       });
 
       testWithoutContext('Get wireless device IP (iPv6)', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'bar'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'bar')],
           <String, List<SrvResourceRecord>>{
             'bar': <SrvResourceRecord>[
               SrvResourceRecord('bar', future, port: 1234, weight: 1, priority: 1, target: 'appId'),
@@ -384,13 +353,15 @@ void main() {
           },
           ipResponse: <String, List<IPAddressResourceRecord>>{
             'appId': <IPAddressResourceRecord>[
-              IPAddressResourceRecord('Device IP', 0, address: InternetAddress.tryParse('1111:1111:1111:1111:1111:1111:1111:1111')!),
+              IPAddressResourceRecord(
+                'Device IP',
+                0,
+                address: InternetAddress.tryParse('1111:1111:1111:1111:1111:1111:1111:1111')!,
+              ),
             ],
           },
           txtResponse: <String, List<TxtResourceRecord>>{
-            'bar': <TxtResourceRecord>[
-              TxtResourceRecord('bar', future, text: 'authCode=xyz\n'),
-            ],
+            'bar': <TxtResourceRecord>[TxtResourceRecord('bar', future, text: 'authCode=xyz\n')],
           },
         );
 
@@ -401,11 +372,7 @@ void main() {
           logger: BufferLogger.test(),
           flutterUsage: TestUsage(),
         );
-        final Uri? uri = await portDiscovery.getVMServiceUriForAttach(
-          'bar',
-          device,
-          useDeviceIPAsHost: true,
-        );
+        final Uri? uri = await portDiscovery.getVMServiceUriForAttach('bar', device, useDeviceIPAsHost: true);
         expect(uri.toString(), 'http://[1111:1111:1111:1111:1111:1111:1111:1111]:1234/xyz/');
       });
 
@@ -436,22 +403,14 @@ void main() {
           flutterUsage: TestUsage(),
         );
         expect(
-          portDiscovery.getVMServiceUriForAttach(
-            'srv-bar',
-            device,
-            deviceVmservicePort: 321,
-          ),
-          throwsToolExit(
-            message: 'Did not find a Dart VM Service advertised for srv-bar on port 321.'
-          ),
+          portDiscovery.getVMServiceUriForAttach('srv-bar', device, deviceVmservicePort: 321),
+          throwsToolExit(message: 'Did not find a Dart VM Service advertised for srv-bar on port 321.'),
         );
       });
 
       testWithoutContext('Throw error if unable to find VM Service with app id', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'srv-foo'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'srv-foo')],
           <String, List<SrvResourceRecord>>{
             'srv-foo': <SrvResourceRecord>[
               SrvResourceRecord('srv-foo', future, port: 123, weight: 1, priority: 1, target: 'target-foo'),
@@ -466,13 +425,8 @@ void main() {
           flutterUsage: TestUsage(),
         );
         expect(
-          portDiscovery.getVMServiceUriForAttach(
-            'srv-asdf',
-            device,
-          ),
-          throwsToolExit(
-            message: 'Did not find a Dart VM Service advertised for srv-asdf.'
-          ),
+          portDiscovery.getVMServiceUriForAttach('srv-asdf', device),
+          throwsToolExit(message: 'Did not find a Dart VM Service advertised for srv-asdf.'),
         );
       });
     });
@@ -487,10 +441,8 @@ void main() {
           flutterUsage: TestUsage(),
         );
 
-        final MDnsVmServiceDiscoveryResult? result = await portDiscovery.queryForLaunch(
-          applicationId: 'app-id',
-          deviceVmservicePort: 123,
-        );
+        final MDnsVmServiceDiscoveryResult? result =
+            await portDiscovery.queryForLaunch(applicationId: 'app-id', deviceVmservicePort: 123);
 
         expect(result, null);
       });
@@ -504,18 +456,15 @@ void main() {
           flutterUsage: TestUsage(),
         );
 
-        final Uri? uri = await portDiscovery.getVMServiceUriForLaunch(
-          '',
-          FakeIOSDevice(),
-          deviceVmservicePort: 0,
-        );
+        final Uri? uri = await portDiscovery.getVMServiceUriForLaunch('', FakeIOSDevice(), deviceVmservicePort: 0);
         expect(uri, isNull);
         expect(logger.errorText, contains('Personal Hotspot'));
       });
 
       testWithoutContext('Throws Exception when client throws OSError on start', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[], <String, List<SrvResourceRecord>>{},
+          <PtrResourceRecord>[],
+          <String, List<SrvResourceRecord>>{},
           osErrorOnStart: true,
         );
 
@@ -532,9 +481,7 @@ void main() {
 
       testWithoutContext('Correctly builds VM Service URI with hostVmservicePort == 0', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'bar'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'bar')],
           <String, List<SrvResourceRecord>>{
             'bar': <SrvResourceRecord>[
               SrvResourceRecord('bar', future, port: 123, weight: 1, priority: 1, target: 'appId'),
@@ -548,20 +495,14 @@ void main() {
           logger: BufferLogger.test(),
           flutterUsage: TestUsage(),
         );
-        final Uri? uri = await portDiscovery.getVMServiceUriForLaunch(
-          'bar',
-          device,
-          hostVmservicePort: 0,
-          deviceVmservicePort: 123,
-        );
+        final Uri? uri =
+            await portDiscovery.getVMServiceUriForLaunch('bar', device, hostVmservicePort: 0, deviceVmservicePort: 123);
         expect(uri.toString(), 'http://127.0.0.1:123/');
       });
 
       testWithoutContext('Get wireless device IP (iPv4)', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'bar'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'bar')],
           <String, List<SrvResourceRecord>>{
             'bar': <SrvResourceRecord>[
               SrvResourceRecord('bar', future, port: 1234, weight: 1, priority: 1, target: 'appId'),
@@ -573,9 +514,7 @@ void main() {
             ],
           },
           txtResponse: <String, List<TxtResourceRecord>>{
-            'bar': <TxtResourceRecord>[
-              TxtResourceRecord('bar', future, text: 'authCode=xyz\n'),
-            ],
+            'bar': <TxtResourceRecord>[TxtResourceRecord('bar', future, text: 'authCode=xyz\n')],
           },
         );
 
@@ -596,9 +535,7 @@ void main() {
 
       testWithoutContext('Get wireless device IP (iPv6)', () async {
         final MDnsClient client = FakeMDnsClient(
-          <PtrResourceRecord>[
-            PtrResourceRecord('foo', future, domainName: 'bar'),
-          ],
+          <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'bar')],
           <String, List<SrvResourceRecord>>{
             'bar': <SrvResourceRecord>[
               SrvResourceRecord('bar', future, port: 1234, weight: 1, priority: 1, target: 'appId'),
@@ -606,13 +543,15 @@ void main() {
           },
           ipResponse: <String, List<IPAddressResourceRecord>>{
             'appId': <IPAddressResourceRecord>[
-              IPAddressResourceRecord('Device IP', 0, address: InternetAddress.tryParse('1111:1111:1111:1111:1111:1111:1111:1111')!),
+              IPAddressResourceRecord(
+                'Device IP',
+                0,
+                address: InternetAddress.tryParse('1111:1111:1111:1111:1111:1111:1111:1111')!,
+              ),
             ],
           },
           txtResponse: <String, List<TxtResourceRecord>>{
-            'bar': <TxtResourceRecord>[
-              TxtResourceRecord('bar', future, text: 'authCode=xyz\n'),
-            ],
+            'bar': <TxtResourceRecord>[TxtResourceRecord('bar', future, text: 'authCode=xyz\n')],
           },
         );
 
@@ -657,13 +596,8 @@ void main() {
           flutterUsage: TestUsage(),
         );
         expect(
-          portDiscovery.getVMServiceUriForLaunch(
-            'srv-bar',
-            device,
-            deviceVmservicePort: 321,
-          ),
-          throwsToolExit(
-              message:'Did not find a Dart VM Service advertised for srv-bar on port 321.'),
+          portDiscovery.getVMServiceUriForLaunch('srv-bar', device, deviceVmservicePort: 321),
+          throwsToolExit(message: 'Did not find a Dart VM Service advertised for srv-bar on port 321.'),
         );
       });
     });
@@ -723,18 +657,14 @@ void main() {
         logger: BufferLogger.test(),
         flutterUsage: TestUsage(),
       );
-      final MDnsVmServiceDiscoveryResult? result = await portDiscovery.firstMatchingVmService(
-        client,
-        applicationId: 'srv-bar'
-      );
+      final MDnsVmServiceDiscoveryResult? result =
+          await portDiscovery.firstMatchingVmService(client, applicationId: 'srv-bar');
       expect(result?.domainName, 'srv-bar');
       expect(result?.port, 222);
     });
     testWithoutContext('find with no txt record', () async {
       final MDnsClient client = FakeMDnsClient(
-        <PtrResourceRecord>[
-          PtrResourceRecord('foo', future, domainName: 'srv-foo'),
-        ],
+        <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'srv-foo')],
         <String, List<SrvResourceRecord>>{
           'srv-foo': <SrvResourceRecord>[
             SrvResourceRecord('srv-foo', future, port: 111, weight: 1, priority: 1, target: 'target-foo'),
@@ -752,11 +682,8 @@ void main() {
         logger: BufferLogger.test(),
         flutterUsage: TestUsage(),
       );
-      final MDnsVmServiceDiscoveryResult? result = await portDiscovery.firstMatchingVmService(
-        client,
-        applicationId: 'srv-foo',
-        useDeviceIPAsHost: true,
-      );
+      final MDnsVmServiceDiscoveryResult? result =
+          await portDiscovery.firstMatchingVmService(client, applicationId: 'srv-foo', useDeviceIPAsHost: true);
       expect(result?.domainName, 'srv-foo');
       expect(result?.port, 111);
       expect(result?.authCode, '');
@@ -764,18 +691,14 @@ void main() {
     });
     testWithoutContext('find with empty txt record', () async {
       final MDnsClient client = FakeMDnsClient(
-        <PtrResourceRecord>[
-          PtrResourceRecord('foo', future, domainName: 'srv-foo'),
-        ],
+        <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'srv-foo')],
         <String, List<SrvResourceRecord>>{
           'srv-foo': <SrvResourceRecord>[
             SrvResourceRecord('srv-foo', future, port: 111, weight: 1, priority: 1, target: 'target-foo'),
           ],
         },
         txtResponse: <String, List<TxtResourceRecord>>{
-          'srv-foo': <TxtResourceRecord>[
-            TxtResourceRecord('srv-foo', future, text: ''),
-          ],
+          'srv-foo': <TxtResourceRecord>[TxtResourceRecord('srv-foo', future, text: '')],
         },
         ipResponse: <String, List<IPAddressResourceRecord>>{
           'target-foo': <IPAddressResourceRecord>[
@@ -789,11 +712,8 @@ void main() {
         logger: BufferLogger.test(),
         flutterUsage: TestUsage(),
       );
-      final MDnsVmServiceDiscoveryResult? result = await portDiscovery.firstMatchingVmService(
-        client,
-        applicationId: 'srv-foo',
-        useDeviceIPAsHost: true,
-      );
+      final MDnsVmServiceDiscoveryResult? result =
+          await portDiscovery.firstMatchingVmService(client, applicationId: 'srv-foo', useDeviceIPAsHost: true);
       expect(result?.domainName, 'srv-foo');
       expect(result?.port, 111);
       expect(result?.authCode, '');
@@ -801,18 +721,14 @@ void main() {
     });
     testWithoutContext('find with valid txt record', () async {
       final MDnsClient client = FakeMDnsClient(
-        <PtrResourceRecord>[
-          PtrResourceRecord('foo', future, domainName: 'srv-foo'),
-        ],
+        <PtrResourceRecord>[PtrResourceRecord('foo', future, domainName: 'srv-foo')],
         <String, List<SrvResourceRecord>>{
           'srv-foo': <SrvResourceRecord>[
             SrvResourceRecord('srv-foo', future, port: 111, weight: 1, priority: 1, target: 'target-foo'),
           ],
         },
         txtResponse: <String, List<TxtResourceRecord>>{
-          'srv-foo': <TxtResourceRecord>[
-            TxtResourceRecord('srv-foo', future, text: 'authCode=xyz\n'),
-          ],
+          'srv-foo': <TxtResourceRecord>[TxtResourceRecord('srv-foo', future, text: 'authCode=xyz\n')],
         },
         ipResponse: <String, List<IPAddressResourceRecord>>{
           'target-foo': <IPAddressResourceRecord>[
@@ -826,11 +742,8 @@ void main() {
         logger: BufferLogger.test(),
         flutterUsage: TestUsage(),
       );
-      final MDnsVmServiceDiscoveryResult? result = await portDiscovery.firstMatchingVmService(
-        client,
-        applicationId: 'srv-foo',
-        useDeviceIPAsHost: true,
-      );
+      final MDnsVmServiceDiscoveryResult? result =
+          await portDiscovery.firstMatchingVmService(client, applicationId: 'srv-foo', useDeviceIPAsHost: true);
       expect(result?.domainName, 'srv-foo');
       expect(result?.port, 111);
       expect(result?.authCode, 'xyz/');
@@ -840,7 +753,9 @@ void main() {
 }
 
 class FakeMDnsClient extends Fake implements MDnsClient {
-  FakeMDnsClient(this.ptrRecords, this.srvResponse, {
+  FakeMDnsClient(
+    this.ptrRecords,
+    this.srvResponse, {
     this.txtResponse = const <String, List<TxtResourceRecord>>{},
     this.ipResponse = const <String, List<IPAddressResourceRecord>>{},
     this.osErrorOnStart = false,

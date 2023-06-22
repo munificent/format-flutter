@@ -19,12 +19,9 @@ void main() {
 
   group('build', () {
     test('exits with useful error message when build mode not set', () {
-      final Directory buildDir = fileSystem.directory('/path/to/builds')
-        ..createSync(recursive: true);
-      final Directory flutterRoot = fileSystem.directory('/path/to/flutter')
-        ..createSync(recursive: true);
-      final File pipe = fileSystem.file('/tmp/pipe')
-        ..createSync(recursive: true);
+      final Directory buildDir = fileSystem.directory('/path/to/builds')..createSync(recursive: true);
+      final Directory flutterRoot = fileSystem.directory('/path/to/flutter')..createSync(recursive: true);
+      final File pipe = fileSystem.file('/tmp/pipe')..createSync(recursive: true);
       const String buildMode = 'Debug';
       final TestContext context = TestContext(
         <String>['build'],
@@ -61,22 +58,13 @@ void main() {
         fileSystem: fileSystem,
         scriptOutputStreamFile: pipe,
       );
-      expect(
-          () => context.run(),
-          throwsException,
-      );
-      expect(
-        context.stderr,
-        contains('ERROR: Unknown FLUTTER_BUILD_MODE: null.\n'),
-      );
+      expect(() => context.run(), throwsException);
+      expect(context.stderr, contains('ERROR: Unknown FLUTTER_BUILD_MODE: null.\n'));
     });
     test('calls flutter assemble', () {
-      final Directory buildDir = fileSystem.directory('/path/to/builds')
-        ..createSync(recursive: true);
-      final Directory flutterRoot = fileSystem.directory('/path/to/flutter')
-        ..createSync(recursive: true);
-      final File pipe = fileSystem.file('/tmp/pipe')
-        ..createSync(recursive: true);
+      final Directory buildDir = fileSystem.directory('/path/to/builds')..createSync(recursive: true);
+      final Directory flutterRoot = fileSystem.directory('/path/to/flutter')..createSync(recursive: true);
+      final File pipe = fileSystem.file('/tmp/pipe')..createSync(recursive: true);
       const String buildMode = 'Debug';
       final TestContext context = TestContext(
         <String>['build'],
@@ -117,18 +105,13 @@ void main() {
       // Ensure after line splitting, the exact string 'done' appears
       expect(streamedLines, contains('done'));
       expect(streamedLines, contains(' └─Compiling, linking and signing...'));
-      expect(
-        context.stdout,
-        contains('built and packaged successfully.'),
-      );
+      expect(context.stdout, contains('built and packaged successfully.'));
       expect(context.stderr, isEmpty);
     });
 
     test('forwards all env variables to flutter assemble', () {
-      final Directory buildDir = fileSystem.directory('/path/to/builds')
-        ..createSync(recursive: true);
-      final Directory flutterRoot = fileSystem.directory('/path/to/flutter')
-        ..createSync(recursive: true);
+      final Directory buildDir = fileSystem.directory('/path/to/builds')..createSync(recursive: true);
+      final Directory flutterRoot = fileSystem.directory('/path/to/flutter')..createSync(recursive: true);
       const String archs = 'arm64';
       const String buildMode = 'Release';
       const String dartObfuscation = 'false';
@@ -187,10 +170,7 @@ void main() {
         ],
         fileSystem: fileSystem,
       )..run();
-      expect(
-        context.stdout,
-        contains('built and packaged successfully.'),
-      );
+      expect(context.stdout, contains('built and packaged successfully.'));
       expect(context.stderr, isEmpty);
     });
   });
@@ -201,18 +181,13 @@ void main() {
       buildDir.createSync(recursive: true);
       final TestContext context = TestContext(
         <String>['test_vm_service_bonjour_service'],
-        <String, String>{
-          'CONFIGURATION': 'Debug',
-          'BUILT_PRODUCTS_DIR': buildDir.path,
-          'INFOPLIST_PATH': 'Info.plist',
-        },
+        <String, String>{'CONFIGURATION': 'Debug', 'BUILT_PRODUCTS_DIR': buildDir.path, 'INFOPLIST_PATH': 'Info.plist'},
         commands: <FakeCommand>[],
         fileSystem: fileSystem,
       )..run();
       expect(
         context.stdout,
-        contains(
-            'Info.plist does not exist. Skipping _dartVmService._tcp NSBonjourServices insertion.'),
+        contains('Info.plist does not exist. Skipping _dartVmService._tcp NSBonjourServices insertion.'),
       );
     });
   });
@@ -225,8 +200,8 @@ class TestContext extends Context {
     required this.fileSystem,
     required List<FakeCommand> commands,
     File? scriptOutputStreamFile,
-  })  : processManager = FakeProcessManager.list(commands),
-        super(arguments: arguments, environment: environment, scriptOutputStreamFile: scriptOutputStreamFile);
+  }) : processManager = FakeProcessManager.list(commands),
+       super(arguments: arguments, environment: environment, scriptOutputStreamFile: scriptOutputStreamFile);
 
   final FileSystem fileSystem;
   final FakeProcessManager processManager;
@@ -252,11 +227,8 @@ class TestContext extends Context {
     bool allowFail = false,
     String? workingDirectory,
   }) {
-    return processManager.runSync(
-      <dynamic>[bin, ...args],
-      workingDirectory: workingDirectory,
-      environment: environment,
-    );
+    return processManager
+        .runSync(<dynamic>[bin, ...args], workingDirectory: workingDirectory, environment: environment);
   }
 
   @override

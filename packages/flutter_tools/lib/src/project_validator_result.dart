@@ -2,22 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-enum StatusProjectValidator {
-  error,
-  warning,
-  success,
-  crash,
-  info,
-}
+enum StatusProjectValidator { error, warning, success, crash, info }
 
 class ProjectValidatorResult {
-
-  const ProjectValidatorResult({
-    required this.name,
-    required this.value,
-    required this.status,
-    this.warning,
-  });
+  const ProjectValidatorResult({required this.name, required this.value, required this.status, this.warning});
 
   final String name;
   final String value;
@@ -34,9 +22,9 @@ class ProjectValidatorResult {
 
   static ProjectValidatorResult crash(Object exception, StackTrace trace) {
     return ProjectValidatorResult(
-        name: exception.toString(),
-        value: trace.toString(),
-        status: StatusProjectValidator.crash
+      name: exception.toString(),
+      value: trace.toString(),
+      status: StatusProjectValidator.crash,
     );
   }
 }

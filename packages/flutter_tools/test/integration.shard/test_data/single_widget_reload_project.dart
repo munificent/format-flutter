@@ -69,26 +69,12 @@ class SingleWidgetReloadProject extends Project {
   int get parentWidgetLine => lineContaining(main, '// PARENT WIDGET');
 
   void uncommentHotReloadPrint() {
-    final String newMainContents = main.replaceAll(
-      '// printHotReloadWorked();',
-      'printHotReloadWorked();',
-    );
-    writeFile(
-      fileSystem.path.join(dir.path, 'lib', 'main.dart'),
-      newMainContents,
-      writeFutureModifiedDate: true,
-    );
+    final String newMainContents = main.replaceAll('// printHotReloadWorked();', 'printHotReloadWorked();');
+    writeFile(fileSystem.path.join(dir.path, 'lib', 'main.dart'), newMainContents, writeFutureModifiedDate: true);
   }
 
   void modifyFunction() {
-    final String newMainContents = main.replaceAll(
-      '(((((RELOAD WORKED)))))',
-      '(((((RELOAD WORKED 2)))))',
-    );
-    writeFile(
-      fileSystem.path.join(dir.path, 'lib', 'main.dart'),
-      newMainContents,
-      writeFutureModifiedDate: true,
-    );
+    final String newMainContents = main.replaceAll('(((((RELOAD WORKED)))))', '(((((RELOAD WORKED 2)))))');
+    writeFile(fileSystem.path.join(dir.path, 'lib', 'main.dart'), newMainContents, writeFutureModifiedDate: true);
   }
 }

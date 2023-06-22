@@ -22,33 +22,13 @@ abstract class OperatingSystemUtils {
     required ProcessManager processManager,
   }) {
     if (platform.isWindows) {
-      return _WindowsUtils(
-        fileSystem: fileSystem,
-        logger: logger,
-        platform: platform,
-        processManager: processManager,
-      );
+      return _WindowsUtils(fileSystem: fileSystem, logger: logger, platform: platform, processManager: processManager);
     } else if (platform.isMacOS) {
-      return _MacOSUtils(
-        fileSystem: fileSystem,
-        logger: logger,
-        platform: platform,
-        processManager: processManager,
-      );
+      return _MacOSUtils(fileSystem: fileSystem, logger: logger, platform: platform, processManager: processManager);
     } else if (platform.isLinux) {
-      return _LinuxUtils(
-        fileSystem: fileSystem,
-        logger: logger,
-        platform: platform,
-        processManager: processManager,
-      );
+      return _LinuxUtils(fileSystem: fileSystem, logger: logger, platform: platform, processManager: processManager);
     } else {
-      return _PosixUtils(
-        fileSystem: fileSystem,
-        logger: logger,
-        platform: platform,
-        processManager: processManager,
-      );
+      return _PosixUtils(fileSystem: fileSystem, logger: logger, platform: platform, processManager: processManager);
     }
   }
 
@@ -61,10 +41,7 @@ abstract class OperatingSystemUtils {
        _logger = logger,
        _platform = platform,
        _processManager = processManager,
-       _processUtils = ProcessUtils(
-        logger: logger,
-        processManager: processManager,
-      );
+       _processUtils = ProcessUtils(logger: logger, processManager: processManager);
 
   @visibleForTesting
   static final GZipCodec gzipLevel1 = GZipCodec(level: 1);
@@ -116,18 +93,14 @@ abstract class OperatingSystemUtils {
   ///
   /// If available, the detailed version of the OS is included.
   String get name {
-    const Map<String, String> osNames = <String, String>{
-      'macos': 'Mac OS',
-      'linux': 'Linux',
-      'windows': 'Windows',
-    };
+    const Map<String, String> osNames = <String, String>{'macos': 'Mac OS', 'linux': 'Linux', 'windows': 'Windows'};
     final String osName = _platform.operatingSystem;
     return osNames[osName] ?? osName;
   }
 
   HostPlatform get hostPlatform;
 
-  List<File> _which(String execName, { bool all = false });
+  List<File> _which(String execName, {bool all = false});
 
   /// Returns the separator between items in the PATH environment variable.
   String get pathVarSeparator;
@@ -141,8 +114,7 @@ abstract class OperatingSystemUtils {
   Future<int> findFreePort({bool ipv6 = false}) async {
     int port = 0;
     ServerSocket? serverSocket;
-    final InternetAddress loopback =
-        ipv6 ? InternetAddress.loopbackIPv6 : InternetAddress.loopbackIPv4;
+    final InternetAddress loopback = ipv6 ? InternetAddress.loopbackIPv6 : InternetAddress.loopbackIPv4;
     try {
       serverSocket = await ServerSocket.bind(loopback, 0);
       port = serverSocket.port;
@@ -181,39 +153,29 @@ class _PosixUtils extends OperatingSystemUtils {
   void chmod(FileSystemEntity entity, String mode) {
     // Errors here are silently ignored (except when tracing).
     try {
-      final ProcessResult result = _processManager.runSync(
-        <String>['chmod', mode, entity.path],
-      );
+      final ProcessResult result = _processManager.runSync(<String>['chmod', mode, entity.path]);
       if (result.exitCode != 0) {
         _logger.printTrace(
           'Error trying to run "chmod $mode ${entity.path}":\n'
           '  exit code: ${result.exitCode}\n'
           '  stdout: ${result.stdout.toString().trimRight()}\n'
-          '  stderr: ${result.stderr.toString().trimRight()}'
+          '  stderr: ${result.stderr.toString().trimRight()}',
         );
       }
     } on ProcessException catch (error) {
-      _logger.printTrace(
-        'Error trying to run "chmod $mode ${entity.path}": $error',
-      );
+      _logger.printTrace('Error trying to run "chmod $mode ${entity.path}": $error');
     }
   }
 
   @override
-  List<File> _which(String execName, { bool all = false }) {
-    final List<String> command = <String>[
-      'which',
-      if (all) '-a',
-      execName,
-    ];
+  List<File> _which(String execName, {bool all = false}) {
+    final List<String> command = <String>['which', if (all) '-a', execName];
     final ProcessResult result = _processManager.runSync(command);
     if (result.exitCode != 0) {
       return const <File>[];
     }
     final String stdout = result.stdout as String;
-    return stdout.trim().split('\n').map<File>(
-      (String path) => _fileSystem.file(path.trim()),
-    ).toList();
+    return stdout.trim().split('\n').map<File>((String path) => _fileSystem.file(path.trim())).toList();
   }
 
   // unzip -o -q zipfile -d dest
@@ -228,32 +190,27 @@ class _PosixUtils extends OperatingSystemUtils {
       } else if (_platform.isLinux) {
         message = 'Consider running "sudo apt-get install unzip".';
       }
-      throwToolExit(
-        'Missing "unzip" tool. Unable to extract ${file.path}.\n$message'
-      );
+      throwToolExit('Missing "unzip" tool. Unable to extract ${file.path}.\n$message');
     }
-    _processUtils.runSync(
-      <String>['unzip', '-o', '-q', file.path, '-d', targetDirectory.path],
-      throwOnError: true,
-      verboseExceptions: true,
-    );
+    _processUtils.runSync(<String>[
+      'unzip',
+      '-o',
+      '-q',
+      file.path,
+      '-d',
+      targetDirectory.path,
+    ], throwOnError: true, verboseExceptions: true);
   }
 
   // tar -xzf tarball -C dest
   @override
   void unpack(File gzippedTarFile, Directory targetDirectory) {
-    _processUtils.runSync(
-      <String>['tar', '-xzf', gzippedTarFile.path, '-C', targetDirectory.path],
-      throwOnError: true,
-    );
+    _processUtils.runSync(<String>['tar', '-xzf', gzippedTarFile.path, '-C', targetDirectory.path], throwOnError: true);
   }
 
   @override
   File makePipe(String path) {
-    _processUtils.runSync(
-      <String>['mkfifo', path],
-      throwOnError: true,
-    );
+    _processUtils.runSync(<String>['mkfifo', path], throwOnError: true);
     return _fileSystem.file(path);
   }
 
@@ -304,8 +261,8 @@ class _LinuxUtils extends _PosixUtils {
       const String prettyNameKey = 'PRETTY_NAME';
       // If "/etc/os-release" doesn't exist, fallback to "/usr/lib/os-release".
       final String osReleasePath = _fileSystem.file('/etc/os-release').existsSync()
-        ? '/etc/os-release'
-        : '/usr/lib/os-release';
+          ? '/etc/os-release'
+          : '/usr/lib/os-release';
       String prettyName;
       String kernelRelease;
       try {
@@ -341,7 +298,7 @@ class _LinuxUtils extends _PosixUtils {
       entry = entry.trim();
       final List<String> entryKeyValuePair = entry.split('=');
       if (entryKeyValuePair[0] == key) {
-        final String value =  entryKeyValuePair[1];
+        final String value = entryKeyValuePair[1];
         // Remove quotes from either end of the value if they exist
         final String quote = value[0];
         if (quote == "'" || quote == '"') {
@@ -380,8 +337,7 @@ class _MacOSUtils extends _PosixUtils {
         if (hostPlatform == HostPlatform.darwin_arm64 && results[3].stdout.contains('x86_64')) {
           osName = '$osName (Rosetta)';
         }
-        _name =
-            '${results[0].stdout.trim()} ${results[1].stdout.trim()} ${results[2].stdout.trim()} $osName';
+        _name = '${results[0].stdout.trim()} ${results[1].stdout.trim()} ${results[2].stdout.trim()} $osName';
       }
       _name ??= super.name;
     }
@@ -395,10 +351,7 @@ class _MacOSUtils extends _PosixUtils {
       String? sysctlPath;
       if (which('sysctl') == null) {
         // Fallback to known install locations.
-        for (final String path in <String>[
-          '/usr/sbin/sysctl',
-          '/sbin/sysctl',
-        ]) {
+        for (final String path in <String>['/usr/sbin/sysctl', '/sbin/sysctl']) {
           if (_fileSystem.isFileSync(path)) {
             sysctlPath = path;
           }
@@ -410,8 +363,7 @@ class _MacOSUtils extends _PosixUtils {
       if (sysctlPath == null) {
         throwToolExit('sysctl not found. Try adding it to your PATH environment variable.');
       }
-      final RunResult arm64Check =
-          _processUtils.runSync(<String>[sysctlPath, 'hw.optional.arm64']);
+      final RunResult arm64Check = _processUtils.runSync(<String>[sysctlPath, 'hw.optional.arm64']);
       // On arm64 stdout is "sysctl hw.optional.arm64: 1"
       // On x86 hw.optional.arm64 is unavailable and exits with 1.
       if (arm64Check.exitCode == 0 && arm64Check.stdout.trim().endsWith('1')) {
@@ -435,19 +387,25 @@ class _MacOSUtils extends _PosixUtils {
       final Directory tempDirectory = _fileSystem.systemTempDirectory.createTempSync('flutter_${file.basename}.');
       try {
         // Unzip to a temporary directory.
-        _processUtils.runSync(
-          <String>['unzip', '-o', '-q', file.path, '-d', tempDirectory.path],
-          throwOnError: true,
-          verboseExceptions: true,
-        );
+        _processUtils.runSync(<String>[
+          'unzip',
+          '-o',
+          '-q',
+          file.path,
+          '-d',
+          tempDirectory.path,
+        ], throwOnError: true, verboseExceptions: true);
         for (final FileSystemEntity unzippedFile in tempDirectory.listSync(followLinks: false)) {
           // rsync --delete the unzipped files so files removed from the archive are also removed from the target.
           // Add the '-8' parameter to avoid mangling filenames with encodings that do not match the current locale.
-          _processUtils.runSync(
-            <String>['rsync', '-8', '-av', '--delete', unzippedFile.path, targetDirectory.path],
-            throwOnError: true,
-            verboseExceptions: true,
-          );
+          _processUtils.runSync(<String>[
+            'rsync',
+            '-8',
+            '-av',
+            '--delete',
+            unzippedFile.path,
+            targetDirectory.path,
+          ], throwOnError: true, verboseExceptions: true);
         }
       } finally {
         tempDirectory.deleteSync(recursive: true);
@@ -455,11 +413,14 @@ class _MacOSUtils extends _PosixUtils {
     } else {
       // Fall back to just unzipping.
       _logger.printTrace('Unable to find rsync, falling back to direct unzipping.');
-      _processUtils.runSync(
-        <String>['unzip', '-o', '-q', file.path, '-d', targetDirectory.path],
-        throwOnError: true,
-        verboseExceptions: true,
-      );
+      _processUtils.runSync(<String>[
+        'unzip',
+        '-o',
+        '-q',
+        file.path,
+        '-d',
+        targetDirectory.path,
+      ], throwOnError: true, verboseExceptions: true);
     }
   }
 }
@@ -482,14 +443,14 @@ class _WindowsUtils extends OperatingSystemUtils {
   void chmod(FileSystemEntity entity, String mode) {}
 
   @override
-  List<File> _which(String execName, { bool all = false }) {
+  List<File> _which(String execName, {bool all = false}) {
     if (!_processManager.canRun('where')) {
       // `where` could be missing if system32 is not on the PATH.
       throwToolExit(
         'Cannot find the executable for `where`. This can happen if the System32 '
         r'folder (e.g. C:\Windows\System32 ) is removed from the PATH environment '
         'variable. Ensure that this is present and then try again after restarting '
-        'the terminal and/or IDE.'
+        'the terminal and/or IDE.',
       );
     }
     // `where` always returns all matches, not just the first one.
@@ -512,9 +473,7 @@ class _WindowsUtils extends OperatingSystemUtils {
 
   @override
   void unpack(File gzippedTarFile, Directory targetDirectory) {
-    final Archive archive = TarDecoder().decodeBytes(
-      GZipDecoder().decodeBytes(gzippedTarFile.readAsBytesSync()),
-    );
+    final Archive archive = TarDecoder().decodeBytes(GZipDecoder().decodeBytes(gzippedTarFile.readAsBytesSync()));
     _unpackArchive(archive, targetDirectory);
   }
 
@@ -526,24 +485,15 @@ class _WindowsUtils extends OperatingSystemUtils {
       }
 
       final File destFile = _fileSystem.file(
-        _fileSystem.path.canonicalize(
-          _fileSystem.path.join(
-            targetDirectory.path,
-            archiveFile.name,
-          ),
-        ),
+        _fileSystem.path.canonicalize(_fileSystem.path.join(targetDirectory.path, archiveFile.name)),
       );
 
       // Validate that the destFile is within the targetDirectory we want to
       // extract to.
       //
       // See https://snyk.io/research/zip-slip-vulnerability for more context.
-      final String destinationFileCanonicalPath = _fileSystem.path.canonicalize(
-        destFile.path,
-      );
-      final String targetDirectoryCanonicalPath = _fileSystem.path.canonicalize(
-        targetDirectory.path,
-      );
+      final String destinationFileCanonicalPath = _fileSystem.path.canonicalize(destFile.path);
+      final String targetDirectoryCanonicalPath = _fileSystem.path.canonicalize(targetDirectory.path);
       if (!destinationFileCanonicalPath.startsWith(targetDirectoryCanonicalPath)) {
         throw StateError(
           'Tried to extract the file $destinationFileCanonicalPath outside of the '
@@ -568,8 +518,7 @@ class _WindowsUtils extends OperatingSystemUtils {
   @override
   String get name {
     if (_name == null) {
-      final ProcessResult result = _processManager.runSync(
-          <String>['ver'], runInShell: true);
+      final ProcessResult result = _processManager.runSync(<String>['ver'], runInShell: true);
       if (result.exitCode == 0) {
         _name = (result.stdout as String).trim();
       } else {
@@ -587,7 +536,7 @@ class _WindowsUtils extends OperatingSystemUtils {
 /// directory or the current working directory if none specified.
 /// Return null if the project root could not be found
 /// or if the project root is the flutter repository root.
-String? findProjectRoot(FileSystem fileSystem, [ String? directory ]) {
+String? findProjectRoot(FileSystem fileSystem, [String? directory]) {
   const String kProjectRootSentinel = 'pubspec.yaml';
   directory ??= fileSystem.currentDirectory.path;
   Directory currentDirectory = fileSystem.directory(directory).absolute;
@@ -615,7 +564,7 @@ enum HostPlatform {
       HostPlatform.darwin_arm64 => 'arm64',
       HostPlatform.linux_x64 => 'x64',
       HostPlatform.linux_arm64 => 'arm64',
-      HostPlatform.windows_x64 => 'x64'
+      HostPlatform.windows_x64 => 'x64',
     };
   }
 }
@@ -626,6 +575,6 @@ String getNameForHostPlatform(HostPlatform platform) {
     HostPlatform.darwin_arm64 => 'darwin-arm64',
     HostPlatform.linux_x64 => 'linux-x64',
     HostPlatform.linux_arm64 => 'linux-arm64',
-    HostPlatform.windows_x64 => 'windows-x64'
+    HostPlatform.windows_x64 => 'windows-x64',
   };
 }

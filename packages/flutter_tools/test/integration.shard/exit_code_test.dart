@@ -21,35 +21,29 @@ void main() {
   });
 
   testWithoutContext('dart.sh/bat can return a zero exit code', () async {
-    tempDir.childFile('main.dart')
-      .writeAsStringSync('''
+    tempDir.childFile('main.dart').writeAsStringSync('''
 import 'dart:io';
 void main() {
   exit(0);
 }
 ''');
 
-    final ProcessResult result = await processManager.run(<String>[
-      dartBin,
-      fileSystem.path.join(tempDir.path, 'main.dart'),
-    ]);
+    final ProcessResult result = await processManager
+        .run(<String>[dartBin, fileSystem.path.join(tempDir.path, 'main.dart')]);
 
     expect(result, const ProcessResultMatcher());
   });
 
   testWithoutContext('dart.sh/bat can return a non-zero exit code', () async {
-    tempDir.childFile('main.dart')
-      .writeAsStringSync('''
+    tempDir.childFile('main.dart').writeAsStringSync('''
 import 'dart:io';
 void main() {
   exit(1);
 }
 ''');
 
-    final ProcessResult result = await processManager.run(<String>[
-      dartBin,
-      fileSystem.path.join(tempDir.path, 'main.dart'),
-    ]);
+    final ProcessResult result = await processManager
+        .run(<String>[dartBin, fileSystem.path.join(tempDir.path, 'main.dart')]);
 
     expect(result, const ProcessResultMatcher(exitCode: 1));
   });

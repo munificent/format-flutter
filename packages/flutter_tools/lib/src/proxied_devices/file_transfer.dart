@@ -62,36 +62,40 @@ class BlockHashes {
 Stream<Uint8List> convertToChunks(Stream<Uint8List> source, int chunkSize) {
   final BytesBuilder bytesBuilder = BytesBuilder(copy: false);
   final StreamController<Uint8List> controller = StreamController<Uint8List>();
-  final StreamSubscription<Uint8List> subscription = source.listen((Uint8List chunk) {
-    int start = 0;
-    while (start < chunk.length) {
-      final int sizeToTake = min(chunkSize - bytesBuilder.length, chunk.length - start);
-      assert(sizeToTake > 0);
-      assert(sizeToTake <= chunkSize);
+  final StreamSubscription<Uint8List> subscription = source.listen(
+    (Uint8List chunk) {
+      int start = 0;
+      while (start < chunk.length) {
+        final int sizeToTake = min(chunkSize - bytesBuilder.length, chunk.length - start);
+        assert(sizeToTake > 0);
+        assert(sizeToTake <= chunkSize);
 
-      final Uint8List sublist = chunk.sublist(start, start + sizeToTake);
-      start += sizeToTake;
+        final Uint8List sublist = chunk.sublist(start, start + sizeToTake);
+        start += sizeToTake;
 
-      if (bytesBuilder.isEmpty && sizeToTake == chunkSize) {
-        controller.add(sublist);
-      } else {
-        bytesBuilder.add(sublist);
-        assert(bytesBuilder.length <= chunkSize);
-        if (bytesBuilder.length == chunkSize) {
-          controller.add(bytesBuilder.takeBytes());
+        if (bytesBuilder.isEmpty && sizeToTake == chunkSize) {
+          controller.add(sublist);
+        } else {
+          bytesBuilder.add(sublist);
+          assert(bytesBuilder.length <= chunkSize);
+          if (bytesBuilder.length == chunkSize) {
+            controller.add(bytesBuilder.takeBytes());
+          }
         }
       }
-    }
-  }, onDone: () {
-    if (controller.hasListener && !controller.isClosed) {
-      if (bytesBuilder.isNotEmpty) {
-        controller.add(bytesBuilder.takeBytes());
+    },
+    onDone: () {
+      if (controller.hasListener && !controller.isClosed) {
+        if (bytesBuilder.isNotEmpty) {
+          controller.add(bytesBuilder.takeBytes());
+        }
+        controller.close();
       }
-      controller.close();
-    }
-  }, onError: (Object error, StackTrace stackTrace) {
-    controller.addError(error, stackTrace);
-  });
+    },
+    onError: (Object error, StackTrace stackTrace) {
+      controller.addError(error, stackTrace);
+    },
+  );
 
   controller.onCancel = subscription.cancel;
   controller.onPause = subscription.pause;
@@ -133,7 +137,7 @@ int adler32Hash(List<int> binary) {
 /// Helper to calculate rolling Adler32 hash of a file.
 @visibleForTesting
 class RollingAdler32 {
-  RollingAdler32(this.blockSize): _buffer = Uint8List(blockSize);
+  RollingAdler32(this.blockSize) : _buffer = Uint8List(blockSize);
 
   /// Block size of the rolling hash calculation.
   final int blockSize;
@@ -182,7 +186,7 @@ class RollingAdler32 {
     } else if (_cur == 0) {
       return _buffer;
     } else {
-      final BytesBuilder builder = BytesBuilder(copy:false)
+      final BytesBuilder builder = BytesBuilder(copy: false)
         ..add(Uint8List.sublistView(_buffer, _cur))
         ..add(Uint8List.sublistView(_buffer, 0, _cur));
       return builder.takeBytes();
@@ -221,7 +225,7 @@ class RollingAdler32 {
 /// given instructions.
 class FileTransfer {
   /// Calculate hashes of blocks in the file.
-  Future<BlockHashes> calculateBlockHashesOfFile(File file, { int? blockSize }) async {
+  Future<BlockHashes> calculateBlockHashesOfFile(File file, {int? blockSize}) async {
     final int totalSize = await file.length();
     blockSize ??= max(sqrt(totalSize).ceil(), 2560);
 
@@ -409,8 +413,8 @@ class FileTransfer {
 /// Represents a single line of instruction on how to generate the target file.
 @immutable
 class FileDeltaBlock {
-  const FileDeltaBlock.fromSource({required this.start, required this.size}): copyFromDestination = false;
-  const FileDeltaBlock.fromDestination({required this.start, required this.size}): copyFromDestination = true;
+  const FileDeltaBlock.fromSource({required this.start, required this.size}) : copyFromDestination = false;
+  const FileDeltaBlock.fromDestination({required this.start, required this.size}) : copyFromDestination = true;
 
   /// If true, this block should be read from the destination file.
   final bool copyFromDestination;
@@ -421,11 +425,7 @@ class FileDeltaBlock {
   /// Byte offset in the destination file from which the block should be read.
   final int start;
 
-  Map<String, Object> toJson() => <String, Object> {
-    if (copyFromDestination)
-      'start': start,
-    'size': size,
-  };
+  Map<String, Object> toJson() => <String, Object>{if (copyFromDestination) 'start': start, 'size': size};
 
   static List<FileDeltaBlock> fromJsonList(List<Map<String, Object?>> jsonList) {
     return jsonList.map((Map<String, Object?> json) {

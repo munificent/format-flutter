@@ -56,15 +56,7 @@ void main() {
 
       testWithoutContext('isSimctlInstalled is true when simctl list succeeds', () {
         fakeProcessManager.addCommand(
-          const FakeCommand(
-            command: <String>[
-              'xcrun',
-              'simctl',
-              'list',
-              'devices',
-              'booted',
-            ],
-          ),
+          const FakeCommand(command: <String>['xcrun', 'simctl', 'list', 'devices', 'booted']),
         );
         final Xcode xcode = Xcode.test(
           processManager: fakeProcessManager,
@@ -77,16 +69,7 @@ void main() {
 
       testWithoutContext('isSimctlInstalled is true when simctl list fails', () {
         fakeProcessManager.addCommand(
-          const FakeCommand(
-            command: <String>[
-              'xcrun',
-              'simctl',
-              'list',
-              'devices',
-              'booted',
-            ],
-            exitCode: 1,
-          ),
+          const FakeCommand(command: <String>['xcrun', 'simctl', 'list', 'devices', 'booted'], exitCode: 1),
         );
         final Xcode xcode = Xcode.test(
           processManager: fakeProcessManager,
@@ -102,18 +85,13 @@ void main() {
 
         setUp(() {
           xcodeProjectInterpreter = FakeXcodeProjectInterpreter();
-          xcode = Xcode.test(
-            processManager: fakeProcessManager,
-            xcodeProjectInterpreter: xcodeProjectInterpreter,
-          );
+          xcode = Xcode.test(processManager: fakeProcessManager, xcodeProjectInterpreter: xcodeProjectInterpreter);
         });
 
         testWithoutContext('xcodeSelectPath returns path when xcode-select is installed', () {
           const String xcodePath = '/Applications/Xcode8.0.app/Contents/Developer';
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['/usr/bin/xcode-select', '--print-path'],
-            stdout: xcodePath,
-          ),
+          fakeProcessManager.addCommand(
+            const FakeCommand(command: <String>['/usr/bin/xcode-select', '--print-path'], stdout: xcodePath),
           );
 
           expect(xcode.xcodeSelectPath, xcodePath);
@@ -121,10 +99,12 @@ void main() {
         });
 
         testWithoutContext('xcodeSelectPath returns null when xcode-select is not installed', () {
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['/usr/bin/xcode-select', '--print-path'],
-            exception: ProcessException('/usr/bin/xcode-select', <String>['--print-path']),
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['/usr/bin/xcode-select', '--print-path'],
+              exception: ProcessException('/usr/bin/xcode-select', <String>['--print-path']),
+            ),
+          );
 
           expect(xcode.xcodeSelectPath, isNull);
           expect(fakeProcessManager, hasNoRemainingExpectations);
@@ -200,21 +180,23 @@ void main() {
           expect(fakeProcessManager, hasNoRemainingExpectations);
         });
 
-        testWithoutContext('isInstalledAndMeetsVersionCheck is true when macOS and installed and version is satisfied', () {
-          xcodeProjectInterpreter.isInstalled = true;
-          xcodeProjectInterpreter.version = Version(14, null, null);
+        testWithoutContext(
+          'isInstalledAndMeetsVersionCheck is true when macOS and installed and version is satisfied',
+          () {
+            xcodeProjectInterpreter.isInstalled = true;
+            xcodeProjectInterpreter.version = Version(14, null, null);
 
-          expect(xcode.isInstalledAndMeetsVersionCheck, isTrue);
-          expect(fakeProcessManager, hasNoRemainingExpectations);
-        });
+            expect(xcode.isInstalledAndMeetsVersionCheck, isTrue);
+            expect(fakeProcessManager, hasNoRemainingExpectations);
+          },
+        );
 
         testWithoutContext('eulaSigned is false when clang output indicates EULA not yet accepted', () {
           fakeProcessManager.addCommands(const <FakeCommand>[
             FakeCommand(
               command: <String>['xcrun', 'clang'],
               exitCode: 1,
-              stderr:
-                  'Xcode EULA has not been accepted.\nLaunch Xcode and accept the license.',
+              stderr: 'Xcode EULA has not been accepted.\nLaunch Xcode and accept the license.',
             ),
           ]);
 
@@ -234,15 +216,9 @@ void main() {
         });
 
         testWithoutContext('eulaSigned is true when clang output indicates EULA has been accepted', () {
-          fakeProcessManager.addCommands(
-            const <FakeCommand>[
-              FakeCommand(
-                command: <String>['xcrun', 'clang'],
-                exitCode: 1,
-                stderr: 'clang: error: no input files',
-              ),
-            ],
-          );
+          fakeProcessManager.addCommands(const <FakeCommand>[
+            FakeCommand(command: <String>['xcrun', 'clang'], exitCode: 1, stderr: 'clang: error: no input files'),
+          ]);
           expect(xcode.eulaSigned, isTrue);
           expect(fakeProcessManager, hasNoRemainingExpectations);
         });
@@ -253,27 +229,31 @@ void main() {
         });
 
         group('SDK location', () {
-          const String sdkroot = 'Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS13.2.sdk';
+          const String sdkroot =
+              'Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS13.2.sdk';
 
           testWithoutContext('--show-sdk-path iphoneos', () async {
-            fakeProcessManager.addCommand(const FakeCommand(
-              command: <String>['xcrun', '--sdk', 'iphoneos', '--show-sdk-path'],
-              stdout: sdkroot,
-            ));
+            fakeProcessManager.addCommand(
+              const FakeCommand(command: <String>['xcrun', '--sdk', 'iphoneos', '--show-sdk-path'], stdout: sdkroot),
+            );
 
             expect(await xcode.sdkLocation(EnvironmentType.physical), sdkroot);
             expect(fakeProcessManager, hasNoRemainingExpectations);
           });
 
           testWithoutContext('--show-sdk-path fails', () async {
-            fakeProcessManager.addCommand(const FakeCommand(
-              command: <String>['xcrun', '--sdk', 'iphoneos', '--show-sdk-path'],
-              exitCode: 1,
-              stderr: 'xcrun: error:',
-            ));
+            fakeProcessManager.addCommand(
+              const FakeCommand(
+                command: <String>['xcrun', '--sdk', 'iphoneos', '--show-sdk-path'],
+                exitCode: 1,
+                stderr: 'xcrun: error:',
+              ),
+            );
 
-            expect(() async => xcode.sdkLocation(EnvironmentType.physical),
-              throwsToolExit(message: 'Could not find SDK location'));
+            expect(
+              () async => xcode.sdkLocation(EnvironmentType.physical),
+              throwsToolExit(message: 'Could not find SDK location'),
+            );
             expect(fakeProcessManager, hasNoRemainingExpectations);
           });
         });
@@ -333,38 +313,26 @@ void main() {
 
       group('observe device events', () {
         testUsingContext('relays events', () async {
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>[
-              'script',
-              '-t',
-              '0',
-              '/dev/null',
-              'xcrun',
-              'xcdevice',
-              'observe',
-              '--usb',
-            ], stdout: 'Listening for all devices, on USB.\n'
-              'Attach: d83d5bc53967baa0ee18626ba87b6254b2ab5418\n'
-              'Attach: 00008027-00192736010F802E\n'
-              'Detach: d83d5bc53967baa0ee18626ba87b6254b2ab5418',
-            stderr: 'Some usb error',
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['script', '-t', '0', '/dev/null', 'xcrun', 'xcdevice', 'observe', '--usb'],
+              stdout: 'Listening for all devices, on USB.\n'
+                  'Attach: d83d5bc53967baa0ee18626ba87b6254b2ab5418\n'
+                  'Attach: 00008027-00192736010F802E\n'
+                  'Detach: d83d5bc53967baa0ee18626ba87b6254b2ab5418',
+              stderr: 'Some usb error',
+            ),
+          );
 
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>[
-              'script',
-              '-t',
-              '0',
-              '/dev/null',
-              'xcrun',
-              'xcdevice',
-              'observe',
-              '--wifi',
-            ], stdout: 'Listening for all devices, on WiFi.\n'
-              'Attach: 00000001-0000000000000000\n'
-              'Detach: 00000001-0000000000000000',
-            stderr: 'Some wifi error',
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['script', '-t', '0', '/dev/null', 'xcrun', 'xcdevice', 'observe', '--wifi'],
+              stdout: 'Listening for all devices, on WiFi.\n'
+                  'Attach: 00000001-0000000000000000\n'
+                  'Detach: 00000001-0000000000000000',
+              stderr: 'Some wifi error',
+            ),
+          );
 
           final Completer<void> attach1 = Completer<void>();
           final Completer<void> attach2 = Completer<void>();
@@ -379,8 +347,7 @@ void main() {
             if (event.eventType == XCDeviceEvent.attach) {
               if (event.deviceIdentifier == 'd83d5bc53967baa0ee18626ba87b6254b2ab5418') {
                 attach1.complete();
-              } else
-              if (event.deviceIdentifier == '00008027-00192736010F802E') {
+              } else if (event.deviceIdentifier == '00008027-00192736010F802E') {
                 attach2.complete();
               }
               if (event.deviceIdentifier == '00000001-0000000000000000') {
@@ -407,77 +374,48 @@ void main() {
         });
 
         testUsingContext('handles exit code', () async {
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>[
-              'script',
-              '-t',
-              '0',
-              '/dev/null',
-              'xcrun',
-              'xcdevice',
-              'observe',
-              '--usb',
-            ],
-          ));
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>[
-              'script',
-              '-t',
-              '0',
-              '/dev/null',
-              'xcrun',
-              'xcdevice',
-              'observe',
-              '--wifi',
-            ],
-            exitCode: 1,
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['script', '-t', '0', '/dev/null', 'xcrun', 'xcdevice', 'observe', '--usb'],
+            ),
+          );
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['script', '-t', '0', '/dev/null', 'xcrun', 'xcdevice', 'observe', '--wifi'],
+              exitCode: 1,
+            ),
+          );
 
           final Completer<void> doneCompleter = Completer<void>();
-          xcdevice.observedDeviceEvents()!.listen(null, onDone: () {
-            doneCompleter.complete();
-          });
+          xcdevice.observedDeviceEvents()!.listen(
+            null,
+            onDone: () {
+              doneCompleter.complete();
+            },
+          );
           await doneCompleter.future;
           expect(logger.traceText, contains('xcdevice observe --usb exited with code 0'));
           expect(logger.traceText, contains('xcdevice observe --wifi exited with code 0'));
         });
-
       });
 
       group('wait device events', () {
         testUsingContext('relays events', () async {
           const String deviceId = '00000001-0000000000000000';
 
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>[
-              'script',
-              '-t',
-              '0',
-              '/dev/null',
-              'xcrun',
-              'xcdevice',
-              'wait',
-              '--usb',
-              deviceId,
-            ],
-            stdout: 'Waiting for $deviceId to appear, on USB.\n',
-          ));
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>[
-              'script',
-              '-t',
-              '0',
-              '/dev/null',
-              'xcrun',
-              'xcdevice',
-              'wait',
-              '--wifi',
-              deviceId,
-            ],
-            stdout:
-            'Waiting for $deviceId to appear, on WiFi.\n'
-            'Attach: 00000001-0000000000000000\n',
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['script', '-t', '0', '/dev/null', 'xcrun', 'xcdevice', 'wait', '--usb', deviceId],
+              stdout: 'Waiting for $deviceId to appear, on USB.\n',
+            ),
+          );
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['script', '-t', '0', '/dev/null', 'xcrun', 'xcdevice', 'wait', '--wifi', deviceId],
+              stdout: 'Waiting for $deviceId to appear, on WiFi.\n'
+                  'Attach: 00000001-0000000000000000\n',
+            ),
+          );
 
           // Attach: 00000001-0000000000000000
 
@@ -491,34 +429,18 @@ void main() {
         testUsingContext('handles exit code', () async {
           const String deviceId = '00000001-0000000000000000';
 
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>[
-              'script',
-              '-t',
-              '0',
-              '/dev/null',
-              'xcrun',
-              'xcdevice',
-              'wait',
-              '--usb',
-              deviceId,
-            ],
-            exitCode: 1,
-            stderr: 'Some error',
-          ));
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>[
-              'script',
-              '-t',
-              '0',
-              '/dev/null',
-              'xcrun',
-              'xcdevice',
-              'wait',
-              '--wifi',
-              deviceId,
-            ],
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['script', '-t', '0', '/dev/null', 'xcrun', 'xcdevice', 'wait', '--usb', deviceId],
+              exitCode: 1,
+              stderr: 'Some error',
+            ),
+          );
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['script', '-t', '0', '/dev/null', 'xcrun', 'xcdevice', 'wait', '--wifi', deviceId],
+            ),
+          );
 
           final XCDeviceEventNotification? event = await xcdevice.waitForDeviceToConnect(deviceId);
 
@@ -532,32 +454,16 @@ void main() {
         testUsingContext('handles cancel', () async {
           const String deviceId = '00000001-0000000000000000';
 
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>[
-              'script',
-              '-t',
-              '0',
-              '/dev/null',
-              'xcrun',
-              'xcdevice',
-              'wait',
-              '--usb',
-              deviceId,
-            ],
-          ));
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>[
-              'script',
-              '-t',
-              '0',
-              '/dev/null',
-              'xcrun',
-              'xcdevice',
-              'wait',
-              '--wifi',
-              deviceId,
-            ],
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['script', '-t', '0', '/dev/null', 'xcrun', 'xcdevice', 'wait', '--usb', deviceId],
+            ),
+          );
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['script', '-t', '0', '/dev/null', 'xcrun', 'xcdevice', 'wait', '--wifi', deviceId],
+            ),
+          );
 
           final Future<XCDeviceEventNotification?> futureEvent = xcdevice.waitForDeviceToConnect(deviceId);
           xcdevice.cancelWaitForDeviceToConnect();
@@ -666,10 +572,9 @@ void main() {
 ]
 ''';
 
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
-            stdout: devicesOutput,
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'], stdout: devicesOutput),
+          );
           final List<IOSDevice> devices = await xcdevice.getAvailableIOSDevices();
           expect(devices, hasLength(5));
           expect(devices[0].id, '00008027-00192736010F802E');
@@ -708,25 +613,23 @@ void main() {
           expect(devices[4].isConnected, false);
 
           expect(fakeProcessManager, hasNoRemainingExpectations);
-        }, overrides: <Type, Generator>{
-          Platform: () => macPlatform,
-          Artifacts: () => Artifacts.test(),
-        });
+        }, overrides: <Type, Generator>{Platform: () => macPlatform, Artifacts: () => Artifacts.test()});
 
         testWithoutContext('available devices xcdevice fails', () async {
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
-            exception: ProcessException('xcrun', <String>['xcdevice', 'list', '--timeout', '2']),
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
+              exception: ProcessException('xcrun', <String>['xcdevice', 'list', '--timeout', '2']),
+            ),
+          );
 
           expect(await xcdevice.getAvailableIOSDevices(), isEmpty);
         });
 
         testWithoutContext('uses timeout', () async {
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '20'],
-            stdout: '[]',
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '20'], stdout: '[]'),
+          );
           await xcdevice.getAvailableIOSDevices(timeout: const Duration(seconds: 20));
           expect(fakeProcessManager, hasNoRemainingExpectations);
         });
@@ -756,18 +659,14 @@ void main() {
 ]
 ''';
 
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
-            stdout: devicesOutput,
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'], stdout: devicesOutput),
+          );
           final List<IOSDevice> devices = await xcdevice.getAvailableIOSDevices();
           expect(devices, hasLength(1));
           expect(devices[0].id, '43ad2fda7991b34fe1acbda82f9e2fd3d6ddc9f7');
           expect(fakeProcessManager, hasNoRemainingExpectations);
-        }, overrides: <Type, Generator>{
-          Platform: () => macPlatform,
-          Artifacts: () => Artifacts.test(),
-        });
+        }, overrides: <Type, Generator>{Platform: () => macPlatform, Artifacts: () => Artifacts.test()});
 
         testUsingContext('handles unknown architectures', () async {
           const String devicesOutput = '''
@@ -799,20 +698,16 @@ void main() {
 ]
 ''';
 
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
-            stdout: devicesOutput,
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'], stdout: devicesOutput),
+          );
           final List<IOSDevice> devices = await xcdevice.getAvailableIOSDevices();
           expect(devices[0].cpuArchitecture, DarwinArch.armv7);
           expect(devices[1].cpuArchitecture, DarwinArch.arm64);
           expect(fakeProcessManager, hasNoRemainingExpectations);
-        }, overrides: <Type, Generator>{
-          Platform: () => macPlatform,
-          Artifacts: () => Artifacts.test(),
-        });
+        }, overrides: <Type, Generator>{Platform: () => macPlatform, Artifacts: () => Artifacts.test()});
 
-        testUsingContext('Sdk Version is parsed correctly',()  async {
+        testUsingContext('Sdk Version is parsed correctly', () async {
           const String devicesOutput = '''
 [
   {
@@ -852,31 +747,28 @@ void main() {
   }
 ]
 ''';
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
-            stdout: devicesOutput,
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'], stdout: devicesOutput),
+          );
 
           final List<IOSDevice> devices = await xcdevice.getAvailableIOSDevices();
-          expect(await devices[0].sdkNameAndVersion,'iOS 13.3 17C54');
-          expect(await devices[1].sdkNameAndVersion,'iOS 10.1');
-          expect(await devices[2].sdkNameAndVersion,'iOS unknown version');
-        }, overrides: <Type, Generator>{
-          Platform: () => macPlatform,
-        });
+          expect(await devices[0].sdkNameAndVersion, 'iOS 13.3 17C54');
+          expect(await devices[1].sdkNameAndVersion, 'iOS 10.1');
+          expect(await devices[2].sdkNameAndVersion, 'iOS unknown version');
+        }, overrides: <Type, Generator>{Platform: () => macPlatform});
 
-        testUsingContext('handles bad output',()  async {
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
-            stdout: 'Something bad happened, not JSON',
-          ));
+        testUsingContext('handles bad output', () async {
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
+              stdout: 'Something bad happened, not JSON',
+            ),
+          );
 
           final List<IOSDevice> devices = await xcdevice.getAvailableIOSDevices();
           expect(devices, isEmpty);
           expect(logger.errorText, contains('xcdevice returned non-JSON response'));
-        }, overrides: <Type, Generator>{
-          Platform: () => macPlatform,
-        });
+        }, overrides: <Type, Generator>{Platform: () => macPlatform});
       });
 
       group('diagnostics', () {
@@ -903,24 +795,23 @@ void main() {
 ]
 ''';
 
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
-            stdout: devicesOutput,
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'], stdout: devicesOutput),
+          );
 
           await xcdevice.getAvailableIOSDevices();
           final List<String> errors = await xcdevice.getDiagnostics();
           expect(errors, hasLength(1));
           expect(fakeProcessManager, hasNoRemainingExpectations);
-        }, overrides: <Type, Generator>{
-          Platform: () => macPlatform,
-        });
+        }, overrides: <Type, Generator>{Platform: () => macPlatform});
 
         testWithoutContext('diagnostics xcdevice fails', () async {
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
-            exception: ProcessException('xcrun', <String>['xcdevice', 'list', '--timeout', '2']),
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(
+              command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
+              exception: ProcessException('xcrun', <String>['xcdevice', 'list', '--timeout', '2']),
+            ),
+          );
 
           expect(await xcdevice.getDiagnostics(), isEmpty);
         });
@@ -1040,23 +931,26 @@ void main() {
 ]
 ''';
 
-          fakeProcessManager.addCommand(const FakeCommand(
-            command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'],
-            stdout: devicesOutput,
-          ));
+          fakeProcessManager.addCommand(
+            const FakeCommand(command: <String>['xcrun', 'xcdevice', 'list', '--timeout', '2'], stdout: devicesOutput),
+          );
 
           final List<String> errors = await xcdevice.getDiagnostics();
           expect(errors, hasLength(4));
 
-          expect(errors[0], 'Error: iPhone is not paired with your computer. To use iPhone with Xcode, unlock it and choose to trust this computer when prompted. (code -9)');
+          expect(
+            errors[0],
+            'Error: iPhone is not paired with your computer. To use iPhone with Xcode, unlock it and choose to trust this computer when prompted. (code -9)',
+          );
           expect(errors[1], 'Error: iPhone is not paired with your computer.');
           expect(errors[2], 'Error: Xcode pairing error. (code -13)');
-          expect(errors[3], 'Error: iPhone is busy: Preparing debugger support for iPhone. Xcode will continue when iPhone is finished. (code -10)');
+          expect(
+            errors[3],
+            'Error: iPhone is busy: Preparing debugger support for iPhone. Xcode will continue when iPhone is finished. (code -10)',
+          );
           expect(errors, isNot(contains('Xcode will continue')));
           expect(fakeProcessManager, hasNoRemainingExpectations);
-        }, overrides: <Type, Generator>{
-          Platform: () => macPlatform,
-        });
+        }, overrides: <Type, Generator>{Platform: () => macPlatform});
       });
     });
   });

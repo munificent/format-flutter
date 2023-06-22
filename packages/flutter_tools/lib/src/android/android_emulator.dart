@@ -45,8 +45,7 @@ class AndroidEmulators extends EmulatorDiscovery {
   bool get canListAnything => _androidWorkflow.canListEmulators;
 
   @override
-  bool get canLaunchAnything => _androidWorkflow.canListEmulators
-    && _androidSdk?.getAvdManagerPath() != null;
+  bool get canLaunchAnything => _androidWorkflow.canListEmulators && _androidSdk?.getAvdManagerPath() != null;
 
   @override
   Future<List<Emulator>> get emulators => _getEmulatorAvds();
@@ -58,8 +57,7 @@ class AndroidEmulators extends EmulatorDiscovery {
       return <AndroidEmulator>[];
     }
 
-    final String listAvdsOutput = (await _processUtils.run(
-      <String>[emulatorPath, '-list-avds'])).stdout.trim();
+    final String listAvdsOutput = (await _processUtils.run(<String>[emulatorPath, '-list-avds'])).stdout.trim();
 
     final List<AndroidEmulator> emulators = <AndroidEmulator>[];
     _extractEmulatorAvdInfo(listAvdsOutput, emulators);
@@ -111,7 +109,8 @@ class AndroidEmulators extends EmulatorDiscovery {
 }
 
 class AndroidEmulator extends Emulator {
-  AndroidEmulator(String id, {
+  AndroidEmulator(
+    String id, {
     Map<String, String>? properties,
     required Logger logger,
     AndroidSdk? androidSdk,
@@ -149,26 +148,20 @@ class AndroidEmulator extends Emulator {
     if (emulatorPath == null) {
       throw Exception('Emulator is missing from the Android SDK');
     }
-    final List<String> command = <String>[
-      emulatorPath,
-      '-avd',
-      id,
-      if (coldBoot)
-        '-no-snapshot-load',
-    ];
+    final List<String> command = <String>[emulatorPath, '-avd', id, if (coldBoot) '-no-snapshot-load'];
     final Process process = await _processUtils.start(command);
 
     // Record output from the emulator process.
     final List<String> stdoutList = <String>[];
     final List<String> stderrList = <String>[];
     final StreamSubscription<String> stdoutSubscription = process.stdout
-      .transform<String>(utf8.decoder)
-      .transform<String>(const LineSplitter())
-      .listen(stdoutList.add);
+        .transform<String>(utf8.decoder)
+        .transform<String>(const LineSplitter())
+        .listen(stdoutList.add);
     final StreamSubscription<String> stderrSubscription = process.stderr
-      .transform<String>(utf8.decoder)
-      .transform<String>(const LineSplitter())
-      .listen(stderrList.add);
+        .transform<String>(utf8.decoder)
+        .transform<String>(const LineSplitter())
+        .listen(stderrList.add);
     final Future<void> stdioFuture = Future.wait<void>(<Future<void>>[
       stdoutSubscription.asFuture<void>(),
       stderrSubscription.asFuture<void>(),
@@ -209,7 +202,6 @@ class AndroidEmulator extends Emulator {
     return;
   }
 }
-
 
 @visibleForTesting
 Map<String, String> parseIniLines(List<String> contents) {

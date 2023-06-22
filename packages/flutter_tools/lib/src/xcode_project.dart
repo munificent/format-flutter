@@ -20,7 +20,7 @@ import 'template.dart';
 /// Represents an Xcode-based sub-project.
 ///
 /// This defines interfaces common to iOS and macOS projects.
-abstract class XcodeBasedProject extends FlutterProjectPlatform  {
+abstract class XcodeBasedProject extends FlutterProjectPlatform {
   static const String _defaultHostAppName = 'Runner';
 
   /// The Xcode workspace (.xcworkspace directory) of the host app.
@@ -45,7 +45,8 @@ abstract class XcodeBasedProject extends FlutterProjectPlatform  {
   Directory? _xcodeDirectoryWithExtension(String extension) {
     final List<FileSystemEntity> contents = hostAppRoot.listSync();
     for (final FileSystemEntity entity in contents) {
-      if (globals.fs.path.extension(entity.path) == extension && !globals.fs.path.basename(entity.path).startsWith('.')) {
+      if (globals.fs.path.extension(entity.path) == extension &&
+          !globals.fs.path.basename(entity.path).startsWith('.')) {
         return hostAppRoot.childDirectory(entity.basename);
       }
     }
@@ -67,13 +68,13 @@ abstract class XcodeBasedProject extends FlutterProjectPlatform  {
   File get xcodeProjectInfoFile => xcodeProject.childFile('project.pbxproj');
 
   /// The 'Runner.xcscheme' file of [xcodeProject].
-  File get xcodeProjectSchemeFile =>
-      xcodeProject.childDirectory('xcshareddata').childDirectory('xcschemes').childFile('Runner.xcscheme');
+  File get xcodeProjectSchemeFile => xcodeProject.childDirectory('xcshareddata').childDirectory('xcschemes').childFile(
+    'Runner.xcscheme',
+  );
 
-  File get xcodeProjectWorkspaceData =>
-      xcodeProject
-          .childDirectory('project.xcworkspace')
-          .childFile('contents.xcworkspacedata');
+  File get xcodeProjectWorkspaceData => xcodeProject.childDirectory('project.xcworkspace').childFile(
+    'contents.xcworkspacedata',
+  );
 
   /// Xcode workspace shared data directory for the host app.
   Directory? get xcodeWorkspaceSharedData => xcodeWorkspace?.childDirectory('xcshareddata');
@@ -168,7 +169,9 @@ class IosProject extends XcodeBasedProject {
   File xcodeConfigFor(String mode) => _flutterLibRoot.childDirectory('Flutter').childFile('$mode.xcconfig');
 
   @override
-  File get generatedEnvironmentVariableExportScript => _flutterLibRoot.childDirectory('Flutter').childFile('flutter_export_environment.sh');
+  File get generatedEnvironmentVariableExportScript => _flutterLibRoot.childDirectory('Flutter').childFile(
+    'flutter_export_environment.sh',
+  );
 
   File get appFrameworkInfoPlist => _flutterLibRoot.childDirectory('Flutter').childFile('AppFrameworkInfo.plist');
 
@@ -184,9 +187,7 @@ class IosProject extends XcodeBasedProject {
 
   /// Do all plugins support arm64 simulators to run natively on an ARM Mac?
   Future<bool> pluginsSupportArmSimulator() async {
-    final Directory podXcodeProject = hostAppRoot
-        .childDirectory('Pods')
-        .childDirectory('Pods.xcodeproj');
+    final Directory podXcodeProject = hostAppRoot.childDirectory('Pods').childDirectory('Pods.xcodeproj');
     if (!podXcodeProject.existsSync()) {
       // No plugins.
       return true;
@@ -207,7 +208,7 @@ class IosProject extends XcodeBasedProject {
   }
 
   @override
-  bool existsSync()  {
+  bool existsSync() {
     return parent.isModule || _editableDirectory.existsSync();
   }
 
@@ -243,14 +244,8 @@ class IosProject extends XcodeBasedProject {
       if (scheme == null) {
         info.reportFlavorNotFoundAndExit();
       }
-      final String? configuration = info.buildConfigurationFor(
-        buildInfo,
-        scheme,
-      );
-      buildContext = XcodeProjectBuildContext(
-        configuration: configuration,
-        scheme: scheme,
-      );
+      final String? configuration = info.buildConfigurationFor(buildInfo, scheme);
+      buildContext = XcodeProjectBuildContext(configuration: configuration, scheme: scheme);
     }
     return _productBundleIdentifierWithBuildContext(buildContext);
   }
@@ -266,7 +261,6 @@ class IosProject extends XcodeBasedProject {
   }
 
   final Map<XcodeProjectBuildContext?, String?> _productBundleIdentifiers = <XcodeProjectBuildContext?, String?>{};
-
 
   Future<String?> _parseProductBundleIdentifier(XcodeProjectBuildContext? buildContext) async {
     String? fromPlist;
@@ -357,6 +351,7 @@ class IosProject extends XcodeBasedProject {
     }
     return _hostAppBundleName ??= await _parseHostAppBundleName(buildInfo);
   }
+
   String? _hostAppBundleName;
 
   Future<String> _parseHostAppBundleName(BuildInfo? buildInfo) async {
@@ -402,20 +397,15 @@ class IosProject extends XcodeBasedProject {
       info.reportFlavorNotFoundAndExit();
     }
 
-    configuration ??= (await projectInfo())?.buildConfigurationFor(
-      buildInfo,
-      scheme,
-    );
-    return _buildSettingsForXcodeProjectBuildContext(
-      XcodeProjectBuildContext(
-        environmentType: environmentType,
-        scheme: scheme,
-        configuration: configuration,
-        target: target,
-        deviceId: deviceId,
-        isWatch: isWatch,
-      ),
-    );
+    configuration ??= (await projectInfo())?.buildConfigurationFor(buildInfo, scheme);
+    return _buildSettingsForXcodeProjectBuildContext(XcodeProjectBuildContext(
+      environmentType: environmentType,
+      scheme: scheme,
+      configuration: configuration,
+      target: target,
+      deviceId: deviceId,
+      isWatch: isWatch,
+    ));
   }
 
   Future<Map<String, String>?> _buildSettingsForXcodeProjectBuildContext(XcodeProjectBuildContext buildContext) async {
@@ -432,7 +422,8 @@ class IosProject extends XcodeBasedProject {
     return _buildSettingsByBuildContext[buildContext];
   }
 
-  final Map<XcodeProjectBuildContext, Map<String, String>> _buildSettingsByBuildContext = <XcodeProjectBuildContext, Map<String, String>>{};
+  final Map<XcodeProjectBuildContext, Map<String, String>> _buildSettingsByBuildContext =
+      <XcodeProjectBuildContext, Map<String, String>>{};
 
   Future<XcodeProjectInfo?> projectInfo() async {
     final XcodeProjectInterpreter? xcodeProjectInterpreter = globals.xcodeProjectInterpreter;
@@ -441,6 +432,7 @@ class IosProject extends XcodeBasedProject {
     }
     return _projectInfo ??= await xcodeProjectInterpreter.getInfo(hostAppRoot.path);
   }
+
   XcodeProjectInfo? _projectInfo;
 
   Future<Map<String, String>?> _xcodeProjectBuildSettings(XcodeProjectBuildContext buildContext) async {
@@ -449,10 +441,8 @@ class IosProject extends XcodeBasedProject {
       return null;
     }
 
-    final Map<String, String> buildSettings = await xcodeProjectInterpreter.getBuildSettings(
-      xcodeProject.path,
-      buildContext: buildContext,
-    );
+    final Map<String, String> buildSettings =
+        await xcodeProjectInterpreter.getBuildSettings(xcodeProject.path, buildContext: buildContext);
     if (buildSettings.isNotEmpty) {
       // No timeouts, flakes, or errors.
       return buildSettings;
@@ -485,7 +475,10 @@ class IosProject extends XcodeBasedProject {
       // In older versions of Xcode, if the target was a watchOS companion app,
       // the Info.plist file of the target contained the key WKCompanionAppBundleIdentifier.
       if (infoFile.existsSync()) {
-        final String? fromPlist = globals.plistParser.getValueFromFile<String>(infoFile.path, 'WKCompanionAppBundleIdentifier');
+        final String? fromPlist = globals.plistParser.getValueFromFile<String>(
+          infoFile.path,
+          'WKCompanionAppBundleIdentifier',
+        );
         if (bundleIdentifier == fromPlist) {
           return true;
         }
@@ -507,7 +500,9 @@ class IosProject extends XcodeBasedProject {
     // If key not found in Info.plist above, do more expensive check of build settings.
     // In newer versions of Xcode, the build settings of the watchOS companion
     // app's scheme should contain the key INFOPLIST_KEY_WKCompanionAppBundleIdentifier.
-    final bool watchIdentifierFound = xcodeProjectInfoFile.readAsStringSync().contains('WKCompanionAppBundleIdentifier');
+    final bool watchIdentifierFound = xcodeProjectInfoFile.readAsStringSync().contains(
+      'WKCompanionAppBundleIdentifier',
+    );
     if (!watchIdentifierFound) {
       return false;
     }
@@ -521,12 +516,8 @@ class IosProject extends XcodeBasedProject {
       if (scheme == defaultScheme) {
         continue;
       }
-      final Map<String, String>? allBuildSettings = await buildSettingsForBuildInfo(
-        buildInfo,
-        deviceId: deviceId,
-        scheme: scheme,
-        isWatch: true,
-      );
+      final Map<String, String>? allBuildSettings =
+          await buildSettingsForBuildInfo(buildInfo, deviceId: deviceId, scheme: scheme, isWatch: true);
       if (allBuildSettings != null) {
         final String? fromBuild = allBuildSettings['INFOPLIST_KEY_WKCompanionAppBundleIdentifier'];
         if (bundleIdentifier == fromBuild) {
@@ -567,10 +558,7 @@ class IosProject extends XcodeBasedProject {
     }
 
     ErrorHandlingFileSystem.deleteIfExists(ephemeralModuleDirectory, recursive: true);
-    await _overwriteFromTemplate(
-      globals.fs.path.join('module', 'ios', 'library'),
-      ephemeralModuleDirectory,
-    );
+    await _overwriteFromTemplate(globals.fs.path.join('module', 'ios', 'library'), ephemeralModuleDirectory);
     // Add ephemeral host app, if a editable host app does not already exist.
     if (!_editableDirectory.existsSync()) {
       await _overwriteFromTemplate(
@@ -587,44 +575,42 @@ class IosProject extends XcodeBasedProject {
   }
 
   @override
-  File get generatedXcodePropertiesFile => _flutterLibRoot
-    .childDirectory('Flutter')
-    .childFile('Generated.xcconfig');
+  File get generatedXcodePropertiesFile => _flutterLibRoot.childDirectory('Flutter').childFile('Generated.xcconfig');
 
   /// No longer compiled to this location.
   ///
   /// Used only for "flutter clean" to remove old references.
-  Directory get deprecatedCompiledDartFramework => _flutterLibRoot
-      .childDirectory('Flutter')
-      .childDirectory('App.framework');
+  Directory get deprecatedCompiledDartFramework => _flutterLibRoot.childDirectory('Flutter').childDirectory(
+    'App.framework',
+  );
 
   /// No longer copied to this location.
   ///
   /// Used only for "flutter clean" to remove old references.
-  Directory get deprecatedProjectFlutterFramework => _flutterLibRoot
-      .childDirectory('Flutter')
-      .childDirectory('Flutter.framework');
+  Directory get deprecatedProjectFlutterFramework => _flutterLibRoot.childDirectory('Flutter').childDirectory(
+    'Flutter.framework',
+  );
 
   /// Used only for "flutter clean" to remove old references.
-  File get flutterPodspec => _flutterLibRoot
-      .childDirectory('Flutter')
-      .childFile('Flutter.podspec');
+  File get flutterPodspec => _flutterLibRoot.childDirectory('Flutter').childFile('Flutter.podspec');
 
   Directory get pluginRegistrantHost {
     return isModule
-        ? _flutterLibRoot
-            .childDirectory('Flutter')
-            .childDirectory('FlutterPluginRegistrant')
+        ? _flutterLibRoot.childDirectory('Flutter').childDirectory('FlutterPluginRegistrant')
         : hostAppRoot.childDirectory(XcodeBasedProject._defaultHostAppName);
   }
 
   File get pluginRegistrantHeader {
-    final Directory registryDirectory = isModule ? pluginRegistrantHost.childDirectory('Classes') : pluginRegistrantHost;
+    final Directory registryDirectory = isModule
+        ? pluginRegistrantHost.childDirectory('Classes')
+        : pluginRegistrantHost;
     return registryDirectory.childFile('GeneratedPluginRegistrant.h');
   }
 
   File get pluginRegistrantImplementation {
-    final Directory registryDirectory = isModule ? pluginRegistrantHost.childDirectory('Classes') : pluginRegistrantHost;
+    final Directory registryDirectory = isModule
+        ? pluginRegistrantHost.childDirectory('Classes')
+        : pluginRegistrantHost;
     return registryDirectory.childFile('GeneratedPluginRegistrant.m');
   }
 
@@ -651,18 +637,14 @@ class IosProject extends XcodeBasedProject {
     // The dart project_name is in snake_case, this variable is the Title Case of the Project Name.
     final String titleCaseProjectName = snakeCaseToTitleCase(projectName);
 
-    template.render(
-      target,
-      <String, Object>{
-        'ios': true,
-        'projectName': projectName,
-        'titleCaseProjectName': titleCaseProjectName,
-        'iosIdentifier': iosBundleIdentifier,
-        'hasIosDevelopmentTeam': iosDevelopmentTeam != null && iosDevelopmentTeam.isNotEmpty,
-        'iosDevelopmentTeam': iosDevelopmentTeam ?? '',
-      },
-      printStatusWhenWriting: false,
-    );
+    template.render(target, <String, Object>{
+      'ios': true,
+      'projectName': projectName,
+      'titleCaseProjectName': titleCaseProjectName,
+      'iosIdentifier': iosBundleIdentifier,
+      'hasIosDevelopmentTeam': iosDevelopmentTeam != null && iosDevelopmentTeam.isNotEmpty,
+      'iosDevelopmentTeam': iosDevelopmentTeam ?? '',
+    }, printStatusWhenWriting: false);
   }
 }
 
@@ -724,11 +706,7 @@ class MacOSProject extends XcodeBasedProject {
 
   Future<void> _updateGeneratedXcodeConfigIfNeeded() async {
     if (globals.cache.isOlderThanToolsStamp(generatedXcodePropertiesFile)) {
-      await xcode.updateGeneratedXcodeProperties(
-        project: parent,
-        buildInfo: BuildInfo.debug,
-        useMacOSConfig: true,
-      );
+      await xcode.updateGeneratedXcodeProperties(project: parent, buildInfo: BuildInfo.debug, useMacOSConfig: true);
     }
   }
 }

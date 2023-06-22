@@ -33,15 +33,12 @@ void main() {
     memoryFileSystem = MemoryFileSystem.test();
     fakePlatform = FakePlatform(
       operatingSystem: 'macos',
-      environment: <String, String>{
-        'FLUTTER_STORAGE_BASE_URL': storageBaseUrl,
-      },
+      environment: <String, String>{'FLUTTER_STORAGE_BASE_URL': storageBaseUrl},
     );
 
     outputDirectory = memoryFileSystem.systemTempDirectory
         .createTempSync('flutter_build_framework_test_output.')
-        .childDirectory('Debug')
-      ..createSync();
+        .childDirectory('Debug')..createSync();
   });
 
   group('build ios-framework', () {
@@ -62,82 +59,88 @@ void main() {
           ..writeAsStringSync(engineRevision);
       });
 
-      testUsingContext('version unknown', () async {
-        const String frameworkVersion = '0.0.0-unknown';
-        final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(frameworkVersion: frameworkVersion);
+      testUsingContext(
+        'version unknown',
+        () async {
+          const String frameworkVersion = '0.0.0-unknown';
+          final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(frameworkVersion: frameworkVersion);
 
-        final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
-          logger: BufferLogger.test(),
-          buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-          platform: fakePlatform,
-          flutterVersion: fakeFlutterVersion,
-          cache: cache,
-          verboseHelp: false,
-        );
+          final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
+            logger: BufferLogger.test(),
+            buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+            platform: fakePlatform,
+            flutterVersion: fakeFlutterVersion,
+            cache: cache,
+            verboseHelp: false,
+          );
 
-        expect(() => command.produceFlutterPodspec(BuildMode.debug, outputDirectory),
-            throwsToolExit(message: '--cocoapods is only supported on the beta or stable channel. Detected version is $frameworkVersion'));
-      }, overrides: <Type, Generator>{
-        FileSystem: () => memoryFileSystem,
-        ProcessManager: () => FakeProcessManager.any(),
-      });
+          expect(() => command.produceFlutterPodspec(BuildMode.debug, outputDirectory), throwsToolExit(
+            message:
+                '--cocoapods is only supported on the beta or stable channel. Detected version is $frameworkVersion',
+          ));
+        },
+        overrides: <Type, Generator>{
+          FileSystem: () => memoryFileSystem,
+          ProcessManager: () => FakeProcessManager.any(),
+        },
+      );
 
-      testUsingContext('throws when not on a released version', () async {
-        const String frameworkVersion = 'v1.13.10+hotfix-pre.2';
-        const GitTagVersion gitTagVersion = GitTagVersion(
-          x: 1,
-          y: 13,
-          z: 10,
-          hotfix: 13,
-          commits: 2,
-        );
-        final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
-          gitTagVersion: gitTagVersion,
-          frameworkVersion: frameworkVersion,
-        );
+      testUsingContext(
+        'throws when not on a released version',
+        () async {
+          const String frameworkVersion = 'v1.13.10+hotfix-pre.2';
+          const GitTagVersion gitTagVersion = GitTagVersion(x: 1, y: 13, z: 10, hotfix: 13, commits: 2);
+          final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
+            gitTagVersion: gitTagVersion,
+            frameworkVersion: frameworkVersion,
+          );
 
-        final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
-          logger: BufferLogger.test(),
-          buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-          platform: fakePlatform,
-          flutterVersion: fakeFlutterVersion,
-          cache: cache,
-          verboseHelp: false,
-        );
+          final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
+            logger: BufferLogger.test(),
+            buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+            platform: fakePlatform,
+            flutterVersion: fakeFlutterVersion,
+            cache: cache,
+            verboseHelp: false,
+          );
 
-        expect(() => command.produceFlutterPodspec(BuildMode.debug, outputDirectory),
-            throwsToolExit(message: '--cocoapods is only supported on the beta or stable channel. Detected version is $frameworkVersion'));
-      }, overrides: <Type, Generator>{
-        FileSystem: () => memoryFileSystem,
-        ProcessManager: () => FakeProcessManager.any(),
-      });
+          expect(() => command.produceFlutterPodspec(BuildMode.debug, outputDirectory), throwsToolExit(
+            message:
+                '--cocoapods is only supported on the beta or stable channel. Detected version is $frameworkVersion',
+          ));
+        },
+        overrides: <Type, Generator>{
+          FileSystem: () => memoryFileSystem,
+          ProcessManager: () => FakeProcessManager.any(),
+        },
+      );
 
-      testUsingContext('throws when license not found', () async {
-        final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
-          gitTagVersion: const GitTagVersion(
-            x: 1,
-            y: 13,
-            z: 10,
-            hotfix: 13,
-            commits: 0,
-          ),
-        );
+      testUsingContext(
+        'throws when license not found',
+        () async {
+          final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
+            gitTagVersion: const GitTagVersion(x: 1, y: 13, z: 10, hotfix: 13, commits: 0),
+          );
 
-        final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
-          logger: BufferLogger.test(),
-          buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-          platform: fakePlatform,
-          flutterVersion: fakeFlutterVersion,
-          cache: cache,
-          verboseHelp: false,
-        );
+          final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
+            logger: BufferLogger.test(),
+            buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+            platform: fakePlatform,
+            flutterVersion: fakeFlutterVersion,
+            cache: cache,
+            verboseHelp: false,
+          );
 
-        expect(() => command.produceFlutterPodspec(BuildMode.debug, outputDirectory),
-            throwsToolExit(message: 'Could not find license'));
-      }, overrides: <Type, Generator>{
-        FileSystem: () => memoryFileSystem,
-        ProcessManager: () => FakeProcessManager.any(),
-      });
+          expect(
+            () => command.produceFlutterPodspec(BuildMode.debug, outputDirectory),
+            throwsToolExit(message: 'Could not find license'),
+          );
+        },
+        overrides: <Type, Generator>{
+          FileSystem: () => memoryFileSystem,
+          ProcessManager: () => FakeProcessManager.any(),
+        },
+      );
 
       group('is created', () {
         const String frameworkVersion = 'v1.13.11+hotfix.13';
@@ -152,130 +155,144 @@ void main() {
         });
 
         group('on master channel', () {
-          testUsingContext('created when forced', () async {
-            const GitTagVersion gitTagVersion = GitTagVersion(
-              x: 1,
-              y: 13,
-              z: 11,
-              hotfix: 13,
-              commits: 100,
-            );
-            final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
-              gitTagVersion: gitTagVersion,
-              frameworkVersion: frameworkVersion,
-            );
+          testUsingContext(
+            'created when forced',
+            () async {
+              const GitTagVersion gitTagVersion = GitTagVersion(x: 1, y: 13, z: 11, hotfix: 13, commits: 100);
+              final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
+                gitTagVersion: gitTagVersion,
+                frameworkVersion: frameworkVersion,
+              );
 
-            final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
-              logger: BufferLogger.test(),
-              buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-              platform: fakePlatform,
-              flutterVersion: fakeFlutterVersion,
-              cache: cache,
-              verboseHelp: false,
-            );
-            command.produceFlutterPodspec(BuildMode.debug, outputDirectory, force: true);
+              final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
+                logger: BufferLogger.test(),
+                buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+                platform: fakePlatform,
+                flutterVersion: fakeFlutterVersion,
+                cache: cache,
+                verboseHelp: false,
+              );
+              command.produceFlutterPodspec(BuildMode.debug, outputDirectory, force: true);
 
-            final File expectedPodspec = outputDirectory.childFile('Flutter.podspec');
-            expect(expectedPodspec.existsSync(), isTrue);
-          }, overrides: <Type, Generator>{
-            FileSystem: () => memoryFileSystem,
-            ProcessManager: () => FakeProcessManager.any(),
-          });
+              final File expectedPodspec = outputDirectory.childFile('Flutter.podspec');
+              expect(expectedPodspec.existsSync(), isTrue);
+            },
+            overrides: <Type, Generator>{
+              FileSystem: () => memoryFileSystem,
+              ProcessManager: () => FakeProcessManager.any(),
+            },
+          );
         });
 
         group('not on master channel', () {
           late FakeFlutterVersion fakeFlutterVersion;
           setUp(() {
-            const GitTagVersion gitTagVersion = GitTagVersion(
-              x: 1,
-              y: 13,
-              z: 11,
-              hotfix: 13,
-              commits: 0,
-            );
-            fakeFlutterVersion = FakeFlutterVersion(
-              gitTagVersion: gitTagVersion,
-              frameworkVersion: frameworkVersion,
-            );
+            const GitTagVersion gitTagVersion = GitTagVersion(x: 1, y: 13, z: 11, hotfix: 13, commits: 0);
+            fakeFlutterVersion = FakeFlutterVersion(gitTagVersion: gitTagVersion, frameworkVersion: frameworkVersion);
           });
 
-          testUsingContext('contains license and version', () async {
-            final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
-              logger: BufferLogger.test(),
-              buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-              platform: fakePlatform,
-              flutterVersion: fakeFlutterVersion,
-              cache: cache,
-              verboseHelp: false,
-            );
-            command.produceFlutterPodspec(BuildMode.debug, outputDirectory);
+          testUsingContext(
+            'contains license and version',
+            () async {
+              final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
+                logger: BufferLogger.test(),
+                buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+                platform: fakePlatform,
+                flutterVersion: fakeFlutterVersion,
+                cache: cache,
+                verboseHelp: false,
+              );
+              command.produceFlutterPodspec(BuildMode.debug, outputDirectory);
 
-            final File expectedPodspec = outputDirectory.childFile('Flutter.podspec');
-            final String podspecContents = expectedPodspec.readAsStringSync();
-            expect(podspecContents, contains("'1.13.1113'"));
-            expect(podspecContents, contains('# $frameworkVersion'));
-            expect(podspecContents, contains(licenseText));
-          }, overrides: <Type, Generator>{
-            FileSystem: () => memoryFileSystem,
-            ProcessManager: () => FakeProcessManager.any(),
-          });
+              final File expectedPodspec = outputDirectory.childFile('Flutter.podspec');
+              final String podspecContents = expectedPodspec.readAsStringSync();
+              expect(podspecContents, contains("'1.13.1113'"));
+              expect(podspecContents, contains('# $frameworkVersion'));
+              expect(podspecContents, contains(licenseText));
+            },
+            overrides: <Type, Generator>{
+              FileSystem: () => memoryFileSystem,
+              ProcessManager: () => FakeProcessManager.any(),
+            },
+          );
 
-          testUsingContext('debug URL', () async {
-            final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
-              logger: BufferLogger.test(),
-              buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-              platform: fakePlatform,
-              flutterVersion: fakeFlutterVersion,
-              cache: cache,
-              verboseHelp: false,
-            );
-            command.produceFlutterPodspec(BuildMode.debug, outputDirectory);
+          testUsingContext(
+            'debug URL',
+            () async {
+              final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
+                logger: BufferLogger.test(),
+                buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+                platform: fakePlatform,
+                flutterVersion: fakeFlutterVersion,
+                cache: cache,
+                verboseHelp: false,
+              );
+              command.produceFlutterPodspec(BuildMode.debug, outputDirectory);
 
-            final File expectedPodspec = outputDirectory.childFile('Flutter.podspec');
-            final String podspecContents = expectedPodspec.readAsStringSync();
-            expect(podspecContents, contains("'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/ios/artifacts.zip'"));
-          }, overrides: <Type, Generator>{
-            FileSystem: () => memoryFileSystem,
-            ProcessManager: () => FakeProcessManager.any(),
-          });
+              final File expectedPodspec = outputDirectory.childFile('Flutter.podspec');
+              final String podspecContents = expectedPodspec.readAsStringSync();
+              expect(
+                podspecContents,
+                contains("'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/ios/artifacts.zip'"),
+              );
+            },
+            overrides: <Type, Generator>{
+              FileSystem: () => memoryFileSystem,
+              ProcessManager: () => FakeProcessManager.any(),
+            },
+          );
 
-          testUsingContext('profile URL', () async {
-            final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
-              logger: BufferLogger.test(),
-              buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-              platform: fakePlatform,
-              flutterVersion: fakeFlutterVersion,
-              cache: cache,
-              verboseHelp: false,
-            );
-            command.produceFlutterPodspec(BuildMode.profile, outputDirectory);
+          testUsingContext(
+            'profile URL',
+            () async {
+              final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
+                logger: BufferLogger.test(),
+                buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+                platform: fakePlatform,
+                flutterVersion: fakeFlutterVersion,
+                cache: cache,
+                verboseHelp: false,
+              );
+              command.produceFlutterPodspec(BuildMode.profile, outputDirectory);
 
-            final File expectedPodspec = outputDirectory.childFile('Flutter.podspec');
-            final String podspecContents = expectedPodspec.readAsStringSync();
-            expect(podspecContents, contains("'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/ios-profile/artifacts.zip'"));
-          }, overrides: <Type, Generator>{
-            FileSystem: () => memoryFileSystem,
-            ProcessManager: () => FakeProcessManager.any(),
-          });
+              final File expectedPodspec = outputDirectory.childFile('Flutter.podspec');
+              final String podspecContents = expectedPodspec.readAsStringSync();
+              expect(
+                podspecContents,
+                contains("'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/ios-profile/artifacts.zip'"),
+              );
+            },
+            overrides: <Type, Generator>{
+              FileSystem: () => memoryFileSystem,
+              ProcessManager: () => FakeProcessManager.any(),
+            },
+          );
 
-          testUsingContext('release URL', () async {
-            final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
-              logger: BufferLogger.test(),
-              buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-              platform: fakePlatform,
-              flutterVersion: fakeFlutterVersion,
-              cache: cache,
-              verboseHelp: false,
-            );
-            command.produceFlutterPodspec(BuildMode.release, outputDirectory);
+          testUsingContext(
+            'release URL',
+            () async {
+              final BuildIOSFrameworkCommand command = BuildIOSFrameworkCommand(
+                logger: BufferLogger.test(),
+                buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+                platform: fakePlatform,
+                flutterVersion: fakeFlutterVersion,
+                cache: cache,
+                verboseHelp: false,
+              );
+              command.produceFlutterPodspec(BuildMode.release, outputDirectory);
 
-            final File expectedPodspec = outputDirectory.childFile('Flutter.podspec');
-            final String podspecContents = expectedPodspec.readAsStringSync();
-            expect(podspecContents, contains("'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/ios-release/artifacts.zip'"));
-          }, overrides: <Type, Generator>{
-            FileSystem: () => memoryFileSystem,
-            ProcessManager: () => FakeProcessManager.any(),
-          });
+              final File expectedPodspec = outputDirectory.childFile('Flutter.podspec');
+              final String podspecContents = expectedPodspec.readAsStringSync();
+              expect(
+                podspecContents,
+                contains("'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/ios-release/artifacts.zip'"),
+              );
+            },
+            overrides: <Type, Generator>{
+              FileSystem: () => memoryFileSystem,
+              ProcessManager: () => FakeProcessManager.any(),
+            },
+          );
         });
       });
     });
@@ -299,82 +316,88 @@ void main() {
           ..writeAsStringSync(engineRevision);
       });
 
-      testUsingContext('version unknown', () async {
-        const String frameworkVersion = '0.0.0-unknown';
-        final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(frameworkVersion: frameworkVersion);
+      testUsingContext(
+        'version unknown',
+        () async {
+          const String frameworkVersion = '0.0.0-unknown';
+          final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(frameworkVersion: frameworkVersion);
 
-        final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
-          logger: BufferLogger.test(),
-          buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-          platform: fakePlatform,
-          flutterVersion: fakeFlutterVersion,
-          cache: cache,
-          verboseHelp: false,
-        );
+          final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
+            logger: BufferLogger.test(),
+            buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+            platform: fakePlatform,
+            flutterVersion: fakeFlutterVersion,
+            cache: cache,
+            verboseHelp: false,
+          );
 
-        expect(() => command.produceFlutterPodspec(BuildMode.debug, outputDirectory),
-            throwsToolExit(message: '--cocoapods is only supported on the beta or stable channel. Detected version is $frameworkVersion'));
-      }, overrides: <Type, Generator>{
-        FileSystem: () => memoryFileSystem,
-        ProcessManager: () => FakeProcessManager.any(),
-      });
+          expect(() => command.produceFlutterPodspec(BuildMode.debug, outputDirectory), throwsToolExit(
+            message:
+                '--cocoapods is only supported on the beta or stable channel. Detected version is $frameworkVersion',
+          ));
+        },
+        overrides: <Type, Generator>{
+          FileSystem: () => memoryFileSystem,
+          ProcessManager: () => FakeProcessManager.any(),
+        },
+      );
 
-      testUsingContext('throws when not on a released version', () async {
-        const String frameworkVersion = 'v1.13.10+hotfix-pre.2';
-        const GitTagVersion gitTagVersion = GitTagVersion(
-          x: 1,
-          y: 13,
-          z: 10,
-          hotfix: 13,
-          commits: 2,
-        );
-        final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
-          gitTagVersion: gitTagVersion,
-          frameworkVersion: frameworkVersion,
-        );
+      testUsingContext(
+        'throws when not on a released version',
+        () async {
+          const String frameworkVersion = 'v1.13.10+hotfix-pre.2';
+          const GitTagVersion gitTagVersion = GitTagVersion(x: 1, y: 13, z: 10, hotfix: 13, commits: 2);
+          final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
+            gitTagVersion: gitTagVersion,
+            frameworkVersion: frameworkVersion,
+          );
 
-        final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
-          logger: BufferLogger.test(),
-          buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-          platform: fakePlatform,
-          flutterVersion: fakeFlutterVersion,
-          cache: cache,
-          verboseHelp: false,
-        );
+          final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
+            logger: BufferLogger.test(),
+            buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+            platform: fakePlatform,
+            flutterVersion: fakeFlutterVersion,
+            cache: cache,
+            verboseHelp: false,
+          );
 
-        expect(() => command.produceFlutterPodspec(BuildMode.debug, outputDirectory),
-            throwsToolExit(message: '--cocoapods is only supported on the beta or stable channel. Detected version is $frameworkVersion'));
-      }, overrides: <Type, Generator>{
-        FileSystem: () => memoryFileSystem,
-        ProcessManager: () => FakeProcessManager.any(),
-      });
+          expect(() => command.produceFlutterPodspec(BuildMode.debug, outputDirectory), throwsToolExit(
+            message:
+                '--cocoapods is only supported on the beta or stable channel. Detected version is $frameworkVersion',
+          ));
+        },
+        overrides: <Type, Generator>{
+          FileSystem: () => memoryFileSystem,
+          ProcessManager: () => FakeProcessManager.any(),
+        },
+      );
 
-      testUsingContext('throws when license not found', () async {
-        final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
-          gitTagVersion: const GitTagVersion(
-            x: 1,
-            y: 13,
-            z: 10,
-            hotfix: 13,
-            commits: 0,
-          ),
-        );
+      testUsingContext(
+        'throws when license not found',
+        () async {
+          final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
+            gitTagVersion: const GitTagVersion(x: 1, y: 13, z: 10, hotfix: 13, commits: 0),
+          );
 
-        final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
-          logger: BufferLogger.test(),
-          buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-          platform: fakePlatform,
-          flutterVersion: fakeFlutterVersion,
-          cache: cache,
-          verboseHelp: false,
-        );
+          final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
+            logger: BufferLogger.test(),
+            buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+            platform: fakePlatform,
+            flutterVersion: fakeFlutterVersion,
+            cache: cache,
+            verboseHelp: false,
+          );
 
-        expect(() => command.produceFlutterPodspec(BuildMode.debug, outputDirectory),
-            throwsToolExit(message: 'Could not find license'));
-      }, overrides: <Type, Generator>{
-        FileSystem: () => memoryFileSystem,
-        ProcessManager: () => FakeProcessManager.any(),
-      });
+          expect(
+            () => command.produceFlutterPodspec(BuildMode.debug, outputDirectory),
+            throwsToolExit(message: 'Could not find license'),
+          );
+        },
+        overrides: <Type, Generator>{
+          FileSystem: () => memoryFileSystem,
+          ProcessManager: () => FakeProcessManager.any(),
+        },
+      );
 
       group('is created', () {
         const String frameworkVersion = 'v1.13.11+hotfix.13';
@@ -389,130 +412,142 @@ void main() {
         });
 
         group('on master channel', () {
-          testUsingContext('created when forced', () async {
-            const GitTagVersion gitTagVersion = GitTagVersion(
-              x: 1,
-              y: 13,
-              z: 11,
-              hotfix: 13,
-              commits: 100,
-            );
-            final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
-              gitTagVersion: gitTagVersion,
-              frameworkVersion: frameworkVersion,
-            );
+          testUsingContext(
+            'created when forced',
+            () async {
+              const GitTagVersion gitTagVersion = GitTagVersion(x: 1, y: 13, z: 11, hotfix: 13, commits: 100);
+              final FakeFlutterVersion fakeFlutterVersion = FakeFlutterVersion(
+                gitTagVersion: gitTagVersion,
+                frameworkVersion: frameworkVersion,
+              );
 
-            final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
-              logger: BufferLogger.test(),
-              buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-              platform: fakePlatform,
-              flutterVersion: fakeFlutterVersion,
-              cache: cache,
-              verboseHelp: false,
-            );
-            command.produceFlutterPodspec(BuildMode.debug, outputDirectory, force: true);
+              final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
+                logger: BufferLogger.test(),
+                buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+                platform: fakePlatform,
+                flutterVersion: fakeFlutterVersion,
+                cache: cache,
+                verboseHelp: false,
+              );
+              command.produceFlutterPodspec(BuildMode.debug, outputDirectory, force: true);
 
-            final File expectedPodspec = outputDirectory.childFile('FlutterMacOS.podspec');
-            expect(expectedPodspec.existsSync(), isTrue);
-          }, overrides: <Type, Generator>{
-            FileSystem: () => memoryFileSystem,
-            ProcessManager: () => FakeProcessManager.any(),
-          });
+              final File expectedPodspec = outputDirectory.childFile('FlutterMacOS.podspec');
+              expect(expectedPodspec.existsSync(), isTrue);
+            },
+            overrides: <Type, Generator>{
+              FileSystem: () => memoryFileSystem,
+              ProcessManager: () => FakeProcessManager.any(),
+            },
+          );
         });
 
         group('not on master channel', () {
           late FakeFlutterVersion fakeFlutterVersion;
           setUp(() {
-            const GitTagVersion gitTagVersion = GitTagVersion(
-              x: 1,
-              y: 13,
-              z: 11,
-              hotfix: 13,
-              commits: 0,
-            );
-            fakeFlutterVersion = FakeFlutterVersion(
-              gitTagVersion: gitTagVersion,
-              frameworkVersion: frameworkVersion,
-            );
+            const GitTagVersion gitTagVersion = GitTagVersion(x: 1, y: 13, z: 11, hotfix: 13, commits: 0);
+            fakeFlutterVersion = FakeFlutterVersion(gitTagVersion: gitTagVersion, frameworkVersion: frameworkVersion);
           });
 
-          testUsingContext('contains license and version', () async {
-            final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
-              logger: BufferLogger.test(),
-              buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-              platform: fakePlatform,
-              flutterVersion: fakeFlutterVersion,
-              cache: cache,
-              verboseHelp: false,
-            );
-            command.produceFlutterPodspec(BuildMode.debug, outputDirectory);
+          testUsingContext(
+            'contains license and version',
+            () async {
+              final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
+                logger: BufferLogger.test(),
+                buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+                platform: fakePlatform,
+                flutterVersion: fakeFlutterVersion,
+                cache: cache,
+                verboseHelp: false,
+              );
+              command.produceFlutterPodspec(BuildMode.debug, outputDirectory);
 
-            final File expectedPodspec = outputDirectory.childFile('FlutterMacOS.podspec');
-            final String podspecContents = expectedPodspec.readAsStringSync();
-            expect(podspecContents, contains("'1.13.1113'"));
-            expect(podspecContents, contains('# $frameworkVersion'));
-            expect(podspecContents, contains(licenseText));
-          }, overrides: <Type, Generator>{
-            FileSystem: () => memoryFileSystem,
-            ProcessManager: () => FakeProcessManager.any(),
-          });
+              final File expectedPodspec = outputDirectory.childFile('FlutterMacOS.podspec');
+              final String podspecContents = expectedPodspec.readAsStringSync();
+              expect(podspecContents, contains("'1.13.1113'"));
+              expect(podspecContents, contains('# $frameworkVersion'));
+              expect(podspecContents, contains(licenseText));
+            },
+            overrides: <Type, Generator>{
+              FileSystem: () => memoryFileSystem,
+              ProcessManager: () => FakeProcessManager.any(),
+            },
+          );
 
-          testUsingContext('debug URL', () async {
-            final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
-              logger: BufferLogger.test(),
-              buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-              platform: fakePlatform,
-              flutterVersion: fakeFlutterVersion,
-              cache: cache,
-              verboseHelp: false,
-            );
-            command.produceFlutterPodspec(BuildMode.debug, outputDirectory);
+          testUsingContext(
+            'debug URL',
+            () async {
+              final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
+                logger: BufferLogger.test(),
+                buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+                platform: fakePlatform,
+                flutterVersion: fakeFlutterVersion,
+                cache: cache,
+                verboseHelp: false,
+              );
+              command.produceFlutterPodspec(BuildMode.debug, outputDirectory);
 
-            final File expectedPodspec = outputDirectory.childFile('FlutterMacOS.podspec');
-            final String podspecContents = expectedPodspec.readAsStringSync();
-            expect(podspecContents, contains("'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/darwin-x64/artifacts.zip'"));
-          }, overrides: <Type, Generator>{
-            FileSystem: () => memoryFileSystem,
-            ProcessManager: () => FakeProcessManager.any(),
-          });
+              final File expectedPodspec = outputDirectory.childFile('FlutterMacOS.podspec');
+              final String podspecContents = expectedPodspec.readAsStringSync();
+              expect(
+                podspecContents,
+                contains("'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/darwin-x64/artifacts.zip'"),
+              );
+            },
+            overrides: <Type, Generator>{
+              FileSystem: () => memoryFileSystem,
+              ProcessManager: () => FakeProcessManager.any(),
+            },
+          );
 
-          testUsingContext('profile URL', () async {
-            final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
-              logger: BufferLogger.test(),
-              buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-              platform: fakePlatform,
-              flutterVersion: fakeFlutterVersion,
-              cache: cache,
-              verboseHelp: false,
-            );
-            command.produceFlutterPodspec(BuildMode.profile, outputDirectory);
+          testUsingContext(
+            'profile URL',
+            () async {
+              final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
+                logger: BufferLogger.test(),
+                buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+                platform: fakePlatform,
+                flutterVersion: fakeFlutterVersion,
+                cache: cache,
+                verboseHelp: false,
+              );
+              command.produceFlutterPodspec(BuildMode.profile, outputDirectory);
 
-            final File expectedPodspec = outputDirectory.childFile('FlutterMacOS.podspec');
-            final String podspecContents = expectedPodspec.readAsStringSync();
-            expect(podspecContents, contains("'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/darwin-x64-profile/artifacts.zip'"));
-          }, overrides: <Type, Generator>{
-            FileSystem: () => memoryFileSystem,
-            ProcessManager: () => FakeProcessManager.any(),
-          });
+              final File expectedPodspec = outputDirectory.childFile('FlutterMacOS.podspec');
+              final String podspecContents = expectedPodspec.readAsStringSync();
+              expect(podspecContents, contains(
+                "'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/darwin-x64-profile/artifacts.zip'",
+              ));
+            },
+            overrides: <Type, Generator>{
+              FileSystem: () => memoryFileSystem,
+              ProcessManager: () => FakeProcessManager.any(),
+            },
+          );
 
-          testUsingContext('release URL', () async {
-            final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
-              logger: BufferLogger.test(),
-              buildSystem: TestBuildSystem.all(BuildResult(success: true)),
-              platform: fakePlatform,
-              flutterVersion: fakeFlutterVersion,
-              cache: cache,
-              verboseHelp: false,
-            );
-            command.produceFlutterPodspec(BuildMode.release, outputDirectory);
+          testUsingContext(
+            'release URL',
+            () async {
+              final BuildMacOSFrameworkCommand command = BuildMacOSFrameworkCommand(
+                logger: BufferLogger.test(),
+                buildSystem: TestBuildSystem.all(BuildResult(success: true)),
+                platform: fakePlatform,
+                flutterVersion: fakeFlutterVersion,
+                cache: cache,
+                verboseHelp: false,
+              );
+              command.produceFlutterPodspec(BuildMode.release, outputDirectory);
 
-            final File expectedPodspec = outputDirectory.childFile('FlutterMacOS.podspec');
-            final String podspecContents = expectedPodspec.readAsStringSync();
-            expect(podspecContents, contains("'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/darwin-x64-release/artifacts.zip'"));
-          }, overrides: <Type, Generator>{
-            FileSystem: () => memoryFileSystem,
-            ProcessManager: () => FakeProcessManager.any(),
-          });
+              final File expectedPodspec = outputDirectory.childFile('FlutterMacOS.podspec');
+              final String podspecContents = expectedPodspec.readAsStringSync();
+              expect(podspecContents, contains(
+                "'$storageBaseUrl/flutter_infra_release/flutter/$engineRevision/darwin-x64-release/artifacts.zip'",
+              ));
+            },
+            overrides: <Type, Generator>{
+              FileSystem: () => memoryFileSystem,
+              ProcessManager: () => FakeProcessManager.any(),
+            },
+          );
         });
       });
     });
@@ -545,12 +580,10 @@ void main() {
           output.childDirectory('Combine.xcframework').path,
         ],
       ));
-      await BuildFrameworkCommand.produceXCFramework(
-        <Directory>[frameworkA, frameworkB],
-        'Combine',
-        output,
-        fakeProcessManager,
-      );
+      await BuildFrameworkCommand.produceXCFramework(<Directory>[
+        frameworkA,
+        frameworkB,
+      ], 'Combine', output, fakeProcessManager);
       expect(fakeProcessManager, hasNoRemainingExpectations);
     });
 
@@ -581,12 +614,10 @@ void main() {
           output.childDirectory('Combine.xcframework').path,
         ],
       ));
-      await BuildFrameworkCommand.produceXCFramework(
-        <Directory>[frameworkA, frameworkB],
-        'Combine',
-        output,
-        fakeProcessManager,
-      );
+      await BuildFrameworkCommand.produceXCFramework(<Directory>[
+        frameworkA,
+        frameworkB,
+      ], 'Combine', output, fakeProcessManager);
       expect(fakeProcessManager, hasNoRemainingExpectations);
     });
   });

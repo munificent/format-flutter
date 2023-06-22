@@ -24,16 +24,16 @@ class LinuxDevice extends DesktopDevice {
     required Logger logger,
     required FileSystem fileSystem,
     required OperatingSystemUtils operatingSystemUtils,
-  })  : _operatingSystemUtils = operatingSystemUtils,
-        super(
-          'linux',
-          platformType: PlatformType.linux,
-          ephemeral: false,
-          logger: logger,
-          processManager: processManager,
-          fileSystem: fileSystem,
-          operatingSystemUtils: operatingSystemUtils,
-        );
+  }) : _operatingSystemUtils = operatingSystemUtils,
+       super(
+         'linux',
+         platformType: PlatformType.linux,
+         ephemeral: false,
+         logger: logger,
+         processManager: processManager,
+         fileSystem: fileSystem,
+         operatingSystemUtils: operatingSystemUtils,
+       );
 
   final OperatingSystemUtils _operatingSystemUtils;
 
@@ -57,16 +57,8 @@ class LinuxDevice extends DesktopDevice {
   }
 
   @override
-  Future<void> buildForDevice({
-    String? mainPath,
-    required BuildInfo buildInfo,
-  }) async {
-    await buildLinux(
-      FlutterProject.current().linux,
-      buildInfo,
-      target: mainPath,
-      targetPlatform: await targetPlatform,
-    );
+  Future<void> buildForDevice({String? mainPath, required BuildInfo buildInfo}) async {
+    await buildLinux(FlutterProject.current().linux, buildInfo, target: mainPath, targetPlatform: await targetPlatform);
   }
 
   @override
@@ -84,10 +76,7 @@ class LinuxDevices extends PollingDeviceDiscovery {
     required ProcessManager processManager,
     required Logger logger,
   }) : _platform = platform,
-       _linuxWorkflow = LinuxWorkflow(
-          platform: platform,
-          featureFlags: featureFlags,
-       ),
+       _linuxWorkflow = LinuxWorkflow(platform: platform, featureFlags: featureFlags),
        _fileSystem = fileSystem,
        _logger = logger,
        _processManager = processManager,
@@ -108,7 +97,7 @@ class LinuxDevices extends PollingDeviceDiscovery {
   bool get canListAnything => _linuxWorkflow.canListDevices;
 
   @override
-  Future<List<Device>> pollingGetDevices({ Duration? timeout }) async {
+  Future<List<Device>> pollingGetDevices({Duration? timeout}) async {
     if (!canListAnything) {
       return const <Device>[];
     }

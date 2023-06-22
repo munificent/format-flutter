@@ -11,15 +11,13 @@ import '../flutter_manifest.dart';
 import '../globals.dart' as globals;
 import '../project.dart';
 
-String flutterMacOSFrameworkDir(BuildMode mode, FileSystem fileSystem,
-    Artifacts artifacts) {
+String flutterMacOSFrameworkDir(BuildMode mode, FileSystem fileSystem, Artifacts artifacts) {
   final String flutterMacOSFramework = artifacts.getArtifactPath(
     Artifact.flutterMacOSFramework,
     platform: TargetPlatform.darwin,
     mode: mode,
   );
-  return fileSystem.path
-      .normalize(fileSystem.path.dirname(flutterMacOSFramework));
+  return fileSystem.path.normalize(fileSystem.path.dirname(flutterMacOSFramework));
 }
 
 /// Writes or rewrites Xcode property files with the specified information.
@@ -70,8 +68,8 @@ void _updateGeneratedXcodePropertiesFile({
   localsBuffer.writeln('// This is a generated file; do not edit or check into version control.');
   xcodeBuildSettings.forEach(localsBuffer.writeln);
   final File generatedXcodePropertiesFile = useMacOSConfig
-    ? project.macos.generatedXcodePropertiesFile
-    : project.ios.generatedXcodePropertiesFile;
+      ? project.macos.generatedXcodePropertiesFile
+      : project.ios.generatedXcodePropertiesFile;
 
   generatedXcodePropertiesFile.createSync(recursive: true);
   generatedXcodePropertiesFile.writeAsStringSync(localsBuffer.toString());
@@ -90,50 +88,37 @@ void _updateGeneratedEnvironmentVariablesScript({
   localsBuffer.writeln('#!/bin/sh');
   localsBuffer.writeln('# This is a generated file; do not edit or check into version control.');
   for (final String line in xcodeBuildSettings) {
-    if (!line.contains('[')) { // Exported conditional Xcode build settings do not work.
+    if (!line.contains('[')) {
+      // Exported conditional Xcode build settings do not work.
       localsBuffer.writeln('export "$line"');
     }
   }
 
   final File generatedModuleBuildPhaseScript = useMacOSConfig
-    ? project.macos.generatedEnvironmentVariableExportScript
-    : project.ios.generatedEnvironmentVariableExportScript;
+      ? project.macos.generatedEnvironmentVariableExportScript
+      : project.ios.generatedEnvironmentVariableExportScript;
   generatedModuleBuildPhaseScript.createSync(recursive: true);
   generatedModuleBuildPhaseScript.writeAsStringSync(localsBuffer.toString());
   globals.os.chmod(generatedModuleBuildPhaseScript, '755');
 }
 
 /// Build name parsed and validated from build info and manifest. Used for CFBundleShortVersionString.
-String? parsedBuildName({
-  required FlutterManifest manifest,
-  BuildInfo? buildInfo,
-}) {
+String? parsedBuildName({required FlutterManifest manifest, BuildInfo? buildInfo}) {
   final String? buildNameToParse = buildInfo?.buildName ?? manifest.buildName;
   return validatedBuildNameForPlatform(TargetPlatform.ios, buildNameToParse, globals.logger);
 }
 
 /// Build number parsed and validated from build info and manifest. Used for CFBundleVersion.
-String? parsedBuildNumber({
-  required FlutterManifest manifest,
-  BuildInfo? buildInfo,
-}) {
+String? parsedBuildNumber({required FlutterManifest manifest, BuildInfo? buildInfo}) {
   String? buildNumberToParse = buildInfo?.buildNumber ?? manifest.buildNumber;
-  final String? buildNumber = validatedBuildNumberForPlatform(
-    TargetPlatform.ios,
-    buildNumberToParse,
-    globals.logger,
-  );
+  final String? buildNumber = validatedBuildNumberForPlatform(TargetPlatform.ios, buildNumberToParse, globals.logger);
   if (buildNumber != null && buildNumber.isNotEmpty) {
     return buildNumber;
   }
   // Drop back to parsing build name if build number is not present. Build number is optional in the manifest, but
   // FLUTTER_BUILD_NUMBER is required as the backing value for the required CFBundleVersion.
   buildNumberToParse = buildInfo?.buildName ?? manifest.buildName;
-  return validatedBuildNumberForPlatform(
-    TargetPlatform.ios,
-    buildNumberToParse,
-    globals.logger,
-  );
+  return validatedBuildNumberForPlatform(TargetPlatform.ios, buildNumberToParse, globals.logger);
 }
 
 /// List of lines of build settings. Example: 'FLUTTER_BUILD_DIR=build'

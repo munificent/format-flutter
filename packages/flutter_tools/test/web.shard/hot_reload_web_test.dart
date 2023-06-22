@@ -17,7 +17,10 @@ void main() async {
   await _testProject(HotReloadProject()); // default
   await _testProject(HotReloadProject(indexHtml: indexHtmlFlutterJsCallback), name: 'flutter.js (callback)');
   await _testProject(HotReloadProject(indexHtml: indexHtmlFlutterJsPromisesFull), name: 'flutter.js (promises)');
-  await _testProject(HotReloadProject(indexHtml: indexHtmlFlutterJsPromisesShort), name: 'flutter.js (promises, short)');
+  await _testProject(
+    HotReloadProject(indexHtml: indexHtmlFlutterJsPromisesShort),
+    name: 'flutter.js (promises, short)',
+  );
   await _testProject(HotReloadProject(indexHtml: indexHtmlNoFlutterJs), name: 'No flutter.js');
 }
 
@@ -71,8 +74,10 @@ Future<void> _testProject(HotReloadProject project, {String name = 'Default'}) a
         completer.complete();
       }
     });
-    await flutter.run(chrome: true,
-      additionalCommandArgs: <String>['--dart-define=FLUTTER_WEB_USE_SKIA=true', '--verbose']);
+    await flutter.run(
+      chrome: true,
+      additionalCommandArgs: <String>['--dart-define=FLUTTER_WEB_USE_SKIA=true', '--verbose'],
+    );
     project.uncommentHotReloadPrint();
     try {
       await flutter.hotRestart();

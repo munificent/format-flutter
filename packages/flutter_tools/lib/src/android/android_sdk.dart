@@ -32,9 +32,7 @@ final RegExp _sdkVersionRe = RegExp(r'^ro.build.version.sdk=([0-9]+)$');
 // $ANDROID_SDK_ROOT/platforms/android-23/android.jar
 // $ANDROID_SDK_ROOT/platforms/android-N/android.jar
 class AndroidSdk {
-  AndroidSdk(this.directory, {
-    Java? java,
-  }): _java = java {
+  AndroidSdk(this.directory, {Java? java}) : _java = java {
     reinitialize();
   }
 
@@ -58,8 +56,7 @@ class AndroidSdk {
   /// the expectation that it will be downloaded later, e.g. by gradle or the
   /// sdkmanager. The [licensesAvailable] property should be used to determine
   /// whether the licenses are at least possibly accepted.
-  bool get platformToolsAvailable => cmdlineToolsAvailable
-     || directory.childDirectory('platform-tools').existsSync();
+  bool get platformToolsAvailable => cmdlineToolsAvailable || directory.childDirectory('platform-tools').existsSync();
 
   /// Whether the `licenses` directory exists in the Android SDK.
   ///
@@ -81,30 +78,15 @@ class AndroidSdk {
         androidHomeDir = globals.platform.environment[kAndroidSdkRoot];
       } else if (globals.platform.isLinux) {
         if (globals.fsUtils.homeDirPath != null) {
-          androidHomeDir = globals.fs.path.join(
-            globals.fsUtils.homeDirPath!,
-            'Android',
-            'Sdk',
-          );
+          androidHomeDir = globals.fs.path.join(globals.fsUtils.homeDirPath!, 'Android', 'Sdk');
         }
       } else if (globals.platform.isMacOS) {
         if (globals.fsUtils.homeDirPath != null) {
-          androidHomeDir = globals.fs.path.join(
-            globals.fsUtils.homeDirPath!,
-            'Library',
-            'Android',
-            'sdk',
-          );
+          androidHomeDir = globals.fs.path.join(globals.fsUtils.homeDirPath!, 'Library', 'Android', 'sdk');
         }
       } else if (globals.platform.isWindows) {
         if (globals.fsUtils.homeDirPath != null) {
-          androidHomeDir = globals.fs.path.join(
-            globals.fsUtils.homeDirPath!,
-            'AppData',
-            'Local',
-            'Android',
-            'sdk',
-          );
+          androidHomeDir = globals.fs.path.join(globals.fsUtils.homeDirPath!, 'AppData', 'Local', 'Android', 'sdk');
         }
       }
 
@@ -179,10 +161,8 @@ class AndroidSdk {
     final String? avdHome = globals.platform.environment['ANDROID_AVD_HOME'];
     final String? home = globals.platform.environment['HOME'];
     final List<String> searchPaths = <String>[
-      if (avdHome != null)
-        avdHome,
-      if (home != null)
-        globals.fs.path.join(home, '.android', 'avd'),
+      if (avdHome != null) avdHome,
+      if (home != null) globals.fs.path.join(home, '.android', 'avd'),
     ];
 
     if (globals.platform.isWindows) {
@@ -210,9 +190,7 @@ class AndroidSdk {
   Iterable<Directory> get _platforms {
     Iterable<Directory> platforms = <Directory>[];
     if (_platformsDir.existsSync()) {
-      platforms = _platformsDir
-        .listSync()
-        .whereType<Directory>();
+      platforms = _platformsDir.listSync().whereType<Directory>();
     }
     return platforms;
   }
@@ -230,9 +208,7 @@ class AndroidSdk {
         msg.write(' Directory was empty.');
       } else {
         msg.write(' Candidates were:\n');
-        msg.write(_platforms
-          .map((Directory dir) => '  - ${dir.basename}')
-          .join('\n'));
+        msg.write(_platforms.map((Directory dir) => '  - ${dir.basename}').join('\n'));
       }
       return <String>[msg.toString()];
     }
@@ -269,10 +245,10 @@ class AndroidSdk {
   String? getCmdlineToolsPath(String binaryName, {bool skipOldTools = false}) {
     // First look for the latest version of the command-line tools
     final File cmdlineToolsLatestBinary = directory
-      .childDirectory('cmdline-tools')
-      .childDirectory('latest')
-      .childDirectory('bin')
-      .childFile(binaryName);
+        .childDirectory('cmdline-tools')
+        .childDirectory('latest')
+        .childDirectory('bin')
+        .childFile(binaryName);
     if (cmdlineToolsLatestBinary.existsSync()) {
       return cmdlineToolsLatestBinary.path;
     }
@@ -280,26 +256,22 @@ class AndroidSdk {
     // Next look for the highest version of the command-line tools
     final Directory cmdlineToolsDir = directory.childDirectory('cmdline-tools');
     if (cmdlineToolsDir.existsSync()) {
-      final List<Version> cmdlineTools = cmdlineToolsDir
-        .listSync()
-        .whereType<Directory>()
-        .map((Directory subDirectory) {
-          try {
-            return Version.parse(subDirectory.basename);
-          } on Exception {
-            return null;
-          }
-        })
-        .whereType<Version>()
-        .toList();
+      final List<Version> cmdlineTools =
+          cmdlineToolsDir.listSync().whereType<Directory>().map((Directory subDirectory) {
+            try {
+              return Version.parse(subDirectory.basename);
+            } on Exception {
+              return null;
+            }
+          }).whereType<Version>().toList();
       cmdlineTools.sort();
 
       for (final Version cmdlineToolsVersion in cmdlineTools.reversed) {
         final File cmdlineToolsBinary = directory
-          .childDirectory('cmdline-tools')
-          .childDirectory(cmdlineToolsVersion.toString())
-          .childDirectory('bin')
-          .childFile(binaryName);
+            .childDirectory('cmdline-tools')
+            .childDirectory(cmdlineToolsVersion.toString())
+            .childDirectory('bin')
+            .childFile(binaryName);
         if (cmdlineToolsBinary.existsSync()) {
           return cmdlineToolsBinary.path;
         }
@@ -329,17 +301,13 @@ class AndroidSdk {
 
     final Directory buildToolsDir = directory.childDirectory('build-tools');
     if (buildToolsDir.existsSync()) {
-      buildTools = buildToolsDir
-        .listSync()
-        .map((FileSystemEntity entity) {
-          try {
-            return Version.parse(entity.basename);
-          } on Exception {
-            return null;
-          }
-        })
-        .whereType<Version>()
-        .toList();
+      buildTools = buildToolsDir.listSync().map((FileSystemEntity entity) {
+        try {
+          return Version.parse(entity.basename);
+        } on Exception {
+          return null;
+        }
+      }).whereType<Version>().toList();
     }
 
     // Match up platforms with the best corresponding build-tools.
@@ -353,10 +321,8 @@ class AndroidSdk {
           platformVersion = int.parse(numberedVersion.group(1)!);
         } else {
           final String buildProps = platformDir.childFile('build.prop').readAsStringSync();
-          final Iterable<Match> versionMatches = const LineSplitter()
-              .convert(buildProps)
-              .map<RegExpMatch?>(_sdkVersionRe.firstMatch)
-              .whereType<Match>();
+          final Iterable<Match> versionMatches =
+              const LineSplitter().convert(buildProps).map<RegExpMatch?>(_sdkVersionRe.firstMatch).whereType<Match>();
 
           if (versionMatches.isEmpty) {
             return null;
@@ -372,9 +338,11 @@ class AndroidSdk {
         return null;
       }
 
-      Version? buildToolsVersion = Version.primary(buildTools.where((Version version) {
-        return version.major == platformVersion;
-      }).toList());
+      Version? buildToolsVersion = Version.primary(
+        buildTools.where((Version version) {
+          return version.major == platformVersion;
+        }).toList(),
+      );
 
       buildToolsVersion ??= Version.primary(buildTools);
 
@@ -398,9 +366,7 @@ class AndroidSdk {
 
   /// Returns the filesystem path of the Android SDK manager tool.
   String? get sdkManagerPath {
-    final String executable = globals.platform.isWindows
-      ? 'sdkmanager.bat'
-      : 'sdkmanager';
+    final String executable = globals.platform.isWindows ? 'sdkmanager.bat' : 'sdkmanager';
     final String? path = getCmdlineToolsPath(executable, skipOldTools: true);
     if (path != null) {
       return path;
@@ -413,15 +379,15 @@ class AndroidSdk {
     if (sdkManagerPath == null || !globals.processManager.canRun(sdkManagerPath)) {
       throwToolExit(
         'Android sdkmanager not found. Update to the latest Android SDK and ensure that '
-        'the cmdline-tools are installed to resolve this.'
+        'the cmdline-tools are installed to resolve this.',
       );
     }
-    final RunResult result = globals.processUtils.runSync(
-      <String>[sdkManagerPath!, '--version'],
-      environment: _java?.environment,
-    );
+    final RunResult result = globals.processUtils
+        .runSync(<String>[sdkManagerPath!, '--version'], environment: _java?.environment);
     if (result.exitCode != 0) {
-      globals.printTrace('sdkmanager --version failed: exitCode: ${result.exitCode} stdout: ${result.stdout} stderr: ${result.stderr}');
+      globals.printTrace(
+        'sdkmanager --version failed: exitCode: ${result.exitCode} stdout: ${result.stdout} stderr: ${result.stderr}',
+      );
       return null;
     }
     return result.stdout.trim();

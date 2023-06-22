@@ -15,7 +15,6 @@ void main() {
   late FileSystem fileSystem;
 
   group('PubDependenciesProjectValidator', () {
-
     setUp(() {
       fileSystem = MemoryFileSystem.test();
     });
@@ -29,9 +28,8 @@ void main() {
       ]);
       final PubDependenciesProjectValidator validator = PubDependenciesProjectValidator(processManager);
 
-      final List<ProjectValidatorResult> result = await validator.start(
-        FlutterProject.fromDirectoryTest(fileSystem.currentDirectory)
-      );
+      final List<ProjectValidatorResult> result =
+          await validator.start(FlutterProject.fromDirectoryTest(fileSystem.currentDirectory));
       const String expected = 'All pub dependencies are hosted on https://pub.dartlang.org';
       expect(result.length, 1);
       expect(result[0].value, expected);
@@ -40,16 +38,12 @@ void main() {
 
     testWithoutContext('error when command dart pub deps fails', () async {
       final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['dart', 'pub', 'deps', '--json'],
-          stderr: 'command fail',
-        ),
+        const FakeCommand(command: <String>['dart', 'pub', 'deps', '--json'], stderr: 'command fail'),
       ]);
       final PubDependenciesProjectValidator validator = PubDependenciesProjectValidator(processManager);
 
-      final List<ProjectValidatorResult> result = await validator.start(
-          FlutterProject.fromDirectoryTest(fileSystem.currentDirectory)
-      );
+      final List<ProjectValidatorResult> result =
+          await validator.start(FlutterProject.fromDirectoryTest(fileSystem.currentDirectory));
       const String expected = 'command fail';
       expect(result.length, 1);
       expect(result[0].value, expected);
@@ -65,9 +59,8 @@ void main() {
       ]);
       final PubDependenciesProjectValidator validator = PubDependenciesProjectValidator(processManager);
 
-      final List<ProjectValidatorResult> result = await validator.start(
-          FlutterProject.fromDirectoryTest(fileSystem.currentDirectory)
-      );
+      final List<ProjectValidatorResult> result =
+          await validator.start(FlutterProject.fromDirectoryTest(fileSystem.currentDirectory));
       const String expected = 'dep1, dep2 are not hosted';
       expect(result.length, 1);
       expect(result[0].value, expected);

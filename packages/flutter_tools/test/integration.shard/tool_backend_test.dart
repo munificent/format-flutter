@@ -7,18 +7,19 @@ import 'package:flutter_tools/src/base/io.dart';
 import '../src/common.dart';
 import 'test_utils.dart';
 
-final String toolBackend = fileSystem.path.join(getFlutterRoot(), 'packages', 'flutter_tools', 'bin', 'tool_backend.dart');
+final String toolBackend = fileSystem.path.join(
+  getFlutterRoot(),
+  'packages',
+  'flutter_tools',
+  'bin',
+  'tool_backend.dart',
+);
 final String examplePath = fileSystem.path.join(getFlutterRoot(), 'examples', 'hello_world');
 final String dart = fileSystem.path.join(getFlutterRoot(), 'bin', platform.isWindows ? 'dart.bat' : 'dart');
 
 void main() {
   testWithoutContext('tool_backend.dart exits if PROJECT_DIR is not set', () async {
-    final ProcessResult result = await processManager.run(<String>[
-      dart,
-      toolBackend,
-      'linux-x64',
-      'debug',
-    ]);
+    final ProcessResult result = await processManager.run(<String>[dart, toolBackend, 'linux-x64', 'debug']);
 
     expect(
       result,
@@ -31,16 +32,20 @@ void main() {
 
   testWithoutContext('tool_backend.dart exits if FLUTTER_ROOT is not set', () async {
     // Removing parent environment means that batch script cannot be run.
-    final String dart = fileSystem.path.join(getFlutterRoot(), 'bin', 'cache', 'dart-sdk', 'bin', platform.isWindows ? 'dart.exe' : 'dart');
+    final String dart = fileSystem.path.join(
+      getFlutterRoot(),
+      'bin',
+      'cache',
+      'dart-sdk',
+      'bin',
+      platform.isWindows ? 'dart.exe' : 'dart',
+    );
 
-    final ProcessResult result = await processManager.run(<String>[
-      dart,
-      toolBackend,
-      'linux-x64',
-      'debug',
-    ], environment: <String, String>{
-      'PROJECT_DIR': examplePath,
-    }, includeParentEnvironment: false); // Prevent FLUTTER_ROOT set by test environment from leaking
+    final ProcessResult result = await processManager.run(
+      <String>[dart, toolBackend, 'linux-x64', 'debug'],
+      environment: <String, String>{'PROJECT_DIR': examplePath},
+      includeParentEnvironment: false,
+    ); // Prevent FLUTTER_ROOT set by test environment from leaking
 
     expect(
       result,
@@ -52,15 +57,13 @@ void main() {
   });
 
   testWithoutContext('tool_backend.dart exits if local engine does not match build mode', () async {
-    final ProcessResult result = await processManager.run(<String>[
-      dart,
-      toolBackend,
-      'linux-x64',
-      'debug',
-    ], environment: <String, String>{
-      'PROJECT_DIR': examplePath,
-      'LOCAL_ENGINE': 'release_foo_bar', // Does not contain "debug",
-    });
+    final ProcessResult result = await processManager.run(
+      <String>[dart, toolBackend, 'linux-x64', 'debug'],
+      environment: <String, String>{
+        'PROJECT_DIR': examplePath,
+        'LOCAL_ENGINE': 'release_foo_bar', // Does not contain "debug",
+      },
+    );
 
     expect(
       result,

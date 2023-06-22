@@ -24,8 +24,11 @@ void main() {
     flutter = FlutterRunTestDriver(tempDirectory);
 
     await flutter.run(
-      withDebugger: true, startPaused: true, chrome: true,
-      additionalCommandArgs: <String>['--verbose', '--web-renderer=html']);
+      withDebugger: true,
+      startPaused: true,
+      chrome: true,
+      additionalCommandArgs: <String>['--verbose', '--web-renderer=html'],
+    );
     await flutter.addBreakpoint(project.breakpointUri, project.breakpointLine);
     await flutter.resume(waitForNextPause: true); // Now we should be on the breakpoint.
     expect((await flutter.getSourceLocation())!.line, equals(project.breakpointLine));
@@ -40,8 +43,10 @@ void main() {
       // within the source code.
       final int expectedLine = project.lineForStep(i);
 
-      expect(actualLine, equals(expectedLine),
-        reason: 'After $i steps, debugger should stop at $expectedLine but stopped at $actualLine'
+      expect(
+        actualLine,
+        equals(expectedLine),
+        reason: 'After $i steps, debugger should stop at $expectedLine but stopped at $actualLine',
       );
     }
   });

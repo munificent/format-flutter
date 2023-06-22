@@ -9,11 +9,8 @@ import '../convert.dart';
 /// Represents a configured deferred component as defined in
 /// the app's pubspec.yaml.
 class DeferredComponent {
-  DeferredComponent({
-    required this.name,
-    this.libraries = const <String>[],
-    this.assets = const <Uri>[],
-  }) : _assigned = false;
+  DeferredComponent({required this.name, this.libraries = const <String>[], this.assets = const <Uri>[]})
+    : _assigned = false;
 
   /// The name of the deferred component. There should be a matching
   /// android dynamic feature module with the same name.
@@ -109,11 +106,7 @@ class LoadingUnit {
   ///
   /// Loading units must include an [id] and [libraries]. The [path] is only present when
   /// parsing the loading unit from a loading unit manifest produced by gen_snapshot.
-  LoadingUnit({
-    required this.id,
-    required this.libraries,
-    this.path,
-  });
+  LoadingUnit({required this.id, required this.libraries, this.path});
 
   /// The unique loading unit id that is used to identify the loading unit within dart.
   final int id;
@@ -200,8 +193,8 @@ class LoadingUnit {
         loadingUnits.add(LoadingUnit(
           id: loadingUnitMap['id'] as int,
           path: loadingUnitMap['path'] as String,
-          libraries: List<String>.from(loadingUnitMap['libraries'] as List<dynamic>)),
-        );
+          libraries: List<String>.from(loadingUnitMap['libraries'] as List<dynamic>),
+        ));
       }
     }
     return loadingUnits;

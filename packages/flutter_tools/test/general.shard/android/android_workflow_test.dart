@@ -37,10 +37,7 @@ void main() {
   });
 
   testWithoutContext('AndroidWorkflow handles a null AndroidSDK', () {
-    final AndroidWorkflow androidWorkflow = AndroidWorkflow(
-      featureFlags: TestFeatureFlags(),
-      androidSdk: null,
-    );
+    final AndroidWorkflow androidWorkflow = AndroidWorkflow(featureFlags: TestFeatureFlags(), androidSdk: null);
 
     expect(androidWorkflow.canLaunchDevices, false);
     expect(androidWorkflow.canListDevices, false);
@@ -50,10 +47,7 @@ void main() {
   testWithoutContext('AndroidWorkflow handles a null adb', () {
     final FakeAndroidSdk androidSdk = FakeAndroidSdk();
     androidSdk.adbPath = null;
-    final AndroidWorkflow androidWorkflow = AndroidWorkflow(
-      featureFlags: TestFeatureFlags(),
-      androidSdk: androidSdk,
-    );
+    final AndroidWorkflow androidWorkflow = AndroidWorkflow(featureFlags: TestFeatureFlags(), androidSdk: androidSdk);
 
     expect(androidWorkflow.canLaunchDevices, false);
     expect(androidWorkflow.canListDevices, false);
@@ -64,10 +58,7 @@ void main() {
   testWithoutContext('Support for Android SDK on Linux Arm Hosts', () {
     final FakeAndroidSdk androidSdk = FakeAndroidSdk();
     androidSdk.adbPath = null;
-    final AndroidWorkflow androidWorkflow = AndroidWorkflow(
-      featureFlags: TestFeatureFlags(),
-      androidSdk: androidSdk,
-    );
+    final AndroidWorkflow androidWorkflow = AndroidWorkflow(featureFlags: TestFeatureFlags(), androidSdk: androidSdk);
 
     expect(androidWorkflow.appliesToHostPlatform, isTrue);
     expect(androidWorkflow.canLaunchDevices, isFalse);
@@ -92,10 +83,7 @@ void main() {
   testWithoutContext('AndroidWorkflow cannot list emulators if emulatorPath is null', () {
     final FakeAndroidSdk androidSdk = FakeAndroidSdk();
     androidSdk.adbPath = 'path/to/adb';
-    final AndroidWorkflow androidWorkflow = AndroidWorkflow(
-      featureFlags: TestFeatureFlags(),
-      androidSdk: androidSdk,
-    );
+    final AndroidWorkflow androidWorkflow = AndroidWorkflow(featureFlags: TestFeatureFlags(), androidSdk: androidSdk);
 
     expect(androidWorkflow.appliesToHostPlatform, true);
     expect(androidWorkflow.canLaunchDevices, true);
@@ -107,10 +95,7 @@ void main() {
     final FakeAndroidSdk androidSdk = FakeAndroidSdk();
     androidSdk.adbPath = 'path/to/adb';
     androidSdk.emulatorPath = 'path/to/emulator';
-    final AndroidWorkflow androidWorkflow = AndroidWorkflow(
-      featureFlags: TestFeatureFlags(),
-      androidSdk: androidSdk,
-    );
+    final AndroidWorkflow androidWorkflow = AndroidWorkflow(featureFlags: TestFeatureFlags(), androidSdk: androidSdk);
 
     expect(androidWorkflow.appliesToHostPlatform, true);
     expect(androidWorkflow.canLaunchDevices, true);
@@ -154,12 +139,9 @@ void main() {
 
   testWithoutContext('licensesAccepted handles garbage/no output', () async {
     sdk.sdkManagerPath = '/foo/bar/sdkmanager';
-    processManager.addCommand(const FakeCommand(
-      command: <String>[
-        '/foo/bar/sdkmanager',
-        '--licenses',
-      ], stdout: 'asdasassad',
-    ));
+    processManager.addCommand(
+      const FakeCommand(command: <String>['/foo/bar/sdkmanager', '--licenses'], stdout: 'asdasassad'),
+    );
     final AndroidLicenseValidator licenseValidator = AndroidLicenseValidator(
       java: FakeJava(),
       androidSdk: sdk,
@@ -180,12 +162,9 @@ void main() {
 [=======================================] 100% Computing updates...
 All SDK package licenses accepted.
 ''';
-    processManager.addCommand(const FakeCommand(
-      command: <String>[
-        '/foo/bar/sdkmanager',
-        '--licenses',
-      ], stdout: output,
-    ));
+    processManager.addCommand(
+      const FakeCommand(command: <String>['/foo/bar/sdkmanager', '--licenses'], stdout: output),
+    );
 
     final AndroidLicenseValidator licenseValidator = AndroidLicenseValidator(
       java: FakeJava(),
@@ -204,16 +183,11 @@ All SDK package licenses accepted.
   testWithoutContext('licensesAccepted sets environment for finding java', () async {
     final Java java = FakeJava();
     sdk.sdkManagerPath = '/foo/bar/sdkmanager';
-    processManager.addCommand(
-      FakeCommand(
-        command: <String>[sdk.sdkManagerPath!, '--licenses'],
-        stdout: 'All SDK package licenses accepted.',
-        environment: <String, String>{
-          'JAVA_HOME': java.javaHome!,
-          'PATH': fileSystem.path.join(java.javaHome!, 'bin'),
-        }
-      )
-    );
+    processManager.addCommand(FakeCommand(
+      command: <String>[sdk.sdkManagerPath!, '--licenses'],
+      stdout: 'All SDK package licenses accepted.',
+      environment: <String, String>{'JAVA_HOME': java.javaHome!, 'PATH': fileSystem.path.join(java.javaHome!, 'bin')},
+    ));
     final AndroidLicenseValidator licenseValidator = AndroidLicenseValidator(
       java: java,
       androidSdk: sdk,
@@ -235,12 +209,9 @@ All SDK package licenses accepted.
 2 of 5 SDK package licenses not accepted.
 Review licenses that have not been accepted (y/N)?
 ''';
-    processManager.addCommand(const FakeCommand(
-      command: <String>[
-        '/foo/bar/sdkmanager',
-        '--licenses',
-      ], stdout: output,
-    ));
+    processManager.addCommand(
+      const FakeCommand(command: <String>['/foo/bar/sdkmanager', '--licenses'], stdout: output),
+    );
 
     final AndroidLicenseValidator licenseValidator = AndroidLicenseValidator(
       java: FakeJava(),
@@ -263,12 +234,9 @@ Review licenses that have not been accepted (y/N)?
 5 of 5 SDK package licenses not accepted.
 Review licenses that have not been accepted (y/N)?
 ''';
-    processManager.addCommand(const FakeCommand(
-      command: <String>[
-        '/foo/bar/sdkmanager',
-        '--licenses',
-      ], stdout: output,
-    ));
+    processManager.addCommand(
+      const FakeCommand(command: <String>['/foo/bar/sdkmanager', '--licenses'], stdout: output),
+    );
 
     final AndroidLicenseValidator licenseValidator = AndroidLicenseValidator(
       java: FakeJava(),
@@ -287,12 +255,7 @@ Review licenses that have not been accepted (y/N)?
   testWithoutContext('runLicenseManager succeeds for version >= 26', () async {
     sdk.sdkManagerPath = '/foo/bar/sdkmanager';
     sdk.sdkManagerVersion = '26.0.0';
-    processManager.addCommand(const FakeCommand(
-      command: <String>[
-        '/foo/bar/sdkmanager',
-        '--licenses',
-      ],
-    ));
+    processManager.addCommand(const FakeCommand(command: <String>['/foo/bar/sdkmanager', '--licenses']));
 
     final AndroidLicenseValidator licenseValidator = AndroidLicenseValidator(
       java: FakeJava(),
@@ -375,11 +338,7 @@ Review licenses that have not been accepted (y/N)?
     sdk.sdkManagerPath = sdkManagerPath;
     final BufferLogger logger = BufferLogger.test();
     processManager.addCommand(
-      const FakeCommand(
-        command: <String>[sdkManagerPath, '--licenses'],
-        exitCode: 1,
-        stderr: 'sdkmanager crash',
-      ),
+      const FakeCommand(command: <String>[sdkManagerPath, '--licenses'], exitCode: 1, stderr: 'sdkmanager crash'),
     );
 
     final AndroidLicenseValidator licenseValidator = AndroidLicenseValidator(
@@ -392,12 +351,9 @@ Review licenses that have not been accepted (y/N)?
       userMessages: UserMessages(),
     );
 
-    await expectLater(
-      licenseValidator.runLicenseManager(),
-      throwsToolExit(
-        message: 'Android sdkmanager tool was found, but failed to run ($sdkManagerPath): "exited code 1"',
-      ),
-    );
+    await expectLater(licenseValidator.runLicenseManager(), throwsToolExit(
+      message: 'Android sdkmanager tool was found, but failed to run ($sdkManagerPath): "exited code 1"',
+    ));
     expect(processManager, hasNoRemainingExpectations);
     expect(logger.traceText, isEmpty);
     expect(stdio.writtenToStdout, isEmpty);
@@ -438,7 +394,7 @@ Review licenses that have not been accepted (y/N)?
       ..licensesAvailable = true
       ..platformToolsAvailable = true
       ..cmdlineToolsAvailable = true
-    // Test with invalid SDK and build tools
+      // Test with invalid SDK and build tools
       ..directory = fileSystem.directory('/foo/bar')
       ..sdkManagerPath = '/foo/bar/sdkmanager'
       ..latestVersion = sdkVersion;
@@ -457,13 +413,9 @@ Review licenses that have not been accepted (y/N)?
       userMessages: UserMessages(),
     );
 
-
     ValidationResult validationResult = await androidValidator.validate();
     expect(validationResult.type, ValidationType.missing);
-    expect(
-      validationResult.messages.last.message,
-      errorMessage,
-    );
+    expect(validationResult.messages.last.message, errorMessage);
 
     // Test with valid SDK but invalid build tools
     sdkVersion.sdkLevel = 29;
@@ -471,10 +423,7 @@ Review licenses that have not been accepted (y/N)?
 
     validationResult = await androidValidator.validate();
     expect(validationResult.type, ValidationType.missing);
-    expect(
-      validationResult.messages.last.message,
-      errorMessage,
-    );
+    expect(validationResult.messages.last.message, errorMessage);
 
     // Test with valid SDK and valid build tools
     // Will still be partial because AndroidSdk.findJavaBinary is static :(
@@ -483,10 +432,7 @@ Review licenses that have not been accepted (y/N)?
 
     validationResult = await androidValidator.validate();
     expect(validationResult.type, ValidationType.partial); // No Java binary
-    expect(
-      validationResult.messages.any((ValidationMessage message) => message.message == errorMessage),
-      isFalse,
-    );
+    expect(validationResult.messages.any((ValidationMessage message) => message.message == errorMessage), isFalse);
   });
 
   testWithoutContext('detects missing cmdline tools', () async {
@@ -504,7 +450,6 @@ Review licenses that have not been accepted (y/N)?
       userMessages: UserMessages(),
     );
 
-
     final String errorMessage = UserMessages().androidMissingCmdTools;
 
     final ValidationResult validationResult = await androidValidator.validate();
@@ -521,11 +466,8 @@ Review licenses that have not been accepted (y/N)?
 
   testUsingContext('detects minimum required java version', () async {
     // Test with older version of JDK
-    final Platform platform = FakePlatform()..environment = <String, String>{
-      'HOME': '/home/me',
-      Java.javaHomeEnvironmentVariable: 'home/java',
-      'PATH': '',
-    };
+    final Platform platform = FakePlatform()
+      ..environment = <String, String>{'HOME': '/home/me', Java.javaHomeEnvironmentVariable: 'home/java', 'PATH': ''};
     final FakeAndroidSdkVersion sdkVersion = FakeAndroidSdkVersion()
       ..sdkLevel = 29
       ..buildToolsVersion = Version(28, 0, 3);
@@ -550,16 +492,10 @@ Review licenses that have not been accepted (y/N)?
       userMessages: UserMessages(),
     ).validate();
     expect(validationResult.type, ValidationType.partial);
-    expect(
-      validationResult.messages.last.message,
-      errorMessage,
-    );
-    expect(
-      validationResult.messages.any(
-        (ValidationMessage message) => message.message.contains('Unable to locate Android SDK')
-      ),
-      false,
-    );
+    expect(validationResult.messages.last.message, errorMessage);
+    expect(validationResult.messages.any(
+      (ValidationMessage message) => message.message.contains('Unable to locate Android SDK'),
+    ), false);
   });
 
   testWithoutContext('Mentions `flutter config --android-sdk if user has no AndroidSdk`', () async {
@@ -567,16 +503,14 @@ Review licenses that have not been accepted (y/N)?
       java: FakeJava(),
       androidSdk: null,
       logger: logger,
-      platform: FakePlatform()..environment = <String, String>{'HOME': '/home/me', Java.javaHomeEnvironmentVariable: 'home/java'},
+      platform: FakePlatform()
+        ..environment = <String, String>{'HOME': '/home/me', Java.javaHomeEnvironmentVariable: 'home/java'},
       userMessages: UserMessages(),
     ).validate();
 
-    expect(
-      validationResult.messages.any(
-        (ValidationMessage message) => message.message.contains('flutter config --android-sdk')
-      ),
-      true,
-    );
+    expect(validationResult.messages.any(
+      (ValidationMessage message) => message.message.contains('flutter config --android-sdk'),
+    ), true);
   });
 }
 

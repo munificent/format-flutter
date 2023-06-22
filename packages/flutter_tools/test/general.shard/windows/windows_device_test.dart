@@ -39,29 +39,33 @@ void main() {
   });
 
   testWithoutContext('WindowsDevices does not list devices if the workflow is unsupported', () async {
-    expect(await WindowsDevices(
-      windowsWorkflow: WindowsWorkflow(
-        featureFlags: TestFeatureFlags(),
-        platform: FakePlatform(operatingSystem: 'windows'),
-      ),
-      operatingSystemUtils: FakeOperatingSystemUtils(),
-      logger: BufferLogger.test(),
-      processManager: FakeProcessManager.any(),
-      fileSystem: MemoryFileSystem.test(),
-    ).devices(), <Device>[]);
+    expect(
+      await WindowsDevices(
+        windowsWorkflow:
+            WindowsWorkflow(featureFlags: TestFeatureFlags(), platform: FakePlatform(operatingSystem: 'windows')),
+        operatingSystemUtils: FakeOperatingSystemUtils(),
+        logger: BufferLogger.test(),
+        processManager: FakeProcessManager.any(),
+        fileSystem: MemoryFileSystem.test(),
+      ).devices(),
+      <Device>[],
+    );
   });
 
   testWithoutContext('WindowsDevices lists a devices if the workflow is supported', () async {
-    expect(await WindowsDevices(
-      windowsWorkflow: WindowsWorkflow(
-        featureFlags: TestFeatureFlags(isWindowsEnabled: true),
-        platform: FakePlatform(operatingSystem: 'windows')
-      ),
-      operatingSystemUtils: FakeOperatingSystemUtils(),
-      logger: BufferLogger.test(),
-      processManager: FakeProcessManager.any(),
-      fileSystem: MemoryFileSystem.test(),
-    ).devices(), hasLength(1));
+    expect(
+      await WindowsDevices(
+        windowsWorkflow: WindowsWorkflow(
+          featureFlags: TestFeatureFlags(isWindowsEnabled: true),
+          platform: FakePlatform(operatingSystem: 'windows'),
+        ),
+        operatingSystemUtils: FakeOperatingSystemUtils(),
+        logger: BufferLogger.test(),
+        processManager: FakeProcessManager.any(),
+        fileSystem: MemoryFileSystem.test(),
+      ).devices(),
+      hasLength(1),
+    );
   });
 
   testWithoutContext('isSupportedForProject is true with editable host app', () async {
@@ -115,11 +119,7 @@ FlutterProject setUpFlutterProject(Directory directory) {
   return flutterProjectFactory.fromDirectory(directory);
 }
 
-WindowsDevice setUpWindowsDevice({
-  FileSystem? fileSystem,
-  Logger? logger,
-  ProcessManager? processManager,
-}) {
+WindowsDevice setUpWindowsDevice({FileSystem? fileSystem, Logger? logger, ProcessManager? processManager}) {
   return WindowsDevice(
     fileSystem: fileSystem ?? MemoryFileSystem.test(),
     logger: logger ?? BufferLogger.test(),

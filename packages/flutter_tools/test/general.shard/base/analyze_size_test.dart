@@ -69,19 +69,17 @@ void main() {
     );
 
     final Archive archive = Archive()
-      ..addFile(ArchiveFile('AndroidManifest.xml', 100,  List<int>.filled(100, 0)))
-      ..addFile(ArchiveFile('META-INF/CERT.RSA', 10,  List<int>.filled(10, 0)))
-      ..addFile(ArchiveFile('META-INF/CERT.SF', 10,  List<int>.filled(10, 0)))
-      ..addFile(ArchiveFile('lib/arm64-v8a/libxyzzyapp.so', 50,  List<int>.filled(50, 0)))
+      ..addFile(ArchiveFile('AndroidManifest.xml', 100, List<int>.filled(100, 0)))
+      ..addFile(ArchiveFile('META-INF/CERT.RSA', 10, List<int>.filled(10, 0)))
+      ..addFile(ArchiveFile('META-INF/CERT.SF', 10, List<int>.filled(10, 0)))
+      ..addFile(ArchiveFile('lib/arm64-v8a/libxyzzyapp.so', 50, List<int>.filled(50, 0)))
       ..addFile(ArchiveFile('lib/arm64-v8a/libflutter.so', 50, List<int>.filled(50, 0)));
 
-    final File apk = fileSystem.file('test.apk')
-      ..writeAsBytesSync(ZipEncoder().encode(archive)!);
+    final File apk = fileSystem.file('test.apk')..writeAsBytesSync(ZipEncoder().encode(archive)!);
     final File aotSizeJson = fileSystem.file('test.json')
       ..createSync()
       ..writeAsStringSync(aotSizeOutput);
-    final File precompilerTrace = fileSystem.file('trace.json')
-      ..writeAsStringSync('{}');
+    final File precompilerTrace = fileSystem.file('trace.json')..writeAsStringSync('{}');
     final Map<String, dynamic> result = await sizeAnalyzer.analyzeZipSizeAndAotSnapshot(
       zipFile: apk,
       aotSnapshot: aotSizeJson,
@@ -153,18 +151,15 @@ void main() {
     );
 
     final Archive archive = Archive()
-      ..addFile(ArchiveFile('AndroidManifest.xml', 100,  List<int>.filled(100, 0)))
-      ..addFile(ArchiveFile('META-INF/CERT.RSA', 10,  List<int>.filled(10, 0)))
-      ..addFile(ArchiveFile('META-INF/CERT.SF', 10,  List<int>.filled(10, 0)))
-      ..addFile(ArchiveFile('lib/arm64-v8a/libxyzzyapp.so', 50,  List<int>.filled(50, 0)))
+      ..addFile(ArchiveFile('AndroidManifest.xml', 100, List<int>.filled(100, 0)))
+      ..addFile(ArchiveFile('META-INF/CERT.RSA', 10, List<int>.filled(10, 0)))
+      ..addFile(ArchiveFile('META-INF/CERT.SF', 10, List<int>.filled(10, 0)))
+      ..addFile(ArchiveFile('lib/arm64-v8a/libxyzzyapp.so', 50, List<int>.filled(50, 0)))
       ..addFile(ArchiveFile('lib/arm64-v8a/libflutter.so', 50, List<int>.filled(50, 0)));
 
-    final File apk = fileSystem.file('test.apk')
-      ..writeAsBytesSync(ZipEncoder().encode(archive)!);
-    final File aotSizeJson = fileSystem.file('test.json')
-      ..writeAsStringSync(aotSizeOutput);
-    final File precompilerTrace = fileSystem.file('trace.json')
-      ..writeAsStringSync('{}');
+    final File apk = fileSystem.file('test.apk')..writeAsBytesSync(ZipEncoder().encode(archive)!);
+    final File aotSizeJson = fileSystem.file('test.json')..writeAsStringSync(aotSizeOutput);
+    final File precompilerTrace = fileSystem.file('trace.json')..writeAsStringSync('{}');
     await sizeAnalyzer.analyzeZipSizeAndAotSnapshot(
       zipFile: apk,
       aotSnapshot: aotSizeJson,
@@ -173,17 +168,14 @@ void main() {
     );
 
     final List<String> stdout = logger.statusText.split('\n');
-    expect(
-      stdout,
-      containsAll(<String>[
-        'test.apk (total compressed)                                                644 B',
-        '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-        '  lib                                                                       12 B',
-        '  Dart AOT symbols accounted decompressed size                             14 KB',
-        '    dart:core/',
-        '      RangeError                                                            4 KB',
-      ]),
-    );
+    expect(stdout, containsAll(<String>[
+      'test.apk (total compressed)                                                644 B',
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+      '  lib                                                                       12 B',
+      '  Dart AOT symbols accounted decompressed size                             14 KB',
+      '    dart:core/',
+      '      RangeError                                                            4 KB',
+    ]));
   });
 
   testWithoutContext('can analyze contents of output directory', () async {
@@ -194,18 +186,15 @@ void main() {
       flutterUsage: TestUsage(),
     );
 
-    final Directory outputDirectory = fileSystem.directory('example/out/foo.app')
-      ..createSync(recursive: true);
+    final Directory outputDirectory = fileSystem.directory('example/out/foo.app')..createSync(recursive: true);
     outputDirectory.childFile('a.txt')
       ..createSync()
       ..writeAsStringSync('hello');
     outputDirectory.childFile('libapp.so')
       ..createSync()
       ..writeAsStringSync('goodbye');
-    final File aotSizeJson = fileSystem.file('test.json')
-      ..writeAsStringSync(aotSizeOutput);
-    final File precompilerTrace = fileSystem.file('trace.json')
-      ..writeAsStringSync('{}');
+    final File aotSizeJson = fileSystem.file('test.json')..writeAsStringSync(aotSizeOutput);
+    final File precompilerTrace = fileSystem.file('trace.json')..writeAsStringSync('{}');
 
     final Map<String, Object?> result = await sizeAnalyzer.analyzeAotSnapshot(
       outputDirectory: outputDirectory,
@@ -215,16 +204,13 @@ void main() {
     );
 
     final List<String> stdout = logger.statusText.split('\n');
-    expect(
-      stdout,
-      containsAll(<String>[
-        '  foo.app                                                                   12 B',
-        '  foo.app                                                                   12 B',
-        '  Dart AOT symbols accounted decompressed size                             14 KB',
-        '    dart:core/',
-        '      RangeError                                                            4 KB',
-      ]),
-    );
+    expect(stdout, containsAll(<String>[
+      '  foo.app                                                                   12 B',
+      '  foo.app                                                                   12 B',
+      '  Dart AOT symbols accounted decompressed size                             14 KB',
+      '    dart:core/',
+      '      RangeError                                                            4 KB',
+    ]));
     expect(result['type'], 'linux');
     expect(result['precompiler-trace'], <String, Object>{});
   });
@@ -242,22 +228,24 @@ void main() {
     final File precompilerTrace = fileSystem.file('trace.json');
 
     await expectLater(
-        () => sizeAnalyzer.analyzeAotSnapshot(
-              outputDirectory: outputDirectory,
-              aotSnapshot: invalidAotSizeJson,
-              precompilerTrace: precompilerTrace,
-              type: 'linux',
-            ),
-        throwsToolExit());
+      () => sizeAnalyzer.analyzeAotSnapshot(
+        outputDirectory: outputDirectory,
+        aotSnapshot: invalidAotSizeJson,
+        precompilerTrace: precompilerTrace,
+        type: 'linux',
+      ),
+      throwsToolExit(),
+    );
 
     final File apk = fileSystem.file('test.apk')..writeAsBytesSync(ZipEncoder().encode(Archive())!);
     await expectLater(
-        () => sizeAnalyzer.analyzeZipSizeAndAotSnapshot(
-              zipFile: apk,
-              aotSnapshot: invalidAotSizeJson,
-              precompilerTrace: precompilerTrace,
-              kind: 'apk',
-            ),
-        throwsToolExit());
+      () => sizeAnalyzer.analyzeZipSizeAndAotSnapshot(
+        zipFile: apk,
+        aotSnapshot: invalidAotSizeJson,
+        precompilerTrace: precompilerTrace,
+        kind: 'apk',
+      ),
+      throwsToolExit(),
+    );
   });
 }

@@ -48,9 +48,7 @@ void main() {
 #1      _rootRunUnary (dart:async/zone.dart:1141:38)''');
   });
 
-  Future<void> verifyCrashReportSent(RequestInfo crashInfo, {
-    int crashes = 1,
-  }) async {
+  Future<void> verifyCrashReportSent(RequestInfo crashInfo, {int crashes = 1}) async {
     // Verify that we sent the crash report.
     expect(crashInfo.method, 'POST');
     expect(crashInfo.uri, Uri(
@@ -58,10 +56,7 @@ void main() {
       host: 'clients2.google.com',
       port: 443,
       path: '/cr/report',
-      queryParameters: <String, String>{
-        'product': 'Flutter_Tools',
-        'version': 'test-version',
-      },
+      queryParameters: <String, String>{'product': 'Flutter_Tools', 'version': 'test-version'},
     ));
     expect(crashInfo.fields?['uuid'], testUsage.clientId);
     expect(crashInfo.fields?['product'], 'Flutter_Tools');
@@ -86,16 +81,13 @@ void main() {
 
     final File file = fs.file('flutter_00.log');
 
-    await crashReporter.informUser(
-      CrashDetails(
-        command: 'arg1 arg2 arg3',
-        error: Exception('Dummy exception'),
-        stackTrace: StackTrace.current,
-        // Spaces are URL query encoded in the output, make it one word to make this test simpler.
-        doctorText: FakeDoctorText('Ignored', 'NoPIIFakeDoctorText'),
-      ),
-      file,
-    );
+    await crashReporter.informUser(CrashDetails(
+      command: 'arg1 arg2 arg3',
+      error: Exception('Dummy exception'),
+      stackTrace: StackTrace.current,
+      // Spaces are URL query encoded in the output, make it one word to make this test simpler.
+      doctorText: FakeDoctorText('Ignored', 'NoPIIFakeDoctorText'),
+    ), file);
 
     expect(logger.statusText, contains('NoPIIFakeDoctorText'));
     expect(logger.statusText, isNot(contains('Ignored')));
@@ -258,10 +250,7 @@ void main() {
         method = request.method;
         uri = request.url;
 
-        return Response(
-          'test-report-id',
-          200,
-        );
+        return Response('test-report-id', 200);
       });
 
       final CrashReportSender crashReportSender = CrashReportSender(
@@ -323,10 +312,7 @@ void main() {
         host: 'localhost',
         port: 12345,
         path: '/fake_server',
-        queryParameters: <String, String>{
-          'product': 'Flutter_Tools',
-          'version': 'test-version',
-        },
+        queryParameters: <String, String>{'product': 'Flutter_Tools', 'version': 'test-version'},
       ));
     });
   });
@@ -339,54 +325,52 @@ class RequestInfo {
 }
 
 class MockCrashReportSender extends MockClient {
-  MockCrashReportSender(RequestInfo crashInfo) : super((Request request) async {
-    MockCrashReportSender.sendCalls++;
-    crashInfo.method = request.method;
-    crashInfo.uri = request.url;
+  MockCrashReportSender(
+    RequestInfo crashInfo,
+  ) : super((Request request) async {
+        MockCrashReportSender.sendCalls++;
+        crashInfo.method = request.method;
+        crashInfo.uri = request.url;
 
-    // A very ad-hoc multipart request parser. Good enough for this test.
-    String? boundary = request.headers['Content-Type'];
-    boundary = boundary?.substring(boundary.indexOf('boundary=') + 9);
-    crashInfo.fields = Map<String, String>.fromIterable(
-      utf8.decode(request.bodyBytes)
-        .split('--$boundary')
-        .map<List<String>?>((String part) {
-        final Match? nameMatch = RegExp(r'name="(.*)"').firstMatch(part);
-        if (nameMatch == null) {
-          return null;
-        }
-        final String name = nameMatch[1]!;
-        final String value = part.split('\n').skip(2).join('\n').trim();
-        return <String>[name, value];
-      }).whereType<List<String>>(),
-      key: (dynamic key) {
-        final List<String> pair = key as List<String>;
-        return pair[0];
-      },
-      value: (dynamic value) {
-        final List<String> pair = value as List<String>;
-        return pair[1];
-      },
-    );
+        // A very ad-hoc multipart request parser. Good enough for this test.
+        String? boundary = request.headers['Content-Type'];
+        boundary = boundary?.substring(boundary.indexOf('boundary=') + 9);
+        crashInfo.fields = Map<String, String>.fromIterable(
+          utf8.decode(request.bodyBytes).split('--$boundary').map<List<String>?>((String part) {
+            final Match? nameMatch = RegExp(r'name="(.*)"').firstMatch(part);
+            if (nameMatch == null) {
+              return null;
+            }
+            final String name = nameMatch[1]!;
+            final String value = part.split('\n').skip(2).join('\n').trim();
+            return <String>[name, value];
+          }).whereType<List<String>>(),
+          key: (dynamic key) {
+            final List<String> pair = key as List<String>;
+            return pair[0];
+          },
+          value: (dynamic value) {
+            final List<String> pair = value as List<String>;
+            return pair[1];
+          },
+        );
 
-    return Response(
-      'test-report-id',
-      200,
-    );
-  });
+        return Response('test-report-id', 200);
+      });
 
   static int sendCalls = 0;
 }
 
 class CrashingCrashReportSender extends MockClient {
-  CrashingCrashReportSender(Exception exception) : super((Request request) async {
-    throw exception;
-  });
+  CrashingCrashReportSender(
+    Exception exception,
+  ) : super((Request request) async {
+        throw exception;
+      });
 }
 
 class FakeDoctorText extends Fake implements DoctorText {
-  FakeDoctorText(String text, String piiStrippedText)
-      : _text = text, _piiStrippedText = piiStrippedText;
+  FakeDoctorText(String text, String piiStrippedText) : _text = text, _piiStrippedText = piiStrippedText;
 
   @override
   Future<String> get text async => _text;

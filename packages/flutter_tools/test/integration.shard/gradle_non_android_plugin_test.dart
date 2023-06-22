@@ -22,11 +22,7 @@ void main() {
 
   testWithoutContext('Flutter app that depends on a non-Android plugin can still build for Android', () {
     final String flutterRoot = getFlutterRoot();
-    final String flutterBin = fileSystem.path.join(
-      flutterRoot,
-      'bin',
-      'flutter',
-    );
+    final String flutterBin = fileSystem.path.join(flutterRoot, 'bin', 'flutter');
     processManager.runSync(<String>[
       flutterBin,
       ...getLocalEngineArguments(),

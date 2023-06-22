@@ -13,6 +13,7 @@ AndroidBuilder? get androidBuilder {
 
 abstract class AndroidBuilder {
   const AndroidBuilder();
+
   /// Builds an AAR artifact.
   Future<void> buildAar({
     required FlutterProject project,
@@ -44,14 +45,8 @@ abstract class AndroidBuilder {
   Future<List<String>> getBuildVariants({required FlutterProject project});
 
   /// Returns the application id for the given build variant.
-  Future<String> getApplicationIdForVariant(
-    String buildVariant, {
-    required FlutterProject project,
-  });
+  Future<String> getApplicationIdForVariant(String buildVariant, {required FlutterProject project});
 
   /// Returns a list of app link domains for the given build variant.
-  Future<List<String>> getAppLinkDomainsForVariant(
-    String buildVariant, {
-    required FlutterProject project,
-  });
+  Future<List<String>> getAppLinkDomainsForVariant(String buildVariant, {required FlutterProject project});
 }

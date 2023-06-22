@@ -28,8 +28,8 @@ class FormatCommand extends FlutterCommand {
   @override
   String get deprecationWarning {
     return 'The "format" command is deprecated. Please use the "dart format" '
-           'sub-command instead, which has the same command-line usage as '
-           '"flutter format".\n';
+        'sub-command instead, which has the same command-line usage as '
+        '"flutter format".\n';
   }
 
   @override

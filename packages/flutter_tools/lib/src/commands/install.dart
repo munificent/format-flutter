@@ -12,9 +12,7 @@ import '../globals.dart' as globals;
 import '../runner/flutter_command.dart';
 
 class InstallCommand extends FlutterCommand with DeviceBasedDevelopmentArtifacts {
-  InstallCommand({
-    required bool verboseHelp,
-  }) {
+  InstallCommand({required bool verboseHelp}) {
     addBuildModeFlags(verboseHelp: verboseHelp);
     requiresPubspecYaml();
     usesApplicationBinaryOption();
@@ -22,9 +20,7 @@ class InstallCommand extends FlutterCommand with DeviceBasedDevelopmentArtifacts
     usesDeviceConnectionOption();
     usesDeviceUserOption();
     usesFlavorOption();
-    argParser.addFlag('uninstall-only',
-      help: 'Uninstall the app if already on the device. Skip install.',
-    );
+    argParser.addFlag('uninstall-only', help: 'Uninstall the app if already on the device. Skip install.');
   }
 
   @override
@@ -106,7 +102,7 @@ Future<bool> installApp(
   Device device,
   ApplicationPackage package, {
   String? userIdentifier,
-  bool uninstall = true
+  bool uninstall = true,
 }) async {
   try {
     if (uninstall && await device.isAppInstalled(package, userIdentifier: userIdentifier)) {

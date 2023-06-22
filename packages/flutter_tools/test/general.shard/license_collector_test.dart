@@ -263,31 +263,14 @@ void main() {
       ..writeAsStringSync(_kMitLicense); // intentionally a duplicate
 
     final File packageConfigFile = fileSystem.file('package_config.json')
-      ..writeAsStringSync(json.encode(
-        <String, Object>{
-          'configVersion': 2,
-          'packages': <Object>[
-            <String, Object>{
-              'name': 'foo',
-              'rootUri': 'file:///foo/',
-              'packageUri': 'lib/',
-              'languageVersion': '2.2',
-            },
-            <String, Object>{
-              'name': 'bar',
-              'rootUri': 'file:///bar/',
-              'packageUri': 'lib/',
-              'languageVersion': '2.2',
-            },
-            <String, Object>{
-              'name': 'fizz',
-              'rootUri': 'file:///fizz/',
-              'packageUri': 'lib/',
-              'languageVersion': '2.2',
-            },
-          ],
-        }
-      ));
+      ..writeAsStringSync(json.encode(<String, Object>{
+        'configVersion': 2,
+        'packages': <Object>[
+          <String, Object>{'name': 'foo', 'rootUri': 'file:///foo/', 'packageUri': 'lib/', 'languageVersion': '2.2'},
+          <String, Object>{'name': 'bar', 'rootUri': 'file:///bar/', 'packageUri': 'lib/', 'languageVersion': '2.2'},
+          <String, Object>{'name': 'fizz', 'rootUri': 'file:///fizz/', 'packageUri': 'lib/', 'languageVersion': '2.2'},
+        ],
+      }));
     final PackageConfig packageConfig = await loadPackageConfig(packageConfigFile.absolute);
     final LicenseResult result = licenseCollector.obtainLicenses(packageConfig, <String, List<File>>{});
 
@@ -303,17 +286,13 @@ void main() {
 
     // All input licenses included in result.
     final Iterable<String> filePaths = result.dependencies.map((File file) => file.path);
-    expect(filePaths, unorderedEquals(<String>[
-      '/foo/NOTICES',
-      '/bar/NOTICES',
-      '/fizz/LICENSE',
-    ]));
+    expect(filePaths, unorderedEquals(<String>['/foo/NOTICES', '/bar/NOTICES', '/fizz/LICENSE']));
   });
 
   testWithoutContext('includes additional LICENSE files as specified by pubspec.yaml', () async {
     fileSystem.file('foo/NOTICES')
-        ..createSync(recursive: true)
-        ..writeAsStringSync(_kMitLicense);
+      ..createSync(recursive: true)
+      ..writeAsStringSync(_kMitLicense);
     fileSystem.file('bar/NOTICES')
       ..createSync(recursive: true)
       ..writeAsStringSync(_kApacheLicense);
@@ -321,25 +300,13 @@ void main() {
     fileSystem.file('bar.txt').writeAsStringSync('bar.txt');
 
     final File packageConfigFile = fileSystem.file('package_config.json')
-      ..writeAsStringSync(json.encode(
-        <String, Object>{
-          'configVersion': 2,
-          'packages': <Object>[
-            <String, Object>{
-              'name': 'foo',
-              'rootUri': 'file:///foo/',
-              'packageUri': 'lib/',
-              'languageVersion': '2.2',
-            },
-            <String, Object>{
-              'name': 'bar',
-              'rootUri': 'file:///bar/',
-              'packageUri': 'lib/',
-              'languageVersion': '2.2',
-            },
-          ],
-        }
-      ));
+      ..writeAsStringSync(json.encode(<String, Object>{
+        'configVersion': 2,
+        'packages': <Object>[
+          <String, Object>{'name': 'foo', 'rootUri': 'file:///foo/', 'packageUri': 'lib/', 'languageVersion': '2.2'},
+          <String, Object>{'name': 'bar', 'rootUri': 'file:///bar/', 'packageUri': 'lib/', 'languageVersion': '2.2'},
+        ],
+      }));
     final PackageConfig packageConfig = await loadPackageConfig(packageConfigFile.absolute);
     final LicenseResult result = licenseCollector.obtainLicenses(packageConfig, <String, List<File>>{
       'foo': <File>[fileSystem.file('foo.txt').absolute],
@@ -354,80 +321,71 @@ void main() {
 
     // All input licenses included in result.
     final Iterable<String> filePaths = result.dependencies.map((File file) => file.path);
-    expect(filePaths, unorderedEquals(<String>[
-      '/foo/NOTICES',
-      '/bar/NOTICES',
-      '/foo.txt',
-      '/bar.txt',
-    ]));
+    expect(filePaths, unorderedEquals(<String>['/foo/NOTICES', '/bar/NOTICES', '/foo.txt', '/bar.txt']));
   });
 
-  testWithoutContext('Returns a LicenseResult with an error message if an additional LICENSE file does not exist', () async {
-    fileSystem.file('foo/NOTICES')
-      ..createSync(recursive: true)
-      ..writeAsStringSync(_kMitLicense);
+  testWithoutContext(
+    'Returns a LicenseResult with an error message if an additional LICENSE file does not exist',
+    () async {
+      fileSystem.file('foo/NOTICES')
+        ..createSync(recursive: true)
+        ..writeAsStringSync(_kMitLicense);
 
-    final File packageConfigFile = fileSystem.file('package_config.json')
-      ..writeAsStringSync(json.encode(
-        <String, Object>{
+      final File packageConfigFile = fileSystem.file('package_config.json')
+        ..writeAsStringSync(json.encode(<String, Object>{
           'configVersion': 2,
           'packages': <Object>[
-            <String, Object>{
-              'name': 'foo',
-              'rootUri': 'file:///foo/',
-              'packageUri': 'lib/',
-              'languageVersion': '2.2',
-            },
+            <String, Object>{'name': 'foo', 'rootUri': 'file:///foo/', 'packageUri': 'lib/', 'languageVersion': '2.2'},
           ],
-        }
-      ));
-    final PackageConfig packageConfig = await loadPackageConfig(packageConfigFile.absolute);
+        }));
+      final PackageConfig packageConfig = await loadPackageConfig(packageConfigFile.absolute);
 
-    final LicenseResult licenseResult = licenseCollector.obtainLicenses(packageConfig, <String, List<File>>{
-      'foo': <File>[fileSystem.file('foo.txt').absolute, fileSystem.file('foo_2.txt').absolute], // Files do not exist.
-    });
+      final LicenseResult licenseResult = licenseCollector.obtainLicenses(packageConfig, <String, List<File>>{
+        'foo': <File>[
+          fileSystem.file('foo.txt').absolute,
+          fileSystem.file('foo_2.txt').absolute,
+        ], // Files do not exist.
+      });
 
-    expect(licenseResult.combinedLicenses, '');
-    expect(licenseResult.dependencies, isEmpty);
-    expect(licenseResult.errorMessages, <String>[
-      'package foo specified an additional license at /foo.txt, but this file does not exist.',
-      'package foo specified an additional license at /foo_2.txt, but this file does not exist.',
-    ]);
-  });
+      expect(licenseResult.combinedLicenses, '');
+      expect(licenseResult.dependencies, isEmpty);
+      expect(licenseResult.errorMessages, <String>[
+        'package foo specified an additional license at /foo.txt, but this file does not exist.',
+        'package foo specified an additional license at /foo_2.txt, but this file does not exist.',
+      ]);
+    },
+  );
 
-  testWithoutContext('Returns a LicenseResult with an error message if an additional license file is not valid utf8', () async {
-    fileSystem.file('foo/NOTICES')
-      ..createSync(recursive: true)
-      ..writeAsStringSync(_kMitLicense);
-    fileSystem.file('foo.txt')
-      ..createSync(recursive: true)
-      ..writeAsBytesSync(<int>[0xFFFE]);
+  testWithoutContext(
+    'Returns a LicenseResult with an error message if an additional license file is not valid utf8',
+    () async {
+      fileSystem.file('foo/NOTICES')
+        ..createSync(recursive: true)
+        ..writeAsStringSync(_kMitLicense);
+      fileSystem.file('foo.txt')
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(<int>[0xFFFE]);
 
-    final File packageConfigFile = fileSystem.file('package_config.json')
-      ..writeAsStringSync(json.encode(
-        <String, Object>{
+      final File packageConfigFile = fileSystem.file('package_config.json')
+        ..writeAsStringSync(json.encode(<String, Object>{
           'configVersion': 2,
           'packages': <Object>[
-            <String, Object>{
-              'name': 'foo',
-              'rootUri': 'file:///foo/',
-              'packageUri': 'lib/',
-              'languageVersion': '2.2',
-            },
+            <String, Object>{'name': 'foo', 'rootUri': 'file:///foo/', 'packageUri': 'lib/', 'languageVersion': '2.2'},
           ],
-        }
-      ));
-    final PackageConfig packageConfig = await loadPackageConfig(packageConfigFile.absolute);
+        }));
+      final PackageConfig packageConfig = await loadPackageConfig(packageConfigFile.absolute);
 
-    final LicenseResult licenseResult = licenseCollector.obtainLicenses(packageConfig, <String, List<File>>{
-      'foo': <File>[fileSystem.file('foo.txt').absolute],
-    });
+      final LicenseResult licenseResult = licenseCollector.obtainLicenses(packageConfig, <String, List<File>>{
+        'foo': <File>[fileSystem.file('foo.txt').absolute],
+      });
 
-    expect(licenseResult.combinedLicenses, '');
-    expect(licenseResult.dependencies, isEmpty);
-    expect(licenseResult.errorMessages.single,
-      'package foo specified an additional license at /foo.txt, but this file could not be read:'
-      "\nFileSystemException: Invalid UTF-8 byte, path = '/foo.txt'",
-    );
-  });
+      expect(licenseResult.combinedLicenses, '');
+      expect(licenseResult.dependencies, isEmpty);
+      expect(
+        licenseResult.errorMessages.single,
+        'package foo specified an additional license at /foo.txt, but this file could not be read:'
+        "\nFileSystemException: Invalid UTF-8 byte, path = '/foo.txt'",
+      );
+    },
+  );
 }

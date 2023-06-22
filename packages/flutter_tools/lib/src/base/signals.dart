@@ -16,15 +16,10 @@ typedef SignalHandler = FutureOr<void> Function(ProcessSignal signal);
 /// Signal handlers are run in the order that they were added.
 abstract class Signals {
   @visibleForTesting
-  factory Signals.test({
-    List<ProcessSignal> exitSignals = defaultExitSignals,
-  }) => LocalSignals._(exitSignals);
+  factory Signals.test({List<ProcessSignal> exitSignals = defaultExitSignals}) => LocalSignals._(exitSignals);
 
   // The default list of signals that should cause the process to exit.
-  static const List<ProcessSignal> defaultExitSignals = <ProcessSignal>[
-    ProcessSignal.sigterm,
-    ProcessSignal.sigint,
-  ];
+  static const List<ProcessSignal> defaultExitSignals = <ProcessSignal>[ProcessSignal.sigterm, ProcessSignal.sigint];
 
   /// Adds a signal handler to run on receipt of signal.
   ///
@@ -52,24 +47,20 @@ abstract class Signals {
 class LocalSignals implements Signals {
   LocalSignals._(this.exitSignals);
 
-  static LocalSignals instance = LocalSignals._(
-    Signals.defaultExitSignals,
-  );
+  static LocalSignals instance = LocalSignals._(Signals.defaultExitSignals);
 
   final List<ProcessSignal> exitSignals;
 
   // A table mapping (signal, token) -> signal handler.
-  final Map<ProcessSignal, Map<Object, SignalHandler>> _handlersTable =
-      <ProcessSignal, Map<Object, SignalHandler>>{};
+  final Map<ProcessSignal, Map<Object, SignalHandler>> _handlersTable = <ProcessSignal, Map<Object, SignalHandler>>{};
 
   // A table mapping (signal) -> signal handler list. The list is in the order
   // that the signal handlers should be run.
-  final Map<ProcessSignal, List<SignalHandler>> _handlersList =
-      <ProcessSignal, List<SignalHandler>>{};
+  final Map<ProcessSignal, List<SignalHandler>> _handlersList = <ProcessSignal, List<SignalHandler>>{};
 
   // A table mapping (signal) -> low-level signal event stream.
   final Map<ProcessSignal, StreamSubscription<ProcessSignal>> _streamSubscriptions =
-    <ProcessSignal, StreamSubscription<ProcessSignal>>{};
+      <ProcessSignal, StreamSubscription<ProcessSignal>>{};
 
   // The stream controller for errors coming from signal handlers.
   final StreamController<Object> _errorStreamController = StreamController<Object>.broadcast();

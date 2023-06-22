@@ -20,7 +20,6 @@ import '../../src/context.dart';
 import '../../src/fakes.dart';
 
 void main() {
-
   late Config config;
   late Logger logger;
   late FileSystem fs;
@@ -31,14 +30,11 @@ void main() {
     config = Config.test();
     logger = BufferLogger.test();
     fs = MemoryFileSystem.test();
-    platform = FakePlatform(environment: <String, String>{
-      'PATH': '',
-    });
+    platform = FakePlatform(environment: <String, String>{'PATH': ''});
     processManager = FakeProcessManager.empty();
   });
 
   group(Java, () {
-
     group('find', () {
       testWithoutContext('finds the JDK bundled with Android Studio, if it exists', () {
         final AndroidStudio androidStudio = _FakeAndroidStudioWithJdk();
@@ -46,15 +42,12 @@ void main() {
         final String expectedJavaBinaryPath = fs.path.join(androidStudioBundledJdkHome, 'bin', 'java');
 
         processManager.addCommand(FakeCommand(
-          command: <String>[
-            expectedJavaBinaryPath,
-            '--version',
-          ],
+          command: <String>[expectedJavaBinaryPath, '--version'],
           stdout: '''
 openjdk 19.0.2 2023-01-17
 OpenJDK Runtime Environment Zulu19.32+15-CA (build 19.0.2+7)
 OpenJDK 64-Bit Server VM Zulu19.32+15-CA (build 19.0.2+7, mixed mode, sharing)
-'''
+''',
         ));
         final Java java = Java.find(
           config: config,
@@ -82,9 +75,7 @@ OpenJDK 64-Bit Server VM Zulu19.32+15-CA (build 19.0.2+7, mixed mode, sharing)
           androidStudio: androidStudio,
           logger: logger,
           fileSystem: fs,
-          platform: FakePlatform(environment: <String, String>{
-            Java.javaHomeEnvironmentVariable: javaHome,
-          }),
+          platform: FakePlatform(environment: <String, String>{Java.javaHomeEnvironmentVariable: javaHome}),
           processManager: processManager,
         )!;
 
@@ -97,10 +88,7 @@ OpenJDK 64-Bit Server VM Zulu19.32+15-CA (build 19.0.2+7, mixed mode, sharing)
         final OperatingSystemUtils os = _FakeOperatingSystemUtilsWithJava(fileSystem);
 
         processManager.addCommand(
-          const FakeCommand(
-            command: <String>['which', 'java'],
-            stdout: '/fake/which/java/path',
-          ),
+          const FakeCommand(command: <String>['which', 'java'], stdout: '/fake/which/java/path'),
         );
 
         final Java java = Java.find(
@@ -118,12 +106,7 @@ OpenJDK 64-Bit Server VM Zulu19.32+15-CA (build 19.0.2+7, mixed mode, sharing)
 
       testWithoutContext('returns null if no java could be found', () {
         final AndroidStudio androidStudio = _FakeAndroidStudioWithoutJdk();
-        processManager.addCommand(
-          const FakeCommand(
-            command: <String>['which', 'java'],
-            exitCode: 1,
-          ),
-        );
+        processManager.addCommand(const FakeCommand(command: <String>['which', 'java'], exitCode: 1));
         final Java? java = Java.find(
           config: config,
           androidStudio: androidStudio,
@@ -140,18 +123,11 @@ OpenJDK 64-Bit Server VM Zulu19.32+15-CA (build 19.0.2+7, mixed mode, sharing)
         config.setValue('jdk-dir', configuredJdkPath);
 
         processManager.addCommand(
-          const FakeCommand(
-            command: <String>['which', 'java'],
-            stdout: '/fake/which/java/path',
-          ),
+          const FakeCommand(command: <String>['which', 'java'], stdout: '/fake/which/java/path'),
         );
 
         final _FakeAndroidStudioWithJdk androidStudio = _FakeAndroidStudioWithJdk();
-        final FakePlatform platformWithJavaHome = FakePlatform(
-          environment: <String, String>{
-            'JAVA_HOME': '/old/jdk'
-          },
-        );
+        final FakePlatform platformWithJavaHome = FakePlatform(environment: <String, String>{'JAVA_HOME': '/old/jdk'});
         Java? java = Java.find(
           config: config,
           androidStudio: androidStudio,
@@ -200,12 +176,7 @@ OpenJDK 64-Bit Server VM Zulu19.32+15-CA (build 19.0.2+7, mixed mode, sharing)
       });
 
       void addJavaVersionCommand(String output) {
-        processManager.addCommand(
-          FakeCommand(
-            command: <String>[java.binaryPath, '--version'],
-            stdout: output,
-          ),
-        );
+        processManager.addCommand(FakeCommand(command: <String>[java.binaryPath, '--version'], stdout: output));
       }
 
       testWithoutContext('parses jdk 8', () {

@@ -73,19 +73,14 @@ class IntegrationTestTestDevice implements TestDevice {
     _gotProcessVmServiceUri.complete(vmServiceUri);
 
     globals.printTrace('test $id: Connecting to vm service');
-    final FlutterVmService vmService = await connectToVmService(
-      vmServiceUri,
-      logger: globals.logger,
-      compileExpression: compileExpression,
-    ).timeout(
-      const Duration(seconds: 5),
-      onTimeout: () => throw TimeoutException('Connecting to the VM Service timed out.'),
-    );
+    final FlutterVmService vmService =
+        await connectToVmService(vmServiceUri, logger: globals.logger, compileExpression: compileExpression).timeout(
+          const Duration(seconds: 5),
+          onTimeout: () => throw TimeoutException('Connecting to the VM Service timed out.'),
+        );
 
     globals.printTrace('test $id: Finding the correct isolate with the integration test service extension');
-    final vm_service.IsolateRef isolateRef = await vmService.findExtensionIsolate(
-      kIntegrationTestMethod,
-    );
+    final vm_service.IsolateRef isolateRef = await vmService.findExtensionIsolate(kIntegrationTestMethod);
 
     await vmService.service.streamListen(vm_service.EventStreams.kExtension);
     final Stream<String> remoteMessages = vmService.service.onExtensionEvent
@@ -98,9 +93,7 @@ class IntegrationTestTestDevice implements TestDevice {
       vmService.service.callServiceExtension(
         kIntegrationTestMethod,
         isolateId: isolateRef.id,
-        args: <String, String>{
-          kIntegrationTestData: event,
-        },
+        args: <String, String>{kIntegrationTestData: event},
       );
     });
 
@@ -108,9 +101,7 @@ class IntegrationTestTestDevice implements TestDevice {
       (String s) => controller.local.sink.add(s),
       onError: (Object error, StackTrace stack) => controller.local.sink.addError(error, stack),
     );
-    unawaited(vmService.service.onDone.whenComplete(
-      () => controller.local.sink.close(),
-    ));
+    unawaited(vmService.service.onDone.whenComplete(() => controller.local.sink.close()));
 
     return controller.foreign;
   }

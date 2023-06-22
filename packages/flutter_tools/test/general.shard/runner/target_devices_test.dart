@@ -25,16 +25,9 @@ void main() {
   testWithoutContext('Ensure factory returns TargetDevicesWithExtendedWirelessDeviceDiscovery on MacOS', () async {
     final BufferLogger logger = BufferLogger.test();
     final Platform platform = FakePlatform(operatingSystem: 'macos');
-    final TestDeviceManager deviceManager = TestDeviceManager(
-      logger: logger,
-      platform: platform,
-    );
+    final TestDeviceManager deviceManager = TestDeviceManager(logger: logger, platform: platform);
 
-    final TargetDevices targetDevices = TargetDevices(
-      platform: platform,
-      deviceManager: deviceManager,
-      logger: logger,
-    );
+    final TargetDevices targetDevices = TargetDevices(platform: platform, deviceManager: deviceManager, logger: logger);
 
     expect(targetDevices is TargetDevicesWithExtendedWirelessDeviceDiscovery, true);
   });
@@ -42,16 +35,9 @@ void main() {
   testWithoutContext('Ensure factory returns default when not on MacOS', () async {
     final BufferLogger logger = BufferLogger.test();
     final Platform platform = FakePlatform();
-    final TestDeviceManager deviceManager = TestDeviceManager(
-      logger: logger,
-      platform: platform,
-    );
+    final TestDeviceManager deviceManager = TestDeviceManager(logger: logger, platform: platform);
 
-    final TargetDevices targetDevices = TargetDevices(
-      platform: platform,
-      deviceManager: deviceManager,
-      logger: logger,
-    );
+    final TargetDevices targetDevices = TargetDevices(platform: platform, deviceManager: deviceManager, logger: logger);
 
     expect(targetDevices is TargetDevicesWithExtendedWirelessDeviceDiscovery, false);
   });
@@ -61,21 +47,39 @@ void main() {
 
     final FakeDevice attachedAndroidDevice1 = FakeDevice(deviceName: 'target-device-1');
     final FakeDevice attachedAndroidDevice2 = FakeDevice(deviceName: 'target-device-2');
-    final FakeDevice attachedUnsupportedAndroidDevice = FakeDevice(deviceName: 'target-device-3', deviceSupported: false);
-    final FakeDevice attachedUnsupportedForProjectAndroidDevice = FakeDevice(deviceName: 'target-device-4', deviceSupportForProject: false);
+    final FakeDevice attachedUnsupportedAndroidDevice = FakeDevice(
+      deviceName: 'target-device-3',
+      deviceSupported: false,
+    );
+    final FakeDevice attachedUnsupportedForProjectAndroidDevice = FakeDevice(
+      deviceName: 'target-device-4',
+      deviceSupportForProject: false,
+    );
 
     final FakeDevice wirelessAndroidDevice1 = FakeDevice.wireless(deviceName: 'target-device-5');
     final FakeDevice wirelessAndroidDevice2 = FakeDevice.wireless(deviceName: 'target-device-6');
-    final FakeDevice wirelessUnsupportedAndroidDevice = FakeDevice.wireless(deviceName: 'target-device-7', deviceSupported: false);
-    final FakeDevice wirelessUnsupportedForProjectAndroidDevice = FakeDevice.wireless(deviceName: 'target-device-8', deviceSupportForProject: false);
+    final FakeDevice wirelessUnsupportedAndroidDevice = FakeDevice.wireless(
+      deviceName: 'target-device-7',
+      deviceSupported: false,
+    );
+    final FakeDevice wirelessUnsupportedForProjectAndroidDevice = FakeDevice.wireless(
+      deviceName: 'target-device-8',
+      deviceSupportForProject: false,
+    );
 
     final FakeDevice nonEphemeralDevice = FakeDevice(deviceName: 'target-device-9', ephemeral: false);
     final FakeDevice fuchsiaDevice = FakeDevice.fuchsia(deviceName: 'target-device-10');
 
     final FakeDevice exactMatchAndroidDevice = FakeDevice(deviceName: 'target-device');
     final FakeDevice exactMatchWirelessAndroidDevice = FakeDevice.wireless(deviceName: 'target-device');
-    final FakeDevice exactMatchAttachedUnsupportedAndroidDevice = FakeDevice(deviceName: 'target-device', deviceSupported: false);
-    final FakeDevice exactMatchUnsupportedByProjectDevice = FakeDevice(deviceName: 'target-device', deviceSupportForProject: false);
+    final FakeDevice exactMatchAttachedUnsupportedAndroidDevice = FakeDevice(
+      deviceName: 'target-device',
+      deviceSupported: false,
+    );
+    final FakeDevice exactMatchUnsupportedByProjectDevice = FakeDevice(
+      deviceName: 'target-device',
+      deviceSupportForProject: false,
+    );
 
     setUp(() {
       platform = FakePlatform();
@@ -91,10 +95,7 @@ void main() {
       });
 
       testUsingContext('does not search for devices', () async {
-        final TestDeviceManager deviceManager = TestDeviceManager(
-          logger: logger,
-          platform: platform,
-        );
+        final TestDeviceManager deviceManager = TestDeviceManager(logger: logger, platform: platform);
         deviceManager.androidDiscoverer.deviceList = <Device>[attachedAndroidDevice1];
 
         final TargetDevices targetDevices = TargetDevices(
@@ -110,17 +111,12 @@ Unable to locate a development device; please run 'flutter doctor' for informati
         expect(devices, isNull);
         expect(deviceManager.androidDiscoverer.devicesCalled, 0);
         expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
-      }, overrides: <Type, Generator>{
-        Doctor: () => doctor,
-      });
+      }, overrides: <Type, Generator>{Doctor: () => doctor});
     });
 
     testUsingContext('ensure refresh when deviceDiscoveryTimeout is provided', () async {
       final BufferLogger logger = BufferLogger.test();
-      final TestDeviceManager deviceManager = TestDeviceManager(
-        logger: logger,
-        platform: platform,
-      );
+      final TestDeviceManager deviceManager = TestDeviceManager(logger: logger, platform: platform);
       deviceManager.androidDiscoverer.deviceList = <Device>[attachedAndroidDevice1];
       deviceManager.androidDiscoverer.refreshDeviceList = <Device>[attachedAndroidDevice1, wirelessAndroidDevice1];
       deviceManager.hasSpecifiedAllDevices = true;
@@ -130,9 +126,8 @@ Unable to locate a development device; please run 'flutter doctor' for informati
         deviceManager: deviceManager,
         logger: logger,
       );
-      final List<Device>? devices = await targetDevices.findAllTargetDevices(
-        deviceDiscoveryTimeout: const Duration(seconds: 2),
-      );
+      final List<Device>? devices =
+          await targetDevices.findAllTargetDevices(deviceDiscoveryTimeout: const Duration(seconds: 2));
 
       expect(logger.statusText, equals(''));
       expect(devices, <Device>[attachedAndroidDevice1, wirelessAndroidDevice1]);
@@ -141,29 +136,31 @@ Unable to locate a development device; please run 'flutter doctor' for informati
       expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
     });
 
-    testUsingContext('ensure unsupported for projects are included when includeDevicesUnsupportedByProject is true', () async {
-      final BufferLogger logger = BufferLogger.test();
-      final TestDeviceManager deviceManager = TestDeviceManager(
-        logger: logger,
-        platform: platform,
-      );
-      deviceManager.androidDiscoverer.deviceList = <Device>[attachedUnsupportedAndroidDevice, attachedUnsupportedForProjectAndroidDevice];
+    testUsingContext(
+      'ensure unsupported for projects are included when includeDevicesUnsupportedByProject is true',
+      () async {
+        final BufferLogger logger = BufferLogger.test();
+        final TestDeviceManager deviceManager = TestDeviceManager(logger: logger, platform: platform);
+        deviceManager.androidDiscoverer.deviceList = <Device>[
+          attachedUnsupportedAndroidDevice,
+          attachedUnsupportedForProjectAndroidDevice,
+        ];
 
-      final TargetDevices targetDevices = TargetDevices(
-        platform: platform,
-        deviceManager: deviceManager,
-        logger: logger,
-      );
-      final List<Device>? devices = await targetDevices.findAllTargetDevices(
-        includeDevicesUnsupportedByProject: true,
-      );
+        final TargetDevices targetDevices = TargetDevices(
+          platform: platform,
+          deviceManager: deviceManager,
+          logger: logger,
+        );
+        final List<Device>? devices =
+            await targetDevices.findAllTargetDevices(includeDevicesUnsupportedByProject: true);
 
-      expect(logger.statusText, equals(''));
-      expect(devices, <Device>[attachedUnsupportedForProjectAndroidDevice]);
-      expect(deviceManager.androidDiscoverer.devicesCalled, 2);
-      expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
-      expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-    });
+        expect(logger.statusText, equals(''));
+        expect(devices, <Device>[attachedUnsupportedForProjectAndroidDevice]);
+        expect(deviceManager.androidDiscoverer.devicesCalled, 2);
+        expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
+        expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
+      },
+    );
 
     group('finds no devices', () {
       late BufferLogger logger;
@@ -172,15 +169,8 @@ Unable to locate a development device; please run 'flutter doctor' for informati
 
       setUp(() {
         logger = BufferLogger.test();
-        deviceManager = TestDeviceManager(
-          logger: logger,
-          platform: platform,
-        );
-        targetDevices = TargetDevices(
-          platform: platform,
-          deviceManager: deviceManager,
-          logger: logger,
-        );
+        deviceManager = TestDeviceManager(logger: logger, platform: platform);
+        targetDevices = TargetDevices(platform: platform, deviceManager: deviceManager, logger: logger);
       });
 
       group('with device not specified', () {
@@ -408,7 +398,6 @@ If you would like your app to run on android or fuchsia, consider running `flutt
           expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
           expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
         });
-
       });
     });
 
@@ -419,15 +408,8 @@ If you would like your app to run on android or fuchsia, consider running `flutt
 
       setUp(() {
         logger = BufferLogger.test();
-        deviceManager = TestDeviceManager(
-          logger: logger,
-          platform: platform,
-        );
-        targetDevices = TargetDevices(
-          platform: platform,
-          deviceManager: deviceManager,
-          logger: logger,
-        );
+        deviceManager = TestDeviceManager(logger: logger, platform: platform);
+        targetDevices = TargetDevices(platform: platform, deviceManager: deviceManager, logger: logger);
       });
 
       group('with device not specified', () {
@@ -554,7 +536,6 @@ If you would like your app to run on android or fuchsia, consider running `flutt
           expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
         });
       });
-
     });
 
     group('finds multiple devices', () {
@@ -564,15 +545,8 @@ If you would like your app to run on android or fuchsia, consider running `flutt
 
       setUp(() {
         logger = BufferLogger.test();
-        deviceManager = TestDeviceManager(
-          logger: logger,
-          platform: platform,
-        );
-        targetDevices = TargetDevices(
-          platform: platform,
-          deviceManager: deviceManager,
-          logger: logger,
-        );
+        deviceManager = TestDeviceManager(logger: logger, platform: platform);
+        targetDevices = TargetDevices(platform: platform, deviceManager: deviceManager, logger: logger);
       });
 
       group('with device not specified', () {
@@ -610,9 +584,7 @@ target-device-5 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 2);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only attached devices', () async {
             deviceManager.androidDiscoverer.deviceList = <Device>[attachedAndroidDevice1, attachedAndroidDevice2];
@@ -631,9 +603,7 @@ target-device-2 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 2);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only wireless devices', () async {
             deviceManager.androidDiscoverer.deviceList = <Device>[wirelessAndroidDevice1, wirelessAndroidDevice2];
@@ -655,9 +625,7 @@ target-device-6 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 2);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
         });
 
         group('without stdinHasTerminal', () {
@@ -693,9 +661,7 @@ target-device-8 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 4);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only attached devices', () async {
             deviceManager.androidDiscoverer.deviceList = <Device>[attachedAndroidDevice1, attachedAndroidDevice2];
@@ -712,9 +678,7 @@ target-device-2 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 4);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only wireless devices', () async {
             deviceManager.androidDiscoverer.deviceList = <Device>[wirelessAndroidDevice1, wirelessAndroidDevice2];
@@ -732,9 +696,7 @@ target-device-6 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 4);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
         });
       });
 
@@ -781,9 +743,7 @@ target-device-8 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 3);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only attached devices', () async {
             deviceManager.androidDiscoverer.deviceList = <Device>[attachedAndroidDevice1, attachedAndroidDevice2];
@@ -802,9 +762,7 @@ target-device-2 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 3);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only wireless devices', () async {
             deviceManager.androidDiscoverer.deviceList = <Device>[wirelessAndroidDevice1, wirelessAndroidDevice2];
@@ -826,9 +784,7 @@ target-device-6 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 3);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
         });
 
         group('without stdinHasTerminal', () {
@@ -852,9 +808,7 @@ target-device-1 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 3);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including matching attached, wireless, unsupported devices', () async {
             deviceManager.androidDiscoverer.deviceList = <Device>[
@@ -881,9 +835,7 @@ target-device-8 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 3);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only attached devices', () async {
             deviceManager.androidDiscoverer.deviceList = <Device>[attachedAndroidDevice1, attachedAndroidDevice2];
@@ -899,9 +851,7 @@ target-device-2 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 3);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only wireless devices', () async {
             deviceManager.androidDiscoverer.deviceList = <Device>[wirelessAndroidDevice1, wirelessAndroidDevice2];
@@ -919,9 +869,7 @@ target-device-6 (mobile) • xxx • android • Android 10
             expect(deviceManager.androidDiscoverer.devicesCalled, 3);
             expect(deviceManager.androidDiscoverer.discoverDevicesCalled, 0);
             expect(deviceManager.androidDiscoverer.numberOfTimesPolled, 1);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
         });
       });
 
@@ -958,24 +906,52 @@ target-device-6 (mobile) • xxx • android • Android 10
 
     final FakeIOSDevice attachedIOSDevice1 = FakeIOSDevice(deviceName: 'target-device-1');
     final FakeIOSDevice attachedIOSDevice2 = FakeIOSDevice(deviceName: 'target-device-2');
-    final FakeIOSDevice attachedUnsupportedIOSDevice = FakeIOSDevice(deviceName: 'target-device-3', deviceSupported: false);
-    final FakeIOSDevice attachedUnsupportedForProjectIOSDevice = FakeIOSDevice(deviceName: 'target-device-4', deviceSupportForProject: false);
+    final FakeIOSDevice attachedUnsupportedIOSDevice = FakeIOSDevice(
+      deviceName: 'target-device-3',
+      deviceSupported: false,
+    );
+    final FakeIOSDevice attachedUnsupportedForProjectIOSDevice = FakeIOSDevice(
+      deviceName: 'target-device-4',
+      deviceSupportForProject: false,
+    );
 
-    final FakeIOSDevice disconnectedWirelessIOSDevice1 = FakeIOSDevice.notConnectedWireless(deviceName: 'target-device-5');
+    final FakeIOSDevice disconnectedWirelessIOSDevice1 = FakeIOSDevice.notConnectedWireless(
+      deviceName: 'target-device-5',
+    );
     final FakeIOSDevice connectedWirelessIOSDevice1 = FakeIOSDevice.connectedWireless(deviceName: 'target-device-5');
-    final FakeIOSDevice disconnectedWirelessIOSDevice2 = FakeIOSDevice.notConnectedWireless(deviceName: 'target-device-6');
+    final FakeIOSDevice disconnectedWirelessIOSDevice2 = FakeIOSDevice.notConnectedWireless(
+      deviceName: 'target-device-6',
+    );
     final FakeIOSDevice connectedWirelessIOSDevice2 = FakeIOSDevice.connectedWireless(deviceName: 'target-device-6');
-    final FakeIOSDevice disconnectedWirelessUnsupportedIOSDevice = FakeIOSDevice.notConnectedWireless(deviceName: 'target-device-7', deviceSupported: false);
-    final FakeIOSDevice connectedWirelessUnsupportedIOSDevice = FakeIOSDevice.connectedWireless(deviceName: 'target-device-7', deviceSupported: false);
-    final FakeIOSDevice disconnectedWirelessUnsupportedForProjectIOSDevice = FakeIOSDevice.notConnectedWireless(deviceName: 'target-device-8', deviceSupportForProject: false);
-    final FakeIOSDevice connectedWirelessUnsupportedForProjectIOSDevice = FakeIOSDevice.connectedWireless(deviceName: 'target-device-8', deviceSupportForProject: false);
+    final FakeIOSDevice disconnectedWirelessUnsupportedIOSDevice = FakeIOSDevice.notConnectedWireless(
+      deviceName: 'target-device-7',
+      deviceSupported: false,
+    );
+    final FakeIOSDevice connectedWirelessUnsupportedIOSDevice = FakeIOSDevice.connectedWireless(
+      deviceName: 'target-device-7',
+      deviceSupported: false,
+    );
+    final FakeIOSDevice disconnectedWirelessUnsupportedForProjectIOSDevice = FakeIOSDevice.notConnectedWireless(
+      deviceName: 'target-device-8',
+      deviceSupportForProject: false,
+    );
+    final FakeIOSDevice connectedWirelessUnsupportedForProjectIOSDevice = FakeIOSDevice.connectedWireless(
+      deviceName: 'target-device-8',
+      deviceSupportForProject: false,
+    );
 
     final FakeIOSDevice nonEphemeralDevice = FakeIOSDevice(deviceName: 'target-device-9', ephemeral: false);
     final FakeDevice fuchsiaDevice = FakeDevice.fuchsia(deviceName: 'target-device-10');
 
     final FakeIOSDevice exactMatchAttachedIOSDevice = FakeIOSDevice(deviceName: 'target-device');
-    final FakeIOSDevice exactMatchAttachedUnsupportedIOSDevice = FakeIOSDevice(deviceName: 'target-device', deviceSupported: false);
-    final FakeIOSDevice exactMatchUnsupportedByProjectDevice = FakeIOSDevice(deviceName: 'target-device', deviceSupportForProject: false);
+    final FakeIOSDevice exactMatchAttachedUnsupportedIOSDevice = FakeIOSDevice(
+      deviceName: 'target-device',
+      deviceSupported: false,
+    );
+    final FakeIOSDevice exactMatchUnsupportedByProjectDevice = FakeIOSDevice(
+      deviceName: 'target-device',
+      deviceSupportForProject: false,
+    );
 
     setUp(() {
       platform = FakePlatform(operatingSystem: 'macos');
@@ -991,16 +967,11 @@ target-device-6 (mobile) • xxx • android • Android 10
       });
 
       testUsingContext('does not search for devices', () async {
-        final TestDeviceManager deviceManager = TestDeviceManager(
-          logger: logger,
-          platform: platform,
-        );
+        final TestDeviceManager deviceManager = TestDeviceManager(logger: logger, platform: platform);
         deviceManager.iosDiscoverer.deviceList = <Device>[attachedIOSDevice1];
 
-        final TargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices = TargetDevicesWithExtendedWirelessDeviceDiscovery(
-          deviceManager: deviceManager,
-          logger: logger,
-        );
+        final TargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices =
+            TargetDevicesWithExtendedWirelessDeviceDiscovery(deviceManager: deviceManager, logger: logger);
         final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
         expect(logger.errorText, equals('''
@@ -1009,27 +980,19 @@ Unable to locate a development device; please run 'flutter doctor' for informati
         expect(devices, isNull);
         expect(deviceManager.iosDiscoverer.devicesCalled, 0);
         expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 0);
-      }, overrides: <Type, Generator>{
-        Doctor: () => doctor,
-      });
+      }, overrides: <Type, Generator>{Doctor: () => doctor});
     });
 
     testUsingContext('ensure refresh when deviceDiscoveryTimeout is provided', () async {
       final BufferLogger logger = BufferLogger.test();
-      final TestDeviceManager deviceManager = TestDeviceManager(
-        logger: logger,
-        platform: platform,
-      );
+      final TestDeviceManager deviceManager = TestDeviceManager(logger: logger, platform: platform);
       deviceManager.iosDiscoverer.deviceList = <Device>[disconnectedWirelessIOSDevice1];
       deviceManager.iosDiscoverer.refreshDeviceList = <Device>[connectedWirelessIOSDevice1];
 
-      final TargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices = TargetDevicesWithExtendedWirelessDeviceDiscovery(
-        deviceManager: deviceManager,
-        logger: logger,
-      );
-      final List<Device>? devices = await targetDevices.findAllTargetDevices(
-        deviceDiscoveryTimeout: const Duration(seconds: 2),
-      );
+      final TargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices =
+          TargetDevicesWithExtendedWirelessDeviceDiscovery(deviceManager: deviceManager, logger: logger);
+      final List<Device>? devices =
+          await targetDevices.findAllTargetDevices(deviceDiscoveryTimeout: const Duration(seconds: 2));
 
       expect(logger.statusText, equals(''));
       expect(devices, <Device>[connectedWirelessIOSDevice1]);
@@ -1040,13 +1003,11 @@ Unable to locate a development device; please run 'flutter doctor' for informati
 
     testUsingContext('ensure no refresh when deviceConnectionInterface is attached', () async {
       final BufferLogger logger = BufferLogger.test();
-      final TestDeviceManager deviceManager = TestDeviceManager(
-        logger: logger,
-        platform: platform,
-      );
+      final TestDeviceManager deviceManager = TestDeviceManager(logger: logger, platform: platform);
       deviceManager.iosDiscoverer.deviceList = <Device>[attachedIOSDevice1];
 
-      final TargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices = TargetDevicesWithExtendedWirelessDeviceDiscovery(
+      final TargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices =
+          TargetDevicesWithExtendedWirelessDeviceDiscovery(
         deviceManager: deviceManager,
         logger: logger,
         deviceConnectionInterface: DeviceConnectionInterface.attached,
@@ -1060,27 +1021,27 @@ Unable to locate a development device; please run 'flutter doctor' for informati
       expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 1);
     });
 
-    testUsingContext('ensure unsupported for projects are included when includeDevicesUnsupportedByProject is true', () async {
-      final BufferLogger logger = BufferLogger.test();
-      final TestDeviceManager deviceManager = TestDeviceManager(
-        logger: logger,
-        platform: platform,
-      );
-      deviceManager.iosDiscoverer.deviceList = <Device>[attachedUnsupportedIOSDevice, attachedUnsupportedForProjectIOSDevice];
+    testUsingContext(
+      'ensure unsupported for projects are included when includeDevicesUnsupportedByProject is true',
+      () async {
+        final BufferLogger logger = BufferLogger.test();
+        final TestDeviceManager deviceManager = TestDeviceManager(logger: logger, platform: platform);
+        deviceManager.iosDiscoverer.deviceList = <Device>[
+          attachedUnsupportedIOSDevice,
+          attachedUnsupportedForProjectIOSDevice,
+        ];
 
-      final TargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices = TargetDevicesWithExtendedWirelessDeviceDiscovery(
-        deviceManager: deviceManager,
-        logger: logger,
-      );
-      final List<Device>? devices = await targetDevices.findAllTargetDevices(
-        includeDevicesUnsupportedByProject: true,
-      );
+        final TargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices =
+            TargetDevicesWithExtendedWirelessDeviceDiscovery(deviceManager: deviceManager, logger: logger);
+        final List<Device>? devices =
+            await targetDevices.findAllTargetDevices(includeDevicesUnsupportedByProject: true);
 
-      expect(logger.statusText, equals(''));
-      expect(devices, <Device>[attachedUnsupportedForProjectIOSDevice]);
-      expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
-      expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-    });
+        expect(logger.statusText, equals(''));
+        expect(devices, <Device>[attachedUnsupportedForProjectIOSDevice]);
+        expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
+        expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
+      },
+    );
 
     group('finds no devices', () {
       late BufferLogger logger;
@@ -1089,15 +1050,8 @@ Unable to locate a development device; please run 'flutter doctor' for informati
 
       setUp(() {
         logger = BufferLogger.test();
-        deviceManager = TestDeviceManager(
-          logger: logger,
-          platform: platform,
-        );
-        targetDevices = TargetDevices(
-          platform: platform,
-          deviceManager: deviceManager,
-          logger: logger,
-        );
+        deviceManager = TestDeviceManager(logger: logger, platform: platform);
+        targetDevices = TargetDevices(platform: platform, deviceManager: deviceManager, logger: logger);
       });
 
       group('with device not specified', () {
@@ -1177,7 +1131,8 @@ No supported devices connected.
             deviceManager.iosDiscoverer.deviceList = <Device>[attachedIOSDevice1];
             deviceManager.iosDiscoverer.refreshDeviceList = <Device>[attachedIOSDevice1];
 
-            final TestTargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices = TestTargetDevicesWithExtendedWirelessDeviceDiscovery(
+            final TestTargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices =
+                TestTargetDevicesWithExtendedWirelessDeviceDiscovery(
               deviceManager: deviceManager,
               logger: logger,
               deviceConnectionInterface: DeviceConnectionInterface.wireless,
@@ -1222,7 +1177,7 @@ No supported devices found with name or id matching 'target-device'.
           final FakeIOSDevice device2 = FakeIOSDevice.notConnectedWireless(deviceName: 'no-match-2');
           final FakeIOSDevice device2Connected = FakeIOSDevice.connectedWireless(deviceName: 'no-match-2');
           deviceManager.iosDiscoverer.deviceList = <Device>[device1, device2];
-          deviceManager.iosDiscoverer.refreshDeviceList = <Device>[device1,device2Connected];
+          deviceManager.iosDiscoverer.refreshDeviceList = <Device>[device1, device2Connected];
 
           final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
@@ -1263,7 +1218,9 @@ target-device (mobile) • xxx • ios • iOS 16 (unsupported)
         });
 
         testUsingContext('when only matching device is dev mode disabled', () async {
-          deviceManager.iosDiscoverer.deviceList = <Device>[FakeIOSDevice(deviceName: 'target-device', devModeEnabled: false)];
+          deviceManager.iosDiscoverer.deviceList = <Device>[
+            FakeIOSDevice(deviceName: 'target-device', devModeEnabled: false),
+          ];
 
           final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
@@ -1274,8 +1231,10 @@ To use 'target-device' for development, enable Developer Mode in Settings → Pr
         });
 
         testUsingContext('when one of the matching devices has dev mode disabled', () async {
-          deviceManager.iosDiscoverer.deviceList = <Device>[FakeIOSDevice(deviceName: 'target-device-1', devModeEnabled: false, isConnected: false),
-            FakeIOSDevice(deviceName: 'target-device-2', devModeEnabled: true)];
+          deviceManager.iosDiscoverer.deviceList = <Device>[
+            FakeIOSDevice(deviceName: 'target-device-1', devModeEnabled: false, isConnected: false),
+            FakeIOSDevice(deviceName: 'target-device-2', devModeEnabled: true),
+          ];
 
           final List<Device>? devices = await targetDevices.findAllTargetDevices();
           expect(logger.statusText, equals('''
@@ -1286,8 +1245,10 @@ Checking for wireless devices...
         });
 
         testUsingContext('when all matching devices are dev mode disabled', () async {
-          deviceManager.iosDiscoverer.deviceList = <Device>[FakeIOSDevice(deviceName: 'target-device-1', devModeEnabled: false, isConnected: false),
-            FakeIOSDevice(deviceName: 'target-device-2', devModeEnabled: false, isConnected: false)];
+          deviceManager.iosDiscoverer.deviceList = <Device>[
+            FakeIOSDevice(deviceName: 'target-device-1', devModeEnabled: false, isConnected: false),
+            FakeIOSDevice(deviceName: 'target-device-2', devModeEnabled: false, isConnected: false),
+          ];
 
           final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
@@ -1308,7 +1269,8 @@ No supported devices found with name or id matching 'target-device'.
             deviceManager.iosDiscoverer.deviceList = <Device>[exactMatchAttachedIOSDevice, device1];
             deviceManager.iosDiscoverer.refreshDeviceList = <Device>[exactMatchAttachedIOSDevice, device1Connected];
 
-            final TestTargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices = TestTargetDevicesWithExtendedWirelessDeviceDiscovery(
+            final TestTargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices =
+                TestTargetDevicesWithExtendedWirelessDeviceDiscovery(
               deviceManager: deviceManager,
               logger: logger,
               deviceConnectionInterface: DeviceConnectionInterface.wireless,
@@ -1395,14 +1357,8 @@ If you would like your app to run on fuchsia or ios, consider running `flutter c
 
       setUp(() {
         logger = TestBufferLogger.test();
-        deviceManager = TestDeviceManager(
-          logger: logger,
-          platform: platform,
-        );
-        targetDevices = TargetDevicesWithExtendedWirelessDeviceDiscovery(
-          deviceManager: deviceManager,
-          logger: logger,
-        );
+        deviceManager = TestDeviceManager(logger: logger, platform: platform);
+        targetDevices = TargetDevicesWithExtendedWirelessDeviceDiscovery(deviceManager: deviceManager, logger: logger);
       });
 
       group('with device not specified', () {
@@ -1426,14 +1382,18 @@ If you would like your app to run on fuchsia or ios, consider running `flutter c
           expect(logger.statusText, equals('''
 No devices found yet. Checking for wireless devices...
 '''));
-        expect(devices, <Device>[connectedWirelessIOSDevice1]);
-        expect(deviceManager.iosDiscoverer.devicesCalled, 2);
-        expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
-        expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
+          expect(devices, <Device>[connectedWirelessIOSDevice1]);
+          expect(deviceManager.iosDiscoverer.devicesCalled, 2);
+          expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
+          expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
         });
 
         testUsingContext('when multiple but only one attached ephemeral', () async {
-          deviceManager.iosDiscoverer.deviceList = <Device>[nonEphemeralDevice, attachedIOSDevice1, disconnectedWirelessIOSDevice1];
+          deviceManager.iosDiscoverer.deviceList = <Device>[
+            nonEphemeralDevice,
+            attachedIOSDevice1,
+            disconnectedWirelessIOSDevice1,
+          ];
 
           final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
@@ -1454,10 +1414,8 @@ No devices found yet. Checking for wireless devices...
           testUsingContext('when single non-ephemeral attached device', () async {
             deviceManager.iosDiscoverer.deviceList = <Device>[nonEphemeralDevice];
 
-            final TestTargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices = TestTargetDevicesWithExtendedWirelessDeviceDiscovery(
-              deviceManager: deviceManager,
-              logger: logger,
-            );
+            final TestTargetDevicesWithExtendedWirelessDeviceDiscovery targetDevices =
+                TestTargetDevicesWithExtendedWirelessDeviceDiscovery(deviceManager: deviceManager, logger: logger);
             targetDevices.waitForWirelessBeforeInput = true;
             targetDevices.deviceSelection.input = '1';
             logger.originalStatusText = '''
@@ -1483,9 +1441,7 @@ Please choose one (or "q" to quit): '''));
             expect(deviceManager.iosDiscoverer.devicesCalled, 2);
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
         });
 
         group('without stdinHasTerminal', () {
@@ -1511,9 +1467,7 @@ Checking for wireless devices...
             expect(deviceManager.iosDiscoverer.devicesCalled, 2);
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
         });
       });
 
@@ -1550,7 +1504,10 @@ Checking for wireless devices...
         });
 
         testUsingContext('when matching attached device', () async {
-          deviceManager.iosDiscoverer.deviceList = <Device>[exactMatchAttachedIOSDevice, disconnectedWirelessIOSDevice1];
+          deviceManager.iosDiscoverer.deviceList = <Device>[
+            exactMatchAttachedIOSDevice,
+            disconnectedWirelessIOSDevice1,
+          ];
 
           final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
@@ -1562,7 +1519,9 @@ Checking for wireless devices...
         });
 
         testUsingContext('when exact matching wireless device', () async {
-          final FakeIOSDevice exactMatchWirelessDevice = FakeIOSDevice.notConnectedWireless(deviceName: 'target-device');
+          final FakeIOSDevice exactMatchWirelessDevice = FakeIOSDevice.notConnectedWireless(
+            deviceName: 'target-device',
+          );
           deviceManager.iosDiscoverer.deviceList = <Device>[attachedIOSDevice1, exactMatchWirelessDevice];
           deviceManager.setDeviceToWaitFor(exactMatchWirelessDevice, DeviceConnectionInterface.wireless);
 
@@ -1581,7 +1540,9 @@ Waiting for target-device to connect...
         });
 
         testUsingContext('when partially matching single wireless devices', () async {
-          final FakeIOSDevice partialMatchWirelessDevice = FakeIOSDevice.notConnectedWireless(deviceName: 'target-device-1');
+          final FakeIOSDevice partialMatchWirelessDevice = FakeIOSDevice.notConnectedWireless(
+            deviceName: 'target-device-1',
+          );
           deviceManager.iosDiscoverer.deviceList = <Device>[partialMatchWirelessDevice];
           deviceManager.setDeviceToWaitFor(partialMatchWirelessDevice, DeviceConnectionInterface.wireless);
 
@@ -1601,7 +1562,10 @@ Waiting for target-device-1 to connect...
 
         testUsingContext('when exact matching an attached device and partial matching a wireless device', () async {
           deviceManager.iosDiscoverer.deviceList = <Device>[exactMatchAttachedIOSDevice, connectedWirelessIOSDevice1];
-          deviceManager.iosDiscoverer.refreshDeviceList = <Device>[exactMatchAttachedIOSDevice, connectedWirelessIOSDevice1];
+          deviceManager.iosDiscoverer.refreshDeviceList = <Device>[
+            exactMatchAttachedIOSDevice,
+            connectedWirelessIOSDevice1,
+          ];
 
           final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
@@ -1640,23 +1604,26 @@ Checking for wireless devices...
           expect(deviceManager.iosDiscoverer.xcdevice.waitedForDeviceToConnect, isFalse);
         });
 
-        testUsingContext('when partially matching wireless device and an attached device from different discoverer', () async {
-          final FakeDevice androidDevice = FakeDevice(deviceName: 'target-device-android');
-          deviceManager.androidDiscoverer.deviceList = <Device>[androidDevice];
-          deviceManager.iosDiscoverer.deviceList = <Device>[disconnectedWirelessIOSDevice1];
-          deviceManager.iosDiscoverer.refreshDeviceList = <Device>[disconnectedWirelessIOSDevice1];
+        testUsingContext(
+          'when partially matching wireless device and an attached device from different discoverer',
+          () async {
+            final FakeDevice androidDevice = FakeDevice(deviceName: 'target-device-android');
+            deviceManager.androidDiscoverer.deviceList = <Device>[androidDevice];
+            deviceManager.iosDiscoverer.deviceList = <Device>[disconnectedWirelessIOSDevice1];
+            deviceManager.iosDiscoverer.refreshDeviceList = <Device>[disconnectedWirelessIOSDevice1];
 
-          final List<Device>? devices = await targetDevices.findAllTargetDevices();
+            final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
-          expect(logger.statusText, equals('''
+            expect(logger.statusText, equals('''
 Checking for wireless devices...
 '''));
-          expect(devices, <Device>[androidDevice]);
-          expect(deviceManager.iosDiscoverer.devicesCalled, 3);
-          expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
-          expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-          expect(deviceManager.iosDiscoverer.xcdevice.waitedForDeviceToConnect, isFalse);
-        });
+            expect(devices, <Device>[androidDevice]);
+            expect(deviceManager.iosDiscoverer.devicesCalled, 3);
+            expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
+            expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
+            expect(deviceManager.iosDiscoverer.xcdevice.waitedForDeviceToConnect, isFalse);
+          },
+        );
 
         testUsingContext('when matching single non-ephemeral attached device', () async {
           deviceManager.iosDiscoverer.deviceList = <Device>[nonEphemeralDevice];
@@ -1703,7 +1670,6 @@ Checking for wireless devices...
           expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
         });
       });
-
     });
 
     group('finds multiple devices', () {
@@ -1712,10 +1678,7 @@ Checking for wireless devices...
 
       setUp(() {
         logger = TestBufferLogger.test();
-        deviceManager = TestDeviceManager(
-          logger: logger,
-          platform: platform,
-        );
+        deviceManager = TestDeviceManager(logger: logger, platform: platform);
       });
 
       group('with device not specified', () {
@@ -1779,13 +1742,11 @@ target-device-5 (mobile) • xxx • ios • iOS 16
 [2]: target-device-2 (xxx)
 [3]: target-device-5 (xxx)
 Please choose one (or "q" to quit): '''));
-          expect(devices, <Device>[connectedWirelessIOSDevice1]);
-          expect(deviceManager.iosDiscoverer.devicesCalled, 2);
-          expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
-          expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+            expect(devices, <Device>[connectedWirelessIOSDevice1]);
+            expect(deviceManager.iosDiscoverer.devicesCalled, 2);
+            expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
+            expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only attached devices', () async {
             deviceManager.iosDiscoverer.deviceList = <Device>[attachedIOSDevice1, attachedIOSDevice2];
@@ -1815,17 +1776,21 @@ No wireless devices were found.
 [1]: target-device-1 (xxx)
 [2]: target-device-2 (xxx)
 Please choose one (or "q" to quit): '''));
-          expect(devices, <Device>[attachedIOSDevice2]);
-          expect(deviceManager.iosDiscoverer.devicesCalled, 2);
-          expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
-          expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+            expect(devices, <Device>[attachedIOSDevice2]);
+            expect(deviceManager.iosDiscoverer.devicesCalled, 2);
+            expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
+            expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only wireless devices', () async {
-            deviceManager.iosDiscoverer.deviceList = <Device>[disconnectedWirelessIOSDevice1, disconnectedWirelessIOSDevice2];
-            deviceManager.iosDiscoverer.refreshDeviceList = <Device>[connectedWirelessIOSDevice1, connectedWirelessIOSDevice2];
+            deviceManager.iosDiscoverer.deviceList = <Device>[
+              disconnectedWirelessIOSDevice1,
+              disconnectedWirelessIOSDevice2,
+            ];
+            deviceManager.iosDiscoverer.refreshDeviceList = <Device>[
+              connectedWirelessIOSDevice1,
+              connectedWirelessIOSDevice2,
+            ];
 
             targetDevices.waitForWirelessBeforeInput = true;
             targetDevices.deviceSelection.input = '2';
@@ -1845,13 +1810,11 @@ target-device-6 (mobile) • xxx • ios • iOS 16
 [1]: target-device-5 (xxx)
 [2]: target-device-6 (xxx)
 '''));
-          expect(devices, <Device>[connectedWirelessIOSDevice1]);
-          expect(deviceManager.iosDiscoverer.devicesCalled, 2);
-          expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
-          expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+            expect(devices, <Device>[connectedWirelessIOSDevice1]);
+            expect(deviceManager.iosDiscoverer.devicesCalled, 2);
+            expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
+            expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           group('but no color support', () {
             setUp(() {
@@ -1864,8 +1827,16 @@ target-device-6 (mobile) • xxx • ios • iOS 16
             });
 
             testUsingContext('and waits for wireless devices to return', () async {
-              deviceManager.iosDiscoverer.deviceList = <Device>[attachedIOSDevice1, attachedIOSDevice2, disconnectedWirelessIOSDevice1];
-              deviceManager.iosDiscoverer.refreshDeviceList = <Device>[attachedIOSDevice1, attachedIOSDevice2, connectedWirelessIOSDevice1];
+              deviceManager.iosDiscoverer.deviceList = <Device>[
+                attachedIOSDevice1,
+                attachedIOSDevice2,
+                disconnectedWirelessIOSDevice1,
+              ];
+              deviceManager.iosDiscoverer.refreshDeviceList = <Device>[
+                attachedIOSDevice1,
+                attachedIOSDevice2,
+                connectedWirelessIOSDevice1,
+              ];
 
               terminal.setPrompt(<String>['1', '2', '3', 'q', 'Q'], '1');
               final List<Device>? devices = await targetDevices.findAllTargetDevices();
@@ -1888,9 +1859,7 @@ target-device-5 (mobile) • xxx • ios • iOS 16
               expect(deviceManager.iosDiscoverer.devicesCalled, 2);
               expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
               expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-            }, overrides: <Type, Generator>{
-              AnsiTerminal: () => terminal,
-            });
+            }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
           });
 
           group('with verbose logging', () {
@@ -1942,13 +1911,19 @@ Please choose one (or "q" to quit): '''));
               expect(deviceManager.iosDiscoverer.devicesCalled, 2);
               expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
               expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-            }, overrides: <Type, Generator>{
-              AnsiTerminal: () => terminal,
-            });
+            }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
             testUsingContext('including attached and wireless devices', () async {
-              deviceManager.iosDiscoverer.deviceList = <Device>[attachedIOSDevice1, attachedIOSDevice2, disconnectedWirelessIOSDevice1];
-              deviceManager.iosDiscoverer.refreshDeviceList = <Device>[attachedIOSDevice1, attachedIOSDevice2, connectedWirelessIOSDevice1];
+              deviceManager.iosDiscoverer.deviceList = <Device>[
+                attachedIOSDevice1,
+                attachedIOSDevice2,
+                disconnectedWirelessIOSDevice1,
+              ];
+              deviceManager.iosDiscoverer.refreshDeviceList = <Device>[
+                attachedIOSDevice1,
+                attachedIOSDevice2,
+                connectedWirelessIOSDevice1,
+              ];
 
               targetDevices.waitForWirelessBeforeInput = true;
               targetDevices.deviceSelection.input = '2';
@@ -1989,9 +1964,7 @@ Please choose one (or "q" to quit): '''));
               expect(deviceManager.iosDiscoverer.devicesCalled, 2);
               expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
               expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-            }, overrides: <Type, Generator>{
-              AnsiTerminal: () => terminal,
-            });
+            }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
           });
         });
 
@@ -2046,9 +2019,7 @@ target-device-8 (mobile) • xxx • ios • iOS 16
             expect(deviceManager.iosDiscoverer.devicesCalled, 4);
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only attached devices', () async {
             deviceManager.iosDiscoverer.deviceList = <Device>[attachedIOSDevice1, attachedIOSDevice2];
@@ -2063,17 +2034,21 @@ More than one device connected; please specify a device with the '-d <deviceId>'
 target-device-1 (mobile) • xxx • ios • iOS 16
 target-device-2 (mobile) • xxx • ios • iOS 16
 '''));
-          expect(devices, isNull);
-          expect(deviceManager.iosDiscoverer.devicesCalled, 4);
-          expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
-          expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+            expect(devices, isNull);
+            expect(deviceManager.iosDiscoverer.devicesCalled, 4);
+            expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
+            expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only wireless devices', () async {
-            deviceManager.iosDiscoverer.deviceList = <Device>[disconnectedWirelessIOSDevice1, disconnectedWirelessIOSDevice2];
-            deviceManager.iosDiscoverer.refreshDeviceList = <Device>[connectedWirelessIOSDevice1, connectedWirelessIOSDevice2];
+            deviceManager.iosDiscoverer.deviceList = <Device>[
+              disconnectedWirelessIOSDevice1,
+              disconnectedWirelessIOSDevice2,
+            ];
+            deviceManager.iosDiscoverer.refreshDeviceList = <Device>[
+              connectedWirelessIOSDevice1,
+              connectedWirelessIOSDevice2,
+            ];
 
             final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
@@ -2090,9 +2065,7 @@ target-device-6 (mobile) • xxx • ios • iOS 16
             expect(deviceManager.iosDiscoverer.devicesCalled, 4);
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
         });
       });
 
@@ -2165,9 +2138,7 @@ Please choose one (or "q" to quit): '''));
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
             expect(deviceManager.iosDiscoverer.xcdevice.waitedForDeviceToConnect, isFalse);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only attached devices', () async {
             deviceManager.iosDiscoverer.deviceList = <Device>[attachedIOSDevice1, attachedIOSDevice2];
@@ -2201,13 +2172,17 @@ Please choose one (or "q" to quit): '''));
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
             expect(deviceManager.iosDiscoverer.xcdevice.waitedForDeviceToConnect, isFalse);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only wireless devices', () async {
-            deviceManager.iosDiscoverer.deviceList = <Device>[disconnectedWirelessIOSDevice1, disconnectedWirelessIOSDevice2];
-            deviceManager.iosDiscoverer.refreshDeviceList = <Device>[connectedWirelessIOSDevice1, connectedWirelessIOSDevice2];
+            deviceManager.iosDiscoverer.deviceList = <Device>[
+              disconnectedWirelessIOSDevice1,
+              disconnectedWirelessIOSDevice2,
+            ];
+            deviceManager.iosDiscoverer.refreshDeviceList = <Device>[
+              connectedWirelessIOSDevice1,
+              connectedWirelessIOSDevice2,
+            ];
 
             terminal.setPrompt(<String>['1', '2', 'q', 'Q'], '1');
             final List<Device>? devices = await targetDevices.findAllTargetDevices();
@@ -2229,9 +2204,7 @@ target-device-6 (mobile) • xxx • ios • iOS 16
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
             expect(deviceManager.iosDiscoverer.xcdevice.waitedForDeviceToConnect, isFalse);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
         });
 
         group('without stdinHasTerminal', () {
@@ -2263,9 +2236,7 @@ target-device-1 (mobile) • xxx • ios • iOS 16
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
             expect(deviceManager.iosDiscoverer.xcdevice.waitedForDeviceToConnect, isFalse);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including matching attached, wireless, unsupported devices', () async {
             deviceManager.iosDiscoverer.deviceList = <Device>[
@@ -2303,9 +2274,7 @@ target-device-8 (mobile) • xxx • ios • iOS 16
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
             expect(deviceManager.iosDiscoverer.xcdevice.waitedForDeviceToConnect, isFalse);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only attached devices', () async {
             deviceManager.iosDiscoverer.deviceList = <Device>[attachedIOSDevice1, attachedIOSDevice2];
@@ -2324,13 +2293,17 @@ target-device-2 (mobile) • xxx • ios • iOS 16
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
             expect(deviceManager.iosDiscoverer.xcdevice.waitedForDeviceToConnect, isFalse);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
 
           testUsingContext('including only wireless devices', () async {
-            deviceManager.iosDiscoverer.deviceList = <Device>[disconnectedWirelessIOSDevice1, disconnectedWirelessIOSDevice2];
-            deviceManager.iosDiscoverer.refreshDeviceList = <Device>[connectedWirelessIOSDevice1, connectedWirelessIOSDevice2];
+            deviceManager.iosDiscoverer.deviceList = <Device>[
+              disconnectedWirelessIOSDevice1,
+              disconnectedWirelessIOSDevice2,
+            ];
+            deviceManager.iosDiscoverer.refreshDeviceList = <Device>[
+              connectedWirelessIOSDevice1,
+              connectedWirelessIOSDevice2,
+            ];
 
             final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
@@ -2348,9 +2321,7 @@ target-device-6 (mobile) • xxx • ios • iOS 16
             expect(deviceManager.iosDiscoverer.discoverDevicesCalled, 1);
             expect(deviceManager.iosDiscoverer.numberOfTimesPolled, 2);
             expect(deviceManager.iosDiscoverer.xcdevice.waitedForDeviceToConnect, isFalse);
-          }, overrides: <Type, Generator>{
-            AnsiTerminal: () => terminal,
-          });
+          }, overrides: <Type, Generator>{AnsiTerminal: () => terminal});
         });
       });
 
@@ -2409,8 +2380,14 @@ Checking for wireless devices...
         });
 
         testUsingContext('including only wireless devices', () async {
-          deviceManager.iosDiscoverer.deviceList = <Device>[disconnectedWirelessIOSDevice1, disconnectedWirelessIOSDevice2];
-          deviceManager.iosDiscoverer.refreshDeviceList = <Device>[connectedWirelessIOSDevice1, connectedWirelessIOSDevice2];
+          deviceManager.iosDiscoverer.deviceList = <Device>[
+            disconnectedWirelessIOSDevice1,
+            disconnectedWirelessIOSDevice2,
+          ];
+          deviceManager.iosDiscoverer.refreshDeviceList = <Device>[
+            connectedWirelessIOSDevice1,
+            connectedWirelessIOSDevice2,
+          ];
 
           final List<Device>? devices = await targetDevices.findAllTargetDevices();
 
@@ -2432,7 +2409,7 @@ class TestTargetDevicesWithExtendedWirelessDeviceDiscovery extends TargetDevices
     required super.deviceManager,
     required super.logger,
     super.deviceConnectionInterface,
-  })  : _deviceSelection = TestTargetDeviceSelection(logger);
+  }) : _deviceSelection = TestTargetDeviceSelection(logger);
 
   final TestTargetDeviceSelection _deviceSelection;
 
@@ -2452,10 +2429,7 @@ class TestTargetDeviceSelection extends TargetDeviceSelection {
 }
 
 class TestDeviceManager extends DeviceManager {
-  TestDeviceManager({
-    required this.logger,
-    required this.platform,
-  }) : super(logger: logger);
+  TestDeviceManager({required this.logger, required this.platform}) : super(logger: logger);
 
   final Logger logger;
   final Platform platform;
@@ -2466,12 +2440,8 @@ class TestDeviceManager extends DeviceManager {
   @override
   bool hasSpecifiedAllDevices = false;
 
-  final TestPollingDeviceDiscovery androidDiscoverer = TestPollingDeviceDiscovery(
-    'android',
-  );
-  final TestPollingDeviceDiscovery otherDiscoverer = TestPollingDeviceDiscovery(
-    'other',
-  );
+  final TestPollingDeviceDiscovery androidDiscoverer = TestPollingDeviceDiscovery('android');
+  final TestPollingDeviceDiscovery otherDiscoverer = TestPollingDeviceDiscovery('other');
   late final TestIOSDeviceDiscovery iosDiscoverer = TestIOSDeviceDiscovery(
     platform: platform,
     xcdevice: FakeXcdevice(),
@@ -2481,21 +2451,13 @@ class TestDeviceManager extends DeviceManager {
 
   @override
   List<DeviceDiscovery> get deviceDiscoverers {
-    return <DeviceDiscovery>[
-      androidDiscoverer,
-      otherDiscoverer,
-      iosDiscoverer,
-    ];
+    return <DeviceDiscovery>[androidDiscoverer, otherDiscoverer, iosDiscoverer];
   }
 
-  void setDeviceToWaitFor(
-    IOSDevice device,
-    DeviceConnectionInterface connectionInterface,
-  ) {
-    final XCDeviceEventInterface eventInterface =
-        connectionInterface == DeviceConnectionInterface.wireless
-            ? XCDeviceEventInterface.wifi
-            : XCDeviceEventInterface.usb;
+  void setDeviceToWaitFor(IOSDevice device, DeviceConnectionInterface connectionInterface) {
+    final XCDeviceEventInterface eventInterface = connectionInterface == DeviceConnectionInterface.wireless
+        ? XCDeviceEventInterface.wifi
+        : XCDeviceEventInterface.usb;
     iosDiscoverer.xcdevice.waitForDeviceEvent = XCDeviceEventNotification(
       XCDeviceEvent.attach,
       eventInterface,
@@ -2532,10 +2494,7 @@ class TestPollingDeviceDiscovery extends PollingDeviceDiscovery {
   }
 
   @override
-  Future<List<Device>> discoverDevices({
-    Duration? timeout,
-    DeviceDiscoveryFilter? filter,
-  }) {
+  Future<List<Device>> discoverDevices({Duration? timeout, DeviceDiscoveryFilter? filter}) {
     discoverDevicesCalled++;
     if (refreshDeviceList.isNotEmpty) {
       deviceList = refreshDeviceList;
@@ -2553,9 +2512,9 @@ class TestIOSDeviceDiscovery extends IOSDevices {
     required FakeXcdevice xcdevice,
     required super.iosWorkflow,
     required super.logger,
-  })  : _platform = platform,
-        _xcdevice = xcdevice,
-        super(xcdevice: xcdevice);
+  }) : _platform = platform,
+       _xcdevice = xcdevice,
+       super(xcdevice: xcdevice);
 
   final Platform _platform;
   List<Device> deviceList = <Device>[];
@@ -2573,9 +2532,7 @@ class TestIOSDeviceDiscovery extends IOSDevices {
   Future<List<Device>> pollingGetDevices({Duration? timeout}) async {
     numberOfTimesPolled++;
     if (!_platform.isMacOS) {
-      throw UnsupportedError(
-        'Control of iOS devices or simulators only supported on macOS.',
-      );
+      throw UnsupportedError('Control of iOS devices or simulators only supported on macOS.');
     }
     return deviceList;
   }
@@ -2587,10 +2544,7 @@ class TestIOSDeviceDiscovery extends IOSDevices {
   }
 
   @override
-  Future<List<Device>> discoverDevices({
-    Duration? timeout,
-    DeviceDiscoveryFilter? filter,
-  }) {
+  Future<List<Device>> discoverDevices({Duration? timeout, DeviceDiscoveryFilter? filter}) {
     discoverDevicesCalled++;
     if (refreshDeviceList.isNotEmpty) {
       deviceList = refreshDeviceList;
@@ -2638,11 +2592,11 @@ class FakeDevice extends Fake implements Device {
     this.connectionInterface = DeviceConnectionInterface.attached,
     this.platformType = PlatformType.android,
     TargetPlatform deviceTargetPlatform = TargetPlatform.android,
-  })  : id = deviceId ?? 'xxx',
-        name = deviceName ?? 'test',
-        _isSupported = deviceSupported,
-        _isSupportedForProject = deviceSupportForProject,
-        _targetPlatform = deviceTargetPlatform;
+  }) : id = deviceId ?? 'xxx',
+       name = deviceName ?? 'test',
+       _isSupported = deviceSupported,
+       _isSupportedForProject = deviceSupportForProject,
+       _targetPlatform = deviceTargetPlatform;
 
   FakeDevice.wireless({
     String? deviceId,
@@ -2654,11 +2608,11 @@ class FakeDevice extends Fake implements Device {
     this.connectionInterface = DeviceConnectionInterface.wireless,
     this.platformType = PlatformType.android,
     TargetPlatform deviceTargetPlatform = TargetPlatform.android,
-  })  : id = deviceId ?? 'xxx',
-        name = deviceName ?? 'test',
-        _isSupported = deviceSupported,
-        _isSupportedForProject = deviceSupportForProject,
-        _targetPlatform = deviceTargetPlatform;
+  }) : id = deviceId ?? 'xxx',
+       name = deviceName ?? 'test',
+       _isSupported = deviceSupported,
+       _isSupportedForProject = deviceSupportForProject,
+       _targetPlatform = deviceTargetPlatform;
 
   FakeDevice.fuchsia({
     String? deviceId,
@@ -2670,12 +2624,12 @@ class FakeDevice extends Fake implements Device {
     this.connectionInterface = DeviceConnectionInterface.attached,
     this.platformType = PlatformType.fuchsia,
     TargetPlatform deviceTargetPlatform = TargetPlatform.fuchsia_arm64,
-  })  : id = deviceId ?? 'xxx',
-        name = deviceName ?? 'test',
-        _isSupported = deviceSupported,
-        _isSupportedForProject = deviceSupportForProject,
-        _targetPlatform = deviceTargetPlatform,
-        _sdkNameAndVersion = 'tester';
+  }) : id = deviceId ?? 'xxx',
+       name = deviceName ?? 'test',
+       _isSupported = deviceSupported,
+       _isSupportedForProject = deviceSupportForProject,
+       _targetPlatform = deviceTargetPlatform,
+       _sdkNameAndVersion = 'tester';
 
   final bool _isSupported;
   final bool _isSupportedForProject;
@@ -2719,8 +2673,7 @@ class FakeDevice extends Fake implements Device {
   Category? get category => Category.mobile;
 
   @override
-  Future<String> get targetPlatformDisplayName async =>
-      getNameForTargetPlatform(await targetPlatform);
+  Future<String> get targetPlatformDisplayName async => getNameForTargetPlatform(await targetPlatform);
 }
 
 // Unfortunately Device, despite not being immutable, has an `operator ==`.
@@ -2737,11 +2690,11 @@ class FakeIOSDevice extends Fake implements IOSDevice {
     this.isConnected = true,
     this.platformType = PlatformType.ios,
     this.connectionInterface = DeviceConnectionInterface.attached,
-  })  : id = deviceId ?? 'xxx',
-        name = deviceName ?? 'test',
-        devModeEnabled = devModeEnabled ?? true,
-        _isSupported = deviceSupported,
-        _isSupportedForProject = deviceSupportForProject;
+  }) : id = deviceId ?? 'xxx',
+       name = deviceName ?? 'test',
+       devModeEnabled = devModeEnabled ?? true,
+       _isSupported = deviceSupported,
+       _isSupportedForProject = deviceSupportForProject;
 
   FakeIOSDevice.notConnectedWireless({
     String? deviceId,
@@ -2753,10 +2706,10 @@ class FakeIOSDevice extends Fake implements IOSDevice {
     this.platformType = PlatformType.ios,
     this.devModeEnabled = true,
     this.connectionInterface = DeviceConnectionInterface.wireless,
-  })  : id = deviceId ?? 'xxx',
-        name = deviceName ?? 'test',
-        _isSupported = deviceSupported,
-        _isSupportedForProject = deviceSupportForProject;
+  }) : id = deviceId ?? 'xxx',
+       name = deviceName ?? 'test',
+       _isSupported = deviceSupported,
+       _isSupportedForProject = deviceSupportForProject;
 
   FakeIOSDevice.connectedWireless({
     String? deviceId,
@@ -2768,10 +2721,10 @@ class FakeIOSDevice extends Fake implements IOSDevice {
     this.devModeEnabled = true,
     this.platformType = PlatformType.ios,
     this.connectionInterface = DeviceConnectionInterface.wireless,
-  })  : id = deviceId ?? 'xxx',
-        name = deviceName ?? 'test',
-        _isSupported = deviceSupported,
-        _isSupportedForProject = deviceSupportForProject;
+  }) : id = deviceId ?? 'xxx',
+       name = deviceName ?? 'test',
+       _isSupported = deviceSupported,
+       _isSupportedForProject = deviceSupportForProject;
 
   final bool _isSupported;
   final bool _isSupportedForProject;
@@ -2820,10 +2773,7 @@ class FakeIOSDevice extends Fake implements IOSDevice {
 }
 
 class FakeTerminal extends Fake implements AnsiTerminal {
-  FakeTerminal({
-    this.stdinHasTerminal = true,
-    this.supportsColor = false,
-  });
+  FakeTerminal({this.stdinHasTerminal = true, this.supportsColor = false});
 
   @override
   final bool stdinHasTerminal;
@@ -2864,11 +2814,7 @@ class FakeTerminal extends Fake implements AnsiTerminal {
 }
 
 class TestBufferLogger extends BufferLogger {
-  TestBufferLogger.test({
-    super.terminal,
-    super.outputPreferences,
-    super.verbose,
-  }) : super.test();
+  TestBufferLogger.test({super.terminal, super.outputPreferences, super.verbose}) : super.test();
 
   String originalStatusText = '';
 
@@ -2884,8 +2830,7 @@ class TestBufferLogger extends BufferLogger {
   }) {
     if (message.startsWith('CLEAR_LINES_')) {
       expect(statusText, equals(originalStatusText));
-      final int numberOfLinesToRemove =
-          int.parse(message.split('CLEAR_LINES_')[1]) - 1;
+      final int numberOfLinesToRemove = int.parse(message.split('CLEAR_LINES_')[1]) - 1;
       final List<String> lines = LineSplitter.split(statusText).toList();
       // Clear string buffer and re-add lines not removed
       clear();
@@ -2907,9 +2852,7 @@ class TestBufferLogger extends BufferLogger {
 }
 
 class FakeDoctor extends Fake implements Doctor {
-  FakeDoctor({
-    this.canLaunchAnything = true,
-  });
+  FakeDoctor({this.canLaunchAnything = true});
 
   @override
   bool canLaunchAnything;

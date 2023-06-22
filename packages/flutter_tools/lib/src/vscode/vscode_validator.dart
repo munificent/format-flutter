@@ -15,16 +15,19 @@ class VsCodeValidator extends DoctorValidator {
 
   final VsCode _vsCode;
 
-  static Iterable<DoctorValidator> installedValidators(FileSystem fileSystem, Platform platform, ProcessManager processManager) {
-    return VsCode
-        .allInstalled(fileSystem, platform, processManager)
-        .map<DoctorValidator>((VsCode vsCode) => VsCodeValidator(vsCode));
+  static Iterable<DoctorValidator> installedValidators(
+    FileSystem fileSystem,
+    Platform platform,
+    ProcessManager processManager,
+  ) {
+    return VsCode.allInstalled(fileSystem, platform, processManager).map<DoctorValidator>(
+      (VsCode vsCode) => VsCodeValidator(vsCode),
+    );
   }
 
   @override
   Future<ValidationResult> validate() async {
-    final List<ValidationMessage> validationMessages =
-      List<ValidationMessage>.from(_vsCode.validationMessages);
+    final List<ValidationMessage> validationMessages = List<ValidationMessage>.from(_vsCode.validationMessages);
 
     final String vsCodeVersionText = _vsCode.version == null
         ? userMessages.vsCodeVersion('unknown')
@@ -34,10 +37,6 @@ class VsCodeValidator extends DoctorValidator {
       validationMessages.add(const ValidationMessage.error('Unable to determine VS Code version.'));
     }
 
-    return ValidationResult(
-      ValidationType.success,
-      validationMessages,
-      statusInfo: vsCodeVersionText,
-    );
+    return ValidationResult(ValidationType.success, validationMessages, statusInfo: vsCodeVersionText);
   }
 }

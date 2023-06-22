@@ -34,17 +34,13 @@ void main() {
     expect(isFuchsiaSupportedPlatform(FakePlatform(operatingSystem: 'macos')), true);
     expect(isFuchsiaSupportedPlatform(FakePlatform()), true);
     expect(isFuchsiaSupportedPlatform(FakePlatform(operatingSystem: 'windows')), false);
-  }, overrides: <Type, Generator>{
-    FeatureFlags: () => TestFeatureFlags(isFuchsiaEnabled: true),
-  });
+  }, overrides: <Type, Generator>{FeatureFlags: () => TestFeatureFlags(isFuchsiaEnabled: true)});
 
   testUsingContext('isFuchsiaSupportedPlatform returns false when opted out on Linux and macOS', () {
     expect(isFuchsiaSupportedPlatform(FakePlatform(operatingSystem: 'macos')), false);
     expect(isFuchsiaSupportedPlatform(FakePlatform()), false);
     expect(isFuchsiaSupportedPlatform(FakePlatform(operatingSystem: 'windows')), false);
-  }, overrides: <Type, Generator>{
-    FeatureFlags: () => TestFeatureFlags(),
-  });
+  }, overrides: <Type, Generator>{FeatureFlags: () => TestFeatureFlags()});
 
   group('ffx list', () {
     testWithoutContext('ffx not found', () {
@@ -54,19 +50,14 @@ void main() {
         processManager: FakeProcessManager.any(),
       );
 
-      expect(() async => fuchsiaFfx.list(),
-          throwsToolExit(message: 'Fuchsia ffx tool not found.'));
+      expect(() async => fuchsiaFfx.list(), throwsToolExit(message: 'Fuchsia ffx tool not found.'));
     });
 
     testWithoutContext('no device found', () async {
       ffx.createSync();
 
-      final ProcessManager processManager =
-          FakeProcessManager.list(<FakeCommand>[
-        FakeCommand(
-          command: <String>[ffx.path, 'target', 'list', '-f', 's'],
-          stderr: 'No devices found.',
-        ),
+      final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
+        FakeCommand(command: <String>[ffx.path, 'target', 'list', '-f', 's'], stderr: 'No devices found.'),
       ]);
 
       final FuchsiaFfx fuchsiaFfx = FuchsiaFfx(
@@ -82,13 +73,8 @@ void main() {
     testWithoutContext('error', () async {
       ffx.createSync();
 
-      final ProcessManager processManager =
-          FakeProcessManager.list(<FakeCommand>[
-        FakeCommand(
-          command: <String>[ffx.path, 'target', 'list', '-f', 's'],
-          exitCode: 1,
-          stderr: 'unexpected error',
-        ),
+      final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
+        FakeCommand(command: <String>[ffx.path, 'target', 'list', '-f', 's'], exitCode: 1, stderr: 'unexpected error'),
       ]);
 
       final FuchsiaFfx fuchsiaFfx = FuchsiaFfx(
@@ -104,12 +90,8 @@ void main() {
     testWithoutContext('devices found', () async {
       ffx.createSync();
 
-      final ProcessManager processManager =
-          FakeProcessManager.list(<FakeCommand>[
-        FakeCommand(
-          command: <String>[ffx.path, 'target', 'list', '-f', 's'],
-          stdout: 'device1\ndevice2',
-        ),
+      final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
+        FakeCommand(command: <String>[ffx.path, 'target', 'list', '-f', 's'], stdout: 'device1\ndevice2'),
       ]);
 
       final FuchsiaFfx fuchsiaFfx = FuchsiaFfx(
@@ -125,12 +107,8 @@ void main() {
     testWithoutContext('timeout', () async {
       ffx.createSync();
 
-      final ProcessManager processManager =
-          FakeProcessManager.list(<FakeCommand>[
-        FakeCommand(
-          command: <String>[ffx.path, '-T', '2', 'target', 'list', '-f', 's'],
-          stdout: 'device1',
-        ),
+      final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
+        FakeCommand(command: <String>[ffx.path, '-T', '2', 'target', 'list', '-f', 's'], stdout: 'device1'),
       ]);
 
       final FuchsiaFfx fuchsiaFfx = FuchsiaFfx(
@@ -139,8 +117,7 @@ void main() {
         processManager: processManager,
       );
 
-      expect(await fuchsiaFfx.list(timeout: const Duration(seconds: 2)),
-          <String>['device1']);
+      expect(await fuchsiaFfx.list(timeout: const Duration(seconds: 2)), <String>['device1']);
     });
   });
 
@@ -152,24 +129,15 @@ void main() {
         processManager: FakeProcessManager.any(),
       );
 
-      expect(() async => fuchsiaFfx.list(),
-          throwsToolExit(message: 'Fuchsia ffx tool not found.'));
+      expect(() async => fuchsiaFfx.list(), throwsToolExit(message: 'Fuchsia ffx tool not found.'));
     });
 
     testWithoutContext('unknown device', () async {
       ffx.createSync();
 
-      final ProcessManager processManager =
-          FakeProcessManager.list(<FakeCommand>[
+      final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
         FakeCommand(
-          command: <String>[
-            ffx.path,
-            'target',
-            'list',
-            '-f',
-            'a',
-            'unknown-device'
-          ],
+          command: <String>[ffx.path, 'target', 'list', '-f', 'a', 'unknown-device'],
           exitCode: 2,
           stderr: 'No devices found.',
         ),
@@ -188,17 +156,9 @@ void main() {
     testWithoutContext('error', () async {
       ffx.createSync();
 
-      final ProcessManager processManager =
-          FakeProcessManager.list(<FakeCommand>[
+      final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
         FakeCommand(
-          command: <String>[
-            ffx.path,
-            'target',
-            'list',
-            '-f',
-            'a',
-            'error-device'
-          ],
+          command: <String>[ffx.path, 'target', 'list', '-f', 'a', 'error-device'],
           exitCode: 1,
           stderr: 'unexpected error',
         ),
@@ -217,17 +177,9 @@ void main() {
     testWithoutContext('valid device', () async {
       ffx.createSync();
 
-      final ProcessManager processManager =
-          FakeProcessManager.list(<FakeCommand>[
+      final ProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
         FakeCommand(
-          command: <String>[
-            ffx.path,
-            'target',
-            'list',
-            '-f',
-            'a',
-            'known-device'
-          ],
+          command: <String>[ffx.path, 'target', 'list', '-f', 'a', 'known-device'],
           stdout: '1234-1234-1234-1234',
         ),
       ]);

@@ -12,7 +12,6 @@ import 'test_data/deferred_components_project.dart';
 import 'test_driver.dart';
 import 'test_utils.dart';
 
-
 void main() {
   late Directory tempDir;
   late FlutterRunTestDriver flutter;
@@ -46,9 +45,9 @@ void main() {
     expect(result.stdout.toString(), contains('Deferred components prebuild validation passed.'));
     expect(result.stdout.toString(), contains('Deferred components gen_snapshot validation passed.'));
 
-    final String line = result.stdout.toString()
-      .split('\n')
-      .firstWhere((String line) => line.contains('app-release.aab'));
+    final String line = result.stdout.toString().split('\n').firstWhere(
+      (String line) => line.contains('app-release.aab'),
+    );
 
     final String outputFilePath = line.split(' ')[2].trim();
     final File outputFile = fileSystem.file(fileSystem.path.join(tempDir.path, outputFilePath));
@@ -68,12 +67,8 @@ void main() {
     final DeferredComponentsProject project = DeferredComponentsProject(BasicDeferredComponentsConfig());
     await project.setUpIn(tempDir);
     final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
-    final ProcessResult result = await processManager.run(<String>[
-      flutterBin,
-      ...getLocalEngineArguments(),
-      'build',
-      'appbundle',
-    ], workingDirectory: tempDir.path);
+    final ProcessResult result = await processManager
+        .run(<String>[flutterBin, ...getLocalEngineArguments(), 'build', 'appbundle'], workingDirectory: tempDir.path);
 
     printOnFailure('stdout:\n${result.stdout}');
     printOnFailure('stderr:\n${result.stderr}');
@@ -81,9 +76,9 @@ void main() {
     expect(result.stdout.toString(), contains('Deferred components prebuild validation passed.'));
     expect(result.stdout.toString(), contains('Deferred components gen_snapshot validation passed.'));
 
-    final String line = result.stdout.toString()
-      .split('\n')
-      .firstWhere((String line) => line.contains('app-release.aab'));
+    final String line = result.stdout.toString().split('\n').firstWhere(
+      (String line) => line.contains('app-release.aab'),
+    );
 
     final String outputFilePath = line.split(' ')[2].trim();
     final File outputFile = fileSystem.file(fileSystem.path.join(tempDir.path, outputFilePath));
@@ -127,9 +122,9 @@ void main() {
     expect(result.stdout.toString().contains('Deferred components prebuild validation passed.'), false);
     expect(result.stdout.toString().contains('Deferred components gen_snapshot validation passed.'), false);
 
-    final String line = result.stdout.toString()
-      .split('\n')
-      .firstWhere((String line) => line.contains('app-release.aab'));
+    final String line = result.stdout.toString().split('\n').firstWhere(
+      (String line) => line.contains('app-release.aab'),
+    );
 
     final String outputFilePath = line.split(' ')[2].trim();
     final File outputFile = fileSystem.file(fileSystem.path.join(tempDir.path, outputFilePath));
@@ -178,9 +173,9 @@ void main() {
     expect(result.stdout.toString().contains('New loading units were found:'), false);
     expect(result.stdout.toString().contains('Previously existing loading units no longer exist:'), false);
 
-    final String line = result.stdout.toString()
-      .split('\n')
-      .firstWhere((String line) => line.contains('app-release.aab'));
+    final String line = result.stdout.toString().split('\n').firstWhere(
+      (String line) => line.contains('app-release.aab'),
+    );
 
     final String outputFilePath = line.split(' ')[2].trim();
     final File outputFile = fileSystem.file(fileSystem.path.join(tempDir.path, outputFilePath));
@@ -207,15 +202,13 @@ void main() {
   });
 
   testWithoutContext('simple build appbundle missing android dynamic feature module fails', () async {
-    final DeferredComponentsProject project = DeferredComponentsProject(NoAndroidDynamicFeatureModuleDeferredComponentsConfig());
+    final DeferredComponentsProject project = DeferredComponentsProject(
+      NoAndroidDynamicFeatureModuleDeferredComponentsConfig(),
+    );
     await project.setUpIn(tempDir);
     final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
-    final ProcessResult result = await processManager.run(<String>[
-      flutterBin,
-      ...getLocalEngineArguments(),
-      'build',
-      'appbundle',
-    ], workingDirectory: tempDir.path);
+    final ProcessResult result = await processManager
+        .run(<String>[flutterBin, ...getLocalEngineArguments(), 'build', 'appbundle'], workingDirectory: tempDir.path);
 
     expect(result.stdout.toString().contains('app-release.aab'), false);
     expect(result.stdout.toString().contains('Deferred components prebuild validation passed.'), false);
@@ -223,8 +216,12 @@ void main() {
 
     expect(result.stdout.toString(), contains('Newly generated android files:'));
     final String pathSeparator = fileSystem.path.separator;
-    expect(result.stdout.toString(), contains('build${pathSeparator}android_deferred_components_setup_files${pathSeparator}component1${pathSeparator}build.gradle'));
-    expect(result.stdout.toString(), contains('build${pathSeparator}android_deferred_components_setup_files${pathSeparator}component1${pathSeparator}src${pathSeparator}main${pathSeparator}AndroidManifest.xml'));
+    expect(result.stdout.toString(), contains(
+      'build${pathSeparator}android_deferred_components_setup_files${pathSeparator}component1${pathSeparator}build.gradle',
+    ));
+    expect(result.stdout.toString(), contains(
+      'build${pathSeparator}android_deferred_components_setup_files${pathSeparator}component1${pathSeparator}src${pathSeparator}main${pathSeparator}AndroidManifest.xml',
+    ));
 
     expect(result.exitCode, 1);
   });
@@ -233,12 +230,8 @@ void main() {
     final DeferredComponentsProject project = DeferredComponentsProject(NoGoldenDeferredComponentsConfig());
     await project.setUpIn(tempDir);
     final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
-    final ProcessResult result = await processManager.run(<String>[
-      flutterBin,
-      ...getLocalEngineArguments(),
-      'build',
-      'appbundle',
-    ], workingDirectory: tempDir.path);
+    final ProcessResult result = await processManager
+        .run(<String>[flutterBin, ...getLocalEngineArguments(), 'build', 'appbundle'], workingDirectory: tempDir.path);
 
     expect(result.stdout.toString().contains('app-release.aab'), false);
     expect(result.stdout.toString().contains('Deferred components prebuild validation passed.'), true);
@@ -256,12 +249,8 @@ void main() {
     final DeferredComponentsProject project = DeferredComponentsProject(MismatchedGoldenDeferredComponentsConfig());
     await project.setUpIn(tempDir);
     final String flutterBin = fileSystem.path.join(getFlutterRoot(), 'bin', 'flutter');
-    final ProcessResult result = await processManager.run(<String>[
-      flutterBin,
-      ...getLocalEngineArguments(),
-      'build',
-      'appbundle',
-    ], workingDirectory: tempDir.path);
+    final ProcessResult result = await processManager
+        .run(<String>[flutterBin, ...getLocalEngineArguments(), 'build', 'appbundle'], workingDirectory: tempDir.path);
 
     expect(result.stdout.toString().contains('app-release.aab'), false);
     expect(result.stdout.toString().contains('Deferred components prebuild validation passed.'), true);

@@ -25,10 +25,7 @@ void main() {
   });
 
   testWithoutContext('Windows workflow configuration when feature is disabled on Windows host machine', () {
-    final WindowsWorkflow windowsWorkflow = WindowsWorkflow(
-      platform: windows,
-      featureFlags: TestFeatureFlags(),
-    );
+    final WindowsWorkflow windowsWorkflow = WindowsWorkflow(platform: windows, featureFlags: TestFeatureFlags());
 
     expect(windowsWorkflow.appliesToHostPlatform, false);
     expect(windowsWorkflow.canListDevices, false);
@@ -49,10 +46,7 @@ void main() {
   });
 
   testWithoutContext('Windows workflow configuration when feature is disabled on non-Windows host machine', () {
-    final WindowsWorkflow windowsWorkflow = WindowsWorkflow(
-      platform: notWindows,
-      featureFlags: TestFeatureFlags(),
-    );
+    final WindowsWorkflow windowsWorkflow = WindowsWorkflow(platform: notWindows, featureFlags: TestFeatureFlags());
 
     expect(windowsWorkflow.appliesToHostPlatform, false);
     expect(windowsWorkflow.canListDevices, false);

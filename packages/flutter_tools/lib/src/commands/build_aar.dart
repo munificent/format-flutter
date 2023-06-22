@@ -21,25 +21,17 @@ class BuildAarCommand extends BuildSubCommand {
     required AndroidSdk? androidSdk,
     required FileSystem fileSystem,
     required bool verboseHelp,
-  }): _androidSdk = androidSdk,
-      _fileSystem = fileSystem,
-      super(verboseHelp: verboseHelp) {
+  }) : _androidSdk = androidSdk,
+       _fileSystem = fileSystem,
+       super(verboseHelp: verboseHelp) {
     argParser
-      ..addFlag(
-        'debug',
-        defaultsTo: true,
-        help: 'Build a debug version of the current project.',
-      )
+      ..addFlag('debug', defaultsTo: true, help: 'Build a debug version of the current project.')
       ..addFlag(
         'profile',
         defaultsTo: true,
         help: 'Build a version of the current project specialized for performance profiling.',
       )
-      ..addFlag(
-        'release',
-        defaultsTo: true,
-        help: 'Build a release version of the current project.',
-      );
+      ..addFlag('release', defaultsTo: true, help: 'Build a release version of the current project.');
     addTreeShakeIconsFlag();
     usesFlavorOption();
     usesBuildNumberOption();
@@ -53,13 +45,12 @@ class BuildAarCommand extends BuildSubCommand {
     addNullSafetyModeOptions(hide: !verboseHelp);
     addEnableExperimentation(hide: !verboseHelp);
     addAndroidSpecificBuildOptions(hide: !verboseHelp);
-    argParser
-      .addMultiOption(
-        'target-platform',
-        defaultsTo: <String>['android-arm', 'android-arm64', 'android-x64'],
-        allowed: <String>['android-arm', 'android-arm64', 'android-x86', 'android-x64'],
-        help: 'The target platform for which the project is compiled.',
-      );
+    argParser.addMultiOption(
+      'target-platform',
+      defaultsTo: <String>['android-arm', 'android-arm64', 'android-x64'],
+      allowed: <String>['android-arm', 'android-arm64', 'android-x86', 'android-x64'],
+      help: 'The target platform for which the project is compiled.',
+    );
   }
   final AndroidSdk? _androidSdk;
   final FileSystem _fileSystem;
@@ -109,28 +100,23 @@ class BuildAarCommand extends BuildSubCommand {
     }
     final Set<AndroidBuildInfo> androidBuildInfo = <AndroidBuildInfo>{};
 
-    final Iterable<AndroidArch> targetArchitectures =
-        stringsArg('target-platform').map<AndroidArch>(getAndroidArchForName);
+    final Iterable<AndroidArch> targetArchitectures = stringsArg('target-platform').map<AndroidArch>(
+      getAndroidArchForName,
+    );
 
     final String? buildNumberArg = stringArg('build-number');
-    final String buildNumber = argParser.options.containsKey('build-number')
-      && buildNumberArg != null
-      && buildNumberArg.isNotEmpty
-      ? buildNumberArg
-      : '1.0';
+    final String buildNumber =
+        argParser.options.containsKey('build-number') && buildNumberArg != null && buildNumberArg.isNotEmpty
+            ? buildNumberArg
+            : '1.0';
 
     final File targetFile = _fileSystem.file(_fileSystem.path.join('lib', 'main.dart'));
     for (final String buildMode in const <String>['debug', 'profile', 'release']) {
       if (boolArg(buildMode)) {
-        androidBuildInfo.add(
-          AndroidBuildInfo(
-            await getBuildInfo(
-              forcedBuildMode: BuildMode.fromCliName(buildMode),
-              forcedTargetFile: targetFile,
-            ),
-            targetArchs: targetArchitectures,
-          )
-        );
+        androidBuildInfo.add(AndroidBuildInfo(
+          await getBuildInfo(forcedBuildMode: BuildMode.fromCliName(buildMode), forcedTargetFile: targetFile),
+          targetArchs: targetArchitectures,
+        ));
       }
     }
     if (androidBuildInfo.isEmpty) {

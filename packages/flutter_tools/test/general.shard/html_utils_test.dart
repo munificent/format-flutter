@@ -66,11 +66,7 @@ const String htmlSampleLegacyVar = '''
 </html>
 ''';
 
-String htmlSample2Replaced({
-  required String baseHref,
-  required String serviceWorkerVersion,
-}) =>
-    '''
+String htmlSample2Replaced({required String baseHref, required String serviceWorkerVersion}) => '''
 <!DOCTYPE html>
 <html>
 <head>
@@ -124,54 +120,27 @@ void main() {
     expect(() => IndexHtml('<base href>').getBaseHref(), throwsToolExit());
     expect(() => IndexHtml('<base href="">').getBaseHref(), throwsToolExit());
     expect(() => IndexHtml('<base href="foo/111">').getBaseHref(), throwsToolExit());
-    expect(
-      () => IndexHtml('<base href="foo/111/">').getBaseHref(),
-      throwsToolExit(),
-    );
-    expect(
-      () => IndexHtml('<base href="/foo/111">').getBaseHref(),
-      throwsToolExit(),
-    );
+    expect(() => IndexHtml('<base href="foo/111/">').getBaseHref(), throwsToolExit());
+    expect(() => IndexHtml('<base href="/foo/111">').getBaseHref(), throwsToolExit());
   });
 
   test('applies substitutions', () {
     final IndexHtml indexHtml = IndexHtml(htmlSample2);
-    indexHtml.applySubstitutions(
-      baseHref: '/foo/333/',
-      serviceWorkerVersion: 'v123xyz',
-    );
-    expect(
-      indexHtml.content,
-      htmlSample2Replaced(
-        baseHref: '/foo/333/',
-        serviceWorkerVersion: 'v123xyz',
-      ),
-    );
+    indexHtml.applySubstitutions(baseHref: '/foo/333/', serviceWorkerVersion: 'v123xyz');
+    expect(indexHtml.content, htmlSample2Replaced(baseHref: '/foo/333/', serviceWorkerVersion: 'v123xyz'));
   });
 
   test('applies substitutions with legacy var version syntax', () {
     final IndexHtml indexHtml = IndexHtml(htmlSampleLegacyVar);
-    indexHtml.applySubstitutions(
-      baseHref: '/foo/333/',
-      serviceWorkerVersion: 'v123xyz',
-    );
-    expect(
-      indexHtml.content,
-      htmlSample2Replaced(
-        baseHref: '/foo/333/',
-        serviceWorkerVersion: 'v123xyz',
-      ),
-    );
+    indexHtml.applySubstitutions(baseHref: '/foo/333/', serviceWorkerVersion: 'v123xyz');
+    expect(indexHtml.content, htmlSample2Replaced(baseHref: '/foo/333/', serviceWorkerVersion: 'v123xyz'));
   });
 
   test('re-parses after substitutions', () {
     final IndexHtml indexHtml = IndexHtml(htmlSample2);
     expect(indexHtml.getBaseHref(), ''); // Placeholder base href.
 
-    indexHtml.applySubstitutions(
-      baseHref: '/foo/333/',
-      serviceWorkerVersion: 'v123xyz',
-    );
+    indexHtml.applySubstitutions(baseHref: '/foo/333/', serviceWorkerVersion: 'v123xyz');
     // The parsed base href should be updated after substitutions.
     expect(indexHtml.getBaseHref(), 'foo/333');
   });

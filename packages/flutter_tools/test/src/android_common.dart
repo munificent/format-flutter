@@ -41,7 +41,8 @@ class FakeAndroidBuilder implements AndroidBuilder {
   Future<List<String>> getBuildVariants({required FlutterProject project}) async => const <String>[];
 
   @override
-  Future<List<String>> getAppLinkDomainsForVariant(String buildVariant, {required FlutterProject project}) async => const <String>[];
+  Future<List<String>> getAppLinkDomainsForVariant(String buildVariant, {required FlutterProject project}) async =>
+      const <String>[];
 
   @override
   Future<String> getApplicationIdForVariant(String buildVariant, {required FlutterProject project}) async => '';
@@ -50,11 +51,7 @@ class FakeAndroidBuilder implements AndroidBuilder {
 /// Creates a [FlutterProject] in a directory named [flutter_project]
 /// within [directoryOverride].
 class FakeFlutterProjectFactory extends FlutterProjectFactory {
-  FakeFlutterProjectFactory(this.directoryOverride) :
-    super(
-      fileSystem: globals.fs,
-      logger: globals.logger,
-    );
+  FakeFlutterProjectFactory(this.directoryOverride) : super(fileSystem: globals.fs, logger: globals.logger);
 
   final Directory directoryOverride;
 

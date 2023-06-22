@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
-
 import 'dart:async';
 
 import 'package:meta/meta.dart';
@@ -43,20 +41,19 @@ class TestCompiler {
   /// compiler.
   ///
   /// If [testTimeRecorder] is passed, times will be recorded in it.
-  TestCompiler(
-    this.buildInfo,
-    this.flutterProject,
-    { String? precompiledDillPath, this.testTimeRecorder }
-  ) : testFilePath = precompiledDillPath ?? globals.fs.path.join(
-        flutterProject!.directory.path,
-        getBuildDirectory(),
-        'test_cache',
-        getDefaultCachedKernelPath(
-          trackWidgetCreation: buildInfo.trackWidgetCreation,
-          dartDefines: buildInfo.dartDefines,
-          extraFrontEndOptions: buildInfo.extraFrontEndOptions,
-        )),
-       shouldCopyDillFile = precompiledDillPath == null {
+  TestCompiler(this.buildInfo, this.flutterProject, {String? precompiledDillPath, this.testTimeRecorder})
+    : testFilePath = precompiledDillPath ??
+          globals.fs.path.join(
+            flutterProject!.directory.path,
+            getBuildDirectory(),
+            'test_cache',
+            getDefaultCachedKernelPath(
+              trackWidgetCreation: buildInfo.trackWidgetCreation,
+              dartDefines: buildInfo.dartDefines,
+              extraFrontEndOptions: buildInfo.extraFrontEndOptions,
+            ),
+          ),
+      shouldCopyDillFile = precompiledDillPath == null {
     // Compiler maintains and updates single incremental dill file.
     // Incremental compilation requests done for each test copy that file away
     // for independent execution.
@@ -64,10 +61,13 @@ class TestCompiler {
     outputDill = outputDillDirectory.childFile('output.dill');
     globals.printTrace('Compiler will use the following file as its incremental dill file: ${outputDill.path}');
     globals.printTrace('Listening to compiler controller...');
-    compilerController.stream.listen(_onCompilationRequest, onDone: () {
-      globals.printTrace('Deleting ${outputDillDirectory.path}...');
-      outputDillDirectory.deleteSync(recursive: true);
-    });
+    compilerController.stream.listen(
+      _onCompilationRequest,
+      onDone: () {
+        globals.printTrace('Deleting ${outputDillDirectory.path}...');
+        outputDillDirectory.deleteSync(recursive: true);
+      },
+    );
   }
 
   final StreamController<CompilationRequest> compilerController = StreamController<CompilationRequest>();
@@ -77,7 +77,6 @@ class TestCompiler {
   final String testFilePath;
   final bool shouldCopyDillFile;
   final TestTimeRecorder? testTimeRecorder;
-
 
   ResidentCompiler? compiler;
   late File outputDill;
@@ -152,8 +151,8 @@ class TestCompiler {
       final List<Uri> invalidatedRegistrantFiles = <Uri>[];
       if (flutterProject != null) {
         // Update the generated registrant to use the test target's main.
-        final String mainUriString = buildInfo.packageConfig.toPackageUri(request.mainUri)?.toString()
-          ?? request.mainUri.toString();
+        final String mainUriString =
+            buildInfo.packageConfig.toPackageUri(request.mainUri)?.toString() ?? request.mainUri.toString();
         await generateMainDartWithPluginRegistrant(
           flutterProject!,
           buildInfo.packageConfig,
