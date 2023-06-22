@@ -219,33 +219,39 @@ class ScrollbarThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ScrollbarThemeData
-      && other.thumbVisibility == thumbVisibility
-      && other.thickness == thickness
-      && other.trackVisibility == trackVisibility
-      && other.showTrackOnHover == showTrackOnHover
-      && other.interactive == interactive
-      && other.radius == radius
-      && other.thumbColor == thumbColor
-      && other.trackColor == trackColor
-      && other.trackBorderColor == trackBorderColor
-      && other.crossAxisMargin == crossAxisMargin
-      && other.mainAxisMargin == mainAxisMargin
-      && other.minThumbLength == minThumbLength;
+    return other is ScrollbarThemeData &&
+        other.thumbVisibility == thumbVisibility &&
+        other.thickness == thickness &&
+        other.trackVisibility == trackVisibility &&
+        other.showTrackOnHover == showTrackOnHover &&
+        other.interactive == interactive &&
+        other.radius == radius &&
+        other.thumbColor == thumbColor &&
+        other.trackColor == trackColor &&
+        other.trackBorderColor == trackBorderColor &&
+        other.crossAxisMargin == crossAxisMargin &&
+        other.mainAxisMargin == mainAxisMargin &&
+        other.minThumbLength == minThumbLength;
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<MaterialStateProperty<bool?>>('thumbVisibility', thumbVisibility, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<bool?>>('thumbVisibility', thumbVisibility, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<MaterialStateProperty<double?>>('thickness', thickness, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<bool?>>('trackVisibility', trackVisibility, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<bool?>>('trackVisibility', trackVisibility, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<bool>('showTrackOnHover', showTrackOnHover, defaultValue: null));
     properties.add(DiagnosticsProperty<bool>('interactive', interactive, defaultValue: null));
     properties.add(DiagnosticsProperty<Radius>('radius', radius, defaultValue: null));
     properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>('thumbColor', thumbColor, defaultValue: null));
     properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>('trackColor', trackColor, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>('trackBorderColor', trackBorderColor, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<Color?>>('trackBorderColor', trackBorderColor, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<double>('crossAxisMargin', crossAxisMargin, defaultValue: null));
     properties.add(DiagnosticsProperty<double>('mainAxisMargin', mainAxisMargin, defaultValue: null));
     properties.add(DiagnosticsProperty<double>('minThumbLength', minThumbLength, defaultValue: null));
@@ -270,11 +276,7 @@ bool? _lerpBool(bool? a, bool? b, double t) => t < 0.5 ? a : b;
 class ScrollbarTheme extends InheritedTheme {
   /// Constructs a scrollbar theme that configures all descendant [Scrollbar]
   /// widgets.
-  const ScrollbarTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const ScrollbarTheme({super.key, required this.data, required super.child});
 
   /// The properties used for all descendant [Scrollbar] widgets.
   final ScrollbarThemeData data;

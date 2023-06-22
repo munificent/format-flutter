@@ -48,7 +48,7 @@ enum MaterialType {
   ///
   /// Prefer using the [Ink] widget for showing ink effects on top of opaque
   /// widgets.
-  transparency
+  transparency,
 }
 
 /// The border radii used by the various kinds of material in Material Design.
@@ -383,29 +383,31 @@ class Material extends StatefulWidget {
   ///   no [Material] ancestor is found.
   static MaterialInkController of(BuildContext context) {
     final MaterialInkController? controller = maybeOf(context);
-    assert(() {
-      if (controller == null) {
-        if (LookupBoundary.debugIsHidingAncestorRenderObjectOfType<_RenderInkFeatures>(context)) {
+    assert(
+      () {
+        if (controller == null) {
+          if (LookupBoundary.debugIsHidingAncestorRenderObjectOfType<_RenderInkFeatures>(context)) {
+            throw FlutterError(
+              'Material.of() was called with a context that does not have access to a Material widget.\n'
+              'The context provided to Material.of() does have a Material widget ancestor, but it is '
+              'hidden by a LookupBoundary. This can happen because you are using a widget that looks '
+              'for a Material ancestor, but no such ancestor exists within the closest LookupBoundary.\n'
+              'The context used was:\n'
+              '  $context',
+            );
+          }
           throw FlutterError(
-            'Material.of() was called with a context that does not have access to a Material widget.\n'
-            'The context provided to Material.of() does have a Material widget ancestor, but it is '
-            'hidden by a LookupBoundary. This can happen because you are using a widget that looks '
-            'for a Material ancestor, but no such ancestor exists within the closest LookupBoundary.\n'
+            'Material.of() was called with a context that does not contain a Material widget.\n'
+            'No Material widget ancestor could be found starting from the context that was passed to '
+            'Material.of(). This can happen because you are using a widget that looks for a Material '
+            'ancestor, but no such ancestor exists.\n'
             'The context used was:\n'
             '  $context',
           );
         }
-        throw FlutterError(
-          'Material.of() was called with a context that does not contain a Material widget.\n'
-          'No Material widget ancestor could be found starting from the context that was passed to '
-          'Material.of(). This can happen because you are using a widget that looks for a Material '
-          'ancestor, but no such ancestor exists.\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+        return true;
+      }(),
+    );
     return controller!;
   }
 
@@ -455,7 +457,8 @@ class _MaterialState extends State<Material> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final Color? backgroundColor = _getBackgroundColor(context);
-    final Color modelShadowColor = widget.shadowColor ?? (theme.useMaterial3 ? theme.colorScheme.shadow : theme.shadowColor);
+    final Color modelShadowColor =
+        widget.shadowColor ?? (theme.useMaterial3 ? theme.colorScheme.shadow : theme.shadowColor);
     // If no shadow color is specified, use 0 for elevation in the model so a drop shadow won't be painted.
     final double modelElevation = widget.elevation;
     assert(
@@ -475,7 +478,8 @@ class _MaterialState extends State<Material> with TickerProviderStateMixin {
     }
     contents = NotificationListener<LayoutChangedNotification>(
       onNotification: (LayoutChangedNotification notification) {
-        final _RenderInkFeatures renderer = _inkFeatureRenderer.currentContext!.findRenderObject()! as _RenderInkFeatures;
+        final _RenderInkFeatures renderer =
+            _inkFeatureRenderer.currentContext!.findRenderObject()! as _RenderInkFeatures;
         renderer._didChangeLayout();
         return false;
       },
@@ -499,8 +503,8 @@ class _MaterialState extends State<Material> with TickerProviderStateMixin {
     // slow-path to be noticeable in the construction site of Material.
     if (widget.type == MaterialType.canvas && widget.shape == null && widget.borderRadius == null) {
       final Color color = Theme.of(context).useMaterial3
-        ? ElevationOverlay.applySurfaceTint(backgroundColor!, widget.surfaceTintColor, widget.elevation)
-        : ElevationOverlay.applyOverlay(context, backgroundColor!, widget.elevation);
+          ? ElevationOverlay.applySurfaceTint(backgroundColor!, widget.surfaceTintColor, widget.elevation)
+          : ElevationOverlay.applyOverlay(context, backgroundColor!, widget.elevation);
 
       return AnimatedPhysicalModel(
         curve: Curves.fastOutSlowIn,
@@ -546,15 +550,9 @@ class _MaterialState extends State<Material> with TickerProviderStateMixin {
     required Clip clipBehavior,
     required Widget contents,
   }) {
-    final _ShapeBorderPaint child = _ShapeBorderPaint(
-      shape: shape,
-      child: contents,
-    );
+    final _ShapeBorderPaint child = _ShapeBorderPaint(shape: shape, child: contents);
     return ClipPath(
-      clipper: ShapeBorderClipper(
-        shape: shape,
-        textDirection: Directionality.maybeOf(context),
-      ),
+      clipper: ShapeBorderClipper(shape: shape, textDirection: Directionality.maybeOf(context)),
       clipBehavior: clipBehavior,
       child: child,
     );
@@ -581,9 +579,7 @@ class _MaterialState extends State<Material> with TickerProviderStateMixin {
 
       case MaterialType.card:
       case MaterialType.button:
-        return RoundedRectangleBorder(
-          borderRadius: widget.borderRadius ?? kMaterialEdges[widget.type]!,
-        );
+        return RoundedRectangleBorder(borderRadius: widget.borderRadius ?? kMaterialEdges[widget.type]!);
 
       case MaterialType.circle:
         return const CircleBorder();
@@ -592,12 +588,7 @@ class _MaterialState extends State<Material> with TickerProviderStateMixin {
 }
 
 class _RenderInkFeatures extends RenderProxyBox implements MaterialInkController {
-  _RenderInkFeatures({
-    RenderBox? child,
-    required this.vsync,
-    required this.absorbHitTest,
-    this.color,
-  }) : super(child);
+  _RenderInkFeatures({RenderBox? child, required this.vsync, required this.absorbHitTest, this.color}) : super(child);
 
   // This class should exist in a 1:1 relationship with a MaterialState object,
   // since there's no current support for dynamically changing the ticker
@@ -620,6 +611,7 @@ class _RenderInkFeatures extends RenderProxyBox implements MaterialInkController
     }
     return null;
   }
+
   List<InkFeature>? _inkFeatures;
 
   @override
@@ -666,13 +658,7 @@ class _RenderInkFeatures extends RenderProxyBox implements MaterialInkController
 }
 
 class _InkFeatures extends SingleChildRenderObjectWidget {
-  const _InkFeatures({
-    super.key,
-    this.color,
-    required this.vsync,
-    required this.absorbHitTest,
-    super.child,
-  });
+  const _InkFeatures({super.key, this.color, required this.vsync, required this.absorbHitTest, super.child});
 
   // This widget must be owned by a MaterialState, which must be provided as the vsync.
   // This relationship must be 1:1 and cannot change for the lifetime of the MaterialState.
@@ -685,17 +671,14 @@ class _InkFeatures extends SingleChildRenderObjectWidget {
 
   @override
   _RenderInkFeatures createRenderObject(BuildContext context) {
-    return _RenderInkFeatures(
-      color: color,
-      absorbHitTest: absorbHitTest,
-      vsync: vsync,
-    );
+    return _RenderInkFeatures(color: color, absorbHitTest: absorbHitTest, vsync: vsync);
   }
 
   @override
   void updateRenderObject(BuildContext context, _RenderInkFeatures renderObject) {
-    renderObject..color = color
-                ..absorbHitTest = absorbHitTest;
+    renderObject
+      ..color = color
+      ..absorbHitTest = absorbHitTest;
     assert(vsync == renderObject.vsync);
   }
 }
@@ -707,11 +690,8 @@ class _InkFeatures extends SingleChildRenderObjectWidget {
 /// [MaterialInkController.addInkFeature].
 abstract class InkFeature {
   /// Initializes fields for subclasses.
-  InkFeature({
-    required MaterialInkController controller,
-    required this.referenceBox,
-    this.onRemoved,
-  }) : _controller = controller as _RenderInkFeatures;
+  InkFeature({required MaterialInkController controller, required this.referenceBox, this.onRemoved})
+    : _controller = controller as _RenderInkFeatures;
 
   /// The [MaterialInkController] associated with this [InkFeature].
   ///
@@ -732,10 +712,12 @@ abstract class InkFeature {
   @mustCallSuper
   void dispose() {
     assert(!_debugDisposed);
-    assert(() {
-      _debugDisposed = true;
-      return true;
-    }());
+    assert(
+      () {
+        _debugDisposed = true;
+        return true;
+      }(),
+    );
     _controller._removeFeature(this);
     onRemoved?.call();
   }
@@ -746,10 +728,7 @@ abstract class InkFeature {
   // Returns null if either `fromRenderObject` or `toRenderObject` is not in the
   // same render tree, or either of them is in an offscreen subtree (see
   // RenderObject.paintsChild).
-  static Matrix4? _getPaintTransform(
-    RenderObject fromRenderObject,
-    RenderObject toRenderObject,
-  ) {
+  static Matrix4? _getPaintTransform(RenderObject fromRenderObject, RenderObject toRenderObject) {
     // The paths to fromRenderObject and toRenderObject's common ancestor.
     final List<RenderObject> fromPath = <RenderObject>[fromRenderObject];
     final List<RenderObject> toPath = <RenderObject>[toRenderObject];
@@ -915,30 +894,17 @@ class _MaterialInteriorState extends AnimatedWidgetBaseState<_MaterialInterior> 
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    _elevation = visitor(
-      _elevation,
-      widget.elevation,
-      (dynamic value) => Tween<double>(begin: value as double),
-    ) as Tween<double>?;
-    _shadowColor =  widget.shadowColor != null
-      ? visitor(
-          _shadowColor,
-          widget.shadowColor,
-          (dynamic value) => ColorTween(begin: value as Color),
-        ) as ColorTween?
-      : null;
+    _elevation = visitor(_elevation, widget.elevation, (dynamic value) => Tween<double>(begin: value as double))
+        as Tween<double>?;
+    _shadowColor = widget.shadowColor != null
+        ? visitor(_shadowColor, widget.shadowColor, (dynamic value) => ColorTween(begin: value as Color)) as ColorTween?
+        : null;
     _surfaceTintColor = widget.surfaceTintColor != null
-      ? visitor(
-          _surfaceTintColor,
-          widget.surfaceTintColor,
-              (dynamic value) => ColorTween(begin: value as Color),
-        ) as ColorTween?
-      : null;
-    _border = visitor(
-      _border,
-      widget.shape,
-      (dynamic value) => ShapeBorderTween(begin: value as ShapeBorder),
-    ) as ShapeBorderTween?;
+        ? visitor(_surfaceTintColor, widget.surfaceTintColor, (dynamic value) => ColorTween(begin: value as Color))
+              as ColorTween?
+        : null;
+    _border = visitor(_border, widget.shape, (dynamic value) => ShapeBorderTween(begin: value as ShapeBorder))
+        as ShapeBorderTween?;
   }
 
   @override
@@ -946,35 +912,24 @@ class _MaterialInteriorState extends AnimatedWidgetBaseState<_MaterialInterior> 
     final ShapeBorder shape = _border!.evaluate(animation)!;
     final double elevation = _elevation!.evaluate(animation);
     final Color color = Theme.of(context).useMaterial3
-      ? ElevationOverlay.applySurfaceTint(widget.color, _surfaceTintColor?.evaluate(animation), elevation)
-      : ElevationOverlay.applyOverlay(context, widget.color, elevation);
+        ? ElevationOverlay.applySurfaceTint(widget.color, _surfaceTintColor?.evaluate(animation), elevation)
+        : ElevationOverlay.applyOverlay(context, widget.color, elevation);
     // If no shadow color is specified, use 0 for elevation in the model so a drop shadow won't be painted.
     final double modelElevation = widget.shadowColor != null ? elevation : 0;
     final Color shadowColor = _shadowColor?.evaluate(animation) ?? const Color(0x00000000);
     return PhysicalShape(
-      clipper: ShapeBorderClipper(
-        shape: shape,
-        textDirection: Directionality.maybeOf(context),
-      ),
+      clipper: ShapeBorderClipper(shape: shape, textDirection: Directionality.maybeOf(context)),
       clipBehavior: widget.clipBehavior,
       elevation: modelElevation,
       color: color,
       shadowColor: shadowColor,
-      child: _ShapeBorderPaint(
-        shape: shape,
-        borderOnForeground: widget.borderOnForeground,
-        child: widget.child,
-      ),
+      child: _ShapeBorderPaint(shape: shape, borderOnForeground: widget.borderOnForeground, child: widget.child),
     );
   }
 }
 
 class _ShapeBorderPaint extends StatelessWidget {
-  const _ShapeBorderPaint({
-    required this.child,
-    required this.shape,
-    this.borderOnForeground = true,
-  });
+  const _ShapeBorderPaint({required this.child, required this.shape, this.borderOnForeground = true});
 
   final Widget child;
   final ShapeBorder shape;

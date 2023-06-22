@@ -37,15 +37,12 @@ class _TextSelectionHandlePainter extends CustomPainter {
       radius: _kSelectionHandleRadius,
     );
     final Rect line = Rect.fromPoints(
-      const Offset(
-        _kSelectionHandleRadius - halfStrokeWidth,
-        2 * _kSelectionHandleRadius - _kSelectionHandleOverlap,
-      ),
+      const Offset(_kSelectionHandleRadius - halfStrokeWidth, 2 * _kSelectionHandleRadius - _kSelectionHandleOverlap),
       Offset(_kSelectionHandleRadius + halfStrokeWidth, size.height),
     );
     final Path path = Path()
       ..addOval(circle)
-    // Draw line so it slightly overlaps the circle.
+      // Draw line so it slightly overlaps the circle.
       ..addRect(line);
     canvas.drawPath(path, paint);
   }
@@ -62,8 +59,7 @@ class _TextSelectionHandlePainter extends CustomPainter {
   'Use `CupertinoTextSelectionControls`. '
   'This feature was deprecated after v3.3.0-0.5.pre.',
 )
-class CupertinoTextSelectionHandleControls extends CupertinoTextSelectionControls with TextSelectionHandleControls {
-}
+class CupertinoTextSelectionHandleControls extends CupertinoTextSelectionControls with TextSelectionHandleControls {}
 
 /// iOS Cupertino styled text selection controls.
 ///
@@ -73,10 +69,7 @@ class CupertinoTextSelectionControls extends TextSelectionControls {
   /// Returns the size of the Cupertino handle.
   @override
   Size getHandleSize(double textLineHeight) {
-    return Size(
-      _kSelectionHandleRadius * 2,
-      textLineHeight + _kSelectionHandleRadius * 2 - _kSelectionHandleOverlap,
-    );
+    return Size(_kSelectionHandleRadius * 2, textLineHeight + _kSelectionHandleRadius * 2 - _kSelectionHandleOverlap);
   }
 
   /// Builder for iOS-style copy/paste text selection toolbar.
@@ -125,17 +118,11 @@ class CupertinoTextSelectionControls extends TextSelectionControls {
     switch (type) {
       case TextSelectionHandleType.left:
         desiredSize = getHandleSize(textLineHeight);
-        handle = SizedBox.fromSize(
-          size: desiredSize,
-          child: customPaint,
-        );
+        handle = SizedBox.fromSize(size: desiredSize, child: customPaint);
         return handle;
       case TextSelectionHandleType.right:
         desiredSize = getHandleSize(textLineHeight);
-        handle = SizedBox.fromSize(
-          size: desiredSize,
-          child: customPaint,
-        );
+        handle = SizedBox.fromSize(size: desiredSize, child: customPaint);
         return Transform(
           transform: Matrix4.identity()
             ..translate(desiredSize.width / 2, desiredSize.height / 2)
@@ -161,25 +148,16 @@ class CupertinoTextSelectionControls extends TextSelectionControls {
       // all the way at the bottom of the line.
       case TextSelectionHandleType.left:
         handleSize = getHandleSize(textLineHeight);
-        return Offset(
-          handleSize.width / 2,
-          handleSize.height,
-        );
+        return Offset(handleSize.width / 2, handleSize.height);
       // The right handle is vertically flipped, and the anchor point is near
       // the top of the circle to give slight overlap.
       case TextSelectionHandleType.right:
         handleSize = getHandleSize(textLineHeight);
-        return Offset(
-          handleSize.width / 2,
-          handleSize.height - 2 * _kSelectionHandleRadius + _kSelectionHandleOverlap,
-        );
+        return Offset(handleSize.width / 2, handleSize.height - 2 * _kSelectionHandleRadius + _kSelectionHandleOverlap);
       // A collapsed handle anchors itself so that it's centered.
       case TextSelectionHandleType.collapsed:
         handleSize = getHandleSize(textLineHeight);
-        return Offset(
-          handleSize.width / 2,
-          textLineHeight + (handleSize.height - textLineHeight) / 2,
-        );
+        return Offset(handleSize.width / 2, textLineHeight + (handleSize.height - textLineHeight) / 2);
     }
   }
 }
@@ -188,12 +166,10 @@ class CupertinoTextSelectionControls extends TextSelectionControls {
 // deleted, when users should migrate back to cupertinoTextSelectionControls.
 // See https://github.com/flutter/flutter/pull/124262
 /// Text selection handle controls that follow iOS design conventions.
-final TextSelectionControls cupertinoTextSelectionHandleControls =
-    CupertinoTextSelectionHandleControls();
+final TextSelectionControls cupertinoTextSelectionHandleControls = CupertinoTextSelectionHandleControls();
 
 /// Text selection controls that follow iOS design conventions.
-final TextSelectionControls cupertinoTextSelectionControls =
-    CupertinoTextSelectionControls();
+final TextSelectionControls cupertinoTextSelectionControls = CupertinoTextSelectionControls();
 
 // Generates the child that's passed into CupertinoTextSelectionToolbar.
 class _CupertinoTextSelectionControlsToolbar extends StatefulWidget {
@@ -264,7 +240,8 @@ class _CupertinoTextSelectionControlsToolbarState extends State<_CupertinoTextSe
     // The toolbar should appear below the TextField when there is not enough
     // space above the TextField to show it, assuming there's always enough
     // space at the bottom in this case.
-    final double anchorX = clampDouble(widget.selectionMidpoint.dx + widget.globalEditableRegion.left,
+    final double anchorX = clampDouble(
+      widget.selectionMidpoint.dx + widget.globalEditableRegion.left,
       _kArrowScreenPadding + mediaQueryPadding.left,
       MediaQuery.sizeOf(context).width - mediaQueryPadding.right - _kArrowScreenPadding,
     );
@@ -276,32 +253,19 @@ class _CupertinoTextSelectionControlsToolbarState extends State<_CupertinoTextSe
     // selectionMidpoint.dy, since the caller
     // (TextSelectionOverlay._buildToolbar) does not know whether the toolbar is
     // going to be facing up or down.
-    final Offset anchorAbove = Offset(
-      anchorX,
-      anchorTop,
-    );
-    final Offset anchorBelow = Offset(
-      anchorX,
-      widget.endpoints.last.point.dy + widget.globalEditableRegion.top,
-    );
+    final Offset anchorAbove = Offset(anchorX, anchorTop);
+    final Offset anchorBelow = Offset(anchorX, widget.endpoints.last.point.dy + widget.globalEditableRegion.top);
 
     final List<Widget> items = <Widget>[];
     final CupertinoLocalizations localizations = CupertinoLocalizations.of(context);
-    final Widget onePhysicalPixelVerticalDivider =
-        SizedBox(width: 1.0 / MediaQuery.devicePixelRatioOf(context));
+    final Widget onePhysicalPixelVerticalDivider = SizedBox(width: 1.0 / MediaQuery.devicePixelRatioOf(context));
 
-    void addToolbarButton(
-      String text,
-      VoidCallback onPressed,
-    ) {
+    void addToolbarButton(String text, VoidCallback onPressed) {
       if (items.isNotEmpty) {
         items.add(onePhysicalPixelVerticalDivider);
       }
 
-      items.add(CupertinoTextSelectionToolbarButton.text(
-        onPressed: onPressed,
-        text: text,
-      ));
+      items.add(CupertinoTextSelectionToolbarButton.text(onPressed: onPressed, text: text));
     }
 
     if (widget.handleCut != null) {
@@ -310,8 +274,7 @@ class _CupertinoTextSelectionControlsToolbarState extends State<_CupertinoTextSe
     if (widget.handleCopy != null) {
       addToolbarButton(localizations.copyButtonLabel, widget.handleCopy!);
     }
-    if (widget.handlePaste != null
-        && widget.clipboardStatus?.value == ClipboardStatus.pasteable) {
+    if (widget.handlePaste != null && widget.clipboardStatus?.value == ClipboardStatus.pasteable) {
       addToolbarButton(localizations.pasteButtonLabel, widget.handlePaste!);
     }
     if (widget.handleSelectAll != null) {
@@ -323,10 +286,6 @@ class _CupertinoTextSelectionControlsToolbarState extends State<_CupertinoTextSe
       return const SizedBox.shrink();
     }
 
-    return CupertinoTextSelectionToolbar(
-      anchorAbove: anchorAbove,
-      anchorBelow: anchorBelow,
-      children: items,
-    );
+    return CupertinoTextSelectionToolbar(anchorAbove: anchorAbove, anchorBelow: anchorBelow, children: items);
   }
 }

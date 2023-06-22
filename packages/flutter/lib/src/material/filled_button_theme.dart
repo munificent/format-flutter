@@ -36,7 +36,7 @@ class FilledButtonThemeData with Diagnosticable {
   /// Creates an [FilledButtonThemeData].
   ///
   /// The [style] may be null.
-  const FilledButtonThemeData({ this.style });
+  const FilledButtonThemeData({this.style});
 
   /// Overrides for [FilledButton]'s default style.
   ///
@@ -52,9 +52,7 @@ class FilledButtonThemeData with Diagnosticable {
     if (identical(a, b)) {
       return a;
     }
-    return FilledButtonThemeData(
-      style: ButtonStyle.lerp(a?.style, b?.style, t),
-    );
+    return FilledButtonThemeData(style: ButtonStyle.lerp(a?.style, b?.style, t));
   }
 
   @override
@@ -93,11 +91,7 @@ class FilledButtonTheme extends InheritedTheme {
   /// Create a [FilledButtonTheme].
   ///
   /// The [data] parameter must not be null.
-  const FilledButtonTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const FilledButtonTheme({super.key, required this.data, required super.child});
 
   /// The configuration of this theme.
   final FilledButtonThemeData data;

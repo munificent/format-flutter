@@ -111,10 +111,7 @@ class TabController extends ChangeNotifier {
        _index = initialIndex,
        _previousIndex = initialIndex,
        _animationDuration = animationDuration ?? kTabScrollDuration,
-       _animationController = AnimationController.unbounded(
-         value: initialIndex.toDouble(),
-         vsync: vsync,
-       );
+       _animationController = AnimationController.unbounded(value: initialIndex.toDouble(), vsync: vsync);
 
   // Private constructor used by `_copyWith`. This allows a new TabController to
   // be created without having to create a new animationController.
@@ -128,7 +125,6 @@ class TabController extends ChangeNotifier {
        _previousIndex = previousIndex,
        _animationController = animationController,
        _animationDuration = animationDuration;
-
 
   /// Creates a new [TabController] with `index`, `previousIndex`, `length`, and
   /// `animationDuration` if they are non-null.
@@ -180,7 +176,7 @@ class TabController extends ChangeNotifier {
   /// [TabBarView.children]'s length.
   final int length;
 
-  void _changeIndex(int value, { Duration? duration, Curve? curve }) {
+  void _changeIndex(int value, {Duration? duration, Curve? curve}) {
     assert(value >= 0 && (value < length || length == 0));
     assert(duration != null || curve == null);
     assert(_indexIsChangingCount >= 0);
@@ -192,14 +188,13 @@ class TabController extends ChangeNotifier {
     if (duration != null && duration > Duration.zero) {
       _indexIsChangingCount += 1;
       notifyListeners(); // Because the value of indexIsChanging may have changed.
-      _animationController!
-        .animateTo(_index.toDouble(), duration: duration, curve: curve!)
-        .whenCompleteOrCancel(() {
-          if (_animationController != null) { // don't notify if we've been disposed
-            _indexIsChangingCount -= 1;
-            notifyListeners();
-          }
-        });
+      _animationController!.animateTo(_index.toDouble(), duration: duration, curve: curve!).whenCompleteOrCancel(() {
+        if (_animationController != null) {
+          // don't notify if we've been disposed
+          _indexIsChangingCount -= 1;
+          notifyListeners();
+        }
+      });
     } else {
       _indexIsChangingCount += 1;
       _animationController!.value = _index.toDouble();
@@ -243,7 +238,7 @@ class TabController extends ChangeNotifier {
   ///
   /// While the animation is running [indexIsChanging] is true. When the
   /// animation completes [offset] will be 0.0.
-  void animateTo(int value, { Duration? duration, Curve curve = Curves.ease }) {
+  void animateTo(int value, {Duration? duration, Curve curve = Curves.ease}) {
     _changeIndex(value, duration: duration ?? _animationDuration, curve: curve);
   }
 
@@ -274,11 +269,7 @@ class TabController extends ChangeNotifier {
 }
 
 class _TabControllerScope extends InheritedWidget {
-  const _TabControllerScope({
-    required this.controller,
-    required this.enabled,
-    required super.child,
-  });
+  const _TabControllerScope({required this.controller, required this.enabled, required super.child});
 
   final TabController controller;
   final bool enabled;
@@ -419,21 +410,23 @@ class DefaultTabController extends StatefulWidget {
   ///   returns null if no [DefaultTabController] ancestor is found.
   static TabController of(BuildContext context) {
     final TabController? controller = maybeOf(context);
-    assert(() {
-      if (controller == null) {
-        throw FlutterError(
-          'DefaultTabController.of() was called with a context that does not '
-          'contain a DefaultTabController widget.\n'
-          'No DefaultTabController widget ancestor could be found starting from '
-          'the context that was passed to DefaultTabController.of(). This can '
-          'happen because you are using a widget that looks for a DefaultTabController '
-          'ancestor, but no such ancestor exists.\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (controller == null) {
+          throw FlutterError(
+            'DefaultTabController.of() was called with a context that does not '
+            'contain a DefaultTabController widget.\n'
+            'No DefaultTabController widget ancestor could be found starting from '
+            'the context that was passed to DefaultTabController.of(). This can '
+            'happen because you are using a widget that looks for a DefaultTabController '
+            'ancestor, but no such ancestor exists.\n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return controller!;
   }
 
@@ -463,11 +456,7 @@ class _DefaultTabControllerState extends State<DefaultTabController> with Single
 
   @override
   Widget build(BuildContext context) {
-    return _TabControllerScope(
-      controller: _controller,
-      enabled: TickerMode.of(context),
-      child: widget.child,
-    );
+    return _TabControllerScope(controller: _controller, enabled: TickerMode.of(context), child: widget.child);
   }
 
   @override

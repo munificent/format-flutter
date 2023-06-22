@@ -76,7 +76,7 @@ abstract class RenderShiftedBox extends RenderBox with RenderObjectWithChildMixi
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, { required Offset position }) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     final RenderBox? child = this.child;
     if (child != null) {
       final BoxParentData childParentData = child.parentData! as BoxParentData;
@@ -209,10 +209,9 @@ class RenderPadding extends RenderShiftedBox {
     _resolve();
     assert(_resolvedPadding != null);
     if (child == null) {
-      return constraints.constrain(Size(
-        _resolvedPadding!.left + _resolvedPadding!.right,
-        _resolvedPadding!.top + _resolvedPadding!.bottom,
-      ));
+      return constraints.constrain(
+        Size(_resolvedPadding!.left + _resolvedPadding!.right, _resolvedPadding!.top + _resolvedPadding!.bottom),
+      );
     }
     final BoxConstraints innerConstraints = constraints.deflate(_resolvedPadding!);
     final Size childSize = child!.getDryLayout(innerConstraints);
@@ -228,10 +227,9 @@ class RenderPadding extends RenderShiftedBox {
     _resolve();
     assert(_resolvedPadding != null);
     if (child == null) {
-      size = constraints.constrain(Size(
-        _resolvedPadding!.left + _resolvedPadding!.right,
-        _resolvedPadding!.top + _resolvedPadding!.bottom,
-      ));
+      size = constraints.constrain(
+        Size(_resolvedPadding!.left + _resolvedPadding!.right, _resolvedPadding!.top + _resolvedPadding!.bottom),
+      );
       return;
     }
     final BoxConstraints innerConstraints = constraints.deflate(_resolvedPadding!);
@@ -247,11 +245,13 @@ class RenderPadding extends RenderShiftedBox {
   @override
   void debugPaintSize(PaintingContext context, Offset offset) {
     super.debugPaintSize(context, offset);
-    assert(() {
-      final Rect outerRect = offset & size;
-      debugPaintPadding(context.canvas, outerRect, child != null ? _resolvedPadding!.deflateRect(outerRect) : null);
-      return true;
-    }());
+    assert(
+      () {
+        final Rect outerRect = offset & size;
+        debugPaintPadding(context.canvas, outerRect, child != null ? _resolvedPadding!.deflateRect(outerRect) : null);
+        return true;
+      }(),
+    );
   }
 
   @override
@@ -307,6 +307,7 @@ abstract class RenderAligningShiftedBox extends RenderShiftedBox {
   /// [textDirection] must not be null.
   AlignmentGeometry get alignment => _alignment;
   AlignmentGeometry _alignment;
+
   /// Sets the alignment to a new value, and triggers a layout update.
   ///
   /// The new alignment must not be null.
@@ -422,10 +423,9 @@ class RenderPositionedBox extends RenderAligningShiftedBox {
         shrinkWrapHeight ? childSize.height * (_heightFactor ?? 1.0) : double.infinity,
       ));
     }
-    return constraints.constrain(Size(
-      shrinkWrapWidth ? 0.0 : double.infinity,
-      shrinkWrapHeight ? 0.0 : double.infinity,
-    ));
+    return constraints.constrain(
+      Size(shrinkWrapWidth ? 0.0 : double.infinity, shrinkWrapHeight ? 0.0 : double.infinity),
+    );
   }
 
   @override
@@ -442,69 +442,69 @@ class RenderPositionedBox extends RenderAligningShiftedBox {
       ));
       alignChild();
     } else {
-      size = constraints.constrain(Size(
-        shrinkWrapWidth ? 0.0 : double.infinity,
-        shrinkWrapHeight ? 0.0 : double.infinity,
-      ));
+      size = constraints.constrain(
+        Size(shrinkWrapWidth ? 0.0 : double.infinity, shrinkWrapHeight ? 0.0 : double.infinity),
+      );
     }
   }
 
   @override
   void debugPaintSize(PaintingContext context, Offset offset) {
     super.debugPaintSize(context, offset);
-    assert(() {
-      final Paint paint;
-      if (child != null && !child!.size.isEmpty) {
-        final Path path;
-        paint = Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.0
-          ..color = const Color(0xFFFFFF00);
-        path = Path();
-        final BoxParentData childParentData = child!.parentData! as BoxParentData;
-        if (childParentData.offset.dy > 0.0) {
-          // vertical alignment arrows
-          final double headSize = math.min(childParentData.offset.dy * 0.2, 10.0);
-          path
-            ..moveTo(offset.dx + size.width / 2.0, offset.dy)
-            ..relativeLineTo(0.0, childParentData.offset.dy - headSize)
-            ..relativeLineTo(headSize, 0.0)
-            ..relativeLineTo(-headSize, headSize)
-            ..relativeLineTo(-headSize, -headSize)
-            ..relativeLineTo(headSize, 0.0)
-            ..moveTo(offset.dx + size.width / 2.0, offset.dy + size.height)
-            ..relativeLineTo(0.0, -childParentData.offset.dy + headSize)
-            ..relativeLineTo(headSize, 0.0)
-            ..relativeLineTo(-headSize, -headSize)
-            ..relativeLineTo(-headSize, headSize)
-            ..relativeLineTo(headSize, 0.0);
-          context.canvas.drawPath(path, paint);
+    assert(
+      () {
+        final Paint paint;
+        if (child != null && !child!.size.isEmpty) {
+          final Path path;
+          paint = Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.0
+            ..color = const Color(0xFFFFFF00);
+          path = Path();
+          final BoxParentData childParentData = child!.parentData! as BoxParentData;
+          if (childParentData.offset.dy > 0.0) {
+            // vertical alignment arrows
+            final double headSize = math.min(childParentData.offset.dy * 0.2, 10.0);
+            path
+              ..moveTo(offset.dx + size.width / 2.0, offset.dy)
+              ..relativeLineTo(0.0, childParentData.offset.dy - headSize)
+              ..relativeLineTo(headSize, 0.0)
+              ..relativeLineTo(-headSize, headSize)
+              ..relativeLineTo(-headSize, -headSize)
+              ..relativeLineTo(headSize, 0.0)
+              ..moveTo(offset.dx + size.width / 2.0, offset.dy + size.height)
+              ..relativeLineTo(0.0, -childParentData.offset.dy + headSize)
+              ..relativeLineTo(headSize, 0.0)
+              ..relativeLineTo(-headSize, -headSize)
+              ..relativeLineTo(-headSize, headSize)
+              ..relativeLineTo(headSize, 0.0);
+            context.canvas.drawPath(path, paint);
+          }
+          if (childParentData.offset.dx > 0.0) {
+            // horizontal alignment arrows
+            final double headSize = math.min(childParentData.offset.dx * 0.2, 10.0);
+            path
+              ..moveTo(offset.dx, offset.dy + size.height / 2.0)
+              ..relativeLineTo(childParentData.offset.dx - headSize, 0.0)
+              ..relativeLineTo(0.0, headSize)
+              ..relativeLineTo(headSize, -headSize)
+              ..relativeLineTo(-headSize, -headSize)
+              ..relativeLineTo(0.0, headSize)
+              ..moveTo(offset.dx + size.width, offset.dy + size.height / 2.0)
+              ..relativeLineTo(-childParentData.offset.dx + headSize, 0.0)
+              ..relativeLineTo(0.0, headSize)
+              ..relativeLineTo(-headSize, -headSize)
+              ..relativeLineTo(headSize, -headSize)
+              ..relativeLineTo(0.0, headSize);
+            context.canvas.drawPath(path, paint);
+          }
+        } else {
+          paint = Paint()..color = const Color(0x90909090);
+          context.canvas.drawRect(offset & size, paint);
         }
-        if (childParentData.offset.dx > 0.0) {
-          // horizontal alignment arrows
-          final double headSize = math.min(childParentData.offset.dx * 0.2, 10.0);
-          path
-            ..moveTo(offset.dx, offset.dy + size.height / 2.0)
-            ..relativeLineTo(childParentData.offset.dx - headSize, 0.0)
-            ..relativeLineTo(0.0, headSize)
-            ..relativeLineTo(headSize, -headSize)
-            ..relativeLineTo(-headSize, -headSize)
-            ..relativeLineTo(0.0, headSize)
-            ..moveTo(offset.dx + size.width, offset.dy + size.height / 2.0)
-            ..relativeLineTo(-childParentData.offset.dx + headSize, 0.0)
-            ..relativeLineTo(0.0, headSize)
-            ..relativeLineTo(-headSize, -headSize)
-            ..relativeLineTo(headSize, -headSize)
-            ..relativeLineTo(0.0, headSize);
-          context.canvas.drawPath(path, paint);
-        }
-      } else {
-        paint = Paint()
-          ..color = const Color(0x90909090);
-        context.canvas.drawRect(offset & size, paint);
-      }
-      return true;
-    }());
+        return true;
+      }(),
+    );
   }
 
   @override
@@ -707,8 +707,7 @@ class RenderConstraintsTransformBox extends RenderAligningShiftedBox with DebugO
     // The RenderObject only needs layout if the new transform maps the current
     // `constraints` to a different value, or the render object has never been
     // laid out before.
-    final bool needsLayout = _childConstraints == null
-                          || _childConstraints != value(constraints);
+    final bool needsLayout = _childConstraints == null || _childConstraints != value(constraints);
     if (needsLayout) {
       markNeedsLayout();
     }
@@ -731,30 +730,22 @@ class RenderConstraintsTransformBox extends RenderAligningShiftedBox with DebugO
 
   @override
   double computeMinIntrinsicHeight(double width) {
-    return super.computeMinIntrinsicHeight(
-      constraintsTransform(BoxConstraints(maxWidth: width)).maxWidth,
-    );
+    return super.computeMinIntrinsicHeight(constraintsTransform(BoxConstraints(maxWidth: width)).maxWidth);
   }
 
   @override
   double computeMaxIntrinsicHeight(double width) {
-    return super.computeMaxIntrinsicHeight(
-      constraintsTransform(BoxConstraints(maxWidth: width)).maxWidth,
-    );
+    return super.computeMaxIntrinsicHeight(constraintsTransform(BoxConstraints(maxWidth: width)).maxWidth);
   }
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    return super.computeMinIntrinsicWidth(
-      constraintsTransform(BoxConstraints(maxHeight: height)).maxHeight,
-    );
+    return super.computeMinIntrinsicWidth(constraintsTransform(BoxConstraints(maxHeight: height)).maxHeight);
   }
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    return super.computeMaxIntrinsicWidth(
-      constraintsTransform(BoxConstraints(maxHeight: height)).maxHeight,
-    );
+    return super.computeMaxIntrinsicWidth(constraintsTransform(BoxConstraints(maxHeight: height)).maxHeight);
   }
 
   @override
@@ -815,17 +806,19 @@ class RenderConstraintsTransformBox extends RenderAligningShiftedBox with DebugO
     );
 
     // Display the overflow indicator if clipBehavior is Clip.none.
-    assert(() {
-      switch (clipBehavior) {
-        case Clip.none:
-          paintOverflowIndicator(context, offset, _overflowContainerRect, _overflowChildRect);
-        case Clip.hardEdge:
-        case Clip.antiAlias:
-        case Clip.antiAliasWithSaveLayer:
-          break;
-      }
-      return true;
-    }());
+    assert(
+      () {
+        switch (clipBehavior) {
+          case Clip.none:
+            paintOverflowIndicator(context, offset, _overflowContainerRect, _overflowChildRect);
+          case Clip.hardEdge:
+          case Clip.antiAlias:
+          case Clip.antiAliasWithSaveLayer:
+            break;
+        }
+        return true;
+      }(),
+    );
   }
 
   final LayerHandle<ClipRectLayer> _clipRectLayer = LayerHandle<ClipRectLayer>();
@@ -881,12 +874,8 @@ class RenderSizedOverflowBox extends RenderAligningShiftedBox {
   ///
   /// The [textDirection] argument must not be null if the [alignment] is
   /// direction-sensitive.
-  RenderSizedOverflowBox({
-    super.child,
-    required Size requestedSize,
-    super.alignment,
-    super.textDirection,
-  }) : _requestedSize = requestedSize;
+  RenderSizedOverflowBox({super.child, required Size requestedSize, super.alignment, super.textDirection})
+    : _requestedSize = requestedSize;
 
   /// The size this render box should attempt to be.
   Size get requestedSize => _requestedSize;
@@ -1022,12 +1011,7 @@ class RenderFractionallySizedOverflowBox extends RenderAligningShiftedBox {
       minHeight = height;
       maxHeight = height;
     }
-    return BoxConstraints(
-      minWidth: minWidth,
-      maxWidth: maxWidth,
-      minHeight: minHeight,
-      maxHeight: maxHeight,
-    );
+    return BoxConstraints(minWidth: minWidth, maxWidth: maxWidth, minHeight: minHeight, maxHeight: maxHeight);
   }
 
   @override
@@ -1035,7 +1019,8 @@ class RenderFractionallySizedOverflowBox extends RenderAligningShiftedBox {
     final double result;
     if (child == null) {
       result = super.computeMinIntrinsicWidth(height);
-    } else { // the following line relies on double.infinity absorption
+    } else {
+      // the following line relies on double.infinity absorption
       result = child!.getMinIntrinsicWidth(height * (_heightFactor ?? 1.0));
     }
     assert(result.isFinite);
@@ -1047,7 +1032,8 @@ class RenderFractionallySizedOverflowBox extends RenderAligningShiftedBox {
     final double result;
     if (child == null) {
       result = super.computeMaxIntrinsicWidth(height);
-    } else { // the following line relies on double.infinity absorption
+    } else {
+      // the following line relies on double.infinity absorption
       result = child!.getMaxIntrinsicWidth(height * (_heightFactor ?? 1.0));
     }
     assert(result.isFinite);
@@ -1059,7 +1045,8 @@ class RenderFractionallySizedOverflowBox extends RenderAligningShiftedBox {
     final double result;
     if (child == null) {
       result = super.computeMinIntrinsicHeight(width);
-    } else { // the following line relies on double.infinity absorption
+    } else {
+      // the following line relies on double.infinity absorption
       result = child!.getMinIntrinsicHeight(width * (_widthFactor ?? 1.0));
     }
     assert(result.isFinite);
@@ -1071,7 +1058,8 @@ class RenderFractionallySizedOverflowBox extends RenderAligningShiftedBox {
     final double result;
     if (child == null) {
       result = super.computeMaxIntrinsicHeight(width);
-    } else { // the following line relies on double.infinity absorption
+    } else {
+      // the following line relies on double.infinity absorption
       result = child!.getMaxIntrinsicHeight(width * (_widthFactor ?? 1.0));
     }
     assert(result.isFinite);
@@ -1136,7 +1124,7 @@ abstract class SingleChildLayoutDelegate {
   /// Creates a layout delegate.
   ///
   /// The layout will update whenever [relayout] notifies its listeners.
-  const SingleChildLayoutDelegate({ Listenable? relayout }) : _relayout = relayout;
+  const SingleChildLayoutDelegate({Listenable? relayout}) : _relayout = relayout;
 
   final Listenable? _relayout;
 
@@ -1197,11 +1185,9 @@ class RenderCustomSingleChildLayoutBox extends RenderShiftedBox {
   /// Creates a render box that defers its layout to a delegate.
   ///
   /// The [delegate] argument must not be null.
-  RenderCustomSingleChildLayoutBox({
-    RenderBox? child,
-    required SingleChildLayoutDelegate delegate,
-  }) : _delegate = delegate,
-       super(child);
+  RenderCustomSingleChildLayoutBox({RenderBox? child, required SingleChildLayoutDelegate delegate})
+    : _delegate = delegate,
+      super(child);
 
   /// A delegate that controls this object's layout.
   SingleChildLayoutDelegate get delegate => _delegate;
@@ -1290,7 +1276,10 @@ class RenderCustomSingleChildLayoutBox extends RenderShiftedBox {
       assert(childConstraints.debugAssertIsValid(isAppliedConstraint: true));
       child!.layout(childConstraints, parentUsesSize: !childConstraints.isTight);
       final BoxParentData childParentData = child!.parentData! as BoxParentData;
-      childParentData.offset = delegate.getPositionForChild(size, childConstraints.isTight ? childConstraints.smallest : child!.size);
+      childParentData.offset = delegate.getPositionForChild(
+        size,
+        childConstraints.isTight ? childConstraints.smallest : child!.size,
+      );
     }
   }
 }
@@ -1315,13 +1304,10 @@ class RenderBaseline extends RenderShiftedBox {
   /// Creates a [RenderBaseline] object.
   ///
   /// The [baseline] and [baselineType] arguments must not be null.
-  RenderBaseline({
-    RenderBox? child,
-    required double baseline,
-    required TextBaseline baselineType,
-  }) : _baseline = baseline,
-       _baselineType = baselineType,
-       super(child);
+  RenderBaseline({RenderBox? child, required double baseline, required TextBaseline baselineType})
+    : _baseline = baseline,
+      _baselineType = baselineType,
+      super(child);
 
   /// The number of logical pixels from the top of this box at which to position
   /// the child's baseline.
@@ -1349,9 +1335,7 @@ class RenderBaseline extends RenderShiftedBox {
   @override
   Size computeDryLayout(BoxConstraints constraints) {
     if (child != null) {
-      assert(debugCannotComputeDryLayout(
-        reason: 'Baseline metrics are only available after a full layout.',
-      ));
+      assert(debugCannotComputeDryLayout(reason: 'Baseline metrics are only available after a full layout.'));
       return Size.zero;
     }
     return constraints.smallest;

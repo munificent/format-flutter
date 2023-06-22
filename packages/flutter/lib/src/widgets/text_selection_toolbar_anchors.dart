@@ -18,10 +18,7 @@ import 'package:flutter/rendering.dart';
 class TextSelectionToolbarAnchors {
   /// Creates an instance of [TextSelectionToolbarAnchors] directly from the
   /// anchor points.
-  const TextSelectionToolbarAnchors({
-    required this.primaryAnchor,
-    this.secondaryAnchor,
-  });
+  const TextSelectionToolbarAnchors({required this.primaryAnchor, this.secondaryAnchor});
 
   /// Creates an instance of [TextSelectionToolbarAnchors] for some selection.
   factory TextSelectionToolbarAnchors.fromSelection({
@@ -35,22 +32,19 @@ class TextSelectionToolbarAnchors {
       renderBox.localToGlobal(renderBox.size.bottomRight(Offset.zero)),
     );
 
-    if (editingRegion.left.isNaN || editingRegion.top.isNaN
-      || editingRegion.right.isNaN || editingRegion.bottom.isNaN) {
+    if (editingRegion.left.isNaN ||
+        editingRegion.top.isNaN ||
+        editingRegion.right.isNaN ||
+        editingRegion.bottom.isNaN) {
       return const TextSelectionToolbarAnchors(primaryAnchor: Offset.zero);
     }
 
-    final bool isMultiline = selectionEndpoints.last.point.dy - selectionEndpoints.first.point.dy >
-        endGlyphHeight / 2;
+    final bool isMultiline = selectionEndpoints.last.point.dy - selectionEndpoints.first.point.dy > endGlyphHeight / 2;
 
     final Rect selectionRect = Rect.fromLTRB(
-      isMultiline
-          ? editingRegion.left
-          : editingRegion.left + selectionEndpoints.first.point.dx,
+      isMultiline ? editingRegion.left : editingRegion.left + selectionEndpoints.first.point.dx,
       editingRegion.top + selectionEndpoints.first.point.dy - startGlyphHeight,
-      isMultiline
-          ? editingRegion.right
-          : editingRegion.left + selectionEndpoints.last.point.dx,
+      isMultiline ? editingRegion.right : editingRegion.left + selectionEndpoints.last.point.dx,
       editingRegion.top + selectionEndpoints.last.point.dy,
     );
 

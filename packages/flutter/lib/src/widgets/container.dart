@@ -57,12 +57,7 @@ class DecoratedBox extends SingleChildRenderObjectWidget {
   ///
   /// The [decoration] and [position] arguments must not be null. By default the
   /// decoration paints behind the child.
-  const DecoratedBox({
-    super.key,
-    required this.decoration,
-    this.position = DecorationPosition.background,
-    super.child,
-  });
+  const DecoratedBox({super.key, required this.decoration, this.position = DecorationPosition.background, super.child});
 
   /// What decoration to paint.
   ///
@@ -266,15 +261,14 @@ class Container extends StatelessWidget {
        assert(decoration == null || decoration.debugAssertIsValid()),
        assert(constraints == null || constraints.debugAssertIsValid()),
        assert(decoration != null || clipBehavior == Clip.none),
-       assert(color == null || decoration == null,
+       assert(
+         color == null || decoration == null,
          'Cannot provide both a color and a decoration\n'
          'To provide both, use "decoration: BoxDecoration(color: color)".',
        ),
-       constraints =
-        (width != null || height != null)
-          ? constraints?.tighten(width: width, height: height)
-            ?? BoxConstraints.tightFor(width: width, height: height)
-          : constraints;
+       constraints = (width != null || height != null)
+           ? constraints?.tighten(width: width, height: height) ?? BoxConstraints.tightFor(width: width, height: height)
+           : constraints;
 
   /// The [child] contained by the container.
   ///
@@ -401,10 +395,7 @@ class Container extends StatelessWidget {
     if (clipBehavior != Clip.none) {
       assert(decoration != null);
       current = ClipPath(
-        clipper: _DecorationClipper(
-          textDirection: Directionality.maybeOf(context),
-          decoration: decoration!,
-        ),
+        clipper: _DecorationClipper(textDirection: Directionality.maybeOf(context), decoration: decoration!),
         clipBehavior: clipBehavior,
         child: current,
       );
@@ -457,10 +448,8 @@ class Container extends StatelessWidget {
 
 /// A clipper that uses [Decoration.getClipPath] to clip.
 class _DecorationClipper extends CustomClipper<Path> {
-  _DecorationClipper({
-    TextDirection? textDirection,
-    required this.decoration,
-  }) : textDirection = textDirection ?? TextDirection.ltr;
+  _DecorationClipper({TextDirection? textDirection, required this.decoration})
+    : textDirection = textDirection ?? TextDirection.ltr;
 
   final TextDirection textDirection;
   final Decoration decoration;
@@ -472,7 +461,6 @@ class _DecorationClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(_DecorationClipper oldClipper) {
-    return oldClipper.decoration != decoration
-        || oldClipper.textDirection != textDirection;
+    return oldClipper.decoration != decoration || oldClipper.textDirection != textDirection;
   }
 }

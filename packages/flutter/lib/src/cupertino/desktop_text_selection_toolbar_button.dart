@@ -21,44 +21,31 @@ const TextStyle _kToolbarButtonFontStyle = TextStyle(
 
 // This value was measured from a screenshot of the native context menu on
 // macOS 13.2 on a Macbook Pro.
-const EdgeInsets _kToolbarButtonPadding = EdgeInsets.fromLTRB(
-  8.0,
-  2.0,
-  8.0,
-  5.0,
-);
+const EdgeInsets _kToolbarButtonPadding = EdgeInsets.fromLTRB(8.0, 2.0, 8.0, 5.0);
 
 /// A button in the style of the Mac context menu buttons.
 class CupertinoDesktopTextSelectionToolbarButton extends StatefulWidget {
   /// Creates an instance of CupertinoDesktopTextSelectionToolbarButton.
   ///
   /// [child] cannot be null.
-  const CupertinoDesktopTextSelectionToolbarButton({
-    super.key,
-    required this.onPressed,
-    required Widget this.child,
-  })  : buttonItem = null,
-        text = null;
+  const CupertinoDesktopTextSelectionToolbarButton({super.key, required this.onPressed, required Widget this.child})
+    : buttonItem = null,
+      text = null;
 
   /// Create an instance of [CupertinoDesktopTextSelectionToolbarButton] whose child is
   /// a [Text] widget styled like the default Mac context menu button.
-  const CupertinoDesktopTextSelectionToolbarButton.text({
-    super.key,
-    required this.onPressed,
-    required this.text,
-  })  : buttonItem = null,
-        child = null;
+  const CupertinoDesktopTextSelectionToolbarButton.text({super.key, required this.onPressed, required this.text})
+    : buttonItem = null,
+      child = null;
 
   /// Create an instance of [CupertinoDesktopTextSelectionToolbarButton] from
   /// the given [ContextMenuButtonItem].
   ///
   /// [buttonItem] cannot be null.
-  CupertinoDesktopTextSelectionToolbarButton.buttonItem({
-    super.key,
-    required ContextMenuButtonItem this.buttonItem,
-  })  : onPressed = buttonItem.onPressed,
-        text = null,
-        child = null;
+  CupertinoDesktopTextSelectionToolbarButton.buttonItem({super.key, required ContextMenuButtonItem this.buttonItem})
+    : onPressed = buttonItem.onPressed,
+      text = null,
+      child = null;
 
   /// {@macro flutter.cupertino.CupertinoTextSelectionToolbarButton.onPressed}
   final VoidCallback? onPressed;
@@ -73,12 +60,10 @@ class CupertinoDesktopTextSelectionToolbarButton extends StatefulWidget {
   final String? text;
 
   @override
-  State<CupertinoDesktopTextSelectionToolbarButton> createState() =>
-      _CupertinoDesktopTextSelectionToolbarButtonState();
+  State<CupertinoDesktopTextSelectionToolbarButton> createState() => _CupertinoDesktopTextSelectionToolbarButtonState();
 }
 
-class _CupertinoDesktopTextSelectionToolbarButtonState
-    extends State<CupertinoDesktopTextSelectionToolbarButton> {
+class _CupertinoDesktopTextSelectionToolbarButtonState extends State<CupertinoDesktopTextSelectionToolbarButton> {
   bool _isHovered = false;
 
   void _onEnter(PointerEnterEvent event) {
@@ -97,11 +82,7 @@ class _CupertinoDesktopTextSelectionToolbarButtonState
   Widget build(BuildContext context) {
     final Widget child = widget.child ??
         Text(
-          widget.text ??
-              CupertinoTextSelectionToolbarButton.getButtonLabel(
-                context,
-                widget.buttonItem!,
-              ),
+          widget.text ?? CupertinoTextSelectionToolbarButton.getButtonLabel(context, widget.buttonItem!),
           overflow: TextOverflow.ellipsis,
           style: _kToolbarButtonFontStyle.copyWith(
             color: _isHovered

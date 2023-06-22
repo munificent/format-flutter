@@ -36,12 +36,7 @@ class ImageFiltered extends SingleChildRenderObjectWidget {
   /// Creates a widget that applies an [ImageFilter] to its child.
   ///
   /// The [imageFilter] must not be null.
-  const ImageFiltered({
-    super.key,
-    required this.imageFilter,
-    super.child,
-    this.enabled = true,
-  });
+  const ImageFiltered({super.key, required this.imageFilter, super.child, this.enabled = true});
 
   /// The image filter to apply to the child of this widget.
   final ImageFilter imageFilter;
@@ -99,7 +94,7 @@ class _ImageFilterRenderObject extends RenderProxyBox {
   @override
   bool get alwaysNeedsCompositing => child != null && enabled;
 
-   @override
+  @override
   bool get isRepaintBoundary => alwaysNeedsCompositing;
 
   @override

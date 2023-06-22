@@ -251,10 +251,7 @@ class Icon extends StatelessWidget {
     final List<Shadow>? iconShadows = shadows ?? iconTheme.shadows;
 
     if (icon == null) {
-      return Semantics(
-        label: semanticLabel,
-        child: SizedBox(width: iconSize, height: iconSize),
-      );
+      return Semantics(label: semanticLabel, child: SizedBox(width: iconSize, height: iconSize));
     }
 
     final double iconOpacity = iconTheme.opacity ?? 1.0;
@@ -302,15 +299,7 @@ class Icon extends StatelessWidget {
 
     return Semantics(
       label: semanticLabel,
-      child: ExcludeSemantics(
-        child: SizedBox(
-          width: iconSize,
-          height: iconSize,
-          child: Center(
-            child: iconWidget,
-          ),
-        ),
-      ),
+      child: ExcludeSemantics(child: SizedBox(width: iconSize, height: iconSize, child: Center(child: iconWidget))),
     );
   }
 

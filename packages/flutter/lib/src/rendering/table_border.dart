@@ -36,15 +36,20 @@ class TableBorder {
     BorderRadius borderRadius = BorderRadius.zero,
   }) {
     final BorderSide side = BorderSide(color: color, width: width, style: style);
-    return TableBorder(top: side, right: side, bottom: side, left: side, horizontalInside: side, verticalInside: side, borderRadius: borderRadius);
+    return TableBorder(
+      top: side,
+      right: side,
+      bottom: side,
+      left: side,
+      horizontalInside: side,
+      verticalInside: side,
+      borderRadius: borderRadius,
+    );
   }
 
   /// Creates a border for a table where all the interior sides use the same
   /// styling and all the exterior sides use the same styling.
-  factory TableBorder.symmetric({
-    BorderSide inside = BorderSide.none,
-    BorderSide outside = BorderSide.none,
-  }) {
+  factory TableBorder.symmetric({BorderSide inside = BorderSide.none, BorderSide outside = BorderSide.none}) {
     return TableBorder(
       top: outside,
       right: outside,
@@ -89,7 +94,6 @@ class TableBorder {
   /// Whether all the sides of the border (outside and inside) are identical.
   /// Uniform borders are typically more efficient to paint.
   bool get isUniform {
-
     final Color topColor = top.color;
     if (right.color != topColor ||
         bottom.color != topColor ||
@@ -198,12 +202,7 @@ class TableBorder {
   ///
   /// The paint order is particularly notable in the case of
   /// partially-transparent borders.
-  void paint(
-    Canvas canvas,
-    Rect rect, {
-    required Iterable<double> rows,
-    required Iterable<double> columns,
-  }) {
+  void paint(Canvas canvas, Rect rect, {required Iterable<double> rows, required Iterable<double> columns}) {
     // properties can't be null
 
     // arguments can't be null
@@ -268,14 +267,14 @@ class TableBorder {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is TableBorder
-        && other.top == top
-        && other.right == right
-        && other.bottom == bottom
-        && other.left == left
-        && other.horizontalInside == horizontalInside
-        && other.verticalInside == verticalInside
-        && other.borderRadius == borderRadius;
+    return other is TableBorder &&
+        other.top == top &&
+        other.right == right &&
+        other.bottom == bottom &&
+        other.left == left &&
+        other.horizontalInside == horizontalInside &&
+        other.verticalInside == verticalInside &&
+        other.borderRadius == borderRadius;
   }
 
   @override

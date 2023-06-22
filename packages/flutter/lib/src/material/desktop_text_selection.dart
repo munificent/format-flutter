@@ -14,8 +14,7 @@ import 'material_localizations.dart';
 ///
 /// Specifically does not manage the toolbar, which is left to
 /// [EditableText.contextMenuBuilder].
-class _DesktopTextSelectionHandleControls extends DesktopTextSelectionControls with TextSelectionHandleControls {
-}
+class _DesktopTextSelectionHandleControls extends DesktopTextSelectionControls with TextSelectionHandleControls {}
 
 /// Desktop Material styled text selection controls.
 ///
@@ -80,8 +79,8 @@ class DesktopTextSelectionControls extends TextSelectionControls {
     // already been selected. Same behavior as Android.
     final TextEditingValue value = delegate.textEditingValue;
     return delegate.selectAllEnabled &&
-           value.text.isNotEmpty &&
-           !(value.selection.start == 0 && value.selection.end == value.text.length);
+        value.text.isNotEmpty &&
+        !(value.selection.start == 0 && value.selection.end == value.text.length);
   }
 
   @Deprecated(
@@ -100,13 +99,11 @@ class DesktopTextSelectionControls extends TextSelectionControls {
 // See https://github.com/flutter/flutter/pull/124262
 /// Desktop text selection handle controls that loosely follow Material design
 /// conventions.
-final TextSelectionControls desktopTextSelectionHandleControls =
-    _DesktopTextSelectionHandleControls();
+final TextSelectionControls desktopTextSelectionHandleControls = _DesktopTextSelectionHandleControls();
 
 /// Desktop text selection controls that loosely follow Material design
 /// conventions.
-final TextSelectionControls desktopTextSelectionControls =
-    DesktopTextSelectionControls();
+final TextSelectionControls desktopTextSelectionControls = DesktopTextSelectionControls();
 
 // Generates the child that's passed into DesktopTextSelectionToolbar.
 class _DesktopTextSelectionControlsToolbar extends StatefulWidget {
@@ -177,26 +174,17 @@ class _DesktopTextSelectionControlsToolbarState extends State<_DesktopTextSelect
     }
 
     final EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
-    final Offset midpointAnchor = Offset(
-      clampDouble(widget.selectionMidpoint.dx - widget.globalEditableRegion.left,
-        mediaQueryPadding.left,
-        MediaQuery.sizeOf(context).width - mediaQueryPadding.right,
-      ),
-      widget.selectionMidpoint.dy - widget.globalEditableRegion.top,
-    );
+    final Offset midpointAnchor = Offset(clampDouble(
+      widget.selectionMidpoint.dx - widget.globalEditableRegion.left,
+      mediaQueryPadding.left,
+      MediaQuery.sizeOf(context).width - mediaQueryPadding.right,
+    ), widget.selectionMidpoint.dy - widget.globalEditableRegion.top);
 
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final List<Widget> items = <Widget>[];
 
-    void addToolbarButton(
-      String text,
-      VoidCallback onPressed,
-    ) {
-      items.add(DesktopTextSelectionToolbarButton.text(
-        context: context,
-        onPressed: onPressed,
-        text: text,
-      ));
+    void addToolbarButton(String text, VoidCallback onPressed) {
+      items.add(DesktopTextSelectionToolbarButton.text(context: context, onPressed: onPressed, text: text));
     }
 
     if (widget.handleCut != null) {
@@ -205,8 +193,7 @@ class _DesktopTextSelectionControlsToolbarState extends State<_DesktopTextSelect
     if (widget.handleCopy != null) {
       addToolbarButton(localizations.copyButtonLabel, widget.handleCopy!);
     }
-    if (widget.handlePaste != null
-        && widget.clipboardStatus?.value == ClipboardStatus.pasteable) {
+    if (widget.handlePaste != null && widget.clipboardStatus?.value == ClipboardStatus.pasteable) {
       addToolbarButton(localizations.pasteButtonLabel, widget.handlePaste!);
     }
     if (widget.handleSelectAll != null) {
@@ -218,9 +205,6 @@ class _DesktopTextSelectionControlsToolbarState extends State<_DesktopTextSelect
       return const SizedBox.shrink();
     }
 
-    return DesktopTextSelectionToolbar(
-      anchor: widget.lastSecondaryTapDownPosition ?? midpointAnchor,
-      children: items,
-    );
+    return DesktopTextSelectionToolbar(anchor: widget.lastSecondaryTapDownPosition ?? midpointAnchor, children: items);
   }
 }

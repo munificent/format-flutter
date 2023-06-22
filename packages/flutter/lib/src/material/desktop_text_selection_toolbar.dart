@@ -69,23 +69,11 @@ class DesktopTextSelectionToolbar extends StatelessWidget {
     final Offset localAdjustment = Offset(_kToolbarScreenPadding, paddingAbove);
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
-        _kToolbarScreenPadding,
-        paddingAbove,
-        _kToolbarScreenPadding,
-        _kToolbarScreenPadding,
-      ),
+      padding:
+          EdgeInsets.fromLTRB(_kToolbarScreenPadding, paddingAbove, _kToolbarScreenPadding, _kToolbarScreenPadding),
       child: CustomSingleChildLayout(
-        delegate: DesktopTextSelectionToolbarLayoutDelegate(
-          anchor: anchor - localAdjustment,
-        ),
-        child: _defaultToolbarBuilder(
-          context,
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: children,
-          ),
-        ),
+        delegate: DesktopTextSelectionToolbarLayoutDelegate(anchor: anchor - localAdjustment),
+        child: _defaultToolbarBuilder(context, Column(mainAxisSize: MainAxisSize.min, children: children)),
       ),
     );
   }

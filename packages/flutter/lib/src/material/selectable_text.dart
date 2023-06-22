@@ -29,19 +29,16 @@ import 'theme.dart';
 const int iOSHorizontalOffset = -2;
 
 class _TextSpanEditingController extends TextEditingController {
-  _TextSpanEditingController({required TextSpan textSpan}):
-    _textSpan = textSpan,
-    super(text: textSpan.toPlainText(includeSemanticsLabels: false));
+  _TextSpanEditingController({required TextSpan textSpan})
+    : _textSpan = textSpan,
+      super(text: textSpan.toPlainText(includeSemanticsLabels: false));
 
   final TextSpan _textSpan;
 
   @override
   TextSpan buildTextSpan({required BuildContext context, TextStyle? style, required bool withComposing}) {
     // This does not care about composing.
-    return TextSpan(
-      style: style,
-      children: <TextSpan>[_textSpan],
-    );
+    return TextSpan(style: style, children: <TextSpan>[_textSpan]);
   }
 
   @override
@@ -52,10 +49,9 @@ class _TextSpanEditingController extends TextEditingController {
 }
 
 class _SelectableTextSelectionGestureDetectorBuilder extends TextSelectionGestureDetectorBuilder {
-  _SelectableTextSelectionGestureDetectorBuilder({
-    required _SelectableTextState state,
-  }) : _state = state,
-       super(delegate: state);
+  _SelectableTextSelectionGestureDetectorBuilder({required _SelectableTextState state})
+    : _state = state,
+      super(delegate: state);
 
   final _SelectableTextState _state;
 
@@ -212,13 +208,13 @@ class SelectableText extends StatefulWidget {
     this.onSelectionChanged,
     this.contextMenuBuilder = _defaultContextMenuBuilder,
     this.magnifierConfiguration,
-  }) :  assert(maxLines == null || maxLines > 0),
-        assert(minLines == null || minLines > 0),
-        assert(
-          (maxLines == null) || (minLines == null) || (maxLines >= minLines),
-          "minLines can't be greater than maxLines",
-        ),
-        textSpan = null;
+  }) : assert(maxLines == null || maxLines > 0),
+       assert(minLines == null || minLines > 0),
+       assert(
+         (maxLines == null) || (minLines == null) || (maxLines >= minLines),
+         "minLines can't be greater than maxLines",
+       ),
+       textSpan = null;
 
   /// Creates a selectable text widget with a [TextSpan].
   ///
@@ -261,13 +257,13 @@ class SelectableText extends StatefulWidget {
     this.onSelectionChanged,
     this.contextMenuBuilder = _defaultContextMenuBuilder,
     this.magnifierConfiguration,
-  }) :  assert(maxLines == null || maxLines > 0),
-    assert(minLines == null || minLines > 0),
-    assert(
-      (maxLines == null) || (minLines == null) || (maxLines >= minLines),
-      "minLines can't be greater than maxLines",
-    ),
-    data = null;
+  }) : assert(maxLines == null || maxLines > 0),
+       assert(minLines == null || minLines > 0),
+       assert(
+         (maxLines == null) || (minLines == null) || (maxLines >= minLines),
+         "minLines can't be greater than maxLines",
+       ),
+       data = null;
 
   /// The text to display.
   ///
@@ -424,9 +420,7 @@ class SelectableText extends StatefulWidget {
   final EditableTextContextMenuBuilder? contextMenuBuilder;
 
   static Widget _defaultContextMenuBuilder(BuildContext context, EditableTextState editableTextState) {
-    return AdaptiveTextSelectionToolbar.editableText(
-      editableTextState: editableTextState,
-    );
+    return AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState);
   }
 
   /// {@macro flutter.widgets.magnifier.TextMagnifierConfiguration.intro}
@@ -461,10 +455,16 @@ class SelectableText extends StatefulWidget {
     properties.add(DoubleProperty('cursorHeight', cursorHeight, defaultValue: null));
     properties.add(DiagnosticsProperty<Radius>('cursorRadius', cursorRadius, defaultValue: null));
     properties.add(DiagnosticsProperty<Color>('cursorColor', cursorColor, defaultValue: null));
-    properties.add(FlagProperty('selectionEnabled', value: selectionEnabled, defaultValue: true, ifFalse: 'selection disabled'));
-    properties.add(DiagnosticsProperty<TextSelectionControls>('selectionControls', selectionControls, defaultValue: null));
+    properties.add(
+      FlagProperty('selectionEnabled', value: selectionEnabled, defaultValue: true, ifFalse: 'selection disabled'),
+    );
+    properties.add(
+      DiagnosticsProperty<TextSelectionControls>('selectionControls', selectionControls, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<ScrollPhysics>('scrollPhysics', scrollPhysics, defaultValue: null));
-    properties.add(DiagnosticsProperty<TextHeightBehavior>('textHeightBehavior', textHeightBehavior, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<TextHeightBehavior>('textHeightBehavior', textHeightBehavior, defaultValue: null),
+    );
   }
 }
 
@@ -474,8 +474,7 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
   late _TextSpanEditingController _controller;
 
   FocusNode? _focusNode;
-  FocusNode get _effectiveFocusNode =>
-      widget.focusNode ?? (_focusNode ??= FocusNode(skipTraversal: true));
+  FocusNode get _effectiveFocusNode => widget.focusNode ?? (_focusNode ??= FocusNode(skipTraversal: true));
 
   bool _showSelectionHandles = false;
 
@@ -495,12 +494,8 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
   @override
   void initState() {
     super.initState();
-    _selectionGestureDetectorBuilder = _SelectableTextSelectionGestureDetectorBuilder(
-      state: this,
-    );
-    _controller = _TextSpanEditingController(
-        textSpan: widget.textSpan ?? TextSpan(text: widget.data),
-    );
+    _selectionGestureDetectorBuilder = _SelectableTextSelectionGestureDetectorBuilder(state: this);
+    _controller = _TextSpanEditingController(textSpan: widget.textSpan ?? TextSpan(text: widget.data));
     _controller.addListener(_onControllerChanged);
   }
 
@@ -509,9 +504,7 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
     super.didUpdateWidget(oldWidget);
     if (widget.data != oldWidget.data || widget.textSpan != oldWidget.textSpan) {
       _controller.removeListener(_onControllerChanged);
-      _controller = _TextSpanEditingController(
-          textSpan: widget.textSpan ?? TextSpan(text: widget.data),
-      );
+      _controller = _TextSpanEditingController(textSpan: widget.textSpan ?? TextSpan(text: widget.data));
       _controller.addListener(_onControllerChanged);
     }
     if (_effectiveFocusNode.hasFocus && _controller.selection.isCollapsed) {
@@ -529,8 +522,7 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
   }
 
   void _onControllerChanged() {
-    final bool showSelectionHandles = !_effectiveFocusNode.hasFocus
-      || !_controller.selection.isCollapsed;
+    final bool showSelectionHandles = !_effectiveFocusNode.hasFocus || !_controller.selection.isCollapsed;
     if (showSelectionHandles == _showSelectionHandles) {
       return;
     }
@@ -607,7 +599,8 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
     assert(debugCheckHasMediaQuery(context));
     assert(debugCheckHasDirectionality(context));
     assert(
-      !(widget.style != null && !widget.style!.inherit &&
+      !(widget.style != null &&
+          !widget.style!.inherit &&
           (widget.style!.fontSize == null || widget.style!.textBaseline == null)),
       'inherit false style must supply fontSize and textBaseline',
     );
@@ -616,7 +609,7 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
     final DefaultSelectionStyle selectionStyle = DefaultSelectionStyle.of(context);
     final FocusNode focusNode = _effectiveFocusNode;
 
-    TextSelectionControls? textSelectionControls =  widget.selectionControls;
+    TextSelectionControls? textSelectionControls = widget.selectionControls;
     final bool paintCursorAboveText;
     final bool cursorOpacityAnimates;
     Offset? cursorOffset;
@@ -721,10 +714,7 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
       onLongPress: () {
         _effectiveFocusNode.requestFocus();
       },
-      child: _selectionGestureDetectorBuilder.buildGestureDetector(
-        behavior: HitTestBehavior.translucent,
-        child: child,
-      ),
+      child: _selectionGestureDetectorBuilder.buildGestureDetector(behavior: HitTestBehavior.translucent, child: child),
     );
   }
 }

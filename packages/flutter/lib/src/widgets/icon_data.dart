@@ -67,12 +67,12 @@ class IconData {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is IconData
-        && other.codePoint == codePoint
-        && other.fontFamily == fontFamily
-        && other.fontPackage == fontPackage
-        && other.matchTextDirection == matchTextDirection
-        && listEquals(other.fontFamilyFallback, fontFamilyFallback);
+    return other is IconData &&
+        other.codePoint == codePoint &&
+        other.fontFamily == fontFamily &&
+        other.fontPackage == fontPackage &&
+        other.matchTextDirection == matchTextDirection &&
+        listEquals(other.fontFamilyFallback, fontFamilyFallback);
   }
 
   @override
@@ -95,22 +95,13 @@ class IconDataProperty extends DiagnosticsProperty<IconData> {
   /// Create a diagnostics property for [IconData].
   ///
   /// The [showName], [style], and [level] arguments must not be null.
-  IconDataProperty(
-    String super.name,
-    super.value, {
-    super.ifNull,
-    super.showName,
-    super.style,
-    super.level,
-  });
+  IconDataProperty(String super.name, super.value, {super.ifNull, super.showName, super.style, super.level});
 
   @override
   Map<String, Object?> toJsonMap(DiagnosticsSerializationDelegate delegate) {
     final Map<String, Object?> json = super.toJsonMap(delegate);
     if (value != null) {
-      json['valueProperties'] = <String, Object>{
-        'codePoint': value!.codePoint,
-      };
+      json['valueProperties'] = <String, Object>{'codePoint': value!.codePoint};
     }
     return json;
   }

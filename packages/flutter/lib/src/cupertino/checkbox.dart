@@ -212,21 +212,17 @@ class _CupertinoCheckboxState extends State<CupertinoCheckbox> with TickerProvid
 
   @override
   Widget build(BuildContext context) {
-    final Color effectiveActiveColor = widget.activeColor
-      ?? CupertinoColors.activeBlue;
+    final Color effectiveActiveColor = widget.activeColor ?? CupertinoColors.activeBlue;
     final Color? inactiveColor = widget.inactiveColor;
-    final Color effectiveInactiveColor = inactiveColor
-      ?? CupertinoColors.inactiveGray;
+    final Color effectiveInactiveColor = inactiveColor ?? CupertinoColors.inactiveGray;
 
-    final Color effectiveFocusOverlayColor = widget.focusColor
-      ?? HSLColor
-          .fromColor(effectiveActiveColor.withOpacity(_kCupertinoFocusColorOpacity))
-          .withLightness(_kCupertinoFocusColorBrightness)
-          .withSaturation(_kCupertinoFocusColorSaturation)
-          .toColor();
+    final Color effectiveFocusOverlayColor = widget.focusColor ??
+        HSLColor.fromColor(effectiveActiveColor.withOpacity(_kCupertinoFocusColorOpacity))
+            .withLightness(_kCupertinoFocusColorBrightness)
+            .withSaturation(_kCupertinoFocusColorSaturation)
+            .toColor();
 
-    final Color effectiveCheckColor = widget.checkColor
-      ?? CupertinoColors.white;
+    final Color effectiveCheckColor = widget.checkColor ?? CupertinoColors.white;
 
     return Semantics(
       checked: widget.value ?? false,
@@ -246,9 +242,7 @@ class _CupertinoCheckboxState extends State<CupertinoCheckbox> with TickerProvid
           ..value = value
           ..previousValue = _previousValue
           ..isActive = widget.onChanged != null
-          ..shape = widget.shape ?? RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          )
+          ..shape = widget.shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0))
           ..side = widget.side,
       ),
     );
@@ -369,11 +363,9 @@ class _CheckboxPainter extends ToggleablePainter {
     final Paint paint = Paint()..color = _colorAt(value ?? true);
 
     if (value == false) {
-
       final BorderSide border = side ?? BorderSide(color: paint.color);
       _drawBox(canvas, outer, paint, border, false);
     } else {
-
       _drawBox(canvas, outer, paint, side, true);
       if (value ?? false) {
         _drawCheck(canvas, origin, strokePaint);

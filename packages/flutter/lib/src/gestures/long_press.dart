@@ -111,11 +111,8 @@ class LongPressDownDetails {
   ///
   /// If the `localPosition` argument is not specified, it will default to the
   /// global position.
-  const LongPressDownDetails({
-    this.globalPosition = Offset.zero,
-    Offset? localPosition,
-    this.kind,
-  }) : localPosition = localPosition ?? globalPosition;
+  const LongPressDownDetails({this.globalPosition = Offset.zero, Offset? localPosition, this.kind})
+    : localPosition = localPosition ?? globalPosition;
 
   /// The global position at which the pointer contacted the screen.
   final Offset globalPosition;
@@ -138,10 +135,8 @@ class LongPressStartDetails {
   /// Creates the details for a [GestureLongPressStartCallback].
   ///
   /// The [globalPosition] argument must not be null.
-  const LongPressStartDetails({
-    this.globalPosition = Offset.zero,
-    Offset? localPosition,
-  }) : localPosition = localPosition ?? globalPosition;
+  const LongPressStartDetails({this.globalPosition = Offset.zero, Offset? localPosition})
+    : localPosition = localPosition ?? globalPosition;
 
   /// The global position at which the pointer initially contacted the screen.
   final Offset globalPosition;
@@ -197,11 +192,8 @@ class LongPressEndDetails {
   /// Creates the details for a [GestureLongPressEndCallback].
   ///
   /// The [globalPosition] argument must not be null.
-  const LongPressEndDetails({
-    this.globalPosition = Offset.zero,
-    Offset? localPosition,
-    this.velocity = Velocity.zero,
-  }) : localPosition = localPosition ?? globalPosition;
+  const LongPressEndDetails({this.globalPosition = Offset.zero, Offset? localPosition, this.velocity = Velocity.zero})
+    : localPosition = localPosition ?? globalPosition;
 
   /// The global position at which the pointer lifted from the screen.
   final Offset globalPosition;
@@ -264,9 +256,7 @@ class LongPressGestureRecognizer extends PrimaryPointerGestureRecognizer {
 
   // Accept the input if, and only if, a single button is pressed.
   static bool _defaultButtonAcceptBehavior(int buttons) =>
-      buttons == kPrimaryButton ||
-      buttons == kSecondaryButton ||
-      buttons == kTertiaryButton;
+      buttons == kPrimaryButton || buttons == kSecondaryButton || buttons == kTertiaryButton;
 
   /// Called when a pointer has contacted the screen at a particular location
   /// with a primary button, which might be the start of a long-press.
@@ -767,9 +757,7 @@ class LongPressGestureRecognizer extends PrimaryPointerGestureRecognizer {
 
   void _checkLongPressEnd(PointerEvent event) {
     final VelocityEstimate? estimate = _velocityTracker!.getVelocityEstimate();
-    final Velocity velocity = estimate == null
-        ? Velocity.zero
-        : Velocity(pixelsPerSecond: estimate.pixelsPerSecond);
+    final Velocity velocity = estimate == null ? Velocity.zero : Velocity(pixelsPerSecond: estimate.pixelsPerSecond);
     final LongPressEndDetails details = LongPressEndDetails(
       globalPosition: event.position,
       localPosition: event.localPosition,

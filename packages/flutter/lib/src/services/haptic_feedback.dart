@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
 import 'system_channels.dart';
 
 /// Allows access to the haptic feedback interface on the device.
@@ -29,10 +28,7 @@ abstract final class HapticFeedback {
   ///
   /// On Android, this uses `HapticFeedbackConstants.VIRTUAL_KEY`.
   static Future<void> lightImpact() async {
-    await SystemChannels.platform.invokeMethod<void>(
-      'HapticFeedback.vibrate',
-      'HapticFeedbackType.lightImpact',
-    );
+    await SystemChannels.platform.invokeMethod<void>('HapticFeedback.vibrate', 'HapticFeedbackType.lightImpact');
   }
 
   /// Provides a haptic feedback corresponding a collision impact with a medium mass.
@@ -43,10 +39,7 @@ abstract final class HapticFeedback {
   ///
   /// On Android, this uses `HapticFeedbackConstants.KEYBOARD_TAP`.
   static Future<void> mediumImpact() async {
-    await SystemChannels.platform.invokeMethod<void>(
-      'HapticFeedback.vibrate',
-      'HapticFeedbackType.mediumImpact',
-    );
+    await SystemChannels.platform.invokeMethod<void>('HapticFeedback.vibrate', 'HapticFeedbackType.mediumImpact');
   }
 
   /// Provides a haptic feedback corresponding a collision impact with a heavy mass.
@@ -58,10 +51,7 @@ abstract final class HapticFeedback {
   /// On Android, this uses `HapticFeedbackConstants.CONTEXT_CLICK` on API levels
   /// 23 and above. This call has no effects on Android API levels below 23.
   static Future<void> heavyImpact() async {
-    await SystemChannels.platform.invokeMethod<void>(
-      'HapticFeedback.vibrate',
-      'HapticFeedbackType.heavyImpact',
-    );
+    await SystemChannels.platform.invokeMethod<void>('HapticFeedback.vibrate', 'HapticFeedbackType.heavyImpact');
   }
 
   /// Provides a haptic feedback indication selection changing through discrete values.
@@ -71,9 +61,6 @@ abstract final class HapticFeedback {
   ///
   /// On Android, this uses `HapticFeedbackConstants.CLOCK_TICK`.
   static Future<void> selectionClick() async {
-    await SystemChannels.platform.invokeMethod<void>(
-      'HapticFeedback.vibrate',
-      'HapticFeedbackType.selectionClick',
-    );
+    await SystemChannels.platform.invokeMethod<void>('HapticFeedback.vibrate', 'HapticFeedbackType.selectionClick');
   }
 }

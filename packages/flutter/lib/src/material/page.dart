@@ -57,7 +57,6 @@ class MaterialPageRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixi
   String get debugLabel => '${super.debugLabel}(${settings.name})';
 }
 
-
 /// A mixin that provides platform-adaptive transitions for a [PageRoute].
 ///
 /// {@template flutter.material.materialRouteTransitionMixin}
@@ -96,26 +95,23 @@ mixin MaterialRouteTransitionMixin<T> on PageRoute<T> {
   @override
   bool canTransitionTo(TransitionRoute<dynamic> nextRoute) {
     // Don't perform outgoing animation if the next route is a fullscreen dialog.
-    return (nextRoute is MaterialRouteTransitionMixin && !nextRoute.fullscreenDialog)
-      || (nextRoute is CupertinoRouteTransitionMixin && !nextRoute.fullscreenDialog);
+    return (nextRoute is MaterialRouteTransitionMixin && !nextRoute.fullscreenDialog) ||
+        (nextRoute is CupertinoRouteTransitionMixin && !nextRoute.fullscreenDialog);
   }
 
   @override
-  Widget buildPage(
+  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+    final Widget result = buildContent(context);
+    return Semantics(scopesRoute: true, explicitChildNodes: true, child: result);
+  }
+
+  @override
+  Widget buildTransitions(
     BuildContext context,
     Animation<double> animation,
     Animation<double> secondaryAnimation,
+    Widget child,
   ) {
-    final Widget result = buildContent(context);
-    return Semantics(
-      scopesRoute: true,
-      explicitChildNodes: true,
-      child: result,
-    );
-  }
-
-  @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
     final PageTransitionsTheme theme = Theme.of(context).pageTransitionsTheme;
     return theme.buildTransitions<T>(this, context, animation, secondaryAnimation, child);
   }
@@ -177,10 +173,7 @@ class MaterialPage<T> extends Page<T> {
 // This route uses the builder from the page to build its content. This ensures
 // the content is up to date after page updates.
 class _PageBasedMaterialPageRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
-  _PageBasedMaterialPageRoute({
-    required MaterialPage<T> page,
-    super.allowSnapshotting,
-  }) : super(settings: page) {
+  _PageBasedMaterialPageRoute({required MaterialPage<T> page, super.allowSnapshotting}) : super(settings: page) {
     assert(opaque);
   }
 

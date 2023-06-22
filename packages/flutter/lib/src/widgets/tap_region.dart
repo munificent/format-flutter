@@ -48,18 +48,20 @@ abstract class TapRegionRegistry {
   /// Will throw if a [TapRegionRegistry] isn't found.
   static TapRegionRegistry of(BuildContext context) {
     final TapRegionRegistry? registry = maybeOf(context);
-    assert(() {
-      if (registry == null) {
-        throw FlutterError(
-          'TapRegionRegistry.of() was called with a context that does not contain a TapRegionSurface widget.\n'
-          'No TapRegionSurface widget ancestor could be found starting from the context that was passed to '
-          'TapRegionRegistry.of().\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (registry == null) {
+          throw FlutterError(
+            'TapRegionRegistry.of() was called with a context that does not contain a TapRegionSurface widget.\n'
+            'No TapRegionSurface widget ancestor could be found starting from the context that was passed to '
+            'TapRegionRegistry.of().\n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return registry!;
   }
 
@@ -115,10 +117,7 @@ class TapRegionSurface extends SingleChildRenderObjectWidget {
   /// Creates a const [RenderTapRegionSurface].
   ///
   /// The [child] attribute is required.
-  const TapRegionSurface({
-    super.key,
-    required Widget super.child,
-  });
+  const TapRegionSurface({super.key, required Widget super.child});
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -126,10 +125,7 @@ class TapRegionSurface extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-    BuildContext context,
-    RenderProxyBoxWithHitTestBehavior renderObject,
-  ) {}
+  void updateRenderObject(BuildContext context, RenderProxyBoxWithHitTestBehavior renderObject) {}
 }
 
 /// A render object that provides notification of a tap inside or outside of a
@@ -224,14 +220,17 @@ class RenderTapRegionSurface extends RenderProxyBoxWithHitTestBehavior implement
   @override
   void handleEvent(PointerEvent event, HitTestEntry entry) {
     assert(debugHandleEvent(event, entry));
-    assert(() {
-      for (final RenderTapRegion region in _registeredRegions) {
-        if (!region.enabled) {
-          return false;
+    assert(
+      () {
+        for (final RenderTapRegion region in _registeredRegions) {
+          if (!region.enabled) {
+            return false;
+          }
         }
-      }
-      return true;
-    }(), 'A RenderTapRegion was registered when it was disabled.');
+        return true;
+      }(),
+      'A RenderTapRegion was registered when it was disabled.',
+    );
 
     if (event is! PointerDownEvent || event.buttons != kPrimaryButton) {
       return;
@@ -393,7 +392,9 @@ class TapRegion extends SingleChildRenderObjectWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(FlagProperty('enabled', value: enabled, ifFalse: 'DISABLED', defaultValue: true));
-    properties.add(DiagnosticsProperty<HitTestBehavior>('behavior', behavior, defaultValue: HitTestBehavior.deferToChild));
+    properties.add(
+      DiagnosticsProperty<HitTestBehavior>('behavior', behavior, defaultValue: HitTestBehavior.deferToChild),
+    );
     properties.add(DiagnosticsProperty<Object?>('debugLabel', debugLabel, defaultValue: null));
     properties.add(DiagnosticsProperty<Object?>('groupId', groupId, defaultValue: null));
   }
@@ -435,10 +436,10 @@ class RenderTapRegion extends RenderProxyBoxWithHitTestBehavior {
     super.behavior = HitTestBehavior.deferToChild,
     Object? groupId,
     String? debugLabel,
-  })  : _registry = registry,
-        _enabled = enabled,
-        _groupId = groupId,
-        debugLabel = kReleaseMode ? null : debugLabel;
+  }) : _registry = registry,
+       _enabled = enabled,
+       _groupId = groupId,
+       debugLabel = kReleaseMode ? null : debugLabel;
 
   bool _isRegistered = false;
 

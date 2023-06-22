@@ -243,10 +243,8 @@ class _CupertinoSliderState extends State<CupertinoSlider> with TickerProviderSt
     return _CupertinoSliderRenderObjectWidget(
       value: (widget.value - widget.min) / (widget.max - widget.min),
       divisions: widget.divisions,
-      activeColor: CupertinoDynamicColor.resolve(
-        widget.activeColor ?? CupertinoTheme.of(context).primaryColor,
-        context,
-      ),
+      activeColor:
+          CupertinoDynamicColor.resolve(widget.activeColor ?? CupertinoTheme.of(context).primaryColor, context),
       thumbColor: widget.thumbColor,
       onChanged: widget.onChanged != null ? _handleChanged : null,
       onChangeStart: widget.onChangeStart != null ? _handleDragStart : null,
@@ -347,11 +345,8 @@ class _RenderCupertinoSlider extends RenderConstrainedBox implements MouseTracke
       ..onStart = _handleDragStart
       ..onUpdate = _handleDragUpdate
       ..onEnd = _handleDragEnd;
-    _position = AnimationController(
-      value: value,
-      duration: _kDiscreteTransitionDuration,
-      vsync: vsync,
-    )..addListener(markNeedsPaint);
+    _position = AnimationController(value: value, duration: _kDiscreteTransitionDuration, vsync: vsync)
+      ..addListener(markNeedsPaint);
   }
 
   double get value => _value;
@@ -459,7 +454,11 @@ class _RenderCupertinoSlider extends RenderConstrainedBox implements MouseTracke
       case TextDirection.ltr:
         visualPosition = _value;
     }
-    return lerpDouble(_trackLeft + CupertinoThumbPainter.radius, _trackRight - CupertinoThumbPainter.radius, visualPosition)!;
+    return lerpDouble(
+      _trackLeft + CupertinoThumbPainter.radius,
+      _trackRight - CupertinoThumbPainter.radius,
+      visualPosition,
+    )!;
   }
 
   bool get isInteractive => onChanged != null;
@@ -544,7 +543,10 @@ class _RenderCupertinoSlider extends RenderConstrainedBox implements MouseTracke
     }
 
     final Offset thumbCenter = Offset(trackActive, trackCenter);
-    CupertinoThumbPainter(color: thumbColor).paint(canvas, Rect.fromCircle(center: thumbCenter, radius: CupertinoThumbPainter.radius));
+    CupertinoThumbPainter(color: thumbColor).paint(
+      canvas,
+      Rect.fromCircle(center: thumbCenter, radius: CupertinoThumbPainter.radius),
+    );
   }
 
   @override

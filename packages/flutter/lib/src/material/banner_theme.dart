@@ -30,7 +30,6 @@ import 'theme.dart';
 ///    application.
 @immutable
 class MaterialBannerThemeData with Diagnosticable {
-
   /// Creates a theme that can be used for [MaterialBannerTheme] or
   /// [ThemeData.bannerTheme].
   const MaterialBannerThemeData({
@@ -133,15 +132,15 @@ class MaterialBannerThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is MaterialBannerThemeData
-      && other.backgroundColor == backgroundColor
-      && other.surfaceTintColor == surfaceTintColor
-      && other.shadowColor == shadowColor
-      && other.dividerColor == dividerColor
-      && other.contentTextStyle == contentTextStyle
-      && other.elevation == elevation
-      && other.padding == padding
-      && other.leadingPadding == leadingPadding;
+    return other is MaterialBannerThemeData &&
+        other.backgroundColor == backgroundColor &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.shadowColor == shadowColor &&
+        other.dividerColor == dividerColor &&
+        other.contentTextStyle == contentTextStyle &&
+        other.elevation == elevation &&
+        other.padding == padding &&
+        other.leadingPadding == leadingPadding;
   }
 
   @override
@@ -166,11 +165,7 @@ class MaterialBannerThemeData with Diagnosticable {
 class MaterialBannerTheme extends InheritedTheme {
   /// Creates a banner theme that controls the configurations for
   /// [MaterialBanner]s in its widget subtree.
-  const MaterialBannerTheme({
-    super.key,
-    this.data,
-    required super.child,
-  });
+  const MaterialBannerTheme({super.key, this.data, required super.child});
 
   /// The properties for descendant [MaterialBanner] widgets.
   final MaterialBannerThemeData? data;

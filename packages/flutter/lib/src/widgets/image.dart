@@ -20,17 +20,18 @@ import 'scroll_aware_image_provider.dart';
 import 'text.dart';
 import 'ticker_provider.dart';
 
-export 'package:flutter/painting.dart' show
-  AssetImage,
-  ExactAssetImage,
-  FileImage,
-  FilterQuality,
-  ImageConfiguration,
-  ImageInfo,
-  ImageProvider,
-  ImageStream,
-  MemoryImage,
-  NetworkImage;
+export 'package:flutter/painting.dart'
+    show
+        AssetImage,
+        ExactAssetImage,
+        FileImage,
+        FilterQuality,
+        ImageConfiguration,
+        ImageInfo,
+        ImageProvider,
+        ImageStream,
+        MemoryImage,
+        NetworkImage;
 
 // Examples can assume:
 // late Widget image;
@@ -50,7 +51,7 @@ export 'package:flutter/painting.dart' show
 /// See also:
 ///
 ///  * [ImageProvider], which has an example showing how this might be used.
-ImageConfiguration createLocalImageConfiguration(BuildContext context, { Size? size }) {
+ImageConfiguration createLocalImageConfiguration(BuildContext context, {Size? size}) {
   return ImageConfiguration(
     bundle: DefaultAssetBundle.of(context),
     devicePixelRatio: MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0,
@@ -104,12 +105,7 @@ ImageConfiguration createLocalImageConfiguration(BuildContext context, { Size? s
 /// See also:
 ///
 ///  * [ImageCache], which holds images that may be reused.
-Future<void> precacheImage(
-  ImageProvider provider,
-  BuildContext context, {
-  Size? size,
-  ImageErrorListener? onError,
-}) {
+Future<void> precacheImage(ImageProvider provider, BuildContext context, {Size? size, ImageErrorListener? onError}) {
   final ImageConfiguration config = createLocalImageConfiguration(context, size: size);
   final Completer<void> completer = Completer<void>();
   final ImageStream stream = provider.resolve(config);
@@ -219,19 +215,11 @@ typedef ImageFrameBuilder = Widget Function(
 ///    widget.
 ///  * [ImageChunkListener], a lower-level signature for listening to raw
 ///    [ImageChunkEvent]s.
-typedef ImageLoadingBuilder = Widget Function(
-  BuildContext context,
-  Widget child,
-  ImageChunkEvent? loadingProgress,
-);
+typedef ImageLoadingBuilder = Widget Function(BuildContext context, Widget child, ImageChunkEvent? loadingProgress);
 
 /// Signature used by [Image.errorBuilder] to create a replacement widget to
 /// render instead of the image.
-typedef ImageErrorWidgetBuilder = Widget Function(
-  BuildContext context,
-  Object error,
-  StackTrace? stackTrace,
-);
+typedef ImageErrorWidgetBuilder = Widget Function(BuildContext context, Object error, StackTrace? stackTrace);
 
 /// A widget that displays an image.
 ///
@@ -476,7 +464,7 @@ class Image extends StatefulWidget {
          !kIsWeb,
          'Image.file is not supported on Flutter Web. '
          'Consider using either Image.asset or Image.network instead.',
-        ),
+       ),
        image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, FileImage(file, scale: scale)),
        loadingBuilder = null,
        assert(cacheWidth == null || cacheWidth > 0),
@@ -636,8 +624,8 @@ class Image extends StatefulWidget {
          cacheWidth,
          cacheHeight,
          scale != null
-           ? ExactAssetImage(name, bundle: bundle, scale: scale, package: package)
-           : AssetImage(name, bundle: bundle, package: package),
+             ? ExactAssetImage(name, bundle: bundle, scale: scale, package: package)
+             : AssetImage(name, bundle: bundle, package: package),
        ),
        loadingBuilder = null,
        assert(cacheWidth == null || cacheWidth > 0),
@@ -1072,8 +1060,7 @@ class _ImageState extends State<Image> with WidgetsBindingObserver {
   @override
   void didUpdateWidget(Image oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_isListeningToStream &&
-        (widget.loadingBuilder == null) != (oldWidget.loadingBuilder == null)) {
+    if (_isListeningToStream && (widget.loadingBuilder == null) != (oldWidget.loadingBuilder == null)) {
       final ImageStreamListener oldListener = _getListener();
       _imageStream!.addListener(_getListener(recreateListener: true));
       _imageStream!.removeListener(oldListener);
@@ -1098,8 +1085,8 @@ class _ImageState extends State<Image> with WidgetsBindingObserver {
   }
 
   void _updateInvertColors() {
-    _invertColors = MediaQuery.maybeInvertColorsOf(context)
-        ?? SemanticsBinding.instance.accessibilityFeatures.invertColors;
+    _invertColors =
+        MediaQuery.maybeInvertColorsOf(context) ?? SemanticsBinding.instance.accessibilityFeatures.invertColors;
   }
 
   void _resolveImage() {
@@ -1107,11 +1094,10 @@ class _ImageState extends State<Image> with WidgetsBindingObserver {
       context: _scrollAwareContext,
       imageProvider: widget.image,
     );
-    final ImageStream newStream =
-      provider.resolve(createLocalImageConfiguration(
-        context,
-        size: widget.width != null && widget.height != null ? Size(widget.width!, widget.height!) : null,
-      ));
+    final ImageStream newStream = provider.resolve(createLocalImageConfiguration(
+      context,
+      size: widget.width != null && widget.height != null ? Size(widget.width!, widget.height!) : null,
+    ));
     _updateSourceStream(newStream);
   }
 
@@ -1129,13 +1115,15 @@ class _ImageState extends State<Image> with WidgetsBindingObserver {
                   _lastException = error;
                   _lastStack = stackTrace;
                 });
-                assert(() {
-                  if (widget.errorBuilder == null) {
-                    // ignore: only_throw_errors, since we're just proxying the error.
-                    throw error; // Ensures the error message is printed to the console.
-                  }
-                  return true;
-                }());
+                assert(
+                  () {
+                    if (widget.errorBuilder == null) {
+                      // ignore: only_throw_errors, since we're just proxying the error.
+                      throw error; // Ensures the error message is printed to the console.
+                    }
+                    return true;
+                  }(),
+                );
               }
             : null,
       );
@@ -1182,7 +1170,9 @@ class _ImageState extends State<Image> with WidgetsBindingObserver {
     }
 
     if (!widget.gaplessPlayback) {
-      setState(() { _replaceImage(info: null); });
+      setState(() {
+        _replaceImage(info: null);
+      });
     }
 
     setState(() {
@@ -1233,11 +1223,7 @@ class _ImageState extends State<Image> with WidgetsBindingObserver {
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        const Positioned.fill(
-          child: Placeholder(
-            color: Color(0xCF8D021F),
-          ),
-        ),
+        const Positioned.fill(child: Placeholder(color: Color(0xCF8D021F))),
         Padding(
           padding: const EdgeInsets.all(4.0),
           child: FittedBox(
@@ -1245,11 +1231,7 @@ class _ImageState extends State<Image> with WidgetsBindingObserver {
               '$error',
               textAlign: TextAlign.center,
               textDirection: TextDirection.ltr,
-              style: const TextStyle(
-                shadows: <Shadow>[
-                  Shadow(blurRadius: 1.0),
-                ],
-              ),
+              style: const TextStyle(shadows: <Shadow>[Shadow(blurRadius: 1.0)]),
             ),
           ),
         ),

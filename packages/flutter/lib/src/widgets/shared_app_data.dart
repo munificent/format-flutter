@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
 import 'framework.dart';
 import 'inherited_model.dart';
 
@@ -74,7 +73,7 @@ class SharedAppData extends StatefulWidget {
   /// rebuilds with [SharedAppData.setValue].
   ///
   /// This widget is automatically created by the [WidgetsApp].
-  const SharedAppData({ super.key, required this.child });
+  const SharedAppData({super.key, required this.child});
 
   /// The widget below this widget in the tree.
   ///
@@ -127,10 +126,10 @@ class SharedAppData extends StatefulWidget {
   }
 
   static bool _debugHasSharedAppData(_SharedAppModel? model, BuildContext context, String methodName) {
-    assert(() {
-      if (model == null) {
-        throw FlutterError.fromParts(
-          <DiagnosticsNode>[
+    assert(
+      () {
+        if (model == null) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
             ErrorSummary('No SharedAppData widget found.'),
             ErrorDescription('SharedAppData.$methodName requires an SharedAppData widget ancestor.\n'),
             context.describeWidget('The specific widget that could not find an SharedAppData ancestor was'),
@@ -141,11 +140,11 @@ class SharedAppData extends StatefulWidget {
               'provides a key/value map of data that is shared with the entire '
               'application.',
             ),
-          ],
-        );
-      }
-      return true;
-    }());
+          ]);
+        }
+        return true;
+      }(),
+    );
     return true;
   }
 }
@@ -174,10 +173,7 @@ class _SharedAppDataState extends State<SharedAppData> {
 }
 
 class _SharedAppModel extends InheritedModel<Object> {
-  _SharedAppModel({
-    required this.sharedAppDataState,
-    required super.child
-  }) : data = sharedAppDataState.data;
+  _SharedAppModel({required this.sharedAppDataState, required super.child}) : data = sharedAppDataState.data;
 
   final _SharedAppDataState sharedAppDataState;
   final Map<Object, Object?> data;

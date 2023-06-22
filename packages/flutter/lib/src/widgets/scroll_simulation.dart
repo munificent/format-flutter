@@ -119,7 +119,10 @@ class BouncingScrollSimulation extends Simulation {
 
   @override
   String toString() {
-    return '${objectRuntimeType(this, 'BouncingScrollSimulation')}(leadingExtent: $leadingExtent, trailingExtent: $trailingExtent)';
+    return '${objectRuntimeType(
+      this,
+      'BouncingScrollSimulation',
+    )}(leadingExtent: $leadingExtent, trailingExtent: $trailingExtent)';
   }
 }
 
@@ -155,12 +158,7 @@ class BouncingScrollSimulation extends Simulation {
 // The "See..." comments below refer to SplineOverScroller methods and values.
 class ClampingScrollSimulation extends Simulation {
   /// Creates a scroll physics simulation that aligns with Android scrolling.
-  ClampingScrollSimulation({
-    required this.position,
-    required this.velocity,
-    this.friction = 0.015,
-    super.tolerance,
-  }) {
+  ClampingScrollSimulation({required this.position, required this.velocity, this.friction = 0.015, super.tolerance}) {
     _duration = _flingDuration();
     _distance = _flingDistance();
   }
@@ -197,11 +195,13 @@ class ClampingScrollSimulation extends Simulation {
 
   // See mPhysicalCoeff.  This has a value of 0.84 times Earth gravity,
   // expressed in units of logical pixels per second^2.
-  static const double _physicalCoeff =
-      9.80665 // g, in meters per second^2
-        * 39.37 // 1 meter / 1 inch
-        * 160.0 // 1 inch / 1 logical pixel
-        * 0.84; // "look and feel tuning"
+  static const double _physicalCoeff = 9.80665 // g, in meters per second^2
+      *
+      39.37 // 1 meter / 1 inch
+      *
+      160.0 // 1 inch / 1 logical pixel
+      *
+      0.84; // "look and feel tuning"
 
   // See getSplineFlingDuration().
   double _flingDuration() {
@@ -211,8 +211,7 @@ class ClampingScrollSimulation extends Simulation {
 
     // This is the value getSplineFlingDuration() would return, but in seconds.
     final double androidDuration =
-        math.pow(velocity.abs() / referenceVelocity,
-                 1 / (_kDecelerationRate - 1.0)) as double;
+        math.pow(velocity.abs() / referenceVelocity, 1 / (_kDecelerationRate - 1.0)) as double;
 
     // We finish a bit sooner than Android, in order to travel the
     // same total distance.
@@ -223,16 +222,17 @@ class ClampingScrollSimulation extends Simulation {
   // sign of [velocity], and in logical pixels.
   double _flingDistance() {
     final double distance = velocity * _duration / _kDecelerationRate;
-    assert(() {
-      // This is the more complicated calculation that getSplineFlingDistance()
-      // actually performs, which boils down to the much simpler formula above.
-      final double referenceVelocity = friction * _physicalCoeff / _kInflexion;
-      final double logVelocity = math.log(velocity.abs() / referenceVelocity);
-      final double distanceAgain =
-          friction * _physicalCoeff
-            * math.exp(logVelocity * _kDecelerationRate / (_kDecelerationRate - 1.0));
-      return (distance.abs() - distanceAgain).abs() < tolerance.distance;
-    }());
+    assert(
+      () {
+        // This is the more complicated calculation that getSplineFlingDistance()
+        // actually performs, which boils down to the much simpler formula above.
+        final double referenceVelocity = friction * _physicalCoeff / _kInflexion;
+        final double logVelocity = math.log(velocity.abs() / referenceVelocity);
+        final double distanceAgain =
+            friction * _physicalCoeff * math.exp(logVelocity * _kDecelerationRate / (_kDecelerationRate - 1.0));
+        return (distance.abs() - distanceAgain).abs() < tolerance.distance;
+      }(),
+    );
     return distance;
   }
 

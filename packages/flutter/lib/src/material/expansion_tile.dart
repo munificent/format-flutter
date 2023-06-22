@@ -138,9 +138,7 @@ class ExpansionTileController {
       return result._tileController;
     }
     throw FlutterError.fromParts(<DiagnosticsNode>[
-      ErrorSummary(
-        'ExpansionTileController.of() called with a context that does not contain a ExpansionTile.',
-      ),
+      ErrorSummary('ExpansionTileController.of() called with a context that does not contain a ExpansionTile.'),
       ErrorDescription(
         'No ExpansionTile ancestor could be found starting from the context that was passed to ExpansionTileController.of(). '
         'This usually happens when the context provided is from the same StatefulWidget as that '
@@ -249,9 +247,9 @@ class ExpansionTile extends StatefulWidget {
     this.controlAffinity,
     this.controller,
   }) : assert(
-       expandedCrossAxisAlignment != CrossAxisAlignment.baseline,
-       'CrossAxisAlignment.baseline is not supported since the expanded children '
-           'are aligned in a column, not a row. Try to use another constant.',
+         expandedCrossAxisAlignment != CrossAxisAlignment.baseline,
+         'CrossAxisAlignment.baseline is not supported since the expanded children '
+         'are aligned in a column, not a row. Try to use another constant.',
        );
 
   /// A widget to display before the title.
@@ -414,7 +412,6 @@ class ExpansionTile extends StatefulWidget {
   /// * [ExpansionTileTheme.of], which returns the nearest [ExpansionTileTheme]'s
   ///   [ExpansionTileThemeData].
   final Color? collapsedIconColor;
-
 
   /// The color of the tile's titles when the sublist is expanded.
   ///
@@ -584,10 +581,7 @@ class _ExpansionTileState extends State<ExpansionTile> with SingleTickerProvider
   }
 
   Widget? _buildIcon(BuildContext context) {
-    return RotationTransition(
-      turns: _iconTurns,
-      child: const Icon(Icons.expand_more),
-    );
+    return RotationTransition(turns: _iconTurns, child: const Icon(Icons.expand_more));
   }
 
   Widget? _buildLeadingIcon(BuildContext context) {
@@ -607,22 +601,20 @@ class _ExpansionTileState extends State<ExpansionTile> with SingleTickerProvider
   Widget _buildChildren(BuildContext context, Widget? child) {
     final ThemeData theme = Theme.of(context);
     final ExpansionTileThemeData expansionTileTheme = ExpansionTileTheme.of(context);
-    final ShapeBorder expansionTileBorder = _border.value ?? const Border(
-            top: BorderSide(color: Colors.transparent),
-            bottom: BorderSide(color: Colors.transparent),
-          );
+    final ShapeBorder expansionTileBorder = _border.value ??
+        const Border(top: BorderSide(color: Colors.transparent), bottom: BorderSide(color: Colors.transparent));
     final Clip clipBehavior = widget.clipBehavior ?? expansionTileTheme.clipBehavior ?? Clip.none;
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final String onTapHint = _isExpanded
-      ? localizations.expansionTileExpandedTapHint
-      : localizations.expansionTileCollapsedTapHint;
+        ? localizations.expansionTileExpandedTapHint
+        : localizations.expansionTileCollapsedTapHint;
     String? semanticsHint;
     switch (theme.platform) {
       case TargetPlatform.iOS:
       case TargetPlatform.macOS:
         semanticsHint = _isExpanded
-          ? '${localizations.collapsedHint}\n ${localizations.expansionTileExpandedHint}'
-          : '${localizations.expandedHint}\n ${localizations.expansionTileCollapsedHint}';
+            ? '${localizations.collapsedHint}\n ${localizations.expansionTileExpandedHint}'
+            : '${localizations.expandedHint}\n ${localizations.expansionTileCollapsedHint}';
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
@@ -656,9 +648,7 @@ class _ExpansionTileState extends State<ExpansionTile> with SingleTickerProvider
           ),
           ClipRect(
             child: Align(
-              alignment: widget.expandedAlignment
-                ?? expansionTileTheme.expandedAlignment
-                ?? Alignment.center,
+              alignment: widget.expandedAlignment ?? expansionTileTheme.expandedAlignment ?? Alignment.center,
               heightFactor: _heightFactor.value,
               child: child,
             ),
@@ -673,30 +663,20 @@ class _ExpansionTileState extends State<ExpansionTile> with SingleTickerProvider
     final ThemeData theme = Theme.of(context);
     final ExpansionTileThemeData expansionTileTheme = ExpansionTileTheme.of(context);
     final ExpansionTileThemeData defaults = theme.useMaterial3
-      ? _ExpansionTileDefaultsM3(context)
-      : _ExpansionTileDefaultsM2(context);
+        ? _ExpansionTileDefaultsM3(context)
+        : _ExpansionTileDefaultsM2(context);
     _borderTween
-      ..begin = widget.collapsedShape
-        ?? expansionTileTheme.collapsedShape
-        ?? const Border(
-          top: BorderSide(color: Colors.transparent),
-          bottom: BorderSide(color: Colors.transparent),
-        )
-      ..end = widget.shape
-        ?? expansionTileTheme.collapsedShape
-        ?? Border(
-          top: BorderSide(color: theme.dividerColor),
-          bottom: BorderSide(color: theme.dividerColor),
-        );
+      ..begin = widget.collapsedShape ??
+          expansionTileTheme.collapsedShape ??
+          const Border(top: BorderSide(color: Colors.transparent), bottom: BorderSide(color: Colors.transparent))
+      ..end = widget.shape ??
+          expansionTileTheme.collapsedShape ??
+          Border(top: BorderSide(color: theme.dividerColor), bottom: BorderSide(color: theme.dividerColor));
     _headerColorTween
-      ..begin = widget.collapsedTextColor
-        ?? expansionTileTheme.collapsedTextColor
-        ?? defaults.collapsedTextColor
+      ..begin = widget.collapsedTextColor ?? expansionTileTheme.collapsedTextColor ?? defaults.collapsedTextColor
       ..end = widget.textColor ?? expansionTileTheme.textColor ?? defaults.textColor;
     _iconColorTween
-      ..begin = widget.collapsedIconColor
-        ?? expansionTileTheme.collapsedIconColor
-        ?? defaults.collapsedIconColor
+      ..begin = widget.collapsedIconColor ?? expansionTileTheme.collapsedIconColor ?? defaults.collapsedIconColor
       ..end = widget.iconColor ?? expansionTileTheme.iconColor ?? defaults.iconColor;
     _backgroundColorTween
       ..begin = widget.collapsedBackgroundColor ?? expansionTileTheme.collapsedBackgroundColor

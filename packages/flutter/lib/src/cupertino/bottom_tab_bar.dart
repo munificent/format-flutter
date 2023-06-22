@@ -74,10 +74,7 @@ class CupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
         width: 0.0, // 0.0 means one physical pixel
       ),
     ),
-  }) : assert(
-         items.length >= 2,
-         "Tabs need at least 2 items to conform to Apple's HIG",
-       ),
+  }) : assert(items.length >= 2, "Tabs need at least 2 items to conform to Apple's HIG"),
        assert(0 <= currentIndex && currentIndex < items.length),
        assert(height >= 0.0);
 
@@ -144,8 +141,7 @@ class CupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
   /// Indicates whether the tab bar is fully opaque or can have contents behind
   /// it show through it.
   bool opaque(BuildContext context) {
-    final Color backgroundColor =
-        this.backgroundColor ?? CupertinoTheme.of(context).barBackgroundColor;
+    final Color backgroundColor = this.backgroundColor ?? CupertinoTheme.of(context).barBackgroundColor;
     return CupertinoDynamicColor.resolve(backgroundColor, context).alpha == 0xFF;
   }
 
@@ -160,32 +156,29 @@ class CupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
     );
 
     BorderSide resolveBorderSide(BorderSide side) {
-      return side == BorderSide.none
-        ? side
-        : side.copyWith(color: CupertinoDynamicColor.resolve(side.color, context));
+      return side == BorderSide.none ? side : side.copyWith(color: CupertinoDynamicColor.resolve(side.color, context));
     }
 
     // Return the border as is when it's a subclass.
     final Border? resolvedBorder = border == null || border.runtimeType != Border
-      ? border
-      : Border(
-        top: resolveBorderSide(border!.top),
-        left: resolveBorderSide(border!.left),
-        bottom: resolveBorderSide(border!.bottom),
-        right: resolveBorderSide(border!.right),
-      );
+        ? border
+        : Border(
+            top: resolveBorderSide(border!.top),
+            left: resolveBorderSide(border!.left),
+            bottom: resolveBorderSide(border!.bottom),
+            right: resolveBorderSide(border!.right),
+          );
 
     final Color inactive = CupertinoDynamicColor.resolve(inactiveColor, context);
     Widget result = DecoratedBox(
-      decoration: BoxDecoration(
-        border: resolvedBorder,
-        color: backgroundColor,
-      ),
+      decoration: BoxDecoration(border: resolvedBorder, color: backgroundColor),
       child: SizedBox(
         height: height + bottomPadding,
-        child: IconTheme.merge( // Default with the inactive state.
+        child: IconTheme.merge(
+          // Default with the inactive state.
           data: IconThemeData(color: inactive, size: iconSize),
-          child: DefaultTextStyle( // Default with the inactive state.
+          child: DefaultTextStyle(
+            // Default with the inactive state.
             style: CupertinoTheme.of(context).textTheme.tabLabelTextStyle.copyWith(color: inactive),
             child: Padding(
               padding: EdgeInsets.only(bottom: bottomPadding),
@@ -205,12 +198,7 @@ class CupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
 
     if (!opaque(context)) {
       // For non-opaque backgrounds, apply a blur effect.
-      result = ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: result,
-        ),
-      );
+      result = ClipRect(child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), child: result));
     }
 
     return result;
@@ -222,39 +210,34 @@ class CupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
 
     for (int index = 0; index < items.length; index += 1) {
       final bool active = index == currentIndex;
-      result.add(
-        _wrapActiveItem(
-          context,
-          Expanded(
-            // Make tab items part of the EditableText tap region so that
-            // switching tabs doesn't unfocus text fields.
-            child: TextFieldTapRegion(
-              child: Semantics(
-                selected: active,
-                hint: localizations.tabSemanticsLabel(
-                  tabIndex: index + 1,
-                  tabCount: items.length,
-                ),
-                child: MouseRegion(
-                  cursor:  kIsWeb ? SystemMouseCursors.click : MouseCursor.defer,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: onTap == null ? null : () { onTap!(index); },
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: _buildSingleTabItem(items[index], active),
-                      ),
-                    ),
+      result.add(_wrapActiveItem(context, Expanded(
+        // Make tab items part of the EditableText tap region so that
+        // switching tabs doesn't unfocus text fields.
+        child: TextFieldTapRegion(
+          child: Semantics(
+            selected: active,
+            hint: localizations.tabSemanticsLabel(tabIndex: index + 1, tabCount: items.length),
+            child: MouseRegion(
+              cursor: kIsWeb ? SystemMouseCursors.click : MouseCursor.defer,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onTap == null
+                    ? null
+                    : () {
+                        onTap!(index);
+                      },
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: _buildSingleTabItem(items[index], active),
                   ),
                 ),
               ),
             ),
           ),
-          active: active,
         ),
-      );
+      ), active: active));
     }
 
     return result;
@@ -262,15 +245,13 @@ class CupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
 
   List<Widget> _buildSingleTabItem(BottomNavigationBarItem item, bool active) {
     return <Widget>[
-      Expanded(
-        child: Center(child: active ? item.activeIcon : item.icon),
-      ),
+      Expanded(child: Center(child: active ? item.activeIcon : item.icon)),
       if (item.label != null) Text(item.label!),
     ];
   }
 
   /// Change the active tab item's icon and title colors to active.
-  Widget _wrapActiveItem(BuildContext context, Widget item, { required bool active }) {
+  Widget _wrapActiveItem(BuildContext context, Widget item, {required bool active}) {
     if (!active) {
       return item;
     }
@@ -281,10 +262,7 @@ class CupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
     );
     return IconTheme.merge(
       data: IconThemeData(color: activeColor),
-      child: DefaultTextStyle.merge(
-        style: TextStyle(color: activeColor),
-        child: item,
-      ),
+      child: DefaultTextStyle.merge(style: TextStyle(color: activeColor), child: item),
     );
   }
 

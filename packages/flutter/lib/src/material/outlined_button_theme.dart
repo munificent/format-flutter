@@ -36,7 +36,7 @@ class OutlinedButtonThemeData with Diagnosticable {
   /// Creates a [OutlinedButtonThemeData].
   ///
   /// The [style] may be null.
-  const OutlinedButtonThemeData({ this.style });
+  const OutlinedButtonThemeData({this.style});
 
   /// Overrides for [OutlinedButton]'s default style.
   ///
@@ -52,9 +52,7 @@ class OutlinedButtonThemeData with Diagnosticable {
     if (identical(a, b)) {
       return a;
     }
-    return OutlinedButtonThemeData(
-      style: ButtonStyle.lerp(a?.style, b?.style, t),
-    );
+    return OutlinedButtonThemeData(style: ButtonStyle.lerp(a?.style, b?.style, t));
   }
 
   @override
@@ -93,11 +91,7 @@ class OutlinedButtonTheme extends InheritedTheme {
   /// Create a [OutlinedButtonTheme].
   ///
   /// The [data] parameter must not be null.
-  const OutlinedButtonTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const OutlinedButtonTheme({super.key, required this.data, required super.child});
 
   /// The configuration of this theme.
   final OutlinedButtonThemeData data;

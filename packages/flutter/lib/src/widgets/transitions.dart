@@ -77,10 +77,7 @@ abstract class AnimatedWidget extends StatefulWidget {
   /// Creates a widget that rebuilds when the given listenable changes.
   ///
   /// The [listenable] argument is required.
-  const AnimatedWidget({
-    super.key,
-    required this.listenable,
-  });
+  const AnimatedWidget({super.key, required this.listenable});
 
   /// The [Listenable] to which this widget is listening.
   ///
@@ -217,11 +214,7 @@ class SlideTransition extends AnimatedWidget {
     if (textDirection == TextDirection.rtl) {
       offset = Offset(-offset.dx, offset.dy);
     }
-    return FractionalTranslation(
-      translation: offset,
-      transformHitTests: transformHitTests,
-      child: child,
-    );
+    return FractionalTranslation(translation: offset, transformHitTests: transformHitTests, child: child);
   }
 }
 
@@ -517,12 +510,7 @@ class FadeTransition extends SingleChildRenderObjectWidget {
   /// Creates an opacity transition.
   ///
   /// The [opacity] argument must not be null.
-  const FadeTransition({
-    super.key,
-    required this.opacity,
-    this.alwaysIncludeSemantics = false,
-    super.child,
-  });
+  const FadeTransition({super.key, required this.opacity, this.alwaysIncludeSemantics = false, super.child});
 
   /// The animation that controls the opacity of the child.
   ///
@@ -544,10 +532,7 @@ class FadeTransition extends SingleChildRenderObjectWidget {
 
   @override
   RenderAnimatedOpacity createRenderObject(BuildContext context) {
-    return RenderAnimatedOpacity(
-      opacity: opacity,
-      alwaysIncludeSemantics: alwaysIncludeSemantics,
-    );
+    return RenderAnimatedOpacity(opacity: opacity, alwaysIncludeSemantics: alwaysIncludeSemantics);
   }
 
   @override
@@ -561,7 +546,9 @@ class FadeTransition extends SingleChildRenderObjectWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Animation<double>>('opacity', opacity));
-    properties.add(FlagProperty('alwaysIncludeSemantics', value: alwaysIncludeSemantics, ifTrue: 'alwaysIncludeSemantics'));
+    properties.add(
+      FlagProperty('alwaysIncludeSemantics', value: alwaysIncludeSemantics, ifTrue: 'alwaysIncludeSemantics'),
+    );
   }
 }
 
@@ -588,12 +575,8 @@ class SliverFadeTransition extends SingleChildRenderObjectWidget {
   /// Creates an opacity transition.
   ///
   /// The [opacity] argument must not be null.
-  const SliverFadeTransition({
-    super.key,
-    required this.opacity,
-    this.alwaysIncludeSemantics = false,
-    Widget? sliver,
-  }) : super(child: sliver);
+  const SliverFadeTransition({super.key, required this.opacity, this.alwaysIncludeSemantics = false, Widget? sliver})
+    : super(child: sliver);
 
   /// The animation that controls the opacity of the sliver child.
   ///
@@ -615,10 +598,7 @@ class SliverFadeTransition extends SingleChildRenderObjectWidget {
 
   @override
   RenderSliverAnimatedOpacity createRenderObject(BuildContext context) {
-    return RenderSliverAnimatedOpacity(
-      opacity: opacity,
-      alwaysIncludeSemantics: alwaysIncludeSemantics,
-    );
+    return RenderSliverAnimatedOpacity(opacity: opacity, alwaysIncludeSemantics: alwaysIncludeSemantics);
   }
 
   @override
@@ -632,7 +612,9 @@ class SliverFadeTransition extends SingleChildRenderObjectWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Animation<double>>('opacity', opacity));
-    properties.add(FlagProperty('alwaysIncludeSemantics', value: alwaysIncludeSemantics, ifTrue: 'alwaysIncludeSemantics'));
+    properties.add(
+      FlagProperty('alwaysIncludeSemantics', value: alwaysIncludeSemantics, ifTrue: 'alwaysIncludeSemantics'),
+    );
   }
 }
 
@@ -647,7 +629,7 @@ class RelativeRectTween extends Tween<RelativeRect> {
   ///
   /// The [begin] and [end] properties may be null; the null value
   /// is treated as [RelativeRect.fill].
-  RelativeRectTween({ super.begin, super.end });
+  RelativeRectTween({super.begin, super.end});
 
   /// Returns the value this variable has at the given animation clock value.
   @override
@@ -689,11 +671,8 @@ class PositionedTransition extends AnimatedWidget {
   /// Creates a transition for [Positioned].
   ///
   /// The [rect] argument must not be null.
-  const PositionedTransition({
-    super.key,
-    required Animation<RelativeRect> rect,
-    required this.child,
-  }) : super(listenable: rect);
+  const PositionedTransition({super.key, required Animation<RelativeRect> rect, required this.child})
+    : super(listenable: rect);
 
   /// The animation that controls the child's size and position.
   Animation<RelativeRect> get rect => listenable as Animation<RelativeRect>;
@@ -705,10 +684,7 @@ class PositionedTransition extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned.fromRelativeRect(
-      rect: rect.value,
-      child: child,
-    );
+    return Positioned.fromRelativeRect(rect: rect.value, child: child);
   }
 }
 
@@ -776,13 +752,7 @@ class RelativePositionedTransition extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     final RelativeRect offsets = RelativeRect.fromSize(rect.value ?? Rect.zero, size);
-    return Positioned(
-      top: offsets.top,
-      right: offsets.right,
-      bottom: offsets.bottom,
-      left: offsets.left,
-      child: child,
-    );
+    return Positioned(top: offsets.top, right: offsets.right, bottom: offsets.bottom, left: offsets.left, child: child);
   }
 }
 
@@ -837,11 +807,7 @@ class DecoratedBoxTransition extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: decoration.value,
-      position: position,
-      child: child,
-    );
+    return DecoratedBox(decoration: decoration.value, position: position, child: child);
   }
 }
 
@@ -903,12 +869,7 @@ class AlignTransition extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: alignment.value,
-      widthFactor: widthFactor,
-      heightFactor: heightFactor,
-      child: child,
-    );
+    return Align(alignment: alignment.value, widthFactor: widthFactor, heightFactor: heightFactor, child: child);
   }
 }
 
@@ -1045,12 +1006,7 @@ class ListenableBuilder extends AnimatedWidget {
   /// Creates a builder that responds to changes in [listenable].
   ///
   /// The [listenable] and [builder] arguments must not be null.
-  const ListenableBuilder({
-    super.key,
-    required super.listenable,
-    required this.builder,
-    this.child,
-  });
+  const ListenableBuilder({super.key, required super.listenable, required this.builder, this.child});
 
   /// The [Listenable] supplied to the constructor.
   ///
@@ -1138,12 +1094,8 @@ class AnimatedBuilder extends ListenableBuilder {
   /// Creates an animated builder.
   ///
   /// The [animation] and [builder] arguments are required.
-  const AnimatedBuilder({
-    super.key,
-    required Listenable animation,
-    required super.builder,
-    super.child,
-  }) : super(listenable: animation);
+  const AnimatedBuilder({super.key, required Listenable animation, required super.builder, super.child})
+    : super(listenable: animation);
 
   /// The [Listenable] supplied to the constructor (typically an [Animation]).
   ///

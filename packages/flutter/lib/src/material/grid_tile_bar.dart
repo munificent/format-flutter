@@ -22,14 +22,7 @@ class GridTileBar extends StatelessWidget {
   /// Creates a grid tile bar.
   ///
   /// Typically used to with [GridTile].
-  const GridTileBar({
-    super.key,
-    this.backgroundColor,
-    this.leading,
-    this.title,
-    this.subtitle,
-    this.trailing,
-  });
+  const GridTileBar({super.key, this.backgroundColor, this.leading, this.title, this.subtitle, this.trailing});
 
   /// The color to paint behind the child widgets.
   ///
@@ -79,8 +72,7 @@ class GridTileBar extends StatelessWidget {
           data: const IconThemeData(color: Colors.white),
           child: Row(
             children: <Widget>[
-              if (leading != null)
-                Padding(padding: const EdgeInsetsDirectional.only(end: 8.0), child: leading),
+              if (leading != null) Padding(padding: const EdgeInsetsDirectional.only(end: 8.0), child: leading),
               if (title != null && subtitle != null)
                 Expanded(
                   child: Column(
@@ -111,8 +103,7 @@ class GridTileBar extends StatelessWidget {
                     child: title ?? subtitle!,
                   ),
                 ),
-              if (trailing != null)
-                Padding(padding: const EdgeInsetsDirectional.only(start: 8.0), child: trailing),
+              if (trailing != null) Padding(padding: const EdgeInsetsDirectional.only(start: 8.0), child: trailing),
             ],
           ),
         ),

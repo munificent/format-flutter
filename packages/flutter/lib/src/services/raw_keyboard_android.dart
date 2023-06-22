@@ -222,7 +222,7 @@ class RawKeyEventDataAndroid extends RawKeyEventData {
   }
 
   @override
-  bool isModifierPressed(ModifierKey key, { KeyboardSide side = KeyboardSide.any }) {
+  bool isModifierPressed(ModifierKey key, {KeyboardSide side = KeyboardSide.any}) {
     switch (key) {
       case ModifierKey.controlModifier:
         return _isLeftRightModifierPressed(side, modifierControl, modifierLeftControl, modifierRightControl);
@@ -296,31 +296,24 @@ class RawKeyEventDataAndroid extends RawKeyEventData {
   }
 
   @override
-  bool operator==(Object other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) {
       return true;
     }
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is RawKeyEventDataAndroid
-        && other.flags == flags
-        && other.codePoint == codePoint
-        && other.plainCodePoint == plainCodePoint
-        && other.keyCode == keyCode
-        && other.scanCode == scanCode
-        && other.metaState == metaState;
+    return other is RawKeyEventDataAndroid &&
+        other.flags == flags &&
+        other.codePoint == codePoint &&
+        other.plainCodePoint == plainCodePoint &&
+        other.keyCode == keyCode &&
+        other.scanCode == scanCode &&
+        other.metaState == metaState;
   }
 
   @override
-  int get hashCode => Object.hash(
-    flags,
-    codePoint,
-    plainCodePoint,
-    keyCode,
-    scanCode,
-    metaState,
-  );
+  int get hashCode => Object.hash(flags, codePoint, plainCodePoint, keyCode, scanCode, metaState);
 
   // Modifier key masks.
 

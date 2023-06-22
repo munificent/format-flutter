@@ -227,17 +227,10 @@ class PlatformViewsService {
     assert(creationParams == null || creationParamsCodec != null);
 
     // TODO(amirh): pass layoutDirection once the system channel supports it.
-    final Map<String, dynamic> args = <String, dynamic>{
-      'id': id,
-      'viewType': viewType,
-    };
+    final Map<String, dynamic> args = <String, dynamic>{'id': id, 'viewType': viewType};
     if (creationParams != null) {
       final ByteData paramsByteData = creationParamsCodec!.encodeMessage(creationParams)!;
-      args['params'] = Uint8List.view(
-        paramsByteData.buffer,
-        0,
-        paramsByteData.lengthInBytes,
-      );
+      args['params'] = Uint8List.view(paramsByteData.buffer, 0, paramsByteData.lengthInBytes);
     }
     await SystemChannels.platform_views.invokeMethod<void>('create', args);
     if (onFocus != null) {
@@ -254,10 +247,7 @@ class AndroidPointerProperties {
   /// Creates an [AndroidPointerProperties] object.
   ///
   /// All parameters must not be null.
-  const AndroidPointerProperties({
-    required this.id,
-    required this.toolType,
-  });
+  const AndroidPointerProperties({required this.id, required this.toolType});
 
   /// See Android's [MotionEvent.PointerProperties#id](https://developer.android.com/reference/android/view/MotionEvent.PointerProperties.html#id).
   final int id;
@@ -346,22 +336,15 @@ class AndroidPointerCoords {
   final double y;
 
   List<double> _asList() {
-    return <double>[
-      orientation,
-      pressure,
-      size,
-      toolMajor,
-      toolMinor,
-      touchMajor,
-      touchMinor,
-      x,
-      y,
-    ];
+    return <double>[orientation, pressure, size, toolMajor, toolMinor, touchMajor, touchMinor, x, y];
   }
 
   @override
   String toString() {
-    return '${objectRuntimeType(this, 'AndroidPointerCoords')}(orientation: $orientation, pressure: $pressure, size: $size, toolMajor: $toolMajor, toolMinor: $toolMinor, touchMajor: $touchMajor, touchMinor: $touchMinor, x: $x, y: $y)';
+    return '${objectRuntimeType(
+      this,
+      'AndroidPointerCoords',
+    )}(orientation: $orientation, pressure: $pressure, size: $size, toolMajor: $toolMajor, toolMinor: $toolMinor, touchMajor: $touchMajor, touchMinor: $touchMinor, x: $x, y: $y)';
   }
 }
 
@@ -491,21 +474,14 @@ class AndroidMotionEvent {
   }
 }
 
-enum _AndroidViewState {
-  waitingForSize,
-  creating,
-  created,
-  disposed,
-}
+enum _AndroidViewState { waitingForSize, creating, created, disposed }
 
 // Helper for converting PointerEvents into AndroidMotionEvents.
 class _AndroidMotionEventConverter {
   _AndroidMotionEventConverter();
 
-  final Map<int, AndroidPointerCoords> pointerPositions =
-      <int, AndroidPointerCoords>{};
-  final Map<int, AndroidPointerProperties> pointerProperties =
-      <int, AndroidPointerProperties>{};
+  final Map<int, AndroidPointerCoords> pointerPositions = <int, AndroidPointerCoords>{};
+  final Map<int, AndroidPointerProperties> pointerProperties = <int, AndroidPointerProperties>{};
   final Set<int> usedAndroidPointerIds = <int>{};
 
   late PointTransformer pointTransformer;
@@ -600,12 +576,8 @@ class _AndroidMotionEventConverter {
       eventTime: event.timeStamp.inMilliseconds,
       action: action,
       pointerCount: pointerPositions.length,
-      pointerProperties: pointers
-          .map<AndroidPointerProperties>((int i) => pointerProperties[i]!)
-          .toList(),
-      pointerCoords: pointers
-          .map<AndroidPointerCoords>((int i) => pointerPositions[i]!)
-          .toList(),
+      pointerProperties: pointers.map<AndroidPointerProperties>((int i) => pointerProperties[i]!).toList(),
+      pointerCoords: pointers.map<AndroidPointerCoords>((int i) => pointerPositions[i]!).toList(),
       metaState: 0,
       buttonState: 0,
       xPrecision: 1.0,
@@ -636,8 +608,7 @@ class _AndroidMotionEventConverter {
     return AndroidPointerProperties(id: pointerId, toolType: toolType);
   }
 
-  bool isSinglePointerAction(PointerEvent event) =>
-      event is! PointerDownEvent && event is! PointerUpEvent;
+  bool isSinglePointerAction(PointerEvent event) => event is! PointerDownEvent && event is! PointerUpEvent;
 }
 
 class _CreationParams {
@@ -657,10 +628,10 @@ abstract class AndroidViewController extends PlatformViewController {
     required TextDirection layoutDirection,
     dynamic creationParams,
     MessageCodec<dynamic>? creationParamsCodec,
-  })  : assert(creationParams == null || creationParamsCodec != null),
-        _viewType = viewType,
-        _layoutDirection = layoutDirection,
-        _creationParams = creationParams == null ? null : _CreationParams(creationParams, creationParamsCodec!);
+  }) : assert(creationParams == null || creationParamsCodec != null),
+       _viewType = viewType,
+       _layoutDirection = layoutDirection,
+       _creationParams = creationParams == null ? null : _CreationParams(creationParams, creationParamsCodec!);
 
   /// Action code for when a primary pointer touched the screen.
   ///
@@ -705,8 +676,7 @@ abstract class AndroidViewController extends PlatformViewController {
   final String _viewType;
 
   // Helps convert PointerEvents to AndroidMotionEvents.
-  final _AndroidMotionEventConverter _motionEventConverter =
-      _AndroidMotionEventConverter();
+  final _AndroidMotionEventConverter _motionEventConverter = _AndroidMotionEventConverter();
 
   TextDirection _layoutDirection;
 
@@ -714,8 +684,7 @@ abstract class AndroidViewController extends PlatformViewController {
 
   final _CreationParams? _creationParams;
 
-  final List<PlatformViewCreatedCallback> _platformViewCreatedCallbacks =
-      <PlatformViewCreatedCallback>[];
+  final List<PlatformViewCreatedCallback> _platformViewCreatedCallbacks = <PlatformViewCreatedCallback>[];
 
   static int _getAndroidDirection(TextDirection direction) {
     switch (direction) {
@@ -825,10 +794,7 @@ abstract class AndroidViewController extends PlatformViewController {
   /// See [AndroidViewController.dispatchPointerEvent] for sending a
   /// [PointerEvent].
   Future<void> sendMotionEvent(AndroidMotionEvent event) async {
-    await SystemChannels.platform_views.invokeMethod<dynamic>(
-      'touch',
-      event._asList(viewId),
-    );
+    await SystemChannels.platform_views.invokeMethod<dynamic>('touch', event._asList(viewId));
   }
 
   /// Converts a given point from the global coordinate system in logical pixels
@@ -881,8 +847,7 @@ abstract class AndroidViewController extends PlatformViewController {
       return;
     }
 
-    await SystemChannels.platform_views
-        .invokeMethod<void>('setDirection', <String, dynamic>{
+    await SystemChannels.platform_views.invokeMethod<void>('setDirection', <String, dynamic>{
       'id': viewId,
       'direction': _getAndroidDirection(layoutDirection),
     });
@@ -911,8 +876,7 @@ abstract class AndroidViewController extends PlatformViewController {
 
     _motionEventConverter.updatePointerPositions(event);
 
-    final AndroidMotionEvent? androidEvent =
-        _motionEventConverter.toAndroidMotionEvent(event);
+    final AndroidMotionEvent? androidEvent = _motionEventConverter.toAndroidMotionEvent(event);
 
     if (event is PointerUpEvent) {
       _motionEventConverter.handlePointerUpEvent(event);
@@ -955,13 +919,13 @@ abstract class AndroidViewController extends PlatformViewController {
 /// This controller is created from the [PlatformViewsService.initSurfaceAndroidView] factory,
 /// and is defined for backward compatibility.
 class SurfaceAndroidViewController extends AndroidViewController {
-    SurfaceAndroidViewController._({
+  SurfaceAndroidViewController._({
     required super.viewId,
     required super.viewType,
     required super.layoutDirection,
     super.creationParams,
     super.creationParamsCodec,
-  })  : super._();
+  }) : super._();
 
   // By default, assume the implementation will be texture-based.
   _AndroidViewControllerInternals _internals = _TextureAndroidViewControllerInternals();
@@ -1028,7 +992,7 @@ class ExpensiveAndroidViewController extends AndroidViewController {
     required super.layoutDirection,
     super.creationParams,
     super.creationParamsCodec,
-  })  : super._();
+  }) : super._();
 
   final _AndroidViewControllerInternals _internals = _HybridAndroidViewControllerInternals();
 
@@ -1146,14 +1110,15 @@ abstract class _AndroidViewControllerInternals {
   // on the native side, the return type is different. Callers should cast
   // depending on the possible return types for their arguments.
   static Future<dynamic> sendCreateMessage({
-      required int viewId,
-      required String viewType,
-      required TextDirection layoutDirection,
-      required bool hybrid,
-      bool hybridFallback = false,
-      _CreationParams? creationParams,
-      Size? size,
-      Offset? position}) {
+    required int viewId,
+    required String viewType,
+    required TextDirection layoutDirection,
+    required bool hybrid,
+    bool hybridFallback = false,
+    _CreationParams? creationParams,
+    Size? size,
+    Offset? position,
+  }) {
     final Map<String, dynamic> args = <String, dynamic>{
       'id': viewId,
       'viewType': viewType,
@@ -1167,11 +1132,7 @@ abstract class _AndroidViewControllerInternals {
     };
     if (creationParams != null) {
       final ByteData paramsByteData = creationParams.codec.encodeMessage(creationParams.data)!;
-      args['params'] = Uint8List.view(
-        paramsByteData.buffer,
-        0,
-        paramsByteData.lengthInBytes,
-      );
+      args['params'] = Uint8List.view(paramsByteData.buffer, 0, paramsByteData.lengthInBytes);
     }
     return SystemChannels.platform_views.invokeMethod<dynamic>('create', args);
   }
@@ -1180,17 +1141,9 @@ abstract class _AndroidViewControllerInternals {
 
   bool get requiresViewComposition;
 
-  Future<Size> setSize(
-    Size size, {
-    required int viewId,
-    required _AndroidViewState viewState,
-  });
+  Future<Size> setSize(Size size, {required int viewId, required _AndroidViewState viewState});
 
-  Future<void> setOffset(
-    Offset offset, {
-    required int viewId,
-    required _AndroidViewState viewState,
-  });
+  Future<void> setOffset(Offset offset, {required int viewId, required _AndroidViewState viewState});
 
   Future<void> sendDisposeMessage({required int viewId});
 }
@@ -1212,21 +1165,13 @@ class _TextureAndroidViewControllerInternals extends _AndroidViewControllerInter
   bool get requiresViewComposition => false;
 
   @override
-  Future<Size> setSize(
-    Size size, {
-    required int viewId,
-    required _AndroidViewState viewState,
-  }) async {
+  Future<Size> setSize(Size size, {required int viewId, required _AndroidViewState viewState}) async {
     assert(viewState != _AndroidViewState.waitingForSize, 'Android view must have an initial size. View id: $viewId');
     assert(!size.isEmpty);
 
     final Map<Object?, Object?>? meta = await SystemChannels.platform_views.invokeMapMethod<Object?, Object?>(
       'resize',
-      <String, dynamic>{
-        'id': viewId,
-        'width': size.width,
-        'height': size.height,
-      },
+      <String, dynamic>{'id': viewId, 'width': size.width, 'height': size.height},
     );
     assert(meta != null);
     assert(meta!.containsKey('width'));
@@ -1235,11 +1180,7 @@ class _TextureAndroidViewControllerInternals extends _AndroidViewControllerInter
   }
 
   @override
-  Future<void> setOffset(
-    Offset offset, {
-    required int viewId,
-    required _AndroidViewState viewState,
-  }) async {
+  Future<void> setOffset(Offset offset, {required int viewId, required _AndroidViewState viewState}) async {
     if (offset == _offset) {
       return;
     }
@@ -1253,23 +1194,14 @@ class _TextureAndroidViewControllerInternals extends _AndroidViewControllerInter
 
     _offset = offset;
 
-    await SystemChannels.platform_views.invokeMethod<void>(
-      'offset',
-      <String, dynamic>{
-        'id': viewId,
-        'top': offset.dy,
-        'left': offset.dx,
-      },
-    );
+    await SystemChannels.platform_views
+        .invokeMethod<void>('offset', <String, dynamic>{'id': viewId, 'top': offset.dy, 'left': offset.dx});
   }
 
   @override
   Future<void> sendDisposeMessage({required int viewId}) {
-    return SystemChannels
-        .platform_views.invokeMethod<void>('dispose', <String, dynamic>{
-      'id': viewId,
-      'hybrid': false,
-    });
+    return SystemChannels.platform_views
+        .invokeMethod<void>('dispose', <String, dynamic>{'id': viewId, 'hybrid': false});
   }
 }
 
@@ -1287,29 +1219,18 @@ class _HybridAndroidViewControllerInternals extends _AndroidViewControllerIntern
   bool get requiresViewComposition => true;
 
   @override
-  Future<Size> setSize(
-    Size size, {
-    required int viewId,
-    required _AndroidViewState viewState,
-  }) {
+  Future<Size> setSize(Size size, {required int viewId, required _AndroidViewState viewState}) {
     throw UnimplementedError('Not supported for hybrid composition.');
   }
 
   @override
-  Future<void> setOffset(
-    Offset offset, {
-    required int viewId,
-    required _AndroidViewState viewState,
-  }) {
+  Future<void> setOffset(Offset offset, {required int viewId, required _AndroidViewState viewState}) {
     throw UnimplementedError('Not supported for hybrid composition.');
   }
 
   @override
   Future<void> sendDisposeMessage({required int viewId}) {
-    return SystemChannels.platform_views.invokeMethod<void>('dispose', <String, dynamic>{
-      'id': viewId,
-      'hybrid': true,
-    });
+    return SystemChannels.platform_views.invokeMethod<void>('dispose', <String, dynamic>{'id': viewId, 'hybrid': true});
   }
 }
 
@@ -1317,11 +1238,7 @@ class _HybridAndroidViewControllerInternals extends _AndroidViewControllerIntern
 ///
 /// Typically created with [PlatformViewsService.initUiKitView].
 class UiKitViewController {
-  UiKitViewController._(
-    this.id,
-    TextDirection layoutDirection,
-  ) : _layoutDirection = layoutDirection;
-
+  UiKitViewController._(this.id, TextDirection layoutDirection) : _layoutDirection = layoutDirection;
 
   /// The unique identifier of the iOS view controlled by this controller.
   ///
@@ -1352,9 +1269,7 @@ class UiKitViewController {
   /// Calling this method releases the delayed events to the embedded UIView and makes it consume
   /// any following touch events for the pointers involved in the active gesture.
   Future<void> acceptGesture() {
-    final Map<String, dynamic> args = <String, dynamic>{
-      'id': id,
-    };
+    final Map<String, dynamic> args = <String, dynamic>{'id': id};
     return SystemChannels.platform_views.invokeMethod('acceptGesture', args);
   }
 
@@ -1364,9 +1279,7 @@ class UiKitViewController {
   /// Calling this method drops the buffered touch events and prevents any future touch events for
   /// the pointers that are part of the active touch sequence from arriving to the embedded view.
   Future<void> rejectGesture() {
-    final Map<String, dynamic> args = <String, dynamic>{
-      'id': id,
-    };
+    final Map<String, dynamic> args = <String, dynamic>{'id': id};
     return SystemChannels.platform_views.invokeMethod('rejectGesture', args);
   }
 

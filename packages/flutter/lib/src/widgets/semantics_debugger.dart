@@ -27,11 +27,7 @@ class SemanticsDebugger extends StatefulWidget {
   const SemanticsDebugger({
     super.key,
     required this.child,
-    this.labelStyle = const TextStyle(
-      color: Color(0xFF000000),
-      fontSize: 10.0,
-      height: 0.8,
-    ),
+    this.labelStyle = const TextStyle(color: Color(0xFF000000), fontSize: 10.0, height: 0.8),
   });
 
   /// The widget below this widget in the tree.
@@ -56,8 +52,7 @@ class _SemanticsDebuggerState extends State<SemanticsDebugger> with WidgetsBindi
     // static here because we might not be in a tree that's attached to that
     // binding. Instead, we should find a way to get to the PipelineOwner from
     // the BuildContext.
-    _client = _SemanticsClient(WidgetsBinding.instance.pipelineOwner)
-      ..addListener(_update);
+    _client = _SemanticsClient(WidgetsBinding.instance.pipelineOwner)..addListener(_update);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -167,13 +162,12 @@ class _SemanticsDebuggerState extends State<SemanticsDebugger> with WidgetsBindi
         onTap: _handleTap,
         onLongPress: _handleLongPress,
         onPanEnd: _handlePanEnd,
-        excludeFromSemantics: true, // otherwise if you don't hit anything, we end up receiving it, which causes an infinite loop...
+        excludeFromSemantics:
+            true, // otherwise if you don't hit anything, we end up receiving it, which causes an infinite loop...
         child: Listener(
           onPointerDown: _handlePointerDown,
           behavior: HitTestBehavior.opaque,
-          child: _IgnorePointerWithSemantics(
-            child: widget.child,
-          ),
+          child: _IgnorePointerWithSemantics(child: widget.child),
         ),
       ),
     );
@@ -182,9 +176,7 @@ class _SemanticsDebuggerState extends State<SemanticsDebugger> with WidgetsBindi
 
 class _SemanticsClient extends ChangeNotifier {
   _SemanticsClient(PipelineOwner pipelineOwner) {
-    _semanticsHandle = pipelineOwner.ensureSemantics(
-      listener: _didUpdateSemantics,
-    );
+    _semanticsHandle = pipelineOwner.ensureSemantics(listener: _didUpdateSemantics);
   }
 
   SemanticsHandle? _semanticsHandle;
@@ -205,7 +197,13 @@ class _SemanticsClient extends ChangeNotifier {
 }
 
 class _SemanticsDebuggerPainter extends CustomPainter {
-  const _SemanticsDebuggerPainter(this.owner, this.generation, this.pointerPosition, this.devicePixelRatio, this.labelStyle);
+  const _SemanticsDebuggerPainter(
+    this.owner,
+    this.generation,
+    this.pointerPosition,
+    this.devicePixelRatio,
+    this.labelStyle,
+  );
 
   final PipelineOwner owner;
   final int generation;
@@ -235,9 +233,9 @@ class _SemanticsDebuggerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_SemanticsDebuggerPainter oldDelegate) {
-    return owner != oldDelegate.owner
-        || generation != oldDelegate.generation
-        || pointerPosition != oldDelegate.pointerPosition;
+    return owner != oldDelegate.owner ||
+        generation != oldDelegate.generation ||
+        pointerPosition != oldDelegate.pointerPosition;
   }
 
   @visibleForTesting
@@ -269,13 +267,12 @@ class _SemanticsDebuggerPainter extends CustomPainter {
       annotations.add('long-pressable');
     }
 
-    final bool isScrollable = data.hasAction(SemanticsAction.scrollLeft)
-        || data.hasAction(SemanticsAction.scrollRight)
-        || data.hasAction(SemanticsAction.scrollUp)
-        || data.hasAction(SemanticsAction.scrollDown);
+    final bool isScrollable = data.hasAction(SemanticsAction.scrollLeft) ||
+        data.hasAction(SemanticsAction.scrollRight) ||
+        data.hasAction(SemanticsAction.scrollUp) ||
+        data.hasAction(SemanticsAction.scrollDown);
 
-    final bool isAdjustable = data.hasAction(SemanticsAction.increase)
-        || data.hasAction(SemanticsAction.decrease);
+    final bool isAdjustable = data.hasAction(SemanticsAction.increase) || data.hasAction(SemanticsAction.decrease);
 
     if (isScrollable) {
       annotations.add('scrollable');
@@ -289,12 +286,11 @@ class _SemanticsDebuggerPainter extends CustomPainter {
     // Android will avoid pronouncing duplicating tooltip and label.
     // Therefore, having two identical strings is the same as having a single
     // string.
-    final bool shouldIgnoreDuplicatedLabel = defaultTargetPlatform == TargetPlatform.android && data.attributedLabel.string == data.tooltip;
+    final bool shouldIgnoreDuplicatedLabel =
+        defaultTargetPlatform == TargetPlatform.android && data.attributedLabel.string == data.tooltip;
     final String tooltipAndLabel = <String>[
-      if (data.tooltip.isNotEmpty)
-        data.tooltip,
-      if (data.attributedLabel.string.isNotEmpty && !shouldIgnoreDuplicatedLabel)
-        data.attributedLabel.string,
+      if (data.tooltip.isNotEmpty) data.tooltip,
+      if (data.attributedLabel.string.isNotEmpty && !shouldIgnoreDuplicatedLabel) data.attributedLabel.string,
     ].join('\n');
     if (tooltipAndLabel.isEmpty) {
       message = annotations.join('; ');
@@ -330,10 +326,7 @@ class _SemanticsDebuggerPainter extends CustomPainter {
     canvas.save();
     canvas.clipRect(rect);
     final TextPainter textPainter = TextPainter()
-      ..text = TextSpan(
-        style: labelStyle,
-        text: message,
-      )
+      ..text = TextSpan(style: labelStyle, text: message)
       ..textDirection = TextDirection.ltr // _getMessage always returns LTR text, even if node.label is RTL
       ..textAlign = TextAlign.center
       ..layout(maxWidth: rect.width);
@@ -395,9 +388,7 @@ class _SemanticsDebuggerPainter extends CustomPainter {
 
 /// A widget ignores pointer event but still keeps semantics actions.
 class _IgnorePointerWithSemantics extends SingleChildRenderObjectWidget {
-  const _IgnorePointerWithSemantics({
-    super.child,
-  });
+  const _IgnorePointerWithSemantics({super.child});
 
   @override
   _RenderIgnorePointerWithSemantics createRenderObject(BuildContext context) {
@@ -409,5 +400,5 @@ class _RenderIgnorePointerWithSemantics extends RenderProxyBox {
   _RenderIgnorePointerWithSemantics();
 
   @override
-  bool hitTest(BoxHitTestResult result, { required Offset position }) => false;
+  bool hitTest(BoxHitTestResult result, {required Offset position}) => false;
 }

@@ -45,23 +45,24 @@ class ShortcutSerialization {
   /// Creates a [ShortcutSerialization] representing a single character.
   ///
   /// This is used by a [CharacterActivator] to serialize itself.
-  ShortcutSerialization.character(String character, {
+  ShortcutSerialization.character(
+    String character, {
     bool alt = false,
     bool control = false,
     bool meta = false,
-  })  : assert(character.length == 1),
-        _character = character,
-        _trigger = null,
-        _alt = alt,
-        _control = control,
-        _meta = meta,
-        _shift = null,
-        _internal = <String, Object?>{
-          _kShortcutCharacter: character,
-          _kShortcutModifiers: (control ? _shortcutModifierControl : 0) |
-              (alt ? _shortcutModifierAlt : 0) |
-              (meta ? _shortcutModifierMeta : 0),
-        };
+  }) : assert(character.length == 1),
+       _character = character,
+       _trigger = null,
+       _alt = alt,
+       _control = control,
+       _meta = meta,
+       _shift = null,
+       _internal = <String, Object?>{
+         _kShortcutCharacter: character,
+         _kShortcutModifiers: (control ? _shortcutModifierControl : 0) |
+             (alt ? _shortcutModifierAlt : 0) |
+             (meta ? _shortcutModifierMeta : 0),
+       };
 
   /// Creates a [ShortcutSerialization] representing a specific
   /// [LogicalKeyboardKey] and modifiers.
@@ -73,33 +74,35 @@ class ShortcutSerialization {
     bool control = false,
     bool meta = false,
     bool shift = false,
-  })  : assert(trigger != LogicalKeyboardKey.alt &&
-               trigger != LogicalKeyboardKey.altLeft &&
-               trigger != LogicalKeyboardKey.altRight &&
-               trigger != LogicalKeyboardKey.control &&
-               trigger != LogicalKeyboardKey.controlLeft &&
-               trigger != LogicalKeyboardKey.controlRight &&
-               trigger != LogicalKeyboardKey.meta &&
-               trigger != LogicalKeyboardKey.metaLeft &&
-               trigger != LogicalKeyboardKey.metaRight &&
-               trigger != LogicalKeyboardKey.shift &&
-               trigger != LogicalKeyboardKey.shiftLeft &&
-               trigger != LogicalKeyboardKey.shiftRight,
-               'Specifying a modifier key as a trigger is not allowed. '
-               'Use provided boolean parameters instead.'),
-        _trigger = trigger,
-        _character = null,
-        _alt = alt,
-        _control = control,
-        _meta = meta,
-        _shift = shift,
-        _internal = <String, Object?>{
-          _kShortcutTrigger: trigger.keyId,
-          _kShortcutModifiers: (alt ? _shortcutModifierAlt : 0) |
-            (control ? _shortcutModifierControl : 0) |
-            (meta ? _shortcutModifierMeta : 0) |
-            (shift ? _shortcutModifierShift : 0),
-        };
+  }) : assert(
+         trigger != LogicalKeyboardKey.alt &&
+             trigger != LogicalKeyboardKey.altLeft &&
+             trigger != LogicalKeyboardKey.altRight &&
+             trigger != LogicalKeyboardKey.control &&
+             trigger != LogicalKeyboardKey.controlLeft &&
+             trigger != LogicalKeyboardKey.controlRight &&
+             trigger != LogicalKeyboardKey.meta &&
+             trigger != LogicalKeyboardKey.metaLeft &&
+             trigger != LogicalKeyboardKey.metaRight &&
+             trigger != LogicalKeyboardKey.shift &&
+             trigger != LogicalKeyboardKey.shiftLeft &&
+             trigger != LogicalKeyboardKey.shiftRight,
+         'Specifying a modifier key as a trigger is not allowed. '
+         'Use provided boolean parameters instead.',
+       ),
+       _trigger = trigger,
+       _character = null,
+       _alt = alt,
+       _control = control,
+       _meta = meta,
+       _shift = shift,
+       _internal = <String, Object?>{
+         _kShortcutTrigger: trigger.keyId,
+         _kShortcutModifiers: (alt ? _shortcutModifierAlt : 0) |
+             (control ? _shortcutModifierControl : 0) |
+             (meta ? _shortcutModifierMeta : 0) |
+             (shift ? _shortcutModifierShift : 0),
+       };
 
   final Map<String, Object?> _internal;
 
@@ -284,8 +287,8 @@ class DefaultPlatformMenuDelegate extends PlatformMenuDelegate {
   /// The optional [channel] argument defines the channel used to communicate
   /// with the platform. It defaults to [SystemChannels.menu] if not supplied.
   DefaultPlatformMenuDelegate({MethodChannel? channel})
-      : channel = channel ?? SystemChannels.menu,
-        _idMap = <int, PlatformMenuItem>{} {
+    : channel = channel ?? SystemChannels.menu,
+      _idMap = <int, PlatformMenuItem>{} {
     this.channel.setMethodCallHandler(_methodCallHandler);
   }
 
@@ -311,9 +314,7 @@ class DefaultPlatformMenuDelegate extends PlatformMenuDelegate {
     }
     // Currently there's only ever one window, but the channel's format allows
     // more than one window's menu hierarchy to be defined.
-    final Map<String, Object?> windowMenu = <String, Object?>{
-      '0': representation,
-    };
+    final Map<String, Object?> windowMenu = <String, Object?>{'0': representation};
     channel.invokeMethod<void>(_kMenuSetMethod, windowMenu);
   }
 
@@ -335,29 +336,33 @@ class DefaultPlatformMenuDelegate extends PlatformMenuDelegate {
 
   @override
   bool debugLockDelegate(BuildContext context) {
-    assert(() {
-      // It's OK to lock if the lock isn't set, but not OK if a different
-      // context is locking it.
-      if (_lockedContext != null && _lockedContext != context) {
-        return false;
-      }
-      _lockedContext = context;
-      return true;
-    }());
+    assert(
+      () {
+        // It's OK to lock if the lock isn't set, but not OK if a different
+        // context is locking it.
+        if (_lockedContext != null && _lockedContext != context) {
+          return false;
+        }
+        _lockedContext = context;
+        return true;
+      }(),
+    );
     return true;
   }
 
   @override
   bool debugUnlockDelegate(BuildContext context) {
-    assert(() {
-      // It's OK to unlock if the lock isn't set, but not OK if a different
-      // context is unlocking it.
-      if (_lockedContext != null && _lockedContext != context) {
-        return false;
-      }
-      _lockedContext = null;
-      return true;
-    }());
+    assert(
+      () {
+        // It's OK to unlock if the lock isn't set, but not OK if a different
+        // context is unlocking it.
+        if (_lockedContext != null && _lockedContext != context) {
+          return false;
+        }
+        _lockedContext = null;
+        return true;
+      }(),
+    );
     return true;
   }
 
@@ -374,8 +379,10 @@ class DefaultPlatformMenuDelegate extends PlatformMenuDelegate {
     }
     final PlatformMenuItem item = _idMap[id]!;
     if (call.method == _kMenuSelectedCallbackMethod) {
-      assert(item.onSelected == null || item.onSelectedIntent == null,
-        'Only one of PlatformMenuItem.onSelected or PlatformMenuItem.onSelectedIntent may be specified');
+      assert(
+        item.onSelected == null || item.onSelectedIntent == null,
+        'Only one of PlatformMenuItem.onSelected or PlatformMenuItem.onSelectedIntent may be specified',
+      );
       item.onSelected?.call();
       if (item.onSelectedIntent != null) {
         Actions.maybeInvoke(FocusManager.instance.primaryFocus!.context!, item.onSelectedIntent!);
@@ -440,11 +447,13 @@ class PlatformMenuBar extends StatefulWidget with DiagnosticableTreeMixin {
     this.child,
     @Deprecated(
       'Use the child attribute instead. '
-      'This feature was deprecated after v3.1.0-0.0.pre.'
+      'This feature was deprecated after v3.1.0-0.0.pre.',
     )
     this.body,
-  }) : assert(body == null || child == null,
-              'The body argument is deprecated, and only one of body or child may be used.');
+  }) : assert(
+         body == null || child == null,
+         'The body argument is deprecated, and only one of body or child may be used.',
+       );
 
   /// The widget below this widget in the tree.
   ///
@@ -456,7 +465,7 @@ class PlatformMenuBar extends StatefulWidget with DiagnosticableTreeMixin {
   /// This attribute is deprecated, use [child] instead.
   @Deprecated(
     'Use the child attribute instead. '
-    'This feature was deprecated after v3.1.0-0.0.pre.'
+    'This feature was deprecated after v3.1.0-0.0.pre.',
   )
   final Widget? body;
 
@@ -490,17 +499,20 @@ class _PlatformMenuBarState extends State<PlatformMenuBar> {
   void initState() {
     super.initState();
     assert(
-        WidgetsBinding.instance.platformMenuDelegate.debugLockDelegate(context),
-        'More than one active $PlatformMenuBar detected. Only one active '
-        'platform-rendered menu bar is allowed at a time.');
+      WidgetsBinding.instance.platformMenuDelegate.debugLockDelegate(context),
+      'More than one active $PlatformMenuBar detected. Only one active '
+          'platform-rendered menu bar is allowed at a time.',
+    );
     WidgetsBinding.instance.platformMenuDelegate.clearMenus();
     _updateMenu();
   }
 
   @override
   void dispose() {
-    assert(WidgetsBinding.instance.platformMenuDelegate.debugUnlockDelegate(context),
-        'tried to unlock the $DefaultPlatformMenuDelegate more than once with context $context.');
+    assert(
+      WidgetsBinding.instance.platformMenuDelegate.debugUnlockDelegate(context),
+      'tried to unlock the $DefaultPlatformMenuDelegate more than once with context $context.',
+    );
     WidgetsBinding.instance.platformMenuDelegate.clearMenus();
     super.dispose();
   }
@@ -509,10 +521,7 @@ class _PlatformMenuBarState extends State<PlatformMenuBar> {
   void didUpdateWidget(PlatformMenuBar oldWidget) {
     super.didUpdateWidget(oldWidget);
     final List<PlatformMenuItem> newDescendants = <PlatformMenuItem>[
-      for (final PlatformMenuItem item in widget.menus) ...<PlatformMenuItem>[
-        item,
-        ...item.descendants,
-      ],
+      for (final PlatformMenuItem item in widget.menus) ...<PlatformMenuItem>[item, ...item.descendants],
     ];
     if (!listEquals(newDescendants, descendants)) {
       descendants = newDescendants;
@@ -544,12 +553,7 @@ class PlatformMenu extends PlatformMenuItem with DiagnosticableTreeMixin {
   /// Creates a const [PlatformMenu].
   ///
   /// The [label] and [menus] fields are required.
-  const PlatformMenu({
-    required super.label,
-    this.onOpen,
-    this.onClose,
-    required this.menus,
-  });
+  const PlatformMenu({required super.label, this.onOpen, this.onClose, required this.menus});
 
   @override
   final VoidCallback? onOpen;
@@ -572,10 +576,7 @@ class PlatformMenu extends PlatformMenuItem with DiagnosticableTreeMixin {
   /// this implementation.
   static List<PlatformMenuItem> getDescendants(PlatformMenu item) {
     return <PlatformMenuItem>[
-      for (final PlatformMenuItem child in item.menus) ...<PlatformMenuItem>[
-        child,
-        ...child.descendants,
-      ],
+      for (final PlatformMenuItem child in item.menus) ...<PlatformMenuItem>[child, ...child.descendants],
     ];
   }
 
@@ -599,10 +600,7 @@ class PlatformMenu extends PlatformMenuItem with DiagnosticableTreeMixin {
   ) {
     final List<Map<String, Object?>> result = <Map<String, Object?>>[];
     for (final PlatformMenuItem childItem in item.menus) {
-      result.addAll(childItem.toChannelRepresentation(
-        delegate,
-        getId: getId,
-      ));
+      result.addAll(childItem.toChannelRepresentation(delegate, getId: getId));
     }
     // To avoid doing type checking for groups, just filter out when there are
     // multiple sequential dividers, or when they are first or last, since
@@ -682,20 +680,11 @@ class PlatformMenuItemGroup extends PlatformMenuItem {
     required MenuItemSerializableIdGenerator getId,
   }) {
     final List<Map<String, Object?>> result = <Map<String, Object?>>[];
-    result.add(<String, Object?>{
-      _kIdKey: getId(group),
-      _kIsDividerKey: true,
-    });
+    result.add(<String, Object?>{_kIdKey: getId(group), _kIsDividerKey: true});
     for (final PlatformMenuItem item in group.members) {
-      result.addAll(item.toChannelRepresentation(
-        delegate,
-        getId: getId,
-      ));
+      result.addAll(item.toChannelRepresentation(delegate, getId: getId));
     }
-    result.add(<String, Object?>{
-      _kIdKey: getId(group),
-      _kIsDividerKey: true,
-    });
+    result.add(<String, Object?>{_kIdKey: getId(group), _kIsDividerKey: true});
     return result;
   }
 
@@ -725,7 +714,10 @@ class PlatformMenuItem with Diagnosticable {
     this.shortcut,
     this.onSelected,
     this.onSelectedIntent,
-  }) : assert(onSelected == null || onSelectedIntent == null, 'Only one of onSelected or onSelectedIntent may be specified');
+  }) : assert(
+         onSelected == null || onSelectedIntent == null,
+         'Only one of onSelected or onSelectedIntent may be specified',
+       );
 
   /// The required label used for rendering the menu item.
   final String label;
@@ -808,7 +800,7 @@ class PlatformMenuItem with Diagnosticable {
       _kIdKey: getId(item),
       _kLabelKey: item.label,
       _kEnabledKey: item.onSelected != null || item.onSelectedIntent != null,
-      if (shortcut != null)...shortcut.serializeForMenu().toChannelRepresentation(),
+      if (shortcut != null) ...shortcut.serializeForMenu().toChannelRepresentation(),
     };
   }
 
@@ -850,10 +842,8 @@ class PlatformProvidedMenuItem extends PlatformMenuItem {
   /// platform doesn't support the given default menu type.
   ///
   /// The [type] argument is required.
-  const PlatformProvidedMenuItem({
-    required this.type,
-    this.enabled = true,
-  }) : super(label: ''); // The label is ignored for platform provided menus.
+  const PlatformProvidedMenuItem({required this.type, this.enabled = true})
+    : super(label: ''); // The label is ignored for platform provided menus.
 
   /// The type of default menu this is.
   ///
@@ -901,23 +891,21 @@ class PlatformProvidedMenuItem extends PlatformMenuItem {
     PlatformMenuDelegate delegate, {
     required MenuItemSerializableIdGenerator getId,
   }) {
-    assert(() {
-      if (!hasMenu(type)) {
-        throw ArgumentError(
-          'Platform ${defaultTargetPlatform.name} has no platform provided menu for '
-          '$type. Call PlatformProvidedMenuItem.hasMenu to determine this before '
-          'instantiating one.',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (!hasMenu(type)) {
+          throw ArgumentError(
+            'Platform ${defaultTargetPlatform.name} has no platform provided menu for '
+            '$type. Call PlatformProvidedMenuItem.hasMenu to determine this before '
+            'instantiating one.',
+          );
+        }
+        return true;
+      }(),
+    );
 
     return <Map<String, Object?>>[
-      <String, Object?>{
-        _kIdKey: getId(this),
-        _kEnabledKey: enabled,
-        _kPlatformDefaultMenuKey: type.index,
-      },
+      <String, Object?>{_kIdKey: getId(this), _kEnabledKey: enabled, _kPlatformDefaultMenuKey: type.index},
     ];
   }
 

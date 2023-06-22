@@ -38,32 +38,24 @@ class CupertinoTextSelectionToolbarButton extends StatelessWidget {
   /// Create an instance of [CupertinoTextSelectionToolbarButton].
   ///
   /// [child] cannot be null.
-  const CupertinoTextSelectionToolbarButton({
-    super.key,
-    this.onPressed,
-    required Widget this.child,
-  }) : text = null,
-       buttonItem = null;
+  const CupertinoTextSelectionToolbarButton({super.key, this.onPressed, required Widget this.child})
+    : text = null,
+      buttonItem = null;
 
   /// Create an instance of [CupertinoTextSelectionToolbarButton] whose child is
   /// a [Text] widget styled like the default iOS text selection toolbar button.
-  const CupertinoTextSelectionToolbarButton.text({
-    super.key,
-    this.onPressed,
-    required this.text,
-  }) : buttonItem = null,
-       child = null;
+  const CupertinoTextSelectionToolbarButton.text({super.key, this.onPressed, required this.text})
+    : buttonItem = null,
+      child = null;
 
   /// Create an instance of [CupertinoTextSelectionToolbarButton] from the given
   /// [ContextMenuButtonItem].
   ///
   /// [buttonItem] cannot be null.
-  CupertinoTextSelectionToolbarButton.buttonItem({
-    super.key,
-    required ContextMenuButtonItem this.buttonItem,
-  }) : child = null,
-       text = null,
-       onPressed = buttonItem.onPressed;
+  CupertinoTextSelectionToolbarButton.buttonItem({super.key, required ContextMenuButtonItem this.buttonItem})
+    : child = null,
+      text = null,
+      onPressed = buttonItem.onPressed;
 
   /// {@template flutter.cupertino.CupertinoTextSelectionToolbarButton.child}
   /// The child of this button.
@@ -115,15 +107,14 @@ class CupertinoTextSelectionToolbarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget child = this.child ?? Text(
-       text ?? getButtonLabel(context, buttonItem!),
-       overflow: TextOverflow.ellipsis,
-       style: _kToolbarButtonFontStyle.copyWith(
-         color: onPressed != null
-             ? _kToolbarTextColor.resolveFrom(context)
-             : CupertinoColors.inactiveGray,
-       ),
-     );
+    final Widget child = this.child ??
+        Text(
+          text ?? getButtonLabel(context, buttonItem!),
+          overflow: TextOverflow.ellipsis,
+          style: _kToolbarButtonFontStyle.copyWith(
+            color: onPressed != null ? _kToolbarTextColor.resolveFrom(context) : CupertinoColors.inactiveGray,
+          ),
+        );
 
     return CupertinoButton(
       borderRadius: null,

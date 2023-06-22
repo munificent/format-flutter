@@ -322,15 +322,15 @@ class BoxDecoration extends Decoration {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is BoxDecoration
-        && other.color == color
-        && other.image == image
-        && other.border == border
-        && other.borderRadius == borderRadius
-        && listEquals<BoxShadow>(other.boxShadow, boxShadow)
-        && other.gradient == gradient
-        && other.backgroundBlendMode == backgroundBlendMode
-        && other.shape == shape;
+    return other is BoxDecoration &&
+        other.color == color &&
+        other.image == image &&
+        other.border == border &&
+        other.borderRadius == borderRadius &&
+        listEquals<BoxShadow>(other.boxShadow, boxShadow) &&
+        other.gradient == gradient &&
+        other.backgroundBlendMode == backgroundBlendMode &&
+        other.shape == shape;
   }
 
   @override
@@ -356,13 +356,15 @@ class BoxDecoration extends Decoration {
     properties.add(DiagnosticsProperty<DecorationImage>('image', image, defaultValue: null));
     properties.add(DiagnosticsProperty<BoxBorder>('border', border, defaultValue: null));
     properties.add(DiagnosticsProperty<BorderRadiusGeometry>('borderRadius', borderRadius, defaultValue: null));
-    properties.add(IterableProperty<BoxShadow>('boxShadow', boxShadow, defaultValue: null, style: DiagnosticsTreeStyle.whitespace));
+    properties.add(
+      IterableProperty<BoxShadow>('boxShadow', boxShadow, defaultValue: null, style: DiagnosticsTreeStyle.whitespace),
+    );
     properties.add(DiagnosticsProperty<Gradient>('gradient', gradient, defaultValue: null));
     properties.add(EnumProperty<BoxShape>('shape', shape, defaultValue: BoxShape.rectangle));
   }
 
   @override
-  bool hitTest(Size size, Offset position, { TextDirection? textDirection }) {
+  bool hitTest(Size size, Offset position, {TextDirection? textDirection}) {
     assert((Offset.zero & size).contains(position));
     switch (shape) {
       case BoxShape.rectangle:
@@ -380,7 +382,7 @@ class BoxDecoration extends Decoration {
   }
 
   @override
-  BoxPainter createBoxPainter([ VoidCallback? onChanged ]) {
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) {
     assert(onChanged != null || image == null);
     return _BoxDecorationPainter(this, onChanged);
   }
@@ -397,8 +399,7 @@ class _BoxDecorationPainter extends BoxPainter {
   Paint _getBackgroundPaint(Rect rect, TextDirection? textDirection) {
     assert(_decoration.gradient != null || _rectForCachedBackgroundPaint == null);
 
-    if (_cachedBackgroundPaint == null ||
-        (_decoration.gradient != null && _rectForCachedBackgroundPaint != rect)) {
+    if (_cachedBackgroundPaint == null || (_decoration.gradient != null && _rectForCachedBackgroundPaint != rect)) {
       final Paint paint = Paint();
       if (_decoration.backgroundBlendMode != null) {
         paint.blendMode = _decoration.backgroundBlendMode!;

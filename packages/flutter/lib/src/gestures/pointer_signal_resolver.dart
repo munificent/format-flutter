@@ -101,12 +101,14 @@ class PointerSignalResolver {
       _firstRegisteredCallback!(_currentEvent!);
     } catch (exception, stack) {
       InformationCollector? collector;
-      assert(() {
-        collector = () => <DiagnosticsNode>[
-          DiagnosticsProperty<PointerSignalEvent>('Event', event, style: DiagnosticsTreeStyle.errorProperty),
-        ];
-        return true;
-      }());
+      assert(
+        () {
+          collector = () => <DiagnosticsNode>[
+                DiagnosticsProperty<PointerSignalEvent>('Event', event, style: DiagnosticsTreeStyle.errorProperty),
+              ];
+          return true;
+        }(),
+      );
       FlutterError.reportError(FlutterErrorDetails(
         exception: exception,
         stack: stack,

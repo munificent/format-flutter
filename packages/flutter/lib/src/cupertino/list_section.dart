@@ -33,7 +33,12 @@ const EdgeInsetsDirectional _kDefaultInsetGroupedRowsMargin = EdgeInsetsDirectio
 
 // Used for iOS "Inset Grouped" margin, determined from SwiftUI's Forms in
 // iOS 14.2 SDK.
-const EdgeInsetsDirectional _kDefaultInsetGroupedRowsMarginWithHeader = EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 10.0);
+const EdgeInsetsDirectional _kDefaultInsetGroupedRowsMarginWithHeader = EdgeInsetsDirectional.fromSTEB(
+  20.0,
+  0.0,
+  20.0,
+  10.0,
+);
 
 // Used for iOS "Inset Grouped" border radius, estimated from SwiftUI's Forms in
 // iOS 14.2 SDK.
@@ -214,8 +219,7 @@ class CupertinoListSection extends StatelessWidget {
     this.separatorColor,
   }) : assert((children != null && children.length > 0) || header != null),
        type = CupertinoListSectionType.base,
-       additionalDividerMargin = additionalDividerMargin ??
-           (hasLeading ? _kBaseAdditionalDividerMargin : 0.0);
+       additionalDividerMargin = additionalDividerMargin ?? (hasLeading ? _kBaseAdditionalDividerMargin : 0.0);
 
   /// Creates a section that mimics standard "Inset Grouped" iOS list section.
   ///
@@ -279,10 +283,9 @@ class CupertinoListSection extends StatelessWidget {
   }) : assert((children != null && children.length > 0) || header != null),
        type = CupertinoListSectionType.insetGrouped,
        additionalDividerMargin = additionalDividerMargin ??
-           (hasLeading
-               ? _kInsetAdditionalDividerMargin
-               : _kInsetAdditionalDividerMarginWithoutLeading),
-       margin = margin ?? (header == null ? _kDefaultInsetGroupedRowsMargin : _kDefaultInsetGroupedRowsMarginWithHeader);
+           (hasLeading ? _kInsetAdditionalDividerMargin : _kInsetAdditionalDividerMarginWithoutLeading),
+       margin =
+           margin ?? (header == null ? _kDefaultInsetGroupedRowsMargin : _kDefaultInsetGroupedRowsMarginWithHeader);
 
   /// The type of list section, either base or inset grouped.
   ///
@@ -359,15 +362,11 @@ class CupertinoListSection extends StatelessWidget {
 
     // Long divider is used for wrapping the top and bottom of rows.
     // Only used in CupertinoListSectionType.base mode.
-    final Widget longDivider = Container(
-      color: dividerColor,
-      height: dividerHeight,
-    );
+    final Widget longDivider = Container(color: dividerColor, height: dividerHeight);
 
     // Short divider is used between rows.
     final Widget shortDivider = Container(
-      margin: EdgeInsetsDirectional.only(
-          start: dividerMargin + additionalDividerMargin),
+      margin: EdgeInsetsDirectional.only(start: dividerMargin + additionalDividerMargin),
       color: dividerColor,
       height: dividerHeight,
     );
@@ -376,14 +375,10 @@ class CupertinoListSection extends StatelessWidget {
     if (header != null) {
       headerWidget = DefaultTextStyle(
         style: CupertinoTheme.of(context).textTheme.textStyle.merge(
-              type == CupertinoListSectionType.base
-                  ? TextStyle(
-                      fontSize: 13.0,
-                      color: CupertinoDynamicColor.resolve(
-                          _kHeaderFooterColor, context))
-                  : const TextStyle(
-                      fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
+          type == CupertinoListSectionType.base
+              ? TextStyle(fontSize: 13.0, color: CupertinoDynamicColor.resolve(_kHeaderFooterColor, context))
+              : const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        ),
         child: header!,
       );
     }
@@ -392,11 +387,9 @@ class CupertinoListSection extends StatelessWidget {
     if (footer != null) {
       footerWidget = DefaultTextStyle(
         style: type == CupertinoListSectionType.base
-            ? CupertinoTheme.of(context).textTheme.textStyle.merge(TextStyle(
-                  fontSize: 13.0,
-                  color: CupertinoDynamicColor.resolve(
-                      _kHeaderFooterColor, context),
-                ))
+            ? CupertinoTheme.of(context).textTheme.textStyle.merge(
+                TextStyle(fontSize: 13.0, color: CupertinoDynamicColor.resolve(_kHeaderFooterColor, context)),
+              )
             : CupertinoTheme.of(context).textTheme.textStyle,
         child: footer!,
       );
@@ -433,9 +426,9 @@ class CupertinoListSection extends StatelessWidget {
         decoration: decoration ??
             BoxDecoration(
               color: CupertinoDynamicColor.resolve(
-                  decoration?.color ??
-                      CupertinoColors.secondarySystemGroupedBackground,
-                  context),
+                decoration?.color ?? CupertinoColors.secondarySystemGroupedBackground,
+                context,
+              ),
               borderRadius: childrenGroupBorderRadius,
             ),
         child: Column(children: childrenWithDividers),
@@ -454,12 +447,10 @@ class CupertinoListSection extends StatelessWidget {
     }
 
     return DecoratedBox(
-      decoration: BoxDecoration(
-          color: CupertinoDynamicColor.resolve(backgroundColor, context)),
+      decoration: BoxDecoration(color: CupertinoDynamicColor.resolve(backgroundColor, context)),
       child: Column(
         children: <Widget>[
-          if (type == CupertinoListSectionType.base)
-            SizedBox(height: topMargin),
+          if (type == CupertinoListSectionType.base) SizedBox(height: topMargin),
           if (headerWidget != null)
             Align(
               alignment: AlignmentDirectional.centerStart,
@@ -470,8 +461,7 @@ class CupertinoListSection extends StatelessWidget {
                 child: headerWidget,
               ),
             ),
-          if (decoratedChildrenGroup != null)
-            decoratedChildrenGroup,
+          if (decoratedChildrenGroup != null) decoratedChildrenGroup,
           if (footerWidget != null)
             Align(
               alignment: AlignmentDirectional.centerStart,

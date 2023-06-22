@@ -15,16 +15,19 @@ export 'dart:ui' show PointerDeviceKind;
 export 'package:flutter/foundation.dart' show DiagnosticPropertiesBuilder;
 
 export 'drag.dart' show DragEndDetails, DragUpdateDetails;
-export 'drag_details.dart' show DragDownDetails, DragStartDetails, DragUpdateDetails, GestureDragDownCallback, GestureDragStartCallback, GestureDragUpdateCallback;
+export 'drag_details.dart'
+    show
+        DragDownDetails,
+        DragStartDetails,
+        DragUpdateDetails,
+        GestureDragDownCallback,
+        GestureDragStartCallback,
+        GestureDragUpdateCallback;
 export 'events.dart' show PointerDownEvent, PointerEvent, PointerPanZoomStartEvent;
 export 'recognizer.dart' show DragStartBehavior;
 export 'velocity_tracker.dart' show VelocityEstimate, VelocityTracker;
 
-enum _DragState {
-  ready,
-  possible,
-  accepted,
-}
+enum _DragState { ready, possible, accepted }
 
 /// {@template flutter.gestures.monodrag.GestureDragEndCallback}
 /// Signature for when a pointer that was previously in contact with the screen
@@ -269,10 +272,12 @@ abstract class DragGestureRecognizer extends OneSequenceGestureRecognizer {
   @visibleForTesting
   Duration? get debugLastPendingEventTimestamp {
     Duration? lastPendingEventTimestamp;
-    assert(() {
-      lastPendingEventTimestamp = _lastPendingEventTimestamp;
-      return true;
-    }());
+    assert(
+      () {
+        lastPendingEventTimestamp = _lastPendingEventTimestamp;
+        return true;
+      }(),
+    );
     return lastPendingEventTimestamp;
   }
 
@@ -311,11 +316,7 @@ abstract class DragGestureRecognizer extends OneSequenceGestureRecognizer {
   @override
   bool isPointerAllowed(PointerEvent event) {
     if (_initialButtons == null) {
-      if (onDown == null &&
-          onStart == null &&
-          onUpdate == null &&
-          onEnd == null &&
-          onCancel == null) {
+      if (onDown == null && onStart == null && onUpdate == null && onEnd == null && onCancel == null) {
         return false;
       }
     } else {
@@ -366,9 +367,9 @@ abstract class DragGestureRecognizer extends OneSequenceGestureRecognizer {
     assert(_state != _DragState.ready);
     if (!event.synthesized &&
         (event is PointerDownEvent ||
-         event is PointerMoveEvent ||
-         event is PointerPanZoomStartEvent ||
-         event is PointerPanZoomUpdateEvent)) {
+            event is PointerMoveEvent ||
+            event is PointerPanZoomStartEvent ||
+            event is PointerPanZoomUpdateEvent)) {
       final VelocityTracker tracker = _velocityTrackers[event.pointer]!;
       if (event is PointerPanZoomStartEvent) {
         tracker.addPosition(event.timeStamp, Offset.zero);
@@ -384,9 +385,15 @@ abstract class DragGestureRecognizer extends OneSequenceGestureRecognizer {
     }
     if (event is PointerMoveEvent || event is PointerPanZoomUpdateEvent) {
       final Offset delta = (event is PointerMoveEvent) ? event.delta : (event as PointerPanZoomUpdateEvent).panDelta;
-      final Offset localDelta = (event is PointerMoveEvent) ? event.localDelta : (event as PointerPanZoomUpdateEvent).localPanDelta;
-      final Offset position = (event is PointerMoveEvent) ? event.position : (event.position + (event as PointerPanZoomUpdateEvent).pan);
-      final Offset localPosition = (event is PointerMoveEvent) ? event.localPosition : (event.localPosition + (event as PointerPanZoomUpdateEvent).localPan);
+      final Offset localDelta = (event is PointerMoveEvent)
+          ? event.localDelta
+          : (event as PointerPanZoomUpdateEvent).localPanDelta;
+      final Offset position = (event is PointerMoveEvent)
+          ? event.position
+          : (event.position + (event as PointerPanZoomUpdateEvent).pan);
+      final Offset localPosition = (event is PointerMoveEvent)
+          ? event.localPosition
+          : (event.localPosition + (event as PointerPanZoomUpdateEvent).localPan);
       if (_state == _DragState.accepted) {
         _checkUpdate(
           sourceTimeStamp: event.timeStamp,
@@ -402,10 +409,11 @@ abstract class DragGestureRecognizer extends OneSequenceGestureRecognizer {
         final Offset movedLocally = _getDeltaForDetails(localDelta);
         final Matrix4? localToGlobalTransform = event.transform == null ? null : Matrix4.tryInvert(event.transform!);
         _globalDistanceMoved += PointerEvent.transformDeltaViaPositions(
-          transform: localToGlobalTransform,
-          untransformedDelta: movedLocally,
-          untransformedEndPosition: localPosition
-        ).distance * (_getPrimaryValueFromOffset(movedLocally) ?? 1).sign;
+              transform: localToGlobalTransform,
+              untransformedDelta: movedLocally,
+              untransformedEndPosition: localPosition,
+            ).distance *
+            (_getPrimaryValueFromOffset(movedLocally) ?? 1).sign;
         if (_hasSufficientGlobalDistanceToAccept(event.kind, gestureSettings?.touchSlop)) {
           _hasDragThresholdBeenMet = true;
           if (_acceptedActivePointers.contains(event.pointer)) {
@@ -566,8 +574,8 @@ abstract class DragGestureRecognizer extends OneSequenceGestureRecognizer {
     } else {
       details = _considerFling(estimate, tracker.kind);
       debugReport = (details != null)
-        ? () => '$estimate; fling at ${details!.velocity}.'
-        : () => '$estimate; judged to not be a fling.';
+          ? () => '$estimate; fling at ${details!.velocity}.'
+          : () => '$estimate; judged to not be a fling.';
     }
     details ??= DragEndDetails(primaryVelocity: 0.0);
 
@@ -585,6 +593,7 @@ abstract class DragGestureRecognizer extends OneSequenceGestureRecognizer {
     _velocityTrackers.clear();
     super.dispose();
   }
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
@@ -606,11 +615,7 @@ class VerticalDragGestureRecognizer extends DragGestureRecognizer {
   /// Create a gesture recognizer for interactions in the vertical axis.
   ///
   /// {@macro flutter.gestures.GestureRecognizer.supportedDevices}
-  VerticalDragGestureRecognizer({
-    super.debugOwner,
-    super.supportedDevices,
-    super.allowedButtonsFilter,
-  });
+  VerticalDragGestureRecognizer({super.debugOwner, super.supportedDevices, super.allowedButtonsFilter});
 
   @override
   bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind) {
@@ -626,10 +631,7 @@ class VerticalDragGestureRecognizer extends DragGestureRecognizer {
     }
     final double maxVelocity = maxFlingVelocity ?? kMaxFlingVelocity;
     final double dy = clampDouble(estimate.pixelsPerSecond.dy, -maxVelocity, maxVelocity);
-    return DragEndDetails(
-      velocity: Velocity(pixelsPerSecond: Offset(0, dy)),
-      primaryVelocity: dy,
-    );
+    return DragEndDetails(velocity: Velocity(pixelsPerSecond: Offset(0, dy)), primaryVelocity: dy);
   }
 
   @override
@@ -661,11 +663,7 @@ class HorizontalDragGestureRecognizer extends DragGestureRecognizer {
   /// Create a gesture recognizer for interactions in the horizontal axis.
   ///
   /// {@macro flutter.gestures.GestureRecognizer.supportedDevices}
-  HorizontalDragGestureRecognizer({
-    super.debugOwner,
-    super.supportedDevices,
-    super.allowedButtonsFilter,
-  });
+  HorizontalDragGestureRecognizer({super.debugOwner, super.supportedDevices, super.allowedButtonsFilter});
 
   @override
   bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind) {
@@ -681,10 +679,7 @@ class HorizontalDragGestureRecognizer extends DragGestureRecognizer {
     }
     final double maxVelocity = maxFlingVelocity ?? kMaxFlingVelocity;
     final double dx = clampDouble(estimate.pixelsPerSecond.dx, -maxVelocity, maxVelocity);
-    return DragEndDetails(
-      velocity: Velocity(pixelsPerSecond: Offset(dx, 0)),
-      primaryVelocity: dx,
-    );
+    return DragEndDetails(velocity: Velocity(pixelsPerSecond: Offset(dx, 0)), primaryVelocity: dx);
   }
 
   @override
@@ -713,18 +708,14 @@ class HorizontalDragGestureRecognizer extends DragGestureRecognizer {
 ///    some time has passed.
 class PanGestureRecognizer extends DragGestureRecognizer {
   /// Create a gesture recognizer for tracking movement on a plane.
-  PanGestureRecognizer({
-    super.debugOwner,
-    super.supportedDevices,
-    super.allowedButtonsFilter,
-  });
+  PanGestureRecognizer({super.debugOwner, super.supportedDevices, super.allowedButtonsFilter});
 
   @override
   bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind) {
     final double minVelocity = minFlingVelocity ?? kMinFlingVelocity;
     final double minDistance = minFlingDistance ?? computeHitSlop(kind, gestureSettings);
-    return estimate.pixelsPerSecond.distanceSquared > minVelocity * minVelocity
-        && estimate.offset.distanceSquared > minDistance * minDistance;
+    return estimate.pixelsPerSecond.distanceSquared > minVelocity * minVelocity &&
+        estimate.offset.distanceSquared > minDistance * minDistance;
   }
 
   @override
@@ -732,8 +723,10 @@ class PanGestureRecognizer extends DragGestureRecognizer {
     if (!isFlingGesture(estimate, kind)) {
       return null;
     }
-    final Velocity velocity = Velocity(pixelsPerSecond: estimate.pixelsPerSecond)
-        .clampMagnitude(minFlingVelocity ?? kMinFlingVelocity, maxFlingVelocity ?? kMaxFlingVelocity);
+    final Velocity velocity = Velocity(pixelsPerSecond: estimate.pixelsPerSecond).clampMagnitude(
+      minFlingVelocity ?? kMinFlingVelocity,
+      maxFlingVelocity ?? kMaxFlingVelocity,
+    );
     return DragEndDetails(velocity: velocity);
   }
 

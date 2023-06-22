@@ -84,8 +84,7 @@ class AnimatedSize extends StatefulWidget {
   State<AnimatedSize> createState() => _AnimatedSizeState();
 }
 
-class _AnimatedSizeState
-    extends State<AnimatedSize> with SingleTickerProviderStateMixin {
+class _AnimatedSizeState extends State<AnimatedSize> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return _AnimatedSize(

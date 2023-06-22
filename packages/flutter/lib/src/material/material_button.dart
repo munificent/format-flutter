@@ -404,10 +404,7 @@ class MaterialButton extends StatelessWidget {
       highlightElevation: buttonTheme.getHighlightElevation(this),
       padding: buttonTheme.getPadding(this),
       visualDensity: visualDensity ?? theme.visualDensity,
-      constraints: buttonTheme.getConstraints(this).copyWith(
-        minWidth: minWidth,
-        minHeight: height,
-      ),
+      constraints: buttonTheme.getConstraints(this).copyWith(minWidth: minWidth, minHeight: height),
       shape: buttonTheme.getShape(this),
       clipBehavior: clipBehavior,
       focusNode: focusNode,
@@ -437,7 +434,9 @@ class MaterialButton extends StatelessWidget {
     properties.add(DiagnosticsProperty<VisualDensity>('visualDensity', visualDensity, defaultValue: null));
     properties.add(DiagnosticsProperty<ShapeBorder>('shape', shape, defaultValue: null));
     properties.add(DiagnosticsProperty<FocusNode>('focusNode', focusNode, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialTapTargetSize>('materialTapTargetSize', materialTapTargetSize, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialTapTargetSize>('materialTapTargetSize', materialTapTargetSize, defaultValue: null),
+    );
   }
 }
 
@@ -453,4 +452,4 @@ class MaterialButton extends StatelessWidget {
   'Use one of these button classes instead. '
   'This feature was deprecated after v2.11.0-0.0.pre.',
 )
-mixin MaterialButtonWithIconMixin { }
+mixin MaterialButtonWithIconMixin {}

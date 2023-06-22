@@ -19,7 +19,6 @@ import 'package:flutter/widgets.dart';
 /// [CupertinoCheckbox] controls.
 @optionalTypeArgs
 mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin<S> {
-
   /// Whether the [value] of this control can be changed by user interaction.
   ///
   /// The control is considered interactive if the [onChanged] callback is
@@ -86,14 +85,18 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
 
   void _handleTapEnd([TapUpDetails? _]) {
     if (_downPosition != null) {
-      setState(() { _downPosition = null; });
+      setState(() {
+        _downPosition = null;
+      });
     }
   }
 
   bool _focused = false;
   void _handleFocusHighlightChanged(bool focused) {
     if (focused != _focused) {
-      setState(() { _focused = focused; });
+      setState(() {
+        _focused = focused;
+      });
     }
   }
 
@@ -129,13 +132,7 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
         onTap: isInteractive ? _handleTap : null,
         onTapUp: isInteractive ? _handleTapEnd : null,
         onTapCancel: isInteractive ? _handleTapEnd : null,
-        child: Semantics(
-          enabled: isInteractive,
-          child: CustomPaint(
-            size: size,
-            painter: painter,
-          ),
-        ),
+        child: Semantics(enabled: isInteractive, child: CustomPaint(size: size, painter: painter)),
       ),
     );
   }

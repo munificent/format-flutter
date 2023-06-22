@@ -17,6 +17,7 @@ import 'theme.dart';
 enum PopupMenuPosition {
   /// Menu is positioned over the anchor.
   over,
+
   /// Menu is positioned under the anchor.
   under,
 }
@@ -168,17 +169,17 @@ class PopupMenuThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is PopupMenuThemeData
-        && other.color == color
-        && other.shape == shape
-        && other.elevation == elevation
-        && other.shadowColor == shadowColor
-        && other.surfaceTintColor == surfaceTintColor
-        && other.textStyle == textStyle
-        && other.labelTextStyle == labelTextStyle
-        && other.enableFeedback == enableFeedback
-        && other.mouseCursor == mouseCursor
-        && other.position == position;
+    return other is PopupMenuThemeData &&
+        other.color == color &&
+        other.shape == shape &&
+        other.elevation == elevation &&
+        other.shadowColor == shadowColor &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.textStyle == textStyle &&
+        other.labelTextStyle == labelTextStyle &&
+        other.enableFeedback == enableFeedback &&
+        other.mouseCursor == mouseCursor &&
+        other.position == position;
   }
 
   @override
@@ -190,9 +191,13 @@ class PopupMenuThemeData with Diagnosticable {
     properties.add(ColorProperty('shadowColor', shadowColor, defaultValue: null));
     properties.add(ColorProperty('surfaceTintColor', surfaceTintColor, defaultValue: null));
     properties.add(DiagnosticsProperty<TextStyle>('text style', textStyle, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<TextStyle?>>('labelTextStyle', labelTextStyle, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<TextStyle?>>('labelTextStyle', labelTextStyle, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<bool>('enableFeedback', enableFeedback, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<MouseCursor?>>('mouseCursor', mouseCursor, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<MouseCursor?>>('mouseCursor', mouseCursor, defaultValue: null),
+    );
     properties.add(EnumProperty<PopupMenuPosition?>('position', position, defaultValue: null));
   }
 }
@@ -207,11 +212,7 @@ class PopupMenuTheme extends InheritedTheme {
   /// popup menus in its widget subtree.
   ///
   /// The data argument must not be null.
-  const PopupMenuTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const PopupMenuTheme({super.key, required this.data, required super.child});
 
   /// The properties for descendant popup menu widgets.
   final PopupMenuThemeData data;

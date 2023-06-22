@@ -17,20 +17,21 @@ import 'debug.dart';
 import 'layer.dart';
 import 'proxy_box.dart';
 
-export 'package:flutter/foundation.dart' show
-  DiagnosticPropertiesBuilder,
-  DiagnosticsNode,
-  DiagnosticsProperty,
-  DoubleProperty,
-  EnumProperty,
-  ErrorDescription,
-  ErrorHint,
-  ErrorSummary,
-  FlagProperty,
-  FlutterError,
-  InformationCollector,
-  IntProperty,
-  StringProperty;
+export 'package:flutter/foundation.dart'
+    show
+        DiagnosticPropertiesBuilder,
+        DiagnosticsNode,
+        DiagnosticsProperty,
+        DoubleProperty,
+        EnumProperty,
+        ErrorDescription,
+        ErrorHint,
+        ErrorSummary,
+        FlagProperty,
+        FlutterError,
+        InformationCollector,
+        IntProperty,
+        StringProperty;
 export 'package:flutter/gestures.dart' show HitTestEntry, HitTestResult;
 export 'package:flutter/painting.dart';
 
@@ -48,7 +49,7 @@ class ParentData {
   /// Called when the RenderObject is removed from the tree.
   @protected
   @mustCallSuper
-  void detach() { }
+  void detach() {}
 
   @override
   String toString() => '<none>';
@@ -78,7 +79,6 @@ typedef PaintingContextCallback = void Function(PaintingContext context, Offset 
 /// New [PaintingContext] objects are created automatically when using
 /// [PaintingContext.repaintCompositedChild] and [pushLayer].
 class PaintingContext extends ClipContext {
-
   /// Creates a painting context.
   ///
   /// Typically only called by [PaintingContext.repaintCompositedChild]
@@ -107,12 +107,9 @@ class PaintingContext extends ClipContext {
   ///
   ///  * [RenderObject.isRepaintBoundary], which determines if a [RenderObject]
   ///    has a composited layer.
-  static void repaintCompositedChild(RenderObject child, { bool debugAlsoPaintedParent = false }) {
+  static void repaintCompositedChild(RenderObject child, {bool debugAlsoPaintedParent = false}) {
     assert(child._needsPaint);
-    _repaintCompositedChild(
-      child,
-      debugAlsoPaintedParent: debugAlsoPaintedParent,
-    );
+    _repaintCompositedChild(child, debugAlsoPaintedParent: debugAlsoPaintedParent);
   }
 
   static void _repaintCompositedChild(
@@ -121,14 +118,13 @@ class PaintingContext extends ClipContext {
     PaintingContext? childContext,
   }) {
     assert(child.isRepaintBoundary);
-    assert(() {
-      // register the call for RepaintBoundary metrics
-      child.debugRegisterRepaintBoundaryPaint(
-        includedParent: debugAlsoPaintedParent,
-        includedChild: true,
-      );
-      return true;
-    }());
+    assert(
+      () {
+        // register the call for RepaintBoundary metrics
+        child.debugRegisterRepaintBoundaryPaint(includedParent: debugAlsoPaintedParent, includedChild: true);
+        return true;
+      }(),
+    );
     OffsetLayer? childLayer = child._layerHandle.layer as OffsetLayer?;
     if (childLayer == null) {
       assert(debugAlsoPaintedParent);
@@ -143,16 +139,19 @@ class PaintingContext extends ClipContext {
     } else {
       assert(debugAlsoPaintedParent || childLayer.attached);
       Offset? debugOldOffset;
-      assert(() {
-        debugOldOffset = childLayer!.offset;
-        return true;
-      }());
+      assert(
+        () {
+          debugOldOffset = childLayer!.offset;
+          return true;
+        }(),
+      );
       childLayer.removeAllChildren();
       final OffsetLayer updatedLayer = child.updateCompositedLayer(oldLayer: childLayer);
-      assert(identical(updatedLayer, childLayer),
+      assert(
+        identical(updatedLayer, childLayer),
         '$child created a new layer instance $updatedLayer instead of reusing the '
-        'existing layer $childLayer. See the documentation of RenderObject.updateCompositedLayer '
-        'for more information on how to correctly implement this method.'
+            'existing layer $childLayer. See the documentation of RenderObject.updateCompositedLayer '
+            'for more information on how to correctly implement this method.',
       );
       assert(debugOldOffset == updatedLayer.offset);
     }
@@ -160,10 +159,12 @@ class PaintingContext extends ClipContext {
 
     assert(identical(childLayer, child._layerHandle.layer));
     assert(child._layerHandle.layer is OffsetLayer);
-    assert(() {
-      childLayer!.debugCreator = child.debugCreator ?? child.runtimeType;
-      return true;
-    }());
+    assert(
+      () {
+        childLayer!.debugCreator = child.debugCreator ?? child.runtimeType;
+        return true;
+      }(),
+    );
 
     childContext ??= PaintingContext(childLayer, child.paintBounds);
     child._paintWithContext(childContext, Offset.zero);
@@ -192,15 +193,18 @@ class PaintingContext extends ClipContext {
 
     final OffsetLayer childLayer = child._layerHandle.layer! as OffsetLayer;
     Offset? debugOldOffset;
-    assert(() {
-      debugOldOffset = childLayer.offset;
-      return true;
-    }());
+    assert(
+      () {
+        debugOldOffset = childLayer.offset;
+        return true;
+      }(),
+    );
     final OffsetLayer updatedLayer = child.updateCompositedLayer(oldLayer: childLayer);
-    assert(identical(updatedLayer, childLayer),
+    assert(
+      identical(updatedLayer, childLayer),
       '$child created a new layer instance $updatedLayer instead of reusing the '
-      'existing layer $childLayer. See the documentation of RenderObject.updateCompositedLayer '
-      'for more information on how to correctly implement this method.'
+          'existing layer $childLayer. See the documentation of RenderObject.updateCompositedLayer '
+          'for more information on how to correctly implement this method.',
     );
     assert(debugOldOffset == updatedLayer.offset);
     child._needsCompositedLayerUpdate = false;
@@ -219,14 +223,12 @@ class PaintingContext extends ClipContext {
     bool debugAlsoPaintedParent = false,
     required PaintingContext customContext,
   }) {
-    assert(() {
-      _repaintCompositedChild(
-        child,
-        debugAlsoPaintedParent: debugAlsoPaintedParent,
-        childContext: customContext,
-      );
-      return true;
-    }());
+    assert(
+      () {
+        _repaintCompositedChild(child, debugAlsoPaintedParent: debugAlsoPaintedParent, childContext: customContext);
+        return true;
+      }(),
+    );
   }
 
   /// Paint a child [RenderObject].
@@ -235,16 +237,18 @@ class PaintingContext extends ClipContext {
   /// into the layer subtree associated with this painting context. Otherwise,
   /// the child will be painted into the current PictureLayer for this context.
   void paintChild(RenderObject child, Offset offset) {
-    assert(() {
-      debugOnProfilePaint?.call(child);
-      return true;
-    }());
+    assert(
+      () {
+        debugOnProfilePaint?.call(child);
+        return true;
+      }(),
+    );
 
     if (child.isRepaintBoundary) {
       stopRecordingIfNeeded();
       _compositeChild(child, offset);
-    // If a render object was a repaint boundary but no longer is one, this
-    // is where the framework managed layer is automatically disposed.
+      // If a render object was a repaint boundary but no longer is one, this
+      // is where the framework managed layer is automatically disposed.
     } else if (child._wasRepaintBoundary) {
       assert(child._layerHandle.layer is OffsetLayer);
       child._layerHandle.layer = null;
@@ -266,12 +270,14 @@ class PaintingContext extends ClipContext {
       if (child._needsCompositedLayerUpdate) {
         updateLayerProperties(child);
       }
-      assert(() {
-        // register the call for RepaintBoundary metrics
-        child.debugRegisterRepaintBoundaryPaint();
-        child._layerHandle.layer!.debugCreator = child.debugCreator ?? child;
-        return true;
-      }());
+      assert(
+        () {
+          // register the call for RepaintBoundary metrics
+          child.debugRegisterRepaintBoundaryPaint();
+          child._layerHandle.layer!.debugCreator = child.debugCreator ?? child;
+          return true;
+        }(),
+      );
     }
     assert(child._layerHandle.layer is OffsetLayer);
     final OffsetLayer childOffsetLayer = child._layerHandle.layer! as OffsetLayer;
@@ -297,18 +303,20 @@ class PaintingContext extends ClipContext {
 
   bool get _isRecording {
     final bool hasCanvas = _canvas != null;
-    assert(() {
-      if (hasCanvas) {
-        assert(_currentLayer != null);
-        assert(_recorder != null);
-        assert(_canvas != null);
-      } else {
-        assert(_currentLayer == null);
-        assert(_recorder == null);
-        assert(_canvas == null);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (hasCanvas) {
+          assert(_currentLayer != null);
+          assert(_recorder != null);
+          assert(_canvas != null);
+        } else {
+          assert(_currentLayer == null);
+          assert(_recorder == null);
+          assert(_canvas == null);
+        }
+        return true;
+      }(),
+    );
     return hasCanvas;
   }
 
@@ -371,23 +379,25 @@ class PaintingContext extends ClipContext {
     if (!_isRecording) {
       return;
     }
-    assert(() {
-      if (debugRepaintRainbowEnabled) {
-        final Paint paint = Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 6.0
-          ..color = debugCurrentRepaintColor.toColor();
-        canvas.drawRect(estimatedBounds.deflate(3.0), paint);
-      }
-      if (debugPaintLayerBordersEnabled) {
-        final Paint paint = Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.0
-          ..color = const Color(0xFFFF9800);
-        canvas.drawRect(estimatedBounds, paint);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (debugRepaintRainbowEnabled) {
+          final Paint paint = Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 6.0
+            ..color = debugCurrentRepaintColor.toColor();
+          canvas.drawRect(estimatedBounds.deflate(3.0), paint);
+        }
+        if (debugPaintLayerBordersEnabled) {
+          final Paint paint = Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.0
+            ..color = const Color(0xFFFF9800);
+          canvas.drawRect(estimatedBounds, paint);
+        }
+        return true;
+      }(),
+    );
     _currentLayer!.picture = _recorder!.endRecording();
     _currentLayer = null;
     _recorder = null;
@@ -460,7 +470,7 @@ class PaintingContext extends ClipContext {
   ///
   ///  * [addLayer], for pushing a layer without painting further contents
   ///    within it.
-  void pushLayer(ContainerLayer childLayer, PaintingContextCallback painter, Offset offset, { Rect? childPaintBounds }) {
+  void pushLayer(ContainerLayer childLayer, PaintingContextCallback painter, Offset offset, {Rect? childPaintBounds}) {
     // If a layer is being reused, it may already contain children. We remove
     // them so that `painter` can add children that are relevant for this frame.
     if (childLayer.hasChildren) {
@@ -519,7 +529,14 @@ class PaintingContext extends ClipContext {
   /// compositing) or until the render object changes the type of the layer
   /// (e.g. from opacity layer to a clip rect layer).
   /// {@endtemplate}
-  ClipRectLayer? pushClipRect(bool needsCompositing, Offset offset, Rect clipRect, PaintingContextCallback painter, { Clip clipBehavior = Clip.hardEdge, ClipRectLayer? oldLayer }) {
+  ClipRectLayer? pushClipRect(
+    bool needsCompositing,
+    Offset offset,
+    Rect clipRect,
+    PaintingContextCallback painter, {
+    Clip clipBehavior = Clip.hardEdge,
+    ClipRectLayer? oldLayer,
+  }) {
     if (clipBehavior == Clip.none) {
       painter(this, offset);
       return null;
@@ -557,7 +574,15 @@ class PaintingContext extends ClipContext {
   /// The `clipBehavior` argument controls how the rounded rectangle is clipped.
   ///
   /// {@macro flutter.rendering.PaintingContext.pushClipRect.oldLayer}
-  ClipRRectLayer? pushClipRRect(bool needsCompositing, Offset offset, Rect bounds, RRect clipRRect, PaintingContextCallback painter, { Clip clipBehavior = Clip.antiAlias, ClipRRectLayer? oldLayer }) {
+  ClipRRectLayer? pushClipRRect(
+    bool needsCompositing,
+    Offset offset,
+    Rect bounds,
+    RRect clipRRect,
+    PaintingContextCallback painter, {
+    Clip clipBehavior = Clip.antiAlias,
+    ClipRRectLayer? oldLayer,
+  }) {
     if (clipBehavior == Clip.none) {
       painter(this, offset);
       return null;
@@ -596,7 +621,15 @@ class PaintingContext extends ClipContext {
   /// The `clipBehavior` argument controls how the path is clipped.
   ///
   /// {@macro flutter.rendering.PaintingContext.pushClipRect.oldLayer}
-  ClipPathLayer? pushClipPath(bool needsCompositing, Offset offset, Rect bounds, Path clipPath, PaintingContextCallback painter, { Clip clipBehavior = Clip.antiAlias, ClipPathLayer? oldLayer }) {
+  ClipPathLayer? pushClipPath(
+    bool needsCompositing,
+    Offset offset,
+    Rect bounds,
+    Path clipPath,
+    PaintingContextCallback painter, {
+    Clip clipBehavior = Clip.antiAlias,
+    ClipPathLayer? oldLayer,
+  }) {
     if (clipBehavior == Clip.none) {
       painter(this, offset);
       return null;
@@ -632,7 +665,12 @@ class PaintingContext extends ClipContext {
   /// [RenderObject.alwaysNeedsCompositing] property to return true. That informs
   /// ancestor render objects that this render object will include a composited
   /// layer, which, for example, causes them to use composited clips.
-  ColorFilterLayer pushColorFilter(Offset offset, ColorFilter colorFilter, PaintingContextCallback painter, { ColorFilterLayer? oldLayer }) {
+  ColorFilterLayer pushColorFilter(
+    Offset offset,
+    ColorFilter colorFilter,
+    PaintingContextCallback painter, {
+    ColorFilterLayer? oldLayer,
+  }) {
     final ColorFilterLayer layer = oldLayer ?? ColorFilterLayer();
     layer.colorFilter = colorFilter;
     pushLayer(layer, painter, offset);
@@ -654,9 +692,16 @@ class PaintingContext extends ClipContext {
   /// is called synchronously during the call to [pushTransform].
   ///
   /// {@macro flutter.rendering.PaintingContext.pushClipRect.oldLayer}
-  TransformLayer? pushTransform(bool needsCompositing, Offset offset, Matrix4 transform, PaintingContextCallback painter, { TransformLayer? oldLayer }) {
+  TransformLayer? pushTransform(
+    bool needsCompositing,
+    Offset offset,
+    Matrix4 transform,
+    PaintingContextCallback painter, {
+    TransformLayer? oldLayer,
+  }) {
     final Matrix4 effectiveTransform = Matrix4.translationValues(offset.dx, offset.dy, 0.0)
-      ..multiply(transform)..translate(-offset.dx, -offset.dy);
+      ..multiply(transform)
+      ..translate(-offset.dx, -offset.dy);
     if (needsCompositing) {
       final TransformLayer layer = oldLayer ?? TransformLayer();
       layer.transform = effectiveTransform;
@@ -695,7 +740,7 @@ class PaintingContext extends ClipContext {
   /// [RenderObject.alwaysNeedsCompositing] property to return true. That informs
   /// ancestor render objects that this render object will include a composited
   /// layer, which, for example, causes them to use composited clips.
-  OpacityLayer pushOpacity(Offset offset, int alpha, PaintingContextCallback painter, { OpacityLayer? oldLayer }) {
+  OpacityLayer pushOpacity(Offset offset, int alpha, PaintingContextCallback painter, {OpacityLayer? oldLayer}) {
     final OpacityLayer layer = oldLayer ?? OpacityLayer();
     layer
       ..alpha = alpha
@@ -705,7 +750,10 @@ class PaintingContext extends ClipContext {
   }
 
   @override
-  String toString() => '${objectRuntimeType(this, 'PaintingContext')}#$hashCode(layer: $_containerLayer, canvas bounds: $estimatedBounds)';
+  String toString() => '${objectRuntimeType(
+        this,
+        'PaintingContext',
+      )}#$hashCode(layer: $_containerLayer, canvas bounds: $estimatedBounds)';
 }
 
 /// An abstract set of layout constraints.
@@ -787,10 +835,7 @@ abstract class Constraints {
   /// then included in the message after the error line.
   ///
   /// Returns the same as [isNormalized] if asserts are disabled.
-  bool debugAssertIsValid({
-    bool isAppliedConstraint = false,
-    InformationCollector? informationCollector,
-  }) {
+  bool debugAssertIsValid({bool isAppliedConstraint = false, InformationCollector? informationCollector}) {
     assert(isNormalized);
     return isNormalized;
   }
@@ -809,8 +854,7 @@ typedef RenderObjectVisitor = void Function(RenderObject child);
 typedef LayoutCallback<T extends Constraints> = void Function(T constraints);
 
 class _LocalSemanticsHandle implements SemanticsHandle {
-  _LocalSemanticsHandle._(PipelineOwner owner, this.listener)
-      : _owner = owner {
+  _LocalSemanticsHandle._(PipelineOwner owner, this.listener) : _owner = owner {
     if (listener != null) {
       _owner.semanticsOwner!.addListener(listener!);
     }
@@ -977,24 +1021,25 @@ class PipelineOwner {
   void flushLayout() {
     if (!kReleaseMode) {
       Map<String, String>? debugTimelineArguments;
-      assert(() {
-        if (debugEnhanceLayoutTimelineArguments) {
-          debugTimelineArguments = <String, String>{
-            'dirty count': '${_nodesNeedingLayout.length}',
-            'dirty list': '$_nodesNeedingLayout',
-          };
-        }
-        return true;
-      }());
-      Timeline.startSync(
-        'LAYOUT',
-        arguments: debugTimelineArguments,
+      assert(
+        () {
+          if (debugEnhanceLayoutTimelineArguments) {
+            debugTimelineArguments = <String, String>{
+              'dirty count': '${_nodesNeedingLayout.length}',
+              'dirty list': '$_nodesNeedingLayout',
+            };
+          }
+          return true;
+        }(),
       );
+      Timeline.startSync('LAYOUT', arguments: debugTimelineArguments);
     }
-    assert(() {
-      _debugDoingLayout = true;
-      return true;
-    }());
+    assert(
+      () {
+        _debugDoingLayout = true;
+        return true;
+      }(),
+    );
     try {
       while (_nodesNeedingLayout.isNotEmpty) {
         assert(!_shouldMergeDirtyNodes);
@@ -1019,21 +1064,25 @@ class PipelineOwner {
         _shouldMergeDirtyNodes = false;
       }
 
-      assert(() {
-        _debugDoingChildLayout = true;
-        return true;
-      }());
+      assert(
+        () {
+          _debugDoingChildLayout = true;
+          return true;
+        }(),
+      );
       for (final PipelineOwner child in _children) {
         child.flushLayout();
       }
       assert(_nodesNeedingLayout.isEmpty, 'Child PipelineOwners must not dirty nodes in their parent.');
     } finally {
       _shouldMergeDirtyNodes = false;
-      assert(() {
-        _debugDoingLayout = false;
-        _debugDoingChildLayout = false;
-        return true;
-      }());
+      assert(
+        () {
+          _debugDoingLayout = false;
+          _debugDoingChildLayout = false;
+          return true;
+        }(),
+      );
       if (!kReleaseMode) {
         Timeline.finishSync();
       }
@@ -1051,23 +1100,28 @@ class PipelineOwner {
   void _enableMutationsToDirtySubtrees(VoidCallback callback) {
     assert(_debugDoingLayout);
     bool? oldState;
-    assert(() {
-      oldState = _debugAllowMutationsToDirtySubtrees;
-      _debugAllowMutationsToDirtySubtrees = true;
-      return true;
-    }());
+    assert(
+      () {
+        oldState = _debugAllowMutationsToDirtySubtrees;
+        _debugAllowMutationsToDirtySubtrees = true;
+        return true;
+      }(),
+    );
     try {
       callback();
     } finally {
       _shouldMergeDirtyNodes = true;
-      assert(() {
-        _debugAllowMutationsToDirtySubtrees = oldState!;
-        return true;
-      }());
+      assert(
+        () {
+          _debugAllowMutationsToDirtySubtrees = oldState!;
+          return true;
+        }(),
+      );
     }
   }
 
   final List<RenderObject> _nodesNeedingCompositingBitsUpdate = <RenderObject>[];
+
   /// Updates the [RenderObject.needsCompositing] bits.
   ///
   /// Called as part of the rendering pipeline after [flushLayout] and before
@@ -1113,25 +1167,26 @@ class PipelineOwner {
   void flushPaint() {
     if (!kReleaseMode) {
       Map<String, String>? debugTimelineArguments;
-      assert(() {
-        if (debugEnhancePaintTimelineArguments) {
-          debugTimelineArguments = <String, String>{
-            'dirty count': '${_nodesNeedingPaint.length}',
-            'dirty list': '$_nodesNeedingPaint',
-          };
-        }
-        return true;
-      }());
-      Timeline.startSync(
-        'PAINT',
-        arguments: debugTimelineArguments,
+      assert(
+        () {
+          if (debugEnhancePaintTimelineArguments) {
+            debugTimelineArguments = <String, String>{
+              'dirty count': '${_nodesNeedingPaint.length}',
+              'dirty list': '$_nodesNeedingPaint',
+            };
+          }
+          return true;
+        }(),
       );
+      Timeline.startSync('PAINT', arguments: debugTimelineArguments);
     }
     try {
-      assert(() {
-        _debugDoingPaint = true;
-        return true;
-      }());
+      assert(
+        () {
+          _debugDoingPaint = true;
+          return true;
+        }(),
+      );
       final List<RenderObject> dirtyNodes = _nodesNeedingPaint;
       _nodesNeedingPaint = <RenderObject>[];
 
@@ -1156,10 +1211,12 @@ class PipelineOwner {
       }
       assert(_nodesNeedingPaint.isEmpty, 'Child PipelineOwners must not dirty nodes in their parent.');
     } finally {
-      assert(() {
-        _debugDoingPaint = false;
-        return true;
-      }());
+      assert(
+        () {
+          _debugDoingPaint = false;
+          return true;
+        }(),
+      );
       if (!kReleaseMode) {
         Timeline.finishSync();
       }
@@ -1205,7 +1262,7 @@ class PipelineOwner {
   /// [SemanticsHandle.dispose]. Once all the outstanding [SemanticsHandle]
   /// objects for a given [PipelineOwner] are closed, the [PipelineOwner] stops
   /// maintaining the semantics tree.
-  SemanticsHandle ensureSemantics({ VoidCallback? listener }) {
+  SemanticsHandle ensureSemantics({VoidCallback? listener}) {
     _outstandingSemanticsHandles += 1;
     _updateSemanticsOwner();
     return _LocalSemanticsHandle._(this, listener);
@@ -1214,7 +1271,10 @@ class PipelineOwner {
   void _updateSemanticsOwner() {
     if ((_manifold?.semanticsEnabled ?? false) || _outstandingSemanticsHandles > 0) {
       if (_semanticsOwner == null) {
-        assert(onSemanticsUpdate != null, 'Attempted to enable semantics without configuring an onSemanticsUpdate callback.');
+        assert(
+          onSemanticsUpdate != null,
+          'Attempted to enable semantics without configuring an onSemanticsUpdate callback.',
+        );
         _semanticsOwner = SemanticsOwner(onSemanticsUpdate: onSemanticsUpdate!);
         onSemanticsOwnerCreated?.call();
       }
@@ -1253,10 +1313,12 @@ class PipelineOwner {
       Timeline.startSync('SEMANTICS');
     }
     assert(_semanticsOwner != null);
-    assert(() {
-      _debugDoingSemantics = true;
-      return true;
-    }());
+    assert(
+      () {
+        _debugDoingSemantics = true;
+        return true;
+      }(),
+    );
     try {
       final List<RenderObject> nodesToProcess = _nodesNeedingSemantics.toList()
         ..sort((RenderObject a, RenderObject b) => a.depth - b.depth);
@@ -1272,10 +1334,12 @@ class PipelineOwner {
       }
       assert(_nodesNeedingSemantics.isEmpty, 'Child PipelineOwners must not dirty nodes in their parent.');
     } finally {
-      assert(() {
-        _debugDoingSemantics = false;
-        return true;
-      }());
+      assert(
+        () {
+          _debugDoingSemantics = false;
+          return true;
+        }(),
+      );
       if (!kReleaseMode) {
         Timeline.finishSync();
       }
@@ -1614,10 +1678,12 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// If asserts are disabled, this property is always null.
   bool? get debugDisposed {
     bool? disposed;
-    assert(() {
-      disposed = _debugDisposed;
-      return true;
-    }());
+    assert(
+      () {
+        disposed = _debugDisposed;
+        return true;
+      }(),
+    );
     return disposed;
   }
 
@@ -1644,18 +1710,20 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _layerHandle.layer = null;
-    assert(() {
-      // TODO(dnfield): Enable this assert once clients have had a chance to
-      // migrate.
-      // visitChildren((RenderObject child) {
-      //   assert(
-      //     child.debugDisposed!,
-      //     '${child.runtimeType} (child of $runtimeType) must be disposed before calling super.dispose().',
-      //   );
-      // });
-      _debugDisposed = true;
-      return true;
-    }());
+    assert(
+      () {
+        // TODO(dnfield): Enable this assert once clients have had a chance to
+        // migrate.
+        // visitChildren((RenderObject child) {
+        //   assert(
+        //     child.debugDisposed!,
+        //     '${child.runtimeType} (child of $runtimeType) must be disposed before calling super.dispose().',
+        //   );
+        // });
+        _debugDisposed = true;
+        return true;
+      }(),
+    );
   }
 
   // LAYOUT
@@ -1724,7 +1792,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// Override this method in subclasses with child nodes to call [redepthChild]
   /// for each child. Do not call this method directly.
   @protected
-  void redepthChildren() { }
+  void redepthChildren() {}
 
   /// The parent of this node in the tree.
   RenderObject? get parent => _parent;
@@ -1738,14 +1806,16 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   @protected
   void adoptChild(RenderObject child) {
     assert(child._parent == null);
-    assert(() {
-      RenderObject node = this;
-      while (node.parent != null) {
-        node = node.parent!;
-      }
-      assert(node != child); // indicates we are about to create a cycle
-      return true;
-    }());
+    assert(
+      () {
+        RenderObject node = this;
+        while (node.parent != null) {
+          node = node.parent!;
+        }
+        assert(node != child); // indicates we are about to create a cycle
+        return true;
+      }(),
+    );
 
     setupParentData(child);
     markNeedsLayout();
@@ -1783,7 +1853,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// Calls visitor for each immediate child of this render object.
   ///
   /// Override in subclasses with children and call the visitor for each child.
-  void visitChildren(RenderObjectVisitor visitor) { }
+  void visitChildren(RenderObjectVisitor visitor) {}
 
   /// The object responsible for creating this render object.
   ///
@@ -1801,17 +1871,16 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
       library: 'rendering library',
       context: ErrorDescription('during $method()'),
       informationCollector: () => <DiagnosticsNode>[
-        // debugCreator should always be null outside of debugMode, but we want
-        // the tree shaker to notice this.
-        if (kDebugMode && debugCreator != null)
-          DiagnosticsDebugCreator(debugCreator!),
-        describeForError('The following RenderObject was being processed when the exception was fired'),
-        // TODO(jacobr): this error message has a code smell. Consider whether
-        // displaying the truncated children is really useful for command line
-        // users. Inspector users can see the full tree by clicking on the
-        // render object so this may not be that useful.
-        describeForError('RenderObject', style: DiagnosticsTreeStyle.truncateChildren),
-      ],
+            // debugCreator should always be null outside of debugMode, but we want
+            // the tree shaker to notice this.
+            if (kDebugMode && debugCreator != null) DiagnosticsDebugCreator(debugCreator!),
+            describeForError('The following RenderObject was being processed when the exception was fired'),
+            // TODO(jacobr): this error message has a code smell. Consider whether
+            // displaying the truncated children is really useful for command line
+            // users. Inspector users can see the full tree by clicking on the
+            // render object so this may not be that useful.
+            describeForError('RenderObject', style: DiagnosticsTreeStyle.truncateChildren),
+          ],
     ));
   }
 
@@ -1843,16 +1912,20 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   @pragma('vm:prefer-inline')
   static T _withDebugActiveLayoutCleared<T>(T Function() inner) {
     RenderObject? debugPreviousActiveLayout;
-    assert(() {
-      debugPreviousActiveLayout = _debugActiveLayout;
-      _debugActiveLayout = null;
-      return true;
-    }());
+    assert(
+      () {
+        debugPreviousActiveLayout = _debugActiveLayout;
+        _debugActiveLayout = null;
+        return true;
+      }(),
+    );
     final T result = inner();
-    assert(() {
-      _debugActiveLayout = debugPreviousActiveLayout;
-      return true;
-    }());
+    assert(
+      () {
+        _debugActiveLayout = debugPreviousActiveLayout;
+        return true;
+      }(),
+    );
     return result;
   }
 
@@ -1876,118 +1949,120 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// Only valid when asserts are enabled. This will throw in release builds.
   bool get _debugCanPerformMutations {
     late bool result;
-    assert(() {
-      if (_debugDisposed) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('A disposed RenderObject was mutated.'),
-          DiagnosticsProperty<RenderObject>(
-            'The disposed RenderObject was',
-            this,
-            style: DiagnosticsTreeStyle.errorProperty,
-          ),
-        ]);
-      }
+    assert(
+      () {
+        if (_debugDisposed) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('A disposed RenderObject was mutated.'),
+            DiagnosticsProperty<RenderObject>(
+              'The disposed RenderObject was',
+              this,
+              style: DiagnosticsTreeStyle.errorProperty,
+            ),
+          ]);
+        }
 
-      final PipelineOwner? owner = this.owner;
-      // Detached nodes are allowed to mutate and the "can perform mutations"
-      // check will be performed when they re-attach. This assert is only useful
-      // during layout.
-      if (owner == null || !owner.debugDoingLayout) {
-        result = true;
-        return true;
-      }
-
-      RenderObject? activeLayoutRoot = this;
-      while (activeLayoutRoot != null) {
-        final bool mutationsToDirtySubtreesAllowed = activeLayoutRoot.owner?._debugAllowMutationsToDirtySubtrees ?? false;
-        final bool doingLayoutWithCallback = activeLayoutRoot._doingThisLayoutWithCallback;
-        // Mutations on this subtree is allowed when:
-        // - the subtree is being mutated in a layout callback.
-        // - a different part of the render tree is doing a layout callback,
-        //   and this subtree is being reparented to that subtree, as a result
-        //   of global key reparenting.
-        if (doingLayoutWithCallback || mutationsToDirtySubtreesAllowed && activeLayoutRoot._needsLayout) {
+        final PipelineOwner? owner = this.owner;
+        // Detached nodes are allowed to mutate and the "can perform mutations"
+        // check will be performed when they re-attach. This assert is only useful
+        // during layout.
+        if (owner == null || !owner.debugDoingLayout) {
           result = true;
           return true;
         }
 
-        if (!activeLayoutRoot._debugMutationsLocked) {
-          final RenderObject? p = activeLayoutRoot.debugLayoutParent;
-          activeLayoutRoot = p is RenderObject ? p : null;
-        } else {
-          // activeLayoutRoot found.
-          break;
+        RenderObject? activeLayoutRoot = this;
+        while (activeLayoutRoot != null) {
+          final bool mutationsToDirtySubtreesAllowed =
+              activeLayoutRoot.owner?._debugAllowMutationsToDirtySubtrees ?? false;
+          final bool doingLayoutWithCallback = activeLayoutRoot._doingThisLayoutWithCallback;
+          // Mutations on this subtree is allowed when:
+          // - the subtree is being mutated in a layout callback.
+          // - a different part of the render tree is doing a layout callback,
+          //   and this subtree is being reparented to that subtree, as a result
+          //   of global key reparenting.
+          if (doingLayoutWithCallback || mutationsToDirtySubtreesAllowed && activeLayoutRoot._needsLayout) {
+            result = true;
+            return true;
+          }
+
+          if (!activeLayoutRoot._debugMutationsLocked) {
+            final RenderObject? p = activeLayoutRoot.debugLayoutParent;
+            activeLayoutRoot = p is RenderObject ? p : null;
+          } else {
+            // activeLayoutRoot found.
+            break;
+          }
         }
-      }
 
-      final RenderObject debugActiveLayout = RenderObject.debugActiveLayout!;
-      final String culpritMethodName = debugActiveLayout.debugDoingThisLayout ? 'performLayout' : 'performResize';
-      final String culpritFullMethodName = '${debugActiveLayout.runtimeType}.$culpritMethodName';
-      result = false;
+        final RenderObject debugActiveLayout = RenderObject.debugActiveLayout!;
+        final String culpritMethodName = debugActiveLayout.debugDoingThisLayout ? 'performLayout' : 'performResize';
+        final String culpritFullMethodName = '${debugActiveLayout.runtimeType}.$culpritMethodName';
+        result = false;
 
-      if (activeLayoutRoot == null) {
+        if (activeLayoutRoot == null) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('A $runtimeType was mutated in $culpritFullMethodName.'),
+            ErrorDescription('The RenderObject was mutated when none of its ancestors is actively performing layout.'),
+            DiagnosticsProperty<RenderObject>(
+              'The RenderObject being mutated was',
+              this,
+              style: DiagnosticsTreeStyle.errorProperty,
+            ),
+            DiagnosticsProperty<RenderObject>(
+              'The RenderObject that was mutating the said $runtimeType was',
+              debugActiveLayout,
+              style: DiagnosticsTreeStyle.errorProperty,
+            ),
+          ]);
+        }
+
+        if (activeLayoutRoot == this) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('A $runtimeType was mutated in its own $culpritMethodName implementation.'),
+            ErrorDescription('A RenderObject must not re-dirty itself while still being laid out.'),
+            DiagnosticsProperty<RenderObject>(
+              'The RenderObject being mutated was',
+              this,
+              style: DiagnosticsTreeStyle.errorProperty,
+            ),
+            ErrorHint('Consider using the LayoutBuilder widget to dynamically change a subtree during layout.'),
+          ]);
+        }
+
+        final ErrorSummary summary = ErrorSummary('A $runtimeType was mutated in $culpritFullMethodName.');
+        final bool isMutatedByAncestor = activeLayoutRoot == debugActiveLayout;
+        final String description = isMutatedByAncestor
+            ? 'A RenderObject must not mutate its descendants in its $culpritMethodName method.'
+            : 'A RenderObject must not mutate another RenderObject from a different render subtree '
+                'in its $culpritMethodName method.';
+
         throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('A $runtimeType was mutated in $culpritFullMethodName.'),
-          ErrorDescription(
-            'The RenderObject was mutated when none of its ancestors is actively performing layout.',
-          ),
+          summary,
+          ErrorDescription(description),
           DiagnosticsProperty<RenderObject>(
             'The RenderObject being mutated was',
             this,
             style: DiagnosticsTreeStyle.errorProperty,
           ),
           DiagnosticsProperty<RenderObject>(
-            'The RenderObject that was mutating the said $runtimeType was',
+            'The ${isMutatedByAncestor ? 'ancestor ' : ''}RenderObject that was mutating the said $runtimeType was',
             debugActiveLayout,
             style: DiagnosticsTreeStyle.errorProperty,
           ),
-        ]);
-      }
-
-      if (activeLayoutRoot == this) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('A $runtimeType was mutated in its own $culpritMethodName implementation.'),
-          ErrorDescription('A RenderObject must not re-dirty itself while still being laid out.'),
-          DiagnosticsProperty<RenderObject>(
-            'The RenderObject being mutated was',
-            this,
-            style: DiagnosticsTreeStyle.errorProperty,
+          if (!isMutatedByAncestor)
+            DiagnosticsProperty<RenderObject>(
+              'Their common ancestor was',
+              activeLayoutRoot,
+              style: DiagnosticsTreeStyle.errorProperty,
+            ),
+          ErrorHint(
+            'Mutating the layout of another RenderObject may cause some RenderObjects in its subtree to be laid out more than once. '
+            'Consider using the LayoutBuilder widget to dynamically mutate a subtree during layout.',
           ),
-          ErrorHint('Consider using the LayoutBuilder widget to dynamically change a subtree during layout.'),
         ]);
-      }
-
-      final ErrorSummary summary = ErrorSummary('A $runtimeType was mutated in $culpritFullMethodName.');
-      final bool isMutatedByAncestor = activeLayoutRoot == debugActiveLayout;
-      final String description = isMutatedByAncestor
-        ? 'A RenderObject must not mutate its descendants in its $culpritMethodName method.'
-        : 'A RenderObject must not mutate another RenderObject from a different render subtree '
-          'in its $culpritMethodName method.';
-
-      throw FlutterError.fromParts(<DiagnosticsNode>[
-        summary,
-        ErrorDescription(description),
-        DiagnosticsProperty<RenderObject>(
-          'The RenderObject being mutated was',
-          this,
-          style: DiagnosticsTreeStyle.errorProperty,
-        ),
-        DiagnosticsProperty<RenderObject>(
-          'The ${isMutatedByAncestor ? 'ancestor ' : ''}RenderObject that was mutating the said $runtimeType was',
-          debugActiveLayout,
-          style: DiagnosticsTreeStyle.errorProperty,
-        ),
-        if (!isMutatedByAncestor) DiagnosticsProperty<RenderObject>(
-          'Their common ancestor was',
-          activeLayoutRoot,
-          style: DiagnosticsTreeStyle.errorProperty,
-        ),
-        ErrorHint(
-          'Mutating the layout of another RenderObject may cause some RenderObjects in its subtree to be laid out more than once. '
-          'Consider using the LayoutBuilder widget to dynamically mutate a subtree during layout.'
-        ),
-      ]);
-    }());
+      }(),
+    );
     return result;
   }
 
@@ -2006,10 +2081,12 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   @protected
   RenderObject? get debugLayoutParent {
     RenderObject? layoutParent;
-    assert(() {
-      layoutParent = parent;
-      return true;
-    }());
+    assert(
+      () {
+        layoutParent = parent;
+        return true;
+      }(),
+    );
     return layoutParent;
   }
 
@@ -2095,12 +2172,15 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// It is intended to be used by tests and asserts.
   bool get debugNeedsLayout {
     late bool result;
-    assert(() {
-      result = _needsLayout;
-      return true;
-    }());
+    assert(
+      () {
+        result = _needsLayout;
+        return true;
+      }(),
+    );
     return result;
   }
+
   bool _needsLayout = true;
 
   RenderObject? _relayoutBoundary;
@@ -2120,6 +2200,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     }
     return _constraints!;
   }
+
   Constraints? _constraints;
 
   /// Verify that the object's constraints are being met. Override
@@ -2217,12 +2298,14 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     } else {
       _needsLayout = true;
       if (owner != null) {
-        assert(() {
-          if (debugPrintMarkNeedsLayoutStacks) {
-            debugPrintStack(label: 'markNeedsLayout() called for $this');
-          }
-          return true;
-        }());
+        assert(
+          () {
+            if (debugPrintMarkNeedsLayoutStacks) {
+              debugPrintStack(label: 'markNeedsLayout() called for $this');
+            }
+            return true;
+          }(),
+        );
         owner!._nodesNeedingLayout.add(this);
         owner!.requestVisualUpdate();
       }
@@ -2305,10 +2388,12 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     assert(!owner!._debugDoingLayout);
     assert(_relayoutBoundary == null);
     _relayoutBoundary = this;
-    assert(() {
-      _debugCanParentUseSize = false;
-      return true;
-    }());
+    assert(
+      () {
+        _debugCanParentUseSize = false;
+        return true;
+      }(),
+    );
     owner!._nodesNeedingLayout.add(this);
   }
 
@@ -2319,28 +2404,32 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     assert(!_debugMutationsLocked);
     assert(!_doingThisLayoutWithCallback);
     assert(_debugCanParentUseSize != null);
-    assert(() {
-      _debugMutationsLocked = true;
-      _debugDoingThisLayout = true;
-      debugPreviousActiveLayout = _debugActiveLayout;
-      _debugActiveLayout = this;
-      if (debugPrintLayouts) {
-        debugPrint('Laying out (without resize) $this');
-      }
-      return true;
-    }());
+    assert(
+      () {
+        _debugMutationsLocked = true;
+        _debugDoingThisLayout = true;
+        debugPreviousActiveLayout = _debugActiveLayout;
+        _debugActiveLayout = this;
+        if (debugPrintLayouts) {
+          debugPrint('Laying out (without resize) $this');
+        }
+        return true;
+      }(),
+    );
     try {
       performLayout();
       markNeedsSemanticsUpdate();
     } catch (e, stack) {
       _reportException('performLayout', e, stack);
     }
-    assert(() {
-      _debugActiveLayout = debugPreviousActiveLayout;
-      _debugDoingThisLayout = false;
-      _debugMutationsLocked = false;
-      return true;
-    }());
+    assert(
+      () {
+        _debugActiveLayout = debugPreviousActiveLayout;
+        _debugDoingThisLayout = false;
+        _debugMutationsLocked = false;
+        return true;
+      }(),
+    );
     _needsLayout = false;
     markNeedsPaint();
   }
@@ -2369,20 +2458,19 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// implemented here) to return early if the child does not need to do any
   /// work to update its layout information.
   @pragma('vm:notify-debugger-on-exception')
-  void layout(Constraints constraints, { bool parentUsesSize = false }) {
+  void layout(Constraints constraints, {bool parentUsesSize = false}) {
     assert(!_debugDisposed);
     if (!kReleaseMode && debugProfileLayoutsEnabled) {
       Map<String, String>? debugTimelineArguments;
-      assert(() {
-        if (debugEnhanceLayoutTimelineArguments) {
-          debugTimelineArguments = toDiagnosticsNode().toTimelineArguments();
-        }
-        return true;
-      }());
-      Timeline.startSync(
-        '$runtimeType',
-        arguments: debugTimelineArguments,
+      assert(
+        () {
+          if (debugEnhanceLayoutTimelineArguments) {
+            debugTimelineArguments = toDiagnosticsNode().toTimelineArguments();
+          }
+          return true;
+        }(),
       );
+      Timeline.startSync('$runtimeType', arguments: debugTimelineArguments);
     }
     assert(constraints.debugAssertIsValid(
       isAppliedConstraint: true,
@@ -2400,7 +2488,9 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
         if (targetFrame != null && targetFrame < stack.length) {
           final Pattern targetFramePattern = RegExp(r'^#[0-9]+ +(.+)$');
           final Match? targetFrameMatch = targetFramePattern.matchAsPrefix(stack[targetFrame]);
-          final String? problemFunction = (targetFrameMatch != null && targetFrameMatch.groupCount > 0) ? targetFrameMatch.group(1) : stack[targetFrame].trim();
+          final String? problemFunction = (targetFrameMatch != null && targetFrameMatch.groupCount > 0)
+              ? targetFrameMatch.group(1)
+              : stack[targetFrame].trim();
           return <DiagnosticsNode>[
             ErrorDescription(
               "These invalid constraints were provided to $runtimeType's layout() "
@@ -2417,25 +2507,29 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     assert(!_debugDoingThisLayout);
     final bool isRelayoutBoundary = !parentUsesSize || sizedByParent || constraints.isTight || parent is! RenderObject;
     final RenderObject relayoutBoundary = isRelayoutBoundary ? this : parent!._relayoutBoundary!;
-    assert(() {
-      _debugCanParentUseSize = parentUsesSize;
-      return true;
-    }());
+    assert(
+      () {
+        _debugCanParentUseSize = parentUsesSize;
+        return true;
+      }(),
+    );
 
     if (!_needsLayout && constraints == _constraints) {
-      assert(() {
-        // in case parentUsesSize changed since the last invocation, set size
-        // to itself, so it has the right internal debug values.
-        _debugDoingThisResize = sizedByParent;
-        _debugDoingThisLayout = !sizedByParent;
-        final RenderObject? debugPreviousActiveLayout = _debugActiveLayout;
-        _debugActiveLayout = this;
-        debugResetSize();
-        _debugActiveLayout = debugPreviousActiveLayout;
-        _debugDoingThisLayout = false;
-        _debugDoingThisResize = false;
-        return true;
-      }());
+      assert(
+        () {
+          // in case parentUsesSize changed since the last invocation, set size
+          // to itself, so it has the right internal debug values.
+          _debugDoingThisResize = sizedByParent;
+          _debugDoingThisLayout = !sizedByParent;
+          final RenderObject? debugPreviousActiveLayout = _debugActiveLayout;
+          _debugActiveLayout = this;
+          debugResetSize();
+          _debugActiveLayout = debugPreviousActiveLayout;
+          _debugDoingThisLayout = false;
+          _debugDoingThisResize = false;
+          return true;
+        }(),
+      );
 
       if (relayoutBoundary != _relayoutBoundary) {
         _relayoutBoundary = relayoutBoundary;
@@ -2457,55 +2551,69 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     _relayoutBoundary = relayoutBoundary;
     assert(!_debugMutationsLocked);
     assert(!_doingThisLayoutWithCallback);
-    assert(() {
-      _debugMutationsLocked = true;
-      if (debugPrintLayouts) {
-        debugPrint('Laying out (${sizedByParent ? "with separate resize" : "with resize allowed"}) $this');
-      }
-      return true;
-    }());
-    if (sizedByParent) {
-      assert(() {
-        _debugDoingThisResize = true;
+    assert(
+      () {
+        _debugMutationsLocked = true;
+        if (debugPrintLayouts) {
+          debugPrint('Laying out (${sizedByParent ? "with separate resize" : "with resize allowed"}) $this');
+        }
         return true;
-      }());
+      }(),
+    );
+    if (sizedByParent) {
+      assert(
+        () {
+          _debugDoingThisResize = true;
+          return true;
+        }(),
+      );
       try {
         performResize();
-        assert(() {
-          debugAssertDoesMeetConstraints();
-          return true;
-        }());
+        assert(
+          () {
+            debugAssertDoesMeetConstraints();
+            return true;
+          }(),
+        );
       } catch (e, stack) {
         _reportException('performResize', e, stack);
       }
-      assert(() {
-        _debugDoingThisResize = false;
-        return true;
-      }());
+      assert(
+        () {
+          _debugDoingThisResize = false;
+          return true;
+        }(),
+      );
     }
     RenderObject? debugPreviousActiveLayout;
-    assert(() {
-      _debugDoingThisLayout = true;
-      debugPreviousActiveLayout = _debugActiveLayout;
-      _debugActiveLayout = this;
-      return true;
-    }());
+    assert(
+      () {
+        _debugDoingThisLayout = true;
+        debugPreviousActiveLayout = _debugActiveLayout;
+        _debugActiveLayout = this;
+        return true;
+      }(),
+    );
     try {
       performLayout();
       markNeedsSemanticsUpdate();
-      assert(() {
-        debugAssertDoesMeetConstraints();
-        return true;
-      }());
+      assert(
+        () {
+          debugAssertDoesMeetConstraints();
+          return true;
+        }(),
+      );
     } catch (e, stack) {
       _reportException('performLayout', e, stack);
     }
-    assert(() {
-      _debugActiveLayout = debugPreviousActiveLayout;
-      _debugDoingThisLayout = false;
-      _debugMutationsLocked = false;
-      return true;
-    }());
+    assert(
+      () {
+        _debugActiveLayout = debugPreviousActiveLayout;
+        _debugDoingThisLayout = false;
+        _debugMutationsLocked = false;
+        return true;
+      }(),
+    );
     _needsLayout = false;
     markNeedsPaint();
 
@@ -2521,7 +2629,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// subclass should override [debugResetSize] to reapply the current values of
   /// [debugCanParentUseSize] to that state.
   @protected
-  void debugResetSize() { }
+  void debugResetSize() {}
 
   /// Whether the constraints are the only input to the sizing algorithm (in
   /// particular, child nodes have no impact).
@@ -2602,7 +2710,9 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     assert(!_doingThisLayoutWithCallback);
     _doingThisLayoutWithCallback = true;
     try {
-      owner!._enableMutationsToDirtySubtrees(() { callback(constraints as T); });
+      owner!._enableMutationsToDirtySubtrees(() {
+        callback(constraints as T);
+      });
     } finally {
       _doingThisLayoutWithCallback = false;
     }
@@ -2648,7 +2758,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   ///
   /// This can be used to record metrics about whether the node should actually
   /// be a repaint boundary.
-  void debugRegisterRepaintBoundaryPaint({ bool includedParent = true, bool includedChild = false }) { }
+  void debugRegisterRepaintBoundaryPaint({bool includedParent = true, bool includedChild = false}) {}
 
   /// Whether this render object always needs compositing.
   ///
@@ -2742,10 +2852,12 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// For production code, consider [layer].
   ContainerLayer? get debugLayer {
     ContainerLayer? result;
-    assert(() {
-      result = _layerHandle.layer;
-      return true;
-    }());
+    assert(
+      () {
+        result = _layerHandle.layer;
+        return true;
+      }(),
+    );
     return result;
   }
 
@@ -2852,12 +2964,15 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// render object is laid out, prior to the paint phase.
   bool get debugNeedsPaint {
     late bool result;
-    assert(() {
-      result = _needsPaint;
-      return true;
-    }());
+    assert(
+      () {
+        result = _needsPaint;
+        return true;
+      }(),
+    );
     return result;
   }
+
   bool _needsPaint = true;
 
   /// Whether this render object's layer information is dirty.
@@ -2870,12 +2985,15 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// It is intended to be used by tests and asserts.
   bool get debugNeedsCompositedLayerUpdate {
     late bool result;
-    assert(() {
-      result = _needsCompositedLayerUpdate;
-      return true;
-    }());
+    assert(
+      () {
+        result = _needsCompositedLayerUpdate;
+        return true;
+      }(),
+    );
     return result;
   }
+
   bool _needsCompositedLayerUpdate = false;
 
   /// Mark this render object as having changed its visual appearance.
@@ -2908,12 +3026,14 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     // If this was not previously a repaint boundary it will not have
     // a layer we can paint from.
     if (isRepaintBoundary && _wasRepaintBoundary) {
-      assert(() {
-        if (debugPrintMarkNeedsPaintStacks) {
-          debugPrintStack(label: 'markNeedsPaint() called for $this');
-        }
-        return true;
-      }());
+      assert(
+        () {
+          if (debugPrintMarkNeedsPaintStacks) {
+            debugPrintStack(label: 'markNeedsPaint() called for $this');
+          }
+          return true;
+        }(),
+      );
       // If we always have our own layer, then we can just repaint
       // ourselves without involving any other nodes.
       assert(_layerHandle.layer is OffsetLayer);
@@ -2924,12 +3044,14 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     } else if (parent is RenderObject) {
       parent!.markNeedsPaint();
     } else {
-      assert(() {
-        if (debugPrintMarkNeedsPaintStacks) {
-          debugPrintStack(label: 'markNeedsPaint() called for $this (root of render tree)');
-        }
-        return true;
-      }());
+      assert(
+        () {
+          if (debugPrintMarkNeedsPaintStacks) {
+            debugPrintStack(label: 'markNeedsPaint() called for $this (root of render tree)');
+          }
+          return true;
+        }(),
+      );
       // If we are the root of the render tree and not a repaint boundary
       // then we have to paint ourselves, since nobody else can paint us.
       // We don't add ourselves to _nodesNeedingPaint in this case,
@@ -3048,22 +3170,24 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
 
   void _paintWithContext(PaintingContext context, Offset offset) {
     assert(!_debugDisposed);
-    assert(() {
-      if (_debugDoingThisPaint) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Tried to paint a RenderObject reentrantly.'),
-          describeForError(
-            'The following RenderObject was already being painted when it was '
-            'painted again',
-          ),
-          ErrorDescription(
-            'Since this typically indicates an infinite recursion, it is '
-            'disallowed.',
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_debugDoingThisPaint) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Tried to paint a RenderObject reentrantly.'),
+            describeForError(
+              'The following RenderObject was already being painted when it was '
+              'painted again',
+            ),
+            ErrorDescription(
+              'Since this typically indicates an infinite recursion, it is '
+              'disallowed.',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     // If we still need layout, then that means that we were skipped in the
     // layout phase and therefore don't need painting. We might not know that
     // yet (that is, our layer might not have been detached yet), because the
@@ -3076,79 +3200,74 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     }
     if (!kReleaseMode && debugProfilePaintsEnabled) {
       Map<String, String>? debugTimelineArguments;
-      assert(() {
-        if (debugEnhancePaintTimelineArguments) {
-          debugTimelineArguments = toDiagnosticsNode().toTimelineArguments();
+      assert(
+        () {
+          if (debugEnhancePaintTimelineArguments) {
+            debugTimelineArguments = toDiagnosticsNode().toTimelineArguments();
+          }
+          return true;
+        }(),
+      );
+      Timeline.startSync('$runtimeType', arguments: debugTimelineArguments);
+    }
+    assert(
+      () {
+        if (_needsCompositingBitsUpdate) {
+          if (parent is RenderObject) {
+            final RenderObject parent = this.parent!;
+            bool visitedByParent = false;
+            parent.visitChildren((RenderObject child) {
+              if (child == this) {
+                visitedByParent = true;
+              }
+            });
+            if (!visitedByParent) {
+              throw FlutterError.fromParts(<DiagnosticsNode>[
+                ErrorSummary(
+                  "A RenderObject was not visited by the parent's visitChildren "
+                  'during paint.',
+                ),
+                parent.describeForError('The parent was'),
+                describeForError('The child that was not visited was'),
+                ErrorDescription(
+                  'A RenderObject with children must implement visitChildren and '
+                  'call the visitor exactly once for each child; it also should not '
+                  'paint children that were removed with dropChild.',
+                ),
+                ErrorHint('This usually indicates an error in the Flutter framework itself.'),
+              ]);
+            }
+          }
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'Tried to paint a RenderObject before its compositing bits were '
+              'updated.',
+            ),
+            describeForError(
+              'The following RenderObject was marked as having dirty compositing '
+              'bits at the time that it was painted',
+            ),
+            ErrorDescription(
+              'A RenderObject that still has dirty compositing bits cannot be '
+              'painted because this indicates that the tree has not yet been '
+              'properly configured for creating the layer tree.',
+            ),
+            ErrorHint('This usually indicates an error in the Flutter framework itself.'),
+          ]);
         }
         return true;
-      }());
-      Timeline.startSync(
-        '$runtimeType',
-        arguments: debugTimelineArguments,
-      );
-    }
-    assert(() {
-      if (_needsCompositingBitsUpdate) {
-        if (parent is RenderObject) {
-          final RenderObject parent = this.parent!;
-          bool visitedByParent = false;
-          parent.visitChildren((RenderObject child) {
-            if (child == this) {
-              visitedByParent = true;
-            }
-          });
-          if (!visitedByParent) {
-            throw FlutterError.fromParts(<DiagnosticsNode>[
-              ErrorSummary(
-                "A RenderObject was not visited by the parent's visitChildren "
-                'during paint.',
-              ),
-              parent.describeForError(
-                'The parent was',
-              ),
-              describeForError(
-                'The child that was not visited was',
-              ),
-              ErrorDescription(
-                'A RenderObject with children must implement visitChildren and '
-                'call the visitor exactly once for each child; it also should not '
-                'paint children that were removed with dropChild.',
-              ),
-              ErrorHint(
-                'This usually indicates an error in the Flutter framework itself.',
-              ),
-            ]);
-          }
-        }
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-            'Tried to paint a RenderObject before its compositing bits were '
-            'updated.',
-          ),
-          describeForError(
-            'The following RenderObject was marked as having dirty compositing '
-            'bits at the time that it was painted',
-          ),
-          ErrorDescription(
-            'A RenderObject that still has dirty compositing bits cannot be '
-            'painted because this indicates that the tree has not yet been '
-            'properly configured for creating the layer tree.',
-          ),
-          ErrorHint(
-            'This usually indicates an error in the Flutter framework itself.',
-          ),
-        ]);
-      }
-      return true;
-    }());
+      }(),
+    );
     RenderObject? debugLastActivePaint;
-    assert(() {
-      _debugDoingThisPaint = true;
-      debugLastActivePaint = _debugActivePaint;
-      _debugActivePaint = this;
-      assert(!isRepaintBoundary || _layerHandle.layer != null);
-      return true;
-    }());
+    assert(
+      () {
+        _debugDoingThisPaint = true;
+        debugLastActivePaint = _debugActivePaint;
+        _debugActivePaint = this;
+        assert(!isRepaintBoundary || _layerHandle.layer != null);
+        return true;
+      }(),
+    );
     _needsPaint = false;
     _needsCompositedLayerUpdate = false;
     _wasRepaintBoundary = isRepaintBoundary;
@@ -3159,12 +3278,14 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     } catch (e, stack) {
       _reportException('paint', e, stack);
     }
-    assert(() {
-      debugPaint(context, offset);
-      _debugActivePaint = debugLastActivePaint;
-      _debugDoingThisPaint = false;
-      return true;
-    }());
+    assert(
+      () {
+        debugPaint(context, offset);
+        _debugActivePaint = debugLastActivePaint;
+        _debugDoingThisPaint = false;
+        return true;
+      }(),
+    );
     if (!kReleaseMode && debugProfilePaintsEnabled) {
       Timeline.finishSync();
     }
@@ -3178,7 +3299,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   Rect get paintBounds;
 
   /// Override this method to paint debugging information.
-  void debugPaint(PaintingContext context, Offset offset) { }
+  void debugPaint(PaintingContext context, Offset offset) {}
 
   /// Paint this render object into the given context at the given offset.
   ///
@@ -3197,7 +3318,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// given context), the current canvas held by the context might change
   /// because draw operations before and after painting children might need to
   /// be recorded on separate compositing layers.
-  void paint(PaintingContext context, Offset offset) { }
+  void paint(PaintingContext context, Offset offset) {}
 
   /// Applies the transform that would be applied when painting the given child
   /// to the given matrix.
@@ -3272,7 +3393,6 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     }
     return transform;
   }
-
 
   /// Returns a rect in this object's coordinate system that describes
   /// the approximate bounding box of the clip rect that would be
@@ -3403,7 +3523,8 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
       _cachedSemanticsConfiguration = SemanticsConfiguration();
       describeSemanticsConfiguration(_cachedSemanticsConfiguration!);
       assert(
-        !_cachedSemanticsConfiguration!.explicitChildNodes || _cachedSemanticsConfiguration!.childConfigurationsDelegate == null,
+        !_cachedSemanticsConfiguration!.explicitChildNodes ||
+            _cachedSemanticsConfiguration!.childConfigurationsDelegate == null,
         'A SemanticsConfiguration with explicitChildNode set to true cannot have a non-null childConfigsDelegate.',
       );
     }
@@ -3465,11 +3586,11 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     // RenderObject are still up-to date. Therefore, we will later only rebuild
     // the semantics subtree starting at the identified semantics boundary.
 
-    final bool wasSemanticsBoundary = _semantics != null && (_cachedSemanticsConfiguration?.isSemanticBoundary ?? false);
+    final bool wasSemanticsBoundary =
+        _semantics != null && (_cachedSemanticsConfiguration?.isSemanticBoundary ?? false);
 
-    bool mayProduceSiblingNodes =
-      _cachedSemanticsConfiguration?.childConfigurationsDelegate != null ||
-      _semanticsConfiguration.childConfigurationsDelegate != null;
+    bool mayProduceSiblingNodes = _cachedSemanticsConfiguration?.childConfigurationsDelegate != null ||
+        _semanticsConfiguration.childConfigurationsDelegate != null;
     _cachedSemanticsConfiguration = null;
 
     bool isEffectiveSemanticsBoundary = _semanticsConfiguration.isSemanticBoundary && wasSemanticsBoundary;
@@ -3548,10 +3669,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   }
 
   /// Returns the semantics that this node would like to add to its parent.
-  _SemanticsFragment _getSemanticsForParent({
-    required bool mergeIntoParent,
-    required bool blockUserActions,
-  }) {
+  _SemanticsFragment _getSemanticsForParent({required bool mergeIntoParent, required bool blockUserActions}) {
     assert(!_needsLayout, 'Updated layout information required for $this to calculate semantics.');
 
     final SemanticsConfiguration config = _semanticsConfiguration;
@@ -3562,9 +3680,11 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     final List<SemanticsConfiguration> childConfigurations = <SemanticsConfiguration>[];
     final bool explicitChildNode = config.explicitChildNodes || parent is! RenderObject;
     final bool hasChildConfigurationsDelegate = config.childConfigurationsDelegate != null;
-    final Map<SemanticsConfiguration, _InterestingSemanticsFragment> configToFragment = <SemanticsConfiguration, _InterestingSemanticsFragment>{};
+    final Map<SemanticsConfiguration, _InterestingSemanticsFragment> configToFragment =
+        <SemanticsConfiguration, _InterestingSemanticsFragment>{};
     final List<_InterestingSemanticsFragment> mergeUpFragments = <_InterestingSemanticsFragment>[];
-    final List<List<_InterestingSemanticsFragment>> siblingMergeFragmentGroups = <List<_InterestingSemanticsFragment>>[];
+    final List<List<_InterestingSemanticsFragment>> siblingMergeFragmentGroups =
+        <List<_InterestingSemanticsFragment>>[];
     final bool hasTags = config.tagsForChildren?.isNotEmpty ?? false;
     visitChildrenForSemantics((RenderObject renderChild) {
       assert(!_needsLayout);
@@ -3617,18 +3737,16 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
       }
     } else if (hasChildConfigurationsDelegate) {
       final ChildSemanticsConfigurationsResult result = config.childConfigurationsDelegate!(childConfigurations);
-      mergeUpFragments.addAll(
-        result.mergeUp.map<_InterestingSemanticsFragment>((SemanticsConfiguration config) {
-          final _InterestingSemanticsFragment? fragment = configToFragment[config];
-          if (fragment == null) {
-            // Parent fragment of Incomplete fragments can't be a forking
-            // fragment since they need to be merged.
-            producesForkingFragment = false;
-            return _IncompleteSemanticsFragment(config: config, owner: this);
-          }
-          return fragment;
-        }),
-      );
+      mergeUpFragments.addAll(result.mergeUp.map<_InterestingSemanticsFragment>((SemanticsConfiguration config) {
+        final _InterestingSemanticsFragment? fragment = configToFragment[config];
+        if (fragment == null) {
+          // Parent fragment of Incomplete fragments can't be a forking
+          // fragment since they need to be merged.
+          producesForkingFragment = false;
+          return _IncompleteSemanticsFragment(config: config, owner: this);
+        }
+        return fragment;
+      }));
       for (final Iterable<SemanticsConfiguration> group in result.siblingMergeGroups) {
         siblingMergeFragmentGroups.add(
           group.map<_InterestingSemanticsFragment>((SemanticsConfiguration config) {
@@ -3647,10 +3765,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
       assert(siblingMergeFragmentGroups.isEmpty);
       _marksExplicitInMergeGroup(mergeUpFragments, isMergeUp: true);
       siblingMergeFragmentGroups.forEach(_marksExplicitInMergeGroup);
-      result = _RootSemanticsFragment(
-        owner: this,
-        dropsSemanticsOfPreviousSiblings: dropSemanticsOfPreviousSiblings,
-      );
+      result = _RootSemanticsFragment(owner: this, dropsSemanticsOfPreviousSiblings: dropSemanticsOfPreviousSiblings);
     } else if (producesForkingFragment) {
       result = _ContainerSemanticsFragment(
         siblingMergeGroups: siblingMergeFragmentGroups,
@@ -3726,11 +3841,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// Subclasses can override this method to add additional [SemanticsNode]s
   /// to the tree. If new [SemanticsNode]s are instantiated in this method
   /// they must be disposed in [clearSemantics].
-  void assembleSemanticsNode(
-    SemanticsNode node,
-    SemanticsConfiguration config,
-    Iterable<SemanticsNode> children,
-  ) {
+  void assembleSemanticsNode(SemanticsNode node, SemanticsConfiguration config, Iterable<SemanticsNode> children) {
     assert(node == _semantics);
     // TODO(a14n): remove the following cast by updating type of parameter in either updateWith or assembleSemanticsNode
     node.updateWith(config: config, childrenInInversePaintOrder: children as List<SemanticsNode>);
@@ -3740,8 +3851,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
 
   /// Override this method to handle pointer events that hit this render object.
   @override
-  void handleEvent(PointerEvent event, covariant HitTestEntry entry) { }
-
+  void handleEvent(PointerEvent event, covariant HitTestEntry entry) {}
 
   // HIT TESTING
 
@@ -3761,7 +3871,6 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   //
   // If you add yourself to /result/ and still return false, then that means you
   // will see events but so will objects below you.
-
 
   /// Returns a human understandable name.
   @override
@@ -3798,7 +3907,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   }
 
   @override
-  String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) => toStringShort();
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) => toStringShort();
 
   /// Returns a description of the tree rooted at this node.
   /// If the prefix argument is provided, then every line in the output
@@ -3809,11 +3918,9 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     String? prefixOtherLines = '',
     DiagnosticLevel minLevel = DiagnosticLevel.debug,
   }) {
-    return _withDebugActiveLayoutCleared(() => super.toStringDeep(
-          prefixLineOne: prefixLineOne,
-          prefixOtherLines: prefixOtherLines,
-          minLevel: minLevel,
-        ));
+    return _withDebugActiveLayoutCleared(
+      () => super.toStringDeep(prefixLineOne: prefixLineOne, prefixOtherLines: prefixOtherLines, minLevel: minLevel),
+    );
   }
 
   /// Returns a one-line detailed description of the render object.
@@ -3822,10 +3929,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   /// This includes the same information for this RenderObject as given by
   /// [toStringDeep], but does not recurse to any children.
   @override
-  String toStringShallow({
-    String joiner = ', ',
-    DiagnosticLevel minLevel = DiagnosticLevel.debug,
-  }) {
+  String toStringShallow({String joiner = ', ', DiagnosticLevel minLevel = DiagnosticLevel.debug}) {
     return _withDebugActiveLayoutCleared(() => super.toStringShallow(joiner: joiner, minLevel: minLevel));
   }
 
@@ -3834,8 +3938,15 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(FlagProperty('needsCompositing', value: _needsCompositing, ifTrue: 'needs compositing'));
-    properties.add(DiagnosticsProperty<Object?>('creator', debugCreator, defaultValue: null, level: DiagnosticLevel.debug));
-    properties.add(DiagnosticsProperty<ParentData>('parentData', parentData, tooltip: (_debugCanParentUseSize ?? false) ? 'can use size' : null, missingIfNull: true));
+    properties.add(
+      DiagnosticsProperty<Object?>('creator', debugCreator, defaultValue: null, level: DiagnosticLevel.debug),
+    );
+    properties.add(DiagnosticsProperty<ParentData>(
+      'parentData',
+      parentData,
+      tooltip: (_debugCanParentUseSize ?? false) ? 'can use size' : null,
+      missingIfNull: true,
+    ));
     properties.add(DiagnosticsProperty<Constraints>('constraints', _constraints, missingIfNull: true));
     // don't access it via the "layer" getter since that's only valid when we don't need paint
     properties.add(DiagnosticsProperty<ContainerLayer>('layer', _layerHandle.layer, defaultValue: null));
@@ -3845,7 +3956,11 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
       value: _semanticsConfiguration.isBlockingSemanticsOfPreviouslyPaintedNodes,
       ifTrue: 'blocks semantics of earlier render objects below the common boundary',
     ));
-    properties.add(FlagProperty('isSemanticBoundary', value: _semanticsConfiguration.isSemanticBoundary, ifTrue: 'semantic boundary'));
+    properties.add(FlagProperty(
+      'isSemanticBoundary',
+      value: _semanticsConfiguration.isSemanticBoundary,
+      ifTrue: 'semantic boundary',
+    ));
   }
 
   @override
@@ -3878,12 +3993,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
     Curve curve = Curves.ease,
   }) {
     if (parent is RenderObject) {
-      parent!.showOnScreen(
-        descendant: descendant ?? this,
-        rect: rect,
-        duration: duration,
-        curve: curve,
-      );
+      parent!.showOnScreen(descendant: descendant ?? this, rect: rect, duration: duration, curve: curve);
     }
   }
 
@@ -3896,7 +4006,7 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
   ///
   /// You should always include a RenderObject in an error message if it is the
   /// [RenderObject] causing the failure or contract violation of the error.
-  DiagnosticsNode describeForError(String name, { DiagnosticsTreeStyle style = DiagnosticsTreeStyle.shallow }) {
+  DiagnosticsNode describeForError(String name, {DiagnosticsTreeStyle style = DiagnosticsTreeStyle.shallow}) {
     return toDiagnosticsNode(name: name, style: style);
   }
 }
@@ -3909,7 +4019,6 @@ abstract class RenderObject with DiagnosticableTreeMixin implements HitTestTarge
 /// This mixin is typically used to implement render objects created
 /// in a [SingleChildRenderObjectWidget].
 mixin RenderObjectWithChildMixin<ChildType extends RenderObject> on RenderObject {
-
   /// Checks whether the given render object has the correct [runtimeType] to be
   /// a child of this render object.
   ///
@@ -3917,40 +4026,43 @@ mixin RenderObjectWithChildMixin<ChildType extends RenderObject> on RenderObject
   ///
   /// Always returns true.
   bool debugValidateChild(RenderObject child) {
-    assert(() {
-      if (child is! ChildType) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-            'A $runtimeType expected a child of type $ChildType but received a '
-            'child of type ${child.runtimeType}.',
-          ),
-          ErrorDescription(
-            'RenderObjects expect specific types of children because they '
-            'coordinate with their children during layout and paint. For '
-            'example, a RenderSliver cannot be the child of a RenderBox because '
-            'a RenderSliver does not understand the RenderBox layout protocol.',
-          ),
-          ErrorSpacer(),
-          DiagnosticsProperty<Object?>(
-            'The $runtimeType that expected a $ChildType child was created by',
-            debugCreator,
-            style: DiagnosticsTreeStyle.errorProperty,
-          ),
-          ErrorSpacer(),
-          DiagnosticsProperty<Object?>(
-            'The ${child.runtimeType} that did not match the expected child type '
-            'was created by',
-            child.debugCreator,
-            style: DiagnosticsTreeStyle.errorProperty,
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (child is! ChildType) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'A $runtimeType expected a child of type $ChildType but received a '
+              'child of type ${child.runtimeType}.',
+            ),
+            ErrorDescription(
+              'RenderObjects expect specific types of children because they '
+              'coordinate with their children during layout and paint. For '
+              'example, a RenderSliver cannot be the child of a RenderBox because '
+              'a RenderSliver does not understand the RenderBox layout protocol.',
+            ),
+            ErrorSpacer(),
+            DiagnosticsProperty<Object?>(
+              'The $runtimeType that expected a $ChildType child was created by',
+              debugCreator,
+              style: DiagnosticsTreeStyle.errorProperty,
+            ),
+            ErrorSpacer(),
+            DiagnosticsProperty<Object?>(
+              'The ${child.runtimeType} that did not match the expected child type '
+              'was created by',
+              child.debugCreator,
+              style: DiagnosticsTreeStyle.errorProperty,
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     return true;
   }
 
   ChildType? _child;
+
   /// The render object's unique child.
   ChildType? get child => _child;
   set child(ChildType? value) {
@@ -4004,6 +4116,7 @@ mixin RenderObjectWithChildMixin<ChildType extends RenderObject> on RenderObject
 mixin ContainerParentDataMixin<ChildType extends RenderObject> on ParentData {
   /// The previous sibling in the parent's child list.
   ChildType? previousSibling;
+
   /// The next sibling in the parent's child list.
   ChildType? nextSibling;
 
@@ -4039,8 +4152,11 @@ mixin ContainerParentDataMixin<ChildType extends RenderObject> on ParentData {
 ///
 ///  * [SlottedContainerRenderObjectMixin], which organizes its children
 ///    in different named slots.
-mixin ContainerRenderObjectMixin<ChildType extends RenderObject, ParentDataType extends ContainerParentDataMixin<ChildType>> on RenderObject {
-  bool _debugUltimatePreviousSiblingOf(ChildType child, { ChildType? equals }) {
+mixin ContainerRenderObjectMixin<
+  ChildType extends RenderObject,
+  ParentDataType extends ContainerParentDataMixin<ChildType>
+> on RenderObject {
+  bool _debugUltimatePreviousSiblingOf(ChildType child, {ChildType? equals}) {
     ParentDataType childParentData = child.parentData! as ParentDataType;
     while (childParentData.previousSibling != null) {
       assert(childParentData.previousSibling != child);
@@ -4049,7 +4165,8 @@ mixin ContainerRenderObjectMixin<ChildType extends RenderObject, ParentDataType 
     }
     return child == equals;
   }
-  bool _debugUltimateNextSiblingOf(ChildType child, { ChildType? equals }) {
+
+  bool _debugUltimateNextSiblingOf(ChildType child, {ChildType? equals}) {
     ParentDataType childParentData = child.parentData! as ParentDataType;
     while (childParentData.nextSibling != null) {
       assert(childParentData.nextSibling != child);
@@ -4060,6 +4177,7 @@ mixin ContainerRenderObjectMixin<ChildType extends RenderObject, ParentDataType 
   }
 
   int _childCount = 0;
+
   /// The number of children.
   int get childCount => _childCount;
 
@@ -4070,42 +4188,44 @@ mixin ContainerRenderObjectMixin<ChildType extends RenderObject, ParentDataType 
   ///
   /// Always returns true.
   bool debugValidateChild(RenderObject child) {
-    assert(() {
-      if (child is! ChildType) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-            'A $runtimeType expected a child of type $ChildType but received a '
-            'child of type ${child.runtimeType}.',
-          ),
-          ErrorDescription(
-            'RenderObjects expect specific types of children because they '
-            'coordinate with their children during layout and paint. For '
-            'example, a RenderSliver cannot be the child of a RenderBox because '
-            'a RenderSliver does not understand the RenderBox layout protocol.',
-          ),
-          ErrorSpacer(),
-          DiagnosticsProperty<Object?>(
-            'The $runtimeType that expected a $ChildType child was created by',
-            debugCreator,
-            style: DiagnosticsTreeStyle.errorProperty,
-          ),
-          ErrorSpacer(),
-          DiagnosticsProperty<Object?>(
-            'The ${child.runtimeType} that did not match the expected child type '
-            'was created by',
-            child.debugCreator,
-            style: DiagnosticsTreeStyle.errorProperty,
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (child is! ChildType) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'A $runtimeType expected a child of type $ChildType but received a '
+              'child of type ${child.runtimeType}.',
+            ),
+            ErrorDescription(
+              'RenderObjects expect specific types of children because they '
+              'coordinate with their children during layout and paint. For '
+              'example, a RenderSliver cannot be the child of a RenderBox because '
+              'a RenderSliver does not understand the RenderBox layout protocol.',
+            ),
+            ErrorSpacer(),
+            DiagnosticsProperty<Object?>(
+              'The $runtimeType that expected a $ChildType child was created by',
+              debugCreator,
+              style: DiagnosticsTreeStyle.errorProperty,
+            ),
+            ErrorSpacer(),
+            DiagnosticsProperty<Object?>(
+              'The ${child.runtimeType} that did not match the expected child type '
+              'was created by',
+              child.debugCreator,
+              style: DiagnosticsTreeStyle.errorProperty,
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     return true;
   }
 
   ChildType? _firstChild;
   ChildType? _lastChild;
-  void _insertIntoChildList(ChildType child, { ChildType? after }) {
+  void _insertIntoChildList(ChildType child, {ChildType? after}) {
     final ParentDataType childParentData = child.parentData! as ParentDataType;
     assert(childParentData.nextSibling == null);
     assert(childParentData.previousSibling == null);
@@ -4138,7 +4258,8 @@ mixin ContainerRenderObjectMixin<ChildType extends RenderObject, ParentDataType 
         childParentData.nextSibling = afterParentData.nextSibling;
         childParentData.previousSibling = after;
         // set up links from siblings to child
-        final ParentDataType childPreviousSiblingParentData = childParentData.previousSibling!.parentData! as ParentDataType;
+        final ParentDataType childPreviousSiblingParentData =
+            childParentData.previousSibling!.parentData! as ParentDataType;
         final ParentDataType childNextSiblingParentData = childParentData.nextSibling!.parentData! as ParentDataType;
         childPreviousSiblingParentData.nextSibling = child;
         childNextSiblingParentData.previousSibling = child;
@@ -4151,9 +4272,12 @@ mixin ContainerRenderObjectMixin<ChildType extends RenderObject, ParentDataType 
   ///
   /// If `after` is null, then this inserts the child at the start of the list,
   /// and the child becomes the new [firstChild].
-  void insert(ChildType child, { ChildType? after }) {
+  void insert(ChildType child, {ChildType? after}) {
     assert(child != this, 'A RenderObject cannot be inserted into itself.');
-    assert(after != this, 'A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject.');
+    assert(
+      after != this,
+      'A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject.',
+    );
     assert(child != after, 'A RenderObject cannot be inserted after itself.');
     assert(child != _firstChild);
     assert(child != _lastChild);
@@ -4180,7 +4304,8 @@ mixin ContainerRenderObjectMixin<ChildType extends RenderObject, ParentDataType 
       assert(_firstChild == child);
       _firstChild = childParentData.nextSibling;
     } else {
-      final ParentDataType childPreviousSiblingParentData = childParentData.previousSibling!.parentData! as ParentDataType;
+      final ParentDataType childPreviousSiblingParentData =
+          childParentData.previousSibling!.parentData! as ParentDataType;
       childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
     }
     if (childParentData.nextSibling == null) {
@@ -4226,7 +4351,7 @@ mixin ContainerRenderObjectMixin<ChildType extends RenderObject, ParentDataType 
   /// More efficient than removing and re-adding the child. Requires the child
   /// to already be in the child list at some position. Pass null for `after` to
   /// move the child to the start of the child list.
-  void move(ChildType child, { ChildType? after }) {
+  void move(ChildType child, {ChildType? after}) {
     assert(child != this);
     assert(after != this);
     assert(child != after);
@@ -4329,7 +4454,6 @@ mixin ContainerRenderObjectMixin<ChildType extends RenderObject, ParentDataType 
 /// mixin if the [RenderObject] uses [TextPainter] or [Paragraph] to correctly
 /// update the text when it happens.
 mixin RelayoutWhenSystemFontsChangeMixin on RenderObject {
-
   /// A callback that is called when system fonts have changed.
   ///
   /// The framework defers the invocation of the callback to the
@@ -4399,9 +4523,7 @@ mixin RelayoutWhenSystemFontsChangeMixin on RenderObject {
 ///  * [_ContainerSemanticsFragment]: a container class to transport the semantic
 ///    information of multiple [_InterestingSemanticsFragment] to a parent.
 abstract class _SemanticsFragment {
-  _SemanticsFragment({
-    required this.dropsSemanticsOfPreviousSiblings,
-  });
+  _SemanticsFragment({required this.dropsSemanticsOfPreviousSiblings});
 
   /// Incorporate the fragments of children into this fragment.
   void addAll(Iterable<_InterestingSemanticsFragment> fragments);
@@ -4426,10 +4548,7 @@ abstract class _SemanticsFragment {
 /// The [_InterestingSemanticsFragment] to be added to the parent can be
 /// obtained via [mergeUpFragments].
 class _ContainerSemanticsFragment extends _SemanticsFragment {
-  _ContainerSemanticsFragment({
-    required super.dropsSemanticsOfPreviousSiblings,
-    required this.siblingMergeGroups,
-  });
+  _ContainerSemanticsFragment({required super.dropsSemanticsOfPreviousSiblings, required this.siblingMergeGroups});
 
   final List<List<_InterestingSemanticsFragment>> siblingMergeGroups;
 
@@ -4449,10 +4568,8 @@ class _ContainerSemanticsFragment extends _SemanticsFragment {
 /// should be added to the parent's [SemanticsNode] and which [config] should be
 /// merged into the parent's [SemanticsNode].
 abstract class _InterestingSemanticsFragment extends _SemanticsFragment {
-  _InterestingSemanticsFragment({
-    required RenderObject owner,
-    required super.dropsSemanticsOfPreviousSiblings,
-  }) : _ancestorChain = <RenderObject>[owner];
+  _InterestingSemanticsFragment({required RenderObject owner, required super.dropsSemanticsOfPreviousSiblings})
+    : _ancestorChain = <RenderObject>[owner];
 
   /// The [RenderObject] that owns this fragment (and any new [SemanticsNode]
   /// introduced by it).
@@ -4537,10 +4654,7 @@ abstract class _InterestingSemanticsFragment extends _SemanticsFragment {
 /// The root node is available as the only element in the Iterable returned by
 /// [children].
 class _RootSemanticsFragment extends _InterestingSemanticsFragment {
-  _RootSemanticsFragment({
-    required super.owner,
-    required super.dropsSemanticsOfPreviousSiblings,
-  });
+  _RootSemanticsFragment({required super.owner, required super.dropsSemanticsOfPreviousSiblings});
 
   @override
   void compileChildren({
@@ -4556,10 +4670,7 @@ class _RootSemanticsFragment extends _InterestingSemanticsFragment {
     assert(_ancestorChain.length == 1);
     assert(elevationAdjustment == 0.0);
 
-    owner._semantics ??= SemanticsNode.root(
-      showOnScreen: owner.showOnScreen,
-      owner: owner.owner!.semanticsOwner!,
-    );
+    owner._semantics ??= SemanticsNode.root(showOnScreen: owner.showOnScreen, owner: owner.owner!.semanticsOwner!);
     final SemanticsNode node = owner._semantics!;
     assert(MatrixUtils.matrixEquals(node.transform, Matrix4.identity()));
     assert(node.parentSemanticsClipRect == null);
@@ -4613,10 +4724,8 @@ class _RootSemanticsFragment extends _InterestingSemanticsFragment {
 /// This fragment is generated from synthetic SemanticsConfiguration returned from
 /// [SemanticsConfiguration.childConfigurationsDelegate].
 class _IncompleteSemanticsFragment extends _InterestingSemanticsFragment {
-  _IncompleteSemanticsFragment({
-    required this.config,
-    required super.owner,
-  }) : super(dropsSemanticsOfPreviousSiblings: false);
+  _IncompleteSemanticsFragment({required this.config, required super.owner})
+    : super(dropsSemanticsOfPreviousSiblings: false);
 
   @override
   void addAll(Iterable<_InterestingSemanticsFragment> fragments) {
@@ -4644,7 +4753,7 @@ class _IncompleteSemanticsFragment extends _InterestingSemanticsFragment {
       false,
       'SemanticsConfiguration created in '
       'SemanticsConfiguration.childConfigurationsDelegate must not produce '
-      'its own semantics node'
+      'its own semantics node',
     );
   }
 }
@@ -4691,7 +4800,12 @@ class _SwitchableSemanticsFragment extends _InterestingSemanticsFragment {
 
   final List<List<_InterestingSemanticsFragment>> _siblingMergeGroups;
 
-  void _mergeSiblingGroup(Rect? parentSemanticsClipRect, Rect? parentPaintClipRect, List<SemanticsNode> result, Set<int> usedSemanticsIds) {
+  void _mergeSiblingGroup(
+    Rect? parentSemanticsClipRect,
+    Rect? parentPaintClipRect,
+    List<SemanticsNode> result,
+    Set<int> usedSemanticsIds,
+  ) {
     for (final List<_InterestingSemanticsFragment> group in _siblingMergeGroups) {
       Rect? rect;
       Rect? semanticsClipRect;
@@ -4785,12 +4899,7 @@ class _SwitchableSemanticsFragment extends _InterestingSemanticsFragment {
       if (!_mergesToSibling) {
         owner._semantics = null;
       }
-      _mergeSiblingGroup(
-        parentSemanticsClipRect,
-        parentPaintClipRect,
-        siblingNodes,
-        usedSemanticsIds,
-      );
+      _mergeSiblingGroup(parentSemanticsClipRect, parentPaintClipRect, siblingNodes, usedSemanticsIds);
       for (final _InterestingSemanticsFragment fragment in compilingFragments) {
         assert(_ancestorChain.first == fragment._ancestorChain.last);
         if (fragment is _SwitchableSemanticsFragment) {
@@ -4851,12 +4960,7 @@ class _SwitchableSemanticsFragment extends _InterestingSemanticsFragment {
       }
     }
     final List<SemanticsNode> children = <SemanticsNode>[];
-    _mergeSiblingGroup(
-      node.parentSemanticsClipRect,
-      node.parentPaintClipRect,
-      siblingNodes,
-      usedSemanticsIds,
-    );
+    _mergeSiblingGroup(node.parentSemanticsClipRect, node.parentPaintClipRect, siblingNodes, usedSemanticsIds);
     for (final _InterestingSemanticsFragment fragment in compilingFragments) {
       if (fragment is _SwitchableSemanticsFragment) {
         // Cached semantics node may be part of sibling merging group prior
@@ -4908,8 +5012,12 @@ class _SwitchableSemanticsFragment extends _InterestingSemanticsFragment {
     required Rect? parentPaintClipRect,
   }) {
     return _needsGeometryUpdate
-      ? _SemanticsGeometry(parentSemanticsClipRect: parentSemanticsClipRect, parentPaintClipRect: parentPaintClipRect, ancestors: _ancestorChain)
-      : null;
+        ? _SemanticsGeometry(
+            parentSemanticsClipRect: parentSemanticsClipRect,
+            parentPaintClipRect: parentPaintClipRect,
+            ancestors: _ancestorChain,
+          )
+        : null;
   }
 
   @override
@@ -4962,7 +5070,6 @@ class _SwitchableSemanticsFragment extends _InterestingSemanticsFragment {
 /// It is used to annotate a [SemanticsNode] with the current information for
 /// [SemanticsNode.rect] and [SemanticsNode.transform].
 class _SemanticsGeometry {
-
   /// The `parentClippingRect` may be null if no clip is to be applied.
   ///
   /// The `ancestors` list has to include all [RenderObject] in order that are
@@ -5006,9 +5113,9 @@ class _SemanticsGeometry {
     _transform = Matrix4.identity();
     _semanticsClipRect = parentSemanticsClipRect;
     _paintClipRect = parentPaintClipRect;
-    for (int index = ancestors.length-1; index > 0; index -= 1) {
+    for (int index = ancestors.length - 1; index > 0; index -= 1) {
       final RenderObject parent = ancestors[index];
-      final RenderObject child = ancestors[index-1];
+      final RenderObject child = ancestors[index - 1];
       final Rect? parentSemanticsClipRect = parent.describeSemanticsClip(child);
       if (parentSemanticsClipRect != null) {
         _semanticsClipRect = parentSemanticsClipRect;
@@ -5114,10 +5221,5 @@ class _SemanticsGeometry {
 class DiagnosticsDebugCreator extends DiagnosticsProperty<Object> {
   /// Create a [DiagnosticsProperty] with its [value] initialized to input
   /// [RenderObject.debugCreator].
-  DiagnosticsDebugCreator(Object value)
-    : super(
-        'debugCreator',
-        value,
-        level: DiagnosticLevel.hidden,
-      );
+  DiagnosticsDebugCreator(Object value) : super('debugCreator', value, level: DiagnosticLevel.hidden);
 }

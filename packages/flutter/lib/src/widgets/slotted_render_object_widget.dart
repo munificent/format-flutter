@@ -46,10 +46,11 @@ import 'framework.dart';
 ///     with a single list of children.
 ///   * [ListTile], which uses [SlottedMultiChildRenderObjectWidget] in its
 ///     internal (private) implementation.
-abstract class SlottedMultiChildRenderObjectWidget<SlotType, ChildType extends RenderObject> extends RenderObjectWidget with SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType> {
+abstract class SlottedMultiChildRenderObjectWidget<SlotType, ChildType extends RenderObject> extends RenderObjectWidget
+    with SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType> {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
-  const SlottedMultiChildRenderObjectWidget({ super.key });
+  const SlottedMultiChildRenderObjectWidget({super.key});
 }
 
 /// A mixin version of [SlottedMultiChildRenderObjectWidget].
@@ -60,7 +61,7 @@ abstract class SlottedMultiChildRenderObjectWidget<SlotType, ChildType extends R
 /// It was deprecated to simplify the process of creating slotted widgets.
 @Deprecated(
   'Extend SlottedMultiChildRenderObjectWidget instead of mixing in SlottedMultiChildRenderObjectWidgetMixin. '
-  'This feature was deprecated after v3.10.0-1.5.pre.'
+  'This feature was deprecated after v3.10.0-1.5.pre.',
 )
 mixin SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType extends RenderObject> on RenderObjectWidget {
   /// Returns a list of all available slots.
@@ -89,7 +90,9 @@ mixin SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType extends Rende
   void updateRenderObject(BuildContext context, SlottedContainerRenderObjectMixin<SlotType, ChildType> renderObject);
 
   @override
-  SlottedRenderObjectElement<SlotType, ChildType> createElement() => SlottedRenderObjectElement<SlotType, ChildType>(this);
+  SlottedRenderObjectElement<SlotType, ChildType> createElement() => SlottedRenderObjectElement<SlotType, ChildType>(
+    this,
+  );
 }
 
 /// Mixin for a [RenderObject] configured by a [SlottedMultiChildRenderObjectWidget].
@@ -227,7 +230,8 @@ class SlottedRenderObjectElement<SlotType, ChildType extends RenderObject> exten
   Map<Key, Element> _keyedChildren = <Key, Element>{};
 
   @override
-  SlottedContainerRenderObjectMixin<SlotType, ChildType> get renderObject => super.renderObject as SlottedContainerRenderObjectMixin<SlotType, ChildType>;
+  SlottedContainerRenderObjectMixin<SlotType, ChildType> get renderObject =>
+      super.renderObject as SlottedContainerRenderObjectMixin<SlotType, ChildType>;
 
   @override
   void visitChildren(ElementVisitor visitor) {
@@ -259,12 +263,20 @@ class SlottedRenderObjectElement<SlotType, ChildType extends RenderObject> exten
   List<SlotType>? _debugPreviousSlots;
 
   void _updateChildren() {
-    final SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType> slottedMultiChildRenderObjectWidgetMixin = widget as SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>;
-    assert(() {
-      _debugPreviousSlots ??= slottedMultiChildRenderObjectWidgetMixin.slots.toList();
-      return listEquals(_debugPreviousSlots, slottedMultiChildRenderObjectWidgetMixin.slots.toList());
-    }(), '${widget.runtimeType}.slots must not change.');
-    assert(slottedMultiChildRenderObjectWidgetMixin.slots.toSet().length == slottedMultiChildRenderObjectWidgetMixin.slots.length, 'slots must be unique');
+    final SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType> slottedMultiChildRenderObjectWidgetMixin =
+        widget as SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>;
+    assert(
+      () {
+        _debugPreviousSlots ??= slottedMultiChildRenderObjectWidgetMixin.slots.toList();
+        return listEquals(_debugPreviousSlots, slottedMultiChildRenderObjectWidgetMixin.slots.toList());
+      }(),
+      '${widget.runtimeType}.slots must not change.',
+    );
+    assert(
+      slottedMultiChildRenderObjectWidgetMixin.slots.toSet().length ==
+          slottedMultiChildRenderObjectWidgetMixin.slots.length,
+      'slots must be unique',
+    );
 
     final Map<Key, Element> oldKeyedElements = _keyedChildren;
     _keyedChildren = <Key, Element>{};
@@ -298,22 +310,27 @@ class SlottedRenderObjectElement<SlotType, ChildType extends RenderObject> exten
         _slotToChild[slot] = newChild;
 
         if (newWidgetKey != null) {
-          assert(() {
-            final Element? existingElement = _keyedChildren[newWidgetKey];
-            if (existingElement != null) {
-              (debugDuplicateKeys ??= <Key, List<Element>>{})
-                .putIfAbsent(newWidgetKey, () => <Element>[existingElement])
-                .add(newChild);
-            }
-            return true;
-          }());
+          assert(
+            () {
+              final Element? existingElement = _keyedChildren[newWidgetKey];
+              if (existingElement != null) {
+                (debugDuplicateKeys ??= <Key, List<Element>>{})
+                    .putIfAbsent(newWidgetKey, () => <Element>[existingElement])
+                    .add(newChild);
+              }
+              return true;
+            }(),
+          );
           _keyedChildren[newWidgetKey] = newChild;
         }
       }
     }
     oldSlotToChild.values.forEach(deactivateChild);
     assert(_debugDuplicateKeys(debugDuplicateKeys));
-    assert(_keyedChildren.values.every(_slotToChild.values.contains), '_keyedChildren ${_keyedChildren.values} should be a subset of ${_slotToChild.values}');
+    assert(
+      _keyedChildren.values.every(_slotToChild.values.contains),
+      '_keyedChildren ${_keyedChildren.values} should be a subset of ${_slotToChild.values}',
+    );
   }
 
   bool _debugDuplicateKeys(Map<Key, List<Element>>? debugDuplicateKeys) {
@@ -323,13 +340,9 @@ class SlottedRenderObjectElement<SlotType, ChildType extends RenderObject> exten
     for (final MapEntry<Key, List<Element>> duplicateKey in debugDuplicateKeys.entries) {
       throw FlutterError.fromParts(<DiagnosticsNode>[
         ErrorSummary('Multiple widgets used the same key in ${widget.runtimeType}.'),
-        ErrorDescription(
-          'The key ${duplicateKey.key} was used by multiple widgets. The offending widgets were:\n'
-        ),
+        ErrorDescription('The key ${duplicateKey.key} was used by multiple widgets. The offending widgets were:\n'),
         for (final Element element in duplicateKey.value) ErrorDescription('  - $element\n'),
-        ErrorDescription(
-          'A key can only be specified on one widget at a time in the same parent widget.',
-        ),
+        ErrorDescription('A key can only be specified on one widget at a time in the same parent widget.'),
       ]);
     }
     return true;

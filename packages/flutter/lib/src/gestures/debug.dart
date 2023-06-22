@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
 import 'package:flutter/foundation.dart';
 
 // Any changes to this file should be reflected in the debugAssertAllGesturesVarsUnset()
@@ -72,14 +71,16 @@ bool debugPrintResamplingMargin = false;
 /// See [the gestures library](gestures/gestures-library.html) for a complete
 /// list.
 bool debugAssertAllGesturesVarsUnset(String reason) {
-  assert(() {
-    if (debugPrintHitTestResults ||
-        debugPrintGestureArenaDiagnostics ||
-        debugPrintRecognizerCallbacksTrace ||
-        debugPrintResamplingMargin) {
-      throw FlutterError(reason);
-    }
-    return true;
-  }());
+  assert(
+    () {
+      if (debugPrintHitTestResults ||
+          debugPrintGestureArenaDiagnostics ||
+          debugPrintRecognizerCallbacksTrace ||
+          debugPrintResamplingMargin) {
+        throw FlutterError(reason);
+      }
+      return true;
+    }(),
+  );
   return true;
 }

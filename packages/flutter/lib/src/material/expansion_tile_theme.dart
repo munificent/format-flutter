@@ -39,7 +39,7 @@ import 'theme.dart';
 @immutable
 class ExpansionTileThemeData with Diagnosticable {
   /// Creates a [ExpansionTileThemeData].
-  const ExpansionTileThemeData ({
+  const ExpansionTileThemeData({
     this.backgroundColor,
     this.collapsedBackgroundColor,
     this.tilePadding,
@@ -168,19 +168,19 @@ class ExpansionTileThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ExpansionTileThemeData
-      && other.backgroundColor == backgroundColor
-      && other.collapsedBackgroundColor == collapsedBackgroundColor
-      && other.tilePadding == tilePadding
-      && other.expandedAlignment == expandedAlignment
-      && other.childrenPadding == childrenPadding
-      && other.iconColor == iconColor
-      && other.collapsedIconColor == collapsedIconColor
-      && other.textColor == textColor
-      && other.collapsedTextColor == collapsedTextColor
-      && other.shape == shape
-      && other.collapsedShape == collapsedShape
-      && other.clipBehavior == clipBehavior;
+    return other is ExpansionTileThemeData &&
+        other.backgroundColor == backgroundColor &&
+        other.collapsedBackgroundColor == collapsedBackgroundColor &&
+        other.tilePadding == tilePadding &&
+        other.expandedAlignment == expandedAlignment &&
+        other.childrenPadding == childrenPadding &&
+        other.iconColor == iconColor &&
+        other.collapsedIconColor == collapsedIconColor &&
+        other.textColor == textColor &&
+        other.collapsedTextColor == collapsedTextColor &&
+        other.shape == shape &&
+        other.collapsedShape == collapsedShape &&
+        other.clipBehavior == clipBehavior;
   }
 
   @override
@@ -212,11 +212,7 @@ class ExpansionTileTheme extends InheritedTheme {
   /// Applies the given theme [data] to [child].
   ///
   /// The [data] and [child] arguments must not be null.
-  const ExpansionTileTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const ExpansionTileTheme({super.key, required this.data, required super.child});
 
   /// Specifies color, alignment, and text style values for
   /// descendant [ExpansionTile] widgets.
@@ -244,4 +240,4 @@ class ExpansionTileTheme extends InheritedTheme {
 
   @override
   bool updateShouldNotify(ExpansionTileTheme oldWidget) => data != oldWidget.data;
- }
+}

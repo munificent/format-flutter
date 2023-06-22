@@ -21,10 +21,7 @@ import 'debug.dart';
 class AnnotationEntry<T> {
   /// Create an entry of found annotation by providing the object and related
   /// information.
-  const AnnotationEntry({
-    required this.annotation,
-    required this.localPosition,
-  });
+  const AnnotationEntry({required this.annotation, required this.localPosition});
 
   /// The annotation object that is found.
   final T annotation;
@@ -226,15 +223,19 @@ abstract class Layer with DiagnosticableTreeMixin {
     _updateSubtreeCompositionObserverCount(1);
     final int callbackId = _nextCallbackId += 1;
     _callbacks[callbackId] = () {
-      assert(() {
-        _debugMutationsLocked = true;
-        return true;
-      }());
+      assert(
+        () {
+          _debugMutationsLocked = true;
+          return true;
+        }(),
+      );
       callback(this);
-      assert(() {
-        _debugMutationsLocked = false;
-        return true;
-      }());
+      assert(
+        () {
+          _debugMutationsLocked = false;
+          return true;
+        }(),
+      );
     };
     return () {
       assert(debugDisposed || _callbacks.containsKey(callbackId));
@@ -249,12 +250,15 @@ abstract class Layer with DiagnosticableTreeMixin {
   /// Throws an exception if asserts are disabled.
   bool get debugDisposed {
     late bool disposed;
-    assert(() {
-      disposed = _debugDisposed;
-      return true;
-    }());
+    assert(
+      () {
+        disposed = _debugDisposed;
+        return true;
+      }(),
+    );
     return disposed;
   }
+
   bool _debugDisposed = false;
 
   /// Set when this layer is appended to a [ContainerLayer], and
@@ -285,10 +289,12 @@ abstract class Layer with DiagnosticableTreeMixin {
   /// This method throws if asserts are disabled.
   int get debugHandleCount {
     late int count;
-    assert(() {
-      count = _refCount;
-      return true;
-    }());
+    assert(
+      () {
+        count = _refCount;
+        return true;
+      }(),
+    );
     return count;
   }
 
@@ -322,15 +328,17 @@ abstract class Layer with DiagnosticableTreeMixin {
       'dispose, except to call super.dispose() in an overridden dispose  '
       'method. Tests must only call dispose once.',
     );
-    assert(() {
-      assert(
-        _refCount == 0,
-        'Do not directly call dispose on a $runtimeType. Instead, '
-        'use createHandle and LayerHandle.dispose.',
-      );
-      _debugDisposed = true;
-      return true;
-    }());
+    assert(
+      () {
+        assert(
+          _refCount == 0,
+          'Do not directly call dispose on a $runtimeType. Instead, '
+          'use createHandle and LayerHandle.dispose.',
+        );
+        _debugDisposed = true;
+        return true;
+      }(),
+    );
     if (kFlutterMemoryAllocationsEnabled) {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
@@ -397,10 +405,12 @@ abstract class Layer with DiagnosticableTreeMixin {
   @visibleForTesting
   void debugMarkClean() {
     assert(!_debugMutationsLocked);
-    assert(() {
-      _needsAddToScene = false;
-      return true;
-    }());
+    assert(
+      () {
+        _needsAddToScene = false;
+        return true;
+      }(),
+    );
   }
 
   /// Subclasses may override this to true to disable retained rendering.
@@ -414,10 +424,12 @@ abstract class Layer with DiagnosticableTreeMixin {
   @visibleForTesting
   bool? get debugSubtreeNeedsAddToScene {
     bool? result;
-    assert(() {
-      result = _needsAddToScene;
-      return true;
-    }());
+    assert(
+      () {
+        result = _needsAddToScene;
+        return true;
+      }(),
+    );
     return result;
   }
 
@@ -477,6 +489,7 @@ abstract class Layer with DiagnosticableTreeMixin {
       }
     }
   }
+
   ui.EngineLayer? _engineLayer;
 
   /// Traverses the layer subtree starting from this layer and determines whether it needs [addToScene].
@@ -628,11 +641,7 @@ abstract class Layer with DiagnosticableTreeMixin {
   /// by their children, hence making all of its ancestors opaque to this type
   /// of annotation.
   @protected
-  bool findAnnotations<S extends Object>(
-    AnnotationResult<S> result,
-    Offset localPosition, {
-    required bool onlyFirst,
-  }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     return false;
   }
 
@@ -721,13 +730,20 @@ abstract class Layer with DiagnosticableTreeMixin {
   Object? debugCreator;
 
   @override
-  String toStringShort() => '${super.toStringShort()}${ owner == null ? " DETACHED" : ""}';
+  String toStringShort() => '${super.toStringShort()}${owner == null ? " DETACHED" : ""}';
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<Object>('owner', owner, level: parent != null ? DiagnosticLevel.hidden : DiagnosticLevel.info, defaultValue: null));
-    properties.add(DiagnosticsProperty<Object?>('creator', debugCreator, defaultValue: null, level: DiagnosticLevel.debug));
+    properties.add(DiagnosticsProperty<Object>(
+      'owner',
+      owner,
+      level: parent != null ? DiagnosticLevel.hidden : DiagnosticLevel.info,
+      defaultValue: null,
+    ));
+    properties.add(
+      DiagnosticsProperty<Object?>('creator', debugCreator, defaultValue: null, level: DiagnosticLevel.debug),
+    );
     if (_engineLayer != null) {
       properties.add(DiagnosticsProperty<String>('engine layer', describeIdentity(_engineLayer)));
     }
@@ -780,10 +796,7 @@ class LayerHandle<T extends Layer> {
   T? get layer => _layer;
 
   set layer(T? layer) {
-    assert(
-      layer?.debugDisposed != true,
-      'Attempted to create a handle to an already disposed layer: $layer.',
-    );
+    assert(layer?.debugDisposed != true, 'Attempted to create a handle to an already disposed layer: $layer.');
     if (identical(layer, _layer)) {
       return;
     }
@@ -883,14 +896,13 @@ class PictureLayer extends Layer {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Rect>('paint bounds', canvasBounds));
     properties.add(DiagnosticsProperty<String>('picture', describeIdentity(_picture)));
-    properties.add(DiagnosticsProperty<String>(
-      'raster cache hints',
-      'isComplex = $isComplexHint, willChange = $willChangeHint',
-    ));
+    properties.add(
+      DiagnosticsProperty<String>('raster cache hints', 'isComplex = $isComplexHint, willChange = $willChangeHint'),
+    );
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     return false;
   }
 }
@@ -963,7 +975,7 @@ class TextureLayer extends Layer {
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     return false;
   }
 }
@@ -974,10 +986,7 @@ class PlatformViewLayer extends Layer {
   /// Creates a platform view layer.
   ///
   /// The `rect` and `viewId` parameters must not be null.
-  PlatformViewLayer({
-    required this.rect,
-    required this.viewId,
-  });
+  PlatformViewLayer({required this.rect, required this.viewId});
 
   /// Bounding rectangle of this layer in the global coordinate space.
   final Rect rect;
@@ -994,12 +1003,7 @@ class PlatformViewLayer extends Layer {
 
   @override
   void addToScene(ui.SceneBuilder builder) {
-    builder.addPlatformView(
-      viewId,
-      offset: rect.topLeft,
-      width: rect.width,
-      height: rect.height,
-    );
+    builder.addPlatformView(viewId, offset: rect.topLeft, width: rect.width, height: rect.height);
   }
 }
 
@@ -1071,7 +1075,7 @@ class PerformanceOverlayLayer extends Layer {
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     return false;
   }
 }
@@ -1139,7 +1143,7 @@ class ContainerLayer extends Layer {
     return scene;
   }
 
-  bool _debugUltimatePreviousSiblingOf(Layer child, { Layer? equals }) {
+  bool _debugUltimatePreviousSiblingOf(Layer child, {Layer? equals}) {
     assert(child.attached == attached);
     while (child.previousSibling != null) {
       assert(child.previousSibling != child);
@@ -1149,7 +1153,7 @@ class ContainerLayer extends Layer {
     return child == equals;
   }
 
-  bool _debugUltimateNextSiblingOf(Layer child, { Layer? equals }) {
+  bool _debugUltimateNextSiblingOf(Layer child, {Layer? equals}) {
     assert(child.attached == attached);
     while (child._nextSibling != null) {
       assert(child._nextSibling != child);
@@ -1178,7 +1182,7 @@ class ContainerLayer extends Layer {
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     for (Layer? child = lastChild; child != null; child = child.previousSibling) {
       final bool isAbsorbed = child.findAnnotations<S>(result, localPosition, onlyFirst: onlyFirst);
       if (isAbsorbed) {
@@ -1231,14 +1235,16 @@ class ContainerLayer extends Layer {
     assert(child.nextSibling == null);
     assert(child.previousSibling == null);
     assert(child._parentHandle.layer == null);
-    assert(() {
-      Layer node = this;
-      while (node.parent != null) {
-        node = node.parent!;
-      }
-      assert(node != child); // indicates we are about to create a cycle
-      return true;
-    }());
+    assert(
+      () {
+        Layer node = this;
+        while (node.parent != null) {
+          node = node.parent!;
+        }
+        assert(node != child); // indicates we are about to create a cycle
+        return true;
+      }(),
+    );
     _adoptChild(child);
     child._previousSibling = lastChild;
     if (lastChild != null) {
@@ -1259,14 +1265,16 @@ class ContainerLayer extends Layer {
       _updateSubtreeCompositionObserverCount(child._compositionCallbackCount);
     }
     assert(child._parent == null);
-    assert(() {
-      Layer node = this;
-      while (node.parent != null) {
-        node = node.parent!;
-      }
-      assert(node != child); // indicates we are about to create a cycle
-      return true;
-    }());
+    assert(
+      () {
+        Layer node = this;
+        while (node.parent != null) {
+          node = node.parent!;
+        }
+        assert(node != child); // indicates we are about to create a cycle
+        return true;
+      }(),
+    );
     child._parent = this;
     if (attached) {
       child.attach(_owner!);
@@ -1469,7 +1477,7 @@ class OffsetLayer extends ContainerLayer {
   ///
   /// By default, [offset] is zero. It must be non-null before the compositing
   /// phase of the pipeline.
-  OffsetLayer({ Offset offset = Offset.zero }) : _offset = offset;
+  OffsetLayer({Offset offset = Offset.zero}) : _offset = offset;
 
   /// Offset from parent in the parent's coordinate system.
   ///
@@ -1488,7 +1496,7 @@ class OffsetLayer extends ContainerLayer {
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     return super.findAnnotations<S>(result, localPosition - offset, onlyFirst: onlyFirst);
   }
 
@@ -1505,11 +1513,7 @@ class OffsetLayer extends ContainerLayer {
     // retained rendering, we don't want to push the offset down to each leaf
     // node. Otherwise, changing an offset layer on the very high level could
     // cascade the change to too many leaves.
-    engineLayer = builder.pushOffset(
-      offset.dx,
-      offset.dy,
-      oldLayer: _engineLayer as ui.OffsetEngineLayer?,
-    );
+    engineLayer = builder.pushOffset(offset.dx, offset.dy, oldLayer: _engineLayer as ui.OffsetEngineLayer?);
     addChildrenToScene(builder);
     builder.pop();
   }
@@ -1520,7 +1524,7 @@ class OffsetLayer extends ContainerLayer {
     properties.add(DiagnosticsProperty<Offset>('offset', offset));
   }
 
-  ui.Scene _createSceneForImage(Rect bounds, { double pixelRatio = 1.0 }) {
+  ui.Scene _createSceneForImage(Rect bounds, {double pixelRatio = 1.0}) {
     final ui.SceneBuilder builder = ui.SceneBuilder();
     final Matrix4 transform = Matrix4.diagonal3Values(pixelRatio, pixelRatio, 1);
     transform.translate(-(bounds.left + offset.dx), -(bounds.top + offset.dy));
@@ -1547,16 +1551,13 @@ class OffsetLayer extends ContainerLayer {
   ///
   ///  * [RenderRepaintBoundary.toImage] for a similar API at the render object level.
   ///  * [dart:ui.Scene.toImage] for more information about the image returned.
-  Future<ui.Image> toImage(Rect bounds, { double pixelRatio = 1.0 }) async {
+  Future<ui.Image> toImage(Rect bounds, {double pixelRatio = 1.0}) async {
     final ui.Scene scene = _createSceneForImage(bounds, pixelRatio: pixelRatio);
 
     try {
       // Size is rounded up to the next pixel to make sure we don't clip off
       // anything.
-      return await scene.toImage(
-        (pixelRatio * bounds.width).ceil(),
-        (pixelRatio * bounds.height).ceil(),
-      );
+      return await scene.toImage((pixelRatio * bounds.width).ceil(), (pixelRatio * bounds.height).ceil());
     } finally {
       scene.dispose();
     }
@@ -1581,16 +1582,13 @@ class OffsetLayer extends ContainerLayer {
   ///
   ///  * [RenderRepaintBoundary.toImage] for a similar API at the render object level.
   ///  * [dart:ui.Scene.toImage] for more information about the image returned.
-  ui.Image toImageSync(Rect bounds, { double pixelRatio = 1.0 }) {
+  ui.Image toImageSync(Rect bounds, {double pixelRatio = 1.0}) {
     final ui.Scene scene = _createSceneForImage(bounds, pixelRatio: pixelRatio);
 
     try {
       // Size is rounded up to the next pixel to make sure we don't clip off
       // anything.
-      return scene.toImageSync(
-        (pixelRatio * bounds.width).ceil(),
-        (pixelRatio * bounds.height).ceil(),
-      );
+      return scene.toImageSync((pixelRatio * bounds.width).ceil(), (pixelRatio * bounds.height).ceil());
     } finally {
       scene.dispose();
     }
@@ -1650,7 +1648,7 @@ class ClipRectLayer extends ContainerLayer {
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     if (!clipRect!.contains(localPosition)) {
       return false;
     }
@@ -1661,10 +1659,12 @@ class ClipRectLayer extends ContainerLayer {
   void addToScene(ui.SceneBuilder builder) {
     assert(clipRect != null);
     bool enabled = true;
-    assert(() {
-      enabled = !debugDisableClipLayers;
-      return true;
-    }());
+    assert(
+      () {
+        enabled = !debugDisableClipLayers;
+        return true;
+      }(),
+    );
     if (enabled) {
       engineLayer = builder.pushClipRect(
         clipRect!,
@@ -1735,7 +1735,7 @@ class ClipRRectLayer extends ContainerLayer {
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     if (!clipRRect!.contains(localPosition)) {
       return false;
     }
@@ -1746,10 +1746,12 @@ class ClipRRectLayer extends ContainerLayer {
   void addToScene(ui.SceneBuilder builder) {
     assert(clipRRect != null);
     bool enabled = true;
-    assert(() {
-      enabled = !debugDisableClipLayers;
-      return true;
-    }());
+    assert(
+      () {
+        enabled = !debugDisableClipLayers;
+        return true;
+      }(),
+    );
     if (enabled) {
       engineLayer = builder.pushClipRRect(
         clipRRect!,
@@ -1820,7 +1822,7 @@ class ClipPathLayer extends ContainerLayer {
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     if (!clipPath!.contains(localPosition)) {
       return false;
     }
@@ -1831,10 +1833,12 @@ class ClipPathLayer extends ContainerLayer {
   void addToScene(ui.SceneBuilder builder) {
     assert(clipPath != null);
     bool enabled = true;
-    assert(() {
-      enabled = !debugDisableClipLayers;
-      return true;
-    }());
+    assert(
+      () {
+        enabled = !debugDisableClipLayers;
+        return true;
+      }(),
+    );
     if (enabled) {
       engineLayer = builder.pushClipPath(
         clipPath!,
@@ -1863,9 +1867,7 @@ class ColorFilterLayer extends ContainerLayer {
   ///
   /// The [colorFilter] property must be non-null before the compositing phase
   /// of the pipeline.
-  ColorFilterLayer({
-    ColorFilter? colorFilter,
-  }) : _colorFilter = colorFilter;
+  ColorFilterLayer({ColorFilter? colorFilter}) : _colorFilter = colorFilter;
 
   /// The color filter to apply to children.
   ///
@@ -1884,10 +1886,7 @@ class ColorFilterLayer extends ContainerLayer {
   @override
   void addToScene(ui.SceneBuilder builder) {
     assert(colorFilter != null);
-    engineLayer = builder.pushColorFilter(
-      colorFilter!,
-      oldLayer: _engineLayer as ui.ColorFilterEngineLayer?,
-    );
+    engineLayer = builder.pushColorFilter(colorFilter!, oldLayer: _engineLayer as ui.ColorFilterEngineLayer?);
     addChildrenToScene(builder);
     builder.pop();
   }
@@ -1905,10 +1904,7 @@ class ImageFilterLayer extends OffsetLayer {
   ///
   /// The [imageFilter] property must be non-null before the compositing phase
   /// of the pipeline.
-  ImageFilterLayer({
-    ui.ImageFilter? imageFilter,
-    super.offset,
-  }) : _imageFilter = imageFilter;
+  ImageFilterLayer({ui.ImageFilter? imageFilter, super.offset}) : _imageFilter = imageFilter;
 
   /// The image filter to apply to children.
   ///
@@ -1953,8 +1949,7 @@ class TransformLayer extends OffsetLayer {
   ///
   /// The [transform] and [offset] properties must be non-null before the
   /// compositing phase of the pipeline.
-  TransformLayer({ Matrix4? transform, super.offset })
-    : _transform = transform;
+  TransformLayer({Matrix4? transform, super.offset}) : _transform = transform;
 
   /// The matrix to apply.
   ///
@@ -2000,9 +1995,7 @@ class TransformLayer extends OffsetLayer {
 
   Offset? _transformOffset(Offset localPosition) {
     if (_inverseDirty) {
-      _invertedTransform = Matrix4.tryInvert(
-        PointerEvent.removePerspectiveTransform(transform!),
-      );
+      _invertedTransform = Matrix4.tryInvert(PointerEvent.removePerspectiveTransform(transform!));
       _inverseDirty = false;
     }
     if (_invertedTransform == null) {
@@ -2013,7 +2006,7 @@ class TransformLayer extends OffsetLayer {
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     final Offset? transformedOffset = _transformOffset(localPosition);
     if (transformedOffset == null) {
       return false;
@@ -2052,10 +2045,7 @@ class OpacityLayer extends OffsetLayer {
   ///
   /// The [alpha] property must be non-null before the compositing phase of
   /// the pipeline.
-  OpacityLayer({
-    int? alpha,
-    super.offset,
-  }) : _alpha = alpha;
+  OpacityLayer({int? alpha, super.offset}) : _alpha = alpha;
 
   /// The amount to multiply into the alpha channel.
   ///
@@ -2090,10 +2080,12 @@ class OpacityLayer extends OffsetLayer {
       return;
     }
 
-    assert(() {
-      enabled = enabled && !debugDisableOpacityLayers;
-      return true;
-    }());
+    assert(
+      () {
+        enabled = enabled && !debugDisableOpacityLayers;
+        return true;
+      }(),
+    );
 
     final int realizedAlpha = alpha!;
     // The type assertions work because the [alpha] setter nulls out the
@@ -2107,11 +2099,7 @@ class OpacityLayer extends OffsetLayer {
       );
     } else {
       assert(_engineLayer is ui.OffsetEngineLayer?);
-      engineLayer = builder.pushOffset(
-        offset.dx,
-        offset.dy,
-        oldLayer: _engineLayer as ui.OffsetEngineLayer?,
-      );
+      engineLayer = builder.pushOffset(offset.dx, offset.dy, oldLayer: _engineLayer as ui.OffsetEngineLayer?);
     }
     addChildrenToScene(builder);
     builder.pop();
@@ -2135,13 +2123,10 @@ class ShaderMaskLayer extends ContainerLayer {
   ///
   /// The [shader], [maskRect], and [blendMode] properties must be non-null
   /// before the compositing phase of the pipeline.
-  ShaderMaskLayer({
-    Shader? shader,
-    Rect? maskRect,
-    BlendMode? blendMode,
-  }) : _shader = shader,
-       _maskRect = maskRect,
-       _blendMode = blendMode;
+  ShaderMaskLayer({Shader? shader, Rect? maskRect, BlendMode? blendMode})
+    : _shader = shader,
+      _maskRect = maskRect,
+      _blendMode = blendMode;
 
   /// The shader to apply to the children.
   ///
@@ -2200,7 +2185,7 @@ class ShaderMaskLayer extends ContainerLayer {
     assert(blendMode != null);
     engineLayer = builder.pushShaderMask(
       shader!,
-      maskRect! ,
+      maskRect!,
       blendMode!,
       oldLayer: _engineLayer as ui.ShaderMaskEngineLayer?,
     );
@@ -2225,11 +2210,9 @@ class BackdropFilterLayer extends ContainerLayer {
   /// pipeline.
   ///
   /// The [blendMode] property defaults to [BlendMode.srcOver].
-  BackdropFilterLayer({
-    ui.ImageFilter? filter,
-    BlendMode blendMode = BlendMode.srcOver,
-  }) : _filter = filter,
-       _blendMode = blendMode;
+  BackdropFilterLayer({ui.ImageFilter? filter, BlendMode blendMode = BlendMode.srcOver})
+    : _filter = filter,
+      _blendMode = blendMode;
 
   /// The filter to apply to the existing contents of the scene.
   ///
@@ -2300,14 +2283,16 @@ class LayerLink {
 
   void _registerLeader(LeaderLayer leader) {
     assert(_leader != leader);
-    assert((){
-      if (_leader != null) {
-        _debugPreviousLeaders ??= <LeaderLayer>{};
-        _debugScheduleLeadersCleanUpCheck();
-        return _debugPreviousLeaders!.add(_leader!);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_leader != null) {
+          _debugPreviousLeaders ??= <LeaderLayer>{};
+          _debugScheduleLeadersCleanUpCheck();
+          return _debugPreviousLeaders!.add(_leader!);
+        }
+        return true;
+      }(),
+    );
     _leader = leader;
   }
 
@@ -2331,17 +2316,19 @@ class LayerLink {
   /// [_debugPreviousLeaders] is empty.
   void _debugScheduleLeadersCleanUpCheck() {
     assert(_debugPreviousLeaders != null);
-    assert(() {
-      if (_debugLeaderCheckScheduled) {
+    assert(
+      () {
+        if (_debugLeaderCheckScheduled) {
+          return true;
+        }
+        _debugLeaderCheckScheduled = true;
+        SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
+          _debugLeaderCheckScheduled = false;
+          assert(_debugPreviousLeaders!.isEmpty);
+        });
         return true;
-      }
-      _debugLeaderCheckScheduled = true;
-      SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
-        _debugLeaderCheckScheduled = false;
-        assert(_debugPreviousLeaders!.isEmpty);
-      });
-      return true;
-    }());
+      }(),
+    );
   }
 
   /// The total size of the content of the connected [LeaderLayer].
@@ -2353,8 +2340,8 @@ class LayerLink {
   Size? leaderSize;
 
   @override
-  String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-    return '${describeIdentity(this)}(${ _leader != null ? "<linked>" : "<dangling>" })';
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return '${describeIdentity(this)}(${_leader != null ? "<linked>" : "<dangling>"})';
   }
 }
 
@@ -2372,7 +2359,7 @@ class LeaderLayer extends ContainerLayer {
   ///
   /// The [offset] property must be non-null before the compositing phase of the
   /// pipeline.
-  LeaderLayer({ required LayerLink link, Offset offset = Offset.zero }) : _link = link, _offset = offset;
+  LeaderLayer({required LayerLink link, Offset offset = Offset.zero}) : _link = link, _offset = offset;
 
   /// The object with which this layer should register.
   ///
@@ -2423,7 +2410,7 @@ class LeaderLayer extends ContainerLayer {
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     return super.findAnnotations<S>(result, localPosition - offset, onlyFirst: onlyFirst);
   }
 
@@ -2557,7 +2544,7 @@ class FollowerLayer extends ContainerLayer {
   }
 
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     if (link.leader == null) {
       if (showWhenUnlinked!) {
         return super.findAnnotations(result, localPosition - unlinkedOffset!, onlyFirst: onlyFirst);
@@ -2674,10 +2661,7 @@ class FollowerLayer extends ContainerLayer {
       return;
     }
     // If we're linked, check the link is valid.
-    assert(
-      leader.owner == owner,
-      'Linked LeaderLayer anchor is not in the same layer tree as the FollowerLayer.',
-    );
+    assert(leader.owner == owner, 'Linked LeaderLayer anchor is not in the same layer tree as the FollowerLayer.');
 
     // Stores [leader, ..., commonAncestor] after calling _pathsToCommonAncestor.
     final List<ContainerLayer> forwardLayers = <ContainerLayer>[leader];
@@ -2685,14 +2669,8 @@ class FollowerLayer extends ContainerLayer {
     // _pathsToCommonAncestor.
     final List<ContainerLayer> inverseLayers = <ContainerLayer>[this];
 
-    final Layer? ancestor = _pathsToCommonAncestor(
-      leader, this,
-      forwardLayers, inverseLayers,
-    );
-    assert(
-      ancestor != null,
-      'LeaderLayer and FollowerLayer do not have a common ancestor.',
-    );
+    final Layer? ancestor = _pathsToCommonAncestor(leader, this, forwardLayers, inverseLayers);
+    assert(ancestor != null, 'LeaderLayer and FollowerLayer do not have a common ancestor.');
     assert(
       _debugCheckLeaderBeforeFollower(forwardLayers, inverseLayers),
       'LeaderLayer anchor must come before FollowerLayer in paint order, but the reverse was true.',
@@ -2743,19 +2721,13 @@ class FollowerLayer extends ContainerLayer {
     _establishTransform();
     if (_lastTransform != null) {
       _lastOffset = unlinkedOffset;
-      engineLayer = builder.pushTransform(
-        _lastTransform!.storage,
-        oldLayer: _engineLayer as ui.TransformEngineLayer?,
-      );
+      engineLayer = builder.pushTransform(_lastTransform!.storage, oldLayer: _engineLayer as ui.TransformEngineLayer?);
       addChildrenToScene(builder);
       builder.pop();
     } else {
       _lastOffset = null;
       final Matrix4 matrix = Matrix4.translationValues(unlinkedOffset!.dx, unlinkedOffset!.dy, .0);
-      engineLayer = builder.pushTransform(
-        matrix.storage,
-        oldLayer: _engineLayer as ui.TransformEngineLayer?,
-      );
+      engineLayer = builder.pushTransform(matrix.storage, oldLayer: _engineLayer as ui.TransformEngineLayer?);
       addChildrenToScene(builder);
       builder.pop();
     }
@@ -2805,12 +2777,7 @@ class AnnotatedRegionLayer<T extends Object> extends ContainerLayer {
   /// Creates a new layer that annotates its children with [value].
   ///
   /// The [value] provided cannot be null.
-  AnnotatedRegionLayer(
-    this.value, {
-    this.size,
-    Offset? offset,
-    this.opaque = false,
-  }) : offset = offset ?? Offset.zero;
+  AnnotatedRegionLayer(this.value, {this.size, Offset? offset, this.opaque = false}) : offset = offset ?? Offset.zero;
 
   /// The annotated object, which is added to the result if all restrictions are
   /// met.
@@ -2880,7 +2847,7 @@ class AnnotatedRegionLayer<T extends Object> extends ContainerLayer {
   /// For explanation of layer annotations, parameters and return value, refer
   /// to [Layer.findAnnotations].
   @override
-  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, { required bool onlyFirst }) {
+  bool findAnnotations<S extends Object>(AnnotationResult<S> result, Offset localPosition, {required bool onlyFirst}) {
     bool isAbsorbed = super.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
     if (result.entries.isNotEmpty && onlyFirst) {
       return isAbsorbed;
@@ -2892,10 +2859,7 @@ class AnnotatedRegionLayer<T extends Object> extends ContainerLayer {
       isAbsorbed = isAbsorbed || opaque;
       final Object untypedValue = value;
       final S typedValue = untypedValue as S;
-      result.add(AnnotationEntry<S>(
-        annotation: typedValue,
-        localPosition: localPosition - offset,
-      ));
+      result.add(AnnotationEntry<S>(annotation: typedValue, localPosition: localPosition - offset));
     }
     return isAbsorbed;
   }

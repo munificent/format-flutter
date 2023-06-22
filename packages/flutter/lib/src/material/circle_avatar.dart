@@ -73,7 +73,7 @@ class CircleAvatar extends StatelessWidget {
     this.maxRadius,
   }) : assert(radius == null || (minRadius == null && maxRadius == null)),
        assert(backgroundImage != null || onBackgroundImageError == null),
-       assert(foregroundImage != null || onForegroundImageError== null);
+       assert(foregroundImage != null || onForegroundImageError == null);
 
   /// The widget below this widget in the tree.
   ///
@@ -195,14 +195,14 @@ class CircleAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(debugCheckHasMediaQuery(context));
     final ThemeData theme = Theme.of(context);
-    final Color? effectiveForegroundColor = foregroundColor
-      ?? (theme.useMaterial3 ? theme.colorScheme.onPrimaryContainer : null);
+    final Color? effectiveForegroundColor =
+        foregroundColor ?? (theme.useMaterial3 ? theme.colorScheme.onPrimaryContainer : null);
     final TextStyle effectiveTextStyle = theme.useMaterial3
-      ? theme.textTheme.titleMedium!
-      : theme.primaryTextTheme.titleMedium!;
+        ? theme.textTheme.titleMedium!
+        : theme.primaryTextTheme.titleMedium!;
     TextStyle textStyle = effectiveTextStyle.copyWith(color: effectiveForegroundColor);
-    Color? effectiveBackgroundColor = backgroundColor
-      ?? (theme.useMaterial3 ? theme.colorScheme.primaryContainer : null);
+    Color? effectiveBackgroundColor =
+        backgroundColor ?? (theme.useMaterial3 ? theme.colorScheme.primaryContainer : null);
     if (effectiveBackgroundColor == null) {
       switch (ThemeData.estimateBrightnessForColor(textStyle.color!)) {
         case Brightness.dark:
@@ -221,31 +221,19 @@ class CircleAvatar extends StatelessWidget {
     final double minDiameter = _minDiameter;
     final double maxDiameter = _maxDiameter;
     return AnimatedContainer(
-      constraints: BoxConstraints(
-        minHeight: minDiameter,
-        minWidth: minDiameter,
-        maxWidth: maxDiameter,
-        maxHeight: maxDiameter,
-      ),
+      constraints:
+          BoxConstraints(minHeight: minDiameter, minWidth: minDiameter, maxWidth: maxDiameter, maxHeight: maxDiameter),
       duration: kThemeChangeDuration,
       decoration: BoxDecoration(
         color: effectiveBackgroundColor,
         image: backgroundImage != null
-          ? DecorationImage(
-              image: backgroundImage!,
-              onError: onBackgroundImageError,
-              fit: BoxFit.cover,
-            )
-          : null,
+            ? DecorationImage(image: backgroundImage!, onError: onBackgroundImageError, fit: BoxFit.cover)
+            : null,
         shape: BoxShape.circle,
       ),
       foregroundDecoration: foregroundImage != null
           ? BoxDecoration(
-              image: DecorationImage(
-                image: foregroundImage!,
-                onError: onForegroundImageError,
-                fit: BoxFit.cover,
-              ),
+              image: DecorationImage(image: foregroundImage!, onError: onForegroundImageError, fit: BoxFit.cover),
               shape: BoxShape.circle,
             )
           : null,
@@ -258,10 +246,7 @@ class CircleAvatar extends StatelessWidget {
                 data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
                 child: IconTheme(
                   data: theme.iconTheme.copyWith(color: textStyle.color),
-                  child: DefaultTextStyle(
-                    style: textStyle,
-                    child: child!,
-                  ),
+                  child: DefaultTextStyle(style: textStyle, child: child!),
                 ),
               ),
             ),

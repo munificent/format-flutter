@@ -199,22 +199,22 @@ class ToggleButtonsThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ToggleButtonsThemeData
-        && other.textStyle == textStyle
-        && other.constraints == constraints
-        && other.color == color
-        && other.selectedColor == selectedColor
-        && other.disabledColor == disabledColor
-        && other.fillColor == fillColor
-        && other.focusColor == focusColor
-        && other.highlightColor == highlightColor
-        && other.hoverColor == hoverColor
-        && other.splashColor == splashColor
-        && other.borderColor == borderColor
-        && other.selectedBorderColor == selectedBorderColor
-        && other.disabledBorderColor == disabledBorderColor
-        && other.borderRadius == borderRadius
-        && other.borderWidth == borderWidth;
+    return other is ToggleButtonsThemeData &&
+        other.textStyle == textStyle &&
+        other.constraints == constraints &&
+        other.color == color &&
+        other.selectedColor == selectedColor &&
+        other.disabledColor == disabledColor &&
+        other.fillColor == fillColor &&
+        other.focusColor == focusColor &&
+        other.highlightColor == highlightColor &&
+        other.hoverColor == hoverColor &&
+        other.splashColor == splashColor &&
+        other.borderColor == borderColor &&
+        other.selectedBorderColor == selectedBorderColor &&
+        other.disabledBorderColor == disabledBorderColor &&
+        other.borderRadius == borderRadius &&
+        other.borderWidth == borderWidth;
   }
 
   @override
@@ -248,11 +248,7 @@ class ToggleButtonsTheme extends InheritedTheme {
   /// parameters for [ToggleButtons].
   ///
   /// The data argument must not be null.
-  const ToggleButtonsTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const ToggleButtonsTheme({super.key, required this.data, required super.child});
 
   /// Specifies the color and border values for descendant [ToggleButtons] widgets.
   final ToggleButtonsThemeData data;

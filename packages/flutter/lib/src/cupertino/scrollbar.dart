@@ -128,7 +128,8 @@ class _CupertinoScrollbarState extends RawScrollbarState<CupertinoScrollbar> {
   late AnimationController _thicknessAnimationController;
 
   double get _thickness {
-    return widget.thickness! + _thicknessAnimationController.value * (widget.thicknessWhileDragging - widget.thickness!);
+    return widget.thickness! +
+        _thicknessAnimationController.value * (widget.thicknessWhileDragging - widget.thickness!);
   }
 
   Radius get _radius {
@@ -138,10 +139,7 @@ class _CupertinoScrollbarState extends RawScrollbarState<CupertinoScrollbar> {
   @override
   void initState() {
     super.initState();
-    _thicknessAnimationController = AnimationController(
-      vsync: this,
-      duration: _kScrollbarResizeDuration,
-    );
+    _thicknessAnimationController = AnimationController(vsync: this, duration: _kScrollbarResizeDuration);
     _thicknessAnimationController.addListener(() {
       updateScrollbarPainter();
     });
@@ -188,9 +186,7 @@ class _CupertinoScrollbarState extends RawScrollbarState<CupertinoScrollbar> {
       return;
     }
     super.handleThumbPress();
-    _thicknessAnimationController.forward().then<void>(
-          (_) => HapticFeedback.mediumImpact(),
-    );
+    _thicknessAnimationController.forward().then<void>((_) => HapticFeedback.mediumImpact());
   }
 
   @override
@@ -203,13 +199,11 @@ class _CupertinoScrollbarState extends RawScrollbarState<CupertinoScrollbar> {
     super.handleThumbPressEnd(localPosition, velocity);
     switch (direction) {
       case Axis.vertical:
-        if (velocity.pixelsPerSecond.dy.abs() < 10 &&
-          (localPosition.dy - _pressStartAxisPosition).abs() > 0) {
+        if (velocity.pixelsPerSecond.dy.abs() < 10 && (localPosition.dy - _pressStartAxisPosition).abs() > 0) {
           HapticFeedback.mediumImpact();
         }
       case Axis.horizontal:
-        if (velocity.pixelsPerSecond.dx.abs() < 10 &&
-          (localPosition.dx - _pressStartAxisPosition).abs() > 0) {
+        if (velocity.pixelsPerSecond.dx.abs() < 10 && (localPosition.dx - _pressStartAxisPosition).abs() > 0) {
           HapticFeedback.mediumImpact();
         }
     }

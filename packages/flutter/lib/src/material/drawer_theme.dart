@@ -134,15 +134,15 @@ class DrawerThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is DrawerThemeData
-        && other.backgroundColor == backgroundColor
-        && other.scrimColor == scrimColor
-        && other.elevation == elevation
-        && other.shadowColor == shadowColor
-        && other.surfaceTintColor == surfaceTintColor
-        && other.shape == shape
-        && other.endShape == endShape
-        && other.width == width;
+    return other is DrawerThemeData &&
+        other.backgroundColor == backgroundColor &&
+        other.scrimColor == scrimColor &&
+        other.elevation == elevation &&
+        other.shadowColor == shadowColor &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.shape == shape &&
+        other.endShape == endShape &&
+        other.width == width;
   }
 
   @override
@@ -169,11 +169,7 @@ class DrawerThemeData with Diagnosticable {
 class DrawerTheme extends InheritedTheme {
   /// Creates a theme that defines the [DrawerThemeData] properties for a
   /// [Drawer].
-  const DrawerTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const DrawerTheme({super.key, required this.data, required super.child});
 
   /// Specifies the background color, scrim color, elevation, and shape for
   /// descendant [Drawer] widgets.

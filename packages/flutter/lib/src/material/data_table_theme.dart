@@ -58,8 +58,10 @@ class DataTableThemeData with Diagnosticable {
     this.headingCellCursor,
     this.dataRowCursor,
   }) : assert(dataRowMinHeight == null || dataRowMaxHeight == null || dataRowMaxHeight >= dataRowMinHeight),
-       assert(dataRowHeight == null || (dataRowMinHeight == null && dataRowMaxHeight == null),
-         'dataRowHeight ($dataRowHeight) must not be set if dataRowMinHeight ($dataRowMinHeight) or dataRowMaxHeight ($dataRowMaxHeight) are set.'),
+       assert(
+         dataRowHeight == null || (dataRowMinHeight == null && dataRowMaxHeight == null),
+         'dataRowHeight ($dataRowHeight) must not be set if dataRowMinHeight ($dataRowMinHeight) or dataRowMaxHeight ($dataRowMaxHeight) are set.',
+       ),
        dataRowMinHeight = dataRowHeight ?? dataRowMinHeight,
        dataRowMaxHeight = dataRowHeight ?? dataRowMaxHeight;
 
@@ -137,8 +139,10 @@ class DataTableThemeData with Diagnosticable {
     MaterialStateProperty<MouseCursor?>? headingCellCursor,
     MaterialStateProperty<MouseCursor?>? dataRowCursor,
   }) {
-    assert(dataRowHeight == null || (dataRowMinHeight == null && dataRowMaxHeight == null),
-      'dataRowHeight ($dataRowHeight) must not be set if dataRowMinHeight ($dataRowMinHeight) or dataRowMaxHeight ($dataRowMaxHeight) are set.');
+    assert(
+      dataRowHeight == null || (dataRowMinHeight == null && dataRowMaxHeight == null),
+      'dataRowHeight ($dataRowHeight) must not be set if dataRowMinHeight ($dataRowMinHeight) or dataRowMaxHeight ($dataRowMaxHeight) are set.',
+    );
     dataRowMinHeight = dataRowHeight ?? dataRowMinHeight;
     dataRowMaxHeight = dataRowHeight ?? dataRowMaxHeight;
 
@@ -213,40 +217,50 @@ class DataTableThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is DataTableThemeData
-      && other.decoration == decoration
-      && other.dataRowColor == dataRowColor
-      && other.dataRowMinHeight == dataRowMinHeight
-      && other.dataRowMaxHeight == dataRowMaxHeight
-      && other.dataTextStyle == dataTextStyle
-      && other.headingRowColor == headingRowColor
-      && other.headingRowHeight == headingRowHeight
-      && other.headingTextStyle == headingTextStyle
-      && other.horizontalMargin == horizontalMargin
-      && other.columnSpacing == columnSpacing
-      && other.dividerThickness == dividerThickness
-      && other.checkboxHorizontalMargin == checkboxHorizontalMargin
-      && other.headingCellCursor == headingCellCursor
-      && other.dataRowCursor == dataRowCursor;
+    return other is DataTableThemeData &&
+        other.decoration == decoration &&
+        other.dataRowColor == dataRowColor &&
+        other.dataRowMinHeight == dataRowMinHeight &&
+        other.dataRowMaxHeight == dataRowMaxHeight &&
+        other.dataTextStyle == dataTextStyle &&
+        other.headingRowColor == headingRowColor &&
+        other.headingRowHeight == headingRowHeight &&
+        other.headingTextStyle == headingTextStyle &&
+        other.horizontalMargin == horizontalMargin &&
+        other.columnSpacing == columnSpacing &&
+        other.dividerThickness == dividerThickness &&
+        other.checkboxHorizontalMargin == checkboxHorizontalMargin &&
+        other.headingCellCursor == headingCellCursor &&
+        other.dataRowCursor == dataRowCursor;
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Decoration>('decoration', decoration, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>('dataRowColor', dataRowColor, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<Color?>>('dataRowColor', dataRowColor, defaultValue: null),
+    );
     properties.add(DoubleProperty('dataRowMinHeight', dataRowMinHeight, defaultValue: null));
     properties.add(DoubleProperty('dataRowMaxHeight', dataRowMaxHeight, defaultValue: null));
     properties.add(DiagnosticsProperty<TextStyle>('dataTextStyle', dataTextStyle, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>('headingRowColor', headingRowColor, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<Color?>>('headingRowColor', headingRowColor, defaultValue: null),
+    );
     properties.add(DoubleProperty('headingRowHeight', headingRowHeight, defaultValue: null));
     properties.add(DiagnosticsProperty<TextStyle>('headingTextStyle', headingTextStyle, defaultValue: null));
     properties.add(DoubleProperty('horizontalMargin', horizontalMargin, defaultValue: null));
     properties.add(DoubleProperty('columnSpacing', columnSpacing, defaultValue: null));
     properties.add(DoubleProperty('dividerThickness', dividerThickness, defaultValue: null));
     properties.add(DoubleProperty('checkboxHorizontalMargin', checkboxHorizontalMargin, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<MouseCursor?>?>('headingCellCursor', headingCellCursor, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<MouseCursor?>?>('dataRowCursor', dataRowCursor, defaultValue: null));
+    properties.add(DiagnosticsProperty<MaterialStateProperty<MouseCursor?>?>(
+      'headingCellCursor',
+      headingCellCursor,
+      defaultValue: null,
+    ));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<MouseCursor?>?>('dataRowCursor', dataRowCursor, defaultValue: null),
+    );
   }
 }
 
@@ -268,11 +282,7 @@ class DataTableTheme extends InheritedWidget {
   /// [DataTable] widgets.
   ///
   /// The [data] must not be null.
-  const DataTableTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const DataTableTheme({super.key, required this.data, required super.child});
 
   /// The properties used for all descendant [DataTable] widgets.
   final DataTableThemeData data;

@@ -102,8 +102,8 @@ class CupertinoFormSection extends StatelessWidget {
     this.backgroundColor = CupertinoColors.systemGroupedBackground,
     this.decoration,
     this.clipBehavior = Clip.none,
-  })  : _type = CupertinoListSectionType.base,
-        assert(children.length > 0);
+  }) : _type = CupertinoListSectionType.base,
+       assert(children.length > 0);
 
   /// Creates a section that mimics standard "Inset Grouped" iOS forms.
   ///
@@ -148,8 +148,8 @@ class CupertinoFormSection extends StatelessWidget {
     this.backgroundColor = CupertinoColors.systemGroupedBackground,
     this.decoration,
     this.clipBehavior = Clip.none,
-  })  : _type = CupertinoListSectionType.insetGrouped,
-        assert(children.length > 0);
+  }) : _type = CupertinoListSectionType.insetGrouped,
+       assert(children.length > 0);
 
   final CupertinoListSectionType _type;
 
@@ -201,26 +201,16 @@ class CupertinoFormSection extends StatelessWidget {
     final Widget? headerWidget = header == null
         ? null
         : DefaultTextStyle(
-            style: TextStyle(
-              fontSize: 13.0,
-              color: CupertinoColors.secondaryLabel.resolveFrom(context),
-            ),
-            child: Padding(
-              padding: _kFormDefaultHeaderMargin,
-              child: header,
-            ));
+            style: TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)),
+            child: Padding(padding: _kFormDefaultHeaderMargin, child: header),
+          );
 
     final Widget? footerWidget = footer == null
         ? null
         : DefaultTextStyle(
-            style: TextStyle(
-              fontSize: 13.0,
-              color: CupertinoColors.secondaryLabel.resolveFrom(context),
-            ),
-            child: Padding(
-              padding: _kFormDefaultFooterMargin,
-              child: footer,
-            ));
+            style: TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)),
+            child: Padding(padding: _kFormDefaultFooterMargin, child: footer),
+          );
 
     return _type == CupertinoListSectionType.base
         ? CupertinoListSection(
@@ -231,7 +221,8 @@ class CupertinoFormSection extends StatelessWidget {
             decoration: decoration,
             clipBehavior: clipBehavior,
             hasLeading: false,
-            children: children)
+            children: children,
+          )
         : CupertinoListSection.insetGrouped(
             header: headerWidget,
             footer: footerWidget,
@@ -240,6 +231,7 @@ class CupertinoFormSection extends StatelessWidget {
             decoration: decoration,
             clipBehavior: clipBehavior,
             hasLeading: false,
-            children: children);
+            children: children,
+          );
   }
 }

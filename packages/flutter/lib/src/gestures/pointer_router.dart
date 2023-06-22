@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
 import 'package:flutter/foundation.dart';
 
 import 'events.dart';
@@ -27,10 +26,7 @@ class PointerRouter {
   /// Routes added reentrantly within [PointerRouter.route] will take effect when
   /// routing the next event.
   void addRoute(int pointer, PointerRoute route, [Matrix4? transform]) {
-    final Map<PointerRoute, Matrix4?> routes = _routeMap.putIfAbsent(
-      pointer,
-      () => <PointerRoute, Matrix4?>{},
-    );
+    final Map<PointerRoute, Matrix4?> routes = _routeMap.putIfAbsent(pointer, () => <PointerRoute, Matrix4?>{});
     assert(!routes.containsKey(route));
     routes[route] = transform;
   }
@@ -81,10 +77,12 @@ class PointerRouter {
   /// [UnsupportedError].
   int get debugGlobalRouteCount {
     int? count;
-    assert(() {
-      count = _globalRoutes.length;
-      return true;
-    }());
+    assert(
+      () {
+        count = _globalRoutes.length;
+        return true;
+      }(),
+    );
     if (count != null) {
       return count!;
     }
@@ -98,14 +96,16 @@ class PointerRouter {
       route(event);
     } catch (exception, stack) {
       InformationCollector? collector;
-      assert(() {
-        collector = () => <DiagnosticsNode>[
-          DiagnosticsProperty<PointerRouter>('router', this, level: DiagnosticLevel.debug),
-          DiagnosticsProperty<PointerRoute>('route', route, level: DiagnosticLevel.debug),
-          DiagnosticsProperty<PointerEvent>('event', event, level: DiagnosticLevel.debug),
-        ];
-        return true;
-      }());
+      assert(
+        () {
+          collector = () => <DiagnosticsNode>[
+                DiagnosticsProperty<PointerRouter>('router', this, level: DiagnosticLevel.debug),
+                DiagnosticsProperty<PointerRoute>('route', route, level: DiagnosticLevel.debug),
+                DiagnosticsProperty<PointerEvent>('event', event, level: DiagnosticLevel.debug),
+              ];
+          return true;
+        }(),
+      );
       FlutterError.reportError(FlutterErrorDetails(
         exception: exception,
         stack: stack,
@@ -124,11 +124,7 @@ class PointerRouter {
     final Map<PointerRoute, Matrix4?>? routes = _routeMap[event.pointer];
     final Map<PointerRoute, Matrix4?> copiedGlobalRoutes = Map<PointerRoute, Matrix4?>.of(_globalRoutes);
     if (routes != null) {
-      _dispatchEventToRoutes(
-        event,
-        routes,
-        Map<PointerRoute, Matrix4?>.of(routes),
-      );
+      _dispatchEventToRoutes(event, routes, Map<PointerRoute, Matrix4?>.of(routes));
     }
     _dispatchEventToRoutes(event, _globalRoutes, copiedGlobalRoutes);
   }

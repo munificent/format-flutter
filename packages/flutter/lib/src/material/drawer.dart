@@ -285,10 +285,9 @@ class Drawer extends StatelessWidget {
     }
     final bool useMaterial3 = Theme.of(context).useMaterial3;
     final bool isDrawerStart = DrawerController.maybeOf(context)?.alignment != DrawerAlignment.end;
-    final DrawerThemeData defaults= useMaterial3 ? _DrawerDefaultsM3(context): _DrawerDefaultsM2(context);
-    final ShapeBorder? effectiveShape = shape ?? (isDrawerStart
-      ? (drawerTheme.shape ?? defaults.shape)
-      : (drawerTheme.endShape ?? defaults.endShape));
+    final DrawerThemeData defaults = useMaterial3 ? _DrawerDefaultsM3(context) : _DrawerDefaultsM2(context);
+    final ShapeBorder? effectiveShape =
+        shape ?? (isDrawerStart ? (drawerTheme.shape ?? defaults.shape) : (drawerTheme.endShape ?? defaults.endShape));
     return Semantics(
       scopesRoute: true,
       namesRoute: true,
@@ -315,10 +314,7 @@ class Drawer extends StatelessWidget {
 typedef DrawerCallback = void Function(bool isOpened);
 
 class _DrawerControllerScope extends InheritedWidget {
-  const _DrawerControllerScope({
-    required this.controller,
-    required super.child,
-  });
+  const _DrawerControllerScope({required this.controller, required super.child});
 
   final DrawerController controller;
 
@@ -465,21 +461,23 @@ class DrawerController extends StatefulWidget {
   /// {@end-tool}
   static DrawerController of(BuildContext context) {
     final DrawerController? controller = maybeOf(context);
-    assert(() {
-      if (controller == null) {
-        throw FlutterError(
-          'DrawerController.of() was called with a context that does not '
-          'contain a DrawerController widget.\n'
-          'No DrawerController widget ancestor could be found starting from '
-          'the context that was passed to DrawerController.of(). This can '
-          'happen because you are using a widget that looks for a DrawerController '
-          'ancestor, but no such ancestor exists.\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (controller == null) {
+          throw FlutterError(
+            'DrawerController.of() was called with a context that does not '
+            'contain a DrawerController widget.\n'
+            'No DrawerController widget ancestor could be found starting from '
+            'the context that was passed to DrawerController.of(). This can '
+            'happen because you are using a widget that looks for a DrawerController '
+            'ancestor, but no such ancestor exists.\n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return controller!;
   }
 
@@ -673,9 +671,7 @@ class DrawerControllerState extends State<DrawerController> with SingleTickerPro
   ColorTween _buildScrimColorTween() {
     return ColorTween(
       begin: Colors.transparent,
-      end: widget.scrimColor
-          ?? DrawerTheme.of(context).scrimColor
-          ?? Colors.black54,
+      end: widget.scrimColor ?? DrawerTheme.of(context).scrimColor ?? Colors.black54,
     );
   }
 
@@ -717,11 +713,9 @@ class DrawerControllerState extends State<DrawerController> with SingleTickerPro
       final EdgeInsets padding = MediaQuery.paddingOf(context);
       switch (textDirection) {
         case TextDirection.ltr:
-          dragAreaWidth = _kEdgeDragWidth +
-            (drawerIsStart ? padding.left : padding.right);
+          dragAreaWidth = _kEdgeDragWidth + (drawerIsStart ? padding.left : padding.right);
         case TextDirection.rtl:
-          dragAreaWidth = _kEdgeDragWidth +
-            (drawerIsStart ? padding.right : padding.left);
+          dragAreaWidth = _kEdgeDragWidth + (drawerIsStart ? padding.right : padding.left);
       }
     }
 
@@ -768,7 +762,8 @@ class DrawerControllerState extends State<DrawerController> with SingleTickerPro
                     onTap: close,
                     child: Semantics(
                       label: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-                      child: Container( // The drawer's "scrim"
+                      child: Container(
+                        // The drawer's "scrim"
                         color: _scrimColorTween.evaluate(_controller),
                       ),
                     ),
@@ -780,13 +775,8 @@ class DrawerControllerState extends State<DrawerController> with SingleTickerPro
                 child: Align(
                   alignment: _drawerInnerAlignment,
                   widthFactor: _controller.value,
-                  child: RepaintBoundary(
-                    child: FocusScope(
-                      key: _drawerKey,
-                      node: _focusScopeNode,
-                      child: widget.child,
-                    ),
-                  ),
+                  child:
+                      RepaintBoundary(child: FocusScope(key: _drawerKey, node: _focusScopeNode, child: widget.child)),
                 ),
               ),
             ],
@@ -814,22 +804,17 @@ class DrawerControllerState extends State<DrawerController> with SingleTickerPro
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
-    return ListTileTheme.merge(
-      style: ListTileStyle.drawer,
-      child: _buildDrawer(context),
-    );
+    return ListTileTheme.merge(style: ListTileStyle.drawer, child: _buildDrawer(context));
   }
 }
 
 class _DrawerDefaultsM2 extends DrawerThemeData {
-  const _DrawerDefaultsM2(this.context)
-      : super(elevation: 16.0);
+  const _DrawerDefaultsM2(this.context) : super(elevation: 16.0);
 
   final BuildContext context;
 
   @override
   Color? get shadowColor => Theme.of(context).shadowColor;
-
 }
 
 // BEGIN GENERATED TOKEN PROPERTIES - Drawer
@@ -840,8 +825,7 @@ class _DrawerDefaultsM2 extends DrawerThemeData {
 //   dev/tools/gen_defaults/bin/gen_defaults.dart.
 
 class _DrawerDefaultsM3 extends DrawerThemeData {
-  _DrawerDefaultsM3(this.context)
-      : super(elevation: 1.0);
+  _DrawerDefaultsM3(this.context) : super(elevation: 1.0);
 
   final BuildContext context;
   late final TextDirection direction = Directionality.of(context);
@@ -859,18 +843,14 @@ class _DrawerDefaultsM3 extends DrawerThemeData {
   // so hard coding here for now.
   @override
   ShapeBorder? get shape => RoundedRectangleBorder(
-    borderRadius: const BorderRadiusDirectional.horizontal(
-      end: Radius.circular(16.0),
-    ).resolve(direction),
+    borderRadius: const BorderRadiusDirectional.horizontal(end: Radius.circular(16.0)).resolve(direction),
   );
 
   // There isn't currently a token for this value, but it is shown in the spec,
   // so hard coding here for now.
   @override
   ShapeBorder? get endShape => RoundedRectangleBorder(
-    borderRadius: const BorderRadiusDirectional.horizontal(
-      start: Radius.circular(16.0),
-    ).resolve(direction),
+    borderRadius: const BorderRadiusDirectional.horizontal(start: Radius.circular(16.0)).resolve(direction),
   );
 }
 

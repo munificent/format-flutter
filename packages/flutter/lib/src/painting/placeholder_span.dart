@@ -38,11 +38,7 @@ abstract class PlaceholderSpan extends InlineSpan {
   ///
   /// A [TextStyle] may be provided with the [style] property, but only the
   /// decoration, foreground, background, and spacing options will be used.
-  const PlaceholderSpan({
-    this.alignment = ui.PlaceholderAlignment.bottom,
-    this.baseline,
-    super.style,
-  });
+  const PlaceholderSpan({this.alignment = ui.PlaceholderAlignment.bottom, this.baseline, super.style});
 
   /// The unicode character to represent a placeholder.
   static const int placeholderCodeUnit = 0xFFFC;

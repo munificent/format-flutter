@@ -119,21 +119,17 @@ abstract class TwoDimensionalScrollView extends StatelessWidget {
   ///
   /// The `verticalOffset` and `horizontalOffset` arguments are the values
   /// obtained from [TwoDimensionalScrollable.viewportBuilder].
-  Widget buildViewport(
-    BuildContext context,
-    ViewportOffset verticalOffset,
-    ViewportOffset horizontalOffset,
-  );
+  Widget buildViewport(BuildContext context, ViewportOffset verticalOffset, ViewportOffset horizontalOffset);
 
   @override
   Widget build(BuildContext context) {
     assert(
       axisDirectionToAxis(verticalDetails.direction) == Axis.vertical,
-      'TwoDimensionalScrollView.verticalDetails are not Axis.vertical.'
+      'TwoDimensionalScrollView.verticalDetails are not Axis.vertical.',
     );
     assert(
       axisDirectionToAxis(horizontalDetails.direction) == Axis.horizontal,
-      'TwoDimensionalScrollView.horizontalDetails are not Axis.horizontal.'
+      'TwoDimensionalScrollView.horizontalDetails are not Axis.horizontal.',
     );
 
     ScrollableDetails mainAxisDetails = switch (mainAxis) {
@@ -141,11 +137,8 @@ abstract class TwoDimensionalScrollView extends StatelessWidget {
       Axis.horizontal => horizontalDetails,
     };
 
-    final bool effectivePrimary = primary
-      ?? mainAxisDetails.controller == null && PrimaryScrollController.shouldInherit(
-        context,
-        mainAxis,
-      );
+    final bool effectivePrimary =
+        primary ?? mainAxisDetails.controller == null && PrimaryScrollController.shouldInherit(context, mainAxis);
 
     if (effectivePrimary) {
       // Using PrimaryScrollController for mainAxis.
@@ -153,31 +146,23 @@ abstract class TwoDimensionalScrollView extends StatelessWidget {
         mainAxisDetails.controller == null,
         'TwoDimensionalScrollView.primary was explicitly set to true, but a '
         'ScrollController was provided in the ScrollableDetails of the '
-        'TwoDimensionalScrollView.mainAxis.'
+        'TwoDimensionalScrollView.mainAxis.',
       );
-      mainAxisDetails = mainAxisDetails.copyWith(
-        controller: PrimaryScrollController.of(context),
-      );
+      mainAxisDetails = mainAxisDetails.copyWith(controller: PrimaryScrollController.of(context));
     }
 
     final TwoDimensionalScrollable scrollable = TwoDimensionalScrollable(
-      horizontalDetails : switch (mainAxis) {
-        Axis.horizontal => mainAxisDetails,
-        Axis.vertical => horizontalDetails,
-      },
-      verticalDetails: switch (mainAxis) {
-        Axis.vertical => mainAxisDetails,
-        Axis.horizontal => verticalDetails,
-      },
+      horizontalDetails: switch (mainAxis) { Axis.horizontal => mainAxisDetails, Axis.vertical => horizontalDetails },
+      verticalDetails: switch (mainAxis) { Axis.vertical => mainAxisDetails, Axis.horizontal => verticalDetails },
       diagonalDragBehavior: diagonalDragBehavior,
       viewportBuilder: buildViewport,
       dragStartBehavior: dragStartBehavior,
     );
 
     final Widget scrollableResult = effectivePrimary
-      // Further descendant ScrollViews will not inherit the same PrimaryScrollController
-      ? PrimaryScrollController.none(child: scrollable)
-      : scrollable;
+        // Further descendant ScrollViews will not inherit the same PrimaryScrollController
+          ? PrimaryScrollController.none(child: scrollable)
+        : scrollable;
 
     if (keyboardDismissBehavior == ScrollViewKeyboardDismissBehavior.onDrag) {
       return NotificationListener<ScrollUpdateNotification>(

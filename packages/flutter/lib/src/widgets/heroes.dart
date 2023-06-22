@@ -34,11 +34,7 @@ typedef CreateRectTween = Tween<Rect?> Function(Rect? begin, Rect? end);
 ///
 ///  * [TransitionBuilder], which is similar but only takes a [BuildContext]
 ///    and a child widget.
-typedef HeroPlaceholderBuilder = Widget Function(
-  BuildContext context,
-  Size heroSize,
-  Widget child,
-);
+typedef HeroPlaceholderBuilder = Widget Function(BuildContext context, Size heroSize, Widget child);
 
 /// A function that lets [Hero]es self supply a [Widget] that is shown during the
 /// hero's flight from one route to another instead of default (which is to
@@ -273,20 +269,27 @@ class Hero extends StatefulWidget {
     final Map<Object, _HeroState> result = <Object, _HeroState>{};
 
     void inviteHero(StatefulElement hero, Object tag) {
-      assert(() {
-        if (result.containsKey(tag)) {
-          throw FlutterError.fromParts(<DiagnosticsNode>[
-            ErrorSummary('There are multiple heroes that share the same tag within a subtree.'),
-            ErrorDescription(
-              'Within each subtree for which heroes are to be animated (i.e. a PageRoute subtree), '
-              'each Hero must have a unique non-null tag.\n'
-              'In this case, multiple heroes had the following tag: $tag',
-            ),
-            DiagnosticsProperty<StatefulElement>('Here is the subtree for one of the offending heroes', hero, linePrefix: '# ', style: DiagnosticsTreeStyle.dense),
-          ]);
-        }
-        return true;
-      }());
+      assert(
+        () {
+          if (result.containsKey(tag)) {
+            throw FlutterError.fromParts(<DiagnosticsNode>[
+              ErrorSummary('There are multiple heroes that share the same tag within a subtree.'),
+              ErrorDescription(
+                'Within each subtree for which heroes are to be animated (i.e. a PageRoute subtree), '
+                'each Hero must have a unique non-null tag.\n'
+                'In this case, multiple heroes had the following tag: $tag',
+              ),
+              DiagnosticsProperty<StatefulElement>(
+                'Here is the subtree for one of the offending heroes',
+                hero,
+                linePrefix: '# ',
+                style: DiagnosticsTreeStyle.dense,
+              ),
+            ]);
+          }
+          return true;
+        }(),
+      );
       final Hero heroWidget = hero.widget as Hero;
       final _HeroState heroState = hero.state as _HeroState;
       if (!isUserGestureTransition || heroWidget.transitionOnUserGestures) {
@@ -362,7 +365,7 @@ class _HeroState extends State<Hero> {
   //
   // It is typically set to true for the *from* hero in a push transition,
   // and false otherwise.
-  void startFlight({ bool shouldIncludedChildInPlaceholder = false }) {
+  void startFlight({bool shouldIncludedChildInPlaceholder = false}) {
     _shouldIncludeChild = shouldIncludedChildInPlaceholder;
     assert(mounted);
     final RenderBox box = context.findRenderObject()! as RenderBox;
@@ -378,7 +381,7 @@ class _HeroState extends State<Hero> {
   //
   // This method can be safely called even when this [Hero] is currently not in
   // a flight.
-  void endFlight({ bool keepPlaceholder = false }) {
+  void endFlight({bool keepPlaceholder = false}) {
     if (keepPlaceholder || _placeholderSize == null) {
       return;
     }
@@ -405,10 +408,7 @@ class _HeroState extends State<Hero> {
     }
 
     if (showPlaceholder && !_shouldIncludeChild) {
-      return SizedBox(
-        width: _placeholderSize!.width,
-        height: _placeholderSize!.height,
-      );
+      return SizedBox(width: _placeholderSize!.width, height: _placeholderSize!.height);
     }
 
     return SizedBox(
@@ -416,10 +416,7 @@ class _HeroState extends State<Hero> {
       height: _placeholderSize?.height,
       child: Offstage(
         offstage: showPlaceholder,
-        child: TickerMode(
-          enabled: !showPlaceholder,
-          child: KeyedSubtree(key: _key, child: widget.child),
-        ),
+        child: TickerMode(enabled: !showPlaceholder, child: KeyedSubtree(key: _key, child: widget.child)),
       ),
     );
   }
@@ -464,7 +461,7 @@ class _HeroFlightManifest {
     );
   }
 
-  Tween<Rect?> createHeroRectTween({ required Rect? begin, required Rect? end }) {
+  Tween<Rect?> createHeroRectTween({required Rect? begin, required Rect? end}) {
     final CreateRectTween? createRectTween = toHero.widget.createRectTween ?? this.createRectTween;
     return createRectTween?.call(begin, end) ?? RectTween(begin: begin, end: end);
   }
@@ -475,10 +472,7 @@ class _HeroFlightManifest {
     assert(ancestorContext != null);
     final RenderBox box = context.findRenderObject()! as RenderBox;
     assert(box.hasSize && box.size.isFinite);
-    return MatrixUtils.transformRect(
-      box.getTransformTo(ancestorContext?.findRenderObject()),
-      Offset.zero & box.size,
-    );
+    return MatrixUtils.transformRect(box.getTransformTo(ancestorContext?.findRenderObject()), Offset.zero & box.size);
   }
 
   /// The bounding box of [fromHero], in [fromRoute]'s coordinate space.
@@ -551,12 +545,7 @@ class _HeroFlight {
           right: offsets.right,
           bottom: offsets.bottom,
           left: offsets.left,
-          child: IgnorePointer(
-            child: FadeTransition(
-              opacity: _heroOpacity,
-              child: child,
-            ),
-          ),
+          child: IgnorePointer(child: FadeTransition(opacity: _heroOpacity, child: child)),
         );
       },
     );
@@ -606,6 +595,7 @@ class _HeroFlight {
       navigator.userGestureInProgressNotifier.removeListener(delayedPerformAnimationUpdate);
       _performAnimationUpdate(_proxyAnimation.status);
     }
+
     assert(navigator.userGestureInProgress);
     _scheduledPerformAnimationUpdate = true;
     navigator.userGestureInProgressNotifier.addListener(delayedPerformAnimationUpdate);
@@ -613,12 +603,15 @@ class _HeroFlight {
 
   void onTick() {
     final RenderBox? toHeroBox = (!_aborted && manifest.toHero.mounted)
-      ? manifest.toHero.context.findRenderObject() as RenderBox?
-      : null;
+        ? manifest.toHero.context.findRenderObject() as RenderBox?
+        : null;
     // Try to find the new origin of the toHero, if the flight isn't aborted.
     final Offset? toHeroOrigin = toHeroBox != null && toHeroBox.attached && toHeroBox.hasSize
-      ? toHeroBox.localToGlobal(Offset.zero, ancestor: manifest.toRoute.subtreeContext?.findRenderObject() as RenderBox?)
-      : null;
+        ? toHeroBox.localToGlobal(
+            Offset.zero,
+            ancestor: manifest.toRoute.subtreeContext?.findRenderObject() as RenderBox?,
+          )
+        : null;
 
     if (toHeroOrigin != null && toHeroOrigin.isFinite) {
       // If the new origin of toHero is available and also paintable, try to
@@ -641,21 +634,23 @@ class _HeroFlight {
   // The simple case: we're either starting a push or a pop animation.
   void start(_HeroFlightManifest initialManifest) {
     assert(!_aborted);
-    assert(() {
-      final Animation<double> initial = initialManifest.animation;
-      final HeroFlightDirection type = initialManifest.type;
-      switch (type) {
-        case HeroFlightDirection.pop:
-          return initial.value == 1.0 && initialManifest.isUserGestureTransition
-              // During user gesture transitions, the animation controller isn't
-              // driving the reverse transition, but should still be in a previously
-              // completed stage with the initial value at 1.0.
-              ? initial.status == AnimationStatus.completed
-              : initial.status == AnimationStatus.reverse;
-        case HeroFlightDirection.push:
-          return initial.value == 0.0 && initial.status == AnimationStatus.forward;
-      }
-    }());
+    assert(
+      () {
+        final Animation<double> initial = initialManifest.animation;
+        final HeroFlightDirection type = initialManifest.type;
+        switch (type) {
+          case HeroFlightDirection.pop:
+            return initial.value == 1.0 && initialManifest.isUserGestureTransition
+                // During user gesture transitions, the animation controller isn't
+                  // driving the reverse transition, but should still be in a previously
+                  // completed stage with the initial value at 1.0.
+                  ? initial.status == AnimationStatus.completed
+                : initial.status == AnimationStatus.reverse;
+          case HeroFlightDirection.push:
+            return initial.value == 0.0 && initial.status == AnimationStatus.forward;
+        }
+      }(),
+    );
 
     manifest = initialManifest;
 
@@ -701,12 +696,7 @@ class _HeroFlight {
       assert(manifest.toHero == newManifest.fromHero);
       assert(manifest.toRoute == newManifest.fromRoute);
 
-      _proxyAnimation.parent = newManifest.animation.drive(
-        Tween<double>(
-          begin: manifest.animation.value,
-          end: 1.0,
-        ),
-      );
+      _proxyAnimation.parent = newManifest.animation.drive(Tween<double>(begin: manifest.animation.value, end: 1.0));
       if (manifest.fromHero != newManifest.toHero) {
         manifest.fromHero.endFlight(keepPlaceholder: true);
         newManifest.toHero.startFlight();
@@ -771,7 +761,7 @@ class HeroController extends NavigatorObserver {
   ///
   /// The [createRectTween] argument is optional. If null, the controller uses a
   /// linear [Tween<Rect>].
-  HeroController({ this.createRectTween });
+  HeroController({this.createRectTween});
 
   /// Used to create [RectTween]s that interpolate the position of heroes in flight.
   ///
@@ -799,7 +789,7 @@ class HeroController extends NavigatorObserver {
   }
 
   @override
-  void didReplace({ Route<dynamic>? newRoute, Route<dynamic>? oldRoute }) {
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     assert(navigator != null);
     if (newRoute?.isCurrent ?? false) {
       // Only run hero animations if the top-most route got replaced.
@@ -825,14 +815,12 @@ class HeroController extends NavigatorObserver {
     // _handleAnimationUpdate will never be called when the gesture finishes. In
     // this case the initiated flight needs to be manually invalidated.
     bool isInvalidFlight(_HeroFlight flight) {
-      return flight.manifest.isUserGestureTransition
-          && flight.manifest.type == HeroFlightDirection.pop
-          && flight._proxyAnimation.isDismissed;
+      return flight.manifest.isUserGestureTransition &&
+          flight.manifest.type == HeroFlightDirection.pop &&
+          flight._proxyAnimation.isDismissed;
     }
 
-    final List<_HeroFlight> invalidFlights = _flights.values
-      .where(isInvalidFlight)
-      .toList(growable: false);
+    final List<_HeroFlight> invalidFlights = _flights.values.where(isInvalidFlight).toList(growable: false);
 
     // Treat these invalidated flights as dismissed. Calling _handleAnimationUpdate
     // will also remove the flight from _flights.
@@ -849,9 +837,7 @@ class HeroController extends NavigatorObserver {
     HeroFlightDirection flightType,
     bool isUserGestureTransition,
   ) {
-    if (toRoute == fromRoute ||
-        toRoute is! PageRoute<dynamic> ||
-        fromRoute is! PageRoute<dynamic>) {
+    if (toRoute == fromRoute || toRoute is! PageRoute<dynamic> || fromRoute is! PageRoute<dynamic>) {
       return;
     }
 
@@ -929,12 +915,12 @@ class HeroController extends NavigatorObserver {
     // If `toSubtreeContext` is null abort existingFlights.
     final BuildContext? fromSubtreeContext = from.subtreeContext;
     final Map<Object, _HeroState> fromHeroes = fromSubtreeContext != null
-      ? Hero._allHeroesFor(fromSubtreeContext, isUserGestureTransition, navigator)
-      : const <Object, _HeroState>{};
+        ? Hero._allHeroesFor(fromSubtreeContext, isUserGestureTransition, navigator)
+        : const <Object, _HeroState>{};
     final BuildContext? toSubtreeContext = to.subtreeContext;
     final Map<Object, _HeroState> toHeroes = toSubtreeContext != null
-      ? Hero._allHeroesFor(toSubtreeContext, isUserGestureTransition, navigator)
-      : const <Object, _HeroState>{};
+        ? Hero._allHeroesFor(toSubtreeContext, isUserGestureTransition, navigator)
+        : const <Object, _HeroState>{};
 
     for (final MapEntry<Object, _HeroState> fromHeroEntry in fromHeroes.entries) {
       final Object tag = fromHeroEntry.key;
@@ -942,22 +928,22 @@ class HeroController extends NavigatorObserver {
       final _HeroState? toHero = toHeroes[tag];
       final _HeroFlight? existingFlight = _flights[tag];
       final _HeroFlightManifest? manifest = toHero == null
-        ? null
-        : _HeroFlightManifest(
-            type: flightType,
-            overlay: overlay,
-            navigatorSize: navigatorRenderObject.size,
-            fromRoute: from,
-            toRoute: to,
-            fromHero: fromHero,
-            toHero: toHero,
-            createRectTween: createRectTween,
-            shuttleBuilder: toHero.widget.flightShuttleBuilder
-                          ?? fromHero.widget.flightShuttleBuilder
-                          ?? _defaultHeroFlightShuttleBuilder,
-            isUserGestureTransition: isUserGestureTransition,
-            isDiverted: existingFlight != null,
-          );
+          ? null
+          : _HeroFlightManifest(
+              type: flightType,
+              overlay: overlay,
+              navigatorSize: navigatorRenderObject.size,
+              fromRoute: from,
+              toRoute: to,
+              fromHero: fromHero,
+              toHero: toHero,
+              createRectTween: createRectTween,
+              shuttleBuilder: toHero.widget.flightShuttleBuilder ??
+                  fromHero.widget.flightShuttleBuilder ??
+                  _defaultHeroFlightShuttleBuilder,
+              isUserGestureTransition: isUserGestureTransition,
+              isDiverted: existingFlight != null,
+            );
 
       // Only proceed with a valid manifest. Otherwise abort the existing
       // flight, and call endFlight when this for loop finishes.
@@ -1013,16 +999,11 @@ class HeroController extends NavigatorObserver {
         return MediaQuery(
           data: toMediaQueryData.copyWith(
             padding: (flightDirection == HeroFlightDirection.push)
-              ? EdgeInsetsTween(
-                  begin: fromHeroPadding,
-                  end: toHeroPadding,
-                ).evaluate(animation)
-              : EdgeInsetsTween(
-                  begin: toHeroPadding,
-                  end: fromHeroPadding,
-                ).evaluate(animation),
+                ? EdgeInsetsTween(begin: fromHeroPadding, end: toHeroPadding).evaluate(animation)
+                : EdgeInsetsTween(begin: toHeroPadding, end: fromHeroPadding).evaluate(animation),
           ),
-          child: toHero.child);
+          child: toHero.child,
+        );
       },
     );
   }
@@ -1041,11 +1022,7 @@ class HeroMode extends StatelessWidget {
   /// Creates a widget that enables or disables [Hero]es.
   ///
   /// The [child] and [enabled] arguments must not be null.
-  const HeroMode({
-    super.key,
-    required this.child,
-    this.enabled = true,
-  });
+  const HeroMode({super.key, required this.child, this.enabled = true});
 
   /// The subtree to place inside the [HeroMode].
   final Widget child;

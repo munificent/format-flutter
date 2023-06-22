@@ -106,10 +106,7 @@ class BannerPainter extends CustomPainter {
   /// Defaults to bold, white text.
   final TextStyle textStyle;
 
-  static const BoxShadow _shadow = BoxShadow(
-    color: Color(0x7F000000),
-    blurRadius: 6.0,
-  );
+  static const BoxShadow _shadow = BoxShadow(color: Color(0x7F000000), blurRadius: 6.0);
 
   bool _prepared = false;
   TextPainter? _textPainter;
@@ -126,8 +123,7 @@ class BannerPainter extends CustomPainter {
 
   void _prepare() {
     _paintShadow = _shadow.toPaint();
-    _paintBanner = Paint()
-      ..color = color;
+    _paintBanner = Paint()..color = color;
     _textPainter?.dispose();
     _textPainter = TextPainter(
       text: TextSpan(style: textStyle, text: message),
@@ -154,10 +150,10 @@ class BannerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(BannerPainter oldDelegate) {
-    return message != oldDelegate.message
-        || location != oldDelegate.location
-        || color != oldDelegate.color
-        || textStyle != oldDelegate.textStyle;
+    return message != oldDelegate.message ||
+        location != oldDelegate.location ||
+        color != oldDelegate.color ||
+        textStyle != oldDelegate.textStyle;
   }
 
   @override
@@ -327,10 +323,7 @@ class Banner extends StatelessWidget {
 /// Does nothing in release mode.
 class CheckedModeBanner extends StatelessWidget {
   /// Creates a const debug mode banner.
-  const CheckedModeBanner({
-    super.key,
-    required this.child,
-  });
+  const CheckedModeBanner({super.key, required this.child});
 
   /// The widget to show behind the banner.
   ///
@@ -340,15 +333,17 @@ class CheckedModeBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget result = child;
-    assert(() {
-      result = Banner(
-        message: 'DEBUG',
-        textDirection: TextDirection.ltr,
-        location: BannerLocation.topEnd,
-        child: result,
-      );
-      return true;
-    }());
+    assert(
+      () {
+        result = Banner(
+          message: 'DEBUG',
+          textDirection: TextDirection.ltr,
+          location: BannerLocation.topEnd,
+          child: result,
+        );
+        return true;
+      }(),
+    );
     return result;
   }
 
@@ -356,10 +351,12 @@ class CheckedModeBanner extends StatelessWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     String message = 'disabled';
-    assert(() {
-      message = '"DEBUG"';
-      return true;
-    }());
+    assert(
+      () {
+        message = '"DEBUG"';
+        return true;
+      }(),
+    );
     properties.add(DiagnosticsNode.message(message));
   }
 }

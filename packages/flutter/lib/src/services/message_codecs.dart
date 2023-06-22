@@ -136,10 +136,8 @@ class JSONMethodCodec implements MethodCodec {
 
   @override
   ByteData encodeMethodCall(MethodCall methodCall) {
-    return const JSONMessageCodec().encodeMessage(<String, Object?>{
-      'method': methodCall.method,
-      'args': methodCall.arguments,
-    })!;
+    return const JSONMessageCodec()
+        .encodeMessage(<String, Object?>{'method': methodCall.method, 'args': methodCall.arguments})!;
   }
 
   @override
@@ -165,19 +163,13 @@ class JSONMethodCodec implements MethodCodec {
     if (decoded.length == 1) {
       return decoded[0];
     }
-    if (decoded.length == 3
-        && decoded[0] is String
-        && (decoded[1] == null || decoded[1] is String)) {
-      throw PlatformException(
-        code: decoded[0] as String,
-        message: decoded[1] as String?,
-        details: decoded[2],
-      );
+    if (decoded.length == 3 && decoded[0] is String && (decoded[1] == null || decoded[1] is String)) {
+      throw PlatformException(code: decoded[0] as String, message: decoded[1] as String?, details: decoded[2]);
     }
-    if (decoded.length == 4
-        && decoded[0] is String
-        && (decoded[1] == null || decoded[1] is String)
-        && (decoded[3] == null || decoded[3] is String)) {
+    if (decoded.length == 4 &&
+        decoded[0] is String &&
+        (decoded[1] == null || decoded[1] is String) &&
+        (decoded[3] == null || decoded[3] is String)) {
       throw PlatformException(
         code: decoded[0] as String,
         message: decoded[1] as String?,
@@ -194,7 +186,7 @@ class JSONMethodCodec implements MethodCodec {
   }
 
   @override
-  ByteData encodeErrorEnvelope({ required String code, String? message, Object? details}) {
+  ByteData encodeErrorEnvelope({required String code, String? message, Object? details}) {
     return const JSONMessageCodec().encodeMessage(<Object?>[code, message, details])!;
   }
 }
@@ -388,15 +380,17 @@ class StandardMessageCodec implements MessageCodec<Object?> {
       buffer.putUint8(_valueNull);
     } else if (value is bool) {
       buffer.putUint8(value ? _valueTrue : _valueFalse);
-    } else if (value is double) {  // Double precedes int because in JS everything is a double.
-                                   // Therefore in JS, both `is int` and `is double` always
-                                   // return `true`. If we check int first, we'll end up treating
-                                   // all numbers as ints and attempt the int32/int64 conversion,
-                                   // which is wrong. This precedence rule is irrelevant when
-                                   // decoding because we use tags to detect the type of value.
+    } else if (value is double) {
+      // Double precedes int because in JS everything is a double.
+      // Therefore in JS, both `is int` and `is double` always
+      // return `true`. If we check int first, we'll end up treating
+      // all numbers as ints and attempt the int32/int64 conversion,
+      // which is wrong. This precedence rule is irrelevant when
+      // decoding because we use tags to detect the type of value.
       buffer.putUint8(_valueFloat64);
       buffer.putFloat64(value);
-    } else if (value is int) { // ignore: avoid_double_and_int_checks, JS code always goes through the `double` path above
+    } else if (value is int) {
+      // ignore: avoid_double_and_int_checks, JS code always goes through the `double` path above
       if (-0x7fffffff - 1 <= value && value <= 0x7fffffff) {
         buffer.putUint8(_valueInt32);
         buffer.putInt32(value);
@@ -530,7 +524,8 @@ class StandardMessageCodec implements MessageCodec<Object?> {
           result[readValue(buffer)] = readValue(buffer);
         }
         return result;
-      default: throw const FormatException('Message corrupted');
+      default:
+        throw const FormatException('Message corrupted');
     }
   }
 
@@ -625,7 +620,7 @@ class StandardMethodCodec implements MethodCodec {
   }
 
   @override
-  ByteData encodeErrorEnvelope({ required String code, String? message, Object? details}) {
+  ByteData encodeErrorEnvelope({required String code, String? message, Object? details}) {
     final WriteBuffer buffer = WriteBuffer(startCapacity: _writeBufferStartCapacity);
     buffer.putUint8(1);
     messageCodec.writeValue(buffer, code);
@@ -649,7 +644,12 @@ class StandardMethodCodec implements MethodCodec {
     final Object? errorDetails = messageCodec.readValue(buffer);
     final String? errorStacktrace = (buffer.hasRemaining) ? messageCodec.readValue(buffer) as String? : null;
     if (errorCode is String && (errorMessage == null || errorMessage is String) && !buffer.hasRemaining) {
-      throw PlatformException(code: errorCode, message: errorMessage as String?, details: errorDetails, stacktrace: errorStacktrace);
+      throw PlatformException(
+        code: errorCode,
+        message: errorMessage as String?,
+        details: errorDetails,
+        stacktrace: errorStacktrace,
+      );
     } else {
       throw const FormatException('Invalid envelope');
     }

@@ -38,11 +38,7 @@ class Theme extends StatelessWidget {
   /// Applies the given theme [data] to [child].
   ///
   /// The [data] and [child] arguments must not be null.
-  const Theme({
-    super.key,
-    required this.data,
-    required this.child,
-  });
+  const Theme({super.key, required this.data, required this.child});
 
   /// Specifies the color and typography values for descendant widgets.
   final ThemeData data;
@@ -105,7 +101,10 @@ class Theme extends StatelessWidget {
   /// ```
   static ThemeData of(BuildContext context) {
     final _InheritedTheme? inheritedTheme = context.dependOnInheritedWidgetOfExactType<_InheritedTheme>();
-    final MaterialLocalizations? localizations = Localizations.of<MaterialLocalizations>(context, MaterialLocalizations);
+    final MaterialLocalizations? localizations = Localizations.of<MaterialLocalizations>(
+      context,
+      MaterialLocalizations,
+    );
     final ScriptCategory category = localizations?.scriptCategory ?? ScriptCategory.englishLike;
     final ThemeData theme = inheritedTheme?.theme.data ?? _kFallbackTheme;
     return ThemeData.localize(theme, theme.typography.geometryThemeFor(category));
@@ -134,9 +133,7 @@ class Theme extends StatelessWidget {
         // We're using a MaterialBasedCupertinoThemeData here instead of a
         // CupertinoThemeData because it defers some properties to the Material
         // ThemeData.
-        data: MaterialBasedCupertinoThemeData(
-          materialTheme: data,
-        ),
+        data: MaterialBasedCupertinoThemeData(materialTheme: data),
         child: _wrapsWidgetThemes(context, child),
       ),
     );
@@ -150,10 +147,7 @@ class Theme extends StatelessWidget {
 }
 
 class _InheritedTheme extends InheritedTheme {
-  const _InheritedTheme({
-    required this.theme,
-    required super.child,
-  });
+  const _InheritedTheme({required this.theme, required super.child});
 
   final Theme theme;
 
@@ -178,7 +172,7 @@ class ThemeDataTween extends Tween<ThemeData> {
   /// The [begin] and [end] properties must be non-null before the tween is
   /// first used, but the arguments can be null if the values are going to be
   /// filled in later.
-  ThemeDataTween({ super.begin, super.end });
+  ThemeDataTween({super.begin, super.end});
 
   @override
   ThemeData lerp(double t) => ThemeData.lerp(begin!, end!, t);
@@ -229,15 +223,13 @@ class _AnimatedThemeState extends AnimatedWidgetBaseState<AnimatedTheme> {
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    _data = visitor(_data, widget.data, (dynamic value) => ThemeDataTween(begin: value as ThemeData))! as ThemeDataTween;
+    _data =
+        visitor(_data, widget.data, (dynamic value) => ThemeDataTween(begin: value as ThemeData))! as ThemeDataTween;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: _data!.evaluate(animation),
-      child: widget.child,
-    );
+    return Theme(data: _data!.evaluate(animation), child: widget.child);
   }
 
   @override

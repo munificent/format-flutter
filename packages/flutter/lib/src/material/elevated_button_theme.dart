@@ -36,7 +36,7 @@ class ElevatedButtonThemeData with Diagnosticable {
   /// Creates an [ElevatedButtonThemeData].
   ///
   /// The [style] may be null.
-  const ElevatedButtonThemeData({ this.style });
+  const ElevatedButtonThemeData({this.style});
 
   /// Overrides for [ElevatedButton]'s default style.
   ///
@@ -52,9 +52,7 @@ class ElevatedButtonThemeData with Diagnosticable {
     if (identical(a, b)) {
       return a;
     }
-    return ElevatedButtonThemeData(
-      style: ButtonStyle.lerp(a?.style, b?.style, t),
-    );
+    return ElevatedButtonThemeData(style: ButtonStyle.lerp(a?.style, b?.style, t));
   }
 
   @override
@@ -93,11 +91,7 @@ class ElevatedButtonTheme extends InheritedTheme {
   /// Create a [ElevatedButtonTheme].
   ///
   /// The [data] parameter must not be null.
-  const ElevatedButtonTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const ElevatedButtonTheme({super.key, required this.data, required super.child});
 
   /// The configuration of this theme.
   final ElevatedButtonThemeData data;

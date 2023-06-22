@@ -36,7 +36,7 @@ class IconButtonThemeData with Diagnosticable {
   /// Creates a [IconButtonThemeData].
   ///
   /// The [style] may be null.
-  const IconButtonThemeData({ this.style });
+  const IconButtonThemeData({this.style});
 
   /// Overrides for [IconButton]'s default style if [ThemeData.useMaterial3]
   /// is set to true.
@@ -52,9 +52,7 @@ class IconButtonThemeData with Diagnosticable {
     if (identical(a, b)) {
       return a;
     }
-    return IconButtonThemeData(
-      style: ButtonStyle.lerp(a?.style, b?.style, t),
-    );
+    return IconButtonThemeData(style: ButtonStyle.lerp(a?.style, b?.style, t));
   }
 
   @override
@@ -91,11 +89,7 @@ class IconButtonTheme extends InheritedTheme {
   /// Create a [IconButtonTheme].
   ///
   /// The [data] parameter must not be null.
-  const IconButtonTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const IconButtonTheme({super.key, required this.data, required super.child});
 
   /// The configuration of this theme.
   final IconButtonThemeData data;

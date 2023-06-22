@@ -34,10 +34,7 @@ abstract class InheritedTheme extends InheritedWidget {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
 
-  const InheritedTheme({
-    super.key,
-    required super.child,
-  });
+  const InheritedTheme({super.key, required super.child});
 
   /// Return a copy of this inherited theme with the specified [child].
   ///
@@ -64,7 +61,6 @@ abstract class InheritedTheme extends InheritedWidget {
   /// the wrapped `child` - unless this method is called again to re-wrap the
   /// child.
   static Widget captureAll(BuildContext context, Widget child, {BuildContext? to}) {
-
     return capture(from: context, to: to).wrap(child);
   }
 
@@ -85,8 +81,7 @@ abstract class InheritedTheme extends InheritedWidget {
   ///
   /// This method can be expensive if there are many widgets between `from` and
   /// `to` (it walks the element tree between those nodes).
-  static CapturedThemes capture({ required BuildContext from, required BuildContext? to }) {
-
+  static CapturedThemes capture({required BuildContext from, required BuildContext? to}) {
     if (from == to) {
       // Nothing to capture.
       return CapturedThemes._(const <InheritedTheme>[]);
@@ -95,16 +90,20 @@ abstract class InheritedTheme extends InheritedWidget {
     final List<InheritedTheme> themes = <InheritedTheme>[];
     final Set<Type> themeTypes = <Type>{};
     late bool debugDidFindAncestor;
-    assert(() {
-      debugDidFindAncestor = to == null;
-      return true;
-    }());
+    assert(
+      () {
+        debugDidFindAncestor = to == null;
+        return true;
+      }(),
+    );
     from.visitAncestorElements((Element ancestor) {
       if (ancestor == to) {
-        assert(() {
-          debugDidFindAncestor = true;
-          return true;
-        }());
+        assert(
+          () {
+            debugDidFindAncestor = true;
+            return true;
+          }(),
+        );
         return false;
       }
       if (ancestor is InheritedElement && ancestor.widget is InheritedTheme) {
@@ -142,10 +141,7 @@ class CapturedThemes {
 }
 
 class _CaptureAll extends StatelessWidget {
-  const _CaptureAll({
-    required this.themes,
-    required this.child,
-  });
+  const _CaptureAll({required this.themes, required this.child});
 
   final List<InheritedTheme> themes;
   final Widget child;

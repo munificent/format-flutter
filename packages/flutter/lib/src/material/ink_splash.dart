@@ -135,17 +135,11 @@ class InkSplash extends InteractiveInkFeature {
     _radiusController = AnimationController(duration: _kUnconfirmedSplashDuration, vsync: controller.vsync)
       ..addListener(controller.markNeedsPaint)
       ..forward();
-    _radius = _radiusController.drive(Tween<double>(
-      begin: _kSplashInitialSize,
-      end: _targetRadius,
-    ));
+    _radius = _radiusController.drive(Tween<double>(begin: _kSplashInitialSize, end: _targetRadius));
     _alphaController = AnimationController(duration: _kSplashFadeDuration, vsync: controller.vsync)
       ..addListener(controller.markNeedsPaint)
       ..addStatusListener(_handleAlphaStatusChanged);
-    _alpha = _alphaController!.drive(IntTween(
-      begin: color.alpha,
-      end: 0,
-    ));
+    _alpha = _alphaController!.drive(IntTween(begin: color.alpha, end: 0));
 
     controller.addInkFeature(this);
   }

@@ -43,11 +43,7 @@ class ChipTheme extends InheritedTheme {
   /// Applies the given theme [data] to [child].
   ///
   /// The [data] and [child] arguments must not be null.
-  const ChipTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const ChipTheme({super.key, required this.data, required super.child});
 
   /// Specifies the color, shape, and text style values for descendant chip
   /// widgets.
@@ -245,9 +241,7 @@ class ChipThemeData with Diagnosticable {
     final Color disabledColor = primaryColor.withAlpha(disabledAlpha);
     final Color selectedColor = primaryColor.withAlpha(selectAlpha);
     final Color secondarySelectedColor = secondaryColor.withAlpha(selectAlpha);
-    final TextStyle secondaryLabelStyle = labelStyle.copyWith(
-      color: secondaryColor.withAlpha(textLabelAlpha),
-    );
+    final TextStyle secondaryLabelStyle = labelStyle.copyWith(color: secondaryColor.withAlpha(textLabelAlpha));
     labelStyle = labelStyle.copyWith(color: primaryColor.withAlpha(textLabelAlpha));
 
     return ChipThemeData(
@@ -508,8 +502,8 @@ class ChipThemeData with Diagnosticable {
       elevation: lerpDouble(a?.elevation, b?.elevation, t),
       pressElevation: lerpDouble(a?.pressElevation, b?.pressElevation, t),
       iconTheme: a?.iconTheme != null || b?.iconTheme != null
-        ? IconThemeData.lerp(a?.iconTheme, b?.iconTheme, t)
-        : null,
+          ? IconThemeData.lerp(a?.iconTheme, b?.iconTheme, t)
+          : null,
     );
   }
 
@@ -567,27 +561,27 @@ class ChipThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ChipThemeData
-        && other.backgroundColor == backgroundColor
-        && other.deleteIconColor == deleteIconColor
-        && other.disabledColor == disabledColor
-        && other.selectedColor == selectedColor
-        && other.secondarySelectedColor == secondarySelectedColor
-        && other.shadowColor == shadowColor
-        && other.surfaceTintColor == surfaceTintColor
-        && other.selectedShadowColor == selectedShadowColor
-        && other.showCheckmark == showCheckmark
-        && other.checkmarkColor == checkmarkColor
-        && other.labelPadding == labelPadding
-        && other.padding == padding
-        && other.side == side
-        && other.shape == shape
-        && other.labelStyle == labelStyle
-        && other.secondaryLabelStyle == secondaryLabelStyle
-        && other.brightness == brightness
-        && other.elevation == elevation
-        && other.pressElevation == pressElevation
-        && other.iconTheme == iconTheme;
+    return other is ChipThemeData &&
+        other.backgroundColor == backgroundColor &&
+        other.deleteIconColor == deleteIconColor &&
+        other.disabledColor == disabledColor &&
+        other.selectedColor == selectedColor &&
+        other.secondarySelectedColor == secondarySelectedColor &&
+        other.shadowColor == shadowColor &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.selectedShadowColor == selectedShadowColor &&
+        other.showCheckmark == showCheckmark &&
+        other.checkmarkColor == checkmarkColor &&
+        other.labelPadding == labelPadding &&
+        other.padding == padding &&
+        other.side == side &&
+        other.shape == shape &&
+        other.labelStyle == labelStyle &&
+        other.secondaryLabelStyle == secondaryLabelStyle &&
+        other.brightness == brightness &&
+        other.elevation == elevation &&
+        other.pressElevation == pressElevation &&
+        other.iconTheme == iconTheme;
   }
 
   @override

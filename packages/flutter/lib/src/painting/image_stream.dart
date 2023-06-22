@@ -23,7 +23,7 @@ class ImageInfo {
   /// Both the [image] and the [scale] must not be null.
   ///
   /// The [debugLabel] may be used to identify the source of this image.
-  const ImageInfo({ required this.image, this.scale = 1.0, this.debugLabel });
+  const ImageInfo({required this.image, this.scale = 1.0, this.debugLabel});
 
   /// Creates an [ImageInfo] with a cloned [image].
   ///
@@ -44,11 +44,7 @@ class ImageInfo {
   ///
   ///  * [Image.clone], which describes how and why to clone images.
   ImageInfo clone() {
-    return ImageInfo(
-      image: image.clone(),
-      scale: scale,
-      debugLabel: debugLabel,
-    );
+    return ImageInfo(image: image.clone(), scale: scale, debugLabel: debugLabel);
   }
 
   /// Whether this [ImageInfo] is a [clone] of the `other`.
@@ -88,9 +84,7 @@ class ImageInfo {
   /// ```
   /// {@end-tool}
   bool isCloneOf(ImageInfo other) {
-    return other.image.isCloneOf(image)
-        && scale == scale
-        && other.debugLabel == debugLabel;
+    return other.image.isCloneOf(image) && scale == scale && other.debugLabel == debugLabel;
   }
 
   /// The raw image pixels.
@@ -139,10 +133,7 @@ class ImageInfo {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ImageInfo
-        && other.image == image
-        && other.scale == scale
-        && other.debugLabel == debugLabel;
+    return other is ImageInfo && other.image == image && other.scale == scale && other.debugLabel == debugLabel;
   }
 }
 
@@ -161,11 +152,7 @@ class ImageStreamListener {
   /// Creates a new [ImageStreamListener].
   ///
   /// The [onImage] parameter must not be null.
-  const ImageStreamListener(
-    this.onImage, {
-    this.onChunk,
-    this.onError,
-  });
+  const ImageStreamListener(this.onImage, {this.onChunk, this.onError});
 
   /// Callback for getting notified that an image is available.
   ///
@@ -219,10 +206,10 @@ class ImageStreamListener {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ImageStreamListener
-        && other.onImage == onImage
-        && other.onChunk == onChunk
-        && other.onError == onError;
+    return other is ImageStreamListener &&
+        other.onImage == onImage &&
+        other.onChunk == onChunk &&
+        other.onError == onError;
   }
 }
 
@@ -421,7 +408,7 @@ class ImageStream with Diagnosticable {
     properties.add(ObjectFlagProperty<List<ImageStreamListener>>(
       'listeners',
       _listeners,
-      ifPresent: '${_listeners?.length} listener${_listeners?.length == 1 ? "" : "s" }',
+      ifPresent: '${_listeners?.length} listener${_listeners?.length == 1 ? "" : "s"}',
       ifNull: 'no listeners',
       level: _completer != null ? DiagnosticLevel.hidden : DiagnosticLevel.info,
     ));
@@ -535,20 +522,19 @@ abstract class ImageStreamCompleter with Diagnosticable {
         listener.onError!(_currentError!.exception, _currentError!.stack);
       } catch (newException, newStack) {
         if (newException != _currentError!.exception) {
-          FlutterError.reportError(
-            FlutterErrorDetails(
-              exception: newException,
-              library: 'image resource service',
-              context: ErrorDescription('by a synchronously-called image error listener'),
-              stack: newStack,
-            ),
-          );
+          FlutterError.reportError(FlutterErrorDetails(
+            exception: newException,
+            library: 'image resource service',
+            context: ErrorDescription('by a synchronously-called image error listener'),
+            stack: newStack,
+          ));
         }
       }
     }
   }
 
   int _keepAliveHandles = 0;
+
   /// Creates an [ImageStreamCompleterHandle] that will prevent this stream from
   /// being disposed at least until the handle is disposed.
   ///
@@ -644,17 +630,12 @@ abstract class ImageStreamCompleter with Diagnosticable {
       return;
     }
     // Make a copy to allow for concurrent modification.
-    final List<ImageStreamListener> localListeners =
-        List<ImageStreamListener>.of(_listeners);
+    final List<ImageStreamListener> localListeners = List<ImageStreamListener>.of(_listeners);
     for (final ImageStreamListener listener in localListeners) {
       try {
         listener.onImage(image.clone(), false);
       } catch (exception, stack) {
-        reportError(
-          context: ErrorDescription('by an image listener'),
-          exception: exception,
-          stack: stack,
-        );
+        reportError(context: ErrorDescription('by an image listener'), exception: exception, stack: stack);
       }
     }
   }
@@ -707,10 +688,9 @@ abstract class ImageStreamCompleter with Diagnosticable {
     );
 
     // Make a copy to allow for concurrent modification.
-    final List<ImageErrorListener> localErrorListeners = _listeners
-        .map<ImageErrorListener?>((ImageStreamListener listener) => listener.onError)
-        .whereType<ImageErrorListener>()
-        .toList();
+    final List<ImageErrorListener> localErrorListeners = _listeners.map<ImageErrorListener?>(
+      (ImageStreamListener listener) => listener.onError,
+    ).whereType<ImageErrorListener>().toList();
 
     bool handled = false;
     for (final ImageErrorListener errorListener in localErrorListeners) {
@@ -719,14 +699,12 @@ abstract class ImageStreamCompleter with Diagnosticable {
         handled = true;
       } catch (newException, newStack) {
         if (newException != exception) {
-          FlutterError.reportError(
-            FlutterErrorDetails(
-              context: ErrorDescription('when reporting an error to an image listener'),
-              library: 'image resource service',
-              exception: newException,
-              stack: newStack,
-            ),
-          );
+          FlutterError.reportError(FlutterErrorDetails(
+            context: ErrorDescription('when reporting an error to an image listener'),
+            library: 'image resource service',
+            exception: newException,
+            stack: newStack,
+          ));
         }
       }
     }
@@ -743,10 +721,9 @@ abstract class ImageStreamCompleter with Diagnosticable {
     _checkDisposed();
     if (hasListeners) {
       // Make a copy to allow for concurrent modification.
-      final List<ImageChunkListener> localListeners = _listeners
-          .map<ImageChunkListener?>((ImageStreamListener listener) => listener.onChunk)
-          .whereType<ImageChunkListener>()
-          .toList();
+      final List<ImageChunkListener> localListeners = _listeners.map<ImageChunkListener?>(
+        (ImageStreamListener listener) => listener.onChunk,
+      ).whereType<ImageChunkListener>().toList();
       for (final ImageChunkListener listener in localListeners) {
         listener(event);
       }
@@ -762,7 +739,7 @@ abstract class ImageStreamCompleter with Diagnosticable {
     description.add(ObjectFlagProperty<List<ImageStreamListener>>(
       'listeners',
       _listeners,
-      ifPresent: '${_listeners.length} listener${_listeners.length == 1 ? "" : "s" }',
+      ifPresent: '${_listeners.length} listener${_listeners.length == 1 ? "" : "s"}',
     ));
     description.add(FlagProperty('disposed', value: _disposed, ifTrue: '<disposed>'));
   }
@@ -785,16 +762,19 @@ class OneFrameImageStreamCompleter extends ImageStreamCompleter {
   /// argument on [FlutterErrorDetails] set to true, meaning that by default the
   /// message is only dumped to the console in debug mode (see [
   /// FlutterErrorDetails]).
-  OneFrameImageStreamCompleter(Future<ImageInfo> image, { InformationCollector? informationCollector }) {
-    image.then<void>(setImage, onError: (Object error, StackTrace stack) {
-      reportError(
-        context: ErrorDescription('resolving a single-frame image stream'),
-        exception: error,
-        stack: stack,
-        informationCollector: informationCollector,
-        silent: true,
-      );
-    });
+  OneFrameImageStreamCompleter(Future<ImageInfo> image, {InformationCollector? informationCollector}) {
+    image.then<void>(
+      setImage,
+      onError: (Object error, StackTrace stack) {
+        reportError(
+          context: ErrorDescription('resolving a single-frame image stream'),
+          exception: error,
+          stack: stack,
+          informationCollector: informationCollector,
+          silent: true,
+        );
+      },
+    );
   }
 }
 
@@ -857,17 +837,21 @@ class MultiFrameImageStreamCompleter extends ImageStreamCompleter {
   }) : _informationCollector = informationCollector,
        _scale = scale {
     this.debugLabel = debugLabel;
-    codec.then<void>(_handleCodecReady, onError: (Object error, StackTrace stack) {
-      reportError(
-        context: ErrorDescription('resolving an image codec'),
-        exception: error,
-        stack: stack,
-        informationCollector: informationCollector,
-        silent: true,
-      );
-    });
+    codec.then<void>(
+      _handleCodecReady,
+      onError: (Object error, StackTrace stack) {
+        reportError(
+          context: ErrorDescription('resolving an image codec'),
+          exception: error,
+          stack: stack,
+          informationCollector: informationCollector,
+          silent: true,
+        );
+      },
+    );
     if (chunkEvents != null) {
-      _chunkSubscription = chunkEvents.listen(reportImageChunkEvent,
+      _chunkSubscription = chunkEvents.listen(
+        reportImageChunkEvent,
         onError: (Object error, StackTrace stack) {
           reportError(
             context: ErrorDescription('loading an image'),
@@ -913,11 +897,7 @@ class MultiFrameImageStreamCompleter extends ImageStreamCompleter {
     }
     assert(_nextFrame != null);
     if (_isFirstFrame() || _hasFrameDurationPassed(timestamp)) {
-      _emitFrame(ImageInfo(
-        image: _nextFrame!.image.clone(),
-        scale: _scale,
-        debugLabel: debugLabel,
-      ));
+      _emitFrame(ImageInfo(image: _nextFrame!.image.clone(), scale: _scale, debugLabel: debugLabel));
       _shownTimestamp = timestamp;
       _frameDuration = _nextFrame!.duration;
       _nextFrame!.image.dispose();
@@ -968,11 +948,7 @@ class MultiFrameImageStreamCompleter extends ImageStreamCompleter {
       }
       // This is not an animated image, just return it and don't schedule more
       // frames.
-      _emitFrame(ImageInfo(
-        image: _nextFrame!.image.clone(),
-        scale: _scale,
-        debugLabel: debugLabel,
-      ));
+      _emitFrame(ImageInfo(image: _nextFrame!.image.clone(), scale: _scale, debugLabel: debugLabel));
       _nextFrame!.image.dispose();
       _nextFrame = null;
       return;

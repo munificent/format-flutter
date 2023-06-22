@@ -19,28 +19,16 @@ class IconTheme extends InheritedTheme {
   /// Creates an icon theme that controls properties of descendant widgets.
   ///
   /// Both [data] and [child] arguments must not be null.
-  const IconTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const IconTheme({super.key, required this.data, required super.child});
 
   /// Creates an icon theme that controls the properties of
   /// descendant widgets, and merges in the current icon theme, if any.
   ///
   /// The [data] and [child] arguments must not be null.
-  static Widget merge({
-    Key? key,
-    required IconThemeData data,
-    required Widget child,
-  }) {
+  static Widget merge({Key? key, required IconThemeData data, required Widget child}) {
     return Builder(
       builder: (BuildContext context) {
-        return IconTheme(
-          key: key,
-          data: _getInheritedIconThemeData(context).merge(data),
-          child: child,
-        );
+        return IconTheme(key: key, data: _getInheritedIconThemeData(context).merge(data), child: child);
       },
     );
   }
@@ -70,17 +58,17 @@ class IconTheme extends InheritedTheme {
   static IconThemeData of(BuildContext context) {
     final IconThemeData iconThemeData = _getInheritedIconThemeData(context).resolve(context);
     return iconThemeData.isConcrete
-      ? iconThemeData
-      : iconThemeData.copyWith(
-        size: iconThemeData.size ?? const IconThemeData.fallback().size,
-        fill: iconThemeData.fill ?? const IconThemeData.fallback().fill,
-        weight: iconThemeData.weight ?? const IconThemeData.fallback().weight,
-        grade: iconThemeData.grade ?? const IconThemeData.fallback().grade,
-        opticalSize: iconThemeData.opticalSize ?? const IconThemeData.fallback().opticalSize,
-        color: iconThemeData.color ?? const IconThemeData.fallback().color,
-        opacity: iconThemeData.opacity ?? const IconThemeData.fallback().opacity,
-        shadows: iconThemeData.shadows ?? const IconThemeData.fallback().shadows,
-      );
+        ? iconThemeData
+        : iconThemeData.copyWith(
+            size: iconThemeData.size ?? const IconThemeData.fallback().size,
+            fill: iconThemeData.fill ?? const IconThemeData.fallback().fill,
+            weight: iconThemeData.weight ?? const IconThemeData.fallback().weight,
+            grade: iconThemeData.grade ?? const IconThemeData.fallback().grade,
+            opticalSize: iconThemeData.opticalSize ?? const IconThemeData.fallback().opticalSize,
+            color: iconThemeData.color ?? const IconThemeData.fallback().color,
+            opacity: iconThemeData.opacity ?? const IconThemeData.fallback().opacity,
+            shadows: iconThemeData.shadows ?? const IconThemeData.fallback().shadows,
+          );
   }
 
   static IconThemeData _getInheritedIconThemeData(BuildContext context) {

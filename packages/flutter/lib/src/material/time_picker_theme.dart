@@ -35,7 +35,6 @@ import 'theme.dart';
 ///    picker theme.
 @immutable
 class TimePickerThemeData with Diagnosticable {
-
   /// Creates a theme that can be used for [TimePickerTheme] or
   /// [ThemeData.timePickerTheme].
   const TimePickerThemeData({
@@ -373,29 +372,29 @@ class TimePickerThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is TimePickerThemeData
-        && other.backgroundColor == backgroundColor
-        && other.cancelButtonStyle == cancelButtonStyle
-        && other.confirmButtonStyle == confirmButtonStyle
-        && other.dayPeriodBorderSide == dayPeriodBorderSide
-        && other.dayPeriodColor == dayPeriodColor
-        && other.dayPeriodShape == dayPeriodShape
-        && other.dayPeriodTextColor == dayPeriodTextColor
-        && other.dayPeriodTextStyle == dayPeriodTextStyle
-        && other.dialBackgroundColor == dialBackgroundColor
-        && other.dialHandColor == dialHandColor
-        && other.dialTextColor == dialTextColor
-        && other.dialTextStyle == dialTextStyle
-        && other.elevation == elevation
-        && other.entryModeIconColor == entryModeIconColor
-        && other.helpTextStyle == helpTextStyle
-        && other.hourMinuteColor == hourMinuteColor
-        && other.hourMinuteShape == hourMinuteShape
-        && other.hourMinuteTextColor == hourMinuteTextColor
-        && other.hourMinuteTextStyle == hourMinuteTextStyle
-        && other.inputDecorationTheme == inputDecorationTheme
-        && other.padding == padding
-        && other.shape == shape;
+    return other is TimePickerThemeData &&
+        other.backgroundColor == backgroundColor &&
+        other.cancelButtonStyle == cancelButtonStyle &&
+        other.confirmButtonStyle == confirmButtonStyle &&
+        other.dayPeriodBorderSide == dayPeriodBorderSide &&
+        other.dayPeriodColor == dayPeriodColor &&
+        other.dayPeriodShape == dayPeriodShape &&
+        other.dayPeriodTextColor == dayPeriodTextColor &&
+        other.dayPeriodTextStyle == dayPeriodTextStyle &&
+        other.dialBackgroundColor == dialBackgroundColor &&
+        other.dialHandColor == dialHandColor &&
+        other.dialTextColor == dialTextColor &&
+        other.dialTextStyle == dialTextStyle &&
+        other.elevation == elevation &&
+        other.entryModeIconColor == entryModeIconColor &&
+        other.helpTextStyle == helpTextStyle &&
+        other.hourMinuteColor == hourMinuteColor &&
+        other.hourMinuteShape == hourMinuteShape &&
+        other.hourMinuteTextColor == hourMinuteTextColor &&
+        other.hourMinuteTextStyle == hourMinuteTextStyle &&
+        other.inputDecorationTheme == inputDecorationTheme &&
+        other.padding == padding &&
+        other.shape == shape;
   }
 
   @override
@@ -420,7 +419,9 @@ class TimePickerThemeData with Diagnosticable {
     properties.add(DiagnosticsProperty<ShapeBorder>('hourMinuteShape', hourMinuteShape, defaultValue: null));
     properties.add(ColorProperty('hourMinuteTextColor', hourMinuteTextColor, defaultValue: null));
     properties.add(DiagnosticsProperty<TextStyle>('hourMinuteTextStyle', hourMinuteTextStyle, defaultValue: null));
-    properties.add(DiagnosticsProperty<InputDecorationTheme>('inputDecorationTheme', inputDecorationTheme, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<InputDecorationTheme>('inputDecorationTheme', inputDecorationTheme, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<EdgeInsetsGeometry>('padding', padding, defaultValue: null));
     properties.add(DiagnosticsProperty<ShapeBorder>('shape', shape, defaultValue: null));
   }
@@ -434,11 +435,7 @@ class TimePickerThemeData with Diagnosticable {
 class TimePickerTheme extends InheritedTheme {
   /// Creates a time picker theme that controls the configurations for
   /// time pickers displayed in its widget subtree.
-  const TimePickerTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const TimePickerTheme({super.key, required this.data, required super.child});
 
   /// The properties for descendant time picker widgets.
   final TimePickerThemeData data;

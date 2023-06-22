@@ -496,12 +496,9 @@ class RadioListTile<T> extends StatelessWidget {
     }
     final ThemeData theme = Theme.of(context);
     final RadioThemeData radioThemeData = RadioTheme.of(context);
-    final Set<MaterialState> states = <MaterialState>{
-      if (selected) MaterialState.selected,
-    };
-    final Color effectiveActiveColor = activeColor
-      ?? radioThemeData.fillColor?.resolve(states)
-      ?? theme.colorScheme.secondary;
+    final Set<MaterialState> states = <MaterialState>{if (selected) MaterialState.selected};
+    final Color effectiveActiveColor =
+        activeColor ?? radioThemeData.fillColor?.resolve(states) ?? theme.colorScheme.secondary;
     return MergeSemantics(
       child: ListTile(
         selectedColor: effectiveActiveColor,
@@ -515,15 +512,17 @@ class RadioListTile<T> extends StatelessWidget {
         shape: shape,
         tileColor: tileColor,
         selectedTileColor: selectedTileColor,
-        onTap: onChanged != null ? () {
-          if (toggleable && checked) {
-            onChanged!(null);
-            return;
-          }
-          if (!checked) {
-            onChanged!(value);
-          }
-        } : null,
+        onTap: onChanged != null
+            ? () {
+                if (toggleable && checked) {
+                  onChanged!(null);
+                  return;
+                }
+                if (!checked) {
+                  onChanged!(value);
+                }
+              }
+            : null,
         selected: selected,
         autofocus: autofocus,
         contentPadding: contentPadding,

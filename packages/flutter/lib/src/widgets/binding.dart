@@ -4,7 +4,15 @@
 
 import 'dart:async';
 import 'dart:developer' as developer;
-import 'dart:ui' show AccessibilityFeatures, AppExitResponse, AppLifecycleState, FrameTiming, Locale, PlatformDispatcher, TimingsCallback;
+import 'dart:ui'
+    show
+        AccessibilityFeatures,
+        AppExitResponse,
+        AppLifecycleState,
+        FrameTiming,
+        Locale,
+        PlatformDispatcher,
+        TimingsCallback;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -74,7 +82,7 @@ abstract mixin class WidgetsBindingObserver {
   /// [SystemChannels.navigation].
   @Deprecated(
     'Use didPushRouteInformation instead. '
-    'This feature was deprecated after v3.8.0-14.0.pre.'
+    'This feature was deprecated after v3.8.0-14.0.pre.',
   )
   Future<bool> didPushRoute(String route) => Future<bool>.value(false);
 
@@ -94,15 +102,13 @@ abstract mixin class WidgetsBindingObserver {
   // removed.
   Future<bool> didPushRouteInformation(RouteInformation routeInformation) {
     final Uri uri = routeInformation.uri;
-    return didPushRoute(
-      Uri.decodeComponent(
-        Uri(
-          path: uri.path.isEmpty ? '/' : uri.path,
-          queryParameters: uri.queryParametersAll.isEmpty ? null : uri.queryParametersAll,
-          fragment: uri.fragment.isEmpty ? null : uri.fragment,
-        ).toString(),
-      ),
-    );
+    return didPushRoute(Uri.decodeComponent(
+      Uri(
+        path: uri.path.isEmpty ? '/' : uri.path,
+        queryParameters: uri.queryParametersAll.isEmpty ? null : uri.queryParametersAll,
+        fragment: uri.fragment.isEmpty ? null : uri.fragment,
+      ).toString(),
+    ));
   }
 
   /// Called when the application's dimensions change. For example,
@@ -164,7 +170,7 @@ abstract mixin class WidgetsBindingObserver {
   ///
   ///  * [MediaQuery.of], which provides a similar service with less
   ///    boilerplate.
-  void didChangeMetrics() { }
+  void didChangeMetrics() {}
 
   /// Called when the platform's text scale factor changes.
   ///
@@ -217,13 +223,13 @@ abstract mixin class WidgetsBindingObserver {
   ///
   ///  * [MediaQuery.of], which provides a similar service with less
   ///    boilerplate.
-  void didChangeTextScaleFactor() { }
+  void didChangeTextScaleFactor() {}
 
   /// Called when the platform brightness changes.
   ///
   /// This method exposes notifications from
   /// [dart:ui.PlatformDispatcher.onPlatformBrightnessChanged].
-  void didChangePlatformBrightness() { }
+  void didChangePlatformBrightness() {}
 
   /// Called when the system tells the app that the user's locale has
   /// changed. For example, if the user changes the system language
@@ -231,7 +237,7 @@ abstract mixin class WidgetsBindingObserver {
   ///
   /// This method exposes notifications from
   /// [dart:ui.PlatformDispatcher.onLocaleChanged].
-  void didChangeLocales(List<Locale>? locales) { }
+  void didChangeLocales(List<Locale>? locales) {}
 
   /// Called when the system puts the app in the background or returns
   /// the app to the foreground.
@@ -240,7 +246,7 @@ abstract mixin class WidgetsBindingObserver {
   /// documentation for the [WidgetsBindingObserver] class.
   ///
   /// This method exposes notifications from [SystemChannels.lifecycle].
-  void didChangeAppLifecycleState(AppLifecycleState state) { }
+  void didChangeAppLifecycleState(AppLifecycleState state) {}
 
   /// Called when a request is received from the system to exit the application.
   ///
@@ -261,27 +267,30 @@ abstract mixin class WidgetsBindingObserver {
   ///
   /// This method exposes the `memoryPressure` notification from
   /// [SystemChannels.system].
-  void didHaveMemoryPressure() { }
+  void didHaveMemoryPressure() {}
 
   /// Called when the system changes the set of currently active accessibility
   /// features.
   ///
   /// This method exposes notifications from
   /// [dart:ui.PlatformDispatcher.onAccessibilityFeaturesChanged].
-  void didChangeAccessibilityFeatures() { }
+  void didChangeAccessibilityFeatures() {}
 }
 
 /// The glue between the widgets layer and the Flutter engine.
-mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureBinding, RendererBinding, SemanticsBinding {
+mixin WidgetsBinding
+    on BindingBase, ServicesBinding, SchedulerBinding, GestureBinding, RendererBinding, SemanticsBinding {
   @override
   void initInstances() {
     super.initInstances();
     _instance = this;
 
-    assert(() {
-      _debugAddStackFilters();
-      return true;
-    }());
+    assert(
+      () {
+        _debugAddStackFilters();
+        return true;
+      }(),
+    );
 
     // Initialization of [_buildOwner] has to be done after
     // [super.initInstances] is called, as it requires [ServicesBinding] to
@@ -290,10 +299,12 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
     buildOwner!.onBuildScheduled = _handleBuildScheduled;
     platformDispatcher.onLocaleChanged = handleLocaleChanged;
     SystemChannels.navigation.setMethodCallHandler(_handleNavigationInvocation);
-    assert(() {
-      FlutterErrorDetails.propertiesTransformers.add(debugTransformDebugCreator);
-      return true;
-    }());
+    assert(
+      () {
+        FlutterErrorDetails.propertiesTransformers.add(debugTransformDebugCreator);
+        return true;
+      }(),
+    );
     platformMenuDelegate = DefaultPlatformMenuDelegate();
   }
 
@@ -306,84 +317,125 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
   static WidgetsBinding? _instance;
 
   void _debugAddStackFilters() {
-    const PartialStackFrame elementInflateWidget = PartialStackFrame(package: 'package:flutter/src/widgets/framework.dart', className: 'Element', method: 'inflateWidget');
-    const PartialStackFrame elementUpdateChild = PartialStackFrame(package: 'package:flutter/src/widgets/framework.dart', className: 'Element', method: 'updateChild');
-    const PartialStackFrame elementRebuild = PartialStackFrame(package: 'package:flutter/src/widgets/framework.dart', className: 'Element', method: 'rebuild');
-    const PartialStackFrame componentElementPerformRebuild = PartialStackFrame(package: 'package:flutter/src/widgets/framework.dart', className: 'ComponentElement', method: 'performRebuild');
-    const PartialStackFrame componentElementFirstBuild = PartialStackFrame(package: 'package:flutter/src/widgets/framework.dart', className: 'ComponentElement', method: '_firstBuild');
-    const PartialStackFrame componentElementMount = PartialStackFrame(package: 'package:flutter/src/widgets/framework.dart', className: 'ComponentElement', method: 'mount');
-    const PartialStackFrame statefulElementFirstBuild = PartialStackFrame(package: 'package:flutter/src/widgets/framework.dart', className: 'StatefulElement', method: '_firstBuild');
-    const PartialStackFrame singleChildMount = PartialStackFrame(package: 'package:flutter/src/widgets/framework.dart', className: 'SingleChildRenderObjectElement', method: 'mount');
-    const PartialStackFrame statefulElementRebuild = PartialStackFrame(package: 'package:flutter/src/widgets/framework.dart', className: 'StatefulElement', method: 'performRebuild');
+    const PartialStackFrame elementInflateWidget = PartialStackFrame(
+      package: 'package:flutter/src/widgets/framework.dart',
+      className: 'Element',
+      method: 'inflateWidget',
+    );
+    const PartialStackFrame elementUpdateChild = PartialStackFrame(
+      package: 'package:flutter/src/widgets/framework.dart',
+      className: 'Element',
+      method: 'updateChild',
+    );
+    const PartialStackFrame elementRebuild = PartialStackFrame(
+      package: 'package:flutter/src/widgets/framework.dart',
+      className: 'Element',
+      method: 'rebuild',
+    );
+    const PartialStackFrame componentElementPerformRebuild = PartialStackFrame(
+      package: 'package:flutter/src/widgets/framework.dart',
+      className: 'ComponentElement',
+      method: 'performRebuild',
+    );
+    const PartialStackFrame componentElementFirstBuild = PartialStackFrame(
+      package: 'package:flutter/src/widgets/framework.dart',
+      className: 'ComponentElement',
+      method: '_firstBuild',
+    );
+    const PartialStackFrame componentElementMount = PartialStackFrame(
+      package: 'package:flutter/src/widgets/framework.dart',
+      className: 'ComponentElement',
+      method: 'mount',
+    );
+    const PartialStackFrame statefulElementFirstBuild = PartialStackFrame(
+      package: 'package:flutter/src/widgets/framework.dart',
+      className: 'StatefulElement',
+      method: '_firstBuild',
+    );
+    const PartialStackFrame singleChildMount = PartialStackFrame(
+      package: 'package:flutter/src/widgets/framework.dart',
+      className: 'SingleChildRenderObjectElement',
+      method: 'mount',
+    );
+    const PartialStackFrame statefulElementRebuild = PartialStackFrame(
+      package: 'package:flutter/src/widgets/framework.dart',
+      className: 'StatefulElement',
+      method: 'performRebuild',
+    );
 
     const String replacementString = '...     Normal element mounting';
 
     // ComponentElement variations
-    FlutterError.addDefaultStackFilter(const RepetitiveStackFrameFilter(
-      frames: <PartialStackFrame>[
-        elementInflateWidget,
-        elementUpdateChild,
-        componentElementPerformRebuild,
-        elementRebuild,
-        componentElementFirstBuild,
-        componentElementMount,
-      ],
-      replacement: replacementString,
-    ));
-    FlutterError.addDefaultStackFilter(const RepetitiveStackFrameFilter(
-      frames: <PartialStackFrame>[
-        elementUpdateChild,
-        componentElementPerformRebuild,
-        elementRebuild,
-        componentElementFirstBuild,
-        componentElementMount,
-      ],
-      replacement: replacementString,
-    ));
+    FlutterError.addDefaultStackFilter(
+      const RepetitiveStackFrameFilter(
+        frames: <PartialStackFrame>[
+          elementInflateWidget,
+          elementUpdateChild,
+          componentElementPerformRebuild,
+          elementRebuild,
+          componentElementFirstBuild,
+          componentElementMount,
+        ],
+        replacement: replacementString,
+      ),
+    );
+    FlutterError.addDefaultStackFilter(
+      const RepetitiveStackFrameFilter(
+        frames: <PartialStackFrame>[
+          elementUpdateChild,
+          componentElementPerformRebuild,
+          elementRebuild,
+          componentElementFirstBuild,
+          componentElementMount,
+        ],
+        replacement: replacementString,
+      ),
+    );
 
     // StatefulElement variations
-    FlutterError.addDefaultStackFilter(const RepetitiveStackFrameFilter(
-      frames: <PartialStackFrame>[
-        elementInflateWidget,
-        elementUpdateChild,
-        componentElementPerformRebuild,
-        statefulElementRebuild,
-        elementRebuild,
-        componentElementFirstBuild,
-        statefulElementFirstBuild,
-        componentElementMount,
-      ],
-      replacement: replacementString,
-    ));
-    FlutterError.addDefaultStackFilter(const RepetitiveStackFrameFilter(
-      frames: <PartialStackFrame>[
-        elementUpdateChild,
-        componentElementPerformRebuild,
-        statefulElementRebuild,
-        elementRebuild,
-        componentElementFirstBuild,
-        statefulElementFirstBuild,
-        componentElementMount,
-      ],
-      replacement: replacementString,
-    ));
+    FlutterError.addDefaultStackFilter(
+      const RepetitiveStackFrameFilter(
+        frames: <PartialStackFrame>[
+          elementInflateWidget,
+          elementUpdateChild,
+          componentElementPerformRebuild,
+          statefulElementRebuild,
+          elementRebuild,
+          componentElementFirstBuild,
+          statefulElementFirstBuild,
+          componentElementMount,
+        ],
+        replacement: replacementString,
+      ),
+    );
+    FlutterError.addDefaultStackFilter(
+      const RepetitiveStackFrameFilter(
+        frames: <PartialStackFrame>[
+          elementUpdateChild,
+          componentElementPerformRebuild,
+          statefulElementRebuild,
+          elementRebuild,
+          componentElementFirstBuild,
+          statefulElementFirstBuild,
+          componentElementMount,
+        ],
+        replacement: replacementString,
+      ),
+    );
 
     // SingleChildRenderObjectElement variations
-    FlutterError.addDefaultStackFilter(const RepetitiveStackFrameFilter(
-      frames: <PartialStackFrame>[
-        elementInflateWidget,
-        elementUpdateChild,
-        singleChildMount,
-      ],
-      replacement: replacementString,
-    ));
-    FlutterError.addDefaultStackFilter(const RepetitiveStackFrameFilter(
-      frames: <PartialStackFrame>[
-        elementUpdateChild,
-        singleChildMount,
-      ],
-      replacement: replacementString,
-    ));
+    FlutterError.addDefaultStackFilter(
+      const RepetitiveStackFrameFilter(
+        frames: <PartialStackFrame>[elementInflateWidget, elementUpdateChild, singleChildMount],
+        replacement: replacementString,
+      ),
+    );
+    FlutterError.addDefaultStackFilter(
+      const RepetitiveStackFrameFilter(
+        frames: <PartialStackFrame>[elementUpdateChild, singleChildMount],
+        replacement: replacementString,
+      ),
+    );
   }
 
   @override
@@ -395,9 +447,7 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
         name: WidgetsServiceExtensions.debugDumpApp.name,
         callback: (Map<String, String> parameters) async {
           final String data = _debugDumpAppString();
-          return <String, Object>{
-            'data': data,
-          };
+          return <String, Object>{'data': data};
         },
       );
 
@@ -405,17 +455,14 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
         name: WidgetsServiceExtensions.debugDumpFocusTree.name,
         callback: (Map<String, String> parameters) async {
           final String data = focusManager.toStringDeep();
-          return <String, Object>{
-            'data': data,
-          };
+          return <String, Object>{'data': data};
         },
       );
 
       if (!kIsWeb) {
         registerBoolServiceExtension(
           name: WidgetsServiceExtensions.showPerformanceOverlay.name,
-          getter: () =>
-          Future<bool>.value(WidgetsApp.showPerformanceOverlayOverride),
+          getter: () => Future<bool>.value(WidgetsApp.showPerformanceOverlayOverride),
           setter: (bool value) {
             if (WidgetsApp.showPerformanceOverlayOverride == value) {
               return Future<void>.value();
@@ -473,34 +520,36 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
         getter: () async => debugProfileBuildsEnabled,
         setter: (bool value) async {
           debugProfileBuildsEnabled = value;
-        }
+        },
       );
       registerBoolServiceExtension(
         name: WidgetsServiceExtensions.profileUserWidgetBuilds.name,
         getter: () async => debugProfileBuildsEnabledUserWidgets,
         setter: (bool value) async {
           debugProfileBuildsEnabledUserWidgets = value;
-        }
+        },
       );
     }
 
-    assert(() {
-      registerBoolServiceExtension(
-        name: WidgetsServiceExtensions.debugAllowBanner.name,
-        getter: () => Future<bool>.value(WidgetsApp.debugAllowBannerOverride),
-        setter: (bool value) {
-          if (WidgetsApp.debugAllowBannerOverride == value) {
-            return Future<void>.value();
-          }
-          WidgetsApp.debugAllowBannerOverride = value;
-          return _forceRebuild();
-        },
-      );
+    assert(
+      () {
+        registerBoolServiceExtension(
+          name: WidgetsServiceExtensions.debugAllowBanner.name,
+          getter: () => Future<bool>.value(WidgetsApp.debugAllowBannerOverride),
+          setter: (bool value) {
+            if (WidgetsApp.debugAllowBannerOverride == value) {
+              return Future<void>.value();
+            }
+            WidgetsApp.debugAllowBannerOverride = value;
+            return _forceRebuild();
+          },
+        );
 
-      WidgetInspectorService.instance.initServiceExtensions(registerServiceExtension);
+        WidgetInspectorService.instance.initServiceExtensions(registerServiceExtension);
 
-      return true;
-    }());
+        return true;
+      }(),
+    );
   }
 
   Future<void> _forceRebuild() {
@@ -776,32 +825,34 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
   void _handleBuildScheduled() {
     // If we're in the process of building dirty elements, then changes
     // should not trigger a new frame.
-    assert(() {
-      if (debugBuildingDirtyElements) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Build scheduled during frame.'),
-          ErrorDescription(
-            'While the widget tree was being built, laid out, and painted, '
-            'a new frame was scheduled to rebuild the widget tree.',
-          ),
-          ErrorHint(
-            'This might be because setState() was called from a layout or '
-            'paint callback. '
-            'If a change is needed to the widget tree, it should be applied '
-            'as the tree is being built. Scheduling a change for the subsequent '
-            'frame instead results in an interface that lags behind by one frame. '
-            'If this was done to make your build dependent on a size measured at '
-            'layout time, consider using a LayoutBuilder, CustomSingleChildLayout, '
-            'or CustomMultiChildLayout. If, on the other hand, the one frame delay '
-            'is the desired effect, for example because this is an '
-            'animation, consider scheduling the frame in a post-frame callback '
-            'using SchedulerBinding.addPostFrameCallback or '
-            'using an AnimationController to trigger the animation.',
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (debugBuildingDirtyElements) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Build scheduled during frame.'),
+            ErrorDescription(
+              'While the widget tree was being built, laid out, and painted, '
+              'a new frame was scheduled to rebuild the widget tree.',
+            ),
+            ErrorHint(
+              'This might be because setState() was called from a layout or '
+              'paint callback. '
+              'If a change is needed to the widget tree, it should be applied '
+              'as the tree is being built. Scheduling a change for the subsequent '
+              'frame instead results in an interface that lags behind by one frame. '
+              'If this was done to make your build dependent on a size measured at '
+              'layout time, consider using a LayoutBuilder, CustomSingleChildLayout, '
+              'or CustomMultiChildLayout. If, on the other hand, the one frame delay '
+              'is the desired effect, for example because this is an '
+              'animation, consider scheduling the frame in a post-frame callback '
+              'using SchedulerBinding.addPostFrameCallback or '
+              'using an AnimationController to trigger the animation.',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     ensureVisualUpdate();
   }
 
@@ -881,10 +932,12 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
   @override
   void drawFrame() {
     assert(!debugBuildingDirtyElements);
-    assert(() {
-      debugBuildingDirtyElements = true;
-      return true;
-    }());
+    assert(
+      () {
+        debugBuildingDirtyElements = true;
+        return true;
+      }(),
+    );
 
     TimingsCallback? firstFrameCallback;
     if (_needToReportFirstFrame) {
@@ -918,10 +971,12 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
       super.drawFrame();
       buildOwner!.finalizeTree();
     } finally {
-      assert(() {
-        debugBuildingDirtyElements = false;
-        return true;
-      }());
+      assert(
+        () {
+          debugBuildingDirtyElements = false;
+          return true;
+        }(),
+      );
     }
     if (!kReleaseMode) {
       if (_needToReportFirstFrame && sendFramesToEngine) {
@@ -948,7 +1003,7 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
   /// Use [rootElement] instead.
   @Deprecated(
     'Use rootElement instead. '
-    'This feature was deprecated after v3.9.0-16.0.pre.'
+    'This feature was deprecated after v3.9.0-16.0.pre.',
   )
   Element? get renderViewElement => rootElement;
 
@@ -965,10 +1020,7 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
   /// The `rootWidget` widget provided to this method must not already be
   /// wrapped in a [View].
   Widget wrapWithDefaultView(Widget rootWidget) {
-    return View(
-      view: platformDispatcher.implicitView!,
-      child: rootWidget,
-    );
+    return View(view: platformDispatcher.implicitView!, child: rootWidget);
   }
 
   /// Schedules a [Timer] for attaching the root widget.
@@ -1012,10 +1064,12 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureB
 
   @override
   Future<void> performReassemble() {
-    assert(() {
-      WidgetInspectorService.instance.performReassemble();
-      return true;
-    }());
+    assert(
+      () {
+        WidgetInspectorService.instance.performReassemble();
+        return true;
+      }(),
+    );
 
     if (rootElement != null) {
       buildOwner!.reassemble(rootElement!, BindingBase.debugReassembleConfig);
@@ -1097,7 +1151,11 @@ void runApp(Widget app) {
 }
 
 String _debugDumpAppString() {
-  const String mode = kDebugMode ? 'DEBUG MODE' : kReleaseMode ? 'RELEASE MODE' : 'PROFILE MODE';
+  const String mode = kDebugMode
+      ? 'DEBUG MODE'
+      : kReleaseMode
+          ? 'RELEASE MODE'
+          : 'PROFILE MODE';
   final StringBuffer buffer = StringBuffer();
   buffer.writeln('${WidgetsBinding.instance.runtimeType} - $mode');
   if (WidgetsBinding.instance.rootElement != null) {
@@ -1125,11 +1183,8 @@ class RenderObjectToWidgetAdapter<T extends RenderObject> extends RenderObjectWi
   /// Creates a bridge from a [RenderObject] to an [Element] tree.
   ///
   /// Used by [WidgetsBinding] to attach the root widget to the [RenderView].
-  RenderObjectToWidgetAdapter({
-    this.child,
-    required this.container,
-    this.debugShortDescription,
-  }) : super(key: GlobalObjectKey(container));
+  RenderObjectToWidgetAdapter({this.child, required this.container, this.debugShortDescription})
+    : super(key: GlobalObjectKey(container));
 
   /// The widget below this widget in the tree.
   ///
@@ -1149,7 +1204,7 @@ class RenderObjectToWidgetAdapter<T extends RenderObject> extends RenderObjectWi
   RenderObjectWithChildMixin<T> createRenderObject(BuildContext context) => container;
 
   @override
-  void updateRenderObject(BuildContext context, RenderObject renderObject) { }
+  void updateRenderObject(BuildContext context, RenderObject renderObject) {}
 
   /// Inflate this widget and actually set the resulting [RenderObject] as the
   /// child of [container].
@@ -1158,7 +1213,7 @@ class RenderObjectToWidgetAdapter<T extends RenderObject> extends RenderObjectWi
   /// the given element will have an update scheduled to switch to this widget.
   ///
   /// Used by [runApp] to bootstrap applications.
-  RenderObjectToWidgetElement<T> attachToRenderTree(BuildOwner owner, [ RenderObjectToWidgetElement<T>? element ]) {
+  RenderObjectToWidgetElement<T> attachToRenderTree(BuildOwner owner, [RenderObjectToWidgetElement<T>? element]) {
     if (element == null) {
       owner.lockState(() {
         element = createElement();
@@ -1301,7 +1356,15 @@ class RenderObjectToWidgetElement<T extends RenderObject> extends RenderObjectEl
 /// * [SemanticsBinding], which supports accessibility.
 /// * [RendererBinding], which handles the render tree.
 /// * [WidgetsBinding], which handles the widget tree.
-class WidgetsFlutterBinding extends BindingBase with GestureBinding, SchedulerBinding, ServicesBinding, PaintingBinding, SemanticsBinding, RendererBinding, WidgetsBinding {
+class WidgetsFlutterBinding extends BindingBase
+    with
+        GestureBinding,
+        SchedulerBinding,
+        ServicesBinding,
+        PaintingBinding,
+        SemanticsBinding,
+        RendererBinding,
+        WidgetsBinding {
   /// Returns an instance of the binding that implements
   /// [WidgetsBinding]. If no binding has yet been initialized, the
   /// [WidgetsFlutterBinding] class is used to create and initialize

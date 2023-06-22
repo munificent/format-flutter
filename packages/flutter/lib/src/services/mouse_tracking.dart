@@ -111,14 +111,9 @@ class MouseTrackerAnnotation with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(FlagsSummary<Function?>(
-      'callbacks',
-      <String, Function?> {
-        'enter': onEnter,
-        'exit': onExit,
-      },
-      ifEmpty: '<none>',
-    ));
+    properties.add(
+      FlagsSummary<Function?>('callbacks', <String, Function?>{'enter': onEnter, 'exit': onExit}, ifEmpty: '<none>'),
+    );
     properties.add(DiagnosticsProperty<MouseCursor>('cursor', cursor, defaultValue: MouseCursor.defer));
   }
 }

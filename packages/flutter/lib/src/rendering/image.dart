@@ -9,9 +9,7 @@ import 'package:flutter/animation.dart';
 import 'box.dart';
 import 'object.dart';
 
-export 'package:flutter/painting.dart' show
-  BoxFit,
-  ImageRepeat;
+export 'package:flutter/painting.dart' show BoxFit, ImageRepeat;
 
 /// An image in the render tree.
 ///
@@ -200,7 +198,6 @@ class RenderImage extends RenderBox {
     markNeedsPaint();
   }
 
-
   /// Used to combine [color] with this image.
   ///
   /// The default is [BlendMode.srcIn]. In terms of the blend mode, [color] is
@@ -353,19 +350,15 @@ class RenderImage extends RenderBox {
   Size _sizeForConstraints(BoxConstraints constraints) {
     // Folds the given |width| and |height| into |constraints| so they can all
     // be treated uniformly.
-    constraints = BoxConstraints.tightFor(
-      width: _width,
-      height: _height,
-    ).enforce(constraints);
+    constraints = BoxConstraints.tightFor(width: _width, height: _height).enforce(constraints);
 
     if (_image == null) {
       return constraints.smallest;
     }
 
-    return constraints.constrainSizeAndAttemptToPreserveAspectRatio(Size(
-      _image!.width.toDouble() / _scale,
-      _image!.height.toDouble() / _scale,
-    ));
+    return constraints.constrainSizeAndAttemptToPreserveAspectRatio(
+      Size(_image!.width.toDouble() / _scale, _image!.height.toDouble() / _scale),
+    );
   }
 
   @override

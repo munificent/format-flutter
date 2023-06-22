@@ -22,10 +22,8 @@ class DragDownDetails {
   /// Creates details for a [GestureDragDownCallback].
   ///
   /// The [globalPosition] argument must not be null.
-  DragDownDetails({
-    this.globalPosition = Offset.zero,
-    Offset? localPosition,
-  }) : localPosition = localPosition ?? globalPosition;
+  DragDownDetails({this.globalPosition = Offset.zero, Offset? localPosition})
+    : localPosition = localPosition ?? globalPosition;
 
   /// The global position at which the pointer contacted the screen.
   ///
@@ -67,12 +65,8 @@ class DragStartDetails {
   /// Creates details for a [GestureDragStartCallback].
   ///
   /// The [globalPosition] argument must not be null.
-  DragStartDetails({
-    this.sourceTimeStamp,
-    this.globalPosition = Offset.zero,
-    Offset? localPosition,
-    this.kind,
-  }) : localPosition = localPosition ?? globalPosition;
+  DragStartDetails({this.sourceTimeStamp, this.globalPosition = Offset.zero, Offset? localPosition, this.kind})
+    : localPosition = localPosition ?? globalPosition;
 
   /// Recorded timestamp of the source pointer event that triggered the drag
   /// event.
@@ -141,9 +135,9 @@ class DragUpdateDetails {
     required this.globalPosition,
     Offset? localPosition,
   }) : assert(
-         primaryDelta == null
-           || (primaryDelta == delta.dx && delta.dy == 0.0)
-           || (primaryDelta == delta.dy && delta.dx == 0.0),
+         primaryDelta == null ||
+             (primaryDelta == delta.dx && delta.dy == 0.0) ||
+             (primaryDelta == delta.dy && delta.dx == 0.0),
        ),
        localPosition = localPosition ?? globalPosition;
 
@@ -225,9 +219,9 @@ class DragEndDetails {
     this.velocity = Velocity.zero,
     this.primaryVelocity,
   }) : assert(
-         primaryVelocity == null
-           || (primaryVelocity == velocity.pixelsPerSecond.dx && velocity.pixelsPerSecond.dy == 0)
-           || (primaryVelocity == velocity.pixelsPerSecond.dy && velocity.pixelsPerSecond.dx == 0),
+         primaryVelocity == null ||
+             (primaryVelocity == velocity.pixelsPerSecond.dx && velocity.pixelsPerSecond.dy == 0) ||
+             (primaryVelocity == velocity.pixelsPerSecond.dy && velocity.pixelsPerSecond.dx == 0),
        );
 
   /// The velocity the pointer was moving when it stopped contacting the screen.

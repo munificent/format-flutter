@@ -46,13 +46,7 @@ class PointerEventResampler {
   int _pointerIdentifier = 0;
   int _hasButtons = 0;
 
-  PointerEvent _toHoverEvent(
-    PointerEvent event,
-    Offset position,
-    Offset delta,
-    Duration timeStamp,
-    int buttons,
-  ) {
+  PointerEvent _toHoverEvent(PointerEvent event, Offset position, Offset delta, Duration timeStamp, int buttons) {
     return PointerHoverEvent(
       viewId: event.viewId,
       timeStamp: timeStamp,
@@ -123,8 +117,7 @@ class PointerEventResampler {
     int buttons,
   ) {
     return isDown
-        ? _toMoveEvent(
-            event, position, delta, pointerIdentifier, timeStamp, buttons)
+        ? _toMoveEvent(event, position, delta, pointerIdentifier, timeStamp, buttons)
         : _toHoverEvent(event, position, delta, timeStamp, buttons);
   }
 
@@ -248,26 +241,19 @@ class PointerEventResampler {
         // therefore never produce `hover` events.
         if (position != _position) {
           final Offset delta = position - _position;
-          callback(_toMoveOrHoverEvent(event, position, delta,
-              _pointerIdentifier, sampleTime, wasDown, hadButtons));
+          callback(_toMoveOrHoverEvent(event, position, delta, _pointerIdentifier, sampleTime, wasDown, hadButtons));
           _position = position;
         }
-        callback(event.copyWith(
-          position: position,
-          delta: Offset.zero,
-          pointer: pointerIdentifier,
-          timeStamp: sampleTime,
-        ));
+        callback(
+          event.copyWith(position: position, delta: Offset.zero, pointer: pointerIdentifier, timeStamp: sampleTime),
+        );
       }
 
       _queuedEvents.removeFirst();
     }
   }
 
-  void _samplePointerPosition(
-    Duration sampleTime,
-    HandleEventCallback callback,
-  ) {
+  void _samplePointerPosition(Duration sampleTime, HandleEventCallback callback) {
     // Position at `sampleTime`.
     final Offset position = _positionAt(sampleTime);
 
@@ -275,8 +261,7 @@ class PointerEventResampler {
     final PointerEvent? next = _next;
     if (position != _position && next != null) {
       final Offset delta = position - _position;
-      callback(_toMoveOrHoverEvent(next, position, delta, _pointerIdentifier,
-          sampleTime, _isDown, _hasButtons));
+      callback(_toMoveOrHoverEvent(next, position, delta, _pointerIdentifier, sampleTime, _isDown, _hasButtons));
       _position = position;
     }
   }
@@ -297,11 +282,7 @@ class PointerEventResampler {
   /// Positive value for `nextSampleTime` allow early processing of
   /// up and removed events. This improves resampling of these events,
   /// which is important for fling animations.
-  void sample(
-    Duration sampleTime,
-    Duration nextSampleTime,
-    HandleEventCallback callback,
-  ) {
+  void sample(Duration sampleTime, Duration nextSampleTime, HandleEventCallback callback) {
     _processPointerEvents(sampleTime);
 
     // Dequeue and sample pointer events until `sampleTime`.

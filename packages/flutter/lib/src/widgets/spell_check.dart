@@ -4,8 +4,7 @@
 
 import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/painting.dart';
-import 'package:flutter/services.dart'
-    show SpellCheckResults, SpellCheckService, SuggestionSpan, TextEditingValue;
+import 'package:flutter/services.dart' show SpellCheckResults, SpellCheckService, SuggestionSpan, TextEditingValue;
 
 import 'editable_text.dart' show EditableTextContextMenuBuilder;
 import 'framework.dart' show immutable;
@@ -28,11 +27,11 @@ class SpellCheckConfiguration {
 
   /// Creates a configuration that disables spell check.
   const SpellCheckConfiguration.disabled()
-    :  _spellCheckEnabled = false,
-       spellCheckService = null,
-       spellCheckSuggestionsToolbarBuilder = null,
-       misspelledTextStyle = null,
-       misspelledSelectionColor = null;
+    : _spellCheckEnabled = false,
+      spellCheckService = null,
+      spellCheckSuggestionsToolbarBuilder = null,
+      misspelledTextStyle = null,
+      misspelledSelectionColor = null;
 
   /// The service used to fetch spell check results for text input.
   final SpellCheckService? spellCheckService;
@@ -67,7 +66,8 @@ class SpellCheckConfiguration {
     SpellCheckService? spellCheckService,
     Color? misspelledSelectionColor,
     TextStyle? misspelledTextStyle,
-    EditableTextContextMenuBuilder? spellCheckSuggestionsToolbarBuilder}) {
+    EditableTextContextMenuBuilder? spellCheckSuggestionsToolbarBuilder,
+  }) {
     if (!_spellCheckEnabled) {
       // A new configuration should be constructed to enable spell check.
       return const SpellCheckConfiguration.disabled();
@@ -77,7 +77,8 @@ class SpellCheckConfiguration {
       spellCheckService: spellCheckService ?? this.spellCheckService,
       misspelledSelectionColor: misspelledSelectionColor ?? this.misspelledSelectionColor,
       misspelledTextStyle: misspelledTextStyle ?? this.misspelledTextStyle,
-      spellCheckSuggestionsToolbarBuilder : spellCheckSuggestionsToolbarBuilder ?? this.spellCheckSuggestionsToolbarBuilder,
+      spellCheckSuggestionsToolbarBuilder:
+          spellCheckSuggestionsToolbarBuilder ?? this.spellCheckSuggestionsToolbarBuilder,
     );
   }
 
@@ -95,18 +96,23 @@ class SpellCheckConfiguration {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
-        return true;
+      return true;
     }
 
-    return other is SpellCheckConfiguration
-      && other.spellCheckService == spellCheckService
-      && other.misspelledTextStyle == misspelledTextStyle
-      && other.spellCheckSuggestionsToolbarBuilder == spellCheckSuggestionsToolbarBuilder
-      && other._spellCheckEnabled == _spellCheckEnabled;
+    return other is SpellCheckConfiguration &&
+        other.spellCheckService == spellCheckService &&
+        other.misspelledTextStyle == misspelledTextStyle &&
+        other.spellCheckSuggestionsToolbarBuilder == spellCheckSuggestionsToolbarBuilder &&
+        other._spellCheckEnabled == _spellCheckEnabled;
   }
 
   @override
-  int get hashCode => Object.hash(spellCheckService, misspelledTextStyle, spellCheckSuggestionsToolbarBuilder, _spellCheckEnabled);
+  int get hashCode => Object.hash(
+    spellCheckService,
+    misspelledTextStyle,
+    spellCheckSuggestionsToolbarBuilder,
+    _spellCheckEnabled,
+  );
 }
 
 // Methods for displaying spell check results:
@@ -117,8 +123,7 @@ class SpellCheckConfiguration {
 ///
 /// Used in the case where the request for the spell check results of the
 /// [newText] is lagging in order to avoid display of incorrect results.
-List<SuggestionSpan> _correctSpellCheckResults(
-    String newText, String resultsText, List<SuggestionSpan> results) {
+List<SuggestionSpan> _correctSpellCheckResults(String newText, String resultsText, List<SuggestionSpan> results) {
   final List<SuggestionSpan> correctedSpellCheckResults = <SuggestionSpan>[];
   int spanPointer = 0;
   int offset = 0;
@@ -129,8 +134,7 @@ List<SuggestionSpan> _correctSpellCheckResults(
 
   while (spanPointer < results.length) {
     final SuggestionSpan currentSpan = results[spanPointer];
-    final String currentSpanText =
-        resultsText.substring(currentSpan.range.start, currentSpan.range.end);
+    final String currentSpanText = resultsText.substring(currentSpan.range.start, currentSpan.range.end);
     final int spanLength = currentSpan.range.end - currentSpan.range.start;
 
     // Try finding SuggestionSpan from resultsText in new text.
@@ -148,10 +152,7 @@ List<SuggestionSpan> _correctSpellCheckResults(
       // the offset value, so apply it to new text by adding it to the list of
       // corrected results.
       final SuggestionSpan adjustedSpan = SuggestionSpan(
-        TextRange(
-          start: currentSpan.range.start + offset,
-          end: currentSpan.range.end + offset,
-        ),
+        TextRange(start: currentSpan.range.start + offset, end: currentSpan.range.end + offset),
         currentSpan.suggestions,
       );
 
@@ -191,18 +192,17 @@ List<SuggestionSpan> _correctSpellCheckResults(
 /// words within the [value]'s text with. The [spellCheckResults] are the
 /// results of spell checking the [value]'s text.
 TextSpan buildTextSpanWithSpellCheckSuggestions(
-    TextEditingValue value,
-    bool composingWithinCurrentTextRange,
-    TextStyle? style,
-    TextStyle misspelledTextStyle,
-    SpellCheckResults spellCheckResults) {
-  List<SuggestionSpan> spellCheckResultsSpans =
-      spellCheckResults.suggestionSpans;
+  TextEditingValue value,
+  bool composingWithinCurrentTextRange,
+  TextStyle? style,
+  TextStyle misspelledTextStyle,
+  SpellCheckResults spellCheckResults,
+) {
+  List<SuggestionSpan> spellCheckResultsSpans = spellCheckResults.suggestionSpans;
   final String spellCheckResultsText = spellCheckResults.spellCheckedText;
 
   if (spellCheckResultsText != value.text) {
-    spellCheckResultsSpans = _correctSpellCheckResults(
-        value.text, spellCheckResultsText, spellCheckResultsSpans);
+    spellCheckResultsSpans = _correctSpellCheckResults(value.text, spellCheckResultsText, spellCheckResultsSpans);
   }
 
   // We will draw the TextSpan tree based on the composing region, if it is
@@ -215,11 +215,11 @@ TextSpan buildTextSpanWithSpellCheckSuggestions(
     return TextSpan(
       style: style,
       children: _buildSubtreesWithComposingRegion(
-          spellCheckResultsSpans,
-          value,
-          style,
-          misspelledTextStyle,
-          composingWithinCurrentTextRange,
+        spellCheckResultsSpans,
+        value,
+        style,
+        misspelledTextStyle,
+        composingWithinCurrentTextRange,
       ),
     );
   }
@@ -241,11 +241,11 @@ TextSpan buildTextSpanWithSpellCheckSuggestions(
 /// edited and shouldn't be spell checked. This is useful for platforms and IMEs
 /// that don't use the composing region for the active word.
 List<TextSpan> _buildSubtreesWithoutComposingRegion(
-    List<SuggestionSpan>? spellCheckSuggestions,
-    TextEditingValue value,
-    TextStyle? style,
-    TextStyle misspelledStyle,
-    int cursorIndex,
+  List<SuggestionSpan>? spellCheckSuggestions,
+  TextEditingValue value,
+  TextStyle? style,
+  TextStyle misspelledStyle,
+  int cursorIndex,
 ) {
   final List<TextSpan> textSpanTreeChildren = <TextSpan>[];
 
@@ -253,39 +253,25 @@ List<TextSpan> _buildSubtreesWithoutComposingRegion(
   int currentSpanPointer = 0;
   int endIndex;
   final String text = value.text;
-  final TextStyle misspelledJointStyle =
-      style?.merge(misspelledStyle) ?? misspelledStyle;
+  final TextStyle misspelledJointStyle = style?.merge(misspelledStyle) ?? misspelledStyle;
   bool cursorInCurrentSpan = false;
 
   // Add text interwoven with any misspelled words to the tree.
   if (spellCheckSuggestions != null) {
-    while (textPointer < text.length &&
-      currentSpanPointer < spellCheckSuggestions.length) {
+    while (textPointer < text.length && currentSpanPointer < spellCheckSuggestions.length) {
       final SuggestionSpan currentSpan = spellCheckSuggestions[currentSpanPointer];
 
       if (currentSpan.range.start > textPointer) {
-        endIndex = currentSpan.range.start < text.length
-            ? currentSpan.range.start
-            : text.length;
-        textSpanTreeChildren.add(
-          TextSpan(
-            style: style,
-            text: text.substring(textPointer, endIndex),
-          )
-        );
+        endIndex = currentSpan.range.start < text.length ? currentSpan.range.start : text.length;
+        textSpanTreeChildren.add(TextSpan(style: style, text: text.substring(textPointer, endIndex)));
         textPointer = endIndex;
       } else {
-        endIndex =
-            currentSpan.range.end < text.length ? currentSpan.range.end : text.length;
+        endIndex = currentSpan.range.end < text.length ? currentSpan.range.end : text.length;
         cursorInCurrentSpan = currentSpan.range.start <= cursorIndex && currentSpan.range.end >= cursorIndex;
-        textSpanTreeChildren.add(
-          TextSpan(
-            style: cursorInCurrentSpan
-                ? style
-                : misspelledJointStyle,
-            text: text.substring(currentSpan.range.start, endIndex),
-          )
-        );
+        textSpanTreeChildren.add(TextSpan(
+          style: cursorInCurrentSpan ? style : misspelledJointStyle,
+          text: text.substring(currentSpan.range.start, endIndex),
+        ));
 
         textPointer = endIndex;
         currentSpanPointer++;
@@ -295,12 +281,7 @@ List<TextSpan> _buildSubtreesWithoutComposingRegion(
 
   // Add any remaining text to the tree if applicable.
   if (textPointer < text.length) {
-    textSpanTreeChildren.add(
-      TextSpan(
-        style: style,
-        text: text.substring(textPointer, text.length),
-      )
-    );
+    textSpanTreeChildren.add(TextSpan(style: style, text: text.substring(textPointer, text.length)));
   }
 
   return textSpanTreeChildren;
@@ -309,11 +290,12 @@ List<TextSpan> _buildSubtreesWithoutComposingRegion(
 /// Builds [TextSpan] subtree for text with misspelled words with logic based on
 /// a valid composing region.
 List<TextSpan> _buildSubtreesWithComposingRegion(
-    List<SuggestionSpan>? spellCheckSuggestions,
-    TextEditingValue value,
-    TextStyle? style,
-    TextStyle misspelledStyle,
-    bool composingWithinCurrentTextRange) {
+  List<SuggestionSpan>? spellCheckSuggestions,
+  TextEditingValue value,
+  TextStyle? style,
+  TextStyle misspelledStyle,
+  bool composingWithinCurrentTextRange,
+) {
   final List<TextSpan> textSpanTreeChildren = <TextSpan>[];
 
   int textPointer = 0;
@@ -322,62 +304,45 @@ List<TextSpan> _buildSubtreesWithComposingRegion(
   SuggestionSpan currentSpan;
   final String text = value.text;
   final TextRange composingRegion = value.composing;
-  final TextStyle composingTextStyle =
-      style?.merge(const TextStyle(decoration: TextDecoration.underline)) ??
-          const TextStyle(decoration: TextDecoration.underline);
-  final TextStyle misspelledJointStyle =
-      style?.merge(misspelledStyle) ?? misspelledStyle;
+  final TextStyle composingTextStyle = style?.merge(const TextStyle(decoration: TextDecoration.underline)) ??
+      const TextStyle(decoration: TextDecoration.underline);
+  final TextStyle misspelledJointStyle = style?.merge(misspelledStyle) ?? misspelledStyle;
   bool textPointerWithinComposingRegion = false;
   bool currentSpanIsComposingRegion = false;
 
   // Add text interwoven with any misspelled words to the tree.
   if (spellCheckSuggestions != null) {
-    while (textPointer < text.length &&
-      currentSpanPointer < spellCheckSuggestions.length) {
+    while (textPointer < text.length && currentSpanPointer < spellCheckSuggestions.length) {
       currentSpan = spellCheckSuggestions[currentSpanPointer];
 
       if (currentSpan.range.start > textPointer) {
-        endIndex = currentSpan.range.start < text.length
-            ? currentSpan.range.start
-            : text.length;
+        endIndex = currentSpan.range.start < text.length ? currentSpan.range.start : text.length;
         textPointerWithinComposingRegion =
-            composingRegion.start >= textPointer &&
-                composingRegion.end <= endIndex &&
-                !composingWithinCurrentTextRange;
+            composingRegion.start >= textPointer && composingRegion.end <= endIndex && !composingWithinCurrentTextRange;
 
         if (textPointerWithinComposingRegion) {
-          _addComposingRegionTextSpans(textSpanTreeChildren, text, textPointer,
-              composingRegion, style, composingTextStyle);
-          textSpanTreeChildren.add(
-            TextSpan(
-              style: style,
-              text: text.substring(composingRegion.end, endIndex),
-            )
+          _addComposingRegionTextSpans(
+            textSpanTreeChildren,
+            text,
+            textPointer,
+            composingRegion,
+            style,
+            composingTextStyle,
           );
+          textSpanTreeChildren.add(TextSpan(style: style, text: text.substring(composingRegion.end, endIndex)));
         } else {
-          textSpanTreeChildren.add(
-            TextSpan(
-              style: style,
-              text: text.substring(textPointer, endIndex),
-            )
-          );
+          textSpanTreeChildren.add(TextSpan(style: style, text: text.substring(textPointer, endIndex)));
         }
 
         textPointer = endIndex;
       } else {
-        endIndex =
-            currentSpan.range.end < text.length ? currentSpan.range.end : text.length;
-        currentSpanIsComposingRegion = textPointer >= composingRegion.start &&
-            endIndex <= composingRegion.end &&
-            !composingWithinCurrentTextRange;
-        textSpanTreeChildren.add(
-          TextSpan(
-            style: currentSpanIsComposingRegion
-                ? composingTextStyle
-                : misspelledJointStyle,
-            text: text.substring(currentSpan.range.start, endIndex),
-          )
-        );
+        endIndex = currentSpan.range.end < text.length ? currentSpan.range.end : text.length;
+        currentSpanIsComposingRegion =
+            textPointer >= composingRegion.start && endIndex <= composingRegion.end && !composingWithinCurrentTextRange;
+        textSpanTreeChildren.add(TextSpan(
+          style: currentSpanIsComposingRegion ? composingTextStyle : misspelledJointStyle,
+          text: text.substring(currentSpan.range.start, endIndex),
+        ));
 
         textPointer = endIndex;
         currentSpanPointer++;
@@ -387,25 +352,14 @@ List<TextSpan> _buildSubtreesWithComposingRegion(
 
   // Add any remaining text to the tree if applicable.
   if (textPointer < text.length) {
-    if (textPointer < composingRegion.start &&
-        !composingWithinCurrentTextRange) {
-      _addComposingRegionTextSpans(textSpanTreeChildren, text, textPointer,
-          composingRegion, style, composingTextStyle);
+    if (textPointer < composingRegion.start && !composingWithinCurrentTextRange) {
+      _addComposingRegionTextSpans(textSpanTreeChildren, text, textPointer, composingRegion, style, composingTextStyle);
 
       if (composingRegion.end != text.length) {
-        textSpanTreeChildren.add(
-          TextSpan(
-            style: style,
-            text: text.substring(composingRegion.end, text.length),
-          )
-        );
+        textSpanTreeChildren.add(TextSpan(style: style, text: text.substring(composingRegion.end, text.length)));
       }
     } else {
-      textSpanTreeChildren.add(
-        TextSpan(
-          style: style, text: text.substring(textPointer, text.length),
-        )
-      );
+      textSpanTreeChildren.add(TextSpan(style: style, text: text.substring(textPointer, text.length)));
     }
   }
 
@@ -415,22 +369,15 @@ List<TextSpan> _buildSubtreesWithComposingRegion(
 /// Helper method to create [TextSpan] tree children for specified range of
 /// text up to and including the composing region.
 void _addComposingRegionTextSpans(
-    List<TextSpan> treeChildren,
-    String text,
-    int start,
-    TextRange composingRegion,
-    TextStyle? style,
-    TextStyle composingTextStyle) {
+  List<TextSpan> treeChildren,
+  String text,
+  int start,
+  TextRange composingRegion,
+  TextStyle? style,
+  TextStyle composingTextStyle,
+) {
+  treeChildren.add(TextSpan(style: style, text: text.substring(start, composingRegion.start)));
   treeChildren.add(
-    TextSpan(
-      style: style,
-      text: text.substring(start, composingRegion.start),
-    )
-  );
-  treeChildren.add(
-    TextSpan(
-      style: composingTextStyle,
-      text: text.substring(composingRegion.start, composingRegion.end),
-    )
+    TextSpan(style: composingTextStyle, text: text.substring(composingRegion.start, composingRegion.end)),
   );
 }

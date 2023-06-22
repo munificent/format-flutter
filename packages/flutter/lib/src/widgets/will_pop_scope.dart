@@ -29,11 +29,7 @@ class WillPopScope extends StatefulWidget {
   /// dismiss the enclosing [ModalRoute].
   ///
   /// The [child] argument must not be null.
-  const WillPopScope({
-    super.key,
-    required this.child,
-    required this.onWillPop,
-  });
+  const WillPopScope({super.key, required this.child, required this.onWillPop});
 
   /// The widget below this widget in the tree.
   ///

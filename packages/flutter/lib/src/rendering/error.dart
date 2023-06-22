@@ -30,7 +30,7 @@ class RenderErrorBox extends RenderBox {
   ///
   /// A message can optionally be provided. If a message is provided, an attempt
   /// will be made to render the message when the box paints.
-  RenderErrorBox([ this.message = '' ]) {
+  RenderErrorBox([this.message = '']) {
     try {
       if (message != '') {
         // This class is intentionally doing things using the low-level
@@ -108,10 +108,12 @@ class RenderErrorBox extends RenderBox {
 
   static Color _initBackgroundColor() {
     Color result = const Color(0xF0C0C0C0);
-    assert(() {
-      result = const Color(0xF0900000);
-      return true;
-    }());
+    assert(
+      () {
+        result = const Color(0xF0900000);
+        return true;
+      }(),
+    );
     return result;
   }
 
@@ -122,20 +124,18 @@ class RenderErrorBox extends RenderBox {
   static ui.TextStyle textStyle = _initTextStyle();
 
   static ui.TextStyle _initTextStyle() {
-    ui.TextStyle result = ui.TextStyle(
-      color: const Color(0xFF303030),
-      fontFamily: 'sans-serif',
-      fontSize: 18.0,
+    ui.TextStyle result = ui.TextStyle(color: const Color(0xFF303030), fontFamily: 'sans-serif', fontSize: 18.0);
+    assert(
+      () {
+        result = ui.TextStyle(
+          color: const Color(0xFFFFFF66),
+          fontFamily: 'monospace',
+          fontSize: 14.0,
+          fontWeight: FontWeight.bold,
+        );
+        return true;
+      }(),
     );
-    assert(() {
-      result = ui.TextStyle(
-        color: const Color(0xFFFFFF66),
-        fontFamily: 'monospace',
-        fontSize: 14.0,
-        fontWeight: FontWeight.bold,
-      );
-      return true;
-    }());
     return result;
   }
 
@@ -148,7 +148,7 @@ class RenderErrorBox extends RenderBox {
   @override
   void paint(PaintingContext context, Offset offset) {
     try {
-      context.canvas.drawRect(offset & size, Paint() .. color = backgroundColor);
+      context.canvas.drawRect(offset & size, Paint()..color = backgroundColor);
       if (_paragraph != null) {
         double width = size.width;
         double left = 0.0;

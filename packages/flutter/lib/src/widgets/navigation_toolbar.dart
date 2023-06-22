@@ -20,7 +20,6 @@ import 'framework.dart';
 /// the iOS [CupertinoNavigationBar] or wrap this widget with more theming
 /// specifications for your own custom app bar.
 class NavigationToolbar extends StatelessWidget {
-
   /// Creates a widget that lays out its children in a manner suitable for a
   /// toolbar.
   const NavigationToolbar({
@@ -59,11 +58,7 @@ class NavigationToolbar extends StatelessWidget {
     assert(debugCheckHasDirectionality(context));
     final TextDirection textDirection = Directionality.of(context);
     return CustomMultiChildLayout(
-      delegate: _ToolbarLayout(
-        centerMiddle: centerMiddle,
-        middleSpacing: middleSpacing,
-        textDirection: textDirection,
-      ),
+      delegate: _ToolbarLayout(centerMiddle: centerMiddle, middleSpacing: middleSpacing, textDirection: textDirection),
       children: <Widget>[
         if (leading != null) LayoutId(id: _ToolbarSlot.leading, child: leading!),
         if (middle != null) LayoutId(id: _ToolbarSlot.middle, child: middle!),
@@ -73,18 +68,10 @@ class NavigationToolbar extends StatelessWidget {
   }
 }
 
-enum _ToolbarSlot {
-  leading,
-  middle,
-  trailing,
-}
+enum _ToolbarSlot { leading, middle, trailing }
 
 class _ToolbarLayout extends MultiChildLayoutDelegate {
-  _ToolbarLayout({
-    required this.centerMiddle,
-    required this.middleSpacing,
-    required this.textDirection,
-  });
+  _ToolbarLayout({required this.centerMiddle, required this.middleSpacing, required this.textDirection});
 
   // If false the middle widget should be start-justified within the space
   // between the leading and trailing widgets.
@@ -167,8 +154,8 @@ class _ToolbarLayout extends MultiChildLayoutDelegate {
 
   @override
   bool shouldRelayout(_ToolbarLayout oldDelegate) {
-    return oldDelegate.centerMiddle != centerMiddle
-        || oldDelegate.middleSpacing != middleSpacing
-        || oldDelegate.textDirection != textDirection;
+    return oldDelegate.centerMiddle != centerMiddle ||
+        oldDelegate.middleSpacing != middleSpacing ||
+        oldDelegate.textDirection != textDirection;
   }
 }

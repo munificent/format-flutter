@@ -28,7 +28,6 @@ import 'theme.dart';
 ///    application.
 @immutable
 class CardTheme with Diagnosticable {
-
   /// Creates a theme that can be used for [ThemeData.cardTheme].
   ///
   /// The [elevation] must be null or non-negative.
@@ -129,15 +128,7 @@ class CardTheme with Diagnosticable {
   }
 
   @override
-  int get hashCode => Object.hash(
-    clipBehavior,
-    color,
-    shadowColor,
-    surfaceTintColor,
-    elevation,
-    margin,
-    shape,
-  );
+  int get hashCode => Object.hash(clipBehavior, color, shadowColor, surfaceTintColor, elevation, margin, shape);
 
   @override
   bool operator ==(Object other) {
@@ -147,14 +138,14 @@ class CardTheme with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is CardTheme
-        && other.clipBehavior == clipBehavior
-        && other.color == color
-        && other.shadowColor == shadowColor
-        && other.surfaceTintColor == surfaceTintColor
-        && other.elevation == elevation
-        && other.margin == margin
-        && other.shape == shape;
+    return other is CardTheme &&
+        other.clipBehavior == clipBehavior &&
+        other.color == color &&
+        other.shadowColor == shadowColor &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.elevation == elevation &&
+        other.margin == margin &&
+        other.shape == shape;
   }
 
   @override

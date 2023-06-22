@@ -112,38 +112,23 @@ class InkSparkle extends InteractiveInkFeature {
        _position = position,
        _borderRadius = borderRadius ?? BorderRadius.zero,
        _textDirection = textDirection,
-       _targetRadius = (radius ?? _getTargetRadius(
-                                    referenceBox,
-                                    containedInkWell,
-                                    rectCallback,
-                                    position,
-                                  )
-                       ) * _targetRadiusMultiplier,
+       _targetRadius = (radius ?? _getTargetRadius(referenceBox, containedInkWell, rectCallback, position)) *
+           _targetRadiusMultiplier,
        _clipCallback = _getClipCallback(referenceBox, containedInkWell, rectCallback) {
     // InkSparkle will not be painted until the async compilation completes.
     _InkSparkleFactory.initializeShader();
     controller.addInkFeature(this);
 
     // Immediately begin animating the ink.
-    _animationController = AnimationController(
-      duration: _animationDuration,
-      vsync: controller.vsync,
-    )..addListener(controller.markNeedsPaint)
-     ..addStatusListener(_handleStatusChanged)
-     ..forward();
+    _animationController = AnimationController(duration: _animationDuration, vsync: controller.vsync)
+      ..addListener(controller.markNeedsPaint)
+      ..addStatusListener(_handleStatusChanged)
+      ..forward();
 
-    _radiusScale = TweenSequence<double>(
-      <TweenSequenceItem<double>>[
-        TweenSequenceItem<double>(
-          tween: CurveTween(curve: Curves.fastOutSlowIn),
-          weight: 75,
-        ),
-        TweenSequenceItem<double>(
-          tween: ConstantTween<double>(1.0),
-          weight: 25,
-        ),
-      ],
-    ).animate(_animationController);
+    _radiusScale = TweenSequence<double>(<TweenSequenceItem<double>>[
+      TweenSequenceItem<double>(tween: CurveTween(curve: Curves.fastOutSlowIn), weight: 75),
+      TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 25),
+    ]).animate(_animationController);
 
     // Functionally equivalent to Android 12's SkSL:
     //`return mix(u_touch, u_resolution, saturate(in_radius_scale * 2.0))`
@@ -151,53 +136,23 @@ class InkSparkle extends InteractiveInkFeature {
       begin: Vector2.array(<double>[_position.dx, _position.dy]),
       end: Vector2.array(<double>[referenceBox.size.width / 2, referenceBox.size.height / 2]),
     );
-    final Animation<double> centerProgress = TweenSequence<double>(
-      <TweenSequenceItem<double>>[
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 0.0, end: 1.0),
-          weight: 50,
-        ),
-        TweenSequenceItem<double>(
-          tween: ConstantTween<double>(1.0),
-          weight: 50,
-        ),
-      ],
-    ).animate(_radiusScale);
+    final Animation<double> centerProgress = TweenSequence<double>(<TweenSequenceItem<double>>[
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.0), weight: 50),
+      TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 50),
+    ]).animate(_radiusScale);
     _center = centerTween.animate(centerProgress);
 
-    _alpha = TweenSequence<double>(
-      <TweenSequenceItem<double>>[
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 0.0, end: 1.0),
-          weight: 13,
-        ),
-        TweenSequenceItem<double>(
-          tween: ConstantTween<double>(1.0),
-          weight: 27,
-        ),
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 1.0, end: 0.0),
-          weight: 60,
-        ),
-      ],
-    ).animate(_animationController);
+    _alpha = TweenSequence<double>(<TweenSequenceItem<double>>[
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.0), weight: 13),
+      TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 27),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.0, end: 0.0), weight: 60),
+    ]).animate(_animationController);
 
-    _sparkleAlpha = TweenSequence<double>(
-      <TweenSequenceItem<double>>[
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 0.0, end: 1.0),
-          weight: 13,
-        ),
-        TweenSequenceItem<double>(
-          tween: ConstantTween<double>(1.0),
-          weight: 27,
-        ),
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 1.0, end: 0.0),
-          weight: 50,
-        ),
-      ],
-    ).animate(_animationController);
+    _sparkleAlpha = TweenSequence<double>(<TweenSequenceItem<double>>[
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.0), weight: 13),
+      TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 27),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.0, end: 0.0), weight: 50),
+    ]).animate(_animationController);
 
     // Creates an element of randomness so that ink emanating from the same
     // pixel have slightly different rings and sparkles.
@@ -251,7 +206,8 @@ class InkSparkle extends InteractiveInkFeature {
   ///
   /// Since a [turbulenceSeed] is passed, the effect will not be random for
   /// subsequent presses in the same position. This can be used for testing.
-  static const InteractiveInkFeatureFactory constantTurbulenceSeedSplashFactory = _InkSparkleFactory.constantTurbulenceSeed();
+  static const InteractiveInkFeatureFactory constantTurbulenceSeedSplashFactory =
+      _InkSparkleFactory.constantTurbulenceSeed();
 
   @override
   void dispose() {
@@ -305,7 +261,6 @@ class InkSparkle extends InteractiveInkFeature {
 
   double get _width => referenceBox.size.width;
   double get _height => referenceBox.size.height;
-
 
   /// All double values for uniforms come from the Android 12 ripple
   /// implementation from the following files:
@@ -382,10 +337,7 @@ class InkSparkle extends InteractiveInkFeature {
   /// the ink feature is to be painted.
   ///
   /// For examples on how the function is used, see [InkSparkle] and [paintInkCircle].
-  void _transformCanvas({
-    required Canvas canvas,
-    required Matrix4 transform,
-  }) {
+  void _transformCanvas({required Canvas canvas, required Matrix4 transform}) {
     final Offset? originOffset = MatrixUtils.getAsTranslation(transform);
     if (originOffset == null) {
       canvas.transform(transform.storage);
@@ -418,8 +370,7 @@ class InkSparkle extends InteractiveInkFeature {
   }) {
     final Rect rect = clipCallback();
     if (customBorder != null) {
-      canvas.clipPath(
-          customBorder.getOuterPath(rect, textDirection: textDirection));
+      canvas.clipPath(customBorder.getOuterPath(rect, textDirection: textDirection));
     } else if (borderRadius != BorderRadius.zero) {
       canvas.clipRRect(RRect.fromRectAndCorners(
         rect,
@@ -441,11 +392,9 @@ class _InkSparkleFactory extends InteractiveInkFeatureFactory {
 
   static void initializeShader() {
     if (!_initCalled) {
-      ui.FragmentProgram.fromAsset('shaders/ink_sparkle.frag').then(
-        (ui.FragmentProgram program) {
-          _program = program;
-        },
-      );
+      ui.FragmentProgram.fromAsset('shaders/ink_sparkle.frag').then((ui.FragmentProgram program) {
+        _program = program;
+      });
       _initCalled = true;
     }
   }
@@ -486,11 +435,7 @@ class _InkSparkleFactory extends InteractiveInkFeatureFactory {
   }
 }
 
-RectCallback? _getClipCallback(
-  RenderBox referenceBox,
-  bool containedInkWell,
-  RectCallback? rectCallback,
-) {
+RectCallback? _getClipCallback(RenderBox referenceBox, bool containedInkWell, RectCallback? rectCallback) {
   if (rectCallback != null) {
     assert(containedInkWell);
     return rectCallback;
@@ -501,12 +446,7 @@ RectCallback? _getClipCallback(
   return null;
 }
 
-double _getTargetRadius(
-  RenderBox referenceBox,
-  bool containedInkWell,
-  RectCallback? rectCallback,
-  Offset position,
-) {
+double _getTargetRadius(RenderBox referenceBox, bool containedInkWell, RectCallback? rectCallback, Offset position) {
   final Size size = rectCallback != null ? rectCallback().size : referenceBox.size;
   final double d1 = size.bottomRight(Offset.zero).distance;
   final double d2 = (size.topRight(Offset.zero) - size.bottomLeft(Offset.zero)).distance;

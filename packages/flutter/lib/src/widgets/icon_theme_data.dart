@@ -41,14 +41,14 @@ class IconThemeData with Diagnosticable {
   /// The [size] is 24.0, [fill] is 0.0, [weight] is 400.0, [grade] is 0.0,
   /// opticalSize is 48.0, [color] is black, and [opacity] is 1.0.
   const IconThemeData.fallback()
-      : size = 24.0,
-        fill = 0.0,
-        weight = 400.0,
-        grade = 0.0,
-        opticalSize = 48.0,
-        color = const Color(0xFF000000),
-        _opacity = 1.0,
-        shadows = null;
+    : size = 24.0,
+      fill = 0.0,
+      weight = 400.0,
+      grade = 0.0,
+      opticalSize = 48.0,
+      color = const Color(0xFF000000),
+      _opacity = 1.0,
+      shadows = null;
 
   /// Creates a copy of this icon theme but with the given fields replaced with
   /// the new values.
@@ -112,13 +112,14 @@ class IconThemeData with Diagnosticable {
   IconThemeData resolve(BuildContext context) => this;
 
   /// Whether all the properties (except shadows) of this object are non-null.
-  bool get isConcrete => size != null
-    && fill != null
-    && weight != null
-    && grade != null
-    && opticalSize != null
-    && color != null
-    && opacity != null;
+  bool get isConcrete =>
+      size != null &&
+      fill != null &&
+      weight != null &&
+      grade != null &&
+      opticalSize != null &&
+      color != null &&
+      opacity != null;
 
   /// The default for [Icon.size].
   ///
@@ -187,15 +188,15 @@ class IconThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is IconThemeData
-        && other.size == size
-        && other.fill == fill
-        && other.weight == weight
-        && other.grade == grade
-        && other.opticalSize == opticalSize
-        && other.color == color
-        && other.opacity == opacity
-        && listEquals(other.shadows, shadows);
+    return other is IconThemeData &&
+        other.size == size &&
+        other.fill == fill &&
+        other.weight == weight &&
+        other.grade == grade &&
+        other.opticalSize == opticalSize &&
+        other.color == color &&
+        other.opacity == opacity &&
+        listEquals(other.shadows, shadows);
   }
 
   @override

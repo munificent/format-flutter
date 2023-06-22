@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
 import 'package:flutter/foundation.dart';
 
 import 'animation.dart';
@@ -72,16 +71,16 @@ mixin AnimationLazyListenerMixin {
 mixin AnimationEagerListenerMixin {
   /// This implementation ignores listener registrations.
   @protected
-  void didRegisterListener() { }
+  void didRegisterListener() {}
 
   /// This implementation ignores listener registrations.
   @protected
-  void didUnregisterListener() { }
+  void didUnregisterListener() {}
 
   /// Release the resources used by this object. The object is no longer usable
   /// after this method is called.
   @mustCallSuper
-  void dispose() { }
+  void dispose() {}
 }
 
 /// A mixin that implements the [addListener]/[removeListener] protocol and notifies
@@ -146,16 +145,18 @@ mixin AnimationLocalListenersMixin {
     final List<VoidCallback> localListeners = _listeners.toList(growable: false);
     for (final VoidCallback listener in localListeners) {
       InformationCollector? collector;
-      assert(() {
-        collector = () => <DiagnosticsNode>[
-          DiagnosticsProperty<AnimationLocalListenersMixin>(
-            'The $runtimeType notifying listeners was',
-            this,
-            style: DiagnosticsTreeStyle.errorProperty,
-          ),
-        ];
-        return true;
-      }());
+      assert(
+        () {
+          collector = () => <DiagnosticsNode>[
+                DiagnosticsProperty<AnimationLocalListenersMixin>(
+                  'The $runtimeType notifying listeners was',
+                  this,
+                  style: DiagnosticsTreeStyle.errorProperty,
+                ),
+              ];
+          return true;
+        }(),
+      );
       try {
         if (_listeners.contains(listener)) {
           listener();
@@ -241,16 +242,18 @@ mixin AnimationLocalStatusListenersMixin {
         }
       } catch (exception, stack) {
         InformationCollector? collector;
-        assert(() {
-          collector = () => <DiagnosticsNode>[
-            DiagnosticsProperty<AnimationLocalStatusListenersMixin>(
-              'The $runtimeType notifying status listeners was',
-              this,
-              style: DiagnosticsTreeStyle.errorProperty,
-            ),
-          ];
-          return true;
-        }());
+        assert(
+          () {
+            collector = () => <DiagnosticsNode>[
+                  DiagnosticsProperty<AnimationLocalStatusListenersMixin>(
+                    'The $runtimeType notifying status listeners was',
+                    this,
+                    style: DiagnosticsTreeStyle.errorProperty,
+                  ),
+                ];
+            return true;
+          }(),
+        );
         FlutterError.reportError(FlutterErrorDetails(
           exception: exception,
           stack: stack,

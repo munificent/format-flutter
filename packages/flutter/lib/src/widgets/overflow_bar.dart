@@ -233,17 +233,24 @@ class OverflowBar extends MultiChildRenderObjectWidget {
     properties.add(DoubleProperty('spacing', spacing, defaultValue: 0));
     properties.add(EnumProperty<MainAxisAlignment>('alignment', alignment, defaultValue: null));
     properties.add(DoubleProperty('overflowSpacing', overflowSpacing, defaultValue: 0));
-    properties.add(EnumProperty<OverflowBarAlignment>('overflowAlignment', overflowAlignment, defaultValue: OverflowBarAlignment.start));
-    properties.add(EnumProperty<VerticalDirection>('overflowDirection', overflowDirection, defaultValue: VerticalDirection.down));
+    properties.add(EnumProperty<OverflowBarAlignment>(
+      'overflowAlignment',
+      overflowAlignment,
+      defaultValue: OverflowBarAlignment.start,
+    ));
+    properties.add(
+      EnumProperty<VerticalDirection>('overflowDirection', overflowDirection, defaultValue: VerticalDirection.down),
+    );
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection, defaultValue: null));
   }
 }
 
-class _OverflowBarParentData extends ContainerBoxParentData<RenderBox> { }
+class _OverflowBarParentData extends ContainerBoxParentData<RenderBox> {}
 
 class _RenderOverflowBar extends RenderBox
-    with ContainerRenderObjectMixin<RenderBox, _OverflowBarParentData>,
-         RenderBoxContainerDefaultsMixin<RenderBox, _OverflowBarParentData> {
+    with
+        ContainerRenderObjectMixin<RenderBox, _OverflowBarParentData>,
+        RenderBoxContainerDefaultsMixin<RenderBox, _OverflowBarParentData> {
   _RenderOverflowBar({
     List<RenderBox>? children,
     double spacing = 0.0,
@@ -265,7 +272,7 @@ class _RenderOverflowBar extends RenderBox
 
   double get spacing => _spacing;
   double _spacing;
-  set spacing (double value) {
+  set spacing(double value) {
     if (_spacing == value) {
       return;
     }
@@ -275,7 +282,7 @@ class _RenderOverflowBar extends RenderBox
 
   MainAxisAlignment? get alignment => _alignment;
   MainAxisAlignment? _alignment;
-  set alignment (MainAxisAlignment? value) {
+  set alignment(MainAxisAlignment? value) {
     if (_alignment == value) {
       return;
     }
@@ -285,7 +292,7 @@ class _RenderOverflowBar extends RenderBox
 
   double get overflowSpacing => _overflowSpacing;
   double _overflowSpacing;
-  set overflowSpacing (double value) {
+  set overflowSpacing(double value) {
     if (_overflowSpacing == value) {
       return;
     }
@@ -295,7 +302,7 @@ class _RenderOverflowBar extends RenderBox
 
   OverflowBarAlignment get overflowAlignment => _overflowAlignment;
   OverflowBarAlignment _overflowAlignment;
-  set overflowAlignment (OverflowBarAlignment value) {
+  set overflowAlignment(OverflowBarAlignment value) {
     if (_overflowAlignment == value) {
       return;
     }
@@ -305,7 +312,7 @@ class _RenderOverflowBar extends RenderBox
 
   VerticalDirection get overflowDirection => _overflowDirection;
   VerticalDirection _overflowDirection;
-  set overflowDirection (VerticalDirection value) {
+  set overflowDirection(VerticalDirection value) {
     if (_overflowDirection == value) {
       return;
     }
@@ -556,7 +563,7 @@ class _RenderOverflowBar extends RenderBox
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, { required Offset position }) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     return defaultHitTestChildren(result, position: position);
   }
 
@@ -570,8 +577,14 @@ class _RenderOverflowBar extends RenderBox
     super.debugFillProperties(properties);
     properties.add(DoubleProperty('spacing', spacing, defaultValue: 0));
     properties.add(DoubleProperty('overflowSpacing', overflowSpacing, defaultValue: 0));
-    properties.add(EnumProperty<OverflowBarAlignment>('overflowAlignment', overflowAlignment, defaultValue: OverflowBarAlignment.start));
-    properties.add(EnumProperty<VerticalDirection>('overflowDirection', overflowDirection, defaultValue: VerticalDirection.down));
+    properties.add(EnumProperty<OverflowBarAlignment>(
+      'overflowAlignment',
+      overflowAlignment,
+      defaultValue: OverflowBarAlignment.start,
+    ));
+    properties.add(
+      EnumProperty<VerticalDirection>('overflowDirection', overflowDirection, defaultValue: VerticalDirection.down),
+    );
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection, defaultValue: null));
   }
 }

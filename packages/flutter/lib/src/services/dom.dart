@@ -71,13 +71,11 @@ extension DomEventTargetExtension on DomEventTarget {
   external JSVoid _addEventListener1(JSString type, DomEventListener? listener);
 
   @JS('addEventListener')
-  external JSVoid _addEventListener2(
-      JSString type, DomEventListener? listener, JSBoolean useCapture);
+  external JSVoid _addEventListener2(JSString type, DomEventListener? listener, JSBoolean useCapture);
 
   /// Adds an event listener to this event target.
   @JS('addEventListener')
-  void addEventListener(String type, DomEventListener? listener,
-      [bool? useCapture]) {
+  void addEventListener(String type, DomEventListener? listener, [bool? useCapture]) {
     if (listener != null) {
       if (useCapture == null) {
         _addEventListener1(type.toJS, listener);
@@ -129,15 +127,13 @@ extension DomXMLHttpRequestExtension on DomXMLHttpRequest {
   external void _setRequestHeader(JSString header, JSString value);
 
   /// Set the request header.
-  void setRequestHeader(String header, String value) =>
-      _setRequestHeader(header.toJS, value.toJS);
+  void setRequestHeader(String header, String value) => _setRequestHeader(header.toJS, value.toJS);
 
   @JS('open')
   external JSVoid _open(JSString method, JSString url, JSBoolean isAsync);
 
   /// Open the request.
-  void open(String method, String url, bool isAsync) =>
-      _open(method.toJS, url.toJS, isAsync.toJS);
+  void open(String method, String url, bool isAsync) => _open(method.toJS, url.toJS, isAsync.toJS);
 
   /// Send the request.
   external JSVoid send();
@@ -152,8 +148,7 @@ typedef DartDomEventListener = JSVoid Function(DomEvent event);
 class DomEventListener {}
 
 /// Creates a [DomEventListener] from a [DartDomEventListener].
-DomEventListener createDomEventListener(DartDomEventListener listener) =>
-    listener.toJS as DomEventListener;
+DomEventListener createDomEventListener(DartDomEventListener listener) => listener.toJS as DomEventListener;
 
 /// [DomEvent] interop object.
 @JS()
@@ -169,8 +164,7 @@ extension DomEventExtension on DomEvent {
   String get type => _type.toDart;
 
   /// Initialize an event.
-  external JSVoid initEvent(
-      JSString type, JSBoolean bubbles, JSBoolean cancelable);
+  external JSVoid initEvent(JSString type, JSBoolean bubbles, JSBoolean cancelable);
 }
 
 /// [DomProgressEvent] interop object.
@@ -326,8 +320,7 @@ extension DomSelectionExtension on DomSelection {
 class DomHTMLDivElement extends DomHTMLElement {}
 
 /// Factory constructor for [DomHTMLDivElement].
-DomHTMLDivElement createDomHTMLDivElement() =>
-    domDocument.createElement('div'.toJS) as DomHTMLDivElement;
+DomHTMLDivElement createDomHTMLDivElement() => domDocument.createElement('div'.toJS) as DomHTMLDivElement;
 
 /// An html style element.
 @JS()
@@ -341,8 +334,7 @@ extension DomHTMLStyleElementExtension on DomHTMLStyleElement {
 }
 
 /// Factory constructor for [DomHTMLStyleElement].
-DomHTMLStyleElement createDomHTMLStyleElement() =>
-    domDocument.createElement('style'.toJS) as DomHTMLStyleElement;
+DomHTMLStyleElement createDomHTMLStyleElement() => domDocument.createElement('style'.toJS) as DomHTMLStyleElement;
 
 /// CSS styles.
 @JS()
@@ -358,8 +350,7 @@ extension DomCSSStyleDeclarationExtension on DomCSSStyleDeclaration {
   set height(String value) => setProperty('height', value);
 
   @JS('setProperty')
-  external JSVoid _setProperty(
-      JSString propertyName, JSString value, JSString priority);
+  external JSVoid _setProperty(JSString propertyName, JSString value, JSString priority);
 
   /// Sets a CSS property by name.
   void setProperty(String propertyName, String value, [String? priority]) {

@@ -467,7 +467,6 @@ class ColorScheme with Diagnosticable {
     Color? errorColor,
     Brightness brightness = Brightness.light,
   }) {
-
     final bool isDark = brightness == Brightness.dark;
     final bool primaryIsDark = _brightnessFor(primarySwatch) == Brightness.dark;
     final Color secondary = accentColor ?? (isDark ? Colors.tealAccent[200]! : primarySwatch);
@@ -504,10 +503,12 @@ class ColorScheme with Diagnosticable {
   final Color onPrimary;
 
   final Color? _primaryContainer;
+
   /// A color used for elements needing less emphasis than [primary].
   Color get primaryContainer => _primaryContainer ?? primary;
 
   final Color? _onPrimaryContainer;
+
   /// A color that's clearly legible when drawn on [primaryContainer].
   ///
   /// To ensure that an app is accessible, a contrast ratio between
@@ -528,10 +529,12 @@ class ColorScheme with Diagnosticable {
   final Color onSecondary;
 
   final Color? _secondaryContainer;
+
   /// A color used for elements needing less emphasis than [secondary].
   Color get secondaryContainer => _secondaryContainer ?? secondary;
 
   final Color? _onSecondaryContainer;
+
   /// A color that's clearly legible when drawn on [secondaryContainer].
   ///
   /// To ensure that an app is accessible, a contrast ratio between
@@ -541,12 +544,14 @@ class ColorScheme with Diagnosticable {
   Color get onSecondaryContainer => _onSecondaryContainer ?? onSecondary;
 
   final Color? _tertiary;
+
   /// A color used as a contrasting accent that can balance [primary]
   /// and [secondary] colors or bring heightened attention to an element,
   /// such as an input field.
   Color get tertiary => _tertiary ?? secondary;
 
   final Color? _onTertiary;
+
   /// A color that's clearly legible when drawn on [tertiary].
   ///
   /// To ensure that an app is accessible, a contrast ratio between
@@ -555,10 +560,12 @@ class ColorScheme with Diagnosticable {
   Color get onTertiary => _onTertiary ?? onSecondary;
 
   final Color? _tertiaryContainer;
+
   /// A color used for elements needing less emphasis than [tertiary].
   Color get tertiaryContainer => _tertiaryContainer ?? tertiary;
 
   final Color? _onTertiaryContainer;
+
   /// A color that's clearly legible when drawn on [tertiaryContainer].
   ///
   /// To ensure that an app is accessible, a contrast ratio between
@@ -579,10 +586,12 @@ class ColorScheme with Diagnosticable {
   final Color onError;
 
   final Color? _errorContainer;
+
   /// A color used for error elements needing less emphasis than [error].
   Color get errorContainer => _errorContainer ?? error;
 
   final Color? _onErrorContainer;
+
   /// A color that's clearly legible when drawn on [errorContainer].
   ///
   /// To ensure that an app is accessible, a contrast ratio between
@@ -612,11 +621,13 @@ class ColorScheme with Diagnosticable {
   final Color onSurface;
 
   final Color? _surfaceVariant;
+
   /// A color variant of [surface] that can be used for differentiation against
   /// a component using [surface].
   Color get surfaceVariant => _surfaceVariant ?? surface;
 
   final Color? _onSurfaceVariant;
+
   /// A color that's clearly legible when drawn on [surfaceVariant].
   ///
   /// To ensure that an app is accessible, a contrast ratio between
@@ -626,29 +637,35 @@ class ColorScheme with Diagnosticable {
   Color get onSurfaceVariant => _onSurfaceVariant ?? onSurface;
 
   final Color? _outline;
+
   /// A utility color that creates boundaries and emphasis to improve usability.
   Color get outline => _outline ?? onBackground;
 
   final Color? _outlineVariant;
+
   /// A utility color that creates boundaries for decorative elements when a
   /// 3:1 contrast isn’t required, such as for dividers or decorative elements.
   Color get outlineVariant => _outlineVariant ?? onBackground;
 
   final Color? _shadow;
+
   /// A color use to paint the drop shadows of elevated components.
   Color get shadow => _shadow ?? const Color(0xff000000);
 
   final Color? _scrim;
+
   /// A color use to paint the scrim around of modal components.
   Color get scrim => _scrim ?? const Color(0xff000000);
 
   final Color? _inverseSurface;
+
   /// A surface color used for displaying the reverse of what’s seen in the
   /// surrounding UI, for example in a SnackBar to bring attention to
   /// an alert.
   Color get inverseSurface => _inverseSurface ?? onSurface;
 
   final Color? _onInverseSurface;
+
   /// A color that's clearly legible when drawn on [inverseSurface].
   ///
   /// To ensure that an app is accessible, a contrast ratio between
@@ -658,11 +675,13 @@ class ColorScheme with Diagnosticable {
   Color get onInverseSurface => _onInverseSurface ?? surface;
 
   final Color? _inversePrimary;
+
   /// An accent color used for displaying a highlight color on [inverseSurface]
   /// backgrounds, like button text in a SnackBar.
   Color get inversePrimary => _inversePrimary ?? onPrimary;
 
   final Color? _surfaceTint;
+
   /// A color used as an overlay on a surface color to indicate a component's
   /// elevation.
   Color get surfaceTint => _surfaceTint ?? primary;
@@ -704,35 +723,35 @@ class ColorScheme with Diagnosticable {
   }) {
     return ColorScheme(
       brightness: brightness ?? this.brightness,
-      primary : primary ?? this.primary,
-      onPrimary : onPrimary ?? this.onPrimary,
-      primaryContainer : primaryContainer ?? this.primaryContainer,
-      onPrimaryContainer : onPrimaryContainer ?? this.onPrimaryContainer,
-      secondary : secondary ?? this.secondary,
-      onSecondary : onSecondary ?? this.onSecondary,
-      secondaryContainer : secondaryContainer ?? this.secondaryContainer,
-      onSecondaryContainer : onSecondaryContainer ?? this.onSecondaryContainer,
-      tertiary : tertiary ?? this.tertiary,
-      onTertiary : onTertiary ?? this.onTertiary,
-      tertiaryContainer : tertiaryContainer ?? this.tertiaryContainer,
-      onTertiaryContainer : onTertiaryContainer ?? this.onTertiaryContainer,
-      error : error ?? this.error,
-      onError : onError ?? this.onError,
-      errorContainer : errorContainer ?? this.errorContainer,
-      onErrorContainer : onErrorContainer ?? this.onErrorContainer,
-      background : background ?? this.background,
-      onBackground : onBackground ?? this.onBackground,
-      surface : surface ?? this.surface,
-      onSurface : onSurface ?? this.onSurface,
-      surfaceVariant : surfaceVariant ?? this.surfaceVariant,
-      onSurfaceVariant : onSurfaceVariant ?? this.onSurfaceVariant,
-      outline : outline ?? this.outline,
-      outlineVariant : outlineVariant ?? this.outlineVariant,
-      shadow : shadow ?? this.shadow,
-      scrim : scrim ?? this.scrim,
-      inverseSurface : inverseSurface ?? this.inverseSurface,
-      onInverseSurface : onInverseSurface ?? this.onInverseSurface,
-      inversePrimary : inversePrimary ?? this.inversePrimary,
+      primary: primary ?? this.primary,
+      onPrimary: onPrimary ?? this.onPrimary,
+      primaryContainer: primaryContainer ?? this.primaryContainer,
+      onPrimaryContainer: onPrimaryContainer ?? this.onPrimaryContainer,
+      secondary: secondary ?? this.secondary,
+      onSecondary: onSecondary ?? this.onSecondary,
+      secondaryContainer: secondaryContainer ?? this.secondaryContainer,
+      onSecondaryContainer: onSecondaryContainer ?? this.onSecondaryContainer,
+      tertiary: tertiary ?? this.tertiary,
+      onTertiary: onTertiary ?? this.onTertiary,
+      tertiaryContainer: tertiaryContainer ?? this.tertiaryContainer,
+      onTertiaryContainer: onTertiaryContainer ?? this.onTertiaryContainer,
+      error: error ?? this.error,
+      onError: onError ?? this.onError,
+      errorContainer: errorContainer ?? this.errorContainer,
+      onErrorContainer: onErrorContainer ?? this.onErrorContainer,
+      background: background ?? this.background,
+      onBackground: onBackground ?? this.onBackground,
+      surface: surface ?? this.surface,
+      onSurface: onSurface ?? this.onSurface,
+      surfaceVariant: surfaceVariant ?? this.surfaceVariant,
+      onSurfaceVariant: onSurfaceVariant ?? this.onSurfaceVariant,
+      outline: outline ?? this.outline,
+      outlineVariant: outlineVariant ?? this.outlineVariant,
+      shadow: shadow ?? this.shadow,
+      scrim: scrim ?? this.scrim,
+      inverseSurface: inverseSurface ?? this.inverseSurface,
+      onInverseSurface: onInverseSurface ?? this.onInverseSurface,
+      inversePrimary: inversePrimary ?? this.inversePrimary,
       surfaceTint: surfaceTint ?? this.surfaceTint,
     );
   }
@@ -787,38 +806,38 @@ class ColorScheme with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ColorScheme
-      && other.brightness == brightness
-      && other.primary == primary
-      && other.onPrimary == onPrimary
-      && other.primaryContainer == primaryContainer
-      && other.onPrimaryContainer == onPrimaryContainer
-      && other.secondary == secondary
-      && other.onSecondary == onSecondary
-      && other.secondaryContainer == secondaryContainer
-      && other.onSecondaryContainer == onSecondaryContainer
-      && other.tertiary == tertiary
-      && other.onTertiary == onTertiary
-      && other.tertiaryContainer == tertiaryContainer
-      && other.onTertiaryContainer == onTertiaryContainer
-      && other.error == error
-      && other.onError == onError
-      && other.errorContainer == errorContainer
-      && other.onErrorContainer == onErrorContainer
-      && other.background == background
-      && other.onBackground == onBackground
-      && other.surface == surface
-      && other.onSurface == onSurface
-      && other.surfaceVariant == surfaceVariant
-      && other.onSurfaceVariant == onSurfaceVariant
-      && other.outline == outline
-      && other.outlineVariant == outlineVariant
-      && other.shadow == shadow
-      && other.scrim == scrim
-      && other.inverseSurface == inverseSurface
-      && other.onInverseSurface == onInverseSurface
-      && other.inversePrimary == inversePrimary
-      && other.surfaceTint == surfaceTint;
+    return other is ColorScheme &&
+        other.brightness == brightness &&
+        other.primary == primary &&
+        other.onPrimary == onPrimary &&
+        other.primaryContainer == primaryContainer &&
+        other.onPrimaryContainer == onPrimaryContainer &&
+        other.secondary == secondary &&
+        other.onSecondary == onSecondary &&
+        other.secondaryContainer == secondaryContainer &&
+        other.onSecondaryContainer == onSecondaryContainer &&
+        other.tertiary == tertiary &&
+        other.onTertiary == onTertiary &&
+        other.tertiaryContainer == tertiaryContainer &&
+        other.onTertiaryContainer == onTertiaryContainer &&
+        other.error == error &&
+        other.onError == onError &&
+        other.errorContainer == errorContainer &&
+        other.onErrorContainer == onErrorContainer &&
+        other.background == background &&
+        other.onBackground == onBackground &&
+        other.surface == surface &&
+        other.onSurface == onSurface &&
+        other.surfaceVariant == surfaceVariant &&
+        other.onSurfaceVariant == onSurfaceVariant &&
+        other.outline == outline &&
+        other.outlineVariant == outlineVariant &&
+        other.shadow == shadow &&
+        other.scrim == scrim &&
+        other.inverseSurface == inverseSurface &&
+        other.onInverseSurface == onInverseSurface &&
+        other.inversePrimary == inversePrimary &&
+        other.surfaceTint == surfaceTint;
   }
 
   @override
@@ -866,15 +885,25 @@ class ColorScheme with Diagnosticable {
     properties.add(ColorProperty('primary', primary, defaultValue: defaultScheme.primary));
     properties.add(ColorProperty('onPrimary', onPrimary, defaultValue: defaultScheme.onPrimary));
     properties.add(ColorProperty('primaryContainer', primaryContainer, defaultValue: defaultScheme.primaryContainer));
-    properties.add(ColorProperty('onPrimaryContainer', onPrimaryContainer, defaultValue: defaultScheme.onPrimaryContainer));
+    properties.add(
+      ColorProperty('onPrimaryContainer', onPrimaryContainer, defaultValue: defaultScheme.onPrimaryContainer),
+    );
     properties.add(ColorProperty('secondary', secondary, defaultValue: defaultScheme.secondary));
     properties.add(ColorProperty('onSecondary', onSecondary, defaultValue: defaultScheme.onSecondary));
-    properties.add(ColorProperty('secondaryContainer', secondaryContainer, defaultValue: defaultScheme.secondaryContainer));
-    properties.add(ColorProperty('onSecondaryContainer', onSecondaryContainer, defaultValue: defaultScheme.onSecondaryContainer));
+    properties.add(
+      ColorProperty('secondaryContainer', secondaryContainer, defaultValue: defaultScheme.secondaryContainer),
+    );
+    properties.add(
+      ColorProperty('onSecondaryContainer', onSecondaryContainer, defaultValue: defaultScheme.onSecondaryContainer),
+    );
     properties.add(ColorProperty('tertiary', tertiary, defaultValue: defaultScheme.tertiary));
     properties.add(ColorProperty('onTertiary', onTertiary, defaultValue: defaultScheme.onTertiary));
-    properties.add(ColorProperty('tertiaryContainer', tertiaryContainer, defaultValue: defaultScheme.tertiaryContainer));
-    properties.add(ColorProperty('onTertiaryContainer', onTertiaryContainer, defaultValue: defaultScheme.onTertiaryContainer));
+    properties.add(
+      ColorProperty('tertiaryContainer', tertiaryContainer, defaultValue: defaultScheme.tertiaryContainer),
+    );
+    properties.add(
+      ColorProperty('onTertiaryContainer', onTertiaryContainer, defaultValue: defaultScheme.onTertiaryContainer),
+    );
     properties.add(ColorProperty('error', error, defaultValue: defaultScheme.error));
     properties.add(ColorProperty('onError', onError, defaultValue: defaultScheme.onError));
     properties.add(ColorProperty('errorContainer', errorContainer, defaultValue: defaultScheme.errorContainer));
@@ -956,8 +985,7 @@ class ColorScheme with Diagnosticable {
     Color? surfaceTint,
   }) async {
     // Extract dominant colors from image.
-    final QuantizerResult quantizerResult =
-        await _extractColorsFromImageProvider(provider);
+    final QuantizerResult quantizerResult = await _extractColorsFromImageProvider(provider);
     final Map<int, int> colorToCount = quantizerResult.colorToCount.map(
       (int key, int value) => MapEntry<int, int>(_getArgbFromAbgr(key), value),
     );
@@ -974,7 +1002,8 @@ class ColorScheme with Diagnosticable {
         scheme = Scheme.dark(baseColor.value);
     }
 
-    return ColorScheme(primary: primary ?? Color(scheme.primary),
+    return ColorScheme(
+      primary: primary ?? Color(scheme.primary),
       onPrimary: onPrimary ?? Color(scheme.onPrimary),
       primaryContainer: primaryContainer ?? Color(scheme.primaryContainer),
       onPrimaryContainer: onPrimaryContainer ?? Color(scheme.onPrimaryContainer),
@@ -1016,59 +1045,58 @@ class ColorScheme with Diagnosticable {
     final ui.Image scaledImage = await _imageProviderToScaled(imageProvider);
     final ByteData? imageBytes = await scaledImage.toByteData();
 
-    final QuantizerResult quantizerResult = await QuantizerCelebi().quantize(
-      imageBytes!.buffer.asUint32List(),
-      128,
-      returnInputPixelToClusterPixel: true,
-    );
+    final QuantizerResult quantizerResult =
+        await QuantizerCelebi().quantize(imageBytes!.buffer.asUint32List(), 128, returnInputPixelToClusterPixel: true);
     return quantizerResult;
   }
 
   // Scale image size down to reduce computation time of color extraction.
   static Future<ui.Image> _imageProviderToScaled(ImageProvider imageProvider) async {
     const double maxDimension = 112.0;
-    final ImageStream stream = imageProvider.resolve(
-        const ImageConfiguration(size: Size(maxDimension, maxDimension)));
+    final ImageStream stream = imageProvider.resolve(const ImageConfiguration(size: Size(maxDimension, maxDimension)));
     final Completer<ui.Image> imageCompleter = Completer<ui.Image>();
     late ImageStreamListener listener;
     late ui.Image scaledImage;
     Timer? loadFailureTimeout;
 
-    listener = ImageStreamListener((ImageInfo info, bool sync) async {
-      loadFailureTimeout?.cancel();
-      stream.removeListener(listener);
-      final ui.Image image = info.image;
-      final int width = image.width;
-      final int height = image.height;
-      double paintWidth = width.toDouble();
-      double paintHeight = height.toDouble();
-      assert(width > 0 && height > 0);
+    listener = ImageStreamListener(
+      (ImageInfo info, bool sync) async {
+        loadFailureTimeout?.cancel();
+        stream.removeListener(listener);
+        final ui.Image image = info.image;
+        final int width = image.width;
+        final int height = image.height;
+        double paintWidth = width.toDouble();
+        double paintHeight = height.toDouble();
+        assert(width > 0 && height > 0);
 
-      final bool rescale = width > maxDimension || height > maxDimension;
-      if (rescale) {
-        paintWidth = (width > height) ? maxDimension : (maxDimension / height) * width;
-        paintHeight = (height > width) ? maxDimension : (maxDimension / width) * height;
-      }
-      final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
-      final Canvas canvas = Canvas(pictureRecorder);
-      paintImage(
-        canvas: canvas,
-        rect: Rect.fromLTRB(0, 0, paintWidth, paintHeight),
-        image: image,
-        filterQuality: FilterQuality.none);
+        final bool rescale = width > maxDimension || height > maxDimension;
+        if (rescale) {
+          paintWidth = (width > height) ? maxDimension : (maxDimension / height) * width;
+          paintHeight = (height > width) ? maxDimension : (maxDimension / width) * height;
+        }
+        final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+        final Canvas canvas = Canvas(pictureRecorder);
+        paintImage(
+          canvas: canvas,
+          rect: Rect.fromLTRB(0, 0, paintWidth, paintHeight),
+          image: image,
+          filterQuality: FilterQuality.none,
+        );
 
-      final ui.Picture picture = pictureRecorder.endRecording();
-      scaledImage = await picture.toImage(paintWidth.toInt(), paintHeight.toInt());
-      imageCompleter.complete(info.image);
-    }, onError: (Object exception, StackTrace? stackTrace) {
-      stream.removeListener(listener);
-      throw Exception('Failed to render image: $exception');
-    });
+        final ui.Picture picture = pictureRecorder.endRecording();
+        scaledImage = await picture.toImage(paintWidth.toInt(), paintHeight.toInt());
+        imageCompleter.complete(info.image);
+      },
+      onError: (Object exception, StackTrace? stackTrace) {
+        stream.removeListener(listener);
+        throw Exception('Failed to render image: $exception');
+      },
+    );
 
     loadFailureTimeout = Timer(const Duration(seconds: 5), () {
       stream.removeListener(listener);
-      imageCompleter.completeError(
-        TimeoutException('Timeout occurred trying to load image'));
+      imageCompleter.completeError(TimeoutException('Timeout occurred trying to load image'));
     });
 
     stream.addListener(listener);

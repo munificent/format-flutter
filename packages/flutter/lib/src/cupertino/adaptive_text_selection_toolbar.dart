@@ -50,11 +50,8 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
   /// * [CupertinoAdaptiveTextSelectionToolbar.selectable], which builds the
   ///   Cupertino children for content that is selectable but not editable.
   /// {@endtemplate}
-  const CupertinoAdaptiveTextSelectionToolbar({
-    super.key,
-    required this.children,
-    required this.anchors,
-  }) : buttonItems = null;
+  const CupertinoAdaptiveTextSelectionToolbar({super.key, required this.children, required this.anchors})
+    : buttonItems = null;
 
   /// Create an instance of [CupertinoAdaptiveTextSelectionToolbar] whose
   /// children will be built from the given [buttonItems].
@@ -68,11 +65,8 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
   /// {@macro flutter.cupertino.CupertinoAdaptiveTextSelectionToolbar.editable}
   /// {@macro flutter.cupertino.CupertinoAdaptiveTextSelectionToolbar.editableText}
   /// {@macro flutter.cupertino.CupertinoAdaptiveTextSelectionToolbar.selectable}
-  const CupertinoAdaptiveTextSelectionToolbar.buttonItems({
-    super.key,
-    required this.buttonItems,
-    required this.anchors,
-  }) : children = null;
+  const CupertinoAdaptiveTextSelectionToolbar.buttonItems({super.key, required this.buttonItems, required this.anchors})
+    : children = null;
 
   /// Create an instance of [CupertinoAdaptiveTextSelectionToolbar] with the
   /// default children for an editable field.
@@ -115,12 +109,10 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
   /// {@macro flutter.cupertino.CupertinoAdaptiveTextSelectionToolbar.editable}
   /// {@macro flutter.cupertino.CupertinoAdaptiveTextSelectionToolbar.buttonItems}
   /// {@macro flutter.cupertino.CupertinoAdaptiveTextSelectionToolbar.selectable}
-  CupertinoAdaptiveTextSelectionToolbar.editableText({
-    super.key,
-    required EditableTextState editableTextState,
-  }) : children = null,
-       buttonItems = editableTextState.contextMenuButtonItems,
-       anchors = editableTextState.contextMenuAnchors;
+  CupertinoAdaptiveTextSelectionToolbar.editableText({super.key, required EditableTextState editableTextState})
+    : children = null,
+      buttonItems = editableTextState.contextMenuButtonItems,
+      anchors = editableTextState.contextMenuAnchors;
 
   /// Create an instance of [CupertinoAdaptiveTextSelectionToolbar] with the
   /// default children for selectable, but not editable, content.
@@ -180,17 +172,13 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
       case TargetPlatform.fuchsia:
       case TargetPlatform.iOS:
         return buttonItems.map((ContextMenuButtonItem buttonItem) {
-          return CupertinoTextSelectionToolbarButton.buttonItem(
-            buttonItem: buttonItem,
-          );
+          return CupertinoTextSelectionToolbarButton.buttonItem(buttonItem: buttonItem);
         });
       case TargetPlatform.linux:
       case TargetPlatform.windows:
       case TargetPlatform.macOS:
         return buttonItems.map((ContextMenuButtonItem buttonItem) {
-          return CupertinoDesktopTextSelectionToolbarButton.buttonItem(
-            buttonItem: buttonItem,
-          );
+          return CupertinoDesktopTextSelectionToolbarButton.buttonItem(buttonItem: buttonItem);
         });
     }
   }
@@ -202,8 +190,7 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final List<Widget> resultChildren = children
-        ?? getAdaptiveButtons(context, buttonItems!).toList();
+    final List<Widget> resultChildren = children ?? getAdaptiveButtons(context, buttonItems!).toList();
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -217,10 +204,7 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
       case TargetPlatform.linux:
       case TargetPlatform.windows:
       case TargetPlatform.macOS:
-        return CupertinoDesktopTextSelectionToolbar(
-          anchor: anchors.primaryAnchor,
-          children: resultChildren,
-        );
+        return CupertinoDesktopTextSelectionToolbar(anchor: anchors.primaryAnchor, children: resultChildren);
     }
   }
 }

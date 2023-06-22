@@ -189,14 +189,16 @@ class TextFormField extends FormField<String> {
          autovalidateMode: autovalidateMode ?? AutovalidateMode.disabled,
          builder: (FormFieldState<String> field) {
            final _TextFormFieldState state = field as _TextFormFieldState;
-           final InputDecoration effectiveDecoration = (decoration ?? const InputDecoration())
-               .applyDefaults(Theme.of(field.context).inputDecorationTheme);
+           final InputDecoration effectiveDecoration = (decoration ?? const InputDecoration()).applyDefaults(
+             Theme.of(field.context).inputDecorationTheme,
+           );
            void onChangedHandler(String value) {
              field.didChange(value);
              if (onChanged != null) {
                onChanged(value);
              }
            }
+
            return UnmanagedRestorationScope(
              bucket: field.bucket,
              child: TextField(
@@ -273,9 +275,7 @@ class TextFormField extends FormField<String> {
   final TextEditingController? controller;
 
   static Widget _defaultContextMenuBuilder(BuildContext context, EditableTextState editableTextState) {
-    return AdaptiveTextSelectionToolbar.editableText(
-      editableTextState: editableTextState,
-    );
+    return AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState);
   }
 
   @override
@@ -307,9 +307,7 @@ class _TextFormFieldState extends FormFieldState<String> {
 
   void _createLocalController([TextEditingValue? value]) {
     assert(_controller == null);
-    _controller = value == null
-        ? RestorableTextEditingController()
-        : RestorableTextEditingController.fromValue(value);
+    _controller = value == null ? RestorableTextEditingController() : RestorableTextEditingController.fromValue(value);
     if (!restorePending) {
       _registerController();
     }

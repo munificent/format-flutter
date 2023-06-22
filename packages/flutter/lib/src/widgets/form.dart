@@ -49,13 +49,8 @@ class Form extends StatefulWidget {
   /// Creates a container for form fields.
   ///
   /// The [child] argument must not be null.
-  const Form({
-    super.key,
-    required this.child,
-    this.onWillPop,
-    this.onChanged,
-    AutovalidateMode? autovalidateMode,
-  }) : autovalidateMode = autovalidateMode ?? AutovalidateMode.disabled;
+  const Form({super.key, required this.child, this.onWillPop, this.onChanged, AutovalidateMode? autovalidateMode})
+    : autovalidateMode = autovalidateMode ?? AutovalidateMode.disabled;
 
   /// Returns the [FormState] of the closest [Form] widget which encloses the
   /// given context, or null if none is found.
@@ -101,19 +96,21 @@ class Form extends StatefulWidget {
   ///   [Form] ancestor is found.
   static FormState of(BuildContext context) {
     final FormState? formState = maybeOf(context);
-    assert(() {
-      if (formState == null) {
-        throw FlutterError(
-          'Form.of() was called with a context that does not contain a Form widget.\n'
-          'No Form widget ancestor could be found starting from the context that '
-          'was passed to Form.of(). This can happen because you are using a widget '
-          'that looks for a Form ancestor, but no such ancestor exists.\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (formState == null) {
+          throw FlutterError(
+            'Form.of() was called with a context that does not contain a Form widget.\n'
+            'No Form widget ancestor could be found starting from the context that '
+            'was passed to Form.of(). This can happen because you are using a widget '
+            'that looks for a Form ancestor, but no such ancestor exists.\n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return formState!;
   }
 
@@ -168,8 +165,7 @@ class FormState extends State<Form> {
   void _fieldDidChange() {
     widget.onChanged?.call();
 
-    _hasInteractedByUser = _fields
-        .any((FormFieldState<dynamic> field) => field._hasInteractedByUser.value);
+    _hasInteractedByUser = _fields.any((FormFieldState<dynamic> field) => field._hasInteractedByUser.value);
     _forceRebuild();
   }
 
@@ -202,11 +198,7 @@ class FormState extends State<Form> {
 
     return WillPopScope(
       onWillPop: widget.onWillPop,
-      child: _FormScope(
-        formState: this,
-        generation: _generation,
-        child: widget.child,
-      ),
+      child: _FormScope(formState: this, generation: _generation, child: widget.child),
     );
   }
 
@@ -266,12 +258,9 @@ class FormState extends State<Form> {
 }
 
 class _FormScope extends InheritedWidget {
-  const _FormScope({
-    required super.child,
-    required FormState formState,
-    required int generation,
-  }) : _formState = formState,
-       _generation = generation;
+  const _FormScope({required super.child, required FormState formState, required int generation})
+    : _formState = formState,
+      _generation = generation;
 
   final FormState _formState;
 

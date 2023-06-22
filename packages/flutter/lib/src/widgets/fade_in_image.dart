@@ -154,7 +154,11 @@ class FadeInImage extends StatefulWidget {
     int? placeholderCacheHeight,
     int? imageCacheWidth,
     int? imageCacheHeight,
-  }) : placeholder = ResizeImage.resizeIfNeeded(placeholderCacheWidth, placeholderCacheHeight, MemoryImage(placeholder, scale: placeholderScale)),
+  }) : placeholder = ResizeImage.resizeIfNeeded(
+         placeholderCacheWidth,
+         placeholderCacheHeight,
+         MemoryImage(placeholder, scale: placeholderScale),
+       ),
        image = ResizeImage.resizeIfNeeded(imageCacheWidth, imageCacheHeight, NetworkImage(image, scale: imageScale));
 
   /// Creates a widget that uses a placeholder image stored in an asset bundle
@@ -217,8 +221,16 @@ class FadeInImage extends StatefulWidget {
     int? imageCacheWidth,
     int? imageCacheHeight,
   }) : placeholder = placeholderScale != null
-         ? ResizeImage.resizeIfNeeded(placeholderCacheWidth, placeholderCacheHeight, ExactAssetImage(placeholder, bundle: bundle, scale: placeholderScale))
-         : ResizeImage.resizeIfNeeded(placeholderCacheWidth, placeholderCacheHeight, AssetImage(placeholder, bundle: bundle)),
+           ? ResizeImage.resizeIfNeeded(
+               placeholderCacheWidth,
+               placeholderCacheHeight,
+               ExactAssetImage(placeholder, bundle: bundle, scale: placeholderScale),
+             )
+           : ResizeImage.resizeIfNeeded(
+               placeholderCacheWidth,
+               placeholderCacheHeight,
+               AssetImage(placeholder, bundle: bundle),
+             ),
        image = ResizeImage.resizeIfNeeded(imageCacheWidth, imageCacheHeight, NetworkImage(image, scale: imageScale));
 
   /// Image displayed while the target [image] is loading.
@@ -525,8 +537,7 @@ class _AnimatedFadeOutFadeInState extends ImplicitlyAnimatedWidgetState<_Animate
 
   @override
   Widget build(BuildContext context) {
-    if (widget.wasSynchronouslyLoaded ||
-        (_placeholderOpacityAnimation?.isCompleted ?? true)) {
+    if (widget.wasSynchronouslyLoaded || (_placeholderOpacityAnimation?.isCompleted ?? true)) {
       return widget.target;
     }
 
@@ -536,10 +547,7 @@ class _AnimatedFadeOutFadeInState extends ImplicitlyAnimatedWidgetState<_Animate
       // Text direction is irrelevant here since we're using center alignment,
       // but it allows the Stack to avoid a call to Directionality.of()
       textDirection: TextDirection.ltr,
-      children: <Widget>[
-        widget.target,
-        widget.placeholder,
-      ],
+      children: <Widget>[widget.target, widget.placeholder],
     );
   }
 

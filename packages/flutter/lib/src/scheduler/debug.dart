@@ -56,12 +56,13 @@ bool debugPrintScheduleFrameStacks = false;
 /// See [the scheduler library](scheduler/scheduler-library.html) for a complete
 /// list.
 bool debugAssertAllSchedulerVarsUnset(String reason) {
-  assert(() {
-    if (debugPrintBeginFrameBanner ||
-        debugPrintEndFrameBanner) {
-      throw FlutterError(reason);
-    }
-    return true;
-  }());
+  assert(
+    () {
+      if (debugPrintBeginFrameBanner || debugPrintEndFrameBanner) {
+        throw FlutterError(reason);
+      }
+      return true;
+    }(),
+  );
   return true;
 }

@@ -29,10 +29,11 @@ class _ScrollNotificationObserverScope extends InheritedWidget {
     required ScrollNotificationObserverState scrollNotificationObserverState,
   }) : _scrollNotificationObserverState = scrollNotificationObserverState;
 
-  final ScrollNotificationObserverState  _scrollNotificationObserverState;
+  final ScrollNotificationObserverState _scrollNotificationObserverState;
 
   @override
-  bool updateShouldNotify(_ScrollNotificationObserverScope old) => _scrollNotificationObserverState != old._scrollNotificationObserverState;
+  bool updateShouldNotify(_ScrollNotificationObserverScope old) =>
+      _scrollNotificationObserverState != old._scrollNotificationObserverState;
 }
 
 final class _ListenerEntry extends LinkedListEntry<_ListenerEntry> {
@@ -84,10 +85,7 @@ class ScrollNotificationObserver extends StatefulWidget {
   /// Create a [ScrollNotificationObserver].
   ///
   /// The [child] parameter must not be null.
-  const ScrollNotificationObserver({
-    super.key,
-    required this.child,
-  });
+  const ScrollNotificationObserver({super.key, required this.child});
 
   /// The subtree below this widget.
   final Widget child;
@@ -105,7 +103,9 @@ class ScrollNotificationObserver extends StatefulWidget {
   /// * [ScrollNotificationObserver.of], which is similar to this method, but
   ///   asserts if no [ScrollNotificationObserver] ancestor is found.
   static ScrollNotificationObserverState? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<_ScrollNotificationObserverScope>()?._scrollNotificationObserverState;
+    return context
+        .dependOnInheritedWidgetOfExactType<_ScrollNotificationObserverScope>()
+        ?._scrollNotificationObserverState;
   }
 
   /// The closest instance of this class that encloses the given context.
@@ -122,21 +122,23 @@ class ScrollNotificationObserver extends StatefulWidget {
   ///   but returns null if no [ScrollNotificationObserver] ancestor is found.
   static ScrollNotificationObserverState of(BuildContext context) {
     final ScrollNotificationObserverState? observerState = maybeOf(context);
-    assert(() {
-      if (observerState == null) {
-        throw FlutterError(
-          'ScrollNotificationObserver.of() was called with a context that does not contain a '
-          'ScrollNotificationObserver widget.\n'
-          'No ScrollNotificationObserver widget ancestor could be found starting from the '
-          'context that was passed to ScrollNotificationObserver.of(). This can happen '
-          'because you are using a widget that looks for a ScrollNotificationObserver '
-          'ancestor, but no such ancestor exists.\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (observerState == null) {
+          throw FlutterError(
+            'ScrollNotificationObserver.of() was called with a context that does not contain a '
+            'ScrollNotificationObserver widget.\n'
+            'No ScrollNotificationObserver widget ancestor could be found starting from the '
+            'context that was passed to ScrollNotificationObserver.of(). This can happen '
+            'because you are using a widget that looks for a ScrollNotificationObserver '
+            'ancestor, but no such ancestor exists.\n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return observerState!;
   }
 
@@ -155,15 +157,17 @@ class ScrollNotificationObserverState extends State<ScrollNotificationObserver> 
   LinkedList<_ListenerEntry>? _listeners = LinkedList<_ListenerEntry>();
 
   bool _debugAssertNotDisposed() {
-    assert(() {
-      if (_listeners == null) {
-        throw FlutterError(
-          'A $runtimeType was used after being disposed.\n'
-          'Once you have called dispose() on a $runtimeType, it can no longer be used.',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_listeners == null) {
+          throw FlutterError(
+            'A $runtimeType was used after being disposed.\n'
+            'Once you have called dispose() on a $runtimeType, it can no longer be used.',
+          );
+        }
+        return true;
+      }(),
+    );
     return true;
   }
 
@@ -204,12 +208,12 @@ class ScrollNotificationObserverState extends State<ScrollNotificationObserver> 
           library: 'widget library',
           context: ErrorDescription('while dispatching notifications for $runtimeType'),
           informationCollector: () => <DiagnosticsNode>[
-            DiagnosticsProperty<ScrollNotificationObserverState>(
-              'The $runtimeType sending notification was',
-              this,
-              style: DiagnosticsTreeStyle.errorProperty,
-            ),
-          ],
+                DiagnosticsProperty<ScrollNotificationObserverState>(
+                  'The $runtimeType sending notification was',
+                  this,
+                  style: DiagnosticsTreeStyle.errorProperty,
+                ),
+              ],
         ));
       }
     }
@@ -230,10 +234,7 @@ class ScrollNotificationObserverState extends State<ScrollNotificationObserver> 
           _notifyListeners(notification);
           return false;
         },
-        child: _ScrollNotificationObserverScope(
-          scrollNotificationObserverState: this,
-          child: widget.child,
-        ),
+        child: _ScrollNotificationObserverScope(scrollNotificationObserverState: this, child: widget.child),
       ),
     );
   }

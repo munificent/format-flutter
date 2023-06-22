@@ -183,16 +183,16 @@ class ButtonBarThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ButtonBarThemeData
-        && other.alignment == alignment
-        && other.mainAxisSize == mainAxisSize
-        && other.buttonTextTheme == buttonTextTheme
-        && other.buttonMinWidth == buttonMinWidth
-        && other.buttonHeight == buttonHeight
-        && other.buttonPadding == buttonPadding
-        && other.buttonAlignedDropdown == buttonAlignedDropdown
-        && other.layoutBehavior == layoutBehavior
-        && other.overflowDirection == overflowDirection;
+    return other is ButtonBarThemeData &&
+        other.alignment == alignment &&
+        other.mainAxisSize == mainAxisSize &&
+        other.buttonTextTheme == buttonTextTheme &&
+        other.buttonMinWidth == buttonMinWidth &&
+        other.buttonHeight == buttonHeight &&
+        other.buttonPadding == buttonPadding &&
+        other.buttonAlignedDropdown == buttonAlignedDropdown &&
+        other.layoutBehavior == layoutBehavior &&
+        other.overflowDirection == overflowDirection;
   }
 
   @override
@@ -204,11 +204,9 @@ class ButtonBarThemeData with Diagnosticable {
     properties.add(DoubleProperty('minWidth', buttonMinWidth, defaultValue: null));
     properties.add(DoubleProperty('height', buttonHeight, defaultValue: null));
     properties.add(DiagnosticsProperty<EdgeInsetsGeometry>('padding', buttonPadding, defaultValue: null));
-    properties.add(FlagProperty(
-      'buttonAlignedDropdown',
-      value: buttonAlignedDropdown,
-      ifTrue: 'dropdown width matches button',
-    ));
+    properties.add(
+      FlagProperty('buttonAlignedDropdown', value: buttonAlignedDropdown, ifTrue: 'dropdown width matches button'),
+    );
     properties.add(DiagnosticsProperty<ButtonBarLayoutBehavior>('layoutBehavior', layoutBehavior, defaultValue: null));
     properties.add(DiagnosticsProperty<VerticalDirection>('overflowDirection', overflowDirection, defaultValue: null));
   }
@@ -235,11 +233,7 @@ class ButtonBarTheme extends InheritedWidget {
   /// widgets.
   ///
   /// The [data] must not be null.
-  const ButtonBarTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const ButtonBarTheme({super.key, required this.data, required super.child});
 
   /// The properties used for all descendant [ButtonBar] widgets.
   final ButtonBarThemeData data;

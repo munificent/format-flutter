@@ -218,8 +218,8 @@ class Dialog extends StatelessWidget {
     final DialogTheme dialogTheme = DialogTheme.of(context);
     final EdgeInsets effectivePadding = MediaQuery.viewInsetsOf(context) + (insetPadding ?? EdgeInsets.zero);
     final DialogTheme defaults = theme.useMaterial3
-      ? (_fullscreen ? _DialogFullscreenDefaultsM3(context) : _DialogDefaultsM3(context))
-      : _DialogDefaultsM2(context);
+        ? (_fullscreen ? _DialogFullscreenDefaultsM3(context) : _DialogDefaultsM3(context))
+        : _DialogDefaultsM2(context);
 
     Widget dialogChild;
 
@@ -734,7 +734,11 @@ class AlertDialog extends StatelessWidget {
         left: 24.0,
         top: 24.0,
         right: 24.0,
-        bottom: belowIsTitle ? 16.0 : belowIsContent ? 0.0 : 24.0,
+        bottom: belowIsTitle
+            ? 16.0
+            : belowIsContent
+                ? 0.0
+                : 24.0,
       );
       final EdgeInsets effectiveIconPadding = iconPadding?.resolve(textDirection) ?? defaultIconPadding;
       iconWidget = Padding(
@@ -745,9 +749,7 @@ class AlertDialog extends StatelessWidget {
           bottom: effectiveIconPadding.bottom,
         ),
         child: IconTheme(
-          data: IconThemeData(
-            color: iconColor ?? dialogTheme.iconColor ?? defaults.iconColor,
-          ),
+          data: IconThemeData(color: iconColor ?? dialogTheme.iconColor ?? defaults.iconColor),
           child: icon!,
         ),
       );
@@ -795,16 +797,13 @@ class AlertDialog extends StatelessWidget {
           left: effectiveContentPadding.left * paddingScaleFactor,
           right: effectiveContentPadding.right * paddingScaleFactor,
           top: title == null && icon == null
-            ? effectiveContentPadding.top * paddingScaleFactor
-            : effectiveContentPadding.top,
+              ? effectiveContentPadding.top * paddingScaleFactor
+              : effectiveContentPadding.top,
           bottom: effectiveContentPadding.bottom,
         ),
         child: DefaultTextStyle(
           style: contentTextStyle ?? dialogTheme.contentTextStyle ?? defaults.contentTextStyle!,
-          child: Semantics(
-            container: true,
-            child: content,
-          ),
+          child: Semantics(container: true, child: content),
         ),
       );
     }
@@ -812,9 +811,9 @@ class AlertDialog extends StatelessWidget {
     if (actions != null) {
       final double spacing = (buttonPadding?.horizontal ?? 16) / 2;
       actionsWidget = Padding(
-        padding: actionsPadding ?? dialogTheme.actionsPadding ?? (
-          theme.useMaterial3 ? defaults.actionsPadding! : defaults.actionsPadding!.add(EdgeInsets.all(spacing))
-        ),
+        padding: actionsPadding ??
+            dialogTheme.actionsPadding ??
+            (theme.useMaterial3 ? defaults.actionsPadding! : defaults.actionsPadding!.add(EdgeInsets.all(spacing))),
         child: OverflowBar(
           alignment: actionsAlignment ?? MainAxisAlignment.end,
           spacing: spacing,
@@ -843,8 +842,7 @@ class AlertDialog extends StatelessWidget {
               ),
             ),
           ),
-        if (actions != null)
-          actionsWidget!,
+        if (actions != null) actionsWidget!,
       ];
     } else {
       columnChildren = <Widget>[
@@ -984,12 +982,7 @@ class _AdaptiveAlertDialog extends AlertDialog {
 ///  * <https://material.io/design/components/dialogs.html#simple-dialog>
 class SimpleDialogOption extends StatelessWidget {
   /// Creates an option for a [SimpleDialog].
-  const SimpleDialogOption({
-    super.key,
-    this.onPressed,
-    this.padding,
-    this.child,
-  });
+  const SimpleDialogOption({super.key, this.onPressed, this.padding, this.child});
 
   /// The callback that is called when this option is selected.
   ///
@@ -1013,10 +1006,7 @@ class SimpleDialogOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onPressed,
-      child: Padding(
-        padding: padding ?? const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
-        child: child,
-      ),
+      child: Padding(padding: padding ?? const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0), child: child),
     );
   }
 }
@@ -1265,10 +1255,7 @@ class SimpleDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            if (title != null) titleWidget!,
-            if (children != null) contentWidget!,
-          ],
+          children: <Widget>[if (title != null) titleWidget!, if (children != null) contentWidget!],
         ),
       ),
     );
@@ -1296,14 +1283,13 @@ class SimpleDialog extends StatelessWidget {
   }
 }
 
-Widget _buildMaterialDialogTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-  return FadeTransition(
-    opacity: CurvedAnimation(
-      parent: animation,
-      curve: Curves.easeOut,
-    ),
-    child: child,
-  );
+Widget _buildMaterialDialogTransitions(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  return FadeTransition(opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut), child: child);
 }
 
 /// Displays a Material dialog above the current contents of the app, with
@@ -1417,10 +1403,7 @@ Future<T?> showDialog<T>({
 
   final CapturedThemes themes = InheritedTheme.capture(
     from: context,
-    to: Navigator.of(
-      context,
-      rootNavigator: useRootNavigator,
-    ).context,
+    to: Navigator.of(context, rootNavigator: useRootNavigator).context,
   );
 
   return Navigator.of(context, rootNavigator: useRootNavigator).push<T>(DialogRoute<T>(
@@ -1493,9 +1476,7 @@ bool _debugIsActive(BuildContext context) {
   if (context is Element && !context.debugIsActive) {
     throw FlutterError.fromParts(<DiagnosticsNode>[
       ErrorSummary('This BuildContext is no longer valid.'),
-      ErrorDescription(
-        'The showDialog function context parameter is a BuildContext that is no longer valid.'
-      ),
+      ErrorDescription('The showDialog function context parameter is a BuildContext that is no longer valid.'),
       ErrorHint(
         'This can commonly occur when the showDialog function is called after awaiting a Future. '
         'In this situation the BuildContext might refer to a widget that has already been disposed during the await. '

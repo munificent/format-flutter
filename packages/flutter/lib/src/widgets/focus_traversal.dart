@@ -38,11 +38,11 @@ BuildContext? _getAncestor(BuildContext context, {int count = 1}) {
 /// Signature for the callback that's called when a traversal policy
 /// requests focus.
 typedef TraversalRequestFocusCallback = void Function(
-    FocusNode node, {
-    ScrollPositionAlignmentPolicy? alignmentPolicy,
-    double? alignment,
-    Duration? duration,
-    Curve? curve,
+  FocusNode node, {
+  ScrollPositionAlignmentPolicy? alignmentPolicy,
+  double? alignment,
+  Duration? duration,
+  Curve? curve,
 });
 
 // A class to temporarily hold information about FocusTraversalGroups when
@@ -52,9 +52,9 @@ class _FocusTraversalGroupInfo {
     _FocusTraversalGroupNode? group, {
     FocusTraversalPolicy? defaultPolicy,
     List<FocusNode>? members,
-  })  : groupNode = group,
-        policy = group?.policy ?? defaultPolicy ?? ReadingOrderTraversalPolicy(),
-        members = members ?? <FocusNode>[];
+  }) : groupNode = group,
+       policy = group?.policy ?? defaultPolicy ?? ReadingOrderTraversalPolicy(),
+       members = members ?? <FocusNode>[];
 
   final FocusNode? groupNode;
   final FocusTraversalPolicy policy;
@@ -158,9 +158,8 @@ abstract class FocusTraversalPolicy with Diagnosticable {
   /// of the focus requests. If `requestFocusCallback`
   /// is null, it defaults to [FocusTraversalPolicy.defaultTraversalRequestFocusCallback].
   /// {@endtemplate}
-  const FocusTraversalPolicy({
-    TraversalRequestFocusCallback? requestFocusCallback
-  }) : requestFocusCallback = requestFocusCallback ?? defaultTraversalRequestFocusCallback;
+  const FocusTraversalPolicy({TraversalRequestFocusCallback? requestFocusCallback})
+    : requestFocusCallback = requestFocusCallback ?? defaultTraversalRequestFocusCallback;
 
   /// The callback used to move the focus from one focus node to another when
   /// traversing them using a keyboard. By default it requests focus on the next
@@ -179,7 +178,8 @@ abstract class FocusTraversalPolicy with Diagnosticable {
   }) {
     node.requestFocus();
     Scrollable.ensureVisible(
-      node.context!, alignment: alignment ?? 1.0,
+      node.context!,
+      alignment: alignment ?? 1.0,
       alignmentPolicy: alignmentPolicy ?? ScrollPositionAlignmentPolicy.explicit,
       duration: duration ?? Duration.zero,
       curve: curve ?? Curves.ease,
@@ -352,7 +352,10 @@ abstract class FocusTraversalPolicy with Diagnosticable {
   @protected
   Iterable<FocusNode> sortDescendants(Iterable<FocusNode> descendants, FocusNode currentNode);
 
-  Map<FocusNode?, _FocusTraversalGroupInfo> _findGroups(FocusScopeNode scope, _FocusTraversalGroupNode? scopeGroupNode) {
+  Map<FocusNode?, _FocusTraversalGroupInfo> _findGroups(
+    FocusScopeNode scope,
+    _FocusTraversalGroupNode? scopeGroupNode,
+  ) {
     final FocusTraversalPolicy defaultPolicy = scopeGroupNode?.policy ?? ReadingOrderTraversalPolicy();
     final Map<FocusNode?, _FocusTraversalGroupInfo> groups = <FocusNode?, _FocusTraversalGroupInfo>{};
     for (final FocusNode node in scope.descendants) {
@@ -367,7 +370,11 @@ abstract class FocusTraversalPolicy with Diagnosticable {
         // looking with that node's parent, since _getGroupNode will return the
         // node it was called on if it matches the type.
         final _FocusTraversalGroupNode? parentGroup = FocusTraversalGroup._getGroupNode(groupNode!.parent!);
-        groups[parentGroup] ??= _FocusTraversalGroupInfo(parentGroup, members: <FocusNode>[], defaultPolicy: defaultPolicy);
+        groups[parentGroup] ??= _FocusTraversalGroupInfo(
+          parentGroup,
+          members: <FocusNode>[],
+          defaultPolicy: defaultPolicy,
+        );
         assert(!groups[parentGroup]!.members.contains(node));
         groups[parentGroup]!.members.add(groupNode);
         continue;
@@ -392,7 +399,8 @@ abstract class FocusTraversalPolicy with Diagnosticable {
 
     // Sort the member lists using the individual policy sorts.
     for (final FocusNode? key in groups.keys) {
-      final List<FocusNode> sortedMembers = groups[key]!.policy.sortDescendants(groups[key]!.members, currentNode).toList();
+      final List<FocusNode> sortedMembers =
+          groups[key]!.policy.sortDescendants(groups[key]!.members, currentNode).toList();
       groups[key]!.members.clear();
       groups[key]!.members.addAll(sortedMembers);
     }
@@ -428,7 +436,8 @@ abstract class FocusTraversalPolicy with Diagnosticable {
     // the one in FocusScopeNode.traversalDescendants in terms of which nodes it
     // finds.
     assert(
-      sortedDescendants.length <= scope.traversalDescendants.length && sortedDescendants.toSet().difference(scope.traversalDescendants.toSet()).isEmpty,
+      sortedDescendants.length <= scope.traversalDescendants.length &&
+          sortedDescendants.toSet().difference(scope.traversalDescendants.toSet()).isEmpty,
       'Sorted descendants contains different nodes than FocusScopeNode.traversalDescendants would. '
       'These are the different nodes: ${sortedDescendants.toSet().difference(scope.traversalDescendants.toSet())}',
     );
@@ -459,7 +468,9 @@ abstract class FocusTraversalPolicy with Diagnosticable {
       if (firstFocus != null) {
         requestFocusCallback(
           firstFocus,
-          alignmentPolicy: forward ? ScrollPositionAlignmentPolicy.keepVisibleAtEnd : ScrollPositionAlignmentPolicy.keepVisibleAtStart,
+          alignmentPolicy: forward
+              ? ScrollPositionAlignmentPolicy.keepVisibleAtEnd
+              : ScrollPositionAlignmentPolicy.keepVisibleAtStart,
         );
         return true;
       }
@@ -497,7 +508,9 @@ abstract class FocusTraversalPolicy with Diagnosticable {
       if (previousNode == focusedChild) {
         requestFocusCallback(
           node,
-          alignmentPolicy: forward ? ScrollPositionAlignmentPolicy.keepVisibleAtEnd : ScrollPositionAlignmentPolicy.keepVisibleAtStart,
+          alignmentPolicy: forward
+              ? ScrollPositionAlignmentPolicy.keepVisibleAtEnd
+              : ScrollPositionAlignmentPolicy.keepVisibleAtStart,
         );
         return true;
       }
@@ -607,21 +620,24 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
   FocusNode? _sortAndFindInitial(FocusNode currentNode, {required bool vertical, required bool first}) {
     final Iterable<FocusNode> nodes = currentNode.nearestScope!.traversalDescendants;
     final List<FocusNode> sorted = nodes.toList();
-    mergeSort<FocusNode>(sorted, compare: (FocusNode a, FocusNode b) {
-      if (vertical) {
-        if (first) {
-          return a.rect.top.compareTo(b.rect.top);
+    mergeSort<FocusNode>(
+      sorted,
+      compare: (FocusNode a, FocusNode b) {
+        if (vertical) {
+          if (first) {
+            return a.rect.top.compareTo(b.rect.top);
+          } else {
+            return b.rect.bottom.compareTo(a.rect.bottom);
+          }
         } else {
-          return b.rect.bottom.compareTo(a.rect.bottom);
+          if (first) {
+            return a.rect.left.compareTo(b.rect.left);
+          } else {
+            return b.rect.right.compareTo(a.rect.right);
+          }
         }
-      } else {
-        if (first) {
-          return a.rect.left.compareTo(b.rect.left);
-        } else {
-          return b.rect.right.compareTo(a.rect.right);
-        }
-      }
-    });
+      },
+    );
 
     if (sorted.isNotEmpty) {
       return sorted.first;
@@ -642,15 +658,18 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
   // the same vertical distance, pick the one that is closest horizontally.
   static Iterable<FocusNode> _sortByDistancePreferVertical(Offset target, Iterable<FocusNode> nodes) {
     final List<FocusNode> sorted = nodes.toList();
-    mergeSort<FocusNode>(sorted, compare: (FocusNode nodeA, FocusNode nodeB) {
-      final Offset a = nodeA.rect.center;
-      final Offset b = nodeB.rect.center;
-      final int vertical = _verticalCompare(target, a, b);
-      if (vertical == 0) {
-        return _horizontalCompare(target, a, b);
-      }
-      return vertical;
-    });
+    mergeSort<FocusNode>(
+      sorted,
+      compare: (FocusNode nodeA, FocusNode nodeB) {
+        final Offset a = nodeA.rect.center;
+        final Offset b = nodeB.rect.center;
+        final int vertical = _verticalCompare(target, a, b);
+        if (vertical == 0) {
+          return _horizontalCompare(target, a, b);
+        }
+        return vertical;
+      },
+    );
     return sorted;
   }
 
@@ -658,15 +677,18 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
   // horizontal distance, pick the one that is closest vertically.
   static Iterable<FocusNode> _sortByDistancePreferHorizontal(Offset target, Iterable<FocusNode> nodes) {
     final List<FocusNode> sorted = nodes.toList();
-    mergeSort<FocusNode>(sorted, compare: (FocusNode nodeA, FocusNode nodeB) {
-      final Offset a = nodeA.rect.center;
-      final Offset b = nodeB.rect.center;
-      final int horizontal = _horizontalCompare(target, a, b);
-      if (horizontal == 0) {
-        return _verticalCompare(target, a, b);
-      }
-      return horizontal;
-    });
+    mergeSort<FocusNode>(
+      sorted,
+      compare: (FocusNode nodeA, FocusNode nodeB) {
+        final Offset a = nodeA.rect.center;
+        final Offset b = nodeB.rect.center;
+        final int horizontal = _horizontalCompare(target, a, b);
+        if (horizontal == 0) {
+          return _verticalCompare(target, a, b);
+        }
+        return horizontal;
+      },
+    );
     return sorted;
   }
 
@@ -689,15 +711,18 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
   // vertically.
   static Iterable<FocusNode> _sortClosestEdgesByDistancePreferHorizontal(Offset target, Iterable<FocusNode> nodes) {
     final List<FocusNode> sorted = nodes.toList();
-    mergeSort<FocusNode>(sorted, compare: (FocusNode nodeA, FocusNode nodeB) {
-      final int horizontal = _horizontalCompareClosestEdge(target, nodeA.rect, nodeB.rect);
-      if (horizontal == 0) {
-        // If they're the same distance horizontally, pick the closest one
-        // vertically.
-        return _verticalCompare(target, nodeA.rect.center, nodeB.rect.center);
-      }
-      return horizontal;
-    });
+    mergeSort<FocusNode>(
+      sorted,
+      compare: (FocusNode nodeA, FocusNode nodeB) {
+        final int horizontal = _horizontalCompareClosestEdge(target, nodeA.rect, nodeB.rect);
+        if (horizontal == 0) {
+          // If they're the same distance horizontally, pick the closest one
+          // vertically.
+          return _verticalCompare(target, nodeA.rect.center, nodeB.rect.center);
+        }
+        return horizontal;
+      },
+    );
     return sorted;
   }
 
@@ -706,15 +731,18 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
   // horizontally.
   static Iterable<FocusNode> _sortClosestEdgesByDistancePreferVertical(Offset target, Iterable<FocusNode> nodes) {
     final List<FocusNode> sorted = nodes.toList();
-    mergeSort<FocusNode>(sorted, compare: (FocusNode nodeA, FocusNode nodeB) {
-      final int vertical = _verticalCompareClosestEdge(target, nodeA.rect, nodeB.rect);
-      if (vertical == 0) {
-        // If they're the same distance vertically, pick the closest one
-        // horizontally.
-        return _horizontalCompare(target, nodeA.rect.center, nodeB.rect.center);
-      }
-      return vertical;
-    });
+    mergeSort<FocusNode>(
+      sorted,
+      compare: (FocusNode nodeA, FocusNode nodeB) {
+        final int vertical = _verticalCompareClosestEdge(target, nodeA.rect, nodeB.rect);
+        if (vertical == 0) {
+          // If they're the same distance vertically, pick the closest one
+          // horizontally.
+          return _horizontalCompare(target, nodeA.rect.center, nodeB.rect.center);
+        }
+        return vertical;
+      },
+    );
     return sorted;
   }
 
@@ -726,11 +754,7 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
   // This doesn't need to take into account directionality because it is
   // typically intending to actually go left or right, not in a reading
   // direction.
-  Iterable<FocusNode> _sortAndFilterHorizontally(
-    TraversalDirection direction,
-    Rect target,
-    Iterable<FocusNode> nodes,
-  ) {
+  Iterable<FocusNode> _sortAndFilterHorizontally(TraversalDirection direction, Rect target, Iterable<FocusNode> nodes) {
     assert(direction == TraversalDirection.left || direction == TraversalDirection.right);
     final Iterable<FocusNode> filtered;
     switch (direction) {
@@ -751,11 +775,7 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
   // Sorts nodes from top to bottom vertically, and removes nodes that are
   // either below the top of the target node if we're going up, or above the
   // bottom of the target node if we're going down.
-  Iterable<FocusNode> _sortAndFilterVertically(
-    TraversalDirection direction,
-    Rect target,
-    Iterable<FocusNode> nodes,
-  ) {
+  Iterable<FocusNode> _sortAndFilterVertically(TraversalDirection direction, Rect target, Iterable<FocusNode> nodes) {
     assert(direction == TraversalDirection.up || direction == TraversalDirection.down);
     final Iterable<FocusNode> filtered;
     switch (direction) {
@@ -805,10 +825,7 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
           case TraversalDirection.down:
             alignmentPolicy = ScrollPositionAlignmentPolicy.keepVisibleAtEnd;
         }
-        requestFocusCallback(
-          lastNode,
-          alignmentPolicy: alignmentPolicy,
-        );
+        requestFocusCallback(lastNode, alignmentPolicy: alignmentPolicy);
         return true;
       }
 
@@ -884,16 +901,10 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
       switch (direction) {
         case TraversalDirection.up:
         case TraversalDirection.left:
-          requestFocusCallback(
-            firstFocus,
-            alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-          );
+          requestFocusCallback(firstFocus, alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
         case TraversalDirection.right:
         case TraversalDirection.down:
-          requestFocusCallback(
-            firstFocus,
-            alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-          );
+          requestFocusCallback(firstFocus, alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
       }
       return true;
     }
@@ -905,12 +916,18 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
     switch (direction) {
       case TraversalDirection.down:
       case TraversalDirection.up:
-        Iterable<FocusNode> eligibleNodes = _sortAndFilterVertically(direction, focusedChild.rect, nearestScope.traversalDescendants);
+        Iterable<FocusNode> eligibleNodes = _sortAndFilterVertically(
+          direction,
+          focusedChild.rect,
+          nearestScope.traversalDescendants,
+        );
         if (eligibleNodes.isEmpty) {
           break;
         }
         if (focusedScrollable != null && !focusedScrollable.position.atEdge) {
-          final Iterable<FocusNode> filteredEligibleNodes = eligibleNodes.where((FocusNode node) => Scrollable.maybeOf(node.context!) == focusedScrollable);
+          final Iterable<FocusNode> filteredEligibleNodes = eligibleNodes.where(
+            (FocusNode node) => Scrollable.maybeOf(node.context!) == focusedScrollable,
+          );
           if (filteredEligibleNodes.isNotEmpty) {
             eligibleNodes = filteredEligibleNodes;
           }
@@ -919,7 +936,12 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
           eligibleNodes = eligibleNodes.toList().reversed;
         }
         // Find any nodes that intersect the band of the focused child.
-        final Rect band = Rect.fromLTRB(focusedChild.rect.left, -double.infinity, focusedChild.rect.right, double.infinity);
+        final Rect band = Rect.fromLTRB(
+          focusedChild.rect.left,
+          -double.infinity,
+          focusedChild.rect.right,
+          double.infinity,
+        );
         final Iterable<FocusNode> inBand = eligibleNodes.where((FocusNode node) => !node.rect.intersect(band).isEmpty);
         if (inBand.isNotEmpty) {
           found = _sortByDistancePreferVertical(focusedChild.rect.center, inBand).first;
@@ -931,12 +953,18 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
         found = _sortClosestEdgesByDistancePreferHorizontal(focusedChild.rect.center, eligibleNodes).first;
       case TraversalDirection.right:
       case TraversalDirection.left:
-        Iterable<FocusNode> eligibleNodes = _sortAndFilterHorizontally(direction, focusedChild.rect, nearestScope.traversalDescendants);
+        Iterable<FocusNode> eligibleNodes = _sortAndFilterHorizontally(
+          direction,
+          focusedChild.rect,
+          nearestScope.traversalDescendants,
+        );
         if (eligibleNodes.isEmpty) {
           break;
         }
         if (focusedScrollable != null && !focusedScrollable.position.atEdge) {
-          final Iterable<FocusNode> filteredEligibleNodes = eligibleNodes.where((FocusNode node) => Scrollable.maybeOf(node.context!) == focusedScrollable);
+          final Iterable<FocusNode> filteredEligibleNodes = eligibleNodes.where(
+            (FocusNode node) => Scrollable.maybeOf(node.context!) == focusedScrollable,
+          );
           if (filteredEligibleNodes.isNotEmpty) {
             eligibleNodes = filteredEligibleNodes;
           }
@@ -945,7 +973,12 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
           eligibleNodes = eligibleNodes.toList().reversed;
         }
         // Find any nodes that intersect the band of the focused child.
-        final Rect band = Rect.fromLTRB(-double.infinity, focusedChild.rect.top, double.infinity, focusedChild.rect.bottom);
+        final Rect band = Rect.fromLTRB(
+          -double.infinity,
+          focusedChild.rect.top,
+          double.infinity,
+          focusedChild.rect.bottom,
+        );
         final Iterable<FocusNode> inBand = eligibleNodes.where((FocusNode node) => !node.rect.intersect(band).isEmpty);
         if (inBand.isNotEmpty) {
           found = _sortByDistancePreferHorizontal(focusedChild.rect.center, inBand).first;
@@ -961,16 +994,10 @@ mixin DirectionalFocusTraversalPolicyMixin on FocusTraversalPolicy {
       switch (direction) {
         case TraversalDirection.up:
         case TraversalDirection.left:
-          requestFocusCallback(
-            found,
-            alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
-          );
+          requestFocusCallback(found, alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart);
         case TraversalDirection.down:
         case TraversalDirection.right:
-          requestFocusCallback(
-            found,
-            alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-          );
+          requestFocusCallback(found, alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
       }
       return true;
     }
@@ -1014,9 +1041,7 @@ class WidgetOrderTraversalPolicy extends FocusTraversalPolicy with DirectionalFo
 // It's also a convenient place to put some utility functions having to do with
 // the sort data.
 class _ReadingOrderSortData with Diagnosticable {
-  _ReadingOrderSortData(this.node)
-      : rect = node.rect,
-        directionality = _findDirectionality(node.context!);
+  _ReadingOrderSortData(this.node) : rect = node.rect, directionality = _findDirectionality(node.context!);
 
   final TextDirection? directionality;
   final Rect rect;
@@ -1030,7 +1055,9 @@ class _ReadingOrderSortData with Diagnosticable {
 
   /// Finds the common Directional ancestor of an entire list of groups.
   static TextDirection? commonDirectionalityOf(List<_ReadingOrderSortData> list) {
-    final Iterable<Set<Directionality>> allAncestors = list.map<Set<Directionality>>((_ReadingOrderSortData member) => member.directionalAncestors.toSet());
+    final Iterable<Set<Directionality>> allAncestors = list.map<Set<Directionality>>(
+      (_ReadingOrderSortData member) => member.directionalAncestors.toSet(),
+    );
     Set<Directionality>? common;
     for (final Set<Directionality> ancestorSet in allAncestors) {
       common ??= ancestorSet;
@@ -1050,14 +1077,17 @@ class _ReadingOrderSortData with Diagnosticable {
   }
 
   static void sortWithDirectionality(List<_ReadingOrderSortData> list, TextDirection directionality) {
-    mergeSort<_ReadingOrderSortData>(list, compare: (_ReadingOrderSortData a, _ReadingOrderSortData b) {
-      switch (directionality) {
-        case TextDirection.ltr:
-          return a.rect.left.compareTo(b.rect.left);
-        case TextDirection.rtl:
-          return b.rect.right.compareTo(a.rect.right);
-      }
-    });
+    mergeSort<_ReadingOrderSortData>(
+      list,
+      compare: (_ReadingOrderSortData a, _ReadingOrderSortData b) {
+        switch (directionality) {
+          case TextDirection.ltr:
+            return a.rect.left.compareTo(b.rect.left);
+          case TextDirection.rtl:
+            return b.rect.right.compareTo(a.rect.right);
+        }
+      },
+    );
   }
 
   /// Returns the list of Directionality ancestors, in order from nearest to
@@ -1068,7 +1098,8 @@ class _ReadingOrderSortData with Diagnosticable {
       InheritedElement? directionalityElement = context.getElementForInheritedWidgetOfExactType<Directionality>();
       while (directionalityElement != null) {
         result.add(directionalityElement.widget as Directionality);
-        directionalityElement = _getAncestor(directionalityElement)?.getElementForInheritedWidgetOfExactType<Directionality>();
+        directionalityElement =
+            _getAncestor(directionalityElement)?.getElementForInheritedWidgetOfExactType<Directionality>();
       }
       return result;
     }
@@ -1121,14 +1152,17 @@ class _ReadingOrderDirectionalGroupData with Diagnosticable {
   List<Directionality>? _memberAncestors;
 
   static void sortWithDirectionality(List<_ReadingOrderDirectionalGroupData> list, TextDirection directionality) {
-    mergeSort<_ReadingOrderDirectionalGroupData>(list, compare: (_ReadingOrderDirectionalGroupData a, _ReadingOrderDirectionalGroupData b) {
-      switch (directionality) {
-        case TextDirection.ltr:
-          return a.rect.left.compareTo(b.rect.left);
-        case TextDirection.rtl:
-          return b.rect.right.compareTo(a.rect.right);
-      }
-    });
+    mergeSort<_ReadingOrderDirectionalGroupData>(
+      list,
+      compare: (_ReadingOrderDirectionalGroupData a, _ReadingOrderDirectionalGroupData b) {
+        switch (directionality) {
+          case TextDirection.ltr:
+            return a.rect.left.compareTo(b.rect.left);
+          case TextDirection.rtl:
+            return b.rect.right.compareTo(a.rect.right);
+        }
+      },
+    );
   }
 
   @override
@@ -1205,7 +1239,10 @@ class ReadingOrderTraversalPolicy extends FocusTraversalPolicy with DirectionalF
 
   _ReadingOrderSortData _pickNext(List<_ReadingOrderSortData> candidates) {
     // Find the topmost node by sorting on the top of the rectangles.
-    mergeSort<_ReadingOrderSortData>(candidates, compare: (_ReadingOrderSortData a, _ReadingOrderSortData b) => a.rect.top.compareTo(b.rect.top));
+    mergeSort<_ReadingOrderSortData>(
+      candidates,
+      compare: (_ReadingOrderSortData a, _ReadingOrderSortData b) => a.rect.top.compareTo(b.rect.top),
+    );
     final _ReadingOrderSortData topmost = candidates.first;
 
     // Find the candidates that are in the same horizontal band as the current one.
@@ -1490,16 +1527,19 @@ class OrderedTraversalPolicy extends FocusTraversalPolicy with DirectionalFocusT
         unordered.add(node);
       }
     }
-    mergeSort<_OrderedFocusInfo>(ordered, compare: (_OrderedFocusInfo a, _OrderedFocusInfo b) {
-      assert(
-        a.order.runtimeType == b.order.runtimeType,
-        'When sorting nodes for determining focus order, the order (${a.order}) of '
-        "node ${a.node}, isn't the same type as the order (${b.order}) of ${b.node}. "
-        "Incompatible order types can't be compared. Use a FocusTraversalGroup to group "
-        'similar orders together.',
-      );
-      return a.order.compareTo(b.order);
-    });
+    mergeSort<_OrderedFocusInfo>(
+      ordered,
+      compare: (_OrderedFocusInfo a, _OrderedFocusInfo b) {
+        assert(
+          a.order.runtimeType == b.order.runtimeType,
+          'When sorting nodes for determining focus order, the order (${a.order}) of '
+          "node ${a.node}, isn't the same type as the order (${b.order}) of ${b.node}. "
+          "Incompatible order types can't be compared. Use a FocusTraversalGroup to group "
+          'similar orders together.',
+        );
+        return a.order.compareTo(b.order);
+      },
+    );
     return ordered.map<FocusNode>((_OrderedFocusInfo info) => info.node).followedBy(unordered);
   }
 }
@@ -1529,19 +1569,21 @@ class FocusTraversalOrder extends InheritedWidget {
   /// will assert in debug mode, and throw an exception in release mode.
   static FocusOrder of(BuildContext context) {
     final FocusTraversalOrder? marker = context.getInheritedWidgetOfExactType<FocusTraversalOrder>();
-    assert(() {
-      if (marker == null) {
-        throw FlutterError(
-          'FocusTraversalOrder.of() was called with a context that '
-          'does not contain a FocusTraversalOrder widget. No TraversalOrder widget '
-          'ancestor could be found starting from the context that was passed to '
-          'FocusTraversalOrder.of().\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (marker == null) {
+          throw FlutterError(
+            'FocusTraversalOrder.of() was called with a context that '
+            'does not contain a FocusTraversalOrder widget. No TraversalOrder widget '
+            'ancestor could be found starting from the context that was passed to '
+            'FocusTraversalOrder.of().\n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return marker!.order;
   }
 
@@ -1707,22 +1749,24 @@ class FocusTraversalGroup extends StatefulWidget {
   ///   [FocusNode], and return null if no policy applies.
   static FocusTraversalPolicy of(BuildContext context) {
     final FocusTraversalPolicy? policy = maybeOf(context);
-    assert(() {
-      if (policy == null) {
-        throw FlutterError(
-          'Unable to find a Focus or FocusScope widget in the given context, or the FocusNode '
-          'from with the widget that was found is not associated with a FocusTraversalPolicy.\n'
-          'FocusTraversalGroup.of() was called with a context that does not contain a '
-          'Focus or FocusScope widget, or there was no FocusTraversalPolicy in effect.\n'
-          'This can happen if there is not a FocusTraversalGroup that defines the policy, '
-          'or if the context comes from a widget that is above the WidgetsApp, MaterialApp, '
-          'or CupertinoApp widget (those widgets introduce an implicit default policy) \n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (policy == null) {
+          throw FlutterError(
+            'Unable to find a Focus or FocusScope widget in the given context, or the FocusNode '
+            'from with the widget that was found is not associated with a FocusTraversalPolicy.\n'
+            'FocusTraversalGroup.of() was called with a context that does not contain a '
+            'Focus or FocusScope widget, or there was no FocusTraversalPolicy in effect.\n'
+            'This can happen if there is not a FocusTraversalGroup that defines the policy, '
+            'or if the context comes from a widget that is above the WidgetsApp, MaterialApp, '
+            'or CupertinoApp widget (those widgets introduce an implicit default policy) \n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return policy!;
   }
 
@@ -1762,10 +1806,7 @@ class FocusTraversalGroup extends StatefulWidget {
 // can be used to cache the policy in the focus tree, and so that the traversal
 // code can find groups in the focus tree.
 class _FocusTraversalGroupNode extends FocusNode {
-  _FocusTraversalGroupNode({
-    super.debugLabel,
-    required this.policy,
-  });
+  _FocusTraversalGroupNode({super.debugLabel, required this.policy});
 
   FocusTraversalPolicy policy;
 }
@@ -1788,7 +1829,7 @@ class _FocusTraversalGroupState extends State<FocusTraversalGroup> {
   }
 
   @override
-  void didUpdateWidget (FocusTraversalGroup oldWidget) {
+  void didUpdateWidget(FocusTraversalGroup oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.policy != widget.policy) {
       focusNode.policy = widget.policy;
@@ -1816,9 +1857,8 @@ class RequestFocusIntent extends Intent {
   ///
   /// The [focusNode] argument must not be null.
   /// {@macro flutter.widgets.FocusTraversalPolicy.requestFocusCallback}
-  const RequestFocusIntent(this.focusNode, {
-    TraversalRequestFocusCallback? requestFocusCallback
-  }) : requestFocusCallback = requestFocusCallback ?? FocusTraversalPolicy.defaultTraversalRequestFocusCallback;
+  const RequestFocusIntent(this.focusNode, {TraversalRequestFocusCallback? requestFocusCallback})
+    : requestFocusCallback = requestFocusCallback ?? FocusTraversalPolicy.defaultTraversalRequestFocusCallback;
 
   /// The callback used to move the focus to the node [focusNode].
   /// By default it requests focus on the node and ensures the node is visible
@@ -1854,7 +1894,6 @@ class RequestFocusIntent extends Intent {
 ///
 /// See [FocusTraversalPolicy] for more information about focus traversal.
 class RequestFocusAction extends Action<RequestFocusIntent> {
-
   @override
   void invoke(RequestFocusIntent intent) {
     intent.requestFocusCallback(intent.focusNode);
@@ -2004,11 +2043,7 @@ class ExcludeFocusTraversal extends StatelessWidget {
   /// The [excluding] argument must not be null.
   ///
   /// The [child] argument is required, and must not be null.
-  const ExcludeFocusTraversal({
-    super.key,
-    this.excluding = true,
-    required this.child,
-  });
+  const ExcludeFocusTraversal({super.key, this.excluding = true, required this.child});
 
   /// If true, will make this widget's descendants untraversable.
   ///

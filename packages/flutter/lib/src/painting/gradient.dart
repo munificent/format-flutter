@@ -30,10 +30,7 @@ Color _sample(List<Color> colors, List<double> stops, double t) {
   }
   final int index = stops.lastIndexWhere((double s) => s <= t);
   assert(index != -1);
-  return Color.lerp(
-      colors[index], colors[index + 1],
-      (t - stops[index]) / (stops[index + 1] - stops[index]),
-  )!;
+  return Color.lerp(colors[index], colors[index + 1], (t - stops[index]) / (stops[index + 1] - stops[index]))!;
 }
 
 _ColorsAndStops _interpolateColorsAndStops(
@@ -51,9 +48,9 @@ _ColorsAndStops _interpolateColorsAndStops(
     ..addAll(aStops)
     ..addAll(bStops);
   final List<double> interpolatedStops = stops.toList(growable: false);
-  final List<Color> interpolatedColors = interpolatedStops.map<Color>(
-          (double stop) => Color.lerp(_sample(aColors, aStops, stop), _sample(bColors, bStops, stop), t)!,
-  ).toList(growable: false);
+  final List<Color> interpolatedColors = interpolatedStops
+      .map<Color>((double stop) => Color.lerp(_sample(aColors, aStops, stop), _sample(bColors, bStops, stop), t)!)
+      .toList(growable: false);
   return _ColorsAndStops(interpolatedColors, interpolatedStops);
 }
 
@@ -123,8 +120,7 @@ class GradientRotation extends GradientTransform {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is GradientRotation
-        && other.radians == radians;
+    return other is GradientRotation && other.radians == radians;
   }
 
   @override
@@ -162,11 +158,7 @@ abstract class Gradient {
   /// that starts from a position of 6 o'clock instead of 3 o'clock, assuming
   /// no other rotation or perspective transformations have been applied to the
   /// [Canvas]. If null, no transformation is applied.
-  const Gradient({
-    required this.colors,
-    this.stops,
-    this.transform,
-  });
+  const Gradient({required this.colors, this.stops, this.transform});
 
   /// The colors the gradient should obtain at each of the stops.
   ///
@@ -206,11 +198,7 @@ abstract class Gradient {
     }
     assert(colors.length >= 2, 'colors list must have at least two colors');
     final double separation = 1.0 / (colors.length - 1);
-    return List<double>.generate(
-      colors.length,
-      (int index) => index * separation,
-      growable: false,
-    );
+    return List<double>.generate(colors.length, (int index) => index * separation, growable: false);
   }
 
   /// Creates a [Shader] for this gradient to fill the given rect.
@@ -222,7 +210,7 @@ abstract class Gradient {
   /// The shader's transform will be resolved from the [transform] of this
   /// gradient.
   @factory
-  Shader createShader(Rect rect, { TextDirection? textDirection });
+  Shader createShader(Rect rect, {TextDirection? textDirection});
 
   /// Returns a new gradient with its properties scaled by the given factor.
   ///
@@ -427,11 +415,14 @@ class LinearGradient extends Gradient {
   final TileMode tileMode;
 
   @override
-  Shader createShader(Rect rect, { TextDirection? textDirection }) {
+  Shader createShader(Rect rect, {TextDirection? textDirection}) {
     return ui.Gradient.linear(
       begin.resolve(textDirection).withinRect(rect),
       end.resolve(textDirection).withinRect(rect),
-      colors, _impliedStops(), tileMode, _resolveTransform(rect, textDirection),
+      colors,
+      _impliedStops(),
+      tileMode,
+      _resolveTransform(rect, textDirection),
     );
   }
 
@@ -496,11 +487,11 @@ class LinearGradient extends Gradient {
       return a.scale(1.0 - t);
     }
     final _ColorsAndStops interpolated = _interpolateColorsAndStops(
-        a.colors,
-        a._impliedStops(),
-        b.colors,
-        b._impliedStops(),
-        t,
+      a.colors,
+      a._impliedStops(),
+      b.colors,
+      b._impliedStops(),
+      t,
     );
     return LinearGradient(
       begin: AlignmentGeometry.lerp(a.begin, b.begin, t)!,
@@ -519,13 +510,13 @@ class LinearGradient extends Gradient {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is LinearGradient
-        && other.begin == begin
-        && other.end == end
-        && other.tileMode == tileMode
-        && other.transform == transform
-        && listEquals<Color>(other.colors, colors)
-        && listEquals<double>(other.stops, stops);
+    return other is LinearGradient &&
+        other.begin == begin &&
+        other.end == end &&
+        other.tileMode == tileMode &&
+        other.transform == transform &&
+        listEquals<Color>(other.colors, colors) &&
+        listEquals<double>(other.stops, stops);
   }
 
   @override
@@ -701,13 +692,15 @@ class RadialGradient extends Gradient {
   final double focalRadius;
 
   @override
-  Shader createShader(Rect rect, { TextDirection? textDirection }) {
+  Shader createShader(Rect rect, {TextDirection? textDirection}) {
     return ui.Gradient.radial(
       center.resolve(textDirection).withinRect(rect),
       radius * rect.shortestSide,
-      colors, _impliedStops(), tileMode,
+      colors,
+      _impliedStops(),
+      tileMode,
       _resolveTransform(rect, textDirection),
-      focal == null  ? null : focal!.resolve(textDirection).withinRect(rect),
+      focal == null ? null : focal!.resolve(textDirection).withinRect(rect),
       focalRadius * rect.shortestSide,
     );
   }
@@ -775,11 +768,11 @@ class RadialGradient extends Gradient {
       return a.scale(1.0 - t);
     }
     final _ColorsAndStops interpolated = _interpolateColorsAndStops(
-        a.colors,
-        a._impliedStops(),
-        b.colors,
-        b._impliedStops(),
-        t,
+      a.colors,
+      a._impliedStops(),
+      b.colors,
+      b._impliedStops(),
+      t,
     );
     return RadialGradient(
       center: AlignmentGeometry.lerp(a.center, b.center, t)!,
@@ -800,15 +793,15 @@ class RadialGradient extends Gradient {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is RadialGradient
-        && other.center == center
-        && other.radius == radius
-        && other.tileMode == tileMode
-        && other.transform == transform
-        && listEquals<Color>(other.colors, colors)
-        && listEquals<double>(other.stops, stops)
-        && other.focal == focal
-        && other.focalRadius == focalRadius;
+    return other is RadialGradient &&
+        other.center == center &&
+        other.radius == radius &&
+        other.tileMode == tileMode &&
+        other.transform == transform &&
+        listEquals<Color>(other.colors, colors) &&
+        listEquals<double>(other.stops, stops) &&
+        other.focal == focal &&
+        other.focalRadius == focalRadius;
   }
 
   @override
@@ -971,10 +964,12 @@ class SweepGradient extends Gradient {
   final TileMode tileMode;
 
   @override
-  Shader createShader(Rect rect, { TextDirection? textDirection }) {
+  Shader createShader(Rect rect, {TextDirection? textDirection}) {
     return ui.Gradient.sweep(
       center.resolve(textDirection).withinRect(rect),
-      colors, _impliedStops(), tileMode,
+      colors,
+      _impliedStops(),
+      tileMode,
       startAngle,
       endAngle,
       _resolveTransform(rect, textDirection),
@@ -1042,11 +1037,11 @@ class SweepGradient extends Gradient {
       return a.scale(1.0 - t);
     }
     final _ColorsAndStops interpolated = _interpolateColorsAndStops(
-        a.colors,
-        a._impliedStops(),
-        b.colors,
-        b._impliedStops(),
-        t,
+      a.colors,
+      a._impliedStops(),
+      b.colors,
+      b._impliedStops(),
+      t,
     );
     return SweepGradient(
       center: AlignmentGeometry.lerp(a.center, b.center, t)!,
@@ -1066,14 +1061,14 @@ class SweepGradient extends Gradient {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is SweepGradient
-        && other.center == center
-        && other.startAngle == startAngle
-        && other.endAngle == endAngle
-        && other.tileMode == tileMode
-        && other.transform == transform
-        && listEquals<Color>(other.colors, colors)
-        && listEquals<double>(other.stops, stops);
+    return other is SweepGradient &&
+        other.center == center &&
+        other.startAngle == startAngle &&
+        other.endAngle == endAngle &&
+        other.tileMode == tileMode &&
+        other.transform == transform &&
+        listEquals<Color>(other.colors, colors) &&
+        listEquals<double>(other.stops, stops);
   }
 
   @override

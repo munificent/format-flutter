@@ -28,11 +28,7 @@ import 'theme.dart';
 @immutable
 class TextSelectionThemeData with Diagnosticable {
   /// Creates the set of properties used to configure [TextField]s.
-  const TextSelectionThemeData({
-    this.cursorColor,
-    this.selectionColor,
-    this.selectionHandleColor,
-  });
+  const TextSelectionThemeData({this.cursorColor, this.selectionColor, this.selectionHandleColor});
 
   /// The color of the cursor in the text field.
   ///
@@ -55,11 +51,7 @@ class TextSelectionThemeData with Diagnosticable {
 
   /// Creates a copy of this object with the given fields replaced with the
   /// specified values.
-  TextSelectionThemeData copyWith({
-    Color? cursorColor,
-    Color? selectionColor,
-    Color? selectionHandleColor,
-  }) {
+  TextSelectionThemeData copyWith({Color? cursorColor, Color? selectionColor, Color? selectionHandleColor}) {
     return TextSelectionThemeData(
       cursorColor: cursorColor ?? this.cursorColor,
       selectionColor: selectionColor ?? this.selectionColor,
@@ -84,24 +76,20 @@ class TextSelectionThemeData with Diagnosticable {
   }
 
   @override
-  int get hashCode => Object.hash(
-    cursorColor,
-    selectionColor,
-    selectionHandleColor,
-  );
+  int get hashCode => Object.hash(cursorColor, selectionColor, selectionHandleColor);
 
   @override
-  bool operator==(Object other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) {
       return true;
     }
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is TextSelectionThemeData
-      && other.cursorColor == cursorColor
-      && other.selectionColor == selectionColor
-      && other.selectionHandleColor == selectionHandleColor;
+    return other is TextSelectionThemeData &&
+        other.cursorColor == cursorColor &&
+        other.selectionColor == selectionColor &&
+        other.selectionHandleColor == selectionHandleColor;
   }
 
   @override
@@ -159,12 +147,9 @@ class TextSelectionTheme extends InheritedTheme {
   // workaround is necessary because TextSelectionTheme is const.
   @override
   Widget get child {
-    return DefaultSelectionStyle(
-      selectionColor: data.selectionColor,
-      cursorColor: data.cursorColor,
-      child: _child,
-    );
+    return DefaultSelectionStyle(selectionColor: data.selectionColor, cursorColor: data.cursorColor, child: _child);
   }
+
   final Widget _child;
 
   /// Returns the [data] from the closest [TextSelectionTheme] ancestor. If

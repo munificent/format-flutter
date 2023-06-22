@@ -29,9 +29,9 @@ import 'overlay.dart';
 /// - [MagnifierInfo], the data class that updates the
 ///   magnifier.
 typedef MagnifierBuilder = Widget? Function(
-    BuildContext context,
-    MagnifierController controller,
-    ValueNotifier<MagnifierInfo> magnifierInfo,
+  BuildContext context,
+  MagnifierController controller,
+  ValueNotifier<MagnifierInfo> magnifierInfo,
 );
 
 /// A data class that contains the geometry information of text layouts
@@ -73,20 +73,15 @@ class MagnifierInfo {
     if (identical(this, other)) {
       return true;
     }
-    return other is MagnifierInfo
-        && other.globalGesturePosition == globalGesturePosition
-        && other.caretRect == caretRect
-        && other.currentLineBoundaries == currentLineBoundaries
-        && other.fieldBounds == fieldBounds;
+    return other is MagnifierInfo &&
+        other.globalGesturePosition == globalGesturePosition &&
+        other.caretRect == caretRect &&
+        other.currentLineBoundaries == currentLineBoundaries &&
+        other.fieldBounds == fieldBounds;
   }
 
   @override
-  int get hashCode => Object.hash(
-    globalGesturePosition,
-    caretRect,
-    fieldBounds,
-    currentLineBoundaries,
-  );
+  int get hashCode => Object.hash(globalGesturePosition, caretRect, fieldBounds, currentLineBoundaries);
 }
 
 /// {@template flutter.widgets.magnifier.TextMagnifierConfiguration.intro}
@@ -105,10 +100,8 @@ class TextMagnifierConfiguration {
   ///
   /// If [magnifierBuilder] is null, a default [MagnifierBuilder] will be used
   /// that never builds a magnifier.
-  const TextMagnifierConfiguration({
-    MagnifierBuilder? magnifierBuilder,
-    this.shouldDisplayHandlesInMagnifier = true
-  }) : _magnifierBuilder = magnifierBuilder;
+  const TextMagnifierConfiguration({MagnifierBuilder? magnifierBuilder, this.shouldDisplayHandlesInMagnifier = true})
+    : _magnifierBuilder = magnifierBuilder;
 
   /// The passed in [MagnifierBuilder].
   ///
@@ -243,23 +236,17 @@ class MagnifierController {
     OverlayEntry? below,
   }) async {
     if (overlayEntry != null) {
-        overlayEntry!.remove();
+      overlayEntry!.remove();
     }
 
-    final OverlayState overlayState = Overlay.of(
-      context,
-      rootOverlay: true,
-      debugRequiredFor: debugRequiredFor,
-    );
+    final OverlayState overlayState = Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor);
 
     final CapturedThemes capturedThemes = InheritedTheme.capture(
       from: context,
       to: Navigator.maybeOf(context)?.context,
     );
 
-   _overlayEntry = OverlayEntry(
-      builder: (BuildContext context) => capturedThemes.wrap(builder(context)),
-    );
+    _overlayEntry = OverlayEntry(builder: (BuildContext context) => capturedThemes.wrap(builder(context)));
     overlayState.insert(overlayEntry!, below: below);
 
     if (animationController != null) {
@@ -327,14 +314,9 @@ class MagnifierController {
   /// It is perfectly valid for the output rect to have a point along the edge of the
   /// [bounds]. If the desired output rect requires that no edges are parallel to edges
   /// of [bounds], see [Rect.deflate] by 1 on [bounds] to achieve this effect.
-  static Rect shiftWithinBounds({
-    required Rect rect,
-    required Rect bounds,
-  }) {
-    assert(rect.width <= bounds.width,
-        'attempted to shift $rect within $bounds, but the rect has a greater width.');
-    assert(rect.height <= bounds.height,
-        'attempted to shift $rect within $bounds, but the rect has a greater height.');
+  static Rect shiftWithinBounds({required Rect rect, required Rect bounds}) {
+    assert(rect.width <= bounds.width, 'attempted to shift $rect within $bounds, but the rect has a greater width.');
+    assert(rect.height <= bounds.height, 'attempted to shift $rect within $bounds, but the rect has a greater height.');
 
     Offset rectShift = Offset.zero;
     if (rect.left < bounds.left) {
@@ -364,11 +346,7 @@ class MagnifierDecoration extends ShapeDecoration {
   ///
   /// By default, [MagnifierDecoration] is a rectangular magnifier with no shadows, and
   /// fully opaque.
-  const MagnifierDecoration({
-    this.opacity = 1,
-    super.shadows,
-    super.shape = const RoundedRectangleBorder(),
-  });
+  const MagnifierDecoration({this.opacity = 1, super.shadows, super.shape = const RoundedRectangleBorder()});
 
   /// The magnifier's opacity.
   final double opacity;
@@ -417,14 +395,13 @@ class RawMagnifier extends StatelessWidget {
   /// originally.
   /// {@endtemplate}
   const RawMagnifier({
-      super.key,
-      this.child,
-      this.decoration = const MagnifierDecoration(),
-      this.focalPointOffset = Offset.zero,
-      this.magnificationScale = 1,
-      required this.size,
-      }) : assert(magnificationScale != 0,
-            'Magnification scale of 0 results in undefined behavior.');
+    super.key,
+    this.child,
+    this.decoration = const MagnifierDecoration(),
+    this.focalPointOffset = Offset.zero,
+    this.magnificationScale = 1,
+    required this.size,
+  }) : assert(magnificationScale != 0, 'Magnification scale of 0 results in undefined behavior.');
 
   /// An optional widget to position inside the len of the [RawMagnifier].
   ///
@@ -436,7 +413,6 @@ class RawMagnifier extends StatelessWidget {
   ///
   /// {@macro flutter.widgets.magnifier.RawMagnifier.invisibility_warning}
   final MagnifierDecoration decoration;
-
 
   /// The offset of the magnifier from [RawMagnifier]'s center.
   ///
@@ -473,23 +449,14 @@ class RawMagnifier extends StatelessWidget {
               shape: decoration.shape,
               focalPointOffset: focalPointOffset,
               magnificationScale: magnificationScale,
-              child: SizedBox.fromSize(
-                size: size,
-                child: child,
-              ),
+              child: SizedBox.fromSize(size: size, child: child),
             ),
           ),
         ),
         // Because `BackdropFilter` will filter any widgets before it, we should
         // apply the style after (i.e. in a younger sibling) to avoid the magnifier
         // from seeing its own styling.
-        Opacity(
-          opacity: decoration.opacity,
-          child: _MagnifierStyle(
-            decoration,
-            size: size,
-          ),
-        )
+        Opacity(opacity: decoration.opacity, child: _MagnifierStyle(decoration, size: size)),
       ],
     );
   }
@@ -506,23 +473,15 @@ class _MagnifierStyle extends StatelessWidget {
     double largestShadow = 0;
     for (final BoxShadow shadow in decoration.shadows ?? <BoxShadow>[]) {
       largestShadow = math.max(
-          largestShadow,
-          (shadow.blurRadius + shadow.spreadRadius) +
-              math.max(shadow.offset.dy.abs(), shadow.offset.dx.abs()));
+        largestShadow,
+        (shadow.blurRadius + shadow.spreadRadius) + math.max(shadow.offset.dy.abs(), shadow.offset.dx.abs()),
+      );
     }
 
     return ClipPath(
       clipBehavior: Clip.hardEdge,
-      clipper: _DonutClip(
-        shape: decoration.shape,
-        spreadRadius: largestShadow,
-      ),
-      child: DecoratedBox(
-        decoration: decoration,
-        child: SizedBox.fromSize(
-          size: size,
-        ),
-      ),
+      clipper: _DonutClip(shape: decoration.shape, spreadRadius: largestShadow),
+      child: DecoratedBox(decoration: decoration, child: SizedBox.fromSize(size: size)),
     );
   }
 }
@@ -583,8 +542,7 @@ class _Magnifier extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, _RenderMagnification renderObject) {
+  void updateRenderObject(BuildContext context, _RenderMagnification renderObject) {
     renderObject
       ..focalPointOffset = focalPointOffset
       ..shape = shape
@@ -593,12 +551,8 @@ class _Magnifier extends SingleChildRenderObjectWidget {
 }
 
 class _RenderMagnification extends RenderProxyBox {
-  _RenderMagnification(
-    this._focalPointOffset,
-    this._magnificationScale,
-    this._shape, {
-    RenderBox? child,
-  }) : super(child);
+  _RenderMagnification(this._focalPointOffset, this._magnificationScale, this._shape, {RenderBox? child})
+    : super(child);
 
   Offset get focalPointOffset => _focalPointOffset;
   Offset _focalPointOffset;
@@ -641,15 +595,14 @@ class _RenderMagnification extends RenderProxyBox {
     final Offset thisCenter = Alignment.center.alongSize(size) + offset;
     final Matrix4 matrix = Matrix4.identity()
       ..translate(
-          magnificationScale * ((focalPointOffset.dx * -1) - thisCenter.dx) + thisCenter.dx,
-          magnificationScale * ((focalPointOffset.dy * -1) - thisCenter.dy) + thisCenter.dy)
+        magnificationScale * ((focalPointOffset.dx * -1) - thisCenter.dx) + thisCenter.dx,
+        magnificationScale * ((focalPointOffset.dy * -1) - thisCenter.dy) + thisCenter.dy,
+      )
       ..scale(magnificationScale);
     final ImageFilter filter = ImageFilter.matrix(matrix.storage, filterQuality: FilterQuality.high);
 
     if (layer == null) {
-      layer = BackdropFilterLayer(
-        filter: filter,
-      );
+      layer = BackdropFilterLayer(filter: filter);
     } else {
       layer!.filter = filter;
     }

@@ -187,20 +187,20 @@ class BottomSheetThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is BottomSheetThemeData
-        && other.backgroundColor == backgroundColor
-        && other.surfaceTintColor == surfaceTintColor
-        && other.elevation == elevation
-        && other.modalBackgroundColor == modalBackgroundColor
-        && other.shadowColor == shadowColor
-        && other.modalBarrierColor == modalBarrierColor
-        && other.modalElevation == modalElevation
-        && other.shape == shape
-        && other.showDragHandle == showDragHandle
-        && other.dragHandleColor == dragHandleColor
-        && other.dragHandleSize == dragHandleSize
-        && other.clipBehavior == clipBehavior
-        && other.constraints == constraints;
+    return other is BottomSheetThemeData &&
+        other.backgroundColor == backgroundColor &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.elevation == elevation &&
+        other.modalBackgroundColor == modalBackgroundColor &&
+        other.shadowColor == shadowColor &&
+        other.modalBarrierColor == modalBarrierColor &&
+        other.modalElevation == modalElevation &&
+        other.shape == shape &&
+        other.showDragHandle == showDragHandle &&
+        other.dragHandleColor == dragHandleColor &&
+        other.dragHandleSize == dragHandleSize &&
+        other.clipBehavior == clipBehavior &&
+        other.constraints == constraints;
   }
 
   @override

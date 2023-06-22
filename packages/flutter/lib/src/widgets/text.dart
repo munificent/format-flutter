@@ -65,7 +65,7 @@ class DefaultTextStyle extends InheritedTheme {
   ///
   /// This constructor creates a [DefaultTextStyle] with an invalid [child], which
   /// means the constructed value cannot be incorporated into the tree.
-  const DefaultTextStyle.fallback({ super.key })
+  const DefaultTextStyle.fallback({super.key})
     : style = const TextStyle(),
       textAlign = null,
       softWrap = true,
@@ -201,11 +201,19 @@ class DefaultTextStyle extends InheritedTheme {
     super.debugFillProperties(properties);
     style.debugFillProperties(properties);
     properties.add(EnumProperty<TextAlign>('textAlign', textAlign, defaultValue: null));
-    properties.add(FlagProperty('softWrap', value: softWrap, ifTrue: 'wrapping at box width', ifFalse: 'no wrapping except at line break characters', showName: true));
+    properties.add(FlagProperty(
+      'softWrap',
+      value: softWrap,
+      ifTrue: 'wrapping at box width',
+      ifFalse: 'no wrapping except at line break characters',
+      showName: true,
+    ));
     properties.add(EnumProperty<TextOverflow>('overflow', overflow, defaultValue: null));
     properties.add(IntProperty('maxLines', maxLines, defaultValue: null));
     properties.add(EnumProperty<TextWidthBasis>('textWidthBasis', textWidthBasis, defaultValue: TextWidthBasis.parent));
-    properties.add(DiagnosticsProperty<ui.TextHeightBehavior>('textHeightBehavior', textHeightBehavior, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<ui.TextHeightBehavior>('textHeightBehavior', textHeightBehavior, defaultValue: null),
+    );
   }
 }
 
@@ -237,11 +245,7 @@ class DefaultTextHeightBehavior extends InheritedTheme {
   /// Creates a default text height behavior for the given subtree.
   ///
   /// The [textHeightBehavior] and [child] arguments are required and must not be null.
-  const DefaultTextHeightBehavior({
-    super.key,
-    required this.textHeightBehavior,
-    required super.child,
-  });
+  const DefaultTextHeightBehavior({super.key, required this.textHeightBehavior, required super.child});
 
   /// {@macro dart.ui.textHeightBehavior}
   final TextHeightBehavior textHeightBehavior;
@@ -289,21 +293,23 @@ class DefaultTextHeightBehavior extends InheritedTheme {
   ///   but returns null if no [DefaultTextHeightBehavior] ancestor is found.
   static TextHeightBehavior of(BuildContext context) {
     final TextHeightBehavior? behavior = maybeOf(context);
-    assert(() {
-      if (behavior == null) {
-        throw FlutterError(
-          'DefaultTextHeightBehavior.of() was called with a context that does not contain a '
-          'DefaultTextHeightBehavior widget.\n'
-          'No DefaultTextHeightBehavior widget ancestor could be found starting from the '
-          'context that was passed to DefaultTextHeightBehavior.of(). This can happen '
-          'because you are using a widget that looks for a DefaultTextHeightBehavior '
-          'ancestor, but no such ancestor exists.\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (behavior == null) {
+          throw FlutterError(
+            'DefaultTextHeightBehavior.of() was called with a context that does not contain a '
+            'DefaultTextHeightBehavior widget.\n'
+            'No DefaultTextHeightBehavior widget ancestor could be found starting from the '
+            'context that was passed to DefaultTextHeightBehavior.of(). This can happen '
+            'because you are using a widget that looks for a DefaultTextHeightBehavior '
+            'ancestor, but no such ancestor exists.\n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return behavior!;
   }
 
@@ -314,16 +320,15 @@ class DefaultTextHeightBehavior extends InheritedTheme {
 
   @override
   Widget wrap(BuildContext context, Widget child) {
-    return DefaultTextHeightBehavior(
-      textHeightBehavior: textHeightBehavior,
-      child: child,
-    );
+    return DefaultTextHeightBehavior(textHeightBehavior: textHeightBehavior, child: child);
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<ui.TextHeightBehavior>('textHeightBehavior', textHeightBehavior, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<ui.TextHeightBehavior>('textHeightBehavior', textHeightBehavior, defaultValue: null),
+    );
   }
 }
 
@@ -605,14 +610,13 @@ class Text extends StatelessWidget {
       maxLines: maxLines ?? defaultTextStyle.maxLines,
       strutStyle: strutStyle,
       textWidthBasis: textWidthBasis ?? defaultTextStyle.textWidthBasis,
-      textHeightBehavior: textHeightBehavior ?? defaultTextStyle.textHeightBehavior ?? DefaultTextHeightBehavior.maybeOf(context),
+      textHeightBehavior:
+          textHeightBehavior ?? defaultTextStyle.textHeightBehavior ?? DefaultTextHeightBehavior.maybeOf(context),
       selectionRegistrar: registrar,
-      selectionColor: selectionColor ?? DefaultSelectionStyle.of(context).selectionColor ?? DefaultSelectionStyle.defaultColor,
-      text: TextSpan(
-        style: effectiveTextStyle,
-        text: data,
-        children: textSpan != null ? <InlineSpan>[textSpan!] : null,
-      ),
+      selectionColor:
+          selectionColor ?? DefaultSelectionStyle.of(context).selectionColor ?? DefaultSelectionStyle.defaultColor,
+      text:
+          TextSpan(style: effectiveTextStyle, text: data, children: textSpan != null ? <InlineSpan>[textSpan!] : null),
     );
     if (registrar != null) {
       result = MouseRegion(
@@ -621,13 +625,7 @@ class Text extends StatelessWidget {
       );
     }
     if (semanticsLabel != null) {
-      result = Semantics(
-        textDirection: textDirection,
-        label: semanticsLabel,
-        child: ExcludeSemantics(
-          child: result,
-        ),
-      );
+      result = Semantics(textDirection: textDirection, label: semanticsLabel, child: ExcludeSemantics(child: result));
     }
     return result;
   }
@@ -643,12 +641,20 @@ class Text extends StatelessWidget {
     properties.add(EnumProperty<TextAlign>('textAlign', textAlign, defaultValue: null));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection, defaultValue: null));
     properties.add(DiagnosticsProperty<Locale>('locale', locale, defaultValue: null));
-    properties.add(FlagProperty('softWrap', value: softWrap, ifTrue: 'wrapping at box width', ifFalse: 'no wrapping except at line break characters', showName: true));
+    properties.add(FlagProperty(
+      'softWrap',
+      value: softWrap,
+      ifTrue: 'wrapping at box width',
+      ifFalse: 'no wrapping except at line break characters',
+      showName: true,
+    ));
     properties.add(EnumProperty<TextOverflow>('overflow', overflow, defaultValue: null));
     properties.add(DoubleProperty('textScaleFactor', textScaleFactor, defaultValue: null));
     properties.add(IntProperty('maxLines', maxLines, defaultValue: null));
     properties.add(EnumProperty<TextWidthBasis>('textWidthBasis', textWidthBasis, defaultValue: null));
-    properties.add(DiagnosticsProperty<ui.TextHeightBehavior>('textHeightBehavior', textHeightBehavior, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<ui.TextHeightBehavior>('textHeightBehavior', textHeightBehavior, defaultValue: null),
+    );
     if (semanticsLabel != null) {
       properties.add(StringProperty('semanticsLabel', semanticsLabel));
     }

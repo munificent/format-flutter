@@ -27,16 +27,14 @@ class SliverLayoutBuilder extends ConstrainedLayoutBuilder<SliverConstraints> {
   /// Creates a sliver widget that defers its building until layout.
   ///
   /// The [builder] argument must not be null.
-  const SliverLayoutBuilder({
-    super.key,
-    required super.builder,
-  });
+  const SliverLayoutBuilder({super.key, required super.builder});
 
   @override
   RenderObject createRenderObject(BuildContext context) => _RenderSliverLayoutBuilder();
 }
 
-class _RenderSliverLayoutBuilder extends RenderSliver with RenderObjectWithChildMixin<RenderSliver>, RenderConstrainedLayoutBuilder<SliverConstraints, RenderSliver> {
+class _RenderSliverLayoutBuilder extends RenderSliver
+    with RenderObjectWithChildMixin<RenderSliver>, RenderConstrainedLayoutBuilder<SliverConstraints, RenderSliver> {
   @override
   double childMainAxisPosition(RenderObject child) {
     assert(child == this.child);
@@ -65,9 +63,13 @@ class _RenderSliverLayoutBuilder extends RenderSliver with RenderObjectWithChild
   }
 
   @override
-  bool hitTestChildren(SliverHitTestResult result, {required double mainAxisPosition, required double crossAxisPosition}) {
-    return child != null
-        && child!.geometry!.hitTestExtent > 0
-        && child!.hitTest(result, mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition);
+  bool hitTestChildren(
+    SliverHitTestResult result, {
+    required double mainAxisPosition,
+    required double crossAxisPosition,
+  }) {
+    return child != null &&
+        child!.geometry!.hitTestExtent > 0 &&
+        child!.hitTest(result, mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition);
   }
 }

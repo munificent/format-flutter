@@ -16,15 +16,10 @@ import 'inherited_model.dart';
 import 'notification_listener.dart';
 import 'widget_inspector.dart';
 
-export 'package:flutter/foundation.dart' show
-  factory,
-  immutable,
-  mustCallSuper,
-  optionalTypeArgs,
-  protected,
-  required,
-  visibleForTesting;
-export 'package:flutter/foundation.dart' show ErrorDescription, ErrorHint, ErrorSummary, FlutterError, debugPrint, debugPrintStack;
+export 'package:flutter/foundation.dart'
+    show factory, immutable, mustCallSuper, optionalTypeArgs, protected, required, visibleForTesting;
+export 'package:flutter/foundation.dart'
+    show ErrorDescription, ErrorHint, ErrorSummary, FlutterError, debugPrint, debugPrintStack;
 export 'package:flutter/foundation.dart' show ValueChanged, ValueGetter, ValueSetter, VoidCallback;
 export 'package:flutter/foundation.dart' show DiagnosticLevel, DiagnosticsNode;
 export 'package:flutter/foundation.dart' show Key, LocalKey, ValueKey;
@@ -87,8 +82,7 @@ class ObjectKey extends LocalKey {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ObjectKey
-        && identical(other.value, value);
+    return other is ObjectKey && identical(other.value, value);
   }
 
   @override
@@ -152,7 +146,7 @@ abstract class GlobalKey<T extends State<StatefulWidget>> extends Key {
   ///
   /// The label is purely for debugging and not used for comparing the identity
   /// of the key.
-  factory GlobalKey({ String? debugLabel }) => LabeledGlobalKey<T>(debugLabel);
+  factory GlobalKey({String? debugLabel}) => LabeledGlobalKey<T>(debugLabel);
 
   /// Creates a global key without a label.
   ///
@@ -251,8 +245,7 @@ class GlobalObjectKey<T extends State<StatefulWidget>> extends GlobalKey<T> {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is GlobalObjectKey<T>
-        && identical(other.value, value);
+    return other is GlobalObjectKey<T> && identical(other.value, value);
   }
 
   @override
@@ -309,7 +302,7 @@ class GlobalObjectKey<T extends State<StatefulWidget>> extends GlobalKey<T> {
 @immutable
 abstract class Widget extends DiagnosticableTree {
   /// Initializes [key] for subclasses.
-  const Widget({ this.key });
+  const Widget({this.key});
 
   /// Controls how one widget replaces another widget in the tree.
   ///
@@ -378,8 +371,7 @@ abstract class Widget extends DiagnosticableTree {
   /// match if they have the same type, even if their children are completely
   /// different.
   static bool canUpdate(Widget oldWidget, Widget newWidget) {
-    return oldWidget.runtimeType == newWidget.runtimeType
-        && oldWidget.key == newWidget.key;
+    return oldWidget.runtimeType == newWidget.runtimeType && oldWidget.key == newWidget.key;
   }
 
   // Return a numeric encoding of the specific `Widget` concrete subtype.
@@ -387,9 +379,11 @@ abstract class Widget extends DiagnosticableTree {
   // superclass of a mounted element's configuration. The encoding of each `Widget`
   // must match the corresponding `Element` encoding in `Element._debugConcreteSubtype`.
   static int _debugConcreteSubtype(Widget widget) {
-    return widget is StatefulWidget ? 1 :
-           widget is StatelessWidget ? 2 :
-           0;
+    return widget is StatefulWidget
+        ? 1
+        : widget is StatelessWidget
+            ? 2
+            : 0;
   }
 }
 
@@ -519,7 +513,7 @@ abstract class Widget extends DiagnosticableTree {
 ///    be read by descendant widgets.
 abstract class StatelessWidget extends Widget {
   /// Initializes [key] for subclasses.
-  const StatelessWidget({ super.key });
+  const StatelessWidget({super.key});
 
   /// Creates a [StatelessElement] to manage this widget's location in the tree.
   ///
@@ -767,7 +761,7 @@ abstract class StatelessWidget extends Widget {
 ///    be read by descendant widgets.
 abstract class StatefulWidget extends Widget {
   /// Initializes [key] for subclasses.
-  const StatefulWidget({ super.key });
+  const StatefulWidget({super.key});
 
   /// Creates a [StatefulElement] to manage this widget's location in the tree.
   ///
@@ -946,17 +940,20 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   /// After calling [dispose], the framework severs the [State] object's
   /// connection with the [BuildContext].
   BuildContext get context {
-    assert(() {
-      if (_element == null) {
-        throw FlutterError(
-          'This widget has been unmounted, so the State no longer has a context (and should be considered defunct). \n'
-          'Consider canceling any active work during "dispose" or using the "mounted" getter to determine if the State is still active.',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_element == null) {
+          throw FlutterError(
+            'This widget has been unmounted, so the State no longer has a context (and should be considered defunct). \n'
+            'Consider canceling any active work during "dispose" or using the "mounted" getter to determine if the State is still active.',
+          );
+        }
+        return true;
+      }(),
+    );
     return _element!;
   }
+
   StatefulElement? _element;
 
   /// Whether this [State] object is currently in a tree.
@@ -1037,7 +1034,7 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   /// method is called._
   @mustCallSuper
   @protected
-  void didUpdateWidget(covariant T oldWidget) { }
+  void didUpdateWidget(covariant T oldWidget) {}
 
   /// {@macro flutter.widgets.Element.reassemble}
   ///
@@ -1052,7 +1049,7 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   ///  * [Image], which uses this to reload images.
   @protected
   @mustCallSuper
-  void reassemble() { }
+  void reassemble() {}
 
   /// Notify the framework that the internal state of this object has changed.
   ///
@@ -1098,64 +1095,68 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   /// whether the [mounted] property is true.
   @protected
   void setState(VoidCallback fn) {
-    assert(() {
-      if (_debugLifecycleState == _StateLifecycle.defunct) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('setState() called after dispose(): $this'),
-          ErrorDescription(
-            'This error happens if you call setState() on a State object for a widget that '
-            'no longer appears in the widget tree (e.g., whose parent widget no longer '
-            'includes the widget in its build). This error can occur when code calls '
-            'setState() from a timer or an animation callback.',
-          ),
-          ErrorHint(
-            'The preferred solution is '
-            'to cancel the timer or stop listening to the animation in the dispose() '
-            'callback. Another solution is to check the "mounted" property of this '
-            'object before calling setState() to ensure the object is still in the '
-            'tree.',
-          ),
-          ErrorHint(
-            'This error might indicate a memory leak if setState() is being called '
-            'because another object is retaining a reference to this State object '
-            'after it has been removed from the tree. To avoid memory leaks, '
-            'consider breaking the reference to this object during dispose().',
-          ),
-        ]);
-      }
-      if (_debugLifecycleState == _StateLifecycle.created && !mounted) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('setState() called in constructor: $this'),
-          ErrorHint(
-            'This happens when you call setState() on a State object for a widget that '
-            "hasn't been inserted into the widget tree yet. It is not necessary to call "
-            'setState() in the constructor, since the state is already assumed to be dirty '
-            'when it is initially created.',
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_debugLifecycleState == _StateLifecycle.defunct) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('setState() called after dispose(): $this'),
+            ErrorDescription(
+              'This error happens if you call setState() on a State object for a widget that '
+              'no longer appears in the widget tree (e.g., whose parent widget no longer '
+              'includes the widget in its build). This error can occur when code calls '
+              'setState() from a timer or an animation callback.',
+            ),
+            ErrorHint(
+              'The preferred solution is '
+              'to cancel the timer or stop listening to the animation in the dispose() '
+              'callback. Another solution is to check the "mounted" property of this '
+              'object before calling setState() to ensure the object is still in the '
+              'tree.',
+            ),
+            ErrorHint(
+              'This error might indicate a memory leak if setState() is being called '
+              'because another object is retaining a reference to this State object '
+              'after it has been removed from the tree. To avoid memory leaks, '
+              'consider breaking the reference to this object during dispose().',
+            ),
+          ]);
+        }
+        if (_debugLifecycleState == _StateLifecycle.created && !mounted) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('setState() called in constructor: $this'),
+            ErrorHint(
+              'This happens when you call setState() on a State object for a widget that '
+              "hasn't been inserted into the widget tree yet. It is not necessary to call "
+              'setState() in the constructor, since the state is already assumed to be dirty '
+              'when it is initially created.',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     final Object? result = fn() as dynamic;
-    assert(() {
-      if (result is Future) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('setState() callback argument returned a Future.'),
-          ErrorDescription(
-            'The setState() method on $this was called with a closure or method that '
-            'returned a Future. Maybe it is marked as "async".',
-          ),
-          ErrorHint(
-            'Instead of performing asynchronous work inside a call to setState(), first '
-            'execute the work (without updating the widget state), and then synchronously '
-            'update the state inside a call to setState().',
-          ),
-        ]);
-      }
-      // We ignore other types of return values so that you can do things like:
-      //   setState(() => x = 3);
-      return true;
-    }());
+    assert(
+      () {
+        if (result is Future) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('setState() callback argument returned a Future.'),
+            ErrorDescription(
+              'The setState() method on $this was called with a closure or method that '
+              'returned a Future. Maybe it is marked as "async".',
+            ),
+            ErrorHint(
+              'Instead of performing asynchronous work inside a call to setState(), first '
+              'execute the work (without updating the widget state), and then synchronously '
+              'update the state inside a call to setState().',
+            ),
+          ]);
+        }
+        // We ignore other types of return values so that you can do things like:
+        //   setState(() => x = 3);
+        return true;
+      }(),
+    );
     _element!.markNeedsBuild();
   }
 
@@ -1187,7 +1188,7 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   ///    from the tree permanently.
   @protected
   @mustCallSuper
-  void deactivate() { }
+  void deactivate() {}
 
   /// Called when this object is reinserted into the tree after having been
   /// removed via [deactivate].
@@ -1221,7 +1222,7 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   ///    transitions from the "inactive" to the "active" lifecycle state.
   @protected
   @mustCallSuper
-  void activate() { }
+  void activate() {}
 
   /// Called when this object is removed from the tree permanently.
   ///
@@ -1246,10 +1247,12 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   @mustCallSuper
   void dispose() {
     assert(_debugLifecycleState == _StateLifecycle.ready);
-    assert(() {
-      _debugLifecycleState = _StateLifecycle.defunct;
-      return true;
-    }());
+    assert(
+      () {
+        _debugLifecycleState = _StateLifecycle.defunct;
+        return true;
+      }(),
+    );
     if (kFlutterMemoryAllocationsEnabled) {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
@@ -1391,15 +1394,19 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   /// expensive to do for every build.
   @protected
   @mustCallSuper
-  void didChangeDependencies() { }
+  void didChangeDependencies() {}
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    assert(() {
-      properties.add(EnumProperty<_StateLifecycle>('lifecycle state', _debugLifecycleState, defaultValue: _StateLifecycle.ready));
-      return true;
-    }());
+    assert(
+      () {
+        properties.add(
+          EnumProperty<_StateLifecycle>('lifecycle state', _debugLifecycleState, defaultValue: _StateLifecycle.ready),
+        );
+        return true;
+      }(),
+    );
     properties.add(ObjectFlagProperty<T>('_widget', _widget, ifNull: 'no widget'));
     properties.add(ObjectFlagProperty<StatefulElement>('_element', _element, ifNull: 'not mounted'));
   }
@@ -1425,7 +1432,7 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
 ///  * [Widget], for an overview of widgets in general.
 abstract class ProxyWidget extends Widget {
   /// Creates a widget that has exactly one child widget.
-  const ProxyWidget({ super.key, required this.child });
+  const ProxyWidget({super.key, required this.child});
 
   /// The widget below this widget in the tree.
   ///
@@ -1491,7 +1498,7 @@ abstract class ProxyWidget extends Widget {
 abstract class ParentDataWidget<T extends ParentData> extends ProxyWidget {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
-  const ParentDataWidget({ super.key, required super.child });
+  const ParentDataWidget({super.key, required super.child});
 
   @override
   ParentDataElement<T> createElement() => ParentDataElement<T>(this);
@@ -1529,9 +1536,7 @@ abstract class ParentDataWidget<T extends ParentData> extends ProxyWidget {
     final String description = 'The ParentDataWidget $this wants to apply ParentData of type $T to a RenderObject';
     return <DiagnosticsNode>[
       if (parentData == null)
-        ErrorDescription(
-          '$description, which has not been set up to receive any ParentData.',
-        )
+        ErrorDescription('$description, which has not been set up to receive any ParentData.')
       else
         ErrorDescription(
           '$description, which has been set up to accept ParentData of incompatible type ${parentData.runtimeType}.',
@@ -1541,9 +1546,7 @@ abstract class ParentDataWidget<T extends ParentData> extends ProxyWidget {
         'Typically, $runtimeType widgets are placed directly inside $debugTypicalAncestorWidgetClass widgets.',
       ),
       if (parentDataCreator != null)
-        ErrorHint(
-          'The offending $runtimeType is currently placed inside a ${parentDataCreator.runtimeType} widget.',
-        ),
+        ErrorHint('The offending $runtimeType is currently placed inside a ${parentDataCreator.runtimeType} widget.'),
       if (ownershipChain != null)
         ErrorDescription(
           'The ownership chain for the RenderObject that received the incompatible parent data was:\n  $ownershipChain',
@@ -1731,7 +1734,7 @@ abstract class ParentDataWidget<T extends ParentData> extends ProxyWidget {
 abstract class InheritedWidget extends ProxyWidget {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
-  const InheritedWidget({ super.key, required super.child });
+  const InheritedWidget({super.key, required super.child});
 
   @override
   InheritedElement createElement() => InheritedElement(this);
@@ -1765,7 +1768,7 @@ abstract class InheritedWidget extends ProxyWidget {
 abstract class RenderObjectWidget extends Widget {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
-  const RenderObjectWidget({ super.key });
+  const RenderObjectWidget({super.key});
 
   /// RenderObjectWidgets always inflate to a [RenderObjectElement] subclass.
   @override
@@ -1795,13 +1798,13 @@ abstract class RenderObjectWidget extends Widget {
   /// [createElement] method. See, for example,
   /// [SingleChildRenderObjectElement.update].
   @protected
-  void updateRenderObject(BuildContext context, covariant RenderObject renderObject) { }
+  void updateRenderObject(BuildContext context, covariant RenderObject renderObject) {}
 
   /// A render object previously associated with this widget has been removed
   /// from the tree. The given [RenderObject] will be of the same type as
   /// returned by this object's [createRenderObject].
   @protected
-  void didUnmountRenderObject(covariant RenderObject renderObject) { }
+  void didUnmountRenderObject(covariant RenderObject renderObject) {}
 }
 
 /// A superclass for RenderObjectWidgets that configure RenderObject subclasses
@@ -1809,7 +1812,7 @@ abstract class RenderObjectWidget extends Widget {
 abstract class LeafRenderObjectWidget extends RenderObjectWidget {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
-  const LeafRenderObjectWidget({ super.key });
+  const LeafRenderObjectWidget({super.key});
 
   @override
   LeafRenderObjectElement createElement() => LeafRenderObjectElement(this);
@@ -1826,7 +1829,7 @@ abstract class LeafRenderObjectWidget extends RenderObjectWidget {
 abstract class SingleChildRenderObjectWidget extends RenderObjectWidget {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
-  const SingleChildRenderObjectWidget({ super.key, this.child });
+  const SingleChildRenderObjectWidget({super.key, this.child});
 
   /// The widget below this widget in the tree.
   ///
@@ -1862,7 +1865,7 @@ abstract class MultiChildRenderObjectWidget extends RenderObjectWidget {
   ///
   /// The [children] argument must not be null and must not contain any null
   /// objects.
-  const MultiChildRenderObjectWidget({ super.key, this.children = const <Widget>[] });
+  const MultiChildRenderObjectWidget({super.key, this.children = const <Widget>[]});
 
   /// The widgets below this widget in the tree.
   ///
@@ -1922,15 +1925,9 @@ abstract class MultiChildRenderObjectWidget extends RenderObjectWidget {
   MultiChildRenderObjectElement createElement() => MultiChildRenderObjectElement(this);
 }
 
-
 // ELEMENTS
 
-enum _ElementLifecycle {
-  initial,
-  active,
-  inactive,
-  defunct,
-}
+enum _ElementLifecycle { initial, active, inactive, defunct }
 
 class _InactiveElements {
   bool _locked = false;
@@ -1938,14 +1935,16 @@ class _InactiveElements {
 
   void _unmount(Element element) {
     assert(element._lifecycleState == _ElementLifecycle.inactive);
-    assert(() {
-      if (debugPrintGlobalKeyedWidgetLifecycle) {
-        if (element.widget.key is GlobalKey) {
-          debugPrint('Discarding $element from inactive elements list.');
+    assert(
+      () {
+        if (debugPrintGlobalKeyedWidgetLifecycle) {
+          if (element.widget.key is GlobalKey) {
+            debugPrint('Discarding $element from inactive elements list.');
+          }
         }
-      }
-      return true;
-    }());
+        return true;
+      }(),
+    );
     element.visitChildren((Element child) {
       assert(child._parent == element);
       _unmount(child);
@@ -1971,10 +1970,12 @@ class _InactiveElements {
     element.deactivate();
     assert(element._lifecycleState == _ElementLifecycle.inactive);
     element.visitChildren(_deactivateRecursively);
-    assert(() {
-      element.debugDeactivated();
-      return true;
-    }());
+    assert(
+      () {
+        element.debugDeactivated();
+        return true;
+      }(),
+    );
   }
 
   void add(Element element) {
@@ -1997,10 +1998,12 @@ class _InactiveElements {
 
   bool debugContains(Element element) {
     late bool result;
-    assert(() {
-      result = _elements.contains(element);
-      return true;
-    }());
+    assert(
+      () {
+        result = _elements.contains(element);
+        return true;
+      }(),
+    );
     return result;
   }
 }
@@ -2221,7 +2224,7 @@ abstract class BuildContext {
   ///
   /// All of the qualifications about when [dependOnInheritedWidgetOfExactType] can
   /// be called apply to this method as well.
-  InheritedWidget dependOnInheritedElement(InheritedElement ancestor, { Object? aspect });
+  InheritedWidget dependOnInheritedElement(InheritedElement ancestor, {Object? aspect});
 
   /// Returns the nearest widget of the given type `T` and creates a dependency
   /// on it, or null if no appropriate widget is found.
@@ -2267,7 +2270,7 @@ abstract class BuildContext {
   /// [InheritedModel]. It specifies what "aspect" of the inherited
   /// widget this context depends on.
   /// {@endtemplate}
-  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({ Object? aspect });
+  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({Object? aspect});
 
   /// Returns the nearest widget of the given [InheritedWidget] subclass `T` or
   /// null if an appropriate ancestor is not found.
@@ -2476,7 +2479,7 @@ abstract class BuildContext {
   /// build context's ancestry tree.
   ///
   /// You can find an example of using this method in [debugCheckHasMaterial].
-  List<DiagnosticsNode> describeMissingAncestor({ required Type expectedAncestorType });
+  List<DiagnosticsNode> describeMissingAncestor({required Type expectedAncestorType});
 
   /// Adds a description of the ownership chain from a specific [Element]
   /// to the error report.
@@ -2517,8 +2520,8 @@ class BuildOwner {
   /// via [FocusManager.registerGlobalHandlers], which will modify static
   /// state. Callers wishing to avoid altering this state can explicitly pass
   /// a focus manager here.
-  BuildOwner({ this.onBuildScheduled, FocusManager? focusManager }) :
-      focusManager = focusManager ?? (FocusManager()..registerGlobalHandlers());
+  BuildOwner({this.onBuildScheduled, FocusManager? focusManager})
+    : focusManager = focusManager ?? (FocusManager()..registerGlobalHandlers());
 
   /// Called on each build pass when the first buildable element is marked
   /// dirty.
@@ -2561,43 +2564,53 @@ class BuildOwner {
   /// when [WidgetsBinding.drawFrame] calls [buildScope].
   void scheduleBuildFor(Element element) {
     assert(element.owner == this);
-    assert(() {
-      if (debugPrintScheduleBuildForStacks) {
-        debugPrintStack(label: 'scheduleBuildFor() called for $element${_dirtyElements.contains(element) ? " (ALREADY IN LIST)" : ""}');
-      }
-      if (!element.dirty) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('scheduleBuildFor() called for a widget that is not marked as dirty.'),
-          element.describeElement('The method was called for the following element'),
-          ErrorDescription(
-            'This element is not current marked as dirty. Make sure to set the dirty flag before '
-            'calling scheduleBuildFor().',
-          ),
-          ErrorHint(
-            'If you did not attempt to call scheduleBuildFor() yourself, then this probably '
-            'indicates a bug in the widgets framework. Please report it:\n'
-            '  https://github.com/flutter/flutter/issues/new?template=2_bug.yml',
-          ),
-        ]);
-      }
-      return true;
-    }());
-    if (element._inDirtyList) {
-      assert(() {
+    assert(
+      () {
         if (debugPrintScheduleBuildForStacks) {
-          debugPrintStack(label: 'BuildOwner.scheduleBuildFor() called; _dirtyElementsNeedsResorting was $_dirtyElementsNeedsResorting (now true); dirty list is: $_dirtyElements');
+          debugPrintStack(
+            label:
+                'scheduleBuildFor() called for $element${_dirtyElements.contains(element) ? " (ALREADY IN LIST)" : ""}',
+          );
         }
-        if (!_debugIsInBuildScope) {
+        if (!element.dirty) {
           throw FlutterError.fromParts(<DiagnosticsNode>[
-            ErrorSummary('BuildOwner.scheduleBuildFor() called inappropriately.'),
+            ErrorSummary('scheduleBuildFor() called for a widget that is not marked as dirty.'),
+            element.describeElement('The method was called for the following element'),
+            ErrorDescription(
+              'This element is not current marked as dirty. Make sure to set the dirty flag before '
+              'calling scheduleBuildFor().',
+            ),
             ErrorHint(
-              'The BuildOwner.scheduleBuildFor() method should only be called while the '
-              'buildScope() method is actively rebuilding the widget tree.',
+              'If you did not attempt to call scheduleBuildFor() yourself, then this probably '
+              'indicates a bug in the widgets framework. Please report it:\n'
+              '  https://github.com/flutter/flutter/issues/new?template=2_bug.yml',
             ),
           ]);
         }
         return true;
-      }());
+      }(),
+    );
+    if (element._inDirtyList) {
+      assert(
+        () {
+          if (debugPrintScheduleBuildForStacks) {
+            debugPrintStack(
+              label:
+                  'BuildOwner.scheduleBuildFor() called; _dirtyElementsNeedsResorting was $_dirtyElementsNeedsResorting (now true); dirty list is: $_dirtyElements',
+            );
+          }
+          if (!_debugIsInBuildScope) {
+            throw FlutterError.fromParts(<DiagnosticsNode>[
+              ErrorSummary('BuildOwner.scheduleBuildFor() called inappropriately.'),
+              ErrorHint(
+                'The BuildOwner.scheduleBuildFor() method should only be called while the '
+                'buildScope() method is actively rebuilding the widget tree.',
+              ),
+            ]);
+          }
+          return true;
+        }(),
+      );
       _dirtyElementsNeedsResorting = true;
       return;
     }
@@ -2607,12 +2620,14 @@ class BuildOwner {
     }
     _dirtyElements.add(element);
     element._inDirtyList = true;
-    assert(() {
-      if (debugPrintScheduleBuildForStacks) {
-        debugPrint('...dirty list is now: $_dirtyElements');
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (debugPrintScheduleBuildForStacks) {
+          debugPrint('...dirty list is now: $_dirtyElements');
+        }
+        return true;
+      }(),
+    );
   }
 
   int _debugStateLockLevel = 0;
@@ -2632,17 +2647,21 @@ class BuildOwner {
   /// not call [State.setState].
   void lockState(VoidCallback callback) {
     assert(_debugStateLockLevel >= 0);
-    assert(() {
-      _debugStateLockLevel += 1;
-      return true;
-    }());
+    assert(
+      () {
+        _debugStateLockLevel += 1;
+        return true;
+      }(),
+    );
     try {
       callback();
     } finally {
-      assert(() {
-        _debugStateLockLevel -= 1;
-        return true;
-      }());
+      assert(
+        () {
+          _debugStateLockLevel -= 1;
+          return true;
+        }(),
+      );
     }
     assert(_debugStateLockLevel >= 0);
   }
@@ -2673,58 +2692,63 @@ class BuildOwner {
   /// involving widgets not getting marked dirty, or getting marked dirty too
   /// often.
   @pragma('vm:notify-debugger-on-exception')
-  void buildScope(Element context, [ VoidCallback? callback ]) {
+  void buildScope(Element context, [VoidCallback? callback]) {
     if (callback == null && _dirtyElements.isEmpty) {
       return;
     }
     assert(_debugStateLockLevel >= 0);
     assert(!_debugBuilding);
-    assert(() {
-      if (debugPrintBuildScope) {
-        debugPrint('buildScope called with context $context; dirty list is: $_dirtyElements');
-      }
-      _debugStateLockLevel += 1;
-      _debugBuilding = true;
-      return true;
-    }());
+    assert(
+      () {
+        if (debugPrintBuildScope) {
+          debugPrint('buildScope called with context $context; dirty list is: $_dirtyElements');
+        }
+        _debugStateLockLevel += 1;
+        _debugBuilding = true;
+        return true;
+      }(),
+    );
     if (!kReleaseMode) {
       Map<String, String>? debugTimelineArguments;
-      assert(() {
-        if (debugEnhanceBuildTimelineArguments) {
-          debugTimelineArguments = <String, String>{
-            'dirty count': '${_dirtyElements.length}',
-            'dirty list': '$_dirtyElements',
-            'lock level': '$_debugStateLockLevel',
-            'scope context': '$context',
-          };
-        }
-        return true;
-      }());
-      Timeline.startSync(
-        'BUILD',
-        arguments: debugTimelineArguments
+      assert(
+        () {
+          if (debugEnhanceBuildTimelineArguments) {
+            debugTimelineArguments = <String, String>{
+              'dirty count': '${_dirtyElements.length}',
+              'dirty list': '$_dirtyElements',
+              'lock level': '$_debugStateLockLevel',
+              'scope context': '$context',
+            };
+          }
+          return true;
+        }(),
       );
+      Timeline.startSync('BUILD', arguments: debugTimelineArguments);
     }
     try {
       _scheduledFlushDirtyElements = true;
       if (callback != null) {
         assert(_debugStateLocked);
         Element? debugPreviousBuildTarget;
-        assert(() {
-          debugPreviousBuildTarget = _debugCurrentBuildTarget;
-          _debugCurrentBuildTarget = context;
-          return true;
-        }());
+        assert(
+          () {
+            debugPreviousBuildTarget = _debugCurrentBuildTarget;
+            _debugCurrentBuildTarget = context;
+            return true;
+          }(),
+        );
         _dirtyElementsNeedsResorting = false;
         try {
           callback();
         } finally {
-          assert(() {
-            assert(_debugCurrentBuildTarget == context);
-            _debugCurrentBuildTarget = debugPreviousBuildTarget;
-            _debugElementWasRebuilt(context);
-            return true;
-          }());
+          assert(
+            () {
+              assert(_debugCurrentBuildTarget == context);
+              _debugCurrentBuildTarget = debugPreviousBuildTarget;
+              _debugElementWasRebuilt(context);
+              return true;
+            }(),
+          );
         }
       }
       _dirtyElements.sort(Element._sort);
@@ -2734,47 +2758,48 @@ class BuildOwner {
       while (index < dirtyCount) {
         final Element element = _dirtyElements[index];
         assert(element._inDirtyList);
-        assert(() {
-          if (element._lifecycleState == _ElementLifecycle.active && !element._debugIsInScope(context)) {
-            throw FlutterError.fromParts(<DiagnosticsNode>[
-              ErrorSummary('Tried to build dirty widget in the wrong build scope.'),
-              ErrorDescription(
-                'A widget which was marked as dirty and is still active was scheduled to be built, '
-                'but the current build scope unexpectedly does not contain that widget.',
-              ),
-              ErrorHint(
-                'Sometimes this is detected when an element is removed from the widget tree, but the '
-                'element somehow did not get marked as inactive. In that case, it might be caused by '
-                'an ancestor element failing to implement visitChildren correctly, thus preventing '
-                'some or all of its descendants from being correctly deactivated.',
-              ),
-              DiagnosticsProperty<Element>(
-                'The root of the build scope was',
-                context,
-                style: DiagnosticsTreeStyle.errorProperty,
-              ),
-              DiagnosticsProperty<Element>(
-                'The offending element (which does not appear to be a descendant of the root of the build scope) was',
-                element,
-                style: DiagnosticsTreeStyle.errorProperty,
-              ),
-            ]);
-          }
-          return true;
-        }());
+        assert(
+          () {
+            if (element._lifecycleState == _ElementLifecycle.active && !element._debugIsInScope(context)) {
+              throw FlutterError.fromParts(<DiagnosticsNode>[
+                ErrorSummary('Tried to build dirty widget in the wrong build scope.'),
+                ErrorDescription(
+                  'A widget which was marked as dirty and is still active was scheduled to be built, '
+                  'but the current build scope unexpectedly does not contain that widget.',
+                ),
+                ErrorHint(
+                  'Sometimes this is detected when an element is removed from the widget tree, but the '
+                  'element somehow did not get marked as inactive. In that case, it might be caused by '
+                  'an ancestor element failing to implement visitChildren correctly, thus preventing '
+                  'some or all of its descendants from being correctly deactivated.',
+                ),
+                DiagnosticsProperty<Element>(
+                  'The root of the build scope was',
+                  context,
+                  style: DiagnosticsTreeStyle.errorProperty,
+                ),
+                DiagnosticsProperty<Element>(
+                  'The offending element (which does not appear to be a descendant of the root of the build scope) was',
+                  element,
+                  style: DiagnosticsTreeStyle.errorProperty,
+                ),
+              ]);
+            }
+            return true;
+          }(),
+        );
         final bool isTimelineTracked = !kReleaseMode && _isProfileBuildsEnabledFor(element.widget);
         if (isTimelineTracked) {
           Map<String, String>? debugTimelineArguments;
-          assert(() {
-            if (kDebugMode && debugEnhanceBuildTimelineArguments) {
-              debugTimelineArguments = element.widget.toDiagnosticsNode().toTimelineArguments();
-            }
-            return true;
-          }());
-          Timeline.startSync(
-            '${element.widget.runtimeType}',
-            arguments: debugTimelineArguments,
+          assert(
+            () {
+              if (kDebugMode && debugEnhanceBuildTimelineArguments) {
+                debugTimelineArguments = element.widget.toDiagnosticsNode().toTimelineArguments();
+              }
+              return true;
+            }(),
           );
+          Timeline.startSync('${element.widget.runtimeType}', arguments: debugTimelineArguments);
         }
         try {
           element.rebuild();
@@ -2784,13 +2809,14 @@ class BuildOwner {
             e,
             stack,
             informationCollector: () => <DiagnosticsNode>[
-              if (kDebugMode && index < _dirtyElements.length)
-                DiagnosticsDebugCreator(DebugCreator(element)),
-              if (index < _dirtyElements.length)
-                element.describeElement('The element being rebuilt at the time was index $index of $dirtyCount')
-              else
-                ErrorHint('The element being rebuilt at the time was index $index of $dirtyCount, but _dirtyElements only had ${_dirtyElements.length} entries. This suggests some confusion in the framework internals.'),
-            ],
+                  if (kDebugMode && index < _dirtyElements.length) DiagnosticsDebugCreator(DebugCreator(element)),
+                  if (index < _dirtyElements.length)
+                    element.describeElement('The element being rebuilt at the time was index $index of $dirtyCount')
+                  else
+                    ErrorHint(
+                      'The element being rebuilt at the time was index $index of $dirtyCount, but _dirtyElements only had ${_dirtyElements.length} entries. This suggests some confusion in the framework internals.',
+                    ),
+                ],
           );
         }
         if (isTimelineTracked) {
@@ -2813,16 +2839,23 @@ class BuildOwner {
           }
         }
       }
-      assert(() {
-        if (_dirtyElements.any((Element element) => element._lifecycleState == _ElementLifecycle.active && element.dirty)) {
-          throw FlutterError.fromParts(<DiagnosticsNode>[
-            ErrorSummary('buildScope missed some dirty elements.'),
-            ErrorHint('This probably indicates that the dirty list should have been resorted but was not.'),
-            Element.describeElements('The list of dirty elements at the end of the buildScope call was', _dirtyElements),
-          ]);
-        }
-        return true;
-      }());
+      assert(
+        () {
+          if (_dirtyElements.any(
+            (Element element) => element._lifecycleState == _ElementLifecycle.active && element.dirty,
+          )) {
+            throw FlutterError.fromParts(<DiagnosticsNode>[
+              ErrorSummary('buildScope missed some dirty elements.'),
+              ErrorHint('This probably indicates that the dirty list should have been resorted but was not.'),
+              Element.describeElements(
+                'The list of dirty elements at the end of the buildScope call was',
+                _dirtyElements,
+              ),
+            ]);
+          }
+          return true;
+        }(),
+      );
     } finally {
       for (final Element element in _dirtyElements) {
         assert(element._inDirtyList);
@@ -2835,14 +2868,16 @@ class BuildOwner {
         Timeline.finishSync();
       }
       assert(_debugBuilding);
-      assert(() {
-        _debugBuilding = false;
-        _debugStateLockLevel -= 1;
-        if (debugPrintBuildScope) {
-          debugPrint('buildScope finished');
-        }
-        return true;
-      }());
+      assert(
+        () {
+          _debugBuilding = false;
+          _debugStateLockLevel -= 1;
+          if (debugPrintBuildScope) {
+            debugPrint('buildScope finished');
+          }
+          return true;
+        }(),
+      );
     }
     assert(_debugStateLockLevel >= 0);
   }
@@ -2851,8 +2886,10 @@ class BuildOwner {
 
   void _debugTrackElementThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans(Element node, GlobalKey key) {
     _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans ??= HashMap<Element, Set<GlobalKey>>();
-    final Set<GlobalKey> keys = _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans!
-      .putIfAbsent(node, () => HashSet<GlobalKey>());
+    final Set<GlobalKey> keys = _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans!.putIfAbsent(
+      node,
+      () => HashSet<GlobalKey>(),
+    );
     keys.add(key);
   }
 
@@ -2875,160 +2912,176 @@ class BuildOwner {
   // In Profile/Release mode this field is initialized to `null`. The Dart compiler can
   // eliminate unused fields, but not their initializers.
   @_debugOnly
-  final Map<Element, Map<Element, GlobalKey>>? _debugGlobalKeyReservations = kDebugMode ? <Element, Map<Element, GlobalKey>>{} : null;
+  final Map<Element, Map<Element, GlobalKey>>? _debugGlobalKeyReservations = kDebugMode
+      ? <Element, Map<Element, GlobalKey>>{}
+      : null;
 
   /// The number of [GlobalKey] instances that are currently associated with
   /// [Element]s that have been built by this build owner.
   int get globalKeyCount => _globalKeyRegistry.length;
 
   void _debugRemoveGlobalKeyReservationFor(Element parent, Element child) {
-    assert(() {
-      _debugGlobalKeyReservations?[parent]?.remove(child);
-      return true;
-    }());
+    assert(
+      () {
+        _debugGlobalKeyReservations?[parent]?.remove(child);
+        return true;
+      }(),
+    );
   }
 
   void _registerGlobalKey(GlobalKey key, Element element) {
-    assert(() {
-      if (_globalKeyRegistry.containsKey(key)) {
-        final Element oldElement = _globalKeyRegistry[key]!;
-        assert(element.widget.runtimeType != oldElement.widget.runtimeType);
-        _debugIllFatedElements?.add(oldElement);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_globalKeyRegistry.containsKey(key)) {
+          final Element oldElement = _globalKeyRegistry[key]!;
+          assert(element.widget.runtimeType != oldElement.widget.runtimeType);
+          _debugIllFatedElements?.add(oldElement);
+        }
+        return true;
+      }(),
+    );
     _globalKeyRegistry[key] = element;
   }
 
   void _unregisterGlobalKey(GlobalKey key, Element element) {
-    assert(() {
-      if (_globalKeyRegistry.containsKey(key) && _globalKeyRegistry[key] != element) {
-        final Element oldElement = _globalKeyRegistry[key]!;
-        assert(element.widget.runtimeType != oldElement.widget.runtimeType);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_globalKeyRegistry.containsKey(key) && _globalKeyRegistry[key] != element) {
+          final Element oldElement = _globalKeyRegistry[key]!;
+          assert(element.widget.runtimeType != oldElement.widget.runtimeType);
+        }
+        return true;
+      }(),
+    );
     if (_globalKeyRegistry[key] == element) {
       _globalKeyRegistry.remove(key);
     }
   }
 
   void _debugReserveGlobalKeyFor(Element parent, Element child, GlobalKey key) {
-    assert(() {
-      _debugGlobalKeyReservations?[parent] ??= <Element, GlobalKey>{};
-      _debugGlobalKeyReservations?[parent]![child] = key;
-      return true;
-    }());
+    assert(
+      () {
+        _debugGlobalKeyReservations?[parent] ??= <Element, GlobalKey>{};
+        _debugGlobalKeyReservations?[parent]![child] = key;
+        return true;
+      }(),
+    );
   }
 
   void _debugVerifyGlobalKeyReservation() {
-    assert(() {
-      final Map<GlobalKey, Element> keyToParent = <GlobalKey, Element>{};
-      _debugGlobalKeyReservations?.forEach((Element parent, Map<Element, GlobalKey> childToKey) {
-        // We ignore parent that are unmounted or detached.
-        if (parent._lifecycleState == _ElementLifecycle.defunct || parent.renderObject?.attached == false) {
-          return;
-        }
-        childToKey.forEach((Element child, GlobalKey key) {
-          // If parent = null, the node is deactivated by its parent and is
-          // not re-attached to other part of the tree. We should ignore this
-          // node.
-          if (child._parent == null) {
+    assert(
+      () {
+        final Map<GlobalKey, Element> keyToParent = <GlobalKey, Element>{};
+        _debugGlobalKeyReservations?.forEach((Element parent, Map<Element, GlobalKey> childToKey) {
+          // We ignore parent that are unmounted or detached.
+          if (parent._lifecycleState == _ElementLifecycle.defunct || parent.renderObject?.attached == false) {
             return;
           }
-          // It is possible the same key registers to the same parent twice
-          // with different children. That is illegal, but it is not in the
-          // scope of this check. Such error will be detected in
-          // _debugVerifyIllFatedPopulation or
-          // _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans.
-          if (keyToParent.containsKey(key) && keyToParent[key] != parent) {
-            // We have duplication reservations for the same global key.
-            final Element older = keyToParent[key]!;
-            final Element newer = parent;
-            final FlutterError error;
-            if (older.toString() != newer.toString()) {
-              error = FlutterError.fromParts(<DiagnosticsNode>[
-                ErrorSummary('Multiple widgets used the same GlobalKey.'),
-                ErrorDescription(
-                  'The key $key was used by multiple widgets. The parents of those widgets were:\n'
-                  '- $older\n'
-                  '- $newer\n'
-                  'A GlobalKey can only be specified on one widget at a time in the widget tree.',
-                ),
-              ]);
+          childToKey.forEach((Element child, GlobalKey key) {
+            // If parent = null, the node is deactivated by its parent and is
+            // not re-attached to other part of the tree. We should ignore this
+            // node.
+            if (child._parent == null) {
+              return;
+            }
+            // It is possible the same key registers to the same parent twice
+            // with different children. That is illegal, but it is not in the
+            // scope of this check. Such error will be detected in
+            // _debugVerifyIllFatedPopulation or
+            // _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans.
+            if (keyToParent.containsKey(key) && keyToParent[key] != parent) {
+              // We have duplication reservations for the same global key.
+              final Element older = keyToParent[key]!;
+              final Element newer = parent;
+              final FlutterError error;
+              if (older.toString() != newer.toString()) {
+                error = FlutterError.fromParts(<DiagnosticsNode>[
+                  ErrorSummary('Multiple widgets used the same GlobalKey.'),
+                  ErrorDescription(
+                    'The key $key was used by multiple widgets. The parents of those widgets were:\n'
+                    '- $older\n'
+                    '- $newer\n'
+                    'A GlobalKey can only be specified on one widget at a time in the widget tree.',
+                  ),
+                ]);
+              } else {
+                error = FlutterError.fromParts(<DiagnosticsNode>[
+                  ErrorSummary('Multiple widgets used the same GlobalKey.'),
+                  ErrorDescription(
+                    'The key $key was used by multiple widgets. The parents of those widgets were '
+                    'different widgets that both had the following description:\n'
+                    '  $parent\n'
+                    'A GlobalKey can only be specified on one widget at a time in the widget tree.',
+                  ),
+                ]);
+              }
+              // Fix the tree by removing the duplicated child from one of its
+              // parents to resolve the duplicated key issue. This allows us to
+              // tear down the tree during testing without producing additional
+              // misleading exceptions.
+              if (child._parent != older) {
+                older.visitChildren((Element currentChild) {
+                  if (currentChild == child) {
+                    older.forgetChild(child);
+                  }
+                });
+              }
+              if (child._parent != newer) {
+                newer.visitChildren((Element currentChild) {
+                  if (currentChild == child) {
+                    newer.forgetChild(child);
+                  }
+                });
+              }
+              throw error;
             } else {
-              error = FlutterError.fromParts(<DiagnosticsNode>[
-                ErrorSummary('Multiple widgets used the same GlobalKey.'),
-                ErrorDescription(
-                  'The key $key was used by multiple widgets. The parents of those widgets were '
-                  'different widgets that both had the following description:\n'
-                  '  $parent\n'
-                  'A GlobalKey can only be specified on one widget at a time in the widget tree.',
-                ),
-              ]);
+              keyToParent[key] = parent;
             }
-            // Fix the tree by removing the duplicated child from one of its
-            // parents to resolve the duplicated key issue. This allows us to
-            // tear down the tree during testing without producing additional
-            // misleading exceptions.
-            if (child._parent != older) {
-              older.visitChildren((Element currentChild) {
-                if (currentChild == child) {
-                  older.forgetChild(child);
-                }
-              });
-            }
-            if (child._parent != newer) {
-              newer.visitChildren((Element currentChild) {
-                if (currentChild == child) {
-                  newer.forgetChild(child);
-                }
-              });
-            }
-            throw error;
-          } else {
-            keyToParent[key] = parent;
-          }
+          });
         });
-      });
-      _debugGlobalKeyReservations?.clear();
-      return true;
-    }());
+        _debugGlobalKeyReservations?.clear();
+        return true;
+      }(),
+    );
   }
 
   void _debugVerifyIllFatedPopulation() {
-    assert(() {
-      Map<GlobalKey, Set<Element>>? duplicates;
-      for (final Element element in _debugIllFatedElements ?? const <Element>{}) {
-        if (element._lifecycleState != _ElementLifecycle.defunct) {
-          assert(element.widget.key != null);
-          final GlobalKey key = element.widget.key! as GlobalKey;
-          assert(_globalKeyRegistry.containsKey(key));
-          duplicates ??= <GlobalKey, Set<Element>>{};
-          // Uses ordered set to produce consistent error message.
-          final Set<Element> elements = duplicates.putIfAbsent(key, () => LinkedHashSet<Element>());
-          elements.add(element);
-          elements.add(_globalKeyRegistry[key]!);
+    assert(
+      () {
+        Map<GlobalKey, Set<Element>>? duplicates;
+        for (final Element element in _debugIllFatedElements ?? const <Element>{}) {
+          if (element._lifecycleState != _ElementLifecycle.defunct) {
+            assert(element.widget.key != null);
+            final GlobalKey key = element.widget.key! as GlobalKey;
+            assert(_globalKeyRegistry.containsKey(key));
+            duplicates ??= <GlobalKey, Set<Element>>{};
+            // Uses ordered set to produce consistent error message.
+            final Set<Element> elements = duplicates.putIfAbsent(key, () => LinkedHashSet<Element>());
+            elements.add(element);
+            elements.add(_globalKeyRegistry[key]!);
+          }
         }
-      }
-      _debugIllFatedElements?.clear();
-      if (duplicates != null) {
-        final List<DiagnosticsNode> information = <DiagnosticsNode>[];
-        information.add(ErrorSummary('Multiple widgets used the same GlobalKey.'));
-        for (final GlobalKey key in duplicates.keys) {
-          final Set<Element> elements = duplicates[key]!;
-          // TODO(jacobr): this will omit the '- ' before each widget name and
-          // use the more standard whitespace style instead. Please let me know
-          // if the '- ' style is a feature we want to maintain and we can add
-          // another tree style that supports it. I also see '* ' in some places
-          // so it would be nice to unify and normalize.
-          information.add(Element.describeElements('The key $key was used by ${elements.length} widgets', elements));
+        _debugIllFatedElements?.clear();
+        if (duplicates != null) {
+          final List<DiagnosticsNode> information = <DiagnosticsNode>[];
+          information.add(ErrorSummary('Multiple widgets used the same GlobalKey.'));
+          for (final GlobalKey key in duplicates.keys) {
+            final Set<Element> elements = duplicates[key]!;
+            // TODO(jacobr): this will omit the '- ' before each widget name and
+            // use the more standard whitespace style instead. Please let me know
+            // if the '- ' style is a feature we want to maintain and we can add
+            // another tree style that supports it. I also see '* ' in some places
+            // so it would be nice to unify and normalize.
+            information.add(Element.describeElements('The key $key was used by ${elements.length} widgets', elements));
+          }
+          information.add(
+            ErrorDescription('A GlobalKey can only be specified on one widget at a time in the widget tree.'),
+          );
+          throw FlutterError.fromParts(information);
         }
-        information.add(ErrorDescription('A GlobalKey can only be specified on one widget at a time in the widget tree.'));
-        throw FlutterError.fromParts(information);
-      }
-      return true;
-    }());
+        return true;
+      }(),
+    );
   }
 
   /// Complete the element build pass by unmounting any elements that are no
@@ -3048,91 +3101,93 @@ class BuildOwner {
     }
     try {
       lockState(_inactiveElements._unmountAll); // this unregisters the GlobalKeys
-      assert(() {
-        try {
-          _debugVerifyGlobalKeyReservation();
-          _debugVerifyIllFatedPopulation();
-          if (_debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans != null &&
-              _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans!.isNotEmpty) {
-            final Set<GlobalKey> keys = HashSet<GlobalKey>();
-            for (final Element element in _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans!.keys) {
-              if (element._lifecycleState != _ElementLifecycle.defunct) {
-                keys.addAll(_debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans![element]!);
+      assert(
+        () {
+          try {
+            _debugVerifyGlobalKeyReservation();
+            _debugVerifyIllFatedPopulation();
+            if (_debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans != null &&
+                _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans!.isNotEmpty) {
+              final Set<GlobalKey> keys = HashSet<GlobalKey>();
+              for (final Element element in _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans!.keys) {
+                if (element._lifecycleState != _ElementLifecycle.defunct) {
+                  keys.addAll(_debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans![element]!);
+                }
+              }
+              if (keys.isNotEmpty) {
+                final Map<String, int> keyStringCount = HashMap<String, int>();
+                for (final String key in keys.map<String>((GlobalKey key) => key.toString())) {
+                  if (keyStringCount.containsKey(key)) {
+                    keyStringCount.update(key, (int value) => value + 1);
+                  } else {
+                    keyStringCount[key] = 1;
+                  }
+                }
+                final List<String> keyLabels = <String>[];
+                keyStringCount.forEach((String key, int count) {
+                  if (count == 1) {
+                    keyLabels.add(key);
+                  } else {
+                    keyLabels.add('$key ($count different affected keys had this toString representation)');
+                  }
+                });
+                final Iterable<Element> elements = _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans!.keys;
+                final Map<String, int> elementStringCount = HashMap<String, int>();
+                for (final String element in elements.map<String>((Element element) => element.toString())) {
+                  if (elementStringCount.containsKey(element)) {
+                    elementStringCount.update(element, (int value) => value + 1);
+                  } else {
+                    elementStringCount[element] = 1;
+                  }
+                }
+                final List<String> elementLabels = <String>[];
+                elementStringCount.forEach((String element, int count) {
+                  if (count == 1) {
+                    elementLabels.add(element);
+                  } else {
+                    elementLabels.add('$element ($count different affected elements had this toString representation)');
+                  }
+                });
+                assert(keyLabels.isNotEmpty);
+                final String the = keys.length == 1 ? ' the' : '';
+                final String s = keys.length == 1 ? '' : 's';
+                final String were = keys.length == 1 ? 'was' : 'were';
+                final String their = keys.length == 1 ? 'its' : 'their';
+                final String respective = elementLabels.length == 1 ? '' : ' respective';
+                final String those = keys.length == 1 ? 'that' : 'those';
+                final String s2 = elementLabels.length == 1 ? '' : 's';
+                final String those2 = elementLabels.length == 1 ? 'that' : 'those';
+                final String they = elementLabels.length == 1 ? 'it' : 'they';
+                final String think = elementLabels.length == 1 ? 'thinks' : 'think';
+                final String are = elementLabels.length == 1 ? 'is' : 'are';
+                // TODO(jacobr): make this error more structured to better expose which widgets had problems.
+                throw FlutterError.fromParts(<DiagnosticsNode>[
+                  ErrorSummary('Duplicate GlobalKey$s detected in widget tree.'),
+                  // TODO(jacobr): refactor this code so the elements are clickable
+                  // in GUI debug tools.
+                  ErrorDescription(
+                    'The following GlobalKey$s $were specified multiple times in the widget tree. This will lead to '
+                    'parts of the widget tree being truncated unexpectedly, because the second time a key is seen, '
+                    'the previous instance is moved to the new location. The key$s $were:\n'
+                    '- ${keyLabels.join("\n  ")}\n'
+                    'This was determined by noticing that after$the widget$s with the above global key$s $were moved '
+                    'out of $their$respective previous parent$s2, $those2 previous parent$s2 never updated during this frame, meaning '
+                    'that $they either did not update at all or updated before the widget$s $were moved, in either case '
+                    'implying that $they still $think that $they should have a child with $those global key$s.\n'
+                    'The specific parent$s2 that did not update after having one or more children forcibly removed '
+                    'due to GlobalKey reparenting $are:\n'
+                    '- ${elementLabels.join("\n  ")}'
+                    '\nA GlobalKey can only be specified on one widget at a time in the widget tree.',
+                  ),
+                ]);
               }
             }
-            if (keys.isNotEmpty) {
-              final Map<String, int> keyStringCount = HashMap<String, int>();
-              for (final String key in keys.map<String>((GlobalKey key) => key.toString())) {
-                if (keyStringCount.containsKey(key)) {
-                  keyStringCount.update(key, (int value) => value + 1);
-                } else {
-                  keyStringCount[key] = 1;
-                }
-              }
-              final List<String> keyLabels = <String>[];
-              keyStringCount.forEach((String key, int count) {
-                if (count == 1) {
-                  keyLabels.add(key);
-                } else {
-                  keyLabels.add('$key ($count different affected keys had this toString representation)');
-                }
-              });
-              final Iterable<Element> elements = _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans!.keys;
-              final Map<String, int> elementStringCount = HashMap<String, int>();
-              for (final String element in elements.map<String>((Element element) => element.toString())) {
-                if (elementStringCount.containsKey(element)) {
-                  elementStringCount.update(element, (int value) => value + 1);
-                } else {
-                  elementStringCount[element] = 1;
-                }
-              }
-              final List<String> elementLabels = <String>[];
-              elementStringCount.forEach((String element, int count) {
-                if (count == 1) {
-                  elementLabels.add(element);
-                } else {
-                  elementLabels.add('$element ($count different affected elements had this toString representation)');
-                }
-              });
-              assert(keyLabels.isNotEmpty);
-              final String the = keys.length == 1 ? ' the' : '';
-              final String s = keys.length == 1 ? '' : 's';
-              final String were = keys.length == 1 ? 'was' : 'were';
-              final String their = keys.length == 1 ? 'its' : 'their';
-              final String respective = elementLabels.length == 1 ? '' : ' respective';
-              final String those = keys.length == 1 ? 'that' : 'those';
-              final String s2 = elementLabels.length == 1 ? '' : 's';
-              final String those2 = elementLabels.length == 1 ? 'that' : 'those';
-              final String they = elementLabels.length == 1 ? 'it' : 'they';
-              final String think = elementLabels.length == 1 ? 'thinks' : 'think';
-              final String are = elementLabels.length == 1 ? 'is' : 'are';
-              // TODO(jacobr): make this error more structured to better expose which widgets had problems.
-              throw FlutterError.fromParts(<DiagnosticsNode>[
-                ErrorSummary('Duplicate GlobalKey$s detected in widget tree.'),
-                // TODO(jacobr): refactor this code so the elements are clickable
-                // in GUI debug tools.
-                ErrorDescription(
-                  'The following GlobalKey$s $were specified multiple times in the widget tree. This will lead to '
-                  'parts of the widget tree being truncated unexpectedly, because the second time a key is seen, '
-                  'the previous instance is moved to the new location. The key$s $were:\n'
-                  '- ${keyLabels.join("\n  ")}\n'
-                  'This was determined by noticing that after$the widget$s with the above global key$s $were moved '
-                  'out of $their$respective previous parent$s2, $those2 previous parent$s2 never updated during this frame, meaning '
-                  'that $they either did not update at all or updated before the widget$s $were moved, in either case '
-                  'implying that $they still $think that $they should have a child with $those global key$s.\n'
-                  'The specific parent$s2 that did not update after having one or more children forcibly removed '
-                  'due to GlobalKey reparenting $are:\n'
-                  '- ${elementLabels.join("\n  ")}'
-                  '\nA GlobalKey can only be specified on one widget at a time in the widget tree.',
-                ),
-              ]);
-            }
+          } finally {
+            _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans?.clear();
           }
-        } finally {
-          _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans?.clear();
-        }
-        return true;
-      }());
+          return true;
+        }(),
+      );
     } catch (e, stack) {
       // Catching the exception directly to avoid activating the ErrorWidget.
       // Since the tree is in a broken state, adding the ErrorWidget would
@@ -3202,9 +3257,7 @@ class _NotificationNode {
 }
 
 bool _isProfileBuildsEnabledFor(Widget widget) {
-  return debugProfileBuildsEnabled ||
-      (debugProfileBuildsEnabledUserWidgets &&
-          debugIsWidgetLocalCreation(widget));
+  return debugProfileBuildsEnabled || (debugProfileBuildsEnabledUserWidgets && debugIsWidgetLocalCreation(widget));
 }
 
 /// An instantiation of a [Widget] at a particular location in the tree.
@@ -3261,8 +3314,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   /// Creates an element that uses the given widget as its configuration.
   ///
   /// Typically called by an override of [Widget.createElement].
-  Element(Widget widget)
-    : _widget = widget {
+  Element(Widget widget) : _widget = widget {
     if (kFlutterMemoryAllocationsEnabled) {
       MemoryAllocations.instance.dispatchObjectCreated(
         library: _flutterWidgetsLibrary,
@@ -3311,14 +3363,17 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   /// An integer that is guaranteed to be greater than the parent's, if any.
   /// The element at the root of the tree must have a depth greater than 0.
   int get depth {
-    assert(() {
-      if (_lifecycleState == _ElementLifecycle.initial) {
-        throw FlutterError('Depth is only available when element has been mounted.');
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_lifecycleState == _ElementLifecycle.initial) {
+          throw FlutterError('Depth is only available when element has been mounted.');
+        }
+        return true;
+      }(),
+    );
     return _depth;
   }
+
   late int _depth;
 
   /// Returns result < 0 when [a] < [b], result == 0 when [a] == [b], result > 0
@@ -3344,9 +3399,11 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   // superclass of a mounted element's configuration. The encoding of each `Element`
   // must match the corresponding `Widget` encoding in `Widget._debugConcreteSubtype`.
   static int _debugConcreteSubtype(Element element) {
-    return element is StatefulElement ? 1 :
-           element is StatelessElement ? 2 :
-           0;
+    return element is StatefulElement
+        ? 1
+        : element is StatelessElement
+            ? 2
+            : 0;
   }
 
   /// The configuration for this element.
@@ -3370,10 +3427,12 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   /// See the lifecycle documentation for [Element] for additional information.
   bool get debugIsDefunct {
     bool isDefunct = false;
-    assert(() {
-      isDefunct = _lifecycleState == _ElementLifecycle.defunct;
-      return true;
-    }());
+    assert(
+      () {
+        isDefunct = _lifecycleState == _ElementLifecycle.defunct;
+        return true;
+      }(),
+    );
     return isDefunct;
   }
 
@@ -3383,10 +3442,12 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   /// See the lifecycle documentation for [Element] for additional information.
   bool get debugIsActive {
     bool isActive = false;
-    assert(() {
-      isActive = _lifecycleState == _ElementLifecycle.active;
-      return true;
-    }());
+    assert(
+      () {
+        isActive = _lifecycleState == _ElementLifecycle.active;
+        return true;
+      }(),
+    );
     return isActive;
   }
 
@@ -3462,7 +3523,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
       } else {
         Element? next;
         current.visitChildren((Element child) {
-          assert(next == null);  // This verifies that there's only one child.
+          assert(next == null); // This verifies that there's only one child.
           next = child;
         });
         current = next;
@@ -3472,7 +3533,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   }
 
   @override
-  List<DiagnosticsNode> describeMissingAncestor({ required Type expectedAncestorType }) {
+  List<DiagnosticsNode> describeMissingAncestor({required Type expectedAncestorType}) {
     final List<DiagnosticsNode> information = <DiagnosticsNode>[];
     final List<Element> ancestors = <Element>[];
     visitAncestorElements((Element element) {
@@ -3538,7 +3599,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   /// being updated at that point, so the children might not be constructed yet,
   /// or might be old children that are going to be replaced. This method should
   /// only be called if it is provable that the children are available.
-  void visitChildren(ElementVisitor visitor) { }
+  void visitChildren(ElementVisitor visitor) {}
 
   /// Calls the argument for each child considered onstage.
   ///
@@ -3565,20 +3626,22 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   /// Wrapper around [visitChildren] for [BuildContext].
   @override
   void visitChildElements(ElementVisitor visitor) {
-    assert(() {
-      if (owner == null || !owner!._debugStateLocked) {
-        return true;
-      }
-      throw FlutterError.fromParts(<DiagnosticsNode>[
-        ErrorSummary('visitChildElements() called during build.'),
-        ErrorDescription(
-          "The BuildContext.visitChildElements() method can't be called during "
-          'build because the child list is still being updated at that point, '
-          'so the children might not be constructed yet, or might be old children '
-          'that are going to be replaced.',
-        ),
-      ]);
-    }());
+    assert(
+      () {
+        if (owner == null || !owner!._debugStateLocked) {
+          return true;
+        }
+        throw FlutterError.fromParts(<DiagnosticsNode>[
+          ErrorSummary('visitChildElements() called during build.'),
+          ErrorDescription(
+            "The BuildContext.visitChildElements() method can't be called during "
+            'build because the child list is still being updated at that point, '
+            'so the children might not be constructed yet, or might be old children '
+            'that are going to be replaced.',
+          ),
+        ]);
+      }(),
+    );
     visitChildren(visitor);
   }
 
@@ -3651,12 +3714,14 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
       // accessing `StatelessElement.widget` as the cast on the getter will
       // cause a type error to be thrown. Here we avoid that by short-circuiting
       // the `Widget.canUpdate` check once `hasSameSuperclass` is false.
-      assert(() {
-        final int oldElementClass = Element._debugConcreteSubtype(child);
-        final int newWidgetClass = Widget._debugConcreteSubtype(newWidget);
-        hasSameSuperclass = oldElementClass == newWidgetClass;
-        return true;
-      }());
+      assert(
+        () {
+          final int oldElementClass = Element._debugConcreteSubtype(child);
+          final int newWidgetClass = Widget._debugConcreteSubtype(newWidget);
+          hasSameSuperclass = oldElementClass == newWidgetClass;
+          return true;
+        }(),
+      );
       if (hasSameSuperclass && child.widget == newWidget) {
         // We don't insert a timeline event here, because otherwise it's
         // confusing that widgets that "don't update" (because they didn't
@@ -3672,26 +3737,27 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
         final bool isTimelineTracked = !kReleaseMode && _isProfileBuildsEnabledFor(newWidget);
         if (isTimelineTracked) {
           Map<String, String>? debugTimelineArguments;
-          assert(() {
-            if (kDebugMode && debugEnhanceBuildTimelineArguments) {
-              debugTimelineArguments = newWidget.toDiagnosticsNode().toTimelineArguments();
-            }
-            return true;
-          }());
-          Timeline.startSync(
-            '${newWidget.runtimeType}',
-            arguments: debugTimelineArguments,
+          assert(
+            () {
+              if (kDebugMode && debugEnhanceBuildTimelineArguments) {
+                debugTimelineArguments = newWidget.toDiagnosticsNode().toTimelineArguments();
+              }
+              return true;
+            }(),
           );
+          Timeline.startSync('${newWidget.runtimeType}', arguments: debugTimelineArguments);
         }
         child.update(newWidget);
         if (isTimelineTracked) {
           Timeline.finishSync();
         }
         assert(child.widget == newWidget);
-        assert(() {
-          child.owner!._debugElementWasRebuilt(child);
-          return true;
-        }());
+        assert(
+          () {
+            child.owner!._debugElementWasRebuilt(child);
+            return true;
+          }(),
+        );
         newChild = child;
       } else {
         deactivateChild(child);
@@ -3708,17 +3774,19 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
       newChild = inflateWidget(newWidget, newSlot);
     }
 
-    assert(() {
-      if (child != null) {
-        _debugRemoveGlobalKeyReservation(child);
-      }
-      final Key? key = newWidget.key;
-      if (key is GlobalKey) {
-        assert(owner != null);
-        owner!._debugReserveGlobalKeyFor(this, newChild, key);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (child != null) {
+          _debugRemoveGlobalKeyReservation(child);
+        }
+        final Key? key = newWidget.key;
+        if (key is GlobalKey) {
+          assert(owner != null);
+          owner!._debugReserveGlobalKeyFor(this, newChild, key);
+        }
+        return true;
+      }(),
+    );
 
     return newChild;
   }
@@ -3771,7 +3839,12 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   /// knows where a child needs to move to in a linked list by providing its new
   /// previous sibling.
   @protected
-  List<Element> updateChildren(List<Element> oldChildren, List<Widget> newWidgets, { Set<Element>? forgottenChildren, List<Object?>? slots }) {
+  List<Element> updateChildren(
+    List<Element> oldChildren,
+    List<Widget> newWidgets, {
+    Set<Element>? forgottenChildren,
+    List<Object?>? slots,
+  }) {
     assert(slots == null || newWidgets.length == slots.length);
 
     Element? replaceWithNullIfForgotten(Element child) {
@@ -3779,9 +3852,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
     }
 
     Object? slotFor(int newChildIndex, Element? previousChild) {
-      return slots != null
-          ? slots[newChildIndex]
-          : IndexedSlot<Element?>(newChildIndex, previousChild);
+      return slots != null ? slots[newChildIndex] : IndexedSlot<Element?>(newChildIndex, previousChild);
     }
 
     // This attempts to diff the new child list (newWidgets) with
@@ -3993,21 +4064,19 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   void update(covariant Widget newWidget) {
     // This code is hot when hot reloading, so we try to
     // only call _AssertionError._evaluateAssertion once.
-    assert(
-      _lifecycleState == _ElementLifecycle.active
-        && newWidget != widget
-        && Widget.canUpdate(widget, newWidget),
-    );
+    assert(_lifecycleState == _ElementLifecycle.active && newWidget != widget && Widget.canUpdate(widget, newWidget));
     // This Element was told to update and we can now release all the global key
     // reservations of forgotten children. We cannot do this earlier because the
     // forgotten children still represent global key duplications if the element
     // never updates (the forgotten children are not removed from the tree
     // until the call to update happens)
-    assert(() {
-      _debugForgottenChildrenWithGlobalKey?.forEach(_debugRemoveGlobalKeyReservation);
-      _debugForgottenChildrenWithGlobalKey?.clear();
-      return true;
-    }());
+    assert(
+      () {
+        _debugForgottenChildrenWithGlobalKey?.forEach(_debugRemoveGlobalKeyReservation);
+        _debugForgottenChildrenWithGlobalKey?.clear();
+        return true;
+      }(),
+    );
     _widget = newWidget;
   }
 
@@ -4026,6 +4095,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
         element.visitChildren(visit);
       }
     }
+
     visit(child);
   }
 
@@ -4091,31 +4161,38 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
     if (!Widget.canUpdate(element.widget, newWidget)) {
       return null;
     }
-    assert(() {
-      if (debugPrintGlobalKeyedWidgetLifecycle) {
-        debugPrint('Attempting to take $element from ${element._parent ?? "inactive elements list"} to put in $this.');
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (debugPrintGlobalKeyedWidgetLifecycle) {
+          debugPrint(
+            'Attempting to take $element from ${element._parent ?? "inactive elements list"} to put in $this.',
+          );
+        }
+        return true;
+      }(),
+    );
     final Element? parent = element._parent;
     if (parent != null) {
-      assert(() {
-        if (parent == this) {
-          throw FlutterError.fromParts(<DiagnosticsNode>[
-            ErrorSummary("A GlobalKey was used multiple times inside one widget's child list."),
-            DiagnosticsProperty<GlobalKey>('The offending GlobalKey was', key),
-            parent.describeElement('The parent of the widgets with that key was'),
-            element.describeElement('The first child to get instantiated with that key became'),
-            DiagnosticsProperty<Widget>('The second child that was to be instantiated with that key was', widget, style: DiagnosticsTreeStyle.errorProperty),
-            ErrorDescription('A GlobalKey can only be specified on one widget at a time in the widget tree.'),
-          ]);
-        }
-        parent.owner!._debugTrackElementThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans(
-          parent,
-          key,
-        );
-        return true;
-      }());
+      assert(
+        () {
+          if (parent == this) {
+            throw FlutterError.fromParts(<DiagnosticsNode>[
+              ErrorSummary("A GlobalKey was used multiple times inside one widget's child list."),
+              DiagnosticsProperty<GlobalKey>('The offending GlobalKey was', key),
+              parent.describeElement('The parent of the widgets with that key was'),
+              element.describeElement('The first child to get instantiated with that key became'),
+              DiagnosticsProperty<Widget>(
+                'The second child that was to be instantiated with that key was',
+                widget,
+                style: DiagnosticsTreeStyle.errorProperty,
+              ),
+              ErrorDescription('A GlobalKey can only be specified on one widget at a time in the widget tree.'),
+            ]);
+          }
+          parent.owner!._debugTrackElementThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans(parent, key);
+          return true;
+        }(),
+      );
       parent.forgetChild(element);
       parent.deactivateChild(element);
     }
@@ -4143,20 +4220,18 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   @protected
   @pragma('vm:prefer-inline')
   Element inflateWidget(Widget newWidget, Object? newSlot) {
-
     final bool isTimelineTracked = !kReleaseMode && _isProfileBuildsEnabledFor(newWidget);
     if (isTimelineTracked) {
       Map<String, String>? debugTimelineArguments;
-      assert(() {
-        if (kDebugMode && debugEnhanceBuildTimelineArguments) {
-          debugTimelineArguments = newWidget.toDiagnosticsNode().toTimelineArguments();
-        }
-        return true;
-      }());
-      Timeline.startSync(
-        '${newWidget.runtimeType}',
-        arguments: debugTimelineArguments,
+      assert(
+        () {
+          if (kDebugMode && debugEnhanceBuildTimelineArguments) {
+            debugTimelineArguments = newWidget.toDiagnosticsNode().toTimelineArguments();
+          }
+          return true;
+        }(),
       );
+      Timeline.startSync('${newWidget.runtimeType}', arguments: debugTimelineArguments);
     }
 
     try {
@@ -4165,10 +4240,12 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
         final Element? newChild = _retakeInactiveElement(key, newWidget);
         if (newChild != null) {
           assert(newChild._parent == null);
-          assert(() {
-            _debugCheckForCycles(newChild);
-            return true;
-          }());
+          assert(
+            () {
+              _debugCheckForCycles(newChild);
+              return true;
+            }(),
+          );
           newChild._activateWithParent(this, newSlot);
           final Element? updatedChild = updateChild(newChild, newWidget, newSlot);
           assert(newChild == updatedChild);
@@ -4176,10 +4253,12 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
         }
       }
       final Element newChild = newWidget.createElement();
-      assert(() {
-        _debugCheckForCycles(newChild);
-        return true;
-      }());
+      assert(
+        () {
+          _debugCheckForCycles(newChild);
+          return true;
+        }(),
+      );
       newChild.mount(this, newSlot);
       assert(newChild._lifecycleState == _ElementLifecycle.active);
 
@@ -4193,14 +4272,16 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
 
   void _debugCheckForCycles(Element newChild) {
     assert(newChild._parent == null);
-    assert(() {
-      Element node = this;
-      while (node._parent != null) {
-        node = node._parent!;
-      }
-      assert(node != newChild); // indicates we are about to create a cycle
-      return true;
-    }());
+    assert(
+      () {
+        Element node = this;
+        while (node._parent != null) {
+          node = node._parent!;
+        }
+        assert(node != newChild); // indicates we are about to create a cycle
+        return true;
+      }(),
+    );
   }
 
   /// Move the given element to the list of inactive elements and detach its
@@ -4223,14 +4304,16 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
     child._parent = null;
     child.detachRenderObject();
     owner!._inactiveElements.add(child); // this eventually calls child.deactivate()
-    assert(() {
-      if (debugPrintGlobalKeyedWidgetLifecycle) {
-        if (child.widget.key is GlobalKey) {
-          debugPrint('Deactivated $child (keyed child of $this)');
+    assert(
+      () {
+        if (debugPrintGlobalKeyedWidgetLifecycle) {
+          if (child.widget.key is GlobalKey) {
+            debugPrint('Deactivated $child (keyed child of $this)');
+          }
         }
-      }
-      return true;
-    }());
+        return true;
+      }(),
+    );
   }
 
   // The children that have been forgotten by forgetChild. This will be used in
@@ -4263,23 +4346,27 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
     // removed from the tree until this Element is updated in [update]. If
     // [update] is never called, the forgotten child still represents a global
     // key duplication that we need to catch.
-    assert(() {
-      if (child.widget.key is GlobalKey) {
-        _debugForgottenChildrenWithGlobalKey?.add(child);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (child.widget.key is GlobalKey) {
+          _debugForgottenChildrenWithGlobalKey?.add(child);
+        }
+        return true;
+      }(),
+    );
   }
 
   void _activateWithParent(Element parent, Object? newSlot) {
     assert(_lifecycleState == _ElementLifecycle.inactive);
     _parent = parent;
-    assert(() {
-      if (debugPrintGlobalKeyedWidgetLifecycle) {
-        debugPrint('Reactivating $this (now child of $_parent).');
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (debugPrintGlobalKeyedWidgetLifecycle) {
+          debugPrint('Reactivating $this (now child of $_parent).');
+        }
+        return true;
+      }(),
+    );
     _updateDepth(_parent!.depth);
     _activateRecursively(this);
     attachRenderObject(newSlot);
@@ -4406,143 +4493,149 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
 
   @override
   RenderObject? findRenderObject() {
-    assert(() {
-      if (_lifecycleState != _ElementLifecycle.active) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Cannot get renderObject of inactive element.'),
-          ErrorDescription(
-            'In order for an element to have a valid renderObject, it must be '
-            'active, which means it is part of the tree.\n'
-            'Instead, this element is in the $_lifecycleState state.\n'
-            'If you called this method from a State object, consider guarding '
-            'it with State.mounted.',
-          ),
-          describeElement('The findRenderObject() method was called for the following element'),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_lifecycleState != _ElementLifecycle.active) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Cannot get renderObject of inactive element.'),
+            ErrorDescription(
+              'In order for an element to have a valid renderObject, it must be '
+              'active, which means it is part of the tree.\n'
+              'Instead, this element is in the $_lifecycleState state.\n'
+              'If you called this method from a State object, consider guarding '
+              'it with State.mounted.',
+            ),
+            describeElement('The findRenderObject() method was called for the following element'),
+          ]);
+        }
+        return true;
+      }(),
+    );
     return renderObject;
   }
 
   @override
   Size? get size {
-    assert(() {
-      if (_lifecycleState != _ElementLifecycle.active) {
-        // TODO(jacobr): is this a good separation into contract and violation?
-        // I have added a line of white space.
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Cannot get size of inactive element.'),
-          ErrorDescription(
-            'In order for an element to have a valid size, the element must be '
-            'active, which means it is part of the tree.\n'
-            'Instead, this element is in the $_lifecycleState state.',
-          ),
-          describeElement('The size getter was called for the following element'),
-        ]);
-      }
-      if (owner!._debugBuilding) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Cannot get size during build.'),
-          ErrorDescription(
-            'The size of this render object has not yet been determined because '
-            'the framework is still in the process of building widgets, which '
-            'means the render tree for this frame has not yet been determined. '
-            'The size getter should only be called from paint callbacks or '
-            'interaction event handlers (e.g. gesture callbacks).',
-          ),
-          ErrorSpacer(),
-          ErrorHint(
-            'If you need some sizing information during build to decide which '
-            'widgets to build, consider using a LayoutBuilder widget, which can '
-            'tell you the layout constraints at a given location in the tree. See '
-            '<https://api.flutter.dev/flutter/widgets/LayoutBuilder-class.html> '
-            'for more details.',
-          ),
-          ErrorSpacer(),
-          describeElement('The size getter was called for the following element'),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_lifecycleState != _ElementLifecycle.active) {
+          // TODO(jacobr): is this a good separation into contract and violation?
+          // I have added a line of white space.
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Cannot get size of inactive element.'),
+            ErrorDescription(
+              'In order for an element to have a valid size, the element must be '
+              'active, which means it is part of the tree.\n'
+              'Instead, this element is in the $_lifecycleState state.',
+            ),
+            describeElement('The size getter was called for the following element'),
+          ]);
+        }
+        if (owner!._debugBuilding) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Cannot get size during build.'),
+            ErrorDescription(
+              'The size of this render object has not yet been determined because '
+              'the framework is still in the process of building widgets, which '
+              'means the render tree for this frame has not yet been determined. '
+              'The size getter should only be called from paint callbacks or '
+              'interaction event handlers (e.g. gesture callbacks).',
+            ),
+            ErrorSpacer(),
+            ErrorHint(
+              'If you need some sizing information during build to decide which '
+              'widgets to build, consider using a LayoutBuilder widget, which can '
+              'tell you the layout constraints at a given location in the tree. See '
+              '<https://api.flutter.dev/flutter/widgets/LayoutBuilder-class.html> '
+              'for more details.',
+            ),
+            ErrorSpacer(),
+            describeElement('The size getter was called for the following element'),
+          ]);
+        }
+        return true;
+      }(),
+    );
     final RenderObject? renderObject = findRenderObject();
-    assert(() {
-      if (renderObject == null) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Cannot get size without a render object.'),
-          ErrorHint(
-            'In order for an element to have a valid size, the element must have '
-            'an associated render object. This element does not have an associated '
-            'render object, which typically means that the size getter was called '
-            'too early in the pipeline (e.g., during the build phase) before the '
-            'framework has created the render tree.',
-          ),
-          describeElement('The size getter was called for the following element'),
-        ]);
-      }
-      if (renderObject is RenderSliver) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Cannot get size from a RenderSliver.'),
-          ErrorHint(
-            'The render object associated with this element is a '
-            '${renderObject.runtimeType}, which is a subtype of RenderSliver. '
-            'Slivers do not have a size per se. They have a more elaborate '
-            'geometry description, which can be accessed by calling '
-            'findRenderObject and then using the "geometry" getter on the '
-            'resulting object.',
-          ),
-          describeElement('The size getter was called for the following element'),
-          renderObject.describeForError('The associated render sliver was'),
-        ]);
-      }
-      if (renderObject is! RenderBox) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Cannot get size from a render object that is not a RenderBox.'),
-          ErrorHint(
-            'Instead of being a subtype of RenderBox, the render object associated '
-            'with this element is a ${renderObject.runtimeType}. If this type of '
-            'render object does have a size, consider calling findRenderObject '
-            'and extracting its size manually.',
-          ),
-          describeElement('The size getter was called for the following element'),
-          renderObject.describeForError('The associated render object was'),
-        ]);
-      }
-      final RenderBox box = renderObject;
-      if (!box.hasSize) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Cannot get size from a render object that has not been through layout.'),
-          ErrorHint(
-            'The size of this render object has not yet been determined because '
-            'this render object has not yet been through layout, which typically '
-            'means that the size getter was called too early in the pipeline '
-            '(e.g., during the build phase) before the framework has determined '
-            'the size and position of the render objects during layout.',
-          ),
-          describeElement('The size getter was called for the following element'),
-          box.describeForError('The render object from which the size was to be obtained was'),
-        ]);
-      }
-      if (box.debugNeedsLayout) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Cannot get size from a render object that has been marked dirty for layout.'),
-          ErrorHint(
-            'The size of this render object is ambiguous because this render object has '
-            'been modified since it was last laid out, which typically means that the size '
-            'getter was called too early in the pipeline (e.g., during the build phase) '
-            'before the framework has determined the size and position of the render '
-            'objects during layout.',
-          ),
-          describeElement('The size getter was called for the following element'),
-          box.describeForError('The render object from which the size was to be obtained was'),
-          ErrorHint(
-            'Consider using debugPrintMarkNeedsLayoutStacks to determine why the render '
-            'object in question is dirty, if you did not expect this.',
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (renderObject == null) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Cannot get size without a render object.'),
+            ErrorHint(
+              'In order for an element to have a valid size, the element must have '
+              'an associated render object. This element does not have an associated '
+              'render object, which typically means that the size getter was called '
+              'too early in the pipeline (e.g., during the build phase) before the '
+              'framework has created the render tree.',
+            ),
+            describeElement('The size getter was called for the following element'),
+          ]);
+        }
+        if (renderObject is RenderSliver) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Cannot get size from a RenderSliver.'),
+            ErrorHint(
+              'The render object associated with this element is a '
+              '${renderObject.runtimeType}, which is a subtype of RenderSliver. '
+              'Slivers do not have a size per se. They have a more elaborate '
+              'geometry description, which can be accessed by calling '
+              'findRenderObject and then using the "geometry" getter on the '
+              'resulting object.',
+            ),
+            describeElement('The size getter was called for the following element'),
+            renderObject.describeForError('The associated render sliver was'),
+          ]);
+        }
+        if (renderObject is! RenderBox) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Cannot get size from a render object that is not a RenderBox.'),
+            ErrorHint(
+              'Instead of being a subtype of RenderBox, the render object associated '
+              'with this element is a ${renderObject.runtimeType}. If this type of '
+              'render object does have a size, consider calling findRenderObject '
+              'and extracting its size manually.',
+            ),
+            describeElement('The size getter was called for the following element'),
+            renderObject.describeForError('The associated render object was'),
+          ]);
+        }
+        final RenderBox box = renderObject;
+        if (!box.hasSize) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Cannot get size from a render object that has not been through layout.'),
+            ErrorHint(
+              'The size of this render object has not yet been determined because '
+              'this render object has not yet been through layout, which typically '
+              'means that the size getter was called too early in the pipeline '
+              '(e.g., during the build phase) before the framework has determined '
+              'the size and position of the render objects during layout.',
+            ),
+            describeElement('The size getter was called for the following element'),
+            box.describeForError('The render object from which the size was to be obtained was'),
+          ]);
+        }
+        if (box.debugNeedsLayout) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Cannot get size from a render object that has been marked dirty for layout.'),
+            ErrorHint(
+              'The size of this render object is ambiguous because this render object has '
+              'been modified since it was last laid out, which typically means that the size '
+              'getter was called too early in the pipeline (e.g., during the build phase) '
+              'before the framework has determined the size and position of the render '
+              'objects during layout.',
+            ),
+            describeElement('The size getter was called for the following element'),
+            box.describeForError('The render object from which the size was to be obtained was'),
+            ErrorHint(
+              'Consider using debugPrintMarkNeedsLayoutStacks to determine why the render '
+              'object in question is dirty, if you did not expect this.',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     if (renderObject is RenderBox) {
       return renderObject.size;
     }
@@ -4554,23 +4647,25 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   bool _hadUnsatisfiedDependencies = false;
 
   bool _debugCheckStateIsActiveForAncestorLookup() {
-    assert(() {
-      if (_lifecycleState != _ElementLifecycle.active) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary("Looking up a deactivated widget's ancestor is unsafe."),
-          ErrorDescription(
-            "At this point the state of the widget's element tree is no longer "
-            'stable.',
-          ),
-          ErrorHint(
-            "To safely refer to a widget's ancestor in its dispose() method, "
-            'save a reference to the ancestor by calling dependOnInheritedWidgetOfExactType() '
-            "in the widget's didChangeDependencies() method.",
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_lifecycleState != _ElementLifecycle.active) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary("Looking up a deactivated widget's ancestor is unsafe."),
+            ErrorDescription(
+              "At this point the state of the widget's element tree is no longer "
+              'stable.',
+            ),
+            ErrorHint(
+              "To safely refer to a widget's ancestor in its dispose() method, "
+              'save a reference to the ancestor by calling dependOnInheritedWidgetOfExactType() '
+              "in the widget's didChangeDependencies() method.",
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     return true;
   }
 
@@ -4580,7 +4675,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
       _dependencies != null && _dependencies!.contains(ancestor);
 
   @override
-  InheritedWidget dependOnInheritedElement(InheritedElement ancestor, { Object? aspect }) {
+  InheritedWidget dependOnInheritedElement(InheritedElement ancestor, {Object? aspect}) {
     _dependencies ??= HashSet<InheritedElement>();
     _dependencies!.add(ancestor);
     ancestor.updateDependencies(this, aspect);
@@ -4705,26 +4800,28 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   }
 
   bool _debugCheckOwnerBuildTargetExists(String methodName) {
-    assert(() {
-      if (owner!._debugCurrentBuildTarget == null) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-            '$methodName for ${widget.runtimeType} was called at an '
-            'inappropriate time.',
-          ),
-          ErrorDescription('It may only be called while the widgets are being built.'),
-          ErrorHint(
-            'A possible cause of this error is when $methodName is called during '
-            'one of:\n'
-            ' * network I/O event\n'
-            ' * file I/O event\n'
-            ' * timer\n'
-            ' * microtask (caused by Future.then, async/await, scheduleMicrotask)',
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (owner!._debugCurrentBuildTarget == null) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              '$methodName for ${widget.runtimeType} was called at an '
+              'inappropriate time.',
+            ),
+            ErrorDescription('It may only be called while the widgets are being built.'),
+            ErrorHint(
+              'A possible cause of this error is when $methodName is called during '
+              'one of:\n'
+              ' * network I/O event\n'
+              ' * file I/O event\n'
+              ' * timer\n'
+              ' * microtask (caused by Future.then, async/await, scheduleMicrotask)',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     return true;
   }
 
@@ -4768,33 +4865,30 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   String toStringShort() => _widget?.toStringShort() ?? '${describeIdentity(this)}(DEFUNCT)';
 
   @override
-  DiagnosticsNode toDiagnosticsNode({ String? name, DiagnosticsTreeStyle? style }) {
-    return _ElementDiagnosticableTreeNode(
-      name: name,
-      value: this,
-      style: style,
-    );
+  DiagnosticsNode toDiagnosticsNode({String? name, DiagnosticsTreeStyle? style}) {
+    return _ElementDiagnosticableTreeNode(name: name, value: this, style: style);
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.defaultDiagnosticsTreeStyle= DiagnosticsTreeStyle.dense;
+    properties.defaultDiagnosticsTreeStyle = DiagnosticsTreeStyle.dense;
     if (_lifecycleState != _ElementLifecycle.initial) {
       properties.add(ObjectFlagProperty<int>('depth', depth, ifNull: 'no depth'));
     }
     properties.add(ObjectFlagProperty<Widget>('widget', _widget, ifNull: 'no widget'));
-    properties.add(DiagnosticsProperty<Key>('key', _widget?.key, showName: false, defaultValue: null, level: DiagnosticLevel.hidden));
+    properties.add(
+      DiagnosticsProperty<Key>('key', _widget?.key, showName: false, defaultValue: null, level: DiagnosticLevel.hidden),
+    );
     _widget?.debugFillProperties(properties);
     properties.add(FlagProperty('dirty', value: dirty, ifTrue: 'dirty'));
     final Set<InheritedElement>? deps = _dependencies;
     if (deps != null && deps.isNotEmpty) {
       final List<InheritedElement> sortedDependencies = deps.toList()
-        ..sort((InheritedElement a, InheritedElement b) =>
-            a.toStringShort().compareTo(b.toStringShort()));
-      final List<DiagnosticsNode> diagnosticsDependencies = sortedDependencies
-        .map((InheritedElement element) => element.widget.toDiagnosticsNode(style: DiagnosticsTreeStyle.sparse))
-        .toList();
+        ..sort((InheritedElement a, InheritedElement b) => a.toStringShort().compareTo(b.toStringShort()));
+      final List<DiagnosticsNode> diagnosticsDependencies = sortedDependencies.map(
+        (InheritedElement element) => element.widget.toDiagnosticsNode(style: DiagnosticsTreeStyle.sparse),
+      ).toList();
       properties.add(DiagnosticsProperty<List<DiagnosticsNode>>('dependencies', diagnosticsDependencies));
     }
   }
@@ -4837,42 +4931,46 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
     }
     assert(owner != null);
     assert(_lifecycleState == _ElementLifecycle.active);
-    assert(() {
-      if (owner!._debugBuilding) {
-        assert(owner!._debugCurrentBuildTarget != null);
-        assert(owner!._debugStateLocked);
-        if (_debugIsInScope(owner!._debugCurrentBuildTarget!)) {
-          return true;
+    assert(
+      () {
+        if (owner!._debugBuilding) {
+          assert(owner!._debugCurrentBuildTarget != null);
+          assert(owner!._debugStateLocked);
+          if (_debugIsInScope(owner!._debugCurrentBuildTarget!)) {
+            return true;
+          }
+          final List<DiagnosticsNode> information = <DiagnosticsNode>[
+            ErrorSummary('setState() or markNeedsBuild() called during build.'),
+            ErrorDescription(
+              'This ${widget.runtimeType} widget cannot be marked as needing to build because the framework '
+              'is already in the process of building widgets. A widget can be marked as '
+              'needing to be built during the build phase only if one of its ancestors '
+              'is currently building. This exception is allowed because the framework '
+              'builds parent widgets before children, which means a dirty descendant '
+              'will always be built. Otherwise, the framework might not visit this '
+              'widget during this build phase.',
+            ),
+            describeElement('The widget on which setState() or markNeedsBuild() was called was'),
+          ];
+          if (owner!._debugCurrentBuildTarget != null) {
+            information.add(owner!._debugCurrentBuildTarget!.describeWidget(
+              'The widget which was currently being built when the offending call was made was',
+            ));
+          }
+          throw FlutterError.fromParts(information);
+        } else if (owner!._debugStateLocked) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('setState() or markNeedsBuild() called when widget tree was locked.'),
+            ErrorDescription(
+              'This ${widget.runtimeType} widget cannot be marked as needing to build '
+              'because the framework is locked.',
+            ),
+            describeElement('The widget on which setState() or markNeedsBuild() was called was'),
+          ]);
         }
-        final List<DiagnosticsNode> information = <DiagnosticsNode>[
-          ErrorSummary('setState() or markNeedsBuild() called during build.'),
-          ErrorDescription(
-            'This ${widget.runtimeType} widget cannot be marked as needing to build because the framework '
-            'is already in the process of building widgets. A widget can be marked as '
-            'needing to be built during the build phase only if one of its ancestors '
-            'is currently building. This exception is allowed because the framework '
-            'builds parent widgets before children, which means a dirty descendant '
-            'will always be built. Otherwise, the framework might not visit this '
-            'widget during this build phase.',
-          ),
-          describeElement('The widget on which setState() or markNeedsBuild() was called was'),
-        ];
-        if (owner!._debugCurrentBuildTarget != null) {
-          information.add(owner!._debugCurrentBuildTarget!.describeWidget('The widget which was currently being built when the offending call was made was'));
-        }
-        throw FlutterError.fromParts(information);
-      } else if (owner!._debugStateLocked) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('setState() or markNeedsBuild() called when widget tree was locked.'),
-          ErrorDescription(
-            'This ${widget.runtimeType} widget cannot be marked as needing to build '
-            'because the framework is locked.',
-          ),
-          describeElement('The widget on which setState() or markNeedsBuild() was called was'),
-        ]);
-      }
-      return true;
-    }());
+        return true;
+      }(),
+    );
     if (dirty) {
       return;
     }
@@ -4993,35 +5091,41 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
     if (_lifecycleState != _ElementLifecycle.active || (!_dirty && !force)) {
       return;
     }
-    assert(() {
-      debugOnRebuildDirtyWidget?.call(this, _debugBuiltOnce);
-      if (debugPrintRebuildDirtyWidgets) {
-        if (!_debugBuiltOnce) {
-          debugPrint('Building $this');
-          _debugBuiltOnce = true;
-        } else {
-          debugPrint('Rebuilding $this');
+    assert(
+      () {
+        debugOnRebuildDirtyWidget?.call(this, _debugBuiltOnce);
+        if (debugPrintRebuildDirtyWidgets) {
+          if (!_debugBuiltOnce) {
+            debugPrint('Building $this');
+            _debugBuiltOnce = true;
+          } else {
+            debugPrint('Rebuilding $this');
+          }
         }
-      }
-      return true;
-    }());
+        return true;
+      }(),
+    );
     assert(_lifecycleState == _ElementLifecycle.active);
     assert(owner!._debugStateLocked);
     Element? debugPreviousBuildTarget;
-    assert(() {
-      debugPreviousBuildTarget = owner!._debugCurrentBuildTarget;
-      owner!._debugCurrentBuildTarget = this;
-      return true;
-    }());
+    assert(
+      () {
+        debugPreviousBuildTarget = owner!._debugCurrentBuildTarget;
+        owner!._debugCurrentBuildTarget = this;
+        return true;
+      }(),
+    );
     try {
       performRebuild();
     } finally {
-      assert(() {
-        owner!._debugElementWasRebuilt(this);
-        assert(owner!._debugCurrentBuildTarget == this);
-        owner!._debugCurrentBuildTarget = debugPreviousBuildTarget;
-        return true;
-      }());
+      assert(
+        () {
+          owner!._debugElementWasRebuilt(this);
+          assert(owner!._debugCurrentBuildTarget == this);
+          owner!._debugCurrentBuildTarget = debugPreviousBuildTarget;
+          return true;
+        }(),
+      );
     }
     assert(!_dirty);
   }
@@ -5117,9 +5221,7 @@ class ErrorWidget extends LeafRenderObjectWidget {
   ///
   /// An explicit [FlutterError] can be provided to be reported to inspection
   /// tools. It need not match the message.
-  ErrorWidget.withDetails({ this.message = '', FlutterError? error })
-    : _flutterError = error,
-      super(key: UniqueKey());
+  ErrorWidget.withDetails({this.message = '', FlutterError? error}) : _flutterError = error, super(key: UniqueKey());
 
   /// The configurable factory for [ErrorWidget].
   ///
@@ -5154,10 +5256,12 @@ class ErrorWidget extends LeafRenderObjectWidget {
 
   static Widget _defaultErrorWidgetBuilder(FlutterErrorDetails details) {
     String message = '';
-    assert(() {
-      message = '${_stringify(details.exception)}\nSee also: https://flutter.dev/docs/testing/errors';
-      return true;
-    }());
+    assert(
+      () {
+        message = '${_stringify(details.exception)}\nSee also: https://flutter.dev/docs/testing/errors';
+        return true;
+      }(),
+    );
     final Object exception = details.exception;
     return ErrorWidget.withDetails(message: message, error: exception is FlutterError ? exception : null);
   }
@@ -5291,29 +5395,28 @@ abstract class ComponentElement extends Element {
   void performRebuild() {
     Widget? built;
     try {
-      assert(() {
-        _debugDoingBuild = true;
-        return true;
-      }());
+      assert(
+        () {
+          _debugDoingBuild = true;
+          return true;
+        }(),
+      );
       built = build();
-      assert(() {
-        _debugDoingBuild = false;
-        return true;
-      }());
+      assert(
+        () {
+          _debugDoingBuild = false;
+          return true;
+        }(),
+      );
       debugWidgetBuilderValue(widget, built);
     } catch (e, stack) {
       _debugDoingBuild = false;
-      built = ErrorWidget.builder(
-        _reportException(
-          ErrorDescription('building $this'),
-          e,
-          stack,
-          informationCollector: () => <DiagnosticsNode>[
-            if (kDebugMode)
-              DiagnosticsDebugCreator(DebugCreator(this)),
-          ],
-        ),
-      );
+      built = ErrorWidget.builder(_reportException(
+        ErrorDescription('building $this'),
+        e,
+        stack,
+        informationCollector: () => <DiagnosticsNode>[if (kDebugMode) DiagnosticsDebugCreator(DebugCreator(this))],
+      ));
     } finally {
       // We delay marking the element as clean until after calling build() so
       // that attempts to markNeedsBuild() during build() will be ignored.
@@ -5323,17 +5426,12 @@ abstract class ComponentElement extends Element {
       _child = updateChild(_child, built, slot);
       assert(_child != null);
     } catch (e, stack) {
-      built = ErrorWidget.builder(
-        _reportException(
-          ErrorDescription('building $this'),
-          e,
-          stack,
-          informationCollector: () => <DiagnosticsNode>[
-            if (kDebugMode)
-              DiagnosticsDebugCreator(DebugCreator(this)),
-          ],
-        ),
-      );
+      built = ErrorWidget.builder(_reportException(
+        ErrorDescription('building $this'),
+        e,
+        stack,
+        informationCollector: () => <DiagnosticsNode>[if (kDebugMode) DiagnosticsDebugCreator(DebugCreator(this))],
+      ));
       _child = updateChild(null, built, slot);
     }
   }
@@ -5378,22 +5476,22 @@ class StatelessElement extends ComponentElement {
 /// An [Element] that uses a [StatefulWidget] as its configuration.
 class StatefulElement extends ComponentElement {
   /// Creates an element that uses the given widget as its configuration.
-  StatefulElement(StatefulWidget widget)
-      : _state = widget.createState(),
-        super(widget) {
-    assert(() {
-      if (!state._debugTypesAreRight(widget)) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('StatefulWidget.createState must return a subtype of State<${widget.runtimeType}>'),
-          ErrorDescription(
-            'The createState function for ${widget.runtimeType} returned a state '
-            'of type ${state.runtimeType}, which is not a subtype of '
-            'State<${widget.runtimeType}>, violating the contract for createState.',
-          ),
-        ]);
-      }
-      return true;
-    }());
+  StatefulElement(StatefulWidget widget) : _state = widget.createState(), super(widget) {
+    assert(
+      () {
+        if (!state._debugTypesAreRight(widget)) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('StatefulWidget.createState must return a subtype of State<${widget.runtimeType}>'),
+            ErrorDescription(
+              'The createState function for ${widget.runtimeType} returned a state '
+              'of type ${state.runtimeType}, which is not a subtype of '
+              'State<${widget.runtimeType}>, violating the contract for createState.',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     assert(state._element == null);
     state._element = this;
     assert(
@@ -5429,28 +5527,34 @@ class StatefulElement extends ComponentElement {
   void _firstBuild() {
     assert(state._debugLifecycleState == _StateLifecycle.created);
     final Object? debugCheckForReturnedFuture = state.initState() as dynamic;
-    assert(() {
-      if (debugCheckForReturnedFuture is Future) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('${state.runtimeType}.initState() returned a Future.'),
-          ErrorDescription('State.initState() must be a void method without an `async` keyword.'),
-          ErrorHint(
-            'Rather than awaiting on asynchronous work directly inside of initState, '
-            'call a separate method to do this work without awaiting it.',
-          ),
-        ]);
-      }
-      return true;
-    }());
-    assert(() {
-      state._debugLifecycleState = _StateLifecycle.initialized;
-      return true;
-    }());
+    assert(
+      () {
+        if (debugCheckForReturnedFuture is Future) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('${state.runtimeType}.initState() returned a Future.'),
+            ErrorDescription('State.initState() must be a void method without an `async` keyword.'),
+            ErrorHint(
+              'Rather than awaiting on asynchronous work directly inside of initState, '
+              'call a separate method to do this work without awaiting it.',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
+    assert(
+      () {
+        state._debugLifecycleState = _StateLifecycle.initialized;
+        return true;
+      }(),
+    );
     state.didChangeDependencies();
-    assert(() {
-      state._debugLifecycleState = _StateLifecycle.ready;
-      return true;
-    }());
+    assert(
+      () {
+        state._debugLifecycleState = _StateLifecycle.ready;
+        return true;
+      }(),
+    );
     super._firstBuild();
   }
 
@@ -5470,19 +5574,21 @@ class StatefulElement extends ComponentElement {
     final StatefulWidget oldWidget = state._widget!;
     state._widget = widget as StatefulWidget;
     final Object? debugCheckForReturnedFuture = state.didUpdateWidget(oldWidget) as dynamic;
-    assert(() {
-      if (debugCheckForReturnedFuture is Future) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('${state.runtimeType}.didUpdateWidget() returned a Future.'),
-          ErrorDescription( 'State.didUpdateWidget() must be a void method without an `async` keyword.'),
-          ErrorHint(
-            'Rather than awaiting on asynchronous work directly inside of didUpdateWidget, '
-            'call a separate method to do this work without awaiting it.',
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (debugCheckForReturnedFuture is Future) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('${state.runtimeType}.didUpdateWidget() returned a Future.'),
+            ErrorDescription('State.didUpdateWidget() must be a void method without an `async` keyword.'),
+            ErrorHint(
+              'Rather than awaiting on asynchronous work directly inside of didUpdateWidget, '
+              'call a separate method to do this work without awaiting it.',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     rebuild(force: true);
   }
 
@@ -5507,18 +5613,20 @@ class StatefulElement extends ComponentElement {
   void unmount() {
     super.unmount();
     state.dispose();
-    assert(() {
-      if (state._debugLifecycleState == _StateLifecycle.defunct) {
-        return true;
-      }
-      throw FlutterError.fromParts(<DiagnosticsNode>[
-        ErrorSummary('${state.runtimeType}.dispose failed to call super.dispose.'),
-        ErrorDescription(
-          'dispose() implementations must always call their superclass dispose() method, to ensure '
-          'that all the resources used by the widget are fully released.',
-        ),
-      ]);
-    }());
+    assert(
+      () {
+        if (state._debugLifecycleState == _StateLifecycle.defunct) {
+          return true;
+        }
+        throw FlutterError.fromParts(<DiagnosticsNode>[
+          ErrorSummary('${state.runtimeType}.dispose failed to call super.dispose.'),
+          ErrorDescription(
+            'dispose() implementations must always call their superclass dispose() method, to ensure '
+            'that all the resources used by the widget are fully released.',
+          ),
+        ]);
+      }(),
+    );
     state._element = null;
     // Release resources to reduce the severity of memory leaks caused by
     // defunct, but accidentally retained Elements.
@@ -5526,54 +5634,60 @@ class StatefulElement extends ComponentElement {
   }
 
   @override
-  InheritedWidget dependOnInheritedElement(Element ancestor, { Object? aspect }) {
-    assert(() {
-      final Type targetType = ancestor.widget.runtimeType;
-      if (state._debugLifecycleState == _StateLifecycle.created) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('dependOnInheritedWidgetOfExactType<$targetType>() or dependOnInheritedElement() was called before ${state.runtimeType}.initState() completed.'),
-          ErrorDescription(
-            'When an inherited widget changes, for example if the value of Theme.of() changes, '
-            "its dependent widgets are rebuilt. If the dependent widget's reference to "
-            'the inherited widget is in a constructor or an initState() method, '
-            'then the rebuilt dependent widget will not reflect the changes in the '
-            'inherited widget.',
-          ),
-          ErrorHint(
-            'Typically references to inherited widgets should occur in widget build() methods. Alternatively, '
-            'initialization based on inherited widgets can be placed in the didChangeDependencies method, which '
-            'is called after initState and whenever the dependencies change thereafter.',
-          ),
-        ]);
-      }
-      if (state._debugLifecycleState == _StateLifecycle.defunct) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('dependOnInheritedWidgetOfExactType<$targetType>() or dependOnInheritedElement() was called after dispose(): $this'),
-          ErrorDescription(
-            'This error happens if you call dependOnInheritedWidgetOfExactType() on the '
-            'BuildContext for a widget that no longer appears in the widget tree '
-            '(e.g., whose parent widget no longer includes the widget in its '
-            'build). This error can occur when code calls '
-            'dependOnInheritedWidgetOfExactType() from a timer or an animation callback.',
-          ),
-          ErrorHint(
-            'The preferred solution is to cancel the timer or stop listening to the '
-            'animation in the dispose() callback. Another solution is to check the '
-            '"mounted" property of this object before calling '
-            'dependOnInheritedWidgetOfExactType() to ensure the object is still in the '
-            'tree.',
-          ),
-          ErrorHint(
-            'This error might indicate a memory leak if '
-            'dependOnInheritedWidgetOfExactType() is being called because another object '
-            'is retaining a reference to this State object after it has been '
-            'removed from the tree. To avoid memory leaks, consider breaking the '
-            'reference to this object during dispose().',
-          ),
-        ]);
-      }
-      return true;
-    }());
+  InheritedWidget dependOnInheritedElement(Element ancestor, {Object? aspect}) {
+    assert(
+      () {
+        final Type targetType = ancestor.widget.runtimeType;
+        if (state._debugLifecycleState == _StateLifecycle.created) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'dependOnInheritedWidgetOfExactType<$targetType>() or dependOnInheritedElement() was called before ${state.runtimeType}.initState() completed.',
+            ),
+            ErrorDescription(
+              'When an inherited widget changes, for example if the value of Theme.of() changes, '
+              "its dependent widgets are rebuilt. If the dependent widget's reference to "
+              'the inherited widget is in a constructor or an initState() method, '
+              'then the rebuilt dependent widget will not reflect the changes in the '
+              'inherited widget.',
+            ),
+            ErrorHint(
+              'Typically references to inherited widgets should occur in widget build() methods. Alternatively, '
+              'initialization based on inherited widgets can be placed in the didChangeDependencies method, which '
+              'is called after initState and whenever the dependencies change thereafter.',
+            ),
+          ]);
+        }
+        if (state._debugLifecycleState == _StateLifecycle.defunct) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'dependOnInheritedWidgetOfExactType<$targetType>() or dependOnInheritedElement() was called after dispose(): $this',
+            ),
+            ErrorDescription(
+              'This error happens if you call dependOnInheritedWidgetOfExactType() on the '
+              'BuildContext for a widget that no longer appears in the widget tree '
+              '(e.g., whose parent widget no longer includes the widget in its '
+              'build). This error can occur when code calls '
+              'dependOnInheritedWidgetOfExactType() from a timer or an animation callback.',
+            ),
+            ErrorHint(
+              'The preferred solution is to cancel the timer or stop listening to the '
+              'animation in the dispose() callback. Another solution is to check the '
+              '"mounted" property of this object before calling '
+              'dependOnInheritedWidgetOfExactType() to ensure the object is still in the '
+              'tree.',
+            ),
+            ErrorHint(
+              'This error might indicate a memory leak if '
+              'dependOnInheritedWidgetOfExactType() is being called because another object '
+              'is retaining a reference to this State object after it has been '
+              'removed from the tree. To avoid memory leaks, consider breaking the '
+              'reference to this object during dispose().',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     return super.dependOnInheritedElement(ancestor as InheritedElement, aspect: aspect);
   }
 
@@ -5595,13 +5709,8 @@ class StatefulElement extends ComponentElement {
   }
 
   @override
-  DiagnosticsNode toDiagnosticsNode({ String? name, DiagnosticsTreeStyle? style }) {
-    return _ElementDiagnosticableTreeNode(
-      name: name,
-      value: this,
-      style: style,
-      stateful: true,
-    );
+  DiagnosticsNode toDiagnosticsNode({String? name, DiagnosticsTreeStyle? style}) {
+    return _ElementDiagnosticableTreeNode(name: name, value: this, style: style, stateful: true);
   }
 
   @override
@@ -5662,6 +5771,7 @@ class ParentDataElement<T extends ParentData> extends ProxyElement {
         child.visitChildren(applyParentDataToChild);
       }
     }
+
     visitChildren(applyParentDataToChild);
   }
 
@@ -5726,10 +5836,12 @@ class InheritedElement extends ProxyElement {
 
   @override
   void debugDeactivated() {
-    assert(() {
-      assert(_dependents.isEmpty);
-      return true;
-    }());
+    assert(
+      () {
+        assert(_dependents.isEmpty);
+        return true;
+      }(),
+    );
     super.debugDeactivated();
   }
 
@@ -5865,14 +5977,16 @@ class InheritedElement extends ProxyElement {
   void notifyClients(InheritedWidget oldWidget) {
     assert(_debugCheckOwnerBuildTargetExists('notifyClients'));
     for (final Element dependent in _dependents.keys) {
-      assert(() {
-        // check that it really is our descendant
-        Element? ancestor = dependent._parent;
-        while (ancestor != this && ancestor != null) {
-          ancestor = ancestor._parent;
-        }
-        return ancestor == this;
-      }());
+      assert(
+        () {
+          // check that it really is our descendant
+          Element? ancestor = dependent._parent;
+          while (ancestor != this && ancestor != null) {
+            ancestor = ancestor._parent;
+          }
+          return ancestor == this;
+        }(),
+      );
       // check that it really depends on us
       assert(dependent._dependencies!.contains(this));
       notifyDependent(oldWidget, dependent);
@@ -6071,6 +6185,7 @@ abstract class RenderObjectElement extends Element {
     assert(_renderObject != null, '$runtimeType unmounted');
     return _renderObject!;
   }
+
   RenderObject? _renderObject;
 
   bool _debugDoingBuild = false;
@@ -6097,60 +6212,80 @@ abstract class RenderObjectElement extends Element {
       }
       ancestor = ancestor._parent;
     }
-    assert(() {
-      if (result == null || ancestor == null) {
-        return true;
-      }
-      // Check that no other ParentDataWidgets want to provide parent data.
-      final List<ParentDataElement<ParentData>> badAncestors = <ParentDataElement<ParentData>>[];
-      ancestor = ancestor!._parent;
-      while (ancestor != null && ancestor is! RenderObjectElement) {
-        if (ancestor is ParentDataElement<ParentData>) {
-          badAncestors.add(ancestor! as ParentDataElement<ParentData>);
+    assert(
+      () {
+        if (result == null || ancestor == null) {
+          return true;
         }
+        // Check that no other ParentDataWidgets want to provide parent data.
+        final List<ParentDataElement<ParentData>> badAncestors = <ParentDataElement<ParentData>>[];
         ancestor = ancestor!._parent;
-      }
-      if (badAncestors.isNotEmpty) {
-        badAncestors.insert(0, result);
-        try {
-          // We explicitly throw here (even though we immediately redirect the
-          // exception elsewhere) so that debuggers will notice it when they
-          // have "break on exception" enabled.
-          throw FlutterError.fromParts(<DiagnosticsNode>[
-            ErrorSummary('Incorrect use of ParentDataWidget.'),
-            ErrorDescription('The following ParentDataWidgets are providing parent data to the same RenderObject:'),
-            for (final ParentDataElement<ParentData> ancestor in badAncestors)
-              ErrorDescription('- ${ancestor.widget} (typically placed directly inside a ${(ancestor.widget as ParentDataWidget<ParentData>).debugTypicalAncestorWidgetClass} widget)'),
-            ErrorDescription('However, a RenderObject can only receive parent data from at most one ParentDataWidget.'),
-            ErrorHint('Usually, this indicates that at least one of the offending ParentDataWidgets listed above is not placed directly inside a compatible ancestor widget.'),
-            ErrorDescription('The ownership chain for the RenderObject that received the parent data was:\n  ${debugGetCreatorChain(10)}'),
-          ]);
-        } on FlutterError catch (e) {
-          _reportException(ErrorSummary('while looking for parent data.'), e, e.stackTrace);
+        while (ancestor != null && ancestor is! RenderObjectElement) {
+          if (ancestor is ParentDataElement<ParentData>) {
+            badAncestors.add(ancestor! as ParentDataElement<ParentData>);
+          }
+          ancestor = ancestor!._parent;
         }
-      }
-      return true;
-    }());
+        if (badAncestors.isNotEmpty) {
+          badAncestors.insert(0, result);
+          try {
+            // We explicitly throw here (even though we immediately redirect the
+            // exception elsewhere) so that debuggers will notice it when they
+            // have "break on exception" enabled.
+            throw FlutterError.fromParts(<DiagnosticsNode>[
+              ErrorSummary('Incorrect use of ParentDataWidget.'),
+              ErrorDescription('The following ParentDataWidgets are providing parent data to the same RenderObject:'),
+              for (final ParentDataElement<ParentData> ancestor in badAncestors)
+                ErrorDescription(
+                  '- ${ancestor.widget} (typically placed directly inside a ${(ancestor.widget as ParentDataWidget<
+                    ParentData
+                  >).debugTypicalAncestorWidgetClass} widget)',
+                ),
+              ErrorDescription(
+                'However, a RenderObject can only receive parent data from at most one ParentDataWidget.',
+              ),
+              ErrorHint(
+                'Usually, this indicates that at least one of the offending ParentDataWidgets listed above is not placed directly inside a compatible ancestor widget.',
+              ),
+              ErrorDescription(
+                'The ownership chain for the RenderObject that received the parent data was:\n  ${debugGetCreatorChain(
+                  10,
+                )}',
+              ),
+            ]);
+          } on FlutterError catch (e) {
+            _reportException(ErrorSummary('while looking for parent data.'), e, e.stackTrace);
+          }
+        }
+        return true;
+      }(),
+    );
     return result;
   }
 
   @override
   void mount(Element? parent, Object? newSlot) {
     super.mount(parent, newSlot);
-    assert(() {
-      _debugDoingBuild = true;
-      return true;
-    }());
+    assert(
+      () {
+        _debugDoingBuild = true;
+        return true;
+      }(),
+    );
     _renderObject = (widget as RenderObjectWidget).createRenderObject(this);
     assert(!_renderObject!.debugDisposed!);
-    assert(() {
-      _debugDoingBuild = false;
-      return true;
-    }());
-    assert(() {
-      _debugUpdateRenderObjectOwner();
-      return true;
-    }());
+    assert(
+      () {
+        _debugDoingBuild = false;
+        return true;
+      }(),
+    );
+    assert(
+      () {
+        _debugUpdateRenderObjectOwner();
+        return true;
+      }(),
+    );
     assert(_slot == newSlot);
     attachRenderObject(newSlot);
     super.performRebuild(); // clears the "dirty" flag
@@ -6160,36 +6295,45 @@ abstract class RenderObjectElement extends Element {
   void update(covariant RenderObjectWidget newWidget) {
     super.update(newWidget);
     assert(widget == newWidget);
-    assert(() {
-      _debugUpdateRenderObjectOwner();
-      return true;
-    }());
+    assert(
+      () {
+        _debugUpdateRenderObjectOwner();
+        return true;
+      }(),
+    );
     _performRebuild(); // calls widget.updateRenderObject()
   }
 
   void _debugUpdateRenderObjectOwner() {
-    assert(() {
-      renderObject.debugCreator = DebugCreator(this);
-      return true;
-    }());
+    assert(
+      () {
+        renderObject.debugCreator = DebugCreator(this);
+        return true;
+      }(),
+    );
   }
 
   @override
-  void performRebuild() { // ignore: must_call_super, _performRebuild calls super.
+  void performRebuild() {
+    // ignore: must_call_super, _performRebuild calls super.
     _performRebuild(); // calls widget.updateRenderObject()
   }
 
   @pragma('vm:prefer-inline')
   void _performRebuild() {
-    assert(() {
-      _debugDoingBuild = true;
-      return true;
-    }());
+    assert(
+      () {
+        _debugDoingBuild = true;
+        return true;
+      }(),
+    );
     (widget as RenderObjectWidget).updateRenderObject(this, renderObject);
-    assert(() {
-      _debugDoingBuild = false;
-      return true;
-    }());
+    assert(
+      () {
+        _debugDoingBuild = false;
+        return true;
+      }(),
+    );
     super.performRebuild(); // clears the "dirty" flag
   }
 
@@ -6224,28 +6368,30 @@ abstract class RenderObjectElement extends Element {
 
   void _updateParentData(ParentDataWidget<ParentData> parentDataWidget) {
     bool applyParentData = true;
-    assert(() {
-      try {
-        if (!parentDataWidget.debugIsValidRenderObject(renderObject)) {
-          applyParentData = false;
-          throw FlutterError.fromParts(<DiagnosticsNode>[
-            ErrorSummary('Incorrect use of ParentDataWidget.'),
-            ...parentDataWidget._debugDescribeIncorrectParentDataType(
-              parentData: renderObject.parentData,
-              parentDataCreator: _ancestorRenderObjectElement!.widget as RenderObjectWidget,
-              ownershipChain: ErrorDescription(debugGetCreatorChain(10)),
-            ),
-          ]);
+    assert(
+      () {
+        try {
+          if (!parentDataWidget.debugIsValidRenderObject(renderObject)) {
+            applyParentData = false;
+            throw FlutterError.fromParts(<DiagnosticsNode>[
+              ErrorSummary('Incorrect use of ParentDataWidget.'),
+              ...parentDataWidget._debugDescribeIncorrectParentDataType(
+                parentData: renderObject.parentData,
+                parentDataCreator: _ancestorRenderObjectElement!.widget as RenderObjectWidget,
+                ownershipChain: ErrorDescription(debugGetCreatorChain(10)),
+              ),
+            ]);
+          }
+        } on FlutterError catch (e) {
+          // We catch the exception directly to avoid activating the ErrorWidget,
+          // while still allowing debuggers to break on exception. Since the tree
+          // is in a broken state, adding the ErrorWidget would likely cause more
+          // exceptions, which is not good for the debugging experience.
+          _reportException(ErrorSummary('while applying parent data.'), e, e.stackTrace);
         }
-      } on FlutterError catch (e) {
-        // We catch the exception directly to avoid activating the ErrorWidget,
-        // while still allowing debuggers to break on exception. Since the tree
-        // is in a broken state, adding the ErrorWidget would likely cause more
-        // exceptions, which is not good for the debugging experience.
-        _reportException(ErrorSummary('while applying parent data.'), e, e.stackTrace);
-      }
-      return true;
-    }());
+        return true;
+      }(),
+    );
     if (applyParentData) {
       parentDataWidget.applyParentData(renderObject);
     }
@@ -6330,13 +6476,13 @@ abstract class RenderObjectElement extends Element {
 /// [RootElementMixin] instead.
 @Deprecated(
   'Use RootElementMixin instead. '
-  'This feature was deprecated after v3.9.0-16.0.pre.'
+  'This feature was deprecated after v3.9.0-16.0.pre.',
 )
 abstract class RootRenderObjectElement extends RenderObjectElement with RootElementMixin {
   /// Initializes fields for subclasses.
   @Deprecated(
     'Use RootElementMixin instead. '
-    'This feature was deprecated after v3.9.0-16.0.pre.'
+    'This feature was deprecated after v3.9.0-16.0.pre.',
   )
   RootRenderObjectElement(super.widget);
 }
@@ -6444,7 +6590,8 @@ class SingleChildRenderObjectElement extends RenderObjectElement {
 
   @override
   void insertRenderObjectChild(RenderObject child, Object? slot) {
-    final RenderObjectWithChildMixin<RenderObject> renderObject = this.renderObject as RenderObjectWithChildMixin<RenderObject>;
+    final RenderObjectWithChildMixin<RenderObject> renderObject =
+        this.renderObject as RenderObjectWithChildMixin<RenderObject>;
     assert(slot == null);
     assert(renderObject.debugValidateChild(child));
     renderObject.child = child;
@@ -6458,7 +6605,8 @@ class SingleChildRenderObjectElement extends RenderObjectElement {
 
   @override
   void removeRenderObjectChild(RenderObject child, Object? slot) {
-    final RenderObjectWithChildMixin<RenderObject> renderObject = this.renderObject as RenderObjectWithChildMixin<RenderObject>;
+    final RenderObjectWithChildMixin<RenderObject> renderObject =
+        this.renderObject as RenderObjectWithChildMixin<RenderObject>;
     assert(slot == null);
     assert(renderObject.child == child);
     renderObject.child = null;
@@ -6481,8 +6629,9 @@ class SingleChildRenderObjectElement extends RenderObjectElement {
 ///   is used for the slots of the children.
 class MultiChildRenderObjectElement extends RenderObjectElement {
   /// Creates an element that uses the given widget as its configuration.
-  MultiChildRenderObjectElement(MultiChildRenderObjectWidget super.widget)
-    : assert(!debugChildrenHaveDuplicateKeys(widget, widget.children));
+  MultiChildRenderObjectElement(
+    MultiChildRenderObjectWidget super.widget,
+  ) : assert(!debugChildrenHaveDuplicateKeys(widget, widget.children));
 
   @override
   ContainerRenderObjectMixin<RenderObject, ContainerParentDataMixin<RenderObject>> get renderObject {
@@ -6504,7 +6653,8 @@ class MultiChildRenderObjectElement extends RenderObjectElement {
 
   @override
   void insertRenderObjectChild(RenderObject child, IndexedSlot<Element?> slot) {
-    final ContainerRenderObjectMixin<RenderObject, ContainerParentDataMixin<RenderObject>> renderObject = this.renderObject;
+    final ContainerRenderObjectMixin<RenderObject, ContainerParentDataMixin<RenderObject>> renderObject =
+        this.renderObject;
     assert(renderObject.debugValidateChild(child));
     renderObject.insert(child, after: slot.value?.renderObject);
     assert(renderObject == this.renderObject);
@@ -6512,7 +6662,8 @@ class MultiChildRenderObjectElement extends RenderObjectElement {
 
   @override
   void moveRenderObjectChild(RenderObject child, IndexedSlot<Element?> oldSlot, IndexedSlot<Element?> newSlot) {
-    final ContainerRenderObjectMixin<RenderObject, ContainerParentDataMixin<RenderObject>> renderObject = this.renderObject;
+    final ContainerRenderObjectMixin<RenderObject, ContainerParentDataMixin<RenderObject>> renderObject =
+        this.renderObject;
     assert(child.parent == renderObject);
     renderObject.move(child, after: newSlot.value?.renderObject);
     assert(renderObject == this.renderObject);
@@ -6520,7 +6671,8 @@ class MultiChildRenderObjectElement extends RenderObjectElement {
 
   @override
   void removeRenderObjectChild(RenderObject child, Object? slot) {
-    final ContainerRenderObjectMixin<RenderObject, ContainerParentDataMixin<RenderObject>> renderObject = this.renderObject;
+    final ContainerRenderObjectMixin<RenderObject, ContainerParentDataMixin<RenderObject>> renderObject =
+        this.renderObject;
     assert(child.parent == renderObject);
     renderObject.remove(child);
     assert(renderObject == this.renderObject);
@@ -6544,12 +6696,14 @@ class MultiChildRenderObjectElement extends RenderObjectElement {
   }
 
   bool _debugCheckHasAssociatedRenderObject(Element newChild) {
-    assert(() {
-      if (newChild.renderObject == null) {
-        FlutterError.reportError(
-          FlutterErrorDetails(
+    assert(
+      () {
+        if (newChild.renderObject == null) {
+          FlutterError.reportError(FlutterErrorDetails(
             exception: FlutterError.fromParts(<DiagnosticsNode>[
-              ErrorSummary('The children of `MultiChildRenderObjectElement` must each has an associated render object.'),
+              ErrorSummary(
+                'The children of `MultiChildRenderObjectElement` must each has an associated render object.',
+              ),
               ErrorHint(
                 'This typically means that the `${newChild.widget}` or its children\n'
                 'are not a subtype of `RenderObjectWidget`.',
@@ -6557,11 +6711,11 @@ class MultiChildRenderObjectElement extends RenderObjectElement {
               newChild.describeElement('The following element does not have an associated render object'),
               DiagnosticsDebugCreator(DebugCreator(newChild)),
             ]),
-          ),
-        );
-      }
-      return true;
-    }());
+          ));
+        }
+        return true;
+      }(),
+    );
     return true;
   }
 
@@ -6576,10 +6730,16 @@ class MultiChildRenderObjectElement extends RenderObjectElement {
   void mount(Element? parent, Object? newSlot) {
     super.mount(parent, newSlot);
     final MultiChildRenderObjectWidget multiChildRenderObjectWidget = widget as MultiChildRenderObjectWidget;
-    final List<Element> children = List<Element>.filled(multiChildRenderObjectWidget.children.length, _NullElement.instance);
+    final List<Element> children = List<Element>.filled(
+      multiChildRenderObjectWidget.children.length,
+      _NullElement.instance,
+    );
     Element? previousChild;
     for (int i = 0; i < children.length; i += 1) {
-      final Element newChild = inflateWidget(multiChildRenderObjectWidget.children[i], IndexedSlot<Element?>(i, previousChild));
+      final Element newChild = inflateWidget(
+        multiChildRenderObjectWidget.children[i],
+        IndexedSlot<Element?>(i, previousChild),
+      );
       children[i] = newChild;
       previousChild = newChild;
     }
@@ -6659,9 +6819,7 @@ class IndexedSlot<T extends Element?> {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is IndexedSlot
-        && index == other.index
-        && value == other.value;
+    return other is IndexedSlot && index == other.index && value == other.value;
   }
 
   @override

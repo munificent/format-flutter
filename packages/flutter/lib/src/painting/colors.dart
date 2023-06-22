@@ -24,13 +24,7 @@ double _getHue(double red, double green, double blue, double max, double delta) 
   return hue;
 }
 
-Color _colorFromHue(
-  double alpha,
-  double hue,
-  double chroma,
-  double secondary,
-  double match,
-) {
+Color _colorFromHue(double alpha, double hue, double chroma, double secondary, double match) {
   double red;
   double green;
   double blue;
@@ -59,7 +53,12 @@ Color _colorFromHue(
     green = 0.0;
     blue = secondary;
   }
-  return Color.fromARGB((alpha * 0xFF).round(), ((red + match) * 0xFF).round(), ((green + match) * 0xFF).round(), ((blue + match) * 0xFF).round());
+  return Color.fromARGB(
+    (alpha * 0xFF).round(),
+    ((red + match) * 0xFF).round(),
+    ((green + match) * 0xFF).round(),
+    ((blue + match) * 0xFF).round(),
+  );
 }
 
 /// A color represented using [alpha], [hue], [saturation], and [value].
@@ -88,8 +87,12 @@ class HSVColor {
   ///
   /// All the arguments must not be null and be in their respective ranges. See
   /// the fields for each parameter for a description of their ranges.
-  const HSVColor.fromAHSV(this.alpha, this.hue, this.saturation, this.value)
-    : assert(alpha >= 0.0),
+  const HSVColor.fromAHSV(
+    this.alpha,
+    this.hue,
+    this.saturation,
+    this.value,
+  ) : assert(alpha >= 0.0),
       assert(alpha <= 1.0),
       assert(hue >= 0.0),
       assert(hue <= 360.0),
@@ -216,11 +219,11 @@ class HSVColor {
     if (identical(this, other)) {
       return true;
     }
-    return other is HSVColor
-        && other.alpha == alpha
-        && other.hue == hue
-        && other.saturation == saturation
-        && other.value == value;
+    return other is HSVColor &&
+        other.alpha == alpha &&
+        other.hue == hue &&
+        other.saturation == saturation &&
+        other.value == value;
   }
 
   @override
@@ -256,8 +259,12 @@ class HSLColor {
   ///
   /// All the arguments must not be null and be in their respective ranges. See
   /// the fields for each parameter for a description of their ranges.
-  const HSLColor.fromAHSL(this.alpha, this.hue, this.saturation, this.lightness)
-    : assert(alpha >= 0.0),
+  const HSLColor.fromAHSL(
+    this.alpha,
+    this.hue,
+    this.saturation,
+    this.lightness,
+  ) : assert(alpha >= 0.0),
       assert(alpha <= 1.0),
       assert(hue >= 0.0),
       assert(hue <= 360.0),
@@ -284,8 +291,8 @@ class HSLColor {
     final double lightness = (max + min) / 2.0;
     // Saturation can exceed 1.0 with rounding errors, so clamp it.
     final double saturation = lightness == 1.0
-      ? 0.0
-      : clampDouble(delta / (1.0 - (2.0 * lightness - 1.0).abs()), 0.0, 1.0);
+        ? 0.0
+        : clampDouble(delta / (1.0 - (2.0 * lightness - 1.0).abs()), 0.0, 1.0);
     return HSLColor.fromAHSL(alpha, hue, saturation, lightness);
   }
 
@@ -399,11 +406,11 @@ class HSLColor {
     if (identical(this, other)) {
       return true;
     }
-    return other is HSLColor
-        && other.alpha == alpha
-        && other.hue == hue
-        && other.saturation == saturation
-        && other.lightness == lightness;
+    return other is HSLColor &&
+        other.alpha == alpha &&
+        other.hue == hue &&
+        other.saturation == saturation &&
+        other.lightness == lightness;
   }
 
   @override
@@ -447,9 +454,7 @@ class ColorSwatch<T> extends Color {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return super == other
-        && other is ColorSwatch<T>
-        && mapEquals<T, Color>(other._swatch, _swatch);
+    return super == other && other is ColorSwatch<T> && mapEquals<T, Color>(other._swatch, _swatch);
   }
 
   @override
@@ -501,14 +506,7 @@ class ColorProperty extends DiagnosticsProperty<Color> {
   /// Create a diagnostics property for [Color].
   ///
   /// The [showName], [style], and [level] arguments must not be null.
-  ColorProperty(
-    String super.name,
-    super.value, {
-    super.showName,
-    super.defaultValue,
-    super.style,
-    super.level,
-  });
+  ColorProperty(String super.name, super.value, {super.showName, super.defaultValue, super.style, super.level});
 
   @override
   Map<String, Object?> toJsonMap(DiagnosticsSerializationDelegate delegate) {

@@ -19,12 +19,7 @@ class AnnotatedRegion<T extends Object> extends SingleChildRenderObjectWidget {
   ///
   /// [sized] defaults to true and controls whether the annotated region will
   /// clip its child.
-  const AnnotatedRegion({
-    super.key,
-    required Widget super.child,
-    required this.value,
-    this.sized = true,
-  });
+  const AnnotatedRegion({super.key, required Widget super.child, required this.value, this.sized = true});
 
   /// A value which can be retrieved using [Layer.find].
   final T value;

@@ -56,7 +56,7 @@ abstract class AssetManifest {
 // New fields could be added to this object schema to support new asset variation
 // features, such as themes, locale/region support, reading directions, and so on.
 class _AssetManifestBin implements AssetManifest {
-  _AssetManifestBin(Map<Object?, Object?> standardMessageData): _data = standardMessageData;
+  _AssetManifestBin(Map<Object?, Object?> standardMessageData) : _data = standardMessageData;
 
   factory _AssetManifestBin.fromStandardMessageCodecMessage(ByteData message) {
     final dynamic data = const StandardMessageCodec().decodeMessage(message);
@@ -76,18 +76,13 @@ class _AssetManifestBin implements AssetManifest {
       if (variantData == null) {
         return null;
       }
-      _typeCastedData[key] = ((_data[key] ?? <Object?>[]) as Iterable<Object?>)
-        .cast<Map<Object?, Object?>>()
-        .map((Map<Object?, Object?> data) {
-          final String asset = data['asset']! as String;
-          final Object? dpr = data['dpr'];
-          return AssetMetadata(
-            key: data['asset']! as String,
-            targetDevicePixelRatio: dpr as double?,
-            main: key == asset,
-          );
-        })
-        .toList();
+      _typeCastedData[key] = ((_data[key] ?? <Object?>[]) as Iterable<Object?>).cast<Map<Object?, Object?>>().map((
+        Map<Object?, Object?> data,
+      ) {
+        final String asset = data['asset']! as String;
+        final Object? dpr = data['dpr'];
+        return AssetMetadata(key: data['asset']! as String, targetDevicePixelRatio: dpr as double?, main: key == asset);
+      }).toList();
 
       _data.remove(key);
     }
@@ -105,11 +100,7 @@ class _AssetManifestBin implements AssetManifest {
 @immutable
 class AssetMetadata {
   /// Creates an object containing information about an asset.
-  const AssetMetadata({
-    required this.key,
-    required this.targetDevicePixelRatio,
-    required this.main,
-  });
+  const AssetMetadata({required this.key, required this.targetDevicePixelRatio, required this.main});
 
   /// The device pixel ratio that this asset is most ideal for. This is determined
   /// by the name of the parent folder of the asset file. For example, if the

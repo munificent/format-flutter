@@ -184,19 +184,19 @@ class TabBarTheme with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is TabBarTheme
-        && other.indicator == indicator
-        && other.indicatorColor == indicatorColor
-        && other.indicatorSize == indicatorSize
-        && other.dividerColor == dividerColor
-        && other.labelColor == labelColor
-        && other.labelPadding == labelPadding
-        && other.labelStyle == labelStyle
-        && other.unselectedLabelColor == unselectedLabelColor
-        && other.unselectedLabelStyle == unselectedLabelStyle
-        && other.overlayColor == overlayColor
-        && other.splashFactory == splashFactory
-        && other.mouseCursor == mouseCursor
-        && other.tabAlignment == tabAlignment;
+    return other is TabBarTheme &&
+        other.indicator == indicator &&
+        other.indicatorColor == indicatorColor &&
+        other.indicatorSize == indicatorSize &&
+        other.dividerColor == dividerColor &&
+        other.labelColor == labelColor &&
+        other.labelPadding == labelPadding &&
+        other.labelStyle == labelStyle &&
+        other.unselectedLabelColor == unselectedLabelColor &&
+        other.unselectedLabelStyle == unselectedLabelStyle &&
+        other.overlayColor == overlayColor &&
+        other.splashFactory == splashFactory &&
+        other.mouseCursor == mouseCursor &&
+        other.tabAlignment == tabAlignment;
   }
 }

@@ -102,8 +102,9 @@ class _ExpandIconState extends State<ExpandIcon> with SingleTickerProviderStateM
   late AnimationController _controller;
   late Animation<double> _iconTurns;
 
-  static final Animatable<double> _iconTurnTween = Tween<double>(begin: 0.0, end: 0.5)
-    .chain(CurveTween(curve: Curves.fastOutSlowIn));
+  static final Animatable<double> _iconTurnTween = Tween<double>(begin: 0.0, end: 0.5).chain(
+    CurveTween(curve: Curves.fastOutSlowIn),
+  );
 
   @override
   void initState() {
@@ -175,10 +176,7 @@ class _ExpandIconState extends State<ExpandIcon> with SingleTickerProviderStateM
         color: _iconColor,
         disabledColor: widget.disabledColor,
         onPressed: widget.onPressed == null ? null : _handlePressed,
-        icon: RotationTransition(
-          turns: _iconTurns,
-          child: const Icon(Icons.expand_more),
-        ),
+        icon: RotationTransition(turns: _iconTurns, child: const Icon(Icons.expand_more)),
       ),
     );
   }

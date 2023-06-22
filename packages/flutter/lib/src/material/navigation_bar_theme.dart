@@ -164,17 +164,17 @@ class NavigationBarThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is NavigationBarThemeData
-        && other.height == height
-        && other.backgroundColor == backgroundColor
-        && other.elevation == elevation
-        && other.shadowColor == shadowColor
-        && other.surfaceTintColor == surfaceTintColor
-        && other.indicatorColor == indicatorColor
-        && other.indicatorShape == indicatorShape
-        && other.labelTextStyle == labelTextStyle
-        && other.iconTheme == iconTheme
-        && other.labelBehavior == labelBehavior;
+    return other is NavigationBarThemeData &&
+        other.height == height &&
+        other.backgroundColor == backgroundColor &&
+        other.elevation == elevation &&
+        other.shadowColor == shadowColor &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.indicatorColor == indicatorColor &&
+        other.indicatorShape == indicatorShape &&
+        other.labelTextStyle == labelTextStyle &&
+        other.iconTheme == iconTheme &&
+        other.labelBehavior == labelBehavior;
   }
 
   @override
@@ -187,9 +187,15 @@ class NavigationBarThemeData with Diagnosticable {
     properties.add(ColorProperty('surfaceTintColor', surfaceTintColor, defaultValue: null));
     properties.add(ColorProperty('indicatorColor', indicatorColor, defaultValue: null));
     properties.add(DiagnosticsProperty<ShapeBorder>('indicatorShape', indicatorShape, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<TextStyle?>>('labelTextStyle', labelTextStyle, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<IconThemeData?>>('iconTheme', iconTheme, defaultValue: null));
-    properties.add(DiagnosticsProperty<NavigationDestinationLabelBehavior>('labelBehavior', labelBehavior, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<TextStyle?>>('labelTextStyle', labelTextStyle, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<IconThemeData?>>('iconTheme', iconTheme, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty<NavigationDestinationLabelBehavior>('labelBehavior', labelBehavior, defaultValue: null),
+    );
   }
 }
 
@@ -208,11 +214,7 @@ class NavigationBarTheme extends InheritedTheme {
   /// [NavigationBarThemeData] properties for a [NavigationBar].
   ///
   /// The data argument must not be null.
-  const NavigationBarTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const NavigationBarTheme({super.key, required this.data, required super.child});
 
   /// Specifies the background color, label text style, icon theme, and label
   /// type values for descendant [NavigationBar] widgets.

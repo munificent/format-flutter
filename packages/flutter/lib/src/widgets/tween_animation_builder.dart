@@ -183,10 +183,7 @@ class _TweenAnimationBuilderState<T extends Object?> extends AnimatedWidgetBaseS
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    assert(
-      widget.tween.end != null,
-      'Tween provided to TweenAnimationBuilder must have non-null Tween.end value.',
-    );
+    assert(widget.tween.end != null, 'Tween provided to TweenAnimationBuilder must have non-null Tween.end value.');
     _currentTween = visitor(_currentTween, widget.tween.end, (dynamic value) {
       assert(false);
       throw StateError('Constructor will never be called because null is never provided as current tween.');

@@ -106,9 +106,12 @@ class CharacterBoundary extends TextBoundary {
     }
     final CharacterRange rangeAtPosition = CharacterRange.at(_text, position);
     return rangeAtPosition.isNotEmpty
-      ? TextRange(start: rangeAtPosition.stringBeforeLength, end: rangeAtPosition.stringBeforeLength + rangeAtPosition.current.length)
-      // rangeAtPosition is empty means `position` is a grapheme boundary.
-      : TextRange(start: rangeAtPosition.stringBeforeLength, end: getTrailingTextBoundaryAt(position) ?? -1);
+        ? TextRange(
+            start: rangeAtPosition.stringBeforeLength,
+            end: rangeAtPosition.stringBeforeLength + rangeAtPosition.current.length,
+          )
+        // rangeAtPosition is empty means `position` is a grapheme boundary.
+          : TextRange(start: rangeAtPosition.stringBeforeLength, end: getTrailingTextBoundaryAt(position) ?? -1);
   }
 }
 
@@ -197,11 +200,9 @@ class ParagraphBoundary extends TextBoundary {
       }
     }
 
-    return index < _text.length - 1
-                && _text.codeUnitAt(index) == 0x0D
-                && _text.codeUnitAt(index + 1) == 0x0A
-                ? index + 2
-                : index + 1;
+    return index < _text.length - 1 && _text.codeUnitAt(index) == 0x0D && _text.codeUnitAt(index + 1) == 0x0A
+        ? index + 2
+        : index + 1;
   }
 }
 

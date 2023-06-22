@@ -65,9 +65,7 @@ Future<T?> showSearch<T>({
 }) {
   delegate.query = query ?? delegate.query;
   delegate._currentBody = _SearchBody.suggestions;
-  return Navigator.of(context, rootNavigator: useRootNavigator).push(_SearchPageRoute<T>(
-    delegate: delegate,
-  ));
+  return Navigator.of(context, rootNavigator: useRootNavigator).push(_SearchPageRoute<T>(delegate: delegate));
 }
 
 /// Delegate for [showSearch] to define the content of the search page.
@@ -233,8 +231,8 @@ abstract class SearchDelegate<T> {
     return theme.copyWith(
       appBarTheme: AppBarTheme(
         systemOverlayStyle: colorScheme.brightness == Brightness.dark
-          ? SystemUiOverlayStyle.light
-          : SystemUiOverlayStyle.dark,
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
         backgroundColor: colorScheme.brightness == Brightness.dark ? Colors.grey[900] : Colors.white,
         iconTheme: theme.primaryIconTheme.copyWith(color: Colors.grey),
         titleTextStyle: theme.textTheme.titleLarge,
@@ -262,7 +260,9 @@ abstract class SearchDelegate<T> {
   set query(String value) {
     _queryTextController.text = value;
     if (_queryTextController.text.isNotEmpty) {
-      _queryTextController.selection = TextSelection.fromPosition(TextPosition(offset: _queryTextController.text.length));
+      _queryTextController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _queryTextController.text.length),
+      );
     }
   }
 
@@ -385,9 +385,7 @@ enum _SearchBody {
 }
 
 class _SearchPageRoute<T> extends PageRoute<T> {
-  _SearchPageRoute({
-    required this.delegate,
-  }) {
+  _SearchPageRoute({required this.delegate}) {
     assert(
       delegate._route == null,
       'The ${delegate.runtimeType} instance is currently used by another active '
@@ -418,10 +416,7 @@ class _SearchPageRoute<T> extends PageRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    return FadeTransition(
-      opacity: animation,
-      child: child,
-    );
+    return FadeTransition(opacity: animation, child: child);
   }
 
   @override
@@ -432,15 +427,8 @@ class _SearchPageRoute<T> extends PageRoute<T> {
   }
 
   @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return _SearchPage<T>(
-      delegate: delegate,
-      animation: animation,
-    );
+  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+    return _SearchPage<T>(delegate: delegate, animation: animation);
   }
 
   @override
@@ -453,10 +441,7 @@ class _SearchPageRoute<T> extends PageRoute<T> {
 }
 
 class _SearchPage<T> extends StatefulWidget {
-  const _SearchPage({
-    required this.delegate,
-    required this.animation,
-  });
+  const _SearchPage({required this.delegate, required this.animation});
 
   final SearchDelegate<T> delegate;
   final Animation<double> animation;
@@ -535,8 +520,8 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
     final ThemeData theme = widget.delegate.appBarTheme(context);
-    final String searchFieldLabel = widget.delegate.searchFieldLabel
-      ?? MaterialLocalizations.of(context).searchFieldLabel;
+    final String searchFieldLabel =
+        widget.delegate.searchFieldLabel ?? MaterialLocalizations.of(context).searchFieldLabel;
     Widget? body;
     switch (widget.delegate._currentBody) {
       case _SearchBody.suggestions:
@@ -589,10 +574,7 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
             actions: widget.delegate.buildActions(context),
             bottom: widget.delegate.buildBottom(context),
           ),
-          body: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: body,
-          ),
+          body: AnimatedSwitcher(duration: const Duration(milliseconds: 300), child: body),
         ),
       ),
     );

@@ -26,11 +26,13 @@ enum SelectionResult {
   /// [SelectionEdgeUpdateEvent].
   /// {@endtemplate}
   next,
+
   /// Selection does not reach this [Selectable] and is located before it in
   /// screen order.
   ///
   /// {@macro flutter.rendering.selection.SelectionResult.footNote}
   previous,
+
   /// Selection ends in this [Selectable].
   ///
   /// Part of the [Selectable] may or may not be selected, but there is still
@@ -38,6 +40,7 @@ enum SelectionResult {
   ///
   /// {@macro flutter.rendering.selection.SelectionResult.footNote}
   end,
+
   /// The result can't be determined in this frame.
   ///
   /// This is typically used when the subtree is scrolling to reveal more
@@ -47,6 +50,7 @@ enum SelectionResult {
   // See `_SelectableRegionState._triggerSelectionEndEdgeUpdate` for how this
   // result affects the selection.
   pending,
+
   /// There is no result for the selection event.
   ///
   /// This is used when a selection result is not applicable, e.g.
@@ -224,9 +228,7 @@ abstract final class SelectionUtils {
     if (point.dy > targetRect.bottom) {
       return SelectionResult.next;
     }
-    return point.dx >= targetRect.right
-        ? SelectionResult.next
-        : SelectionResult.previous;
+    return point.dx >= targetRect.right ? SelectionResult.next : SelectionResult.previous;
   }
 
   /// Adjusts the dragging offset based on the target rect.
@@ -254,8 +256,7 @@ abstract final class SelectionUtils {
     if (targetRect.contains(point)) {
       return point;
     }
-    if (point.dy <= targetRect.top ||
-        point.dy <= targetRect.bottom && point.dx <= targetRect.left) {
+    if (point.dy <= targetRect.top || point.dy <= targetRect.bottom && point.dx <= targetRect.left) {
       // Area 1
       return direction == TextDirection.ltr ? targetRect.topLeft : targetRect.topRight;
     } else {
@@ -345,14 +346,14 @@ abstract class SelectionEvent {
 /// ctrl + A, or cmd + A in macOS.
 class SelectAllSelectionEvent extends SelectionEvent {
   /// Creates a select all selection event.
-  const SelectAllSelectionEvent(): super._(SelectionEventType.selectAll);
+  const SelectAllSelectionEvent() : super._(SelectionEventType.selectAll);
 }
 
 /// Clears the selection from the [Selectable] and removes any existing
 /// highlight as if there is no selection at all.
 class ClearSelectionEvent extends SelectionEvent {
   /// Create a clear selection event.
-  const ClearSelectionEvent(): super._(SelectionEventType.clear);
+  const ClearSelectionEvent() : super._(SelectionEventType.clear);
 }
 
 /// Selects the whole word at the location.
@@ -360,7 +361,7 @@ class ClearSelectionEvent extends SelectionEvent {
 /// This event can be sent as the result of mobile long press selection.
 class SelectWordSelectionEvent extends SelectionEvent {
   /// Creates a select word event at the [globalPosition].
-  const SelectWordSelectionEvent({required this.globalPosition}): super._(SelectionEventType.selectWord);
+  const SelectWordSelectionEvent({required this.globalPosition}) : super._(SelectionEventType.selectWord);
 
   /// The position in global coordinates to select word at.
   final Offset globalPosition;
@@ -382,16 +383,12 @@ class SelectionEdgeUpdateEvent extends SelectionEvent {
   /// Creates a selection start edge update event.
   ///
   /// The [globalPosition] contains the location of the selection start edge.
-  const SelectionEdgeUpdateEvent.forStart({
-    required this.globalPosition
-  }) : super._(SelectionEventType.startEdgeUpdate);
+  const SelectionEdgeUpdateEvent.forStart({required this.globalPosition}) : super._(SelectionEventType.startEdgeUpdate);
 
   /// Creates a selection end edge update event.
   ///
   /// The [globalPosition] contains the new location of the selection end edge.
-  const SelectionEdgeUpdateEvent.forEnd({
-    required this.globalPosition
-  }) : super._(SelectionEventType.endEdgeUpdate);
+  const SelectionEdgeUpdateEvent.forEnd({required this.globalPosition}) : super._(SelectionEventType.endEdgeUpdate);
 
   /// The new location of the selection edge.
   final Offset globalPosition;
@@ -405,11 +402,8 @@ class GranularlyExtendSelectionEvent extends SelectionEvent {
   /// Creates a [GranularlyExtendSelectionEvent].
   ///
   /// All parameters are required and must not be null.
-  const GranularlyExtendSelectionEvent({
-    required this.forward,
-    required this.isEnd,
-    required this.granularity,
-  }) : super._(SelectionEventType.granularlyExtendSelection);
+  const GranularlyExtendSelectionEvent({required this.forward, required this.isEnd, required this.granularity})
+    : super._(SelectionEventType.granularlyExtendSelection);
 
   /// Whether to extend the selection forward.
   final bool forward;
@@ -483,11 +477,8 @@ class DirectionallyExtendSelectionEvent extends SelectionEvent {
   /// Creates a [DirectionallyExtendSelectionEvent].
   ///
   /// All parameters are required and must not be null.
-  const DirectionallyExtendSelectionEvent({
-    required this.dx,
-    required this.isEnd,
-    required this.direction,
-  }) : super._(SelectionEventType.directionallyExtendSelection);
+  const DirectionallyExtendSelectionEvent({required this.dx, required this.isEnd, required this.direction})
+    : super._(SelectionEventType.directionallyExtendSelection);
 
   /// The horizontal offset the selection should move to.
   ///
@@ -505,11 +496,7 @@ class DirectionallyExtendSelectionEvent extends SelectionEvent {
 
   /// Makes a copy of this object with its property replaced with the new
   /// values.
-  DirectionallyExtendSelectionEvent copyWith({
-    double? dx,
-    bool? isEnd,
-    SelectionExtendDirection? direction,
-  }) {
+  DirectionallyExtendSelectionEvent copyWith({double? dx, bool? isEnd, SelectionExtendDirection? direction}) {
     return DirectionallyExtendSelectionEvent(
       dx: dx ?? this.dx,
       isEnd: isEnd ?? this.isEnd,
@@ -657,21 +644,16 @@ class SelectionGeometry {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is SelectionGeometry
-        && other.startSelectionPoint == startSelectionPoint
-        && other.endSelectionPoint == endSelectionPoint
-        && other.status == status
-        && other.hasContent == hasContent;
+    return other is SelectionGeometry &&
+        other.startSelectionPoint == startSelectionPoint &&
+        other.endSelectionPoint == endSelectionPoint &&
+        other.status == status &&
+        other.hasContent == hasContent;
   }
 
   @override
   int get hashCode {
-    return Object.hash(
-      startSelectionPoint,
-      endSelectionPoint,
-      status,
-      hasContent,
-    );
+    return Object.hash(startSelectionPoint, endSelectionPoint, status, hasContent);
   }
 }
 
@@ -681,11 +663,7 @@ class SelectionPoint {
   /// Creates a selection point object.
   ///
   /// All properties must not be null.
-  const SelectionPoint({
-    required this.localPosition,
-    required this.lineHeight,
-    required this.handleType,
-  });
+  const SelectionPoint({required this.localPosition, required this.lineHeight, required this.handleType});
 
   /// The position of the selection point in the local coordinates of the
   /// containing [Selectable].
@@ -707,19 +685,15 @@ class SelectionPoint {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is SelectionPoint
-        && other.localPosition == localPosition
-        && other.lineHeight == lineHeight
-        && other.handleType == handleType;
+    return other is SelectionPoint &&
+        other.localPosition == localPosition &&
+        other.lineHeight == lineHeight &&
+        other.handleType == handleType;
   }
 
   @override
   int get hashCode {
-    return Object.hash(
-      localPosition,
-      lineHeight,
-      handleType,
-    );
+    return Object.hash(localPosition, lineHeight, handleType);
   }
 }
 

@@ -87,7 +87,8 @@ abstract class ShaderWarmUp {
     await warmUpOnCanvas(canvas);
     final ui.Picture picture = recorder.endRecording();
     assert(debugCaptureShaderWarmUpPicture(picture));
-    if (!kIsWeb || isCanvasKit) { // Picture.toImage is not yet implemented on the web.
+    if (!kIsWeb || isCanvasKit) {
+      // Picture.toImage is not yet implemented on the web.
       final TimelineTask shaderWarmUpTask = TimelineTask();
       shaderWarmUpTask.start('Warm-up shader');
       try {

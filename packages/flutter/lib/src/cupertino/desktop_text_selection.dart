@@ -13,8 +13,8 @@ import 'localizations.dart';
 ///
 /// Specifically does not manage the toolbar, which is left to
 /// [EditableText.contextMenuBuilder].
-class _CupertinoDesktopTextSelectionHandleControls extends CupertinoDesktopTextSelectionControls with TextSelectionHandleControls {
-}
+class _CupertinoDesktopTextSelectionHandleControls extends CupertinoDesktopTextSelectionControls
+    with TextSelectionHandleControls {}
 
 /// Desktop Cupertino styled text selection controls.
 ///
@@ -89,8 +89,7 @@ final TextSelectionControls cupertinoDesktopTextSelectionHandleControls =
     _CupertinoDesktopTextSelectionHandleControls();
 
 /// Text selection controls that follows MacOS design conventions.
-final TextSelectionControls cupertinoDesktopTextSelectionControls =
-    CupertinoDesktopTextSelectionControls();
+final TextSelectionControls cupertinoDesktopTextSelectionControls = CupertinoDesktopTextSelectionControls();
 
 // Generates the child that's passed into CupertinoDesktopTextSelectionToolbar.
 class _CupertinoDesktopTextSelectionControlsToolbar extends StatefulWidget {
@@ -119,7 +118,8 @@ class _CupertinoDesktopTextSelectionControlsToolbar extends StatefulWidget {
   final double textLineHeight;
 
   @override
-  _CupertinoDesktopTextSelectionControlsToolbarState createState() => _CupertinoDesktopTextSelectionControlsToolbarState();
+  _CupertinoDesktopTextSelectionControlsToolbarState createState() =>
+      _CupertinoDesktopTextSelectionControlsToolbarState();
 }
 
 class _CupertinoDesktopTextSelectionControlsToolbarState extends State<_CupertinoDesktopTextSelectionControlsToolbar> {
@@ -160,31 +160,22 @@ class _CupertinoDesktopTextSelectionControlsToolbarState extends State<_Cupertin
     assert(debugCheckHasMediaQuery(context));
     final EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
 
-    final Offset midpointAnchor = Offset(
-      clampDouble(widget.selectionMidpoint.dx - widget.globalEditableRegion.left,
-        mediaQueryPadding.left,
-        MediaQuery.sizeOf(context).width - mediaQueryPadding.right,
-      ),
-      widget.selectionMidpoint.dy - widget.globalEditableRegion.top,
-    );
+    final Offset midpointAnchor = Offset(clampDouble(
+      widget.selectionMidpoint.dx - widget.globalEditableRegion.left,
+      mediaQueryPadding.left,
+      MediaQuery.sizeOf(context).width - mediaQueryPadding.right,
+    ), widget.selectionMidpoint.dy - widget.globalEditableRegion.top);
 
     final List<Widget> items = <Widget>[];
     final CupertinoLocalizations localizations = CupertinoLocalizations.of(context);
-    final Widget onePhysicalPixelVerticalDivider =
-        SizedBox(width: 1.0 / MediaQuery.devicePixelRatioOf(context));
+    final Widget onePhysicalPixelVerticalDivider = SizedBox(width: 1.0 / MediaQuery.devicePixelRatioOf(context));
 
-    void addToolbarButton(
-      String text,
-      VoidCallback onPressed,
-    ) {
+    void addToolbarButton(String text, VoidCallback onPressed) {
       if (items.isNotEmpty) {
         items.add(onePhysicalPixelVerticalDivider);
       }
 
-      items.add(CupertinoDesktopTextSelectionToolbarButton.text(
-        onPressed: onPressed,
-        text: text,
-      ));
+      items.add(CupertinoDesktopTextSelectionToolbarButton.text(onPressed: onPressed, text: text));
     }
 
     if (widget.handleCut != null) {
@@ -193,8 +184,7 @@ class _CupertinoDesktopTextSelectionControlsToolbarState extends State<_Cupertin
     if (widget.handleCopy != null) {
       addToolbarButton(localizations.copyButtonLabel, widget.handleCopy!);
     }
-    if (widget.handlePaste != null
-        && widget.clipboardStatus?.value == ClipboardStatus.pasteable) {
+    if (widget.handlePaste != null && widget.clipboardStatus?.value == ClipboardStatus.pasteable) {
       addToolbarButton(localizations.pasteButtonLabel, widget.handlePaste!);
     }
     if (widget.handleSelectAll != null) {

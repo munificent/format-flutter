@@ -37,10 +37,7 @@ typedef RegisterViewFactory = void Function(String, Object Function(int viewId),
 /// documentation.
 class PlatformSelectableRegionContextMenu extends StatelessWidget {
   /// See `_platform_selectable_region_context_menu_io.dart`.
-  PlatformSelectableRegionContextMenu({
-    required this.child,
-    super.key,
-  }) {
+  PlatformSelectableRegionContextMenu({required this.child, super.key}) {
     if (_registeredViewType == null) {
       _register();
     }
@@ -135,14 +132,7 @@ class PlatformSelectableRegionContextMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
-      children: <Widget>[
-        const Positioned.fill(
-          child: HtmlElementView(
-            viewType: _viewType,
-          ),
-        ),
-        child,
-      ],
+      children: <Widget>[const Positioned.fill(child: HtmlElementView(viewType: _viewType)), child],
     );
   }
 }

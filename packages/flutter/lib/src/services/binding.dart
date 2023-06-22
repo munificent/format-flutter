@@ -180,10 +180,15 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
           // The compressed version doesn't have a more common .gz extension
           // because gradle for Android non-transparently manipulates .gz files.
           final ByteData licenseBytes = await rootBundle.load('NOTICES.Z');
-          final List<int> unzippedBytes = await compute<List<int>, List<int>>(gzip.decode, licenseBytes.buffer.asUint8List(), debugLabel: 'decompressLicenses');
+          final List<int> unzippedBytes = await compute<List<int>, List<int>>(
+            gzip.decode,
+            licenseBytes.buffer.asUint8List(),
+            debugLabel: 'decompressLicenses',
+          );
           rawLicenses = await compute<List<int>, String>(utf8.decode, unzippedBytes, debugLabel: 'utf8DecodeLicenses');
         }
-        final List<LicenseEntry> licenses = await compute<String, List<LicenseEntry>>(_parseLicenses, rawLicenses, debugLabel: 'parseLicenses');
+        final List<LicenseEntry> licenses =
+            await compute<String, List<LicenseEntry>>(_parseLicenses, rawLicenses, debugLabel: 'parseLicenses');
         licenses.forEach(controller.add);
         await controller.close();
       },
@@ -199,10 +204,7 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
     for (final String license in licenses) {
       final int split = license.indexOf('\n\n');
       if (split >= 0) {
-        result.add(LicenseEntryWithLineBreaks(
-          license.substring(0, split).split('\n'),
-          license.substring(split + 2),
-        ));
+        result.add(LicenseEntryWithLineBreaks(license.substring(0, split).split('\n'), license.substring(split + 2)));
       } else {
         result.add(LicenseEntryWithLineBreaks(const <String>[], license));
       }
@@ -214,16 +216,18 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
   void initServiceExtensions() {
     super.initServiceExtensions();
 
-    assert(() {
-      registerStringServiceExtension(
-        name: ServicesServiceExtensions.evict.name,
-        getter: () async => '',
-        setter: (String value) async {
-          evict(value);
-        },
-      );
-      return true;
-    }());
+    assert(
+      () {
+        registerStringServiceExtension(
+          name: ServicesServiceExtensions.evict.name,
+          getter: () async => '',
+          setter: (String value) async {
+            evict(value);
+          },
+        );
+        return true;
+      }(),
+    );
   }
 
   /// Called in response to the `ext.flutter.evict` service extension.
@@ -270,9 +274,7 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
     }
     if (previousState == AppLifecycleState.paused && state == AppLifecycleState.detached) {
       // Handle the wrap-around from paused to detached
-      return const <AppLifecycleState>[
-        AppLifecycleState.detached,
-      ];
+      return const <AppLifecycleState>[AppLifecycleState.detached];
     }
     final List<AppLifecycleState> stateChanges = <AppLifecycleState>[];
     if (previousState == null) {
@@ -293,16 +295,19 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
         }
       }
     }
-    assert((){
-      AppLifecycleState? starting = previousState;
-      for (final AppLifecycleState ending in stateChanges) {
-        if (!_debugVerifyLifecycleChange(starting, ending)) {
-          return false;
+    assert(
+      () {
+        AppLifecycleState? starting = previousState;
+        for (final AppLifecycleState ending in stateChanges) {
+          if (!_debugVerifyLifecycleChange(starting, ending)) {
+            return false;
+          }
+          starting = ending;
         }
-        starting = ending;
-      }
-      return true;
-    }(), 'Invalid lifecycle state transition generated from $previousState to $state (generated $stateChanges)');
+        return true;
+      }(),
+      'Invalid lifecycle state transition generated from $previousState to $state (generated $stateChanges)',
+    );
     return stateChanges;
   }
 
@@ -440,7 +445,7 @@ mixin ServicesBinding on BindingBase, SchedulerBinding {
       'System.exitApplication',
       <String, Object?>{'type': exitType.name, 'exitCode': exitCode},
     );
-    if (result == null ) {
+    if (result == null) {
       return ui.AppExitResponse.cancel;
     }
     switch (result['response']) {

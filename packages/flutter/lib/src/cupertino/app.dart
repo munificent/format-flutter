@@ -179,7 +179,7 @@ class CupertinoApp extends StatefulWidget {
     @Deprecated(
       'Remove this parameter as it is now ignored. '
       'CupertinoApp never introduces its own MediaQuery; the View widget takes care of that. '
-      'This feature was deprecated after v3.7.0-29.0.pre.'
+      'This feature was deprecated after v3.7.0-29.0.pre.',
     )
     this.useInheritedMediaQuery = false,
   }) : routeInformationProvider = null,
@@ -220,7 +220,7 @@ class CupertinoApp extends StatefulWidget {
     @Deprecated(
       'Remove this parameter as it is now ignored. '
       'CupertinoApp never introduces its own MediaQuery; the View widget takes care of that. '
-      'This feature was deprecated after v3.7.0-29.0.pre.'
+      'This feature was deprecated after v3.7.0-29.0.pre.',
     )
     this.useInheritedMediaQuery = false,
   }) : assert(routerDelegate != null || routerConfig != null),
@@ -421,7 +421,7 @@ class CupertinoApp extends StatefulWidget {
   @Deprecated(
     'This setting is now ignored. '
     'CupertinoApp never introduces its own MediaQuery; the View widget takes care of that. '
-    'This feature was deprecated after v3.7.0-29.0.pre.'
+    'This feature was deprecated after v3.7.0-29.0.pre.',
   )
   final bool useInheritedMediaQuery;
 
@@ -431,8 +431,7 @@ class CupertinoApp extends StatefulWidget {
   /// The [HeroController] used for Cupertino page transitions.
   ///
   /// Used by [CupertinoTabView] and [CupertinoApp].
-  static HeroController createCupertinoHeroController() =>
-      HeroController(); // Linear tweening.
+  static HeroController createCupertinoHeroController() => HeroController(); // Linear tweening.
 }
 
 /// Describes how [Scrollable] widgets behave for [CupertinoApp]s.
@@ -453,7 +452,7 @@ class CupertinoScrollBehavior extends ScrollBehavior {
   const CupertinoScrollBehavior();
 
   @override
-  Widget buildScrollbar(BuildContext context , Widget child, ScrollableDetails details) {
+  Widget buildScrollbar(BuildContext context, Widget child, ScrollableDetails details) {
     // When modifying this function, consider modifying the implementation in
     // the base class as well.
     switch (getPlatform(context)) {
@@ -461,10 +460,7 @@ class CupertinoScrollBehavior extends ScrollBehavior {
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         assert(details.controller != null);
-        return CupertinoScrollbar(
-          controller: details.controller,
-          child: child,
-        );
+        return CupertinoScrollbar(controller: details.controller, child: child);
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.iOS:
@@ -508,8 +504,7 @@ class _CupertinoAppState extends State<CupertinoApp> {
   // _CupertinoLocalizationsDelegate.
   Iterable<LocalizationsDelegate<dynamic>> get _localizationsDelegates {
     return <LocalizationsDelegate<dynamic>>[
-      if (widget.localizationsDelegates != null)
-        ...widget.localizationsDelegates!,
+      if (widget.localizationsDelegates != null) ...widget.localizationsDelegates!,
       DefaultCupertinoLocalizations.delegate,
     ];
   }
@@ -518,11 +513,7 @@ class _CupertinoAppState extends State<CupertinoApp> {
     return CupertinoButton.filled(
       padding: EdgeInsets.zero,
       onPressed: onPressed,
-      child: const Icon(
-        CupertinoIcons.search,
-        size: 28.0,
-        color: CupertinoColors.white,
-      ),
+      child: const Icon(CupertinoIcons.search, size: 28.0, color: CupertinoColors.white),
     );
   }
 
@@ -608,12 +599,7 @@ class _CupertinoAppState extends State<CupertinoApp> {
           child: DefaultSelectionStyle(
             selectionColor: effectiveThemeData.primaryColor.withOpacity(0.2),
             cursorColor: effectiveThemeData.primaryColor,
-            child: HeroControllerScope(
-              controller: _heroController,
-              child: Builder(
-                builder: _buildWidgetApp,
-              ),
-            ),
+            child: HeroControllerScope(controller: _heroController, child: Builder(builder: _buildWidgetApp)),
           ),
         ),
       ),

@@ -126,10 +126,12 @@ mixin ScrollMetrics {
   double get extentInside {
     assert(minScrollExtent <= maxScrollExtent);
     return viewportDimension
-      // "above" overscroll value
-      - clampDouble(minScrollExtent - pixels, 0, viewportDimension)
-      // "below" overscroll value
-      - clampDouble(pixels - maxScrollExtent, 0, viewportDimension);
+        // "above" overscroll value
+        -
+        clampDouble(minScrollExtent - pixels, 0, viewportDimension)
+        // "below" overscroll value
+        -
+        clampDouble(pixels - maxScrollExtent, 0, viewportDimension);
   }
 
   /// The quantity of content conceptually "below" the viewport in the scrollable.
@@ -205,6 +207,8 @@ class FixedScrollMetrics with ScrollMetrics {
 
   @override
   String toString() {
-    return '${objectRuntimeType(this, 'FixedScrollMetrics')}(${extentBefore.toStringAsFixed(1)}..[${extentInside.toStringAsFixed(1)}]..${extentAfter.toStringAsFixed(1)})';
+    return '${objectRuntimeType(this, 'FixedScrollMetrics')}(${extentBefore.toStringAsFixed(
+      1,
+    )}..[${extentInside.toStringAsFixed(1)}]..${extentAfter.toStringAsFixed(1)})';
   }
 }

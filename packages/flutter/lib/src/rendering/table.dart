@@ -25,7 +25,8 @@ class TableCellParentData extends BoxParentData {
   int? y;
 
   @override
-  String toString() => '${super.toString()}; ${verticalAlignment == null ? "default vertical alignment" : "$verticalAlignment"}';
+  String toString() =>
+      '${super.toString()}; ${verticalAlignment == null ? "default vertical alignment" : "$verticalAlignment"}';
 }
 
 /// Base class to describe how wide a column in a [RenderTable] should be.
@@ -98,7 +99,7 @@ class IntrinsicColumnWidth extends TableColumnWidth {
   /// there is any room left over when laying out the table. If `flex` is
   /// null (the default), the table will not distribute any extra space to the
   /// column.
-  const IntrinsicColumnWidth({ double? flex }) : _flex = flex;
+  const IntrinsicColumnWidth({double? flex}) : _flex = flex;
 
   @override
   double minIntrinsicWidth(Iterable<RenderBox> cells, double containerWidth) {
@@ -246,18 +247,12 @@ class MaxColumnWidth extends TableColumnWidth {
 
   @override
   double minIntrinsicWidth(Iterable<RenderBox> cells, double containerWidth) {
-    return math.max(
-      a.minIntrinsicWidth(cells, containerWidth),
-      b.minIntrinsicWidth(cells, containerWidth),
-    );
+    return math.max(a.minIntrinsicWidth(cells, containerWidth), b.minIntrinsicWidth(cells, containerWidth));
   }
 
   @override
   double maxIntrinsicWidth(Iterable<RenderBox> cells, double containerWidth) {
-    return math.max(
-      a.maxIntrinsicWidth(cells, containerWidth),
-      b.maxIntrinsicWidth(cells, containerWidth),
-    );
+    return math.max(a.maxIntrinsicWidth(cells, containerWidth), b.maxIntrinsicWidth(cells, containerWidth));
   }
 
   @override
@@ -299,18 +294,12 @@ class MinColumnWidth extends TableColumnWidth {
 
   @override
   double minIntrinsicWidth(Iterable<RenderBox> cells, double containerWidth) {
-    return math.min(
-      a.minIntrinsicWidth(cells, containerWidth),
-      b.minIntrinsicWidth(cells, containerWidth),
-    );
+    return math.min(a.minIntrinsicWidth(cells, containerWidth), b.minIntrinsicWidth(cells, containerWidth));
   }
 
   @override
   double maxIntrinsicWidth(Iterable<RenderBox> cells, double containerWidth) {
-    return math.min(
-      a.maxIntrinsicWidth(cells, containerWidth),
-      b.maxIntrinsicWidth(cells, containerWidth),
-    );
+    return math.min(a.maxIntrinsicWidth(cells, containerWidth), b.maxIntrinsicWidth(cells, containerWidth));
   }
 
   @override
@@ -355,7 +344,7 @@ enum TableCellVerticalAlignment {
 
   /// Cells with this alignment are sized to be as tall as the row, then made to fit the row.
   /// If all the cells have this alignment, then the row will have zero height.
-  fill
+  fill,
 }
 
 /// A table where the columns and rows are sized to fit the contents of the cells.
@@ -1051,7 +1040,8 @@ class RenderTable extends RenderBox {
           switch (childParentData.verticalAlignment ?? defaultVerticalAlignment) {
             case TableCellVerticalAlignment.baseline:
               assert(debugCannotComputeDryLayout(
-                reason: 'TableCellVerticalAlignment.baseline requires a full layout for baseline metrics to be available.',
+                reason:
+                    'TableCellVerticalAlignment.baseline requires a full layout for baseline metrics to be available.',
               ));
               return Size.zero;
             case TableCellVerticalAlignment.top:
@@ -1088,14 +1078,14 @@ class RenderTable extends RenderBox {
       case TextDirection.rtl:
         positions[columns - 1] = 0.0;
         for (int x = columns - 2; x >= 0; x -= 1) {
-          positions[x] = positions[x+1] + widths[x+1];
+          positions[x] = positions[x + 1] + widths[x + 1];
         }
         _columnLefts = positions.reversed;
         _tableWidth = positions.first + widths.first;
       case TextDirection.ltr:
         positions[0] = 0.0;
         for (int x = 1; x < columns; x += 1) {
-          positions[x] = positions[x-1] + widths[x-1];
+          positions[x] = positions[x - 1] + widths[x - 1];
         }
         _columnLefts = positions;
         _tableWidth = positions.last + widths.last;
@@ -1176,7 +1166,7 @@ class RenderTable extends RenderBox {
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, { required Offset position }) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     assert(_children.length == rows * columns);
     for (int index = _children.length - 1; index >= 0; index -= 1) {
       final RenderBox? child = _children[index];
@@ -1221,7 +1211,7 @@ class RenderTable extends RenderBox {
           _rowDecorationPainters![y]!.paint(
             canvas,
             Offset(offset.dx, offset.dy + _rowTops[y]),
-            configuration.copyWith(size: Size(size.width, _rowTops[y+1] - _rowTops[y])),
+            configuration.copyWith(size: Size(size.width, _rowTops[y + 1] - _rowTops[y])),
           );
         }
       }
@@ -1250,7 +1240,11 @@ class RenderTable extends RenderBox {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<TableBorder>('border', border, defaultValue: null));
-    properties.add(DiagnosticsProperty<Map<int, TableColumnWidth>>('specified column widths', _columnWidths, level: _columnWidths.isEmpty ? DiagnosticLevel.hidden : DiagnosticLevel.info));
+    properties.add(DiagnosticsProperty<Map<int, TableColumnWidth>>(
+      'specified column widths',
+      _columnWidths,
+      level: _columnWidths.isEmpty ? DiagnosticLevel.hidden : DiagnosticLevel.info,
+    ));
     properties.add(DiagnosticsProperty<TableColumnWidth>('default column width', defaultColumnWidth));
     properties.add(MessageProperty('table size', '$columns\u00D7$rows'));
     properties.add(IterableProperty<String>('column offsets', _columnLefts?.map(debugFormatDouble), ifNull: 'unknown'));

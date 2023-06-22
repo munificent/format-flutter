@@ -152,90 +152,86 @@ class CupertinoTextFormFieldRow extends FormField<String> {
     Iterable<String>? autofillHints,
     AutovalidateMode super.autovalidateMode = AutovalidateMode.disabled,
     String? placeholder,
-    TextStyle? placeholderStyle = const TextStyle(
-      fontWeight: FontWeight.w400,
-      color: CupertinoColors.placeholderText,
-    ),
+    TextStyle? placeholderStyle = const TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText),
     EditableTextContextMenuBuilder? contextMenuBuilder = _defaultContextMenuBuilder,
-  })  : assert(initialValue == null || controller == null),
-        assert(obscuringCharacter.length == 1),
-        assert(maxLines == null || maxLines > 0),
-        assert(minLines == null || minLines > 0),
-        assert(
-          (maxLines == null) || (minLines == null) || (maxLines >= minLines),
-          "minLines can't be greater than maxLines",
-        ),
-        assert(
-          !expands || (maxLines == null && minLines == null),
-          'minLines and maxLines must be null when expands is true.',
-        ),
-        assert(!obscureText || maxLines == 1, 'Obscured fields cannot be multiline.'),
-        assert(maxLength == null || maxLength > 0),
-        super(
-          initialValue: controller?.text ?? initialValue ?? '',
-          builder: (FormFieldState<String> field) {
-            final _CupertinoTextFormFieldRowState state =
-                field as _CupertinoTextFormFieldRowState;
+  }) : assert(initialValue == null || controller == null),
+       assert(obscuringCharacter.length == 1),
+       assert(maxLines == null || maxLines > 0),
+       assert(minLines == null || minLines > 0),
+       assert(
+         (maxLines == null) || (minLines == null) || (maxLines >= minLines),
+         "minLines can't be greater than maxLines",
+       ),
+       assert(
+         !expands || (maxLines == null && minLines == null),
+         'minLines and maxLines must be null when expands is true.',
+       ),
+       assert(!obscureText || maxLines == 1, 'Obscured fields cannot be multiline.'),
+       assert(maxLength == null || maxLength > 0),
+       super(
+         initialValue: controller?.text ?? initialValue ?? '',
+         builder: (FormFieldState<String> field) {
+           final _CupertinoTextFormFieldRowState state = field as _CupertinoTextFormFieldRowState;
 
-            void onChangedHandler(String value) {
-              field.didChange(value);
-              if (onChanged != null) {
-                onChanged(value);
-              }
-            }
+           void onChangedHandler(String value) {
+             field.didChange(value);
+             if (onChanged != null) {
+               onChanged(value);
+             }
+           }
 
-            return CupertinoFormRow(
-              prefix: prefix,
-              padding: padding,
-              error: (field.errorText == null) ? null : Text(field.errorText!),
-              child: CupertinoTextField.borderless(
-                controller: state._effectiveController,
-                focusNode: focusNode,
-                keyboardType: keyboardType,
-                decoration: decoration,
-                textInputAction: textInputAction,
-                style: style,
-                strutStyle: strutStyle,
-                textAlign: textAlign,
-                textAlignVertical: textAlignVertical,
-                textCapitalization: textCapitalization,
-                textDirection: textDirection,
-                autofocus: autofocus,
-                toolbarOptions: toolbarOptions,
-                readOnly: readOnly,
-                showCursor: showCursor,
-                obscuringCharacter: obscuringCharacter,
-                obscureText: obscureText,
-                autocorrect: autocorrect,
-                smartDashesType: smartDashesType,
-                smartQuotesType: smartQuotesType,
-                enableSuggestions: enableSuggestions,
-                maxLines: maxLines,
-                minLines: minLines,
-                expands: expands,
-                maxLength: maxLength,
-                onChanged: onChangedHandler,
-                onTap: onTap,
-                onEditingComplete: onEditingComplete,
-                onSubmitted: onFieldSubmitted,
-                inputFormatters: inputFormatters,
-                enabled: enabled,
-                cursorWidth: cursorWidth,
-                cursorHeight: cursorHeight,
-                cursorColor: cursorColor,
-                scrollPadding: scrollPadding,
-                scrollPhysics: scrollPhysics,
-                keyboardAppearance: keyboardAppearance,
-                enableInteractiveSelection: enableInteractiveSelection,
-                selectionControls: selectionControls,
-                autofillHints: autofillHints,
-                placeholder: placeholder,
-                placeholderStyle: placeholderStyle,
-                contextMenuBuilder: contextMenuBuilder,
-              ),
-            );
-          },
-        );
+           return CupertinoFormRow(
+             prefix: prefix,
+             padding: padding,
+             error: (field.errorText == null) ? null : Text(field.errorText!),
+             child: CupertinoTextField.borderless(
+               controller: state._effectiveController,
+               focusNode: focusNode,
+               keyboardType: keyboardType,
+               decoration: decoration,
+               textInputAction: textInputAction,
+               style: style,
+               strutStyle: strutStyle,
+               textAlign: textAlign,
+               textAlignVertical: textAlignVertical,
+               textCapitalization: textCapitalization,
+               textDirection: textDirection,
+               autofocus: autofocus,
+               toolbarOptions: toolbarOptions,
+               readOnly: readOnly,
+               showCursor: showCursor,
+               obscuringCharacter: obscuringCharacter,
+               obscureText: obscureText,
+               autocorrect: autocorrect,
+               smartDashesType: smartDashesType,
+               smartQuotesType: smartQuotesType,
+               enableSuggestions: enableSuggestions,
+               maxLines: maxLines,
+               minLines: minLines,
+               expands: expands,
+               maxLength: maxLength,
+               onChanged: onChangedHandler,
+               onTap: onTap,
+               onEditingComplete: onEditingComplete,
+               onSubmitted: onFieldSubmitted,
+               inputFormatters: inputFormatters,
+               enabled: enabled,
+               cursorWidth: cursorWidth,
+               cursorHeight: cursorHeight,
+               cursorColor: cursorColor,
+               scrollPadding: scrollPadding,
+               scrollPhysics: scrollPhysics,
+               keyboardAppearance: keyboardAppearance,
+               enableInteractiveSelection: enableInteractiveSelection,
+               selectionControls: selectionControls,
+               autofillHints: autofillHints,
+               placeholder: placeholder,
+               placeholderStyle: placeholderStyle,
+               contextMenuBuilder: contextMenuBuilder,
+             ),
+           );
+         },
+       );
 
   /// A widget that is displayed at the start of the row.
   ///
@@ -261,9 +257,7 @@ class CupertinoTextFormFieldRow extends FormField<String> {
   final TextEditingController? controller;
 
   static Widget _defaultContextMenuBuilder(BuildContext context, EditableTextState editableTextState) {
-    return CupertinoAdaptiveTextSelectionToolbar.editableText(
-      editableTextState: editableTextState,
-    );
+    return CupertinoAdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState);
   }
 
   @override
@@ -273,11 +267,9 @@ class CupertinoTextFormFieldRow extends FormField<String> {
 class _CupertinoTextFormFieldRowState extends FormFieldState<String> {
   TextEditingController? _controller;
 
-  TextEditingController? get _effectiveController =>
-      _cupertinoTextFormFieldRow.controller ?? _controller;
+  TextEditingController? get _effectiveController => _cupertinoTextFormFieldRow.controller ?? _controller;
 
-  CupertinoTextFormFieldRow get _cupertinoTextFormFieldRow =>
-      super.widget as CupertinoTextFormFieldRow;
+  CupertinoTextFormFieldRow get _cupertinoTextFormFieldRow => super.widget as CupertinoTextFormFieldRow;
 
   @override
   void initState() {
@@ -297,8 +289,7 @@ class _CupertinoTextFormFieldRowState extends FormFieldState<String> {
       _cupertinoTextFormFieldRow.controller?.addListener(_handleControllerChanged);
 
       if (oldWidget.controller != null && _cupertinoTextFormFieldRow.controller == null) {
-        _controller =
-            TextEditingController.fromValue(oldWidget.controller!.value);
+        _controller = TextEditingController.fromValue(oldWidget.controller!.value);
       }
 
       if (_cupertinoTextFormFieldRow.controller != null) {

@@ -159,10 +159,7 @@ class ListWheelChildLoopingListDelegate extends ListWheelChildDelegate {
 /// not have to be built until they are displayed.
 class ListWheelChildBuilderDelegate extends ListWheelChildDelegate {
   /// Constructs the delegate from a builder callback.
-  ListWheelChildBuilderDelegate({
-    required this.builder,
-    this.childCount,
-  });
+  ListWheelChildBuilderDelegate({required this.builder, this.childCount});
 
   /// Called lazily to build children.
   final NullableIndexedWidgetBuilder builder;
@@ -216,9 +213,7 @@ class FixedExtentScrollController extends ScrollController {
   /// Creates a scroll controller for scrollables whose items have the same size.
   ///
   /// [initialItem] defaults to 0 and must not be null.
-  FixedExtentScrollController({
-    this.initialItem = 0,
-  });
+  FixedExtentScrollController({this.initialItem = 0});
 
   /// The page to show when first creating the scroll view.
   ///
@@ -257,22 +252,14 @@ class FixedExtentScrollController extends ScrollController {
   /// The returned [Future] resolves when the animation completes.
   ///
   /// The `duration` and `curve` arguments must not be null.
-  Future<void> animateToItem(
-    int itemIndex, {
-    required Duration duration,
-    required Curve curve,
-  }) async {
+  Future<void> animateToItem(int itemIndex, {required Duration duration, required Curve curve}) async {
     if (!hasClients) {
       return;
     }
 
     await Future.wait<void>(<Future<void>>[
       for (final _FixedExtentScrollPosition position in positions.cast<_FixedExtentScrollPosition>())
-        position.animateTo(
-          itemIndex * position.itemExtent,
-          duration: duration,
-          curve: curve,
-        ),
+        position.animateTo(itemIndex * position.itemExtent, duration: duration, curve: curve),
     ]);
   }
 
@@ -353,11 +340,7 @@ int _getItemFromOffset({
   return (_clipOffsetToScrollableRange(offset, minScrollExtent, maxScrollExtent) / itemExtent).round();
 }
 
-double _clipOffsetToScrollableRange(
-  double offset,
-  double minScrollExtent,
-  double maxScrollExtent,
-) {
+double _clipOffsetToScrollableRange(double offset, double minScrollExtent, double maxScrollExtent) {
   return math.min(math.max(offset, minScrollExtent), maxScrollExtent);
 }
 
@@ -373,9 +356,7 @@ class _FixedExtentScrollPosition extends ScrollPositionWithSingleContext impleme
          context is _FixedExtentScrollableState,
          'FixedExtentScrollController can only be used with ListWheelScrollViews',
        ),
-       super(
-         initialPixels: _getItemExtentFromScrollContext(context) * initialItem,
-       );
+       super(initialPixels: _getItemExtentFromScrollContext(context) * initialItem);
 
   static double _getItemExtentFromScrollContext(ScrollContext context) {
     final _FixedExtentScrollableState scrollable = context as _FixedExtentScrollableState;
@@ -456,7 +437,7 @@ class _FixedExtentScrollableState extends ScrollableState {
 /// Defers back to the parent beyond the scroll extents.
 class FixedExtentScrollPhysics extends ScrollPhysics {
   /// Creates a scroll physics that always lands on items.
-  const FixedExtentScrollPhysics({ super.parent });
+  const FixedExtentScrollPhysics({super.parent});
 
   @override
   FixedExtentScrollPhysics applyTo(ScrollPhysics? ancestor) {
@@ -483,16 +464,15 @@ class FixedExtentScrollPhysics extends ScrollPhysics {
 
     // Create a test simulation to see where it would have ballistically fallen
     // naturally without settling onto items.
-    final Simulation? testFrictionSimulation =
-        super.createBallisticSimulation(metrics, velocity);
+    final Simulation? testFrictionSimulation = super.createBallisticSimulation(metrics, velocity);
 
     // Scenario 2:
     // If it was going to end up past the scroll extent, defer back to the
     // parent physics' ballistics again which should put us on the scrollable's
     // boundary.
-    if (testFrictionSimulation != null
-        && (testFrictionSimulation.x(double.infinity) == metrics.minScrollExtent
-            || testFrictionSimulation.x(double.infinity) == metrics.maxScrollExtent)) {
+    if (testFrictionSimulation != null &&
+        (testFrictionSimulation.x(double.infinity) == metrics.minScrollExtent ||
+            testFrictionSimulation.x(double.infinity) == metrics.maxScrollExtent)) {
       return super.createBallisticSimulation(metrics, velocity);
     }
 
@@ -510,8 +490,8 @@ class FixedExtentScrollPhysics extends ScrollPhysics {
     // Scenario 3:
     // If there's no velocity and we're already at where we intend to land,
     // do nothing.
-    if (velocity.abs() < toleranceFor(position).velocity
-        && (settlingPixels - metrics.pixels).abs() < toleranceFor(position).distance) {
+    if (velocity.abs() < toleranceFor(position).velocity &&
+        (settlingPixels - metrics.pixels).abs() < toleranceFor(position).distance) {
       return null;
     }
 
@@ -519,13 +499,7 @@ class FixedExtentScrollPhysics extends ScrollPhysics {
     // If we're going to end back at the same item because initial velocity
     // is too low to break past it, use a spring simulation to get back.
     if (settlingItemIndex == metrics.itemIndex) {
-      return SpringSimulation(
-        spring,
-        metrics.pixels,
-        settlingPixels,
-        velocity,
-        tolerance: toleranceFor(position),
-      );
+      return SpringSimulation(spring, metrics.pixels, settlingPixels, velocity, tolerance: toleranceFor(position));
     }
 
     // Scenario 5:
@@ -734,10 +708,10 @@ class _ListWheelScrollViewState extends State<ListWheelScrollView> {
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
-    if (notification.depth == 0
-        && widget.onSelectedItemChanged != null
-        && notification is ScrollUpdateNotification
-        && notification.metrics is FixedExtentMetrics) {
+    if (notification.depth == 0 &&
+        widget.onSelectedItemChanged != null &&
+        notification is ScrollUpdateNotification &&
+        notification.metrics is FixedExtentMetrics) {
       final FixedExtentMetrics metrics = notification.metrics as FixedExtentMetrics;
       final int currentItemIndex = metrics.itemIndex;
       if (currentItemIndex != _lastReportedItemIndex) {
@@ -852,12 +826,11 @@ class ListWheelElement extends RenderObjectElement implements ListWheelChildMana
   bool childExistsAt(int index) => retrieveWidget(index) != null;
 
   @override
-  void createChild(int index, { required RenderBox? after }) {
+  void createChild(int index, {required RenderBox? after}) {
     owner!.buildScope(this, () {
       final bool insertFirst = after == null;
       assert(insertFirst || _childElements[index - 1] != null);
-      final Element? newChild =
-        updateChild(_childElements[index], retrieveWidget(index), index);
+      final Element? newChild = updateChild(_childElements[index], retrieveWidget(index), index);
       if (newChild != null) {
         _childElements[index] = newChild;
       } else {
@@ -927,7 +900,6 @@ class ListWheelElement extends RenderObjectElement implements ListWheelChildMana
     _childElements.remove(child.slot);
     super.forgetChild(child);
   }
-
 }
 
 /// A viewport showing a subset of children on a wheel.

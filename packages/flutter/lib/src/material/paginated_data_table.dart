@@ -86,7 +86,12 @@ class PaginatedDataTable extends StatefulWidget {
     this.initialFirstRowIndex = 0,
     this.onPageChanged,
     this.rowsPerPage = defaultRowsPerPage,
-    this.availableRowsPerPage = const <int>[defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 5, defaultRowsPerPage * 10],
+    this.availableRowsPerPage = const <int>[
+      defaultRowsPerPage,
+      defaultRowsPerPage * 2,
+      defaultRowsPerPage * 5,
+      defaultRowsPerPage * 10,
+    ],
     this.onRowsPerPageChanged,
     this.dragStartBehavior = DragStartBehavior.start,
     this.arrowHeadColor,
@@ -98,20 +103,25 @@ class PaginatedDataTable extends StatefulWidget {
        assert(columns.isNotEmpty),
        assert(sortColumnIndex == null || (sortColumnIndex >= 0 && sortColumnIndex < columns.length)),
        assert(dataRowMinHeight == null || dataRowMaxHeight == null || dataRowMaxHeight >= dataRowMinHeight),
-       assert(dataRowHeight == null || (dataRowMinHeight == null && dataRowMaxHeight == null),
-         'dataRowHeight ($dataRowHeight) must not be set if dataRowMinHeight ($dataRowMinHeight) or dataRowMaxHeight ($dataRowMaxHeight) are set.'),
+       assert(
+         dataRowHeight == null || (dataRowMinHeight == null && dataRowMaxHeight == null),
+         'dataRowHeight ($dataRowHeight) must not be set if dataRowMinHeight ($dataRowMinHeight) or dataRowMaxHeight ($dataRowMaxHeight) are set.',
+       ),
        dataRowMinHeight = dataRowHeight ?? dataRowMinHeight ?? kMinInteractiveDimension,
        dataRowMaxHeight = dataRowHeight ?? dataRowMaxHeight ?? kMinInteractiveDimension,
        assert(rowsPerPage > 0),
-       assert(() {
-         if (onRowsPerPageChanged != null) {
-           assert(availableRowsPerPage.contains(rowsPerPage));
-         }
-         return true;
-       }()),
-       assert(!(controller != null && (primary ?? false)),
-          'Primary ScrollViews obtain their ScrollController via inheritance from a PrimaryScrollController widget. '
-          'You cannot both set primary to true and pass an explicit controller.',
+       assert(
+         () {
+           if (onRowsPerPageChanged != null) {
+             assert(availableRowsPerPage.contains(rowsPerPage));
+           }
+           return true;
+         }(),
+       ),
+       assert(
+         !(controller != null && (primary ?? false)),
+         'Primary ScrollViews obtain their ScrollController via inheritance from a PrimaryScrollController widget. '
+         'You cannot both set primary to true and pass an explicit controller.',
        );
 
   /// The table card's optional header.
@@ -320,8 +330,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
       final int rowsPerPage = widget.rowsPerPage;
       _firstRowIndex = (rowIndex ~/ rowsPerPage) * rowsPerPage;
     });
-    if ((widget.onPageChanged != null) &&
-        (oldFirstRowIndex != _firstRowIndex)) {
+    if ((widget.onPageChanged != null) && (oldFirstRowIndex != _firstRowIndex)) {
       widget.onPageChanged!(_firstRowIndex);
     }
   }
@@ -346,10 +355,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
       haveProgressIndicator = true;
       cells[0] = const DataCell(CircularProgressIndicator());
     }
-    return DataRow.byIndex(
-      index: index,
-      cells: cells,
-    );
+    return DataRow.byIndex(index: index, cells: cells);
   }
 
   List<DataRow> _getRows(int firstRowIndex, int rowsPerPage) {
@@ -387,8 +393,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
     pageTo(((_rowCount - 1) / widget.rowsPerPage).floor() * widget.rowsPerPage);
   }
 
-  bool _isNextPageUnavailable() => !_rowCountApproximate &&
-      (_firstRowIndex + widget.rowsPerPage >= _rowCount);
+  bool _isNextPageUnavailable() => !_rowCountApproximate && (_firstRowIndex + widget.rowsPerPage >= _rowCount);
 
   final GlobalKey _tableKey = GlobalKey();
 
@@ -403,9 +408,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
     if (_selectedRowCount == 0 && widget.header != null) {
       headerWidgets.add(Expanded(child: widget.header!));
     } else if (widget.header != null) {
-      headerWidgets.add(Expanded(
-        child: Text(localizations.selectedRowCountTitle(_selectedRowCount)),
-      ));
+      headerWidgets.add(Expanded(child: Text(localizations.selectedRowCountTitle(_selectedRowCount))));
     }
     if (widget.actions != null) {
       headerWidgets.addAll(
@@ -424,14 +427,11 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
     final List<Widget> footerWidgets = <Widget>[];
     if (widget.onRowsPerPageChanged != null) {
       final List<Widget> availableRowsPerPage = widget.availableRowsPerPage
-        .where((int value) => value <= _rowCount || value == widget.rowsPerPage)
-        .map<DropdownMenuItem<int>>((int value) {
-          return DropdownMenuItem<int>(
-            value: value,
-            child: Text('$value'),
-          );
-        })
-        .toList();
+          .where((int value) => value <= _rowCount || value == widget.rowsPerPage)
+          .map<DropdownMenuItem<int>>((int value) {
+            return DropdownMenuItem<int>(value: value, child: Text('$value'));
+          })
+          .toList();
       footerWidgets.addAll(<Widget>[
         Container(width: 14.0), // to match trailing padding in case we overflow and end up scrolling
         Text(localizations.rowsPerPageTitle),
@@ -453,14 +453,12 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
     }
     footerWidgets.addAll(<Widget>[
       Container(width: 32.0),
-      Text(
-        localizations.pageRowsInfoTitle(
-          _firstRowIndex + 1,
-          _firstRowIndex + widget.rowsPerPage,
-          _rowCount,
-          _rowCountApproximate,
-        ),
-      ),
+      Text(localizations.pageRowsInfoTitle(
+        _firstRowIndex + 1,
+        _firstRowIndex + widget.rowsPerPage,
+        _rowCount,
+        _rowCountApproximate,
+      )),
       Container(width: 32.0),
       if (widget.showFirstLastButtons)
         IconButton(
@@ -487,9 +485,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
           icon: Icon(Icons.skip_next, color: widget.arrowHeadColor),
           padding: EdgeInsets.zero,
           tooltip: localizations.lastPageTooltip,
-          onPressed: _isNextPageUnavailable()
-              ? null
-              : _handleLast,
+          onPressed: _isNextPageUnavailable() ? null : _handleLast,
         ),
       Container(width: 14.0),
     ]);
@@ -509,21 +505,17 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
                     // These typographic styles aren't quite the regular ones. We pick the closest ones from the regular
                     // list and then tweak them appropriately.
                     // See https://material.io/design/components/data-tables.html#tables-within-cards
-                    style: _selectedRowCount > 0 ? themeData.textTheme.titleMedium!.copyWith(color: themeData.colorScheme.secondary)
-                                                 : themeData.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400),
+                    style: _selectedRowCount > 0
+                        ? themeData.textTheme.titleMedium!.copyWith(color: themeData.colorScheme.secondary)
+                        : themeData.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400),
                     child: IconTheme.merge(
-                      data: const IconThemeData(
-                        opacity: 0.54,
-                      ),
+                      data: const IconThemeData(opacity: 0.54),
                       child: Ink(
                         height: 64.0,
                         color: _selectedRowCount > 0 ? themeData.secondaryHeaderColor : null,
                         child: Padding(
                           padding: const EdgeInsetsDirectional.only(start: 24, end: 14.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: headerWidgets,
-                          ),
+                          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: headerWidgets),
                         ),
                       ),
                     ),
@@ -560,9 +552,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
               DefaultTextStyle(
                 style: footerTextStyle!,
                 child: IconTheme.merge(
-                  data: const IconThemeData(
-                    opacity: 0.54,
-                  ),
+                  data: const IconThemeData(opacity: 0.54),
                   child: SizedBox(
                     // TODO(bkonyi): this won't handle text zoom correctly,
                     //  https://github.com/flutter/flutter/issues/48522
@@ -571,9 +561,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
                       dragStartBehavior: widget.dragStartBehavior,
                       scrollDirection: Axis.horizontal,
                       reverse: true,
-                      child: Row(
-                        children: footerWidgets,
-                      ),
+                      child: Row(children: footerWidgets),
                     ),
                   ),
                 ),

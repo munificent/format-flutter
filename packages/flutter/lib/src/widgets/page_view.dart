@@ -166,10 +166,7 @@ class PageController extends ScrollController {
   /// The [hasClients] property can be used to check if a [PageView] is attached
   /// prior to accessing [page].
   double? get page {
-    assert(
-      positions.isNotEmpty,
-      'PageController.page cannot be accessed before a PageView is built with it.',
-    );
+    assert(positions.isNotEmpty, 'PageController.page cannot be accessed before a PageView is built with it.');
     assert(
       positions.length == 1,
       'The page property cannot be read when multiple PageViews are attached to '
@@ -185,22 +182,14 @@ class PageController extends ScrollController {
   /// The returned [Future] resolves when the animation completes.
   ///
   /// The `duration` and `curve` arguments must not be null.
-  Future<void> animateToPage(
-    int page, {
-    required Duration duration,
-    required Curve curve,
-  }) {
+  Future<void> animateToPage(int page, {required Duration duration, required Curve curve}) {
     final _PagePosition position = this.position as _PagePosition;
     if (position._cachedPage != null) {
       position._cachedPage = page.toDouble();
       return Future<void>.value();
     }
 
-    return position.animateTo(
-      position.getPixelsFromPage(page.toDouble()),
-      duration: duration,
-      curve: curve,
-    );
+    return position.animateTo(position.getPixelsFromPage(page.toDouble()), duration: duration, curve: curve);
   }
 
   /// Changes which page is displayed in the controlled [PageView].
@@ -223,7 +212,7 @@ class PageController extends ScrollController {
   /// The returned [Future] resolves when the animation completes.
   ///
   /// The `duration` and `curve` arguments must not be null.
-  Future<void> nextPage({ required Duration duration, required Curve curve }) {
+  Future<void> nextPage({required Duration duration, required Curve curve}) {
     return animateToPage(page!.round() + 1, duration: duration, curve: curve);
   }
 
@@ -233,7 +222,7 @@ class PageController extends ScrollController {
   /// The returned [Future] resolves when the animation completes.
   ///
   /// The `duration` and `curve` arguments must not be null.
-  Future<void> previousPage({ required Duration duration, required Curve curve }) {
+  Future<void> previousPage({required Duration duration, required Curve curve}) {
     return animateToPage(page!.round() - 1, duration: duration, curve: curve);
   }
 
@@ -297,7 +286,7 @@ class PageMetrics extends FixedScrollMetrics {
   /// The current page displayed in the [PageView].
   double? get page {
     return math.max(0.0, clampDouble(pixels, minScrollExtent, maxScrollExtent)) /
-           math.max(1.0, viewportDimension * viewportFraction);
+        math.max(1.0, viewportDimension * viewportFraction);
   }
 
   /// The fraction of the viewport that each page occupies.
@@ -317,10 +306,7 @@ class _PagePosition extends ScrollPositionWithSingleContext implements PageMetri
   }) : assert(viewportFraction > 0.0),
        _viewportFraction = viewportFraction,
        _pageToUseOnStartup = initialPage.toDouble(),
-       super(
-         initialPixels: null,
-         keepScrollOffset: keepPage,
-       );
+       super(initialPixels: null, keepScrollOffset: keepPage);
 
   final int initialPage;
   double _pageToUseOnStartup;
@@ -394,13 +380,16 @@ class _PagePosition extends ScrollPositionWithSingleContext implements PageMetri
       'Page value is only available after content dimensions are established.',
     );
     return !hasPixels || !hasContentDimensions
-      ? null
-      : _cachedPage ?? getPageFromPixels(clampDouble(pixels, minScrollExtent, maxScrollExtent), viewportDimension);
+        ? null
+        : _cachedPage ?? getPageFromPixels(clampDouble(pixels, minScrollExtent, maxScrollExtent), viewportDimension);
   }
 
   @override
   void saveScrollOffset() {
-    PageStorage.maybeOf(context.storageContext)?.writeState(context.storageContext, _cachedPage ?? getPageFromPixels(pixels, viewportDimension));
+    PageStorage.maybeOf(context.storageContext)?.writeState(
+      context.storageContext,
+      _cachedPage ?? getPageFromPixels(pixels, viewportDimension),
+    );
   }
 
   @override
@@ -503,17 +492,11 @@ class _PagePosition extends ScrollPositionWithSingleContext implements PageMetri
 }
 
 class _ForceImplicitScrollPhysics extends ScrollPhysics {
-  const _ForceImplicitScrollPhysics({
-    required this.allowImplicitScrolling,
-    super.parent,
-  });
+  const _ForceImplicitScrollPhysics({required this.allowImplicitScrolling, super.parent});
 
   @override
   _ForceImplicitScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return _ForceImplicitScrollPhysics(
-      allowImplicitScrolling: allowImplicitScrolling,
-      parent: buildParent(ancestor),
-    );
+    return _ForceImplicitScrollPhysics(allowImplicitScrolling: allowImplicitScrolling, parent: buildParent(ancestor));
   }
 
   @override
@@ -531,7 +514,7 @@ class _ForceImplicitScrollPhysics extends ScrollPhysics {
 ///  * [PageView.physics], which can override the physics used by a page view.
 class PageScrollPhysics extends ScrollPhysics {
   /// Creates physics for a [PageView].
-  const PageScrollPhysics({ super.parent });
+  const PageScrollPhysics({super.parent});
 
   @override
   PageScrollPhysics applyTo(ScrollPhysics? ancestor) {
@@ -940,13 +923,12 @@ class _PageViewState extends State<PageView> {
   @override
   Widget build(BuildContext context) {
     final AxisDirection axisDirection = _getDirection(context);
-    final ScrollPhysics physics = _ForceImplicitScrollPhysics(
-      allowImplicitScrolling: widget.allowImplicitScrolling,
-    ).applyTo(
-      widget.pageSnapping
-        ? _kPagePhysics.applyTo(widget.physics ?? widget.scrollBehavior?.getScrollPhysics(context))
-        : widget.physics ?? widget.scrollBehavior?.getScrollPhysics(context),
-    );
+    final ScrollPhysics physics = _ForceImplicitScrollPhysics(allowImplicitScrolling: widget.allowImplicitScrolling)
+        .applyTo(
+          widget.pageSnapping
+              ? _kPagePhysics.applyTo(widget.physics ?? widget.scrollBehavior?.getScrollPhysics(context))
+              : widget.physics ?? widget.scrollBehavior?.getScrollPhysics(context),
+        );
 
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification notification) {
@@ -998,6 +980,8 @@ class _PageViewState extends State<PageView> {
     description.add(DiagnosticsProperty<PageController>('controller', widget.controller, showName: false));
     description.add(DiagnosticsProperty<ScrollPhysics>('physics', widget.physics, showName: false));
     description.add(FlagProperty('pageSnapping', value: widget.pageSnapping, ifFalse: 'snapping disabled'));
-    description.add(FlagProperty('allowImplicitScrolling', value: widget.allowImplicitScrolling, ifTrue: 'allow implicit scrolling'));
+    description.add(
+      FlagProperty('allowImplicitScrolling', value: widget.allowImplicitScrolling, ifTrue: 'allow implicit scrolling'),
+    );
   }
 }

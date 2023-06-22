@@ -48,12 +48,7 @@ abstract class EdgeInsetsGeometry {
 
   /// Whether every dimension is non-negative.
   bool get isNonNegative {
-    return _left >= 0.0
-        && _right >= 0.0
-        && _start >= 0.0
-        && _end >= 0.0
-        && _top >= 0.0
-        && _bottom >= 0.0;
+    return _left >= 0.0 && _right >= 0.0 && _start >= 0.0 && _end >= 0.0 && _top >= 0.0 && _bottom >= 0.0;
   }
 
   /// The total offset in the horizontal direction.
@@ -261,36 +256,36 @@ abstract class EdgeInsetsGeometry {
         return 'EdgeInsets.all(${_left.toStringAsFixed(1)})';
       }
       return 'EdgeInsets(${_left.toStringAsFixed(1)}, '
-                        '${_top.toStringAsFixed(1)}, '
-                        '${_right.toStringAsFixed(1)}, '
-                        '${_bottom.toStringAsFixed(1)})';
+          '${_top.toStringAsFixed(1)}, '
+          '${_right.toStringAsFixed(1)}, '
+          '${_bottom.toStringAsFixed(1)})';
     }
     if (_left == 0.0 && _right == 0.0) {
       return 'EdgeInsetsDirectional(${_start.toStringAsFixed(1)}, '
-                                   '${_top.toStringAsFixed(1)}, '
-                                   '${_end.toStringAsFixed(1)}, '
-                                   '${_bottom.toStringAsFixed(1)})';
+          '${_top.toStringAsFixed(1)}, '
+          '${_end.toStringAsFixed(1)}, '
+          '${_bottom.toStringAsFixed(1)})';
     }
     return 'EdgeInsets(${_left.toStringAsFixed(1)}, '
-                      '${_top.toStringAsFixed(1)}, '
-                      '${_right.toStringAsFixed(1)}, '
-                      '${_bottom.toStringAsFixed(1)})'
-           ' + '
-           'EdgeInsetsDirectional(${_start.toStringAsFixed(1)}, '
-                                 '0.0, '
-                                 '${_end.toStringAsFixed(1)}, '
-                                 '0.0)';
+        '${_top.toStringAsFixed(1)}, '
+        '${_right.toStringAsFixed(1)}, '
+        '${_bottom.toStringAsFixed(1)})'
+        ' + '
+        'EdgeInsetsDirectional(${_start.toStringAsFixed(1)}, '
+        '0.0, '
+        '${_end.toStringAsFixed(1)}, '
+        '0.0)';
   }
 
   @override
   bool operator ==(Object other) {
-    return other is EdgeInsetsGeometry
-        && other._left == _left
-        && other._right == _right
-        && other._start == _start
-        && other._end == _end
-        && other._top == _top
-        && other._bottom == _bottom;
+    return other is EdgeInsetsGeometry &&
+        other._left == _left &&
+        other._right == _right &&
+        other._start == _start &&
+        other._end == _end &&
+        other._top == _top &&
+        other._bottom == _bottom;
   }
 
   @override
@@ -356,11 +351,7 @@ class EdgeInsets extends EdgeInsetsGeometry {
   /// const EdgeInsets.all(8.0)
   /// ```
   /// {@end-tool}
-  const EdgeInsets.all(double value)
-    : left = value,
-      top = value,
-      right = value,
-      bottom = value;
+  const EdgeInsets.all(double value) : left = value, top = value, right = value, bottom = value;
 
   /// Creates insets with only the given values non-zero.
   ///
@@ -372,12 +363,7 @@ class EdgeInsets extends EdgeInsetsGeometry {
   /// const EdgeInsets.only(left: 40.0)
   /// ```
   /// {@end-tool}
-  const EdgeInsets.only({
-    this.left = 0.0,
-    this.top = 0.0,
-    this.right = 0.0,
-    this.bottom = 0.0,
-  });
+  const EdgeInsets.only({this.left = 0.0, this.top = 0.0, this.right = 0.0, this.bottom = 0.0});
 
   /// Creates insets with symmetrical vertical and horizontal offsets.
   ///
@@ -389,13 +375,11 @@ class EdgeInsets extends EdgeInsetsGeometry {
   /// const EdgeInsets.symmetric(vertical: 8.0)
   /// ```
   /// {@end-tool}
-  const EdgeInsets.symmetric({
-    double vertical = 0.0,
-    double horizontal = 0.0,
-  }) : left = horizontal,
-       top = vertical,
-       right = horizontal,
-       bottom = vertical;
+  const EdgeInsets.symmetric({double vertical = 0.0, double horizontal = 0.0})
+    : left = horizontal,
+      top = vertical,
+      right = horizontal,
+      bottom = vertical;
 
   /// Creates insets that match the given view padding.
   ///
@@ -530,22 +514,12 @@ class EdgeInsets extends EdgeInsetsGeometry {
 
   /// Returns the difference between two [EdgeInsets].
   EdgeInsets operator -(EdgeInsets other) {
-    return EdgeInsets.fromLTRB(
-      left - other.left,
-      top - other.top,
-      right - other.right,
-      bottom - other.bottom,
-    );
+    return EdgeInsets.fromLTRB(left - other.left, top - other.top, right - other.right, bottom - other.bottom);
   }
 
   /// Returns the sum of two [EdgeInsets].
   EdgeInsets operator +(EdgeInsets other) {
-    return EdgeInsets.fromLTRB(
-      left + other.left,
-      top + other.top,
-      right + other.right,
-      bottom + other.bottom,
-    );
+    return EdgeInsets.fromLTRB(left + other.left, top + other.top, right + other.right, bottom + other.bottom);
   }
 
   /// Returns the [EdgeInsets] object with each dimension negated.
@@ -553,34 +527,19 @@ class EdgeInsets extends EdgeInsetsGeometry {
   /// This is the same as multiplying the object by -1.0.
   @override
   EdgeInsets operator -() {
-    return EdgeInsets.fromLTRB(
-      -left,
-      -top,
-      -right,
-      -bottom,
-    );
+    return EdgeInsets.fromLTRB(-left, -top, -right, -bottom);
   }
 
   /// Scales the [EdgeInsets] in each dimension by the given factor.
   @override
   EdgeInsets operator *(double other) {
-    return EdgeInsets.fromLTRB(
-      left * other,
-      top * other,
-      right * other,
-      bottom * other,
-    );
+    return EdgeInsets.fromLTRB(left * other, top * other, right * other, bottom * other);
   }
 
   /// Divides the [EdgeInsets] in each dimension by the given factor.
   @override
   EdgeInsets operator /(double other) {
-    return EdgeInsets.fromLTRB(
-      left / other,
-      top / other,
-      right / other,
-      bottom / other,
-    );
+    return EdgeInsets.fromLTRB(left / other, top / other, right / other, bottom / other);
   }
 
   /// Integer divides the [EdgeInsets] in each dimension by the given factor.
@@ -597,12 +556,7 @@ class EdgeInsets extends EdgeInsetsGeometry {
   /// Computes the remainder in each dimension by the given factor.
   @override
   EdgeInsets operator %(double other) {
-    return EdgeInsets.fromLTRB(
-      left % other,
-      top % other,
-      right % other,
-      bottom % other,
-    );
+    return EdgeInsets.fromLTRB(left % other, top % other, right % other, bottom % other);
   }
 
   /// Linearly interpolate between two [EdgeInsets].
@@ -633,12 +587,7 @@ class EdgeInsets extends EdgeInsetsGeometry {
 
   /// Creates a copy of this EdgeInsets but with the given fields replaced
   /// with the new values.
-  EdgeInsets copyWith({
-    double? left,
-    double? top,
-    double? right,
-    double? bottom,
-  }) {
+  EdgeInsets copyWith({double? left, double? top, double? right, double? bottom}) {
     return EdgeInsets.only(
       left: left ?? this.left,
       top: top ?? this.top,
@@ -673,12 +622,7 @@ class EdgeInsetsDirectional extends EdgeInsetsGeometry {
   /// const EdgeInsetsDirectional.only(start: 40.0)
   /// ```
   /// {@end-tool}
-  const EdgeInsetsDirectional.only({
-    this.start = 0.0,
-    this.top = 0.0,
-    this.end = 0.0,
-    this.bottom = 0.0,
-  });
+  const EdgeInsetsDirectional.only({this.start = 0.0, this.top = 0.0, this.end = 0.0, this.bottom = 0.0});
 
   /// Creates insets with symmetric vertical and horizontal offsets.
   ///
@@ -693,13 +637,11 @@ class EdgeInsetsDirectional extends EdgeInsetsGeometry {
   /// const EdgeInsetsDirectional.symmetric(vertical: 8.0)
   /// ```
   /// {@end-tool}
-  const EdgeInsetsDirectional.symmetric({
-    double horizontal = 0.0,
-    double vertical = 0.0,
-  })  : start = horizontal,
-        end = horizontal,
-        top = vertical,
-        bottom = vertical;
+  const EdgeInsetsDirectional.symmetric({double horizontal = 0.0, double vertical = 0.0})
+    : start = horizontal,
+      end = horizontal,
+      top = vertical,
+      bottom = vertical;
 
   /// Creates insets where all the offsets are `value`.
   ///
@@ -711,11 +653,7 @@ class EdgeInsetsDirectional extends EdgeInsetsGeometry {
   /// const EdgeInsetsDirectional.all(8.0)
   /// ```
   /// {@end-tool}
-  const EdgeInsetsDirectional.all(double value)
-    : start = value,
-      top = value,
-      end = value,
-      bottom = value;
+  const EdgeInsetsDirectional.all(double value) : start = value, top = value, end = value, bottom = value;
 
   /// An [EdgeInsetsDirectional] with zero offsets in each direction.
   ///
@@ -792,22 +730,12 @@ class EdgeInsetsDirectional extends EdgeInsetsGeometry {
 
   /// Returns the difference between two [EdgeInsetsDirectional] objects.
   EdgeInsetsDirectional operator -(EdgeInsetsDirectional other) {
-    return EdgeInsetsDirectional.fromSTEB(
-      start - other.start,
-      top - other.top,
-      end - other.end,
-      bottom - other.bottom,
-    );
+    return EdgeInsetsDirectional.fromSTEB(start - other.start, top - other.top, end - other.end, bottom - other.bottom);
   }
 
   /// Returns the sum of two [EdgeInsetsDirectional] objects.
   EdgeInsetsDirectional operator +(EdgeInsetsDirectional other) {
-    return EdgeInsetsDirectional.fromSTEB(
-      start + other.start,
-      top + other.top,
-      end + other.end,
-      bottom + other.bottom,
-    );
+    return EdgeInsetsDirectional.fromSTEB(start + other.start, top + other.top, end + other.end, bottom + other.bottom);
   }
 
   /// Returns the [EdgeInsetsDirectional] object with each dimension negated.
@@ -815,34 +743,19 @@ class EdgeInsetsDirectional extends EdgeInsetsGeometry {
   /// This is the same as multiplying the object by -1.0.
   @override
   EdgeInsetsDirectional operator -() {
-    return EdgeInsetsDirectional.fromSTEB(
-      -start,
-      -top,
-      -end,
-      -bottom,
-    );
+    return EdgeInsetsDirectional.fromSTEB(-start, -top, -end, -bottom);
   }
 
   /// Scales the [EdgeInsetsDirectional] object in each dimension by the given factor.
   @override
   EdgeInsetsDirectional operator *(double other) {
-    return EdgeInsetsDirectional.fromSTEB(
-      start * other,
-      top * other,
-      end * other,
-      bottom * other,
-    );
+    return EdgeInsetsDirectional.fromSTEB(start * other, top * other, end * other, bottom * other);
   }
 
   /// Divides the [EdgeInsetsDirectional] object in each dimension by the given factor.
   @override
   EdgeInsetsDirectional operator /(double other) {
-    return EdgeInsetsDirectional.fromSTEB(
-      start / other,
-      top / other,
-      end / other,
-      bottom / other,
-    );
+    return EdgeInsetsDirectional.fromSTEB(start / other, top / other, end / other, bottom / other);
   }
 
   /// Integer divides the [EdgeInsetsDirectional] object in each dimension by the given factor.
@@ -859,12 +772,7 @@ class EdgeInsetsDirectional extends EdgeInsetsGeometry {
   /// Computes the remainder in each dimension by the given factor.
   @override
   EdgeInsetsDirectional operator %(double other) {
-    return EdgeInsetsDirectional.fromSTEB(
-      start % other,
-      top % other,
-      end % other,
-      bottom % other,
-    );
+    return EdgeInsetsDirectional.fromSTEB(start % other, top % other, end % other, bottom % other);
   }
 
   /// Linearly interpolate between two [EdgeInsetsDirectional].
@@ -929,24 +837,12 @@ class _MixedEdgeInsets extends EdgeInsetsGeometry {
 
   @override
   bool get isNonNegative {
-    return _left >= 0.0
-        && _right >= 0.0
-        && _start >= 0.0
-        && _end >= 0.0
-        && _top >= 0.0
-        && _bottom >= 0.0;
+    return _left >= 0.0 && _right >= 0.0 && _start >= 0.0 && _end >= 0.0 && _top >= 0.0 && _bottom >= 0.0;
   }
 
   @override
   _MixedEdgeInsets operator -() {
-    return _MixedEdgeInsets.fromLRSETB(
-      -_left,
-      -_right,
-      -_start,
-      -_end,
-      -_top,
-      -_bottom,
-    );
+    return _MixedEdgeInsets.fromLRSETB(-_left, -_right, -_start, -_end, -_top, -_bottom);
   }
 
   @override

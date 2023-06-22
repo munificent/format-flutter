@@ -40,11 +40,7 @@ enum ContextMenuButtonType {
 @immutable
 class ContextMenuButtonItem {
   /// Creates a const instance of [ContextMenuButtonItem].
-  const ContextMenuButtonItem({
-    required this.onPressed,
-    this.type = ContextMenuButtonType.custom,
-    this.label,
-  });
+  const ContextMenuButtonItem({required this.onPressed, this.type = ContextMenuButtonType.custom, this.label});
 
   /// The callback to be called when the button is pressed.
   final VoidCallback? onPressed;
@@ -61,11 +57,7 @@ class ContextMenuButtonItem {
 
   /// Creates a new [ContextMenuButtonItem] with the provided parameters
   /// overridden.
-  ContextMenuButtonItem copyWith({
-    VoidCallback? onPressed,
-    ContextMenuButtonType? type,
-    String? label,
-  }) {
+  ContextMenuButtonItem copyWith({VoidCallback? onPressed, ContextMenuButtonType? type, String? label}) {
     return ContextMenuButtonItem(
       onPressed: onPressed ?? this.onPressed,
       type: type ?? this.type,
@@ -78,10 +70,7 @@ class ContextMenuButtonItem {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ContextMenuButtonItem
-        && other.label == label
-        && other.onPressed == onPressed
-        && other.type == type;
+    return other is ContextMenuButtonItem && other.label == label && other.onPressed == onPressed && other.type == type;
   }
 
   @override

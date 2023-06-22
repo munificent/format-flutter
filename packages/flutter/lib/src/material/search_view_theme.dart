@@ -139,16 +139,16 @@ class SearchViewThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is SearchViewThemeData
-      && other.backgroundColor == backgroundColor
-      && other.elevation == elevation
-      && other.surfaceTintColor == surfaceTintColor
-      && other.side == side
-      && other.shape == shape
-      && other.headerTextStyle == headerTextStyle
-      && other.headerHintStyle == headerHintStyle
-      && other.constraints == constraints
-      && other.dividerColor == dividerColor;
+    return other is SearchViewThemeData &&
+        other.backgroundColor == backgroundColor &&
+        other.elevation == elevation &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.side == side &&
+        other.shape == shape &&
+        other.headerTextStyle == headerTextStyle &&
+        other.headerHintStyle == headerHintStyle &&
+        other.constraints == constraints &&
+        other.dividerColor == dividerColor;
   }
 
   @override
@@ -190,11 +190,7 @@ class SearchViewThemeData with Diagnosticable {
 class SearchViewTheme extends InheritedWidget {
   /// Creates a const theme that controls the configurations for the search view
   /// created by the [SearchAnchor] widget.
-  const SearchViewTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const SearchViewTheme({super.key, required this.data, required super.child});
 
   /// The properties used for all descendant [SearchAnchor] widgets.
   final SearchViewThemeData data;

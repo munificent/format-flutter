@@ -113,7 +113,7 @@ class InputChip extends StatelessWidget
     this.avatarBorder = const CircleBorder(),
     @Deprecated(
       'Migrate to deleteButtonTooltipMessage. '
-      'This feature was deprecated after v2.10.0-0.3.pre.'
+      'This feature was deprecated after v2.10.0-0.3.pre.',
     )
     this.useDeleteButtonTooltip = true,
   }) : assert(pressElevation == null || pressElevation >= 0.0),
@@ -188,7 +188,7 @@ class InputChip extends StatelessWidget
   @override
   @Deprecated(
     'Migrate to deleteButtonTooltipMessage. '
-    'This feature was deprecated after v2.10.0-0.3.pre.'
+    'This feature was deprecated after v2.10.0-0.3.pre.',
   )
   final bool useDeleteButtonTooltip;
 
@@ -196,10 +196,10 @@ class InputChip extends StatelessWidget
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     final ChipThemeData? defaults = Theme.of(context).useMaterial3
-      ? _InputChipDefaultsM3(context, isEnabled, selected)
-      : null;
-    final Widget? resolvedDeleteIcon = deleteIcon
-      ?? (Theme.of(context).useMaterial3 ? const Icon(Icons.clear, size: 18) : null);
+        ? _InputChipDefaultsM3(context, isEnabled, selected)
+        : null;
+    final Widget? resolvedDeleteIcon =
+        deleteIcon ?? (Theme.of(context).useMaterial3 ? const Icon(Icons.clear, size: 18) : null);
     return RawChip(
       defaultProperties: defaults,
       avatar: avatar,
@@ -273,9 +273,7 @@ class _InputChipDefaultsM3 extends ChipThemeData {
   Color? get surfaceTintColor => Colors.transparent;
 
   @override
-  Color? get selectedColor => isEnabled
-    ? _colors.secondaryContainer
-    : _colors.onSurface.withOpacity(0.12);
+  Color? get selectedColor => isEnabled ? _colors.secondaryContainer : _colors.onSurface.withOpacity(0.12);
 
   @override
   Color? get checkmarkColor => null;
@@ -288,18 +286,13 @@ class _InputChipDefaultsM3 extends ChipThemeData {
 
   @override
   BorderSide? get side => !isSelected
-    ? isEnabled
-      ? BorderSide(color: _colors.outline)
-      : BorderSide(color: _colors.onSurface.withOpacity(0.12))
-    : const BorderSide(color: Colors.transparent);
+      ? isEnabled
+          ? BorderSide(color: _colors.outline)
+          : BorderSide(color: _colors.onSurface.withOpacity(0.12))
+      : const BorderSide(color: Colors.transparent);
 
   @override
-  IconThemeData? get iconTheme => IconThemeData(
-    color: isEnabled
-      ? null
-      : _colors.onSurface,
-    size: 18.0,
-  );
+  IconThemeData? get iconTheme => IconThemeData(color: isEnabled ? null : _colors.onSurface, size: 18.0);
 
   @override
   EdgeInsetsGeometry? get padding => const EdgeInsets.all(8.0);

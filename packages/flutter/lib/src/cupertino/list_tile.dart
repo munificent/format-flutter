@@ -251,33 +251,25 @@ class _CupertinoListTileState extends State<CupertinoListTile> {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle titleTextStyle =
-        widget._type == _CupertinoListTileType.base || widget.subtitle == null
-            ? CupertinoTheme.of(context).textTheme.textStyle
-            : CupertinoTheme.of(context).textTheme.textStyle.merge(
-                  TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: widget.leading == null ? _kNotchedTitleWithSubtitleFontSize : null,
-                  ),
-                );
+    final TextStyle titleTextStyle = widget._type == _CupertinoListTileType.base || widget.subtitle == null
+        ? CupertinoTheme.of(context).textTheme.textStyle
+        : CupertinoTheme.of(context).textTheme.textStyle.merge(TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: widget.leading == null ? _kNotchedTitleWithSubtitleFontSize : null,
+          ));
 
     final TextStyle subtitleTextStyle = widget._type == _CupertinoListTileType.base
         ? CupertinoTheme.of(context).textTheme.textStyle.merge(
-              TextStyle(
-                fontSize: _kSubtitleFontSize,
-                color: CupertinoColors.secondaryLabel.resolveFrom(context),
-              ),
-            )
+            TextStyle(fontSize: _kSubtitleFontSize, color: CupertinoColors.secondaryLabel.resolveFrom(context)),
+          )
         : CupertinoTheme.of(context).textTheme.textStyle.merge(
-              TextStyle(
-                fontSize: _kNotchedSubtitleFontSize,
-                color: CupertinoColors.secondaryLabel.resolveFrom(context),
-              ),
-            );
+            TextStyle(fontSize: _kNotchedSubtitleFontSize, color: CupertinoColors.secondaryLabel.resolveFrom(context)),
+          );
 
     final TextStyle? additionalInfoTextStyle = widget.additionalInfo != null
         ? CupertinoTheme.of(context).textTheme.textStyle.merge(
-            TextStyle(color: CupertinoColors.secondaryLabel.resolveFrom(context)))
+            TextStyle(color: CupertinoColors.secondaryLabel.resolveFrom(context)),
+          )
         : null;
 
     final Widget title = DefaultTextStyle(
@@ -309,11 +301,7 @@ class _CupertinoListTileState extends State<CupertinoListTile> {
 
     Widget? additionalInfo;
     if (widget.additionalInfo != null) {
-      additionalInfo = DefaultTextStyle(
-        style: additionalInfoTextStyle!,
-        maxLines: 1,
-        child: widget.additionalInfo!,
-      );
+      additionalInfo = DefaultTextStyle(style: additionalInfoTextStyle!, maxLines: 1, child: widget.additionalInfo!);
     }
 
     // The color for default state tile is set to either what user provided or
@@ -341,13 +329,7 @@ class _CupertinoListTileState extends State<CupertinoListTile> {
         child: Row(
           children: <Widget>[
             if (widget.leading != null) ...<Widget>[
-              SizedBox(
-                width: widget.leadingSize,
-                height: widget.leadingSize,
-                child: Center(
-                  child: widget.leading,
-                ),
-              ),
+              SizedBox(width: widget.leadingSize, height: widget.leadingSize, child: Center(child: widget.leading)),
               SizedBox(width: widget.leadingToTitle),
             ] else
               SizedBox(height: widget.leadingSize),
@@ -357,19 +339,15 @@ class _CupertinoListTileState extends State<CupertinoListTile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   title,
-                  if (subtitle != null) ...<Widget>[
-                    const SizedBox(height: _kNotchedTitleToSubtitle),
-                    subtitle,
-                  ],
+                  if (subtitle != null) ...<Widget>[const SizedBox(height: _kNotchedTitleToSubtitle), subtitle],
                 ],
               ),
             ),
             if (additionalInfo != null) ...<Widget>[
               additionalInfo,
-              if (widget.trailing != null)
-                const SizedBox(width: _kAdditionalInfoToTrailing),
+              if (widget.trailing != null) const SizedBox(width: _kAdditionalInfoToTrailing),
             ],
-            if (widget.trailing != null) widget.trailing!
+            if (widget.trailing != null) widget.trailing!,
           ],
         ),
       ),
@@ -380,12 +358,18 @@ class _CupertinoListTileState extends State<CupertinoListTile> {
     }
 
     return GestureDetector(
-      onTapDown: (_) => setState(() { _tapped = true; }),
-      onTapCancel: () => setState(() { _tapped = false; }),
+      onTapDown: (_) => setState(() {
+        _tapped = true;
+      }),
+      onTapCancel: () => setState(() {
+        _tapped = false;
+      }),
       onTap: () async {
         await widget.onTap!();
         if (mounted) {
-          setState(() { _tapped = false; });
+          setState(() {
+            _tapped = false;
+          });
         }
       },
       behavior: HitTestBehavior.opaque,

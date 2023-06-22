@@ -237,11 +237,7 @@ class AssetImage extends AssetBundleImageProvider {
   /// from the set of images to choose from. The [package] argument must be
   /// non-null when fetching an asset that is included in package. See the
   /// documentation for the [AssetImage] class itself for details.
-  const AssetImage(
-    this.assetName, {
-    this.bundle,
-    this.package,
-  });
+  const AssetImage(this.assetName, {this.bundle, this.package});
 
   /// The name of the main asset from the set of images to choose from. See the
   /// documentation for the [AssetImage] class itself for details.
@@ -281,39 +277,33 @@ class AssetImage extends AssetBundleImageProvider {
     Completer<AssetBundleImageKey>? completer;
     Future<AssetBundleImageKey>? result;
 
-    AssetManifest.loadFromAssetBundle(chosenBundle)
-      .then((AssetManifest manifest) {
-        final Iterable<AssetMetadata>? candidateVariants = manifest.getAssetVariants(keyName);
-        final AssetMetadata chosenVariant = _chooseVariant(
-          keyName,
-          configuration,
-          candidateVariants,
-        );
-        final AssetBundleImageKey key = AssetBundleImageKey(
-          bundle: chosenBundle,
-          name: chosenVariant.key,
-          scale: chosenVariant.targetDevicePixelRatio ?? _naturalResolution,
-        );
-        if (completer != null) {
-          // We already returned from this function, which means we are in the
-          // asynchronous mode. Pass the value to the completer. The completer's
-          // future is what we returned.
-          completer.complete(key);
-        } else {
-          // We haven't yet returned, so we must have been called synchronously
-          // just after loadStructuredData returned (which means it provided us
-          // with a SynchronousFuture). Let's return a SynchronousFuture
-          // ourselves.
-          result = SynchronousFuture<AssetBundleImageKey>(key);
-        }
-      })
-      .onError((Object error, StackTrace stack) {
-        // We had an error. (This guarantees we weren't called synchronously.)
-        // Forward the error to the caller.
-        assert(completer != null);
-        assert(result == null);
-        completer!.completeError(error, stack);
-      });
+    AssetManifest.loadFromAssetBundle(chosenBundle).then((AssetManifest manifest) {
+      final Iterable<AssetMetadata>? candidateVariants = manifest.getAssetVariants(keyName);
+      final AssetMetadata chosenVariant = _chooseVariant(keyName, configuration, candidateVariants);
+      final AssetBundleImageKey key = AssetBundleImageKey(
+        bundle: chosenBundle,
+        name: chosenVariant.key,
+        scale: chosenVariant.targetDevicePixelRatio ?? _naturalResolution,
+      );
+      if (completer != null) {
+        // We already returned from this function, which means we are in the
+        // asynchronous mode. Pass the value to the completer. The completer's
+        // future is what we returned.
+        completer.complete(key);
+      } else {
+        // We haven't yet returned, so we must have been called synchronously
+        // just after loadStructuredData returned (which means it provided us
+        // with a SynchronousFuture). Let's return a SynchronousFuture
+        // ourselves.
+        result = SynchronousFuture<AssetBundleImageKey>(key);
+      }
+    }).onError((Object error, StackTrace stack) {
+      // We had an error. (This guarantees we weren't called synchronously.)
+      // Forward the error to the caller.
+      assert(completer != null);
+      assert(result == null);
+      completer!.completeError(error, stack);
+    });
 
     if (result != null) {
       // The code above ran synchronously, and came up with an answer.
@@ -326,13 +316,16 @@ class AssetImage extends AssetBundleImageProvider {
     return completer.future;
   }
 
-  AssetMetadata _chooseVariant(String mainAssetKey, ImageConfiguration config, Iterable<AssetMetadata>? candidateVariants) {
+  AssetMetadata _chooseVariant(
+    String mainAssetKey,
+    ImageConfiguration config,
+    Iterable<AssetMetadata>? candidateVariants,
+  ) {
     if (candidateVariants == null || candidateVariants.isEmpty || config.devicePixelRatio == null) {
       return AssetMetadata(key: mainAssetKey, targetDevicePixelRatio: null, main: true);
     }
 
-    final SplayTreeMap<double, AssetMetadata> candidatesByDevicePixelRatio =
-      SplayTreeMap<double, AssetMetadata>();
+    final SplayTreeMap<double, AssetMetadata> candidatesByDevicePixelRatio = SplayTreeMap<double, AssetMetadata>();
     for (final AssetMetadata candidate in candidateVariants) {
       candidatesByDevicePixelRatio[candidate.targetDevicePixelRatio ?? _naturalResolution] = candidate;
     }
@@ -383,9 +376,7 @@ class AssetImage extends AssetBundleImageProvider {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is AssetImage
-        && other.keyName == keyName
-        && other.bundle == bundle;
+    return other is AssetImage && other.keyName == keyName && other.bundle == bundle;
   }
 
   @override

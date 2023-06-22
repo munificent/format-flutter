@@ -88,8 +88,8 @@ class CupertinoPicker extends StatefulWidget {
        assert(itemExtent > 0),
        assert(squeeze > 0),
        childDelegate = looping
-                       ? ListWheelChildLoopingListDelegate(children: children)
-                       : ListWheelChildListDelegate(children: children);
+           ? ListWheelChildLoopingListDelegate(children: children)
+           : ListWheelChildListDelegate(children: children);
 
   /// Creates a picker from an [IndexedWidgetBuilder] callback where the builder
   /// is dynamically invoked during layout.
@@ -259,14 +259,7 @@ class _CupertinoPickerState extends State<CupertinoPicker> {
     final double height = widget.itemExtent * widget.magnification;
 
     return IgnorePointer(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints.expand(
-            height: height,
-          ),
-          child: selectionOverlay,
-        ),
-      ),
+      child: Center(child: ConstrainedBox(constraints: BoxConstraints.expand(height: height), child: selectionOverlay)),
     );
   }
 
@@ -298,16 +291,12 @@ class _CupertinoPickerState extends State<CupertinoPicker> {
               ),
             ),
           ),
-          if (widget.selectionOverlay != null)
-            _buildSelectionOverlay(widget.selectionOverlay!),
+          if (widget.selectionOverlay != null) _buildSelectionOverlay(widget.selectionOverlay!),
         ],
       ),
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: resolvedBackgroundColor),
-      child: result,
-    );
+    return DecoratedBox(decoration: BoxDecoration(color: resolvedBackgroundColor), child: result);
   }
 }
 
@@ -329,7 +318,6 @@ class _CupertinoPickerState extends State<CupertinoPicker> {
 ///
 ///  * [CupertinoPicker], which uses this widget as its default [CupertinoPicker.selectionOverlay].
 class CupertinoPickerDefaultSelectionOverlay extends StatelessWidget {
-
   /// Creates an iOS 14 style selection overlay that highlights the magnified
   /// area (or the currently selected item, depending on how you described it
   /// elsewhere) of a [CupertinoPicker].
@@ -395,10 +383,7 @@ class CupertinoPickerDefaultSelectionOverlay extends StatelessWidget {
 // adjustable semantic node, with adjustment callbacks wired to move the
 // scroll controller.
 class _CupertinoPickerSemantics extends SingleChildRenderObjectWidget {
-  const _CupertinoPickerSemantics({
-    super.child,
-    required this.scrollController,
-  });
+  const _CupertinoPickerSemantics({super.child, required this.scrollController});
 
   final FixedExtentScrollController scrollController;
 
@@ -467,6 +452,7 @@ class _RenderCupertinoPickerSemantics extends RenderProxyBox {
     _currentIndex = controller.selectedItem;
     markNeedsSemanticsUpdate();
   }
+
   @override
   void describeSemanticsConfiguration(SemanticsConfiguration config) {
     super.describeSemanticsConfiguration(config);

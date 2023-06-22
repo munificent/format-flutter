@@ -11,12 +11,7 @@ import 'object.dart';
 import 'stack.dart';
 
 // Describes which side the region data overflows on.
-enum _OverflowSide {
-  left,
-  top,
-  bottom,
-  right,
-}
+enum _OverflowSide { left, top, bottom, right }
 
 // Data used by the DebugOverflowIndicator to manage the regions and labels for
 // the indicators.
@@ -142,17 +137,11 @@ mixin DebugOverflowIndicatorMixin on RenderObject {
   List<_OverflowRegionData> _calculateOverflowRegions(RelativeRect overflow, Rect containerRect) {
     final List<_OverflowRegionData> regions = <_OverflowRegionData>[];
     if (overflow.left > 0.0) {
-      final Rect markerRect = Rect.fromLTWH(
-        0.0,
-        0.0,
-        containerRect.width * _indicatorFraction,
-        containerRect.height,
-      );
+      final Rect markerRect = Rect.fromLTWH(0.0, 0.0, containerRect.width * _indicatorFraction, containerRect.height);
       regions.add(_OverflowRegionData(
         rect: markerRect,
         label: 'LEFT OVERFLOWED BY ${_formatPixels(overflow.left)} PIXELS',
-        labelOffset: markerRect.centerLeft +
-            const Offset(_indicatorFontSizePixels + _indicatorLabelPaddingPixels, 0.0),
+        labelOffset: markerRect.centerLeft + const Offset(_indicatorFontSizePixels + _indicatorLabelPaddingPixels, 0.0),
         rotation: math.pi / 2.0,
         side: _OverflowSide.left,
       ));
@@ -167,19 +156,14 @@ mixin DebugOverflowIndicatorMixin on RenderObject {
       regions.add(_OverflowRegionData(
         rect: markerRect,
         label: 'RIGHT OVERFLOWED BY ${_formatPixels(overflow.right)} PIXELS',
-        labelOffset: markerRect.centerRight -
-            const Offset(_indicatorFontSizePixels + _indicatorLabelPaddingPixels, 0.0),
+        labelOffset:
+            markerRect.centerRight - const Offset(_indicatorFontSizePixels + _indicatorLabelPaddingPixels, 0.0),
         rotation: -math.pi / 2.0,
         side: _OverflowSide.right,
       ));
     }
     if (overflow.top > 0.0) {
-      final Rect markerRect = Rect.fromLTWH(
-        0.0,
-        0.0,
-        containerRect.width,
-        containerRect.height * _indicatorFraction,
-      );
+      final Rect markerRect = Rect.fromLTWH(0.0, 0.0, containerRect.width, containerRect.height * _indicatorFraction);
       regions.add(_OverflowRegionData(
         rect: markerRect,
         label: 'TOP OVERFLOWED BY ${_formatPixels(overflow.top)} PIXELS',
@@ -197,8 +181,8 @@ mixin DebugOverflowIndicatorMixin on RenderObject {
       regions.add(_OverflowRegionData(
         rect: markerRect,
         label: 'BOTTOM OVERFLOWED BY ${_formatPixels(overflow.bottom)} PIXELS',
-        labelOffset: markerRect.bottomCenter -
-            const Offset(0.0, _indicatorFontSizePixels + _indicatorLabelPaddingPixels),
+        labelOffset:
+            markerRect.bottomCenter - const Offset(0.0, _indicatorFontSizePixels + _indicatorLabelPaddingPixels),
         side: _OverflowSide.bottom,
       ));
     }
@@ -242,25 +226,22 @@ mixin DebugOverflowIndicatorMixin on RenderObject {
     }
     // TODO(jacobr): add the overflows in pixels as structured data so they can
     // be visualized in debugging tools.
-    FlutterError.reportError(
-      FlutterErrorDetails(
-        exception: FlutterError('A $runtimeType overflowed by $overflowText.'),
-        library: 'rendering library',
-        context: ErrorDescription('during layout'),
-        informationCollector: () => <DiagnosticsNode>[
-          // debugCreator should only be set in DebugMode, but we want the
-          // treeshaker to know that.
-          if (kDebugMode && debugCreator != null)
-            DiagnosticsDebugCreator(debugCreator!),
-          ...overflowHints!,
-          describeForError('The specific $runtimeType in question is'),
-          // TODO(jacobr): this line is ascii art that it would be nice to
-          // handle a little more generically in GUI debugging clients in the
-          // future.
-          DiagnosticsNode.message('◢◤' * (FlutterError.wrapWidth ~/ 2), allowWrap: false),
-        ],
-      ),
-    );
+    FlutterError.reportError(FlutterErrorDetails(
+      exception: FlutterError('A $runtimeType overflowed by $overflowText.'),
+      library: 'rendering library',
+      context: ErrorDescription('during layout'),
+      informationCollector: () => <DiagnosticsNode>[
+            // debugCreator should only be set in DebugMode, but we want the
+            // treeshaker to know that.
+            if (kDebugMode && debugCreator != null) DiagnosticsDebugCreator(debugCreator!),
+            ...overflowHints!,
+            describeForError('The specific $runtimeType in question is'),
+            // TODO(jacobr): this line is ascii art that it would be nice to
+            // handle a little more generically in GUI debugging clients in the
+            // future.
+            DiagnosticsNode.message('◢◤' * (FlutterError.wrapWidth ~/ 2), allowWrap: false),
+          ],
+    ));
   }
 
   /// To be called when the overflow indicators should be painted.
@@ -278,10 +259,7 @@ mixin DebugOverflowIndicatorMixin on RenderObject {
   }) {
     final RelativeRect overflow = RelativeRect.fromRect(containerRect, childRect);
 
-    if (overflow.left <= 0.0 &&
-        overflow.right <= 0.0 &&
-        overflow.top <= 0.0 &&
-        overflow.bottom <= 0.0) {
+    if (overflow.left <= 0.0 && overflow.right <= 0.0 && overflow.top <= 0.0 && overflow.bottom <= 0.0) {
       return;
     }
 
@@ -290,10 +268,7 @@ mixin DebugOverflowIndicatorMixin on RenderObject {
       context.canvas.drawRect(region.rect.shift(offset), _indicatorPaint);
       final TextSpan? textSpan = _indicatorLabel[region.side.index].text as TextSpan?;
       if (textSpan?.text != region.label) {
-        _indicatorLabel[region.side.index].text = TextSpan(
-          text: region.label,
-          style: _indicatorTextStyle,
-        );
+        _indicatorLabel[region.side.index].text = TextSpan(text: region.label, style: _indicatorTextStyle);
         _indicatorLabel[region.side.index].layout();
       }
 
@@ -318,9 +293,11 @@ mixin DebugOverflowIndicatorMixin on RenderObject {
   void reassemble() {
     super.reassemble();
     // Users expect error messages to be shown again after hot reload.
-    assert(() {
-      _overflowReportNeeded = true;
-      return true;
-    }());
+    assert(
+      () {
+        _overflowReportNeeded = true;
+        return true;
+      }(),
+    );
   }
 }

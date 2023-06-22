@@ -85,11 +85,7 @@ const double _kTopLevelMenuHorizontalMinPadding = 4;
 /// The `child` is an optional child supplied as the [MenuAnchor.child]
 /// attribute. The child is intended to be incorporated in the result of the
 /// function.
-typedef MenuAnchorChildBuilder = Widget Function(
-  BuildContext context,
-  MenuController controller,
-  Widget? child,
-);
+typedef MenuAnchorChildBuilder = Widget Function(BuildContext context, MenuController controller, Widget? child);
 
 /// A widget used to mark the "anchor" for a set of submenus, defining the
 /// rectangle used to position the menu, which can be done either with an
@@ -362,12 +358,7 @@ class _MenuAnchorState extends State<MenuAnchor> {
       );
     }
 
-    return _MenuAnchorScope(
-      anchorKey: _anchorKey,
-      anchor: this,
-      isOpen: _isOpen,
-      child: child,
-    );
+    return _MenuAnchorScope(anchorKey: _anchorKey, anchor: this, isOpen: _isOpen, child: child);
   }
 
   Widget _buildContents(BuildContext context) {
@@ -377,11 +368,7 @@ class _MenuAnchorState extends State<MenuAnchor> {
         if (widget.builder == null) {
           return widget.child ?? const SizedBox();
         }
-        return widget.builder!(
-          context,
-          _menuController,
-          widget.child,
-        );
+        return widget.builder!(context, _menuController, widget.child);
       },
     );
   }
@@ -491,7 +478,8 @@ class _MenuAnchorState extends State<MenuAnchor> {
       _close();
     }
     assert(_debugMenuInfo(
-        'Opening $this at ${position ?? Offset.zero} with alignment offset ${widget.alignmentOffset ?? Offset.zero}'));
+      'Opening $this at ${position ?? Offset.zero} with alignment offset ${widget.alignmentOffset ?? Offset.zero}',
+    ));
     _parent?._closeChildren(); // Close all siblings.
     assert(_overlayEntry == null);
 
@@ -709,13 +697,7 @@ class MenuBar extends StatelessWidget {
   /// Creates a const [MenuBar].
   ///
   /// The [children] argument is required.
-  const MenuBar({
-    super.key,
-    this.style,
-    this.clipBehavior = Clip.none,
-    this.controller,
-    required this.children,
-  });
+  const MenuBar({super.key, this.style, this.clipBehavior = Clip.none, this.controller, required this.children});
 
   /// The [MenuStyle] that defines the visual attributes of the menu bar.
   ///
@@ -745,21 +727,12 @@ class MenuBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasOverlay(context));
-    return _MenuBarAnchor(
-      controller: controller,
-      clipBehavior: clipBehavior,
-      style: style,
-      menuChildren: children,
-    );
+    return _MenuBarAnchor(controller: controller, clipBehavior: clipBehavior, style: style, menuChildren: children);
   }
 
   @override
   List<DiagnosticsNode> debugDescribeChildren() {
-    return <DiagnosticsNode>[
-      ...children.map<DiagnosticsNode>(
-        (Widget item) => item.toDiagnosticsNode(),
-      ),
-    ];
+    return <DiagnosticsNode>[...children.map<DiagnosticsNode>((Widget item) => item.toDiagnosticsNode())];
   }
 
   @override
@@ -1005,7 +978,9 @@ class MenuItemButton extends StatefulWidget {
     properties.add(DiagnosticsProperty<Widget?>('trailingIcon', trailingIcon, defaultValue: null));
     properties.add(DiagnosticsProperty<FocusNode?>('focusNode', focusNode, defaultValue: null));
     properties.add(EnumProperty<Clip>('clipBehavior', clipBehavior, defaultValue: Clip.none));
-    properties.add(DiagnosticsProperty<MaterialStatesController?>('statesController', statesController, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStatesController?>('statesController', statesController, defaultValue: null),
+    );
   }
 }
 
@@ -1048,8 +1023,8 @@ class _MenuItemButtonState extends State<MenuItemButton> {
     // Since we don't want to use the theme style or default style from the
     // TextButton, we merge the styles, merging them in the right order when
     // each type of style exists. Each "*StyleOf" function is only called once.
-    ButtonStyle mergedStyle = widget.themeStyleOf(context)?.merge(widget.defaultStyleOf(context))
-      ?? widget.defaultStyleOf(context);
+    ButtonStyle mergedStyle =
+        widget.themeStyleOf(context)?.merge(widget.defaultStyleOf(context)) ?? widget.defaultStyleOf(context);
     if (widget.style != null) {
       mergedStyle = widget.style!.merge(mergedStyle);
     }
@@ -1073,10 +1048,7 @@ class _MenuItemButtonState extends State<MenuItemButton> {
     );
 
     if (_platformSupportsAccelerators() && widget.enabled) {
-      child = MenuAcceleratorCallbackBinding(
-        onInvoke: _handleSelect,
-        child: child,
-      );
+      child = MenuAcceleratorCallbackBinding(onInvoke: _handleSelect, child: child);
     }
 
     return child;
@@ -1108,12 +1080,14 @@ class _MenuItemButtonState extends State<MenuItemButton> {
   void _createInternalFocusNodeIfNeeded() {
     if (widget.focusNode == null) {
       _internalFocusNode = FocusNode();
-      assert(() {
-        if (_internalFocusNode != null) {
-          _internalFocusNode!.debugLabel = '$MenuItemButton(${widget.child})';
-        }
-        return true;
-      }());
+      assert(
+        () {
+          if (_internalFocusNode != null) {
+            _internalFocusNode!.debugLabel = '$MenuItemButton(${widget.child})';
+          }
+          return true;
+        }(),
+      );
     }
   }
 }
@@ -1275,16 +1249,18 @@ class CheckboxMenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MenuItemButton(
       key: key,
-      onPressed: onChanged == null ? null : () {
-        switch (value) {
-          case false:
-            onChanged!.call(true);
-          case true:
-            onChanged!.call(tristate ? null : false);
-          case null:
-            onChanged!.call(false);
-        }
-      },
+      onPressed: onChanged == null
+          ? null
+          : () {
+              switch (value) {
+                case false:
+                  onChanged!.call(true);
+                case true:
+                  onChanged!.call(tristate ? null : false);
+                case null:
+                  onChanged!.call(false);
+              }
+            },
       onHover: onHover,
       onFocusChange: onFocusChange,
       focusNode: focusNode,
@@ -1294,16 +1270,8 @@ class CheckboxMenuButton extends StatelessWidget {
       leadingIcon: ExcludeFocus(
         child: IgnorePointer(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxHeight: Checkbox.width,
-              maxWidth: Checkbox.width,
-            ),
-            child: Checkbox(
-              tristate: tristate,
-              value: value,
-              onChanged: onChanged,
-              isError: isError,
-            ),
+            constraints: const BoxConstraints(maxHeight: Checkbox.width, maxWidth: Checkbox.width),
+            child: Checkbox(tristate: tristate, value: value, onChanged: onChanged, isError: isError),
           ),
         ),
       ),
@@ -1474,13 +1442,15 @@ class RadioMenuButton<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return MenuItemButton(
       key: key,
-      onPressed: onChanged == null ? null : () {
-        if (toggleable && groupValue == value) {
-          onChanged!.call(null);
-          return;
-        }
-        onChanged!.call(value);
-      },
+      onPressed: onChanged == null
+          ? null
+          : () {
+              if (toggleable && groupValue == value) {
+                onChanged!.call(null);
+                return;
+              }
+              onChanged!.call(value);
+            },
       onHover: onHover,
       onFocusChange: onFocusChange,
       focusNode: focusNode,
@@ -1490,16 +1460,8 @@ class RadioMenuButton<T> extends StatelessWidget {
       leadingIcon: ExcludeFocus(
         child: IgnorePointer(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxHeight: Checkbox.width,
-              maxWidth: Checkbox.width,
-            ),
-            child: Radio<T>(
-              value: value,
-              groupValue: groupValue,
-              onChanged: onChanged,
-              toggleable: toggleable,
-            ),
+            constraints: const BoxConstraints(maxHeight: Checkbox.width, maxWidth: Checkbox.width),
+            child: Radio<T>(value: value, groupValue: groupValue, onChanged: onChanged, toggleable: toggleable),
           ),
         ),
       ),
@@ -1746,7 +1708,7 @@ class SubmenuButton extends StatefulWidget {
     return <DiagnosticsNode>[
       ...menuChildren.map<DiagnosticsNode>((Widget child) {
         return child.toDiagnosticsNode();
-      })
+      }),
     ];
   }
 
@@ -1777,12 +1739,14 @@ class _SubmenuButtonState extends State<SubmenuButton> {
     super.initState();
     if (widget.focusNode == null) {
       _internalFocusNode = FocusNode();
-      assert(() {
-        if (_internalFocusNode != null) {
-          _internalFocusNode!.debugLabel = '$SubmenuButton(${widget.child})';
-        }
-        return true;
-      }());
+      assert(
+        () {
+          if (_internalFocusNode != null) {
+            _internalFocusNode!.debugLabel = '$SubmenuButton(${widget.child})';
+          }
+          return true;
+        }(),
+      );
     }
     if (widget.controller == null) {
       _internalMenuController = MenuController();
@@ -1811,12 +1775,14 @@ class _SubmenuButtonState extends State<SubmenuButton> {
       }
       if (widget.focusNode == null) {
         _internalFocusNode ??= FocusNode();
-        assert(() {
-          if (_internalFocusNode != null) {
-            _internalFocusNode!.debugLabel = '$SubmenuButton(${widget.child})';
-          }
-          return true;
-        }());
+        assert(
+          () {
+            if (_internalFocusNode != null) {
+              _internalFocusNode!.debugLabel = '$SubmenuButton(${widget.child})';
+            }
+            return true;
+          }(),
+        );
       }
       _buttonFocusNode.addListener(_handleFocusChange);
     }
@@ -1865,8 +1831,8 @@ class _SubmenuButtonState extends State<SubmenuButton> {
         // TextButton, we merge the styles, merging them in the right order when
         // each type of style exists. Each "*StyleOf" function is only called
         // once.
-        ButtonStyle mergedStyle = widget.themeStyleOf(context)?.merge(widget.defaultStyleOf(context))
-          ?? widget.defaultStyleOf(context);
+        ButtonStyle mergedStyle =
+            widget.themeStyleOf(context)?.merge(widget.defaultStyleOf(context)) ?? widget.defaultStyleOf(context);
         if (widget.style != null) {
           mergedStyle = widget.style!.merge(mergedStyle);
         }
@@ -1930,12 +1896,10 @@ class _SubmenuButtonState extends State<SubmenuButton> {
 
   EdgeInsets _computeMenuPadding(BuildContext context) {
     final MaterialStateProperty<EdgeInsetsGeometry?> insets =
-      widget.menuStyle?.padding ??
-      MenuTheme.of(context).style?.padding ??
-      _MenuDefaultsM3(context).padding!;
-    return insets
-      .resolve(widget.statesController?.value ?? const <MaterialState>{})!
-      .resolve(Directionality.of(context));
+        widget.menuStyle?.padding ?? MenuTheme.of(context).style?.padding ?? _MenuDefaultsM3(context).padding!;
+    return insets.resolve(widget.statesController?.value ?? const <MaterialState>{})!.resolve(
+      Directionality.of(context),
+    );
   }
 
   void _handleFocusChange() {
@@ -2087,16 +2051,17 @@ class _LocalizedShortcutLabeler {
         // Fall back to the key label if all else fails.
         shortcutTrigger ??= trigger.keyLabel;
       }
-      return <String>[
-        ...modifiers,
-        if (shortcutTrigger != null && shortcutTrigger.isNotEmpty) shortcutTrigger,
-      ].join(keySeparator);
+      return <String>[...modifiers, if (shortcutTrigger != null && shortcutTrigger.isNotEmpty) shortcutTrigger].join(
+        keySeparator,
+      );
     } else if (serialized.character != null) {
       return serialized.character!;
     }
-    throw UnimplementedError('Shortcut labels for ShortcutActivators that do not implement '
-        'MenuSerializableShortcut (e.g. ShortcutActivators other than SingleActivator or '
-        'CharacterActivator) are not supported.');
+    throw UnimplementedError(
+      'Shortcut labels for ShortcutActivators that do not implement '
+      'MenuSerializableShortcut (e.g. ShortcutActivators other than SingleActivator or '
+      'CharacterActivator) are not supported.',
+    );
   }
 
   // Tries to look up the key in an internal table, and if it can't find it,
@@ -2221,12 +2186,7 @@ class _LocalizedShortcutLabeler {
 }
 
 class _MenuAnchorScope extends InheritedWidget {
-  const _MenuAnchorScope({
-    required super.child,
-    required this.anchorKey,
-    required this.anchor,
-    required this.isOpen,
-  });
+  const _MenuAnchorScope({required super.child, required this.anchorKey, required this.anchor, required this.isOpen});
 
   final GlobalKey anchorKey;
   final _MenuAnchorState anchor;
@@ -2234,21 +2194,14 @@ class _MenuAnchorScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_MenuAnchorScope oldWidget) {
-    return anchorKey != oldWidget.anchorKey
-        || anchor != oldWidget.anchor
-        || isOpen != oldWidget.isOpen;
+    return anchorKey != oldWidget.anchorKey || anchor != oldWidget.anchor || isOpen != oldWidget.isOpen;
   }
 }
 
 /// MenuBar-specific private specialization of [MenuAnchor] so that it can act
 /// differently in regards to orientation, how open works, and what gets built.
 class _MenuBarAnchor extends MenuAnchor {
-  const _MenuBarAnchor({
-    required super.menuChildren,
-    super.controller,
-    super.clipBehavior,
-    super.style,
-  });
+  const _MenuBarAnchor({required super.menuChildren, super.controller, super.clipBehavior, super.style});
 
   @override
   State<MenuAnchor> createState() => _MenuBarAnchorState();
@@ -2284,14 +2237,16 @@ class _MenuBarAnchorState extends _MenuAnchorState {
               DirectionalFocusIntent: _MenuDirectionalFocusAction(),
               DismissIntent: DismissMenuAction(controller: _menuController),
             },
-            child: Builder(builder: (BuildContext context) {
-              return _MenuPanel(
-                menuStyle: widget.style,
-                clipBehavior: widget.clipBehavior,
-                orientation: Axis.horizontal,
-                children: widget.menuChildren,
-              );
-            }),
+            child: Builder(
+              builder: (BuildContext context) {
+                return _MenuPanel(
+                  menuStyle: widget.style,
+                  clipBehavior: widget.clipBehavior,
+                  orientation: Axis.horizontal,
+                  children: widget.menuChildren,
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -2331,8 +2286,10 @@ class _MenuDirectionalFocusAction extends DirectionalFocusAction {
       orientation = anchor._orientation;
     }
     final bool firstItemIsFocused = anchor._firstItemFocusNode?.hasPrimaryFocus ?? false;
-    assert(_debugMenuInfo('In _MenuDirectionalFocusAction, current node is ${anchor.widget.childFocusNode?.debugLabel}, '
-        'button is${buttonIsFocused ? '' : ' not'} focused. Assuming ${orientation.name} orientation.'));
+    assert(_debugMenuInfo(
+      'In _MenuDirectionalFocusAction, current node is ${anchor.widget.childFocusNode?.debugLabel}, '
+      'button is${buttonIsFocused ? '' : ' not'} focused. Assuming ${orientation.name} orientation.',
+    ));
 
     switch (intent.direction) {
       case TraversalDirection.up:
@@ -2536,12 +2493,7 @@ class MenuAcceleratorCallbackBinding extends InheritedWidget {
   /// Create a const [MenuAcceleratorCallbackBinding].
   ///
   /// The [child] parameter is required.
-  const MenuAcceleratorCallbackBinding({
-    super.key,
-    this.onInvoke,
-    this.hasSubmenu = false,
-    required super.child,
-  });
+  const MenuAcceleratorCallbackBinding({super.key, this.onInvoke, this.hasSubmenu = false, required super.child});
 
   /// The function that pressing the accelerator defined in a descendant
   /// [MenuAcceleratorLabel] will invoke.
@@ -2588,21 +2540,23 @@ class MenuAcceleratorCallbackBinding extends InheritedWidget {
   ///   [MenuAcceleratorCallbackBinding] is found.
   static MenuAcceleratorCallbackBinding of(BuildContext context) {
     final MenuAcceleratorCallbackBinding? result = maybeOf(context);
-    assert(() {
-      if (result == null) {
-        throw FlutterError(
-          'MenuAcceleratorWrapper.of() was called with a context that does not '
-          'contain a MenuAcceleratorWrapper in the given context.\n'
-          'No MenuAcceleratorWrapper ancestor could be found in the context that '
-          'was passed to MenuAcceleratorWrapper.of(). This can happen because '
-          'you are using a widget that looks for a MenuAcceleratorWrapper '
-          'ancestor, and do not have a MenuAcceleratorWrapper widget ancestor.\n'
-          'The context used was:\n'
-          '  $context',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (result == null) {
+          throw FlutterError(
+            'MenuAcceleratorWrapper.of() was called with a context that does not '
+            'contain a MenuAcceleratorWrapper in the given context.\n'
+            'No MenuAcceleratorWrapper ancestor could be found in the context that '
+            'was passed to MenuAcceleratorWrapper.of(). This can happen because '
+            'you are using a widget that looks for a MenuAcceleratorWrapper '
+            'ancestor, and do not have a MenuAcceleratorWrapper widget ancestor.\n'
+            'The context used was:\n'
+            '  $context',
+          );
+        }
+        return true;
+      }(),
+    );
     return result!;
   }
 }
@@ -2630,11 +2584,7 @@ class MenuAcceleratorCallbackBinding extends InheritedWidget {
 ///
 /// * [MenuAcceleratorLabel.defaultLabelBuilder], which is the implementation
 ///   used as the default value for [MenuAcceleratorLabel.builder].
-typedef MenuAcceleratorChildBuilder = Widget Function(
-  BuildContext context,
-  String label,
-  int index,
-);
+typedef MenuAcceleratorChildBuilder = Widget Function(BuildContext context, String label, int index);
 
 /// A widget that draws the label text for a menu item (typically a
 /// [MenuItemButton] or [SubmenuButton]) and renders its child with information
@@ -2677,11 +2627,7 @@ class MenuAcceleratorLabel extends StatefulWidget {
   /// Creates a const [MenuAcceleratorLabel].
   ///
   /// The [label] parameter is required.
-  const MenuAcceleratorLabel(
-    this.label, {
-    super.key,
-    this.builder = defaultLabelBuilder,
-  });
+  const MenuAcceleratorLabel(this.label, {super.key, this.builder = defaultLabelBuilder});
 
   /// The label string that should be displayed.
   ///
@@ -2740,11 +2686,7 @@ class MenuAcceleratorLabel extends StatefulWidget {
   /// [index] is non-negative, and a [Text] widget when the [index] is negative.
   ///
   /// {@macro flutter.material.menu_anchor.menu_accelerator_child_builder.args}
-  static Widget defaultLabelBuilder(
-    BuildContext context,
-    String label,
-    int index,
-  ) {
+  static Widget defaultLabelBuilder(BuildContext context, String label, int index) {
     if (index < 0) {
       return Text(label);
     }
@@ -2753,8 +2695,7 @@ class MenuAcceleratorLabel extends StatefulWidget {
     return RichText(
       text: TextSpan(
         children: <TextSpan>[
-          if (index > 0)
-            TextSpan(text: characters.getRange(0, index).toString(), style: defaultStyle),
+          if (index > 0) TextSpan(text: characters.getRange(0, index).toString(), style: defaultStyle),
           TextSpan(
             text: characters.getRange(index, index + 1).toString(),
             style: defaultStyle.copyWith(decoration: TextDecoration.underline),
@@ -2801,7 +2742,8 @@ class MenuAcceleratorLabel extends StatefulWidget {
       }
       lastWasAmpersand = true;
       final Characters acceleratorCharacter = labelChars.characterAt(i + 1);
-      if (acceleratorIndex == -1 && acceleratorCharacter != ampersand &&
+      if (acceleratorIndex == -1 &&
+          acceleratorCharacter != ampersand &&
           acceleratorCharacter.toString().trim().isNotEmpty) {
         // Don't set the accelerator index if the character is an ampersand,
         // or whitespace.
@@ -2884,13 +2826,11 @@ class _MenuAcceleratorLabelState extends State<MenuAcceleratorLabel> {
   }
 
   static bool _altIsPressed() {
-    return HardwareKeyboard.instance.logicalKeysPressed.intersection(
-      <LogicalKeyboardKey>{
-        LogicalKeyboardKey.altLeft,
-        LogicalKeyboardKey.altRight,
-        LogicalKeyboardKey.alt,
-      },
-    ).isNotEmpty;
+    return HardwareKeyboard.instance.logicalKeysPressed.intersection(<LogicalKeyboardKey>{
+      LogicalKeyboardKey.altLeft,
+      LogicalKeyboardKey.altRight,
+      LogicalKeyboardKey.alt,
+    }).isNotEmpty;
   }
 
   bool _handleKeyEvent(KeyEvent event) {
@@ -2920,13 +2860,14 @@ class _MenuAcceleratorLabelState extends State<MenuAcceleratorLabel> {
     // 4) Is part of an anchor that either doesn't have a submenu, or doesn't
     //    have any submenus currently open (only the "deepest" open menu should
     //    have accelerator shortcuts registered).
-    if (_showAccelerators && _acceleratorIndex != -1 && _binding?.onInvoke != null && !(_binding!.hasSubmenu && (_anchor?._isOpen ?? false))) {
+    if (_showAccelerators &&
+        _acceleratorIndex != -1 &&
+        _binding?.onInvoke != null &&
+        !(_binding!.hasSubmenu && (_anchor?._isOpen ?? false))) {
       final String acceleratorCharacter = _displayLabel[_acceleratorIndex].toLowerCase();
-      _shortcutRegistryEntry = _shortcutRegistry?.addAll(
-        <ShortcutActivator, Intent>{
-          CharacterActivator(acceleratorCharacter, alt: true): VoidCallbackIntent(_binding!.onInvoke!),
-        },
-      );
+      _shortcutRegistryEntry = _shortcutRegistry?.addAll(<ShortcutActivator, Intent>{
+        CharacterActivator(acceleratorCharacter, alt: true): VoidCallbackIntent(_binding!.onInvoke!),
+      });
     }
   }
 
@@ -3010,19 +2951,12 @@ class _MenuItemLabel extends StatelessWidget {
           ],
         ),
         if (trailingIcon != null)
-          Padding(
-            padding: EdgeInsetsDirectional.only(start: horizontalPadding),
-            child: trailingIcon,
-          ),
+          Padding(padding: EdgeInsetsDirectional.only(start: horizontalPadding), child: trailingIcon),
         if (showDecoration && shortcut != null)
           Padding(
             padding: EdgeInsetsDirectional.only(start: horizontalPadding),
-            child: Text(
-              _LocalizedShortcutLabeler.instance.getShortcutLabel(
-                shortcut!,
-                MaterialLocalizations.of(context),
-              ),
-            ),
+            child:
+                Text(_LocalizedShortcutLabeler.instance.getShortcutLabel(shortcut!, MaterialLocalizations.of(context))),
           ),
         if (showDecoration && hasSubmenu)
           Padding(
@@ -3094,9 +3028,7 @@ class _MenuLayout extends SingleChildLayoutDelegate {
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
     // The menu can be at most the size of the overlay minus _kMenuViewPadding
     // pixels in each direction.
-    return BoxConstraints.loose(constraints.biggest).deflate(
-      const EdgeInsets.all(_kMenuViewPadding),
-    );
+    return BoxConstraints.loose(constraints.biggest).deflate(const EdgeInsets.all(_kMenuViewPadding));
   }
 
   @override
@@ -3206,15 +3138,15 @@ class _MenuLayout extends SingleChildLayoutDelegate {
 
   @override
   bool shouldRelayout(_MenuLayout oldDelegate) {
-    return anchorRect != oldDelegate.anchorRect
-        || textDirection != oldDelegate.textDirection
-        || alignment != oldDelegate.alignment
-        || alignmentOffset != oldDelegate.alignmentOffset
-        || menuPosition != oldDelegate.menuPosition
-        || menuPadding != oldDelegate.menuPadding
-        || orientation != oldDelegate.orientation
-        || parentOrientation != oldDelegate.parentOrientation
-        || !setEquals(avoidBounds, oldDelegate.avoidBounds);
+    return anchorRect != oldDelegate.anchorRect ||
+        textDirection != oldDelegate.textDirection ||
+        alignment != oldDelegate.alignment ||
+        alignmentOffset != oldDelegate.alignmentOffset ||
+        menuPosition != oldDelegate.menuPosition ||
+        menuPadding != oldDelegate.menuPadding ||
+        orientation != oldDelegate.orientation ||
+        parentOrientation != oldDelegate.parentOrientation ||
+        !setEquals(avoidBounds, oldDelegate.avoidBounds);
   }
 
   Rect _closestScreen(Iterable<Rect> screens, Offset point) {
@@ -3288,11 +3220,9 @@ class _MenuPanelState extends State<_MenuPanel> {
     }
 
     T? resolve<T>(MaterialStateProperty<T>? Function(MenuStyle? style) getProperty) {
-      return effectiveValue(
-        (MenuStyle? style) {
-          return getProperty(style)?.resolve(<MaterialState>{});
-        },
-      );
+      return effectiveValue((MenuStyle? style) {
+        return getProperty(style)?.resolve(<MaterialState>{});
+      });
     }
 
     final Color? backgroundColor = resolve<Color?>((MenuStyle? style) => style?.backgroundColor);
@@ -3315,31 +3245,24 @@ class _MenuPanelState extends State<_MenuPanel> {
     // reduce the horizontal padding to zero.
     final double dy = densityAdjustment.dy;
     final double dx = math.max(0, densityAdjustment.dx);
-    final EdgeInsetsGeometry resolvedPadding = padding
-        .add(EdgeInsets.symmetric(horizontal: dx, vertical: dy))
-        .clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity); // ignore_clamp_double_lint
+    final EdgeInsetsGeometry resolvedPadding = padding.add(EdgeInsets.symmetric(horizontal: dx, vertical: dy)).clamp(
+      EdgeInsets.zero,
+      EdgeInsetsGeometry.infinity,
+    ); // ignore_clamp_double_lint
 
-    BoxConstraints effectiveConstraints = visualDensity.effectiveConstraints(
-      BoxConstraints(
-        minWidth: minimumSize?.width ?? 0,
-        minHeight: minimumSize?.height ?? 0,
-        maxWidth: maximumSize?.width ?? double.infinity,
-        maxHeight: maximumSize?.height ?? double.infinity,
-      ),
-    );
+    BoxConstraints effectiveConstraints = visualDensity.effectiveConstraints(BoxConstraints(
+      minWidth: minimumSize?.width ?? 0,
+      minHeight: minimumSize?.height ?? 0,
+      maxWidth: maximumSize?.width ?? double.infinity,
+      maxHeight: maximumSize?.height ?? double.infinity,
+    ));
     if (fixedSize != null) {
       final Size size = effectiveConstraints.constrain(fixedSize);
       if (size.width.isFinite) {
-        effectiveConstraints = effectiveConstraints.copyWith(
-          minWidth: size.width,
-          maxWidth: size.width,
-        );
+        effectiveConstraints = effectiveConstraints.copyWith(minWidth: size.width, maxWidth: size.width);
       }
       if (size.height.isFinite) {
-        effectiveConstraints = effectiveConstraints.copyWith(
-          minHeight: size.height,
-          maxHeight: size.height,
-        );
+        effectiveConstraints = effectiveConstraints.copyWith(minHeight: size.height, maxHeight: size.height);
       }
     }
 
@@ -3377,10 +3300,7 @@ class _MenuPanelState extends State<_MenuPanel> {
       );
     }
 
-    return ConstrainedBox(
-      constraints: effectiveConstraints,
-      child: menuPanel,
-    );
+    return ConstrainedBox(constraints: effectiveConstraints, child: menuPanel);
   }
 
   Widget _intrinsicCrossSize({required Widget child}) {
@@ -3430,12 +3350,11 @@ class _Submenu extends StatelessWidget {
     T? effectiveValue<T>(T? Function(MenuStyle? style) getProperty) {
       return getProperty(menuStyle) ?? getProperty(themeStyle) ?? getProperty(defaultStyle);
     }
+
     T? resolve<T>(MaterialStateProperty<T>? Function(MenuStyle? style) getProperty) {
-      return effectiveValue(
-        (MenuStyle? style) {
-          return getProperty(style)?.resolve(<MaterialState>{});
-        },
-      );
+      return effectiveValue((MenuStyle? style) {
+        return getProperty(style)?.resolve(<MaterialState>{});
+      });
     }
 
     final MaterialStateMouseCursor mouseCursor = _MouseCursor(
@@ -3460,14 +3379,13 @@ class _Submenu extends StatelessWidget {
     // reduce the horizontal padding to zero.
     final double dy = densityAdjustment.dy;
     final double dx = math.max(0, densityAdjustment.dx);
-    final EdgeInsetsGeometry resolvedPadding = padding
-        .add(EdgeInsets.fromLTRB(dx, dy, dx, dy))
-        .clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity); // ignore_clamp_double_lint
+    final EdgeInsetsGeometry resolvedPadding = padding.add(EdgeInsets.fromLTRB(dx, dy, dx, dy)).clamp(
+      EdgeInsets.zero,
+      EdgeInsetsGeometry.infinity,
+    ); // ignore_clamp_double_lint
 
     return Theme(
-      data: Theme.of(context).copyWith(
-        visualDensity: visualDensity,
-      ),
+      data: Theme.of(context).copyWith(visualDensity: visualDensity),
       child: ConstrainedBox(
         constraints: BoxConstraints.loose(overlay.paintBounds.size),
         child: CustomSingleChildLayout(
@@ -3545,17 +3463,19 @@ class _MouseCursor extends MaterialStateMouseCursor {
 /// Enable debug printing by setting [_kDebugMenus] to true at the top of the
 /// file.
 bool _debugMenuInfo(String message, [Iterable<String>? details]) {
-  assert(() {
-    if (_kDebugMenus) {
-      debugPrint('MENU: $message');
-      if (details != null && details.isNotEmpty) {
-        for (final String detail in details) {
-          debugPrint('    $detail');
+  assert(
+    () {
+      if (_kDebugMenus) {
+        debugPrint('MENU: $message');
+        if (details != null && details.isNotEmpty) {
+          for (final String detail in details) {
+            debugPrint('    $detail');
+          }
         }
       }
-    }
-    return true;
-  }());
+      return true;
+    }(),
+  );
   // Return true so that it can be easily used inside of an assert.
   return true;
 }
@@ -3587,13 +3507,14 @@ bool _platformSupportsAccelerators() {
 class _MenuBarDefaultsM3 extends MenuStyle {
   _MenuBarDefaultsM3(this.context)
     : super(
-      elevation: const MaterialStatePropertyAll<double?>(3.0),
-      shape: const MaterialStatePropertyAll<OutlinedBorder>(_defaultMenuBorder),
-      alignment: AlignmentDirectional.bottomStart,
-    );
+        elevation: const MaterialStatePropertyAll<double?>(3.0),
+        shape: const MaterialStatePropertyAll<OutlinedBorder>(_defaultMenuBorder),
+        alignment: AlignmentDirectional.bottomStart,
+      );
 
-  static const RoundedRectangleBorder _defaultMenuBorder =
-    RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0)));
+  static const RoundedRectangleBorder _defaultMenuBorder = RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+  );
 
   final BuildContext context;
 
@@ -3617,9 +3538,7 @@ class _MenuBarDefaultsM3 extends MenuStyle {
   @override
   MaterialStateProperty<EdgeInsetsGeometry?>? get padding {
     return const MaterialStatePropertyAll<EdgeInsetsGeometry>(
-      EdgeInsetsDirectional.symmetric(
-        horizontal: _kTopLevelMenuHorizontalMinPadding
-      ),
+      EdgeInsetsDirectional.symmetric(horizontal: _kTopLevelMenuHorizontalMinPadding),
     );
   }
 
@@ -3629,11 +3548,7 @@ class _MenuBarDefaultsM3 extends MenuStyle {
 
 class _MenuButtonDefaultsM3 extends ButtonStyle {
   _MenuButtonDefaultsM3(this.context)
-    : super(
-      animationDuration: kThemeChangeDuration,
-      enableFeedback: true,
-      alignment: AlignmentDirectional.centerStart,
-    );
+    : super(animationDuration: kThemeChangeDuration, enableFeedback: true, alignment: AlignmentDirectional.centerStart);
 
   final BuildContext context;
 
@@ -3705,32 +3620,28 @@ class _MenuButtonDefaultsM3 extends ButtonStyle {
 
   @override
   MaterialStateProperty<MouseCursor?>? get mouseCursor {
-    return MaterialStateProperty.resolveWith(
-      (Set<MaterialState> states) {
-        if (states.contains(MaterialState.disabled)) {
-          return SystemMouseCursors.basic;
-        }
-        return SystemMouseCursors.click;
-      },
-    );
+    return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return SystemMouseCursors.basic;
+      }
+      return SystemMouseCursors.click;
+    });
   }
 
   @override
   MaterialStateProperty<Color?>? get overlayColor {
-    return MaterialStateProperty.resolveWith(
-      (Set<MaterialState> states) {
-        if (states.contains(MaterialState.pressed)) {
-          return _colors.onSurface.withOpacity(0.12);
-        }
-        if (states.contains(MaterialState.hovered)) {
-          return _colors.onSurface.withOpacity(0.08);
-        }
-        if (states.contains(MaterialState.focused)) {
-          return _colors.onSurface.withOpacity(0.12);
-        }
-        return Colors.transparent;
-      },
-    );
+    return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+      if (states.contains(MaterialState.pressed)) {
+        return _colors.onSurface.withOpacity(0.12);
+      }
+      if (states.contains(MaterialState.hovered)) {
+        return _colors.onSurface.withOpacity(0.08);
+      }
+      if (states.contains(MaterialState.focused)) {
+        return _colors.onSurface.withOpacity(0.12);
+      }
+      return Colors.transparent;
+    });
   }
 
   @override
@@ -3771,14 +3682,10 @@ class _MenuButtonDefaultsM3 extends ButtonStyle {
       visualDensity = VisualDensity(vertical: visualDensity.vertical);
     }
     return ButtonStyleButton.scaledPadding(
-      EdgeInsets.symmetric(horizontal: math.max(
-        _kMenuViewPadding,
-        _kLabelItemDefaultSpacing + visualDensity.baseSizeAdjustment.dx,
-      )),
-      EdgeInsets.symmetric(horizontal: math.max(
-        _kMenuViewPadding,
-        8 + visualDensity.baseSizeAdjustment.dx,
-      )),
+      EdgeInsets.symmetric(
+        horizontal: math.max(_kMenuViewPadding, _kLabelItemDefaultSpacing + visualDensity.baseSizeAdjustment.dx),
+      ),
+      EdgeInsets.symmetric(horizontal: math.max(_kMenuViewPadding, 8 + visualDensity.baseSizeAdjustment.dx)),
       const EdgeInsets.symmetric(horizontal: _kMenuViewPadding),
       MediaQuery.maybeTextScaleFactorOf(context) ?? 1,
     );
@@ -3788,13 +3695,14 @@ class _MenuButtonDefaultsM3 extends ButtonStyle {
 class _MenuDefaultsM3 extends MenuStyle {
   _MenuDefaultsM3(this.context)
     : super(
-      elevation: const MaterialStatePropertyAll<double?>(3.0),
-      shape: const MaterialStatePropertyAll<OutlinedBorder>(_defaultMenuBorder),
-      alignment: AlignmentDirectional.topEnd,
-    );
+        elevation: const MaterialStatePropertyAll<double?>(3.0),
+        shape: const MaterialStatePropertyAll<OutlinedBorder>(_defaultMenuBorder),
+        alignment: AlignmentDirectional.topEnd,
+      );
 
-  static const RoundedRectangleBorder _defaultMenuBorder =
-    RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0)));
+  static const RoundedRectangleBorder _defaultMenuBorder = RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+  );
 
   final BuildContext context;
 

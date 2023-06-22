@@ -15,11 +15,12 @@ import 'image_stream.dart';
 
 /// The dart:io implementation of [image_provider.NetworkImage].
 @immutable
-class NetworkImage extends image_provider.ImageProvider<image_provider.NetworkImage> implements image_provider.NetworkImage {
+class NetworkImage extends image_provider.ImageProvider<image_provider.NetworkImage>
+    implements image_provider.NetworkImage {
   /// Creates an object that fetches the image at the given URL.
   ///
   /// The arguments [url] and [scale] must not be null.
-  const NetworkImage(this.url, { this.scale = 1.0, this.headers });
+  const NetworkImage(this.url, {this.scale = 1.0, this.headers});
 
   @override
   final String url;
@@ -48,9 +49,9 @@ class NetworkImage extends image_provider.ImageProvider<image_provider.NetworkIm
       scale: key.scale,
       debugLabel: key.url,
       informationCollector: () => <DiagnosticsNode>[
-        DiagnosticsProperty<image_provider.ImageProvider>('Image provider', this),
-        DiagnosticsProperty<image_provider.NetworkImage>('Image key', key),
-      ],
+            DiagnosticsProperty<image_provider.ImageProvider>('Image provider', this),
+            DiagnosticsProperty<image_provider.NetworkImage>('Image key', key),
+          ],
     );
   }
 
@@ -67,9 +68,9 @@ class NetworkImage extends image_provider.ImageProvider<image_provider.NetworkIm
       scale: key.scale,
       debugLabel: key.url,
       informationCollector: () => <DiagnosticsNode>[
-        DiagnosticsProperty<image_provider.ImageProvider>('Image provider', this),
-        DiagnosticsProperty<image_provider.NetworkImage>('Image key', key),
-      ],
+            DiagnosticsProperty<image_provider.ImageProvider>('Image provider', this),
+            DiagnosticsProperty<image_provider.NetworkImage>('Image key', key),
+          ],
     );
   }
 
@@ -86,9 +87,9 @@ class NetworkImage extends image_provider.ImageProvider<image_provider.NetworkIm
       scale: key.scale,
       debugLabel: key.url,
       informationCollector: () => <DiagnosticsNode>[
-        DiagnosticsProperty<image_provider.ImageProvider>('Image provider', this),
-        DiagnosticsProperty<image_provider.NetworkImage>('Image key', key),
-      ],
+            DiagnosticsProperty<image_provider.ImageProvider>('Image provider', this),
+            DiagnosticsProperty<image_provider.NetworkImage>('Image key', key),
+          ],
     );
   }
 
@@ -100,12 +101,14 @@ class NetworkImage extends image_provider.ImageProvider<image_provider.NetworkIm
 
   static HttpClient get _httpClient {
     HttpClient client = _sharedHttpClient;
-    assert(() {
-      if (debugNetworkImageHttpClientProvider != null) {
-        client = debugNetworkImageHttpClientProvider!();
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (debugNetworkImageHttpClientProvider != null) {
+          client = debugNetworkImageHttpClientProvider!();
+        }
+        return true;
+      }(),
+    );
     return client;
   }
 
@@ -138,10 +141,7 @@ class NetworkImage extends image_provider.ImageProvider<image_provider.NetworkIm
       final Uint8List bytes = await consolidateHttpClientResponseBytes(
         response,
         onBytesReceived: (int cumulative, int? total) {
-          chunkEvents.add(ImageChunkEvent(
-            cumulativeBytesLoaded: cumulative,
-            expectedTotalBytes: total,
-          ));
+          chunkEvents.add(ImageChunkEvent(cumulativeBytesLoaded: cumulative, expectedTotalBytes: total));
         },
       );
       if (bytes.lengthInBytes == 0) {
@@ -176,9 +176,7 @@ class NetworkImage extends image_provider.ImageProvider<image_provider.NetworkIm
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is NetworkImage
-        && other.url == url
-        && other.scale == scale;
+    return other is NetworkImage && other.url == url && other.scale == scale;
   }
 
   @override

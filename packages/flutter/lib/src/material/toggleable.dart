@@ -143,37 +143,21 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
       value: value == false ? 0.0 : 1.0,
       vsync: this,
     );
-    _position = CurvedAnimation(
-      parent: _positionController,
-      curve: Curves.easeIn,
-      reverseCurve: Curves.easeOut,
-    );
-    _reactionController = AnimationController(
-      duration: kRadialReactionDuration,
-      vsync: this,
-    );
-    _reaction = CurvedAnimation(
-      parent: _reactionController,
-      curve: Curves.fastOutSlowIn,
-    );
+    _position = CurvedAnimation(parent: _positionController, curve: Curves.easeIn, reverseCurve: Curves.easeOut);
+    _reactionController = AnimationController(duration: kRadialReactionDuration, vsync: this);
+    _reaction = CurvedAnimation(parent: _reactionController, curve: Curves.fastOutSlowIn);
     _reactionHoverFadeController = AnimationController(
       duration: _kReactionFadeDuration,
       value: _hovering || _focused ? 1.0 : 0.0,
       vsync: this,
     );
-    _reactionHoverFade = CurvedAnimation(
-      parent: _reactionHoverFadeController,
-      curve: Curves.fastOutSlowIn,
-    );
+    _reactionHoverFade = CurvedAnimation(parent: _reactionHoverFadeController, curve: Curves.fastOutSlowIn);
     _reactionFocusFadeController = AnimationController(
       duration: _kReactionFadeDuration,
       value: _hovering || _focused ? 1.0 : 0.0,
       vsync: this,
     );
-    _reactionFocusFade = CurvedAnimation(
-      parent: _reactionFocusFadeController,
-      curve: Curves.fastOutSlowIn,
-    );
+    _reactionFocusFade = CurvedAnimation(parent: _reactionFocusFadeController, curve: Curves.fastOutSlowIn);
   }
 
   /// Runs the [position] animation to transition the Toggleable's appearance
@@ -242,7 +226,9 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
 
   void _handleTapEnd([TapUpDetails? _]) {
     if (_downPosition != null) {
-      setState(() { _downPosition = null; });
+      setState(() {
+        _downPosition = null;
+      });
     }
     _reactionController.reverse();
   }
@@ -250,7 +236,9 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
   bool _focused = false;
   void _handleFocusHighlightChanged(bool focused) {
     if (focused != _focused) {
-      setState(() { _focused = focused; });
+      setState(() {
+        _focused = focused;
+      });
       if (focused) {
         _reactionFocusFadeController.forward();
       } else {
@@ -262,7 +250,9 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
   bool _hovering = false;
   void _handleHoverChanged(bool hovering) {
     if (hovering != _hovering) {
-      setState(() { _hovering = hovering; });
+      setState(() {
+        _hovering = hovering;
+      });
       if (hovering) {
         _reactionHoverFadeController.forward();
       } else {
@@ -323,13 +313,7 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
         onTap: isInteractive ? _handleTap : null,
         onTapUp: isInteractive ? _handleTapEnd : null,
         onTapCancel: isInteractive ? _handleTapEnd : null,
-        child: Semantics(
-          enabled: isInteractive,
-          child: CustomPaint(
-            size: size,
-            painter: painter,
-          ),
-        ),
+        child: Semantics(enabled: isInteractive, child: CustomPaint(size: size, painter: painter)),
       ),
     );
   }
@@ -542,26 +526,15 @@ abstract class ToggleablePainter extends ChangeNotifier implements CustomPainter
   /// The reaction is painted on the given canvas at the given offset. The
   /// origin is the center point of the reaction (usually distinct from the
   /// [downPosition] at which the user interacted with the control).
-  void paintRadialReaction({
-    required Canvas canvas,
-    Offset offset = Offset.zero,
-    required Offset origin,
-  }) {
+  void paintRadialReaction({required Canvas canvas, Offset offset = Offset.zero, required Offset origin}) {
     if (!reaction.isDismissed || !reactionFocusFade.isDismissed || !reactionHoverFade.isDismissed) {
       final Paint reactionPaint = Paint()
-        ..color = Color.lerp(
-          Color.lerp(
-            Color.lerp(inactiveReactionColor, reactionColor, position.value),
-            hoverColor,
-            reactionHoverFade.value,
-          ),
-          focusColor,
-          reactionFocusFade.value,
-        )!;
-      final Animatable<double> radialReactionRadiusTween = Tween<double>(
-        begin: 0.0,
-        end: splashRadius,
-      );
+        ..color = Color.lerp(Color.lerp(
+          Color.lerp(inactiveReactionColor, reactionColor, position.value),
+          hoverColor,
+          reactionHoverFade.value,
+        ), focusColor, reactionFocusFade.value)!;
+      final Animatable<double> radialReactionRadiusTween = Tween<double>(begin: 0.0, end: splashRadius);
       final double reactionRadius = isFocused || isHovered
           ? splashRadius
           : radialReactionRadiusTween.evaluate(reaction);
@@ -570,7 +543,6 @@ abstract class ToggleablePainter extends ChangeNotifier implements CustomPainter
       }
     }
   }
-
 
   @override
   void dispose() {

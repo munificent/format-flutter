@@ -57,12 +57,14 @@ class BoxShadow extends ui.Shadow {
     final Paint result = Paint()
       ..color = color
       ..maskFilter = MaskFilter.blur(blurStyle, blurSigma);
-    assert(() {
-      if (debugDisableShadows) {
-        result.maskFilter = null;
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (debugDisableShadows) {
+          result.maskFilter = null;
+        }
+        return true;
+      }(),
+    );
     return result;
   }
 
@@ -131,17 +133,18 @@ class BoxShadow extends ui.Shadow {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is BoxShadow
-        && other.color == color
-        && other.offset == offset
-        && other.blurRadius == blurRadius
-        && other.spreadRadius == spreadRadius
-        && other.blurStyle == blurStyle;
+    return other is BoxShadow &&
+        other.color == color &&
+        other.offset == offset &&
+        other.blurRadius == blurRadius &&
+        other.spreadRadius == spreadRadius &&
+        other.blurStyle == blurStyle;
   }
 
   @override
   int get hashCode => Object.hash(color, offset, blurRadius, spreadRadius, blurStyle);
 
   @override
-  String toString() => 'BoxShadow($color, $offset, ${debugFormatDouble(blurRadius)}, ${debugFormatDouble(spreadRadius)}, $blurStyle)';
+  String toString() =>
+      'BoxShadow($color, $offset, ${debugFormatDouble(blurRadius)}, ${debugFormatDouble(spreadRadius)}, $blurStyle)';
 }

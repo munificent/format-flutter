@@ -36,11 +36,7 @@ class SliverPrototypeExtentList extends SliverMultiBoxAdaptorWidget {
   /// Creates a sliver that places its box children in a linear array and
   /// constrains them to have the same extent as a prototype item along
   /// the main axis.
-  const SliverPrototypeExtentList({
-    super.key,
-    required super.delegate,
-    required this.prototypeItem,
-  });
+  const SliverPrototypeExtentList({super.key, required super.delegate, required this.prototypeItem});
 
   /// A sliver that places its box children in a linear array and constrains them
   /// to have the same extent as a prototype item along the main axis.
@@ -96,14 +92,16 @@ class SliverPrototypeExtentList extends SliverMultiBoxAdaptorWidget {
     bool addAutomaticKeepAlives = true,
     bool addRepaintBoundaries = true,
     bool addSemanticIndexes = true,
-  }) : super(delegate: SliverChildBuilderDelegate(
-         itemBuilder,
-         findChildIndexCallback: findChildIndexCallback,
-         childCount: itemCount,
-         addAutomaticKeepAlives: addAutomaticKeepAlives,
-         addRepaintBoundaries: addRepaintBoundaries,
-         addSemanticIndexes: addSemanticIndexes,
-       ));
+  }) : super(
+         delegate: SliverChildBuilderDelegate(
+           itemBuilder,
+           findChildIndexCallback: findChildIndexCallback,
+           childCount: itemCount,
+           addAutomaticKeepAlives: addAutomaticKeepAlives,
+           addRepaintBoundaries: addRepaintBoundaries,
+           addSemanticIndexes: addSemanticIndexes,
+         ),
+       );
 
   /// A sliver that places multiple box children in a linear array along the main
   /// axis.
@@ -138,12 +136,14 @@ class SliverPrototypeExtentList extends SliverMultiBoxAdaptorWidget {
     bool addAutomaticKeepAlives = true,
     bool addRepaintBoundaries = true,
     bool addSemanticIndexes = true,
-  }) : super(delegate: SliverChildListDelegate(
-         children,
-         addAutomaticKeepAlives: addAutomaticKeepAlives,
-         addRepaintBoundaries: addRepaintBoundaries,
-         addSemanticIndexes: addSemanticIndexes,
-       ));
+  }) : super(
+         delegate: SliverChildListDelegate(
+           children,
+           addAutomaticKeepAlives: addAutomaticKeepAlives,
+           addRepaintBoundaries: addRepaintBoundaries,
+           addSemanticIndexes: addSemanticIndexes,
+         ),
+       );
 
   /// Defines the main axis extent of all of this sliver's children.
   ///
@@ -231,9 +231,8 @@ class _SliverPrototypeExtentListElement extends SliverMultiBoxAdaptorElement {
 }
 
 class _RenderSliverPrototypeExtentList extends RenderSliverFixedExtentBoxAdaptor {
-  _RenderSliverPrototypeExtentList({
-    required _SliverPrototypeExtentListElement childManager,
-  }) : super(childManager: childManager);
+  _RenderSliverPrototypeExtentList({required _SliverPrototypeExtentListElement childManager})
+    : super(childManager: childManager);
 
   RenderBox? _child;
   RenderBox? get child => _child;

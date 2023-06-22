@@ -68,10 +68,10 @@ abstract final class DeferredComponent {
   ///    the Dart method to trigger the installation of the corresponding deferred component that
   ///    contains the Dart library.
   static Future<void> installDeferredComponent({required String componentName}) async {
-    await SystemChannels.deferredComponent.invokeMethod<void>(
-      'installDeferredComponent',
-      <String, dynamic>{ 'loadingUnitId': -1, 'componentName': componentName },
-    );
+    await SystemChannels.deferredComponent.invokeMethod<void>('installDeferredComponent', <String, dynamic>{
+      'loadingUnitId': -1,
+      'componentName': componentName,
+    });
   }
 
   /// Requests that a deferred component identified by the [componentName] be
@@ -96,9 +96,9 @@ abstract final class DeferredComponent {
   ///    the dart method to trigger the installation of the corresponding deferred component that
   ///    contains the dart library.
   static Future<void> uninstallDeferredComponent({required String componentName}) async {
-    await SystemChannels.deferredComponent.invokeMethod<void>(
-      'uninstallDeferredComponent',
-      <String, dynamic>{ 'loadingUnitId': -1, 'componentName': componentName },
-    );
+    await SystemChannels.deferredComponent.invokeMethod<void>('uninstallDeferredComponent', <String, dynamic>{
+      'loadingUnitId': -1,
+      'componentName': componentName,
+    });
   }
 }

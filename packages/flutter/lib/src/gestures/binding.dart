@@ -87,10 +87,7 @@ class _Resampler {
       // Save last event time for debugPrint of resampling margin.
       _lastEventTime = event.timeStamp;
 
-      final PointerEventResampler resampler = _resamplers.putIfAbsent(
-        event.device,
-        () => PointerEventResampler(),
-      );
+      final PointerEventResampler resampler = _resamplers.putIfAbsent(event.device, () => PointerEventResampler());
       resampler.addEvent(event);
     } else {
       _handlePointerEvent(event);
@@ -190,13 +187,15 @@ class _Resampler {
   }
 
   void _onSampleTimeChanged() {
-    assert(() {
-      if (debugPrintResamplingMargin) {
-        final Duration resamplingMargin = _lastEventTime - _lastSampleTime;
-        debugPrint('$resamplingMargin');
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (debugPrintResamplingMargin) {
+          final Duration resamplingMargin = _lastEventTime - _lastSampleTime;
+          debugPrint('$resamplingMargin');
+        }
+        return true;
+      }(),
+    );
     _handleSampleTimeChanged();
   }
 }
@@ -378,19 +377,29 @@ mixin GestureBinding on BindingBase implements HitTestable, HitTestDispatcher, H
 
   void _handlePointerEventImmediately(PointerEvent event) {
     HitTestResult? hitTestResult;
-    if (event is PointerDownEvent || event is PointerSignalEvent || event is PointerHoverEvent || event is PointerPanZoomStartEvent) {
-      assert(!_hitTests.containsKey(event.pointer), 'Pointer of ${event.toString(minLevel: DiagnosticLevel.debug)} unexpectedly has a HitTestResult associated with it.');
+    if (event is PointerDownEvent ||
+        event is PointerSignalEvent ||
+        event is PointerHoverEvent ||
+        event is PointerPanZoomStartEvent) {
+      assert(
+        !_hitTests.containsKey(event.pointer),
+        'Pointer of ${event.toString(
+          minLevel: DiagnosticLevel.debug,
+        )} unexpectedly has a HitTestResult associated with it.',
+      );
       hitTestResult = HitTestResult();
       hitTestInView(hitTestResult, event.position, event.viewId);
       if (event is PointerDownEvent || event is PointerPanZoomStartEvent) {
         _hitTests[event.pointer] = hitTestResult;
       }
-      assert(() {
-        if (debugPrintHitTestResults) {
-          debugPrint('${event.toString(minLevel: DiagnosticLevel.debug)}: $hitTestResult');
-        }
-        return true;
-      }());
+      assert(
+        () {
+          if (debugPrintHitTestResults) {
+            debugPrint('${event.toString(minLevel: DiagnosticLevel.debug)}: $hitTestResult');
+          }
+          return true;
+        }(),
+      );
     } else if (event is PointerUpEvent || event is PointerCancelEvent || event is PointerPanZoomEndEvent) {
       hitTestResult = _hitTests.remove(event.pointer);
     } else if (event.down || event is PointerPanZoomUpdateEvent) {
@@ -401,15 +410,15 @@ mixin GestureBinding on BindingBase implements HitTestable, HitTestDispatcher, H
       // such an event.
       hitTestResult = _hitTests[event.pointer];
     }
-    assert(() {
-      if (debugPrintMouseHoverEvents && event is PointerHoverEvent) {
-        debugPrint('$event');
-      }
-      return true;
-    }());
-    if (hitTestResult != null ||
-        event is PointerAddedEvent ||
-        event is PointerRemovedEvent) {
+    assert(
+      () {
+        if (debugPrintMouseHoverEvents && event is PointerHoverEvent) {
+          debugPrint('$event');
+        }
+        return true;
+      }(),
+    );
+    if (hitTestResult != null || event is PointerAddedEvent || event is PointerRemovedEvent) {
       dispatchEvent(event, hitTestResult);
     }
   }
@@ -457,8 +466,8 @@ mixin GestureBinding on BindingBase implements HitTestable, HitTestDispatcher, H
           context: ErrorDescription('while dispatching a non-hit-tested pointer event'),
           event: event,
           informationCollector: () => <DiagnosticsNode>[
-            DiagnosticsProperty<PointerEvent>('Event', event, style: DiagnosticsTreeStyle.errorProperty),
-          ],
+                DiagnosticsProperty<PointerEvent>('Event', event, style: DiagnosticsTreeStyle.errorProperty),
+              ],
         ));
       }
       return;
@@ -475,9 +484,9 @@ mixin GestureBinding on BindingBase implements HitTestable, HitTestDispatcher, H
           event: event,
           hitTestEntry: entry,
           informationCollector: () => <DiagnosticsNode>[
-            DiagnosticsProperty<PointerEvent>('Event', event, style: DiagnosticsTreeStyle.errorProperty),
-            DiagnosticsProperty<HitTestTarget>('Target', entry.target, style: DiagnosticsTreeStyle.errorProperty),
-          ],
+                DiagnosticsProperty<PointerEvent>('Event', event, style: DiagnosticsTreeStyle.errorProperty),
+                DiagnosticsProperty<HitTestTarget>('Target', entry.target, style: DiagnosticsTreeStyle.errorProperty),
+              ],
         ));
       }
     }
@@ -515,8 +524,7 @@ mixin GestureBinding on BindingBase implements HitTestable, HitTestDispatcher, H
     if (!locked) {
       if (resamplingEnabled) {
         _resampler.sample(samplingOffset, _samplingClock);
-      }
-      else {
+      } else {
         _resampler.stop();
       }
     }
@@ -524,13 +532,15 @@ mixin GestureBinding on BindingBase implements HitTestable, HitTestDispatcher, H
 
   SamplingClock get _samplingClock {
     SamplingClock value = SamplingClock();
-    assert(() {
-      final SamplingClock? debugValue = debugSamplingClock;
-      if (debugValue != null) {
-        value = debugValue;
-      }
-      return true;
-    }());
+    assert(
+      () {
+        final SamplingClock? debugValue = debugSamplingClock;
+        if (debugValue != null) {
+          value = debugValue;
+        }
+        return true;
+      }(),
+    );
     return value;
   }
 

@@ -117,7 +117,6 @@ class CupertinoSwitch extends StatefulWidget {
   /// [CupertinoThemeData.primaryColor].
   final Color? activeColor;
 
-
   /// The color to use for the track when the switch is off.
   ///
   /// Defaults to [CupertinoColors.secondarySystemFill] when null.
@@ -224,23 +223,10 @@ class _CupertinoSwitchState extends State<CupertinoSwitch> with TickerProviderSt
       ..onEnd = _handleDragEnd
       ..dragStartBehavior = widget.dragStartBehavior;
 
-    _positionController = AnimationController(
-      duration: _kToggleDuration,
-      value: widget.value ? 1.0 : 0.0,
-      vsync: this,
-    );
-    position = CurvedAnimation(
-      parent: _positionController,
-      curve: Curves.linear,
-    );
-    _reactionController = AnimationController(
-      duration: _kReactionDuration,
-      vsync: this,
-    );
-    _reaction = CurvedAnimation(
-      parent: _reactionController,
-      curve: Curves.ease,
-    );
+    _positionController = AnimationController(duration: _kToggleDuration, value: widget.value ? 1.0 : 0.0, vsync: this);
+    position = CurvedAnimation(parent: _positionController, curve: Curves.linear);
+    _reactionController = AnimationController(duration: _kReactionDuration, vsync: this);
+    _reaction = CurvedAnimation(parent: _reactionController, curve: Curves.ease);
   }
 
   @override
@@ -259,7 +245,7 @@ class _CupertinoSwitchState extends State<CupertinoSwitch> with TickerProviderSt
   //
   // It can be set to false when it's an implicit animation triggered by
   // widget.value changes.
-  void _resumePositionAnimation({ bool isLinear = true }) {
+  void _resumePositionAnimation({bool isLinear = true}) {
     needsPositionAnimation = false;
     position
       ..curve = isLinear ? Curves.linear : Curves.ease
@@ -275,7 +261,7 @@ class _CupertinoSwitchState extends State<CupertinoSwitch> with TickerProviderSt
     if (isInteractive) {
       needsPositionAnimation = false;
     }
-      _reactionController.forward();
+    _reactionController.forward();
   }
 
   void _handleTap([Intent? _]) {
@@ -323,7 +309,9 @@ class _CupertinoSwitchState extends State<CupertinoSwitch> with TickerProviderSt
 
   void _handleDragEnd(DragEndDetails details) {
     // Deferring the animation to the next build phase.
-    setState(() { needsPositionAnimation = true; });
+    setState(() {
+      needsPositionAnimation = true;
+    });
     // Call onChanged when the user's intent to change value is clear.
     if (position.value >= 0.5 != widget.value) {
       widget.onChanged!(!widget.value);
@@ -345,16 +333,18 @@ class _CupertinoSwitchState extends State<CupertinoSwitch> with TickerProviderSt
   }
 
   void _onShowFocusHighlight(bool showHighlight) {
-    setState(() { isFocused = showHighlight; });
+    setState(() {
+      isFocused = showHighlight;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final CupertinoThemeData theme = CupertinoTheme.of(context);
     final Color activeColor = CupertinoDynamicColor.resolve(
-      widget.activeColor
-      ?? ((widget.applyTheme ?? theme.applyThemeToAll) ? theme.primaryColor : null)
-      ?? CupertinoColors.systemGreen,
+      widget.activeColor ??
+          ((widget.applyTheme ?? theme.applyThemeToAll) ? theme.primaryColor : null) ??
+          CupertinoColors.systemGreen,
       context,
     );
     if (needsPositionAnimation) {
@@ -374,17 +364,16 @@ class _CupertinoSwitchState extends State<CupertinoSwitch> with TickerProviderSt
           child: _CupertinoSwitchRenderObjectWidget(
             value: widget.value,
             activeColor: activeColor,
-            trackColor: CupertinoDynamicColor.resolve(widget.trackColor ?? CupertinoColors.secondarySystemFill, context),
+            trackColor:
+                CupertinoDynamicColor.resolve(widget.trackColor ?? CupertinoColors.secondarySystemFill, context),
             thumbColor: CupertinoDynamicColor.resolve(widget.thumbColor ?? CupertinoColors.white, context),
             // Opacity, lightness, and saturation values were approximated with
             // color pickers on the switches in the macOS settings.
             focusColor: CupertinoDynamicColor.resolve(
               widget.focusColor ??
-              HSLColor
-                    .fromColor(activeColor.withOpacity(0.80))
-                    .withLightness(0.69).withSaturation(0.835)
-                    .toColor(),
-              context),
+                  HSLColor.fromColor(activeColor.withOpacity(0.80)).withLightness(0.69).withSaturation(0.835).toColor(),
+              context,
+            ),
             onChanged: widget.onChanged,
             textDirection: Directionality.of(context),
             isFocused: isFocused,
@@ -494,8 +483,8 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
        _isFocused = isFocused,
        _state = state,
        super(additionalConstraints: const BoxConstraints.tightFor(width: _kSwitchWidth, height: _kSwitchHeight)) {
-         state.position.addListener(markNeedsPaint);
-         state._reaction.addListener(markNeedsPaint);
+    state.position.addListener(markNeedsPaint);
+    state._reaction.addListener(markNeedsPaint);
   }
 
   final _CupertinoSwitchState _state;
@@ -625,14 +614,13 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
         visualPosition = currentValue;
     }
 
-    final Paint paint = Paint()
-      ..color = Color.lerp(trackColor, activeColor, currentValue)!;
+    final Paint paint = Paint()..color = Color.lerp(trackColor, activeColor, currentValue)!;
 
     final Rect trackRect = Rect.fromLTWH(
-        offset.dx + (size.width - _kTrackWidth) / 2.0,
-        offset.dy + (size.height - _kTrackHeight) / 2.0,
-        _kTrackWidth,
-        _kTrackHeight,
+      offset.dx + (size.width - _kTrackWidth) / 2.0,
+      offset.dy + (size.height - _kTrackHeight) / 2.0,
+      _kTrackWidth,
+      _kTrackHeight,
     );
     final RRect trackRRect = RRect.fromRectAndRadius(trackRect, const Radius.circular(_kTrackRadius));
     canvas.drawRRect(trackRRect, paint);
@@ -668,9 +656,16 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
       thumbCenterY + CupertinoThumbPainter.radius,
     );
 
-    _clipRRectLayer.layer = context.pushClipRRect(needsCompositing, Offset.zero, thumbBounds, trackRRect, (PaintingContext innerContext, Offset offset) {
-      _thumbPainter.paint(innerContext.canvas, thumbBounds);
-    }, oldLayer: _clipRRectLayer.layer);
+    _clipRRectLayer.layer = context.pushClipRRect(
+      needsCompositing,
+      Offset.zero,
+      thumbBounds,
+      trackRRect,
+      (PaintingContext innerContext, Offset offset) {
+        _thumbPainter.paint(innerContext.canvas, thumbBounds);
+      },
+      oldLayer: _clipRRectLayer.layer,
+    );
   }
 
   final LayerHandle<ClipRRectLayer> _clipRRectLayer = LayerHandle<ClipRRectLayer>();
@@ -685,6 +680,13 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   void debugFillProperties(DiagnosticPropertiesBuilder description) {
     super.debugFillProperties(description);
     description.add(FlagProperty('value', value: value, ifTrue: 'checked', ifFalse: 'unchecked', showName: true));
-    description.add(FlagProperty('isInteractive', value: isInteractive, ifTrue: 'enabled', ifFalse: 'disabled', showName: true, defaultValue: true));
+    description.add(FlagProperty(
+      'isInteractive',
+      value: isInteractive,
+      ifTrue: 'enabled',
+      ifFalse: 'disabled',
+      showName: true,
+      defaultValue: true,
+    ));
   }
 }

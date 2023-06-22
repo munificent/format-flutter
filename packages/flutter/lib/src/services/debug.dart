@@ -42,14 +42,16 @@ bool debugPrintKeyboardEvents = false;
 ///
 /// See [the services library](services/services-library.html) for a complete list.
 bool debugAssertAllServicesVarsUnset(String reason) {
-  assert(() {
-    if (debugKeyEventSimulatorTransitModeOverride != null) {
-      throw FlutterError(reason);
-    }
-    if (debugProfilePlatformChannels || debugPrintKeyboardEvents) {
-      throw FlutterError(reason);
-    }
-    return true;
-  }());
+  assert(
+    () {
+      if (debugKeyEventSimulatorTransitModeOverride != null) {
+        throw FlutterError(reason);
+      }
+      if (debugProfilePlatformChannels || debugPrintKeyboardEvents) {
+        throw FlutterError(reason);
+      }
+      return true;
+    }(),
+  );
   return true;
 }

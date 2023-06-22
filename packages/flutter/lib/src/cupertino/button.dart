@@ -11,10 +11,7 @@ import 'theme.dart';
 
 // Measured against iOS 12 in Xcode.
 const EdgeInsets _kButtonPadding = EdgeInsets.all(16.0);
-const EdgeInsets _kBackgroundButtonPadding = EdgeInsets.symmetric(
-  vertical: 14.0,
-  horizontal: 64.0,
-);
+const EdgeInsets _kBackgroundButtonPadding = EdgeInsets.symmetric(vertical: 14.0, horizontal: 64.0);
 
 /// An iOS-style button.
 ///
@@ -159,14 +156,8 @@ class _CupertinoButtonState extends State<CupertinoButton> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      value: 0.0,
-      vsync: this,
-    );
-    _opacityAnimation = _animationController
-      .drive(CurveTween(curve: Curves.decelerate))
-      .drive(_opacityTween);
+    _animationController = AnimationController(duration: const Duration(milliseconds: 200), value: 0.0, vsync: this);
+    _opacityAnimation = _animationController.drive(CurveTween(curve: Curves.decelerate)).drive(_opacityTween);
     _setTween();
   }
 
@@ -230,14 +221,14 @@ class _CupertinoButtonState extends State<CupertinoButton> with SingleTickerProv
     final CupertinoThemeData themeData = CupertinoTheme.of(context);
     final Color primaryColor = themeData.primaryColor;
     final Color? backgroundColor = widget.color == null
-      ? (widget._filled ? primaryColor : null)
-      : CupertinoDynamicColor.maybeResolve(widget.color, context);
+        ? (widget._filled ? primaryColor : null)
+        : CupertinoDynamicColor.maybeResolve(widget.color, context);
 
     final Color foregroundColor = backgroundColor != null
-      ? themeData.primaryContrastingColor
-      : enabled
-        ? primaryColor
-        : CupertinoDynamicColor.resolve(CupertinoColors.placeholderText, context);
+        ? themeData.primaryContrastingColor
+        : enabled
+            ? primaryColor
+            : CupertinoDynamicColor.resolve(CupertinoColors.placeholderText, context);
 
     final TextStyle textStyle = themeData.textTheme.textStyle.copyWith(color: foregroundColor);
 
@@ -253,34 +244,26 @@ class _CupertinoButtonState extends State<CupertinoButton> with SingleTickerProv
           button: true,
           child: ConstrainedBox(
             constraints: widget.minSize == null
-              ? const BoxConstraints()
-              : BoxConstraints(
-                  minWidth: widget.minSize!,
-                  minHeight: widget.minSize!,
-                ),
+                ? const BoxConstraints()
+                : BoxConstraints(minWidth: widget.minSize!, minHeight: widget.minSize!),
             child: FadeTransition(
               opacity: _opacityAnimation,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: widget.borderRadius,
                   color: backgroundColor != null && !enabled
-                    ? CupertinoDynamicColor.resolve(widget.disabledColor, context)
-                    : backgroundColor,
+                      ? CupertinoDynamicColor.resolve(widget.disabledColor, context)
+                      : backgroundColor,
                 ),
                 child: Padding(
-                  padding: widget.padding ?? (backgroundColor != null
-                    ? _kBackgroundButtonPadding
-                    : _kButtonPadding),
+                  padding: widget.padding ?? (backgroundColor != null ? _kBackgroundButtonPadding : _kButtonPadding),
                   child: Align(
                     alignment: widget.alignment,
                     widthFactor: 1.0,
                     heightFactor: 1.0,
                     child: DefaultTextStyle(
                       style: textStyle,
-                      child: IconTheme(
-                        data: IconThemeData(color: foregroundColor),
-                        child: widget.child,
-                      ),
+                      child: IconTheme(data: IconThemeData(color: foregroundColor), child: widget.child),
                     ),
                   ),
                 ),

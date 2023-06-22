@@ -31,13 +31,11 @@ class TextSelection extends TextRange {
   /// text.
   ///
   /// The [offset] argument must not be null.
-  const TextSelection.collapsed({
-    required int offset,
-    this.affinity = TextAffinity.downstream,
-  }) : baseOffset = offset,
-       extentOffset = offset,
-       isDirectional = false,
-       super.collapsed(offset);
+  const TextSelection.collapsed({required int offset, this.affinity = TextAffinity.downstream})
+    : baseOffset = offset,
+      extentOffset = offset,
+      isDirectional = false,
+      super.collapsed(offset);
 
   /// Creates a collapsed selection at the given text position.
   ///
@@ -134,8 +132,8 @@ class TextSelection extends TextRange {
       return '$typeName.invalid';
     }
     return isCollapsed
-      ? '$typeName.collapsed(offset: $baseOffset, affinity: $affinity, isDirectional: $isDirectional)'
-      : '$typeName(baseOffset: $baseOffset, extentOffset: $extentOffset, isDirectional: $isDirectional)';
+        ? '$typeName.collapsed(offset: $baseOffset, affinity: $affinity, isDirectional: $isDirectional)'
+        : '$typeName(baseOffset: $baseOffset, extentOffset: $extentOffset, isDirectional: $isDirectional)';
   }
 
   @override
@@ -149,10 +147,10 @@ class TextSelection extends TextRange {
     if (!isValid) {
       return !other.isValid;
     }
-    return other.baseOffset == baseOffset
-        && other.extentOffset == extentOffset
-        && (!isCollapsed || other.affinity == affinity)
-        && other.isDirectional == isDirectional;
+    return other.baseOffset == baseOffset &&
+        other.extentOffset == extentOffset &&
+        (!isCollapsed || other.affinity == affinity) &&
+        other.isDirectional == isDirectional;
   }
 
   @override
@@ -165,15 +163,9 @@ class TextSelection extends TextRange {
     return Object.hash(baseOffset.hashCode, extentOffset.hashCode, affinityHash, isDirectional.hashCode);
   }
 
-
   /// Creates a new [TextSelection] based on the current selection, with the
   /// provided parameters overridden.
-  TextSelection copyWith({
-    int? baseOffset,
-    int? extentOffset,
-    TextAffinity? affinity,
-    bool? isDirectional,
-  }) {
+  TextSelection copyWith({int? baseOffset, int? extentOffset, TextAffinity? affinity, bool? isDirectional}) {
     return TextSelection(
       baseOffset: baseOffset ?? this.baseOffset,
       extentOffset: extentOffset ?? this.extentOffset,
@@ -211,11 +203,7 @@ class TextSelection extends TextRange {
     if (position.offset <= start) {
       // Here the position is somewhere before the selection: ..|..[...]....
       if (extentAtIndex) {
-        return copyWith(
-          baseOffset: end,
-          extentOffset: position.offset,
-          affinity: position.affinity,
-        );
+        return copyWith(baseOffset: end, extentOffset: position.offset, affinity: position.affinity);
       }
       return copyWith(
         baseOffset: normalized ? position.offset : baseOffset,
@@ -224,11 +212,7 @@ class TextSelection extends TextRange {
     }
     // Here the position is somewhere after the selection: ....[...]..|..
     if (extentAtIndex) {
-      return copyWith(
-        baseOffset: start,
-        extentOffset: position.offset,
-        affinity: position.affinity,
-      );
+      return copyWith(baseOffset: start, extentOffset: position.offset, affinity: position.affinity);
     }
     return copyWith(
       baseOffset: normalized ? baseOffset : position.offset,
@@ -254,9 +238,6 @@ class TextSelection extends TextRange {
       return this;
     }
 
-    return copyWith(
-      extentOffset: position.offset,
-      affinity: position.affinity,
-    );
+    return copyWith(extentOffset: position.offset, affinity: position.affinity);
   }
 }

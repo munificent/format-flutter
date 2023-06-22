@@ -42,7 +42,11 @@ typedef ViewportBuilder = Widget Function(BuildContext context, ViewportOffset p
 
 /// Signature used by [TwoDimensionalScrollable] to build the viewport through
 /// which the scrollable content is displayed.
-typedef TwoDimensionalViewportBuilder = Widget Function(BuildContext context, ViewportOffset verticalPosition, ViewportOffset horizontalPosition);
+typedef TwoDimensionalViewportBuilder = Widget Function(
+  BuildContext context,
+  ViewportOffset verticalPosition,
+  ViewportOffset horizontalPosition,
+);
 
 /// A widget that manages scrolling in one dimension and informs the [Viewport]
 /// through which the content is viewed.
@@ -328,7 +332,7 @@ class Scrollable extends StatefulWidget {
   ///
   /// * [Scrollable.of], which is similar to this method, but asserts
   ///   if no [Scrollable] ancestor is found.
-  static ScrollableState? maybeOf(BuildContext context, { Axis? axis }) {
+  static ScrollableState? maybeOf(BuildContext context, {Axis? axis}) {
     // This is the context that will need to establish the dependency.
     final BuildContext originalContext = context;
     InheritedElement? element = context.getElementForInheritedWidgetOfExactType<_ScrollableScope>();
@@ -374,32 +378,35 @@ class Scrollable extends StatefulWidget {
   ///
   /// * [Scrollable.maybeOf], which is similar to this method, but returns null
   ///   if no [Scrollable] ancestor is found.
-  static ScrollableState of(BuildContext context, { Axis? axis }) {
+  static ScrollableState of(BuildContext context, {Axis? axis}) {
     final ScrollableState? scrollableState = maybeOf(context, axis: axis);
-    assert(() {
-      if (scrollableState == null) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-            'Scrollable.of() was called with a context that does not contain a '
-            'Scrollable widget.',
-          ),
-          ErrorDescription(
-            'No Scrollable widget ancestor could be found '
-            '${axis == null ? '' : 'for the provided Axis: $axis '}'
-            'starting from the context that was passed to Scrollable.of(). This '
-            'can happen because you are using a widget that looks for a Scrollable '
-            'ancestor, but no such ancestor exists.\n'
-            'The context used was:\n'
-            '  $context',
-          ),
-          if (axis != null) ErrorHint(
-            'When specifying an axis, this method will only look for a Scrollable '
-            'that matches the given Axis.',
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (scrollableState == null) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'Scrollable.of() was called with a context that does not contain a '
+              'Scrollable widget.',
+            ),
+            ErrorDescription(
+              'No Scrollable widget ancestor could be found '
+              '${axis == null ? '' : 'for the provided Axis: $axis '}'
+              'starting from the context that was passed to Scrollable.of(). This '
+              'can happen because you are using a widget that looks for a Scrollable '
+              'ancestor, but no such ancestor exists.\n'
+              'The context used was:\n'
+              '  $context',
+            ),
+            if (axis != null)
+              ErrorHint(
+                'When specifying an axis, this method will only look for a Scrollable '
+                'that matches the given Axis.',
+              ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     return scrollableState!;
   }
 
@@ -421,7 +428,7 @@ class Scrollable extends StatefulWidget {
   ///
   /// If there is no [Scrollable] in the widget tree above the [context], this
   /// method returns false.
-  static bool recommendDeferredLoadingForContext(BuildContext context, { Axis? axis }) {
+  static bool recommendDeferredLoadingForContext(BuildContext context, {Axis? axis}) {
     _ScrollableScope? widget = context.getInheritedWidgetOfExactType<_ScrollableScope>();
     while (widget != null) {
       if (axis == null || axisDirectionToAxis(widget.scrollable.axisDirection) == axis) {
@@ -480,11 +487,7 @@ class Scrollable extends StatefulWidget {
 // Enable Scrollable.of() to work as if ScrollableState was an inherited widget.
 // ScrollableState.build() always rebuilds its _ScrollableScope.
 class _ScrollableScope extends InheritedWidget {
-  const _ScrollableScope({
-    required this.scrollable,
-    required this.position,
-    required super.child,
-  });
+  const _ScrollableScope({required this.scrollable, required this.position, required super.child});
 
   final ScrollableState scrollable;
   final ScrollPosition position;
@@ -505,9 +508,9 @@ class _ScrollableScope extends InheritedWidget {
 ///
 /// This class is not intended to be subclassed. To specialize the behavior of a
 /// [Scrollable], provide it with a [ScrollPhysics].
-class ScrollableState extends State<Scrollable> with TickerProviderStateMixin, RestorationMixin
+class ScrollableState extends State<Scrollable>
+    with TickerProviderStateMixin, RestorationMixin
     implements ScrollContext {
-
   // GETTERS
 
   /// The manager for this [Scrollable] widget's viewport position.
@@ -645,7 +648,7 @@ class ScrollableState extends State<Scrollable> with TickerProviderStateMixin, R
       if (oldWidget.controller == null) {
         // The old controller was null, meaning the fallback cannot be null.
         // Dispose of the fallback.
-        assert(_fallbackScrollController !=  null);
+        assert(_fallbackScrollController != null);
         assert(widget.controller != null);
         _fallbackScrollController!.detach(position);
         _fallbackScrollController!.dispose();
@@ -779,7 +782,8 @@ class ScrollableState extends State<Scrollable> with TickerProviderStateMixin, R
     }
     _shouldIgnorePointer = value;
     if (_ignorePointerKey.currentContext != null) {
-      final RenderIgnorePointer renderBox = _ignorePointerKey.currentContext!.findRenderObject()! as RenderIgnorePointer;
+      final RenderIgnorePointer renderBox =
+          _ignorePointerKey.currentContext!.findRenderObject()! as RenderIgnorePointer;
       renderBox.ignoring = _shouldIgnorePointer;
     }
   }
@@ -847,10 +851,7 @@ class ScrollableState extends State<Scrollable> with TickerProviderStateMixin, R
   // Returns the offset that should result from applying [event] to the current
   // position, taking min/max scroll extent into account.
   double _targetScrollOffsetForPointerScroll(double delta) {
-    return math.min(
-      math.max(position.pixels + delta, position.minScrollExtent),
-      position.maxScrollExtent,
-    );
+    return math.min(math.max(position.pixels + delta, position.minScrollExtent), position.maxScrollExtent);
   }
 
   // Returns the delta that should result from applying [event] with axis,
@@ -860,23 +861,19 @@ class ScrollableState extends State<Scrollable> with TickerProviderStateMixin, R
     late double delta;
     final Set<LogicalKeyboardKey> pressed = HardwareKeyboard.instance.logicalKeysPressed;
     final bool flipAxes = pressed.any(_configuration.pointerAxisModifiers.contains) &&
-      // Axes are only flipped for physical mouse wheel input.
-      // On some platforms, like web, trackpad input is handled through pointer
-      // signals, but should not be included in this axis modifying behavior.
-      // This is because on a trackpad, all directional axes are available to
-      // the user, while mouse scroll wheels typically are restricted to one
-      // axis.
-      event.kind == PointerDeviceKind.mouse;
+        // Axes are only flipped for physical mouse wheel input.
+        // On some platforms, like web, trackpad input is handled through pointer
+        // signals, but should not be included in this axis modifying behavior.
+        // This is because on a trackpad, all directional axes are available to
+        // the user, while mouse scroll wheels typically are restricted to one
+        // axis.
+        event.kind == PointerDeviceKind.mouse;
 
     switch (widget.axis) {
       case Axis.horizontal:
-        delta = flipAxes
-          ? event.scrollDelta.dy
-          : event.scrollDelta.dx;
+        delta = flipAxes ? event.scrollDelta.dy : event.scrollDelta.dx;
       case Axis.vertical:
-        delta = flipAxes
-          ? event.scrollDelta.dx
-          : event.scrollDelta.dy;
+        delta = flipAxes ? event.scrollDelta.dx : event.scrollDelta.dy;
     }
 
     if (axisDirectionIsReversed(widget.axisDirection)) {
@@ -979,7 +976,7 @@ class ScrollableState extends State<Scrollable> with TickerProviderStateMixin, R
           allowImplicitScrolling: _physics!.allowImplicitScrolling,
           semanticChildCount: widget.semanticChildCount,
           child: result,
-        )
+        ),
       );
     }
 
@@ -988,12 +985,7 @@ class ScrollableState extends State<Scrollable> with TickerProviderStateMixin, R
     // Selection is only enabled when there is a parent registrar.
     final SelectionRegistrar? registrar = SelectionContainer.maybeOf(context);
     if (registrar != null) {
-      result = _ScrollableSelectionHandler(
-        state: this,
-        position: position,
-        registrar: registrar,
-        child: result,
-      );
+      result = _ScrollableSelectionHandler(state: this, position: position, registrar: registrar, child: result);
     }
 
     return result;
@@ -1034,10 +1026,7 @@ class _ScrollableSelectionHandlerState extends State<_ScrollableSelectionHandler
   @override
   void initState() {
     super.initState();
-    _selectionDelegate = _ScrollableSelectionContainerDelegate(
-      state: widget.state,
-      position: widget.position,
-    );
+    _selectionDelegate = _ScrollableSelectionContainerDelegate(state: widget.state, position: widget.position);
   }
 
   @override
@@ -1056,11 +1045,7 @@ class _ScrollableSelectionHandlerState extends State<_ScrollableSelectionHandler
 
   @override
   Widget build(BuildContext context) {
-    return SelectionContainer(
-      registrar: widget.registrar,
-      delegate: _selectionDelegate,
-      child: widget.child,
-    );
+    return SelectionContainer(registrar: widget.registrar, delegate: _selectionDelegate, child: widget.child);
   }
 }
 
@@ -1072,11 +1057,9 @@ class _ScrollableSelectionHandlerState extends State<_ScrollableSelectionHandler
 /// date with the scroll position when it sends the drag update event to a
 /// selectable.
 class _ScrollableSelectionContainerDelegate extends MultiSelectableSelectionContainerDelegate {
-  _ScrollableSelectionContainerDelegate({
-    required this.state,
-    required ScrollPosition position
-  }) : _position = position,
-       _autoScroller = EdgeDraggingAutoScroller(state, velocityScalar: _kDefaultSelectToScrollVelocityScalar) {
+  _ScrollableSelectionContainerDelegate({required this.state, required ScrollPosition position})
+    : _position = position,
+      _autoScroller = EdgeDraggingAutoScroller(state, velocityScalar: _kDefaultSelectToScrollVelocityScalar) {
     _position.addListener(_scheduleLayoutChange);
   }
 
@@ -1230,7 +1213,7 @@ class _ScrollableSelectionContainerDelegate extends MultiSelectableSelectionCont
       final Matrix4 childTransform = selectables[currentSelectionStartIndex].getTransformTo(box);
       final Offset localDragStart = MatrixUtils.transformPoint(
         childTransform,
-        start.localPosition + Offset(0, - start.lineHeight / 2),
+        start.localPosition + Offset(0, -start.lineHeight / 2),
       );
       _currentDragStartRelatedToOrigin = MatrixUtils.transformPoint(transform, localDragStart + deltaToOrigin);
     }
@@ -1241,7 +1224,7 @@ class _ScrollableSelectionContainerDelegate extends MultiSelectableSelectionCont
       final Matrix4 childTransform = selectables[currentSelectionEndIndex].getTransformTo(box);
       final Offset localDragEnd = MatrixUtils.transformPoint(
         childTransform,
-        end.localPosition + Offset(0, - end.lineHeight / 2),
+        end.localPosition + Offset(0, -end.lineHeight / 2),
       );
       _currentDragEndRelatedToOrigin = MatrixUtils.transformPoint(transform, localDragEnd + deltaToOrigin);
     }
@@ -1272,10 +1255,7 @@ class _ScrollableSelectionContainerDelegate extends MultiSelectableSelectionCont
     // The selection geometry may not have the accurate offset for the edges
     // that are outside of the viewport whose transform may not be valid. Only
     // the edge this event is updating is sure to be accurate.
-    _updateDragLocationsFromGeometries(
-      forceUpdateStart: !event.isEnd,
-      forceUpdateEnd: event.isEnd,
-    );
+    _updateDragLocationsFromGeometries(forceUpdateStart: !event.isEnd, forceUpdateEnd: event.isEnd);
     if (_selectionStartsInScrollable) {
       _jumpToEdge(event.isEnd);
     }
@@ -1288,10 +1268,7 @@ class _ScrollableSelectionContainerDelegate extends MultiSelectableSelectionCont
     // The selection geometry may not have the accurate offset for the edges
     // that are outside of the viewport whose transform may not be valid. Only
     // the edge this event is updating is sure to be accurate.
-    _updateDragLocationsFromGeometries(
-      forceUpdateStart: !event.isEnd,
-      forceUpdateEnd: event.isEnd,
-    );
+    _updateDragLocationsFromGeometries(forceUpdateStart: !event.isEnd, forceUpdateEnd: event.isEnd);
     if (_selectionStartsInScrollable) {
       _jumpToEdge(event.isEnd);
     }
@@ -1384,7 +1361,11 @@ class _ScrollableSelectionContainerDelegate extends MultiSelectableSelectionCont
   }
 
   Rect _dragTargetFromEvent(SelectionEdgeUpdateEvent event) {
-    return Rect.fromCenter(center: event.globalPosition, width: _kDefaultDragTargetSize, height: _kDefaultDragTargetSize);
+    return Rect.fromCenter(
+      center: event.globalPosition,
+      width: _kDefaultDragTargetSize,
+      height: _kDefaultDragTargetSize,
+    );
   }
 
   @override
@@ -1554,11 +1535,11 @@ class _RenderScrollSemantics extends RenderProxyBox {
     config.isSemanticBoundary = true;
     if (position.haveDimensions) {
       config
-          ..hasImplicitScrolling = allowImplicitScrolling
-          ..scrollPosition = _position.pixels
-          ..scrollExtentMax = _position.maxScrollExtent
-          ..scrollExtentMin = _position.minScrollExtent
-          ..scrollChildCount = semanticChildCount;
+        ..hasImplicitScrolling = allowImplicitScrolling
+        ..scrollPosition = _position.pixels
+        ..scrollExtentMax = _position.maxScrollExtent
+        ..scrollExtentMin = _position.minScrollExtent
+        ..scrollChildCount = semanticChildCount;
     }
   }
 
@@ -1771,7 +1752,8 @@ class TwoDimensionalScrollable extends StatefulWidget {
   /// * [TwoDimensionalScrollable.of], which is similar to this method, but
   ///   asserts if no [Scrollable] ancestor is found.
   static TwoDimensionalScrollableState? maybeOf(BuildContext context) {
-    final _TwoDimensionalScrollableScope? widget = context.dependOnInheritedWidgetOfExactType<_TwoDimensionalScrollableScope>();
+    final _TwoDimensionalScrollableScope? widget =
+        context.dependOnInheritedWidgetOfExactType<_TwoDimensionalScrollableScope>();
     return widget?.twoDimensionalScrollable;
   }
 
@@ -1801,25 +1783,27 @@ class TwoDimensionalScrollable extends StatefulWidget {
   ///   but returns null if no [TwoDimensionalScrollable] ancestor is found.
   static TwoDimensionalScrollableState of(BuildContext context) {
     final TwoDimensionalScrollableState? scrollableState = maybeOf(context);
-    assert(() {
-      if (scrollableState == null) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-            'TwoDimensionalScrollable.of() was called with a context that does '
-            'not contain a TwoDimensionalScrollable widget.\n'
-          ),
-          ErrorDescription(
-            'No TwoDimensionalScrollable widget ancestor could be found starting '
-            'from the context that was passed to TwoDimensionalScrollable.of(). '
-            'This can happen because you are using a widget that looks for a '
-            'TwoDimensionalScrollable ancestor, but no such ancestor exists.\n'
-            'The context used was:\n'
-            '  $context',
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (scrollableState == null) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'TwoDimensionalScrollable.of() was called with a context that does '
+              'not contain a TwoDimensionalScrollable widget.\n',
+            ),
+            ErrorDescription(
+              'No TwoDimensionalScrollable widget ancestor could be found starting '
+              'from the context that was passed to TwoDimensionalScrollable.of(). '
+              'This can happen because you are using a widget that looks for a '
+              'TwoDimensionalScrollable ancestor, but no such ancestor exists.\n'
+              'The context used was:\n'
+              '  $context',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     return scrollableState!;
   }
 }
@@ -1901,7 +1885,7 @@ class TwoDimensionalScrollableState extends State<TwoDimensionalScrollable> {
       if (oldWidget.horizontalDetails.controller == null) {
         // The old controller was null, meaning the fallback cannot be null.
         // Dispose of the fallback.
-        assert(_horizontalFallbackController !=  null);
+        assert(_horizontalFallbackController != null);
         assert(widget.horizontalDetails.controller != null);
         _horizontalFallbackController!.dispose();
         _horizontalFallbackController = null;
@@ -1918,11 +1902,11 @@ class TwoDimensionalScrollableState extends State<TwoDimensionalScrollable> {
   Widget build(BuildContext context) {
     assert(
       axisDirectionToAxis(widget.verticalDetails.direction) == Axis.vertical,
-      'TwoDimensionalScrollable.verticalDetails are not Axis.vertical.'
+      'TwoDimensionalScrollable.verticalDetails are not Axis.vertical.',
     );
     assert(
       axisDirectionToAxis(widget.horizontalDetails.direction) == Axis.horizontal,
-      'TwoDimensionalScrollable.horizontalDetails are not Axis.horizontal.'
+      'TwoDimensionalScrollable.horizontalDetails are not Axis.horizontal.',
     );
 
     final Widget result = RestorationScope(
@@ -1930,12 +1914,10 @@ class TwoDimensionalScrollableState extends State<TwoDimensionalScrollable> {
       child: _VerticalOuterDimension(
         key: _verticalOuterScrollableKey,
         axisDirection: widget.verticalDetails.direction,
-        controller: widget.verticalDetails.controller
-          ?? _verticalFallbackController!,
+        controller: widget.verticalDetails.controller ?? _verticalFallbackController!,
         physics: widget.verticalDetails.physics,
-        clipBehavior: widget.verticalDetails.clipBehavior
-          ?? widget.verticalDetails.decorationClipBehavior
-          ?? Clip.hardEdge,
+        clipBehavior:
+            widget.verticalDetails.clipBehavior ?? widget.verticalDetails.decorationClipBehavior ?? Clip.hardEdge,
         incrementCalculator: widget.incrementCalculator,
         excludeFromSemantics: widget.excludeFromSemantics,
         restorationId: 'OuterVerticalTwoDimensionalScrollable',
@@ -1945,12 +1927,11 @@ class TwoDimensionalScrollableState extends State<TwoDimensionalScrollable> {
           return _HorizontalInnerDimension(
             key: _horizontalInnerScrollableKey,
             axisDirection: widget.horizontalDetails.direction,
-            controller: widget.horizontalDetails.controller
-              ?? _horizontalFallbackController!,
+            controller: widget.horizontalDetails.controller ?? _horizontalFallbackController!,
             physics: widget.horizontalDetails.physics,
-            clipBehavior: widget.horizontalDetails.clipBehavior
-              ?? widget.horizontalDetails.decorationClipBehavior
-              ?? Clip.hardEdge,
+            clipBehavior: widget.horizontalDetails.clipBehavior ??
+                widget.horizontalDetails.decorationClipBehavior ??
+                Clip.hardEdge,
             incrementCalculator: widget.incrementCalculator,
             excludeFromSemantics: widget.excludeFromSemantics,
             restorationId: 'InnerHorizontalTwoDimensionalScrollable',
@@ -1960,17 +1941,14 @@ class TwoDimensionalScrollableState extends State<TwoDimensionalScrollable> {
               return widget.viewportBuilder(context, verticalOffset, horizontalOffset);
             },
           );
-        }
-      )
+        },
+      ),
     );
 
     // TODO(Piinks): Build scrollbars for 2 dimensions instead of 1,
     //  https://github.com/flutter/flutter/issues/122348
 
-    return _TwoDimensionalScrollableScope(
-      twoDimensionalScrollable: this,
-      child: result,
-    );
+    return _TwoDimensionalScrollableScope(twoDimensionalScrollable: this, child: result);
   }
 
   @override
@@ -1986,10 +1964,7 @@ class TwoDimensionalScrollableState extends State<TwoDimensionalScrollable> {
 // TwoDimensionalScrollableState.build() always rebuilds its
 // _TwoDimensionalScrollableScope.
 class _TwoDimensionalScrollableScope extends InheritedWidget {
-  const _TwoDimensionalScrollableScope({
-    required this.twoDimensionalScrollable,
-    required super.child,
-  });
+  const _TwoDimensionalScrollableScope({required this.twoDimensionalScrollable, required super.child});
 
   final TwoDimensionalScrollableState twoDimensionalScrollable;
 

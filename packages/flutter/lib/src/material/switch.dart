@@ -118,10 +118,10 @@ class Switch extends StatelessWidget {
     this.focusNode,
     this.onFocusChange,
     this.autofocus = false,
-  })  : _switchType = _SwitchType.material,
-        applyCupertinoTheme = false,
-        assert(activeThumbImage != null || onActiveThumbImageError == null),
-        assert(inactiveThumbImage != null || onInactiveThumbImageError == null);
+  }) : _switchType = _SwitchType.material,
+       applyCupertinoTheme = false,
+       assert(activeThumbImage != null || onActiveThumbImageError == null),
+       assert(inactiveThumbImage != null || onInactiveThumbImageError == null);
 
   /// Creates an adaptive [Switch] based on whether the target platform is iOS
   /// or macOS, following Material design's
@@ -166,9 +166,9 @@ class Switch extends StatelessWidget {
     this.onFocusChange,
     this.autofocus = false,
     this.applyCupertinoTheme,
-  })  : assert(activeThumbImage != null || onActiveThumbImageError == null),
-        assert(inactiveThumbImage != null || onInactiveThumbImageError == null),
-        _switchType = _SwitchType.adaptive;
+  }) : assert(activeThumbImage != null || onActiveThumbImageError == null),
+       assert(inactiveThumbImage != null || onInactiveThumbImageError == null),
+       _switchType = _SwitchType.adaptive;
 
   /// Whether this switch is on or off.
   ///
@@ -557,9 +557,8 @@ class Switch extends StatelessWidget {
     final SwitchThemeData switchTheme = SwitchTheme.of(context);
     final _SwitchConfig switchConfig = theme.useMaterial3 ? _SwitchConfigM3(context) : _SwitchConfigM2();
 
-    final MaterialTapTargetSize effectiveMaterialTapTargetSize = materialTapTargetSize
-      ?? switchTheme.materialTapTargetSize
-      ?? theme.materialTapTargetSize;
+    final MaterialTapTargetSize effectiveMaterialTapTargetSize =
+        materialTapTargetSize ?? switchTheme.materialTapTargetSize ?? theme.materialTapTargetSize;
     switch (effectiveMaterialTapTargetSize) {
       case MaterialTapTargetSize.padded:
         return Size(switchConfig.switchWidth, switchConfig.switchHeight);
@@ -627,19 +626,20 @@ class Switch extends StatelessWidget {
       case _SwitchType.material:
         return _buildMaterialSwitch(context);
 
-      case _SwitchType.adaptive: {
-        final ThemeData theme = Theme.of(context);
-        switch (theme.platform) {
-          case TargetPlatform.android:
-          case TargetPlatform.fuchsia:
-          case TargetPlatform.linux:
-          case TargetPlatform.windows:
-            return _buildMaterialSwitch(context);
-          case TargetPlatform.iOS:
-          case TargetPlatform.macOS:
-            return _buildCupertinoSwitch(context);
+      case _SwitchType.adaptive:
+        {
+          final ThemeData theme = Theme.of(context);
+          switch (theme.platform) {
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
+              return _buildMaterialSwitch(context);
+            case TargetPlatform.iOS:
+            case TargetPlatform.macOS:
+              return _buildCupertinoSwitch(context);
+          }
         }
-      }
     }
   }
 
@@ -679,8 +679,8 @@ class _MaterialSwitch extends StatefulWidget {
     this.focusNode,
     this.onFocusChange,
     this.autofocus = false,
-  })  : assert(activeThumbImage != null || onActiveThumbImageError == null),
-        assert(inactiveThumbImage != null || onInactiveThumbImageError == null);
+  }) : assert(activeThumbImage != null || onActiveThumbImageError == null),
+       assert(inactiveThumbImage != null || onInactiveThumbImageError == null);
 
   final bool value;
   final ValueChanged<bool>? onChanged;
@@ -810,7 +810,6 @@ class _MaterialSwitchState extends State<_MaterialSwitch> with TickerProviderSta
       animateToValue();
     }
     reactionController.reverse();
-
   }
 
   void _handleChanged(bool? value) {
@@ -840,88 +839,92 @@ class _MaterialSwitchState extends State<_MaterialSwitch> with TickerProviderSta
     final Set<MaterialState> activeStates = states..add(MaterialState.selected);
     final Set<MaterialState> inactiveStates = states..remove(MaterialState.selected);
 
-    final Color? activeThumbColor = widget.thumbColor?.resolve(activeStates)
-      ?? _widgetThumbColor.resolve(activeStates)
-      ?? switchTheme.thumbColor?.resolve(activeStates);
-    final Color effectiveActiveThumbColor = activeThumbColor
-      ?? defaults.thumbColor!.resolve(activeStates)!;
-    final Color? inactiveThumbColor = widget.thumbColor?.resolve(inactiveStates)
-      ?? _widgetThumbColor.resolve(inactiveStates)
-      ?? switchTheme.thumbColor?.resolve(inactiveStates);
-    final Color effectiveInactiveThumbColor = inactiveThumbColor
-      ?? defaults.thumbColor!.resolve(inactiveStates)!;
-    final Color effectiveActiveTrackColor = widget.trackColor?.resolve(activeStates)
-      ?? _widgetTrackColor.resolve(activeStates)
-      ?? switchTheme.trackColor?.resolve(activeStates)
-      ?? _widgetThumbColor.resolve(activeStates)?.withAlpha(0x80)
-      ?? defaults.trackColor!.resolve(activeStates)!;
-    final Color effectiveActiveTrackOutlineColor = widget.trackOutlineColor?.resolve(activeStates)
-      ?? switchTheme.trackOutlineColor?.resolve(activeStates)
-      ?? Colors.transparent;
-    final double? effectiveActiveTrackOutlineWidth = widget.trackOutlineWidth?.resolve(activeStates)
-      ?? switchTheme.trackOutlineWidth?.resolve(activeStates)
-      ?? defaults.trackOutlineWidth?.resolve(activeStates);
+    final Color? activeThumbColor = widget.thumbColor?.resolve(activeStates) ??
+        _widgetThumbColor.resolve(activeStates) ??
+        switchTheme.thumbColor?.resolve(activeStates);
+    final Color effectiveActiveThumbColor = activeThumbColor ?? defaults.thumbColor!.resolve(activeStates)!;
+    final Color? inactiveThumbColor = widget.thumbColor?.resolve(inactiveStates) ??
+        _widgetThumbColor.resolve(inactiveStates) ??
+        switchTheme.thumbColor?.resolve(inactiveStates);
+    final Color effectiveInactiveThumbColor = inactiveThumbColor ?? defaults.thumbColor!.resolve(inactiveStates)!;
+    final Color effectiveActiveTrackColor = widget.trackColor?.resolve(activeStates) ??
+        _widgetTrackColor.resolve(activeStates) ??
+        switchTheme.trackColor?.resolve(activeStates) ??
+        _widgetThumbColor.resolve(activeStates)?.withAlpha(0x80) ??
+        defaults.trackColor!.resolve(activeStates)!;
+    final Color effectiveActiveTrackOutlineColor = widget.trackOutlineColor?.resolve(activeStates) ??
+        switchTheme.trackOutlineColor?.resolve(activeStates) ??
+        Colors.transparent;
+    final double? effectiveActiveTrackOutlineWidth = widget.trackOutlineWidth?.resolve(activeStates) ??
+        switchTheme.trackOutlineWidth?.resolve(activeStates) ??
+        defaults.trackOutlineWidth?.resolve(activeStates);
 
-    final Color effectiveInactiveTrackColor = widget.trackColor?.resolve(inactiveStates)
-      ?? _widgetTrackColor.resolve(inactiveStates)
-      ?? switchTheme.trackColor?.resolve(inactiveStates)
-      ?? defaults.trackColor!.resolve(inactiveStates)!;
-    final Color? effectiveInactiveTrackOutlineColor = widget.trackOutlineColor?.resolve(inactiveStates)
-      ?? switchTheme.trackOutlineColor?.resolve(inactiveStates)
-      ?? defaults.trackOutlineColor?.resolve(inactiveStates);
-    final double? effectiveInactiveTrackOutlineWidth = widget.trackOutlineWidth?.resolve(inactiveStates)
-      ?? switchTheme.trackOutlineWidth?.resolve(inactiveStates)
-      ?? defaults.trackOutlineWidth?.resolve(inactiveStates);
+    final Color effectiveInactiveTrackColor = widget.trackColor?.resolve(inactiveStates) ??
+        _widgetTrackColor.resolve(inactiveStates) ??
+        switchTheme.trackColor?.resolve(inactiveStates) ??
+        defaults.trackColor!.resolve(inactiveStates)!;
+    final Color? effectiveInactiveTrackOutlineColor = widget.trackOutlineColor?.resolve(inactiveStates) ??
+        switchTheme.trackOutlineColor?.resolve(inactiveStates) ??
+        defaults.trackOutlineColor?.resolve(inactiveStates);
+    final double? effectiveInactiveTrackOutlineWidth = widget.trackOutlineWidth?.resolve(inactiveStates) ??
+        switchTheme.trackOutlineWidth?.resolve(inactiveStates) ??
+        defaults.trackOutlineWidth?.resolve(inactiveStates);
 
-    final Icon? effectiveActiveIcon = widget.thumbIcon?.resolve(activeStates)
-      ?? switchTheme.thumbIcon?.resolve(activeStates);
-    final Icon? effectiveInactiveIcon = widget.thumbIcon?.resolve(inactiveStates)
-      ?? switchTheme.thumbIcon?.resolve(inactiveStates);
+    final Icon? effectiveActiveIcon =
+        widget.thumbIcon?.resolve(activeStates) ?? switchTheme.thumbIcon?.resolve(activeStates);
+    final Icon? effectiveInactiveIcon =
+        widget.thumbIcon?.resolve(inactiveStates) ?? switchTheme.thumbIcon?.resolve(inactiveStates);
 
     final Color effectiveActiveIconColor = effectiveActiveIcon?.color ?? switchConfig.iconColor.resolve(activeStates);
-    final Color effectiveInactiveIconColor = effectiveInactiveIcon?.color ?? switchConfig.iconColor.resolve(inactiveStates);
+    final Color effectiveInactiveIconColor =
+        effectiveInactiveIcon?.color ?? switchConfig.iconColor.resolve(inactiveStates);
 
     final Set<MaterialState> focusedStates = states..add(MaterialState.focused);
-    final Color effectiveFocusOverlayColor = widget.overlayColor?.resolve(focusedStates)
-      ?? widget.focusColor
-      ?? switchTheme.overlayColor?.resolve(focusedStates)
-      ?? defaults.overlayColor!.resolve(focusedStates)!;
+    final Color effectiveFocusOverlayColor = widget.overlayColor?.resolve(focusedStates) ??
+        widget.focusColor ??
+        switchTheme.overlayColor?.resolve(focusedStates) ??
+        defaults.overlayColor!.resolve(focusedStates)!;
 
     final Set<MaterialState> hoveredStates = states..add(MaterialState.hovered);
-    final Color effectiveHoverOverlayColor = widget.overlayColor?.resolve(hoveredStates)
-      ?? widget.hoverColor
-      ?? switchTheme.overlayColor?.resolve(hoveredStates)
-      ?? defaults.overlayColor!.resolve(hoveredStates)!;
+    final Color effectiveHoverOverlayColor = widget.overlayColor?.resolve(hoveredStates) ??
+        widget.hoverColor ??
+        switchTheme.overlayColor?.resolve(hoveredStates) ??
+        defaults.overlayColor!.resolve(hoveredStates)!;
 
     final Set<MaterialState> activePressedStates = activeStates..add(MaterialState.pressed);
-    final Color effectiveActivePressedThumbColor = widget.thumbColor?.resolve(activePressedStates)
-      ?? _widgetThumbColor.resolve(activePressedStates)
-      ?? switchTheme.thumbColor?.resolve(activePressedStates)
-      ?? defaults.thumbColor!.resolve(activePressedStates)!;
-    final Color effectiveActivePressedOverlayColor = widget.overlayColor?.resolve(activePressedStates)
-      ?? switchTheme.overlayColor?.resolve(activePressedStates)
-      ?? activeThumbColor?.withAlpha(kRadialReactionAlpha)
-      ?? defaults.overlayColor!.resolve(activePressedStates)!;
+    final Color effectiveActivePressedThumbColor = widget.thumbColor?.resolve(activePressedStates) ??
+        _widgetThumbColor.resolve(activePressedStates) ??
+        switchTheme.thumbColor?.resolve(activePressedStates) ??
+        defaults.thumbColor!.resolve(activePressedStates)!;
+    final Color effectiveActivePressedOverlayColor = widget.overlayColor?.resolve(activePressedStates) ??
+        switchTheme.overlayColor?.resolve(activePressedStates) ??
+        activeThumbColor?.withAlpha(kRadialReactionAlpha) ??
+        defaults.overlayColor!.resolve(activePressedStates)!;
 
     final Set<MaterialState> inactivePressedStates = inactiveStates..add(MaterialState.pressed);
-    final Color effectiveInactivePressedThumbColor = widget.thumbColor?.resolve(inactivePressedStates)
-      ?? _widgetThumbColor.resolve(inactivePressedStates)
-      ?? switchTheme.thumbColor?.resolve(inactivePressedStates)
-      ?? defaults.thumbColor!.resolve(inactivePressedStates)!;
-    final Color effectiveInactivePressedOverlayColor = widget.overlayColor?.resolve(inactivePressedStates)
-      ?? switchTheme.overlayColor?.resolve(inactivePressedStates)
-      ?? inactiveThumbColor?.withAlpha(kRadialReactionAlpha)
-      ?? defaults.overlayColor!.resolve(inactivePressedStates)!;
+    final Color effectiveInactivePressedThumbColor = widget.thumbColor?.resolve(inactivePressedStates) ??
+        _widgetThumbColor.resolve(inactivePressedStates) ??
+        switchTheme.thumbColor?.resolve(inactivePressedStates) ??
+        defaults.thumbColor!.resolve(inactivePressedStates)!;
+    final Color effectiveInactivePressedOverlayColor = widget.overlayColor?.resolve(inactivePressedStates) ??
+        switchTheme.overlayColor?.resolve(inactivePressedStates) ??
+        inactiveThumbColor?.withAlpha(kRadialReactionAlpha) ??
+        defaults.overlayColor!.resolve(inactivePressedStates)!;
 
-    final MaterialStateProperty<MouseCursor> effectiveMouseCursor = MaterialStateProperty.resolveWith<MouseCursor>((Set<MaterialState> states) {
-      return MaterialStateProperty.resolveAs<MouseCursor?>(widget.mouseCursor, states)
-        ?? switchTheme.mouseCursor?.resolve(states)
-        ?? MaterialStateProperty.resolveAs<MouseCursor>(MaterialStateMouseCursor.clickable, states);
-    });
+    final MaterialStateProperty<MouseCursor> effectiveMouseCursor = MaterialStateProperty.resolveWith<MouseCursor>(
+      (Set<MaterialState> states) {
+        return MaterialStateProperty.resolveAs<MouseCursor?>(widget.mouseCursor, states) ??
+            switchTheme.mouseCursor?.resolve(states) ??
+            MaterialStateProperty.resolveAs<MouseCursor>(MaterialStateMouseCursor.clickable, states);
+      },
+    );
 
-    final double effectiveActiveThumbRadius = effectiveActiveIcon == null ? switchConfig.activeThumbRadius : switchConfig.thumbRadiusWithIcon;
+    final double effectiveActiveThumbRadius = effectiveActiveIcon == null
+        ? switchConfig.activeThumbRadius
+        : switchConfig.thumbRadiusWithIcon;
     final double effectiveInactiveThumbRadius = effectiveInactiveIcon == null && widget.inactiveThumbImage == null
-      ? switchConfig.inactiveThumbRadius : switchConfig.thumbRadiusWithIcon;
+        ? switchConfig.inactiveThumbRadius
+        : switchConfig.thumbRadiusWithIcon;
     final double effectiveSplashRadius = widget.splashRadius ?? switchTheme.splashRadius ?? defaults.splashRadius!;
 
     return Semantics(
@@ -1376,34 +1379,32 @@ class _SwitchPainter extends ToggleablePainter {
       if (isForward) {
         thumbSizeSequence = <TweenSequenceItem<Size>>[
           TweenSequenceItem<Size>(
-            tween: Tween<Size>(begin: inactiveThumbSize, end: transitionalThumbSize)
-                .chain(CurveTween(curve: const Cubic(0.31, 0.00, 0.56, 1.00))),
+            tween: Tween<Size>(begin: inactiveThumbSize, end: transitionalThumbSize).chain(
+              CurveTween(curve: const Cubic(0.31, 0.00, 0.56, 1.00)),
+            ),
             weight: 11,
           ),
           TweenSequenceItem<Size>(
-            tween: Tween<Size>(begin: transitionalThumbSize, end: activeThumbSize)
-                .chain(CurveTween(curve: const Cubic(0.20, 0.00, 0.00, 1.00))),
+            tween: Tween<Size>(begin: transitionalThumbSize, end: activeThumbSize).chain(
+              CurveTween(curve: const Cubic(0.20, 0.00, 0.00, 1.00)),
+            ),
             weight: 72,
           ),
-          TweenSequenceItem<Size>(
-            tween: ConstantTween<Size>(activeThumbSize),
-            weight: 17,
-          )
+          TweenSequenceItem<Size>(tween: ConstantTween<Size>(activeThumbSize), weight: 17),
         ];
       } else {
         thumbSizeSequence = <TweenSequenceItem<Size>>[
+          TweenSequenceItem<Size>(tween: ConstantTween<Size>(inactiveThumbSize), weight: 17),
           TweenSequenceItem<Size>(
-            tween: ConstantTween<Size>(inactiveThumbSize),
-            weight: 17,
-          ),
-          TweenSequenceItem<Size>(
-            tween: Tween<Size>(begin: inactiveThumbSize, end: transitionalThumbSize)
-                .chain(CurveTween(curve: const Cubic(0.20, 0.00, 0.00, 1.00).flipped)),
+            tween: Tween<Size>(begin: inactiveThumbSize, end: transitionalThumbSize).chain(
+              CurveTween(curve: const Cubic(0.20, 0.00, 0.00, 1.00).flipped),
+            ),
             weight: 72,
           ),
           TweenSequenceItem<Size>(
-            tween: Tween<Size>(begin: transitionalThumbSize, end: activeThumbSize)
-                .chain(CurveTween(curve: const Cubic(0.31, 0.00, 0.56, 1.00).flipped)),
+            tween: Tween<Size>(begin: transitionalThumbSize, end: activeThumbSize).chain(
+              CurveTween(curve: const Cubic(0.31, 0.00, 0.56, 1.00).flipped),
+            ),
             weight: 11,
           ),
         ];
@@ -1427,9 +1428,11 @@ class _SwitchPainter extends ToggleablePainter {
     final double inset = thumbOffset == null ? 0 : 1.0 - (currentValue - thumbOffset!).abs() * 2.0;
     thumbSize = Size(thumbSize.width - inset, thumbSize.height - inset);
 
-    final double colorValue = CurvedAnimation(parent: positionController, curve: Curves.easeOut, reverseCurve: Curves.easeIn).value;
+    final double colorValue =
+        CurvedAnimation(parent: positionController, curve: Curves.easeOut, reverseCurve: Curves.easeIn).value;
     final Color trackColor = Color.lerp(inactiveTrackColor, activeTrackColor, colorValue)!;
-    final Color? trackOutlineColor = inactiveTrackOutlineColor == null ? null
+    final Color? trackOutlineColor = inactiveTrackOutlineColor == null
+        ? null
         : Color.lerp(inactiveTrackOutlineColor, activeTrackOutlineColor, colorValue);
     final double? trackOutlineWidth = lerpDouble(inactiveTrackOutlineWidth, activeTrackOutlineWidth, colorValue);
     Color lerpedThumbColor;
@@ -1452,10 +1455,11 @@ class _SwitchPainter extends ToggleablePainter {
 
     final ImageProvider? thumbImage = currentValue < 0.5 ? inactiveThumbImage : activeThumbImage;
 
-    final ImageErrorListener? thumbErrorListener = currentValue < 0.5 ? onInactiveThumbImageError : onActiveThumbImageError;
+    final ImageErrorListener? thumbErrorListener = currentValue < 0.5
+        ? onInactiveThumbImageError
+        : onActiveThumbImageError;
 
-    final Paint paint = Paint()
-      ..color = trackColor;
+    final Paint paint = Paint()..color = trackColor;
 
     final Offset trackPaintOffset = _computeTrackPaintOffset(size, trackWidth, trackHeight);
     final Offset thumbPaintOffset = _computeThumbPaintOffset(trackPaintOffset, thumbSize, visualPosition);
@@ -1493,24 +1497,23 @@ class _SwitchPainter extends ToggleablePainter {
     final double additionalRectWidth = (thumbSize.width - thumbSize.height) / 2;
 
     final double horizontalProgress = visualPosition * trackInnerLength;
-    final double thumbHorizontalOffset = trackPaintOffset.dx - additionalThumbRadius - additionalRectWidth + horizontalProgress;
+    final double thumbHorizontalOffset =
+        trackPaintOffset.dx - additionalThumbRadius - additionalRectWidth + horizontalProgress;
     final double thumbVerticalOffset = trackPaintOffset.dy - additionalThumbRadius;
 
     return Offset(thumbHorizontalOffset, thumbVerticalOffset);
   }
 
-  void _paintTrackWith(Canvas canvas, Paint paint, Offset trackPaintOffset, Color? trackOutlineColor, double? trackOutlineWidth) {
-    final Rect trackRect = Rect.fromLTWH(
-      trackPaintOffset.dx,
-      trackPaintOffset.dy,
-      trackWidth,
-      trackHeight,
-    );
+  void _paintTrackWith(
+    Canvas canvas,
+    Paint paint,
+    Offset trackPaintOffset,
+    Color? trackOutlineColor,
+    double? trackOutlineWidth,
+  ) {
+    final Rect trackRect = Rect.fromLTWH(trackPaintOffset.dx, trackPaintOffset.dy, trackWidth, trackHeight);
     final double trackRadius = trackHeight / 2;
-    final RRect trackRRect = RRect.fromRectAndRadius(
-      trackRect,
-      Radius.circular(trackRadius),
-    );
+    final RRect trackRRect = RRect.fromRectAndRadius(trackRect, Radius.circular(trackRadius));
 
     canvas.drawRRect(trackRRect, paint);
 
@@ -1522,10 +1525,7 @@ class _SwitchPainter extends ToggleablePainter {
         trackWidth - 2,
         trackHeight - 2,
       );
-      final RRect outlineTrackRRect = RRect.fromRectAndRadius(
-        outlineTrackRect,
-        Radius.circular(trackRadius),
-      );
+      final RRect outlineTrackRRect = RRect.fromRectAndRadius(outlineTrackRect, Radius.circular(trackRadius));
       final Paint outlinePaint = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = trackOutlineWidth ?? 2.0
@@ -1535,32 +1535,32 @@ class _SwitchPainter extends ToggleablePainter {
   }
 
   void _paintThumbWith(
-      Offset thumbPaintOffset,
-      Canvas canvas,
-      double currentValue,
-      Color thumbColor,
-      ImageProvider? thumbImage,
-      ImageErrorListener? thumbErrorListener,
-      Icon? thumbIcon,
-      Size thumbSize,
-      double inset,
-      ) {
+    Offset thumbPaintOffset,
+    Canvas canvas,
+    double currentValue,
+    Color thumbColor,
+    ImageProvider? thumbImage,
+    ImageErrorListener? thumbErrorListener,
+    Icon? thumbIcon,
+    Size thumbSize,
+    double inset,
+  ) {
     try {
       _isPainting = true;
-      if (_cachedThumbPainter == null || thumbColor != _cachedThumbColor || thumbImage != _cachedThumbImage || thumbErrorListener != _cachedThumbErrorListener) {
+      if (_cachedThumbPainter == null ||
+          thumbColor != _cachedThumbColor ||
+          thumbImage != _cachedThumbImage ||
+          thumbErrorListener != _cachedThumbErrorListener) {
         _cachedThumbColor = thumbColor;
         _cachedThumbImage = thumbImage;
         _cachedThumbErrorListener = thumbErrorListener;
         _cachedThumbPainter?.dispose();
-        _cachedThumbPainter = _createDefaultThumbDecoration(thumbColor, thumbImage, thumbErrorListener).createBoxPainter(_handleDecorationChanged);
+        _cachedThumbPainter = _createDefaultThumbDecoration(thumbColor, thumbImage, thumbErrorListener)
+            .createBoxPainter(_handleDecorationChanged);
       }
       final BoxPainter thumbPainter = _cachedThumbPainter!;
 
-      thumbPainter.paint(
-        canvas,
-        thumbPaintOffset,
-        configuration.copyWith(size: thumbSize),
-      );
+      thumbPainter.paint(canvas, thumbPaintOffset, configuration.copyWith(size: thumbSize));
 
       if (thumbIcon != null && thumbIcon.icon != null) {
         final Color iconColor = Color.lerp(inactiveIconColor, activeIconColor, currentValue)!;
@@ -1589,10 +1589,7 @@ class _SwitchPainter extends ToggleablePainter {
             shadows: iconShadows,
           ),
         );
-        final TextPainter textPainter = TextPainter(
-          textDirection: textDirection,
-          text: textSpan,
-        );
+        final TextPainter textPainter = TextPainter(textDirection: textDirection, text: textSpan);
         textPainter.layout();
         final double additionalHorizontalOffset = (thumbSize.width - iconSize) / 2;
         final double additionalVerticalOffset = (thumbSize.height - iconSize) / 2;
@@ -1635,7 +1632,7 @@ mixin _SwitchConfig {
 
 // Hand coded defaults based on Material Design 2.
 class _SwitchConfigM2 with _SwitchConfig {
-    _SwitchConfigM2();
+  _SwitchConfigM2();
 
   @override
   double get activeThumbRadius => 10.0;
@@ -1681,9 +1678,7 @@ class _SwitchConfigM2 with _SwitchConfig {
 }
 
 class _SwitchDefaultsM2 extends SwitchThemeData {
-  _SwitchDefaultsM2(BuildContext context)
-      : _theme = Theme.of(context),
-        _colors = Theme.of(context).colorScheme;
+  _SwitchDefaultsM2(BuildContext context) : _theme = Theme.of(context), _colors = Theme.of(context).colorScheme;
 
   final ThemeData _theme;
   final ColorScheme _colors;
@@ -1727,8 +1722,9 @@ class _SwitchDefaultsM2 extends SwitchThemeData {
   MaterialTapTargetSize get materialTapTargetSize => _theme.materialTapTargetSize;
 
   @override
-  MaterialStateProperty<MouseCursor> get mouseCursor =>
-    MaterialStateProperty.resolveWith((Set<MaterialState> states) => MaterialStateMouseCursor.clickable.resolve(states));
+  MaterialStateProperty<MouseCursor> get mouseCursor => MaterialStateProperty.resolveWith(
+    (Set<MaterialState> states) => MaterialStateMouseCursor.clickable.resolve(states),
+  );
 
   @override
   MaterialStateProperty<Color?> get overlayColor {
@@ -1880,8 +1876,7 @@ class _SwitchDefaultsM3 extends SwitchThemeData {
 }
 
 class _SwitchConfigM3 with _SwitchConfig {
-  _SwitchConfigM3(this.context)
-    : _colors = Theme.of(context).colorScheme;
+  _SwitchConfigM3(this.context) : _colors = Theme.of(context).colorScheme;
 
   BuildContext context;
   final ColorScheme _colors;

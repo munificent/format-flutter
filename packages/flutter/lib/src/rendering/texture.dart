@@ -36,11 +36,8 @@ import 'object.dart';
 class TextureBox extends RenderBox {
   /// Creates a box backed by the texture identified by [textureId], and use
   /// [filterQuality] to set texture's [FilterQuality].
-  TextureBox({
-    required int textureId,
-    bool freeze = false,
-    FilterQuality filterQuality = FilterQuality.low,
-  }) : _textureId = textureId,
+  TextureBox({required int textureId, bool freeze = false, FilterQuality filterQuality = FilterQuality.low})
+    : _textureId = textureId,
       _freeze = freeze,
       _filterQuality = filterQuality;
 

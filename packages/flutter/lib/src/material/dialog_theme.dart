@@ -139,17 +139,17 @@ class DialogTheme with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is DialogTheme
-        && other.backgroundColor == backgroundColor
-        && other.elevation == elevation
-        && other.shadowColor == shadowColor
-        && other.surfaceTintColor == surfaceTintColor
-        && other.shape == shape
-        && other.alignment == alignment
-        && other.iconColor == iconColor
-        && other.titleTextStyle == titleTextStyle
-        && other.contentTextStyle == contentTextStyle
-        && other.actionsPadding == actionsPadding;
+    return other is DialogTheme &&
+        other.backgroundColor == backgroundColor &&
+        other.elevation == elevation &&
+        other.shadowColor == shadowColor &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.shape == shape &&
+        other.alignment == alignment &&
+        other.iconColor == iconColor &&
+        other.titleTextStyle == titleTextStyle &&
+        other.contentTextStyle == contentTextStyle &&
+        other.actionsPadding == actionsPadding;
   }
 
   @override

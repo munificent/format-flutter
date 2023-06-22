@@ -74,21 +74,15 @@ class ImageSizeInfo {
   int _sizeToBytes(Size size) {
     // Assume 4 bytes per pixel and that mipmapping will be used, which adds
     // 4/3.
-    return (size.width * size.height * 4 * (4/3)).toInt();
+    return (size.width * size.height * 4 * (4 / 3)).toInt();
   }
 
   /// Returns a JSON encodable representation of this object.
   Map<String, Object?> toJson() {
     return <String, Object?>{
       'source': source,
-      'displaySize': <String, Object?>{
-        'width': displaySize.width,
-        'height': displaySize.height,
-      },
-      'imageSize': <String, Object?>{
-        'width': imageSize.width,
-        'height': imageSize.height,
-      },
+      'displaySize': <String, Object?>{'width': displaySize.width, 'height': displaySize.height},
+      'imageSize': <String, Object?>{'width': imageSize.width, 'height': imageSize.height},
       'displaySizeInBytes': displaySizeInBytes,
       'decodedSizeInBytes': decodedSizeInBytes,
     };
@@ -99,10 +93,10 @@ class ImageSizeInfo {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ImageSizeInfo
-        && other.source == source
-        && other.imageSize == imageSize
-        && other.displaySize == displaySize;
+    return other is ImageSizeInfo &&
+        other.source == source &&
+        other.imageSize == imageSize &&
+        other.displaySize == displaySize;
   }
 
   @override
@@ -180,17 +174,19 @@ int debugImageOverheadAllowance = _imageOverheadAllowanceDefault;
 /// The `debugDisableShadowsOverride` argument can be provided to override
 /// the expected value for [debugDisableShadows]. (This exists because the
 /// test framework itself overrides this value in some cases.)
-bool debugAssertAllPaintingVarsUnset(String reason, { bool debugDisableShadowsOverride = false }) {
-  assert(() {
-    if (debugDisableShadows != debugDisableShadowsOverride ||
-        debugNetworkImageHttpClientProvider != null ||
-        debugOnPaintImage != null ||
-        debugInvertOversizedImages ||
-        debugImageOverheadAllowance != _imageOverheadAllowanceDefault) {
-      throw FlutterError(reason);
-    }
-    return true;
-  }());
+bool debugAssertAllPaintingVarsUnset(String reason, {bool debugDisableShadowsOverride = false}) {
+  assert(
+    () {
+      if (debugDisableShadows != debugDisableShadowsOverride ||
+          debugNetworkImageHttpClientProvider != null ||
+          debugOnPaintImage != null ||
+          debugInvertOversizedImages ||
+          debugImageOverheadAllowance != _imageOverheadAllowanceDefault) {
+        throw FlutterError(reason);
+      }
+      return true;
+    }(),
+  );
   return true;
 }
 

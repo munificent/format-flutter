@@ -34,10 +34,7 @@ Rect? _trim(
 class OverScrollHeaderStretchConfiguration {
   /// Creates an object that specifies how a stretched header may activate an
   /// [AsyncCallback].
-  OverScrollHeaderStretchConfiguration({
-    this.stretchTriggerOffset = 100.0,
-    this.onStretchTrigger,
-  });
+  OverScrollHeaderStretchConfiguration({this.stretchTriggerOffset = 100.0, this.onStretchTrigger});
 
   /// The offset of overscroll required to trigger the [onStretchTrigger].
   final double stretchTriggerOffset;
@@ -117,15 +114,13 @@ class PersistentHeaderShowOnScreenConfiguration {
 ///
 /// Subclasses must implement [performLayout], [minExtent], and [maxExtent], and
 /// typically also will implement [updateChild].
-abstract class RenderSliverPersistentHeader extends RenderSliver with RenderObjectWithChildMixin<RenderBox>, RenderSliverHelpers {
+abstract class RenderSliverPersistentHeader extends RenderSliver
+    with RenderObjectWithChildMixin<RenderBox>, RenderSliverHelpers {
   /// Creates a sliver that changes its size when scrolled to the start of the
   /// viewport.
   ///
   /// This is an abstract class; this constructor only initializes the [child].
-  RenderSliverPersistentHeader({
-    RenderBox? child,
-    this.stretchConfiguration,
-  }) {
+  RenderSliverPersistentHeader({RenderBox? child, this.stretchConfiguration}) {
     this.child = child;
   }
 
@@ -196,7 +191,7 @@ abstract class RenderSliverPersistentHeader extends RenderSliver with RenderObje
   ///
   /// Any time this method would mutate the child, call [markNeedsLayout].
   @protected
-  void updateChild(double shrinkOffset, bool overlapsContent) { }
+  void updateChild(double shrinkOffset, bool overlapsContent) {}
 
   @override
   void markNeedsLayout() {
@@ -215,7 +210,7 @@ abstract class RenderSliverPersistentHeader extends RenderSliver with RenderObje
   ///
   /// The `overlapsContent` argument is passed to [updateChild].
   @protected
-  void layoutChild(double scrollOffset, double maxExtent, { bool overlapsContent = false }) {
+  void layoutChild(double scrollOffset, double maxExtent, {bool overlapsContent = false}) {
     final double shrinkOffset = math.min(scrollOffset, maxExtent);
     if (_needsUpdateChild || _lastShrinkOffset != shrinkOffset || _lastOverlapsContent != overlapsContent) {
       invokeLayoutCallback<SliverConstraints>((SliverConstraints constraints) {
@@ -226,32 +221,32 @@ abstract class RenderSliverPersistentHeader extends RenderSliver with RenderObje
       _lastOverlapsContent = overlapsContent;
       _needsUpdateChild = false;
     }
-    assert(() {
-      if (minExtent <= maxExtent) {
-        return true;
-      }
-      throw FlutterError.fromParts(<DiagnosticsNode>[
-        ErrorSummary('The maxExtent for this $runtimeType is less than its minExtent.'),
-        DoubleProperty('The specified maxExtent was', maxExtent),
-        DoubleProperty('The specified minExtent was', minExtent),
-      ]);
-    }());
+    assert(
+      () {
+        if (minExtent <= maxExtent) {
+          return true;
+        }
+        throw FlutterError.fromParts(<DiagnosticsNode>[
+          ErrorSummary('The maxExtent for this $runtimeType is less than its minExtent.'),
+          DoubleProperty('The specified maxExtent was', maxExtent),
+          DoubleProperty('The specified minExtent was', minExtent),
+        ]);
+      }(),
+    );
     double stretchOffset = 0.0;
     if (stretchConfiguration != null && constraints.scrollOffset == 0.0) {
       stretchOffset += constraints.overlap.abs();
     }
 
     child?.layout(
-      constraints.asBoxConstraints(
-        maxExtent: math.max(minExtent, maxExtent - shrinkOffset) + stretchOffset,
-      ),
+      constraints.asBoxConstraints(maxExtent: math.max(minExtent, maxExtent - shrinkOffset) + stretchOffset),
       parentUsesSize: true,
     );
 
     if (stretchConfiguration != null &&
-      stretchConfiguration!.onStretchTrigger != null &&
-      stretchOffset >= stretchConfiguration!.stretchTriggerOffset &&
-      _lastStretchOffset <= stretchConfiguration!.stretchTriggerOffset) {
+        stretchConfiguration!.onStretchTrigger != null &&
+        stretchOffset >= stretchConfiguration!.stretchTriggerOffset &&
+        _lastStretchOffset <= stretchConfiguration!.stretchTriggerOffset) {
       stretchConfiguration!.onStretchTrigger!();
     }
     _lastStretchOffset = stretchOffset;
@@ -281,10 +276,19 @@ abstract class RenderSliverPersistentHeader extends RenderSliver with RenderObje
   double childMainAxisPosition(covariant RenderObject child) => super.childMainAxisPosition(child);
 
   @override
-  bool hitTestChildren(SliverHitTestResult result, { required double mainAxisPosition, required double crossAxisPosition }) {
+  bool hitTestChildren(
+    SliverHitTestResult result, {
+    required double mainAxisPosition,
+    required double crossAxisPosition,
+  }) {
     assert(geometry!.hitTestExtent > 0.0);
     if (child != null) {
-      return hitTestBoxChild(BoxHitTestResult.wrap(result), child!, mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition);
+      return hitTestBoxChild(
+        BoxHitTestResult.wrap(result),
+        child!,
+        mainAxisPosition: mainAxisPosition,
+        crossAxisPosition: crossAxisPosition,
+      );
     }
     return false;
   }
@@ -334,10 +338,7 @@ abstract class RenderSliverPersistentHeader extends RenderSliver with RenderObje
 abstract class RenderSliverScrollingPersistentHeader extends RenderSliverPersistentHeader {
   /// Creates a sliver that shrinks when it hits the start of the viewport, then
   /// scrolls off.
-  RenderSliverScrollingPersistentHeader({
-    super.child,
-    super.stretchConfiguration,
-  });
+  RenderSliverScrollingPersistentHeader({super.child, super.stretchConfiguration});
 
   // Distance from our leading edge to the child's leading edge, in the axis
   // direction. Negative if we're scrolled off the top.
@@ -363,7 +364,6 @@ abstract class RenderSliverScrollingPersistentHeader extends RenderSliverPersist
     );
     return stretchOffset > 0 ? 0.0 : math.min(0.0, paintExtent - childExtent);
   }
-
 
   @override
   void performLayout() {
@@ -417,9 +417,7 @@ abstract class RenderSliverPinnedPersistentHeader extends RenderSliverPersistent
     layoutChild(constraints.scrollOffset, maxExtent, overlapsContent: overlapsContent);
     final double effectiveRemainingPaintExtent = math.max(0, constraints.remainingPaintExtent - constraints.overlap);
     final double layoutExtent = clampDouble(maxExtent - constraints.scrollOffset, 0.0, effectiveRemainingPaintExtent);
-    final double stretchOffset = stretchConfiguration != null ?
-      constraints.overlap.abs() :
-      0.0;
+    final double stretchOffset = stretchConfiguration != null ? constraints.overlap.abs() : 0.0;
     geometry = SliverGeometry(
       scrollExtent: maxExtent,
       paintOrigin: constraints.overlap,
@@ -443,8 +441,8 @@ abstract class RenderSliverPinnedPersistentHeader extends RenderSliverPersistent
     Curve curve = Curves.ease,
   }) {
     final Rect? localBounds = descendant != null
-      ? MatrixUtils.transformRect(descendant.getTransformTo(this), rect ?? descendant.paintBounds)
-      : rect;
+        ? MatrixUtils.transformRect(descendant.getTransformTo(this), rect ?? descendant.paintBounds)
+        : rect;
 
     Rect? newRect;
     switch (applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection)) {
@@ -458,12 +456,7 @@ abstract class RenderSliverPinnedPersistentHeader extends RenderSliverPersistent
         newRect = _trim(localBounds, right: childExtent);
     }
 
-    super.showOnScreen(
-      descendant: this,
-      rect: newRect,
-      duration: duration,
-      curve: curve,
-    );
+    super.showOnScreen(descendant: this, rect: newRect, duration: duration, curve: curve);
   }
 }
 
@@ -480,10 +473,7 @@ abstract class RenderSliverPinnedPersistentHeader extends RenderSliverPersistent
 class FloatingHeaderSnapConfiguration {
   /// Creates an object that specifies how a floating header is to be "snapped"
   /// (animated) into or out of view.
-  FloatingHeaderSnapConfiguration({
-    this.curve = Curves.ease,
-    this.duration = const Duration(milliseconds: 300),
-  });
+  FloatingHeaderSnapConfiguration({this.curve = Curves.ease, this.duration = const Duration(milliseconds: 300)});
 
   /// The snap animation curve.
   final Curve curve;
@@ -531,7 +521,6 @@ abstract class RenderSliverFloatingPersistentHeader extends RenderSliverPersiste
     _controller = null; // lazily recreated if we're reattached.
     super.detach();
   }
-
 
   /// A [TickerProvider] to use when animating the scroll position.
   TickerProvider? get vsync => _vsync;
@@ -593,26 +582,19 @@ abstract class RenderSliverFloatingPersistentHeader extends RenderSliverPersiste
   }
 
   void _updateAnimation(Duration duration, double endValue, Curve curve) {
-    assert(
-      vsync != null,
-      'vsync must not be null if the floating header changes size animatedly.',
-    );
+    assert(vsync != null, 'vsync must not be null if the floating header changes size animatedly.');
 
-    final AnimationController effectiveController =
-      _controller ??= AnimationController(vsync: vsync!, duration: duration)
-        ..addListener(() {
-            if (_effectiveScrollOffset == _animation.value) {
-              return;
-            }
-            _effectiveScrollOffset = _animation.value;
-            markNeedsLayout();
-          });
+    final AnimationController effectiveController = _controller ??=
+        AnimationController(vsync: vsync!, duration: duration)..addListener(() {
+          if (_effectiveScrollOffset == _animation.value) {
+            return;
+          }
+          _effectiveScrollOffset = _animation.value;
+          markNeedsLayout();
+        });
 
     _animation = effectiveController.drive(
-      Tween<double>(
-        begin: _effectiveScrollOffset,
-        end: endValue,
-      ).chain(CurveTween(curve: curve)),
+      Tween<double>(begin: _effectiveScrollOffset, end: endValue).chain(CurveTween(curve: curve)),
     );
   }
 
@@ -635,11 +617,7 @@ abstract class RenderSliverFloatingPersistentHeader extends RenderSliverPersiste
       return;
     }
 
-    _updateAnimation(
-      snap.duration,
-      direction == ScrollDirection.forward ? 0.0 : maxExtent,
-      snap.curve,
-    );
+    _updateAnimation(snap.duration, direction == ScrollDirection.forward ? 0.0 : maxExtent, snap.curve);
     _controller?.forward(from: 0.0);
   }
 
@@ -655,11 +633,12 @@ abstract class RenderSliverFloatingPersistentHeader extends RenderSliverPersiste
     final double maxExtent = this.maxExtent;
     if (_lastActualScrollOffset != null && // We've laid out at least once to get an initial position, and either
         ((constraints.scrollOffset < _lastActualScrollOffset!) || // we are scrolling back, so should reveal, or
-         (_effectiveScrollOffset! < maxExtent))) { // some part of it is visible, so should shrink or reveal as appropriate.
+            (_effectiveScrollOffset! < maxExtent))) {
+      // some part of it is visible, so should shrink or reveal as appropriate.
       double delta = _lastActualScrollOffset! - constraints.scrollOffset;
 
-      final bool allowFloatingExpansion = constraints.userScrollDirection == ScrollDirection.forward
-        || (_lastStartedScrollDirection != null && _lastStartedScrollDirection == ScrollDirection.forward);
+      final bool allowFloatingExpansion = constraints.userScrollDirection == ScrollDirection.forward ||
+          (_lastStartedScrollDirection != null && _lastStartedScrollDirection == ScrollDirection.forward);
       if (allowFloatingExpansion) {
         if (_effectiveScrollOffset! > maxExtent) {
           // We're scrolled off-screen, but should reveal, so pretend we're just at the limit.
@@ -677,11 +656,7 @@ abstract class RenderSliverFloatingPersistentHeader extends RenderSliverPersiste
     }
     final bool overlapsContent = _effectiveScrollOffset! < constraints.scrollOffset;
 
-    layoutChild(
-      _effectiveScrollOffset!,
-      maxExtent,
-      overlapsContent: overlapsContent,
-    );
+    layoutChild(_effectiveScrollOffset!, maxExtent, overlapsContent: overlapsContent);
     _childPosition = updateGeometry();
     _lastActualScrollOffset = constraints.scrollOffset;
   }
@@ -706,8 +681,8 @@ abstract class RenderSliverFloatingPersistentHeader extends RenderSliverPersiste
     // will not be aligned. The only exception is when child is null (and thus
     // descendant == null).
     final Rect? childBounds = descendant != null
-      ? MatrixUtils.transformRect(descendant.getTransformTo(child), rect ?? descendant.paintBounds)
-      : rect;
+        ? MatrixUtils.transformRect(descendant.getTransformTo(child), rect ?? descendant.paintBounds)
+        : rect;
 
     double targetExtent;
     Rect? targetRect;
@@ -730,23 +705,17 @@ abstract class RenderSliverFloatingPersistentHeader extends RenderSliverPersiste
     final double effectiveMaxExtent = math.max(childExtent, maxExtent);
 
     targetExtent = clampDouble(
-        clampDouble(
-          targetExtent,
-          showOnScreen.minShowOnScreenExtent,
-          showOnScreen.maxShowOnScreenExtent,
-        ),
-        // Clamp the value back to the valid range after applying additional
-        // constraints. Contracting is not allowed.
-        childExtent,
-        effectiveMaxExtent);
+      clampDouble(targetExtent, showOnScreen.minShowOnScreenExtent, showOnScreen.maxShowOnScreenExtent),
+      // Clamp the value back to the valid range after applying additional
+      // constraints. Contracting is not allowed.
+      childExtent,
+      effectiveMaxExtent,
+    );
 
     // Expands the header if needed, with animation.
     if (targetExtent > childExtent) {
       final double targetScrollOffset = maxExtent - targetExtent;
-      assert(
-        vsync != null,
-        'vsync must not be null if the floating header changes size animatedly.',
-      );
+      assert(vsync != null, 'vsync must not be null if the floating header changes size animatedly.');
       _updateAnimation(duration, targetScrollOffset, curve);
       _controller?.forward(from: 0.0);
     }
@@ -795,19 +764,14 @@ abstract class RenderSliverFloatingPinnedPersistentHeader extends RenderSliverFl
   @override
   double updateGeometry() {
     final double minExtent = this.minExtent;
-    final double minAllowedExtent = constraints.remainingPaintExtent > minExtent ?
-      minExtent :
-      constraints.remainingPaintExtent;
+    final double minAllowedExtent = constraints.remainingPaintExtent > minExtent
+        ? minExtent
+        : constraints.remainingPaintExtent;
     final double maxExtent = this.maxExtent;
     final double paintExtent = maxExtent - _effectiveScrollOffset!;
-    final double clampedPaintExtent = clampDouble(paintExtent,
-      minAllowedExtent,
-      constraints.remainingPaintExtent,
-    );
+    final double clampedPaintExtent = clampDouble(paintExtent, minAllowedExtent, constraints.remainingPaintExtent);
     final double layoutExtent = maxExtent - constraints.scrollOffset;
-    final double stretchOffset = stretchConfiguration != null ?
-      constraints.overlap.abs() :
-      0.0;
+    final double stretchOffset = stretchConfiguration != null ? constraints.overlap.abs() : 0.0;
     geometry = SliverGeometry(
       scrollExtent: maxExtent,
       paintOrigin: math.min(constraints.overlap, 0.0),

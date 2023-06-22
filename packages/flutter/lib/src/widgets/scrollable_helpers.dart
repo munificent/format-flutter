@@ -38,27 +38,19 @@ class ScrollableDetails {
       'Migrate to decorationClipBehavior. '
       'This property was deprecated so that its application is clearer. This clip '
       'applies to decorators, and does not directly clip a scroll view. '
-      'This feature was deprecated after v3.9.0-1.0.pre.'
+      'This feature was deprecated after v3.9.0-1.0.pre.',
     )
     Clip? clipBehavior,
     Clip? decorationClipBehavior,
   }) : decorationClipBehavior = clipBehavior ?? decorationClipBehavior;
 
   /// A constructor specific to a [Scrollable] with an [Axis.vertical].
-  const ScrollableDetails.vertical({
-    bool reverse = false,
-    this.controller,
-    this.physics,
-    this.decorationClipBehavior,
-  }) : direction = reverse ? AxisDirection.up : AxisDirection.down;
+  const ScrollableDetails.vertical({bool reverse = false, this.controller, this.physics, this.decorationClipBehavior})
+    : direction = reverse ? AxisDirection.up : AxisDirection.down;
 
   /// A constructor specific to a [Scrollable] with an [Axis.horizontal].
-  const ScrollableDetails.horizontal({
-    bool reverse = false,
-    this.controller,
-    this.physics,
-    this.decorationClipBehavior,
-  }) : direction = reverse ? AxisDirection.left : AxisDirection.right;
+  const ScrollableDetails.horizontal({bool reverse = false, this.controller, this.physics, this.decorationClipBehavior})
+    : direction = reverse ? AxisDirection.left : AxisDirection.right;
 
   /// {@macro flutter.widgets.Scrollable.axisDirection}
   final AxisDirection direction;
@@ -86,7 +78,7 @@ class ScrollableDetails {
     'Migrate to decorationClipBehavior. '
     'This property was deprecated so that its application is clearer. This clip '
     'applies to decorators, and does not directly clip a scroll view. '
-    'This feature was deprecated after v3.9.0-1.0.pre.'
+    'This feature was deprecated after v3.9.0-1.0.pre.',
   )
   Clip? get clipBehavior => decorationClipBehavior;
 
@@ -116,6 +108,7 @@ class ScrollableDetails {
         description.add(prefix + value.toString());
       }
     }
+
     addIfNonNull('scroll controller: ', controller);
     addIfNonNull('scroll physics: ', physics);
     addIfNonNull('decorationClipBehavior: ', decorationClipBehavior);
@@ -123,12 +116,7 @@ class ScrollableDetails {
   }
 
   @override
-  int get hashCode => Object.hash(
-    direction,
-    controller,
-    physics,
-    decorationClipBehavior,
-  );
+  int get hashCode => Object.hash(direction, controller, physics, decorationClipBehavior);
 
   @override
   bool operator ==(Object other) {
@@ -138,11 +126,11 @@ class ScrollableDetails {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ScrollableDetails
-      && other.direction == direction
-      && other.controller == controller
-      && other.physics == physics
-      && other.decorationClipBehavior == decorationClipBehavior;
+    return other is ScrollableDetails &&
+        other.direction == direction &&
+        other.controller == controller &&
+        other.physics == physics &&
+        other.decorationClipBehavior == decorationClipBehavior;
   }
 }
 
@@ -154,11 +142,7 @@ class ScrollableDetails {
 /// velocity = <distance of overscroll> * [velocityScalar].
 class EdgeDraggingAutoScroller {
   /// Creates a auto scroller that scrolls the [scrollable].
-  EdgeDraggingAutoScroller(
-    this.scrollable, {
-    this.onScrollViewScrolled,
-    required this.velocityScalar,
-  });
+  EdgeDraggingAutoScroller(this.scrollable, {this.onScrollViewScrolled, required this.velocityScalar});
 
   /// The [Scrollable] this auto scroller is scrolling.
   final ScrollableState scrollable;
@@ -236,7 +220,7 @@ class EdgeDraggingAutoScroller {
     );
     assert(
       globalRect.size.width >= _dragTargetRelatedToScrollOrigin.size.width &&
-        globalRect.size.height >= _dragTargetRelatedToScrollOrigin.size.height,
+          globalRect.size.height >= _dragTargetRelatedToScrollOrigin.size.height,
       'Drag target size is larger than scrollable size, which may cause bouncing',
     );
     _scrolling = true;
@@ -264,7 +248,7 @@ class EdgeDraggingAutoScroller {
       case AxisDirection.down:
         if (proxyStart < viewportStart && scrollable.position.pixels > scrollable.position.minScrollExtent) {
           final double overDrag = math.min(viewportStart - proxyStart, overDragMax);
-          newOffset = math.max(scrollable.position.minScrollExtent, scrollable.position.pixels -  overDrag);
+          newOffset = math.max(scrollable.position.minScrollExtent, scrollable.position.pixels - overDrag);
         } else if (proxyEnd > viewportEnd && scrollable.position.pixels < scrollable.position.maxScrollExtent) {
           final double overDrag = math.min(proxyEnd - viewportEnd, overDragMax);
           newOffset = math.min(scrollable.position.maxScrollExtent, scrollable.position.pixels + overDrag);
@@ -277,11 +261,7 @@ class EdgeDraggingAutoScroller {
       return;
     }
     final Duration duration = Duration(milliseconds: (1000 / velocityScalar).round());
-    await scrollable.position.animateTo(
-      newOffset,
-      duration: duration,
-      curve: Curves.linear,
-    );
+    await scrollable.position.animateTo(newOffset, duration: duration, curve: Curves.linear);
     if (onScrollViewScrolled != null) {
       onScrollViewScrolled!();
     }
@@ -340,10 +320,7 @@ class ScrollIncrementDetails {
   /// A const constructor for a [ScrollIncrementDetails].
   ///
   /// All of the arguments must not be null, and are required.
-  const ScrollIncrementDetails({
-    required this.type,
-    required this.metrics,
-  });
+  const ScrollIncrementDetails({required this.type, required this.metrics});
 
   /// The type of scroll this is (e.g. line, page, etc.).
   ///
@@ -363,10 +340,7 @@ class ScrollIncrementDetails {
 class ScrollIntent extends Intent {
   /// Creates a const [ScrollIntent] that requests scrolling in the given
   /// [direction], with the given [type].
-  const ScrollIntent({
-    required this.direction,
-    this.type = ScrollIncrementType.line,
-  });
+  const ScrollIntent({required this.direction, this.type = ScrollIncrementType.line});
 
   /// The direction in which to scroll the scrollable containing the focused
   /// widget.
@@ -407,16 +381,14 @@ class ScrollAction extends ContextAction<ScrollIntent> {
   /// metrics (pixels, viewportDimension, maxScrollExtent, minScrollExtent) are
   /// null. The type and state arguments must not be null, and the widget must
   /// have already been laid out so that the position fields are valid.
-  static double _calculateScrollIncrement(ScrollableState state, { ScrollIncrementType type = ScrollIncrementType.line }) {
+  static double _calculateScrollIncrement(
+    ScrollableState state, {
+    ScrollIncrementType type = ScrollIncrementType.line,
+  }) {
     assert(state.position.hasPixels);
     assert(state.resolvedPhysics == null || state.resolvedPhysics!.shouldAcceptUserOffset(state.position));
     if (state.widget.incrementCalculator != null) {
-      return state.widget.incrementCalculator!(
-        ScrollIncrementDetails(
-          type: type,
-          metrics: state.position,
-        ),
-      );
+      return state.widget.incrementCalculator!(ScrollIncrementDetails(type: type, metrics: state.position));
     }
     switch (type) {
       case ScrollIncrementType.line:
@@ -480,31 +452,33 @@ class ScrollAction extends ContextAction<ScrollIntent> {
     ScrollableState? state = Scrollable.maybeOf(context!);
     if (state == null) {
       final ScrollController primaryScrollController = PrimaryScrollController.of(context);
-      assert (() {
-        if (primaryScrollController.positions.length != 1) {
-          throw FlutterError.fromParts(<DiagnosticsNode>[
-            ErrorSummary(
-              'A ScrollAction was invoked with the PrimaryScrollController, but '
-              'more than one ScrollPosition is attached.',
-            ),
-            ErrorDescription(
-              'Only one ScrollPosition can be manipulated by a ScrollAction at '
-              'a time.',
-            ),
-            ErrorHint(
-              'The PrimaryScrollController can be inherited automatically by '
-              'descendant ScrollViews based on the TargetPlatform and scroll '
-              'direction. By default, the PrimaryScrollController is '
-              'automatically inherited on mobile platforms for vertical '
-              'ScrollViews. ScrollView.primary can also override this behavior.',
-            ),
-          ]);
-        }
-        return true;
-      }());
+      assert(
+        () {
+          if (primaryScrollController.positions.length != 1) {
+            throw FlutterError.fromParts(<DiagnosticsNode>[
+              ErrorSummary(
+                'A ScrollAction was invoked with the PrimaryScrollController, but '
+                'more than one ScrollPosition is attached.',
+              ),
+              ErrorDescription(
+                'Only one ScrollPosition can be manipulated by a ScrollAction at '
+                'a time.',
+              ),
+              ErrorHint(
+                'The PrimaryScrollController can be inherited automatically by '
+                'descendant ScrollViews based on the TargetPlatform and scroll '
+                'direction. By default, the PrimaryScrollController is '
+                'automatically inherited on mobile platforms for vertical '
+                'ScrollViews. ScrollView.primary can also override this behavior.',
+              ),
+            ]);
+          }
+          return true;
+        }(),
+      );
 
-      if (primaryScrollController.position.context.notificationContext == null
-          && Scrollable.maybeOf(primaryScrollController.position.context.notificationContext!) == null) {
+      if (primaryScrollController.position.context.notificationContext == null &&
+          Scrollable.maybeOf(primaryScrollController.position.context.notificationContext!) == null) {
         return;
       }
       state = Scrollable.maybeOf(primaryScrollController.position.context.notificationContext!);

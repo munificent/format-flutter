@@ -108,11 +108,7 @@ class CircularNotchedRectangle extends NotchedShape {
       ..moveTo(host.left, host.top)
       ..lineTo(p[0]!.dx, p[0]!.dy)
       ..quadraticBezierTo(p[1]!.dx, p[1]!.dy, p[2]!.dx, p[2]!.dy)
-      ..arcToPoint(
-        p[3]!,
-        radius: Radius.circular(notchRadius),
-        clockwise: false,
-      )
+      ..arcToPoint(p[3]!, radius: Radius.circular(notchRadius), clockwise: false)
       ..quadraticBezierTo(p[4]!.dx, p[4]!.dy, p[5]!.dx, p[5]!.dy)
       ..lineTo(host.right, host.top)
       ..lineTo(host.right, host.bottom)
@@ -134,7 +130,7 @@ class AutomaticNotchedShape extends NotchedShape {
   ///
   /// The [guest] may be null, in which case no notch is created even
   /// if a guest rectangle is provided to [getOuterPath].
-  const AutomaticNotchedShape(this.host, [ this.guest ]);
+  const AutomaticNotchedShape(this.host, [this.guest]);
 
   /// The shape of the widget that uses the [NotchedShape] (typically a
   /// [BottomAppBar]).
@@ -152,7 +148,8 @@ class AutomaticNotchedShape extends NotchedShape {
   final ShapeBorder? guest;
 
   @override
-  Path getOuterPath(Rect hostRect, Rect? guestRect) { // ignore: avoid_renaming_method_parameters
+  Path getOuterPath(Rect hostRect, Rect? guestRect) {
+    // ignore: avoid_renaming_method_parameters
     // The parameters of this method are renamed over the baseclass because they
     // would clash with properties of this object, and the use of all four of
     // them in the code below is really confusing if they have the same names.

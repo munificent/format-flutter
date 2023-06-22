@@ -16,11 +16,7 @@ import 'package:flutter/rendering.dart';
 ///     itself.
 class TextSelectionToolbarLayoutDelegate extends SingleChildLayoutDelegate {
   /// Creates an instance of TextSelectionToolbarLayoutDelegate.
-  TextSelectionToolbarLayoutDelegate({
-    required this.anchorAbove,
-    required this.anchorBelow,
-    this.fitsAbove,
-  });
+  TextSelectionToolbarLayoutDelegate({required this.anchorAbove, required this.anchorBelow, this.fitsAbove});
 
   /// {@macro flutter.material.TextSelectionToolbar.anchorAbove}
   ///
@@ -69,21 +65,15 @@ class TextSelectionToolbarLayoutDelegate extends SingleChildLayoutDelegate {
     final Offset anchor = fitsAbove ? anchorAbove : anchorBelow;
 
     return Offset(
-      centerOn(
-        anchor.dx,
-        childSize.width,
-        size.width,
-      ),
-      fitsAbove
-        ? math.max(0.0, anchor.dy - childSize.height)
-        : anchor.dy,
+      centerOn(anchor.dx, childSize.width, size.width),
+      fitsAbove ? math.max(0.0, anchor.dy - childSize.height) : anchor.dy,
     );
   }
 
   @override
   bool shouldRelayout(TextSelectionToolbarLayoutDelegate oldDelegate) {
-    return anchorAbove != oldDelegate.anchorAbove
-        || anchorBelow != oldDelegate.anchorBelow
-        || fitsAbove != oldDelegate.fitsAbove;
+    return anchorAbove != oldDelegate.anchorAbove ||
+        anchorBelow != oldDelegate.anchorBelow ||
+        fitsAbove != oldDelegate.fitsAbove;
   }
 }

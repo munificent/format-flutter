@@ -187,10 +187,9 @@ class _InputDatePickerFormFieldState extends State<InputDatePickerFormField> {
       TextEditingValue textEditingValue = TextEditingValue(text: _inputText!);
       // Select the new text if we are auto focused and haven't selected the text before.
       if (widget.autofocus && !_autoSelected) {
-        textEditingValue = textEditingValue.copyWith(selection: TextSelection(
-          baseOffset: 0,
-          extentOffset: _inputText!.length,
-        ));
+        textEditingValue = textEditingValue.copyWith(
+          selection: TextSelection(baseOffset: 0, extentOffset: _inputText!.length),
+        );
         _autoSelected = true;
       }
       _controller.value = textEditingValue;
@@ -206,11 +205,10 @@ class _InputDatePickerFormFieldState extends State<InputDatePickerFormField> {
   }
 
   bool _isValidAcceptableDate(DateTime? date) {
-    return
-      date != null &&
-      !date.isBefore(widget.firstDate) &&
-      !date.isAfter(widget.lastDate) &&
-      (widget.selectableDayPredicate == null || widget.selectableDayPredicate!(date));
+    return date != null &&
+        !date.isBefore(widget.firstDate) &&
+        !date.isAfter(widget.lastDate) &&
+        (widget.selectableDayPredicate == null || widget.selectableDayPredicate!(date));
   }
 
   String? _validateDate(String? text) {
@@ -249,8 +247,8 @@ class _InputDatePickerFormFieldState extends State<InputDatePickerFormField> {
     final bool useMaterial3 = theme.useMaterial3;
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final InputDecorationTheme inputTheme = theme.inputDecorationTheme;
-    final InputBorder inputBorder = inputTheme.border
-      ?? (useMaterial3 ? const OutlineInputBorder() : const UnderlineInputBorder());
+    final InputBorder inputBorder =
+        inputTheme.border ?? (useMaterial3 ? const OutlineInputBorder() : const UnderlineInputBorder());
 
     return TextFormField(
       decoration: InputDecoration(

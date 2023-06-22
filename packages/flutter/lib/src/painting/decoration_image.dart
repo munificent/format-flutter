@@ -188,19 +188,19 @@ class DecorationImage {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is DecorationImage
-        && other.image == image
-        && other.colorFilter == colorFilter
-        && other.fit == fit
-        && other.alignment == alignment
-        && other.centerSlice == centerSlice
-        && other.repeat == repeat
-        && other.matchTextDirection == matchTextDirection
-        && other.scale == scale
-        && other.opacity == opacity
-        && other.filterQuality == filterQuality
-        && other.invertColors == invertColors
-        && other.isAntiAlias == isAntiAlias;
+    return other is DecorationImage &&
+        other.image == image &&
+        other.colorFilter == colorFilter &&
+        other.fit == fit &&
+        other.alignment == alignment &&
+        other.centerSlice == centerSlice &&
+        other.repeat == repeat &&
+        other.matchTextDirection == matchTextDirection &&
+        other.scale == scale &&
+        other.opacity == opacity &&
+        other.filterQuality == filterQuality &&
+        other.invertColors == invertColors &&
+        other.isAntiAlias == isAntiAlias;
   }
 
   @override
@@ -223,26 +223,20 @@ class DecorationImage {
   String toString() {
     final List<String> properties = <String>[
       '$image',
-      if (colorFilter != null)
-        '$colorFilter',
+      if (colorFilter != null) '$colorFilter',
       if (fit != null &&
           !(fit == BoxFit.fill && centerSlice != null) &&
           !(fit == BoxFit.scaleDown && centerSlice == null))
         '$fit',
       '$alignment',
-      if (centerSlice != null)
-        'centerSlice: $centerSlice',
-      if (repeat != ImageRepeat.noRepeat)
-        '$repeat',
-      if (matchTextDirection)
-        'match text direction',
+      if (centerSlice != null) 'centerSlice: $centerSlice',
+      if (repeat != ImageRepeat.noRepeat) '$repeat',
+      if (matchTextDirection) 'match text direction',
       'scale $scale',
       'opacity $opacity',
       '$filterQuality',
-      if (invertColors)
-        'invert colors',
-      if (isAntiAlias)
-        'use anti-aliasing',
+      if (invertColors) 'invert colors',
+      if (isAntiAlias) 'use anti-aliasing',
     ];
     return '${objectRuntimeType(this, 'DecorationImage')}(${properties.join(", ")})';
   }
@@ -283,25 +277,34 @@ class DecorationImagePainter {
   /// then the `onChanged` callback passed to [DecorationImage.createPainter]
   /// will be called.
   void paint(Canvas canvas, Rect rect, Path? clipPath, ImageConfiguration configuration) {
-
     bool flipHorizontally = false;
     if (_details.matchTextDirection) {
-      assert(() {
-        // We check this first so that the assert will fire immediately, not just
-        // when the image is ready.
-        if (configuration.textDirection == null) {
-          throw FlutterError.fromParts(<DiagnosticsNode>[
-            ErrorSummary('DecorationImage.matchTextDirection can only be used when a TextDirection is available.'),
-            ErrorDescription(
-              'When DecorationImagePainter.paint() was called, there was no text direction provided '
-              'in the ImageConfiguration object to match.',
-            ),
-            DiagnosticsProperty<DecorationImage>('The DecorationImage was', _details, style: DiagnosticsTreeStyle.errorProperty),
-            DiagnosticsProperty<ImageConfiguration>('The ImageConfiguration was', configuration, style: DiagnosticsTreeStyle.errorProperty),
-          ]);
-        }
-        return true;
-      }());
+      assert(
+        () {
+          // We check this first so that the assert will fire immediately, not just
+          // when the image is ready.
+          if (configuration.textDirection == null) {
+            throw FlutterError.fromParts(<DiagnosticsNode>[
+              ErrorSummary('DecorationImage.matchTextDirection can only be used when a TextDirection is available.'),
+              ErrorDescription(
+                'When DecorationImagePainter.paint() was called, there was no text direction provided '
+                'in the ImageConfiguration object to match.',
+              ),
+              DiagnosticsProperty<DecorationImage>(
+                'The DecorationImage was',
+                _details,
+                style: DiagnosticsTreeStyle.errorProperty,
+              ),
+              DiagnosticsProperty<ImageConfiguration>(
+                'The ImageConfiguration was',
+                configuration,
+                style: DiagnosticsTreeStyle.errorProperty,
+              ),
+            ]);
+          }
+          return true;
+        }(),
+      );
       if (configuration.textDirection == TextDirection.rtl) {
         flipHorizontally = true;
       }
@@ -309,10 +312,7 @@ class DecorationImagePainter {
 
     final ImageStream newImageStream = _details.image.resolve(configuration);
     if (newImageStream.key != _imageStream?.key) {
-      final ImageStreamListener listener = ImageStreamListener(
-        _handleImage,
-        onError: _details.onError,
-      );
+      final ImageStreamListener listener = ImageStreamListener(_handleImage, onError: _details.onError);
       _imageStream?.removeListener(listener);
       _imageStream = newImageStream;
       _imageStream!.addListener(listener);
@@ -371,10 +371,7 @@ class DecorationImagePainter {
   /// After this method has been called, the object is no longer usable.
   @mustCallSuper
   void dispose() {
-    _imageStream?.removeListener(ImageStreamListener(
-      _handleImage,
-      onError: _details.onError,
-    ));
+    _imageStream?.removeListener(ImageStreamListener(_handleImage, onError: _details.onError));
     _image?.dispose();
     _image = null;
   }
@@ -398,10 +395,12 @@ Set<ImageSizeInfo> _lastFrameImageSizeInfo = <ImageSizeInfo>{};
 /// Has no effect if asserts are disabled.
 @visibleForTesting
 void debugFlushLastFrameImageSizeInfo() {
-  assert(() {
-    _lastFrameImageSizeInfo = <ImageSizeInfo>{};
-    return true;
-  }());
+  assert(
+    () {
+      _lastFrameImageSizeInfo = <ImageSizeInfo>{};
+      return true;
+    }(),
+  );
 }
 
 /// Paints an image into the given rectangle on the canvas.
@@ -518,7 +517,10 @@ void paintImage({
     destinationSize += sliceBorder;
     // We don't have the ability to draw a subset of the image at the same time
     // as we apply a nine-patch stretch.
-    assert(sourceSize == inputSize, 'centerSlice was used with a BoxFit that does not guarantee that the image is fully visible.');
+    assert(
+      sourceSize == inputSize,
+      'centerSlice was used with a BoxFit that does not guarantee that the image is fully visible.',
+    );
   }
 
   if (repeat != ImageRepeat.noRepeat && destinationSize == outputSize) {
@@ -561,43 +563,62 @@ void paintImage({
       imageSize: Size(image.width.toDouble(), image.height.toDouble()),
       displaySize: outputSize * maxDevicePixelRatio,
     );
-    assert(() {
-      if (debugInvertOversizedImages &&
-          sizeInfo.decodedSizeInBytes > sizeInfo.displaySizeInBytes + debugImageOverheadAllowance) {
-        final int overheadInKilobytes = (sizeInfo.decodedSizeInBytes - sizeInfo.displaySizeInBytes) ~/ 1024;
-        final int outputWidth = sizeInfo.displaySize.width.toInt();
-        final int outputHeight = sizeInfo.displaySize.height.toInt();
-        FlutterError.reportError(FlutterErrorDetails(
-          exception: 'Image $debugImageLabel has a display size of '
-            '$outputWidth×$outputHeight but a decode size of '
-            '${image.width}×${image.height}, which uses an additional '
-            '${overheadInKilobytes}KB (assuming a device pixel ratio of '
-            '$maxDevicePixelRatio).\n\n'
-            'Consider resizing the asset ahead of time, supplying a cacheWidth '
-            'parameter of $outputWidth, a cacheHeight parameter of '
-            '$outputHeight, or using a ResizeImage.',
-          library: 'painting library',
-          context: ErrorDescription('while painting an image'),
-        ));
-        // Invert the colors of the canvas.
-        canvas.saveLayer(
-          destinationRect,
-          Paint()..colorFilter = const ColorFilter.matrix(<double>[
-            -1,  0,  0, 0, 255,
-             0, -1,  0, 0, 255,
-             0,  0, -1, 0, 255,
-             0,  0,  0, 1,   0,
-          ]),
-        );
-        // Flip the canvas vertically.
-        final double dy = -(rect.top + rect.height / 2.0);
-        canvas.translate(0.0, -dy);
-        canvas.scale(1.0, -1.0);
-        canvas.translate(0.0, dy);
-        invertedCanvas = true;
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (debugInvertOversizedImages &&
+            sizeInfo.decodedSizeInBytes > sizeInfo.displaySizeInBytes + debugImageOverheadAllowance) {
+          final int overheadInKilobytes = (sizeInfo.decodedSizeInBytes - sizeInfo.displaySizeInBytes) ~/ 1024;
+          final int outputWidth = sizeInfo.displaySize.width.toInt();
+          final int outputHeight = sizeInfo.displaySize.height.toInt();
+          FlutterError.reportError(FlutterErrorDetails(
+            exception: 'Image $debugImageLabel has a display size of '
+                '$outputWidth×$outputHeight but a decode size of '
+                '${image.width}×${image.height}, which uses an additional '
+                '${overheadInKilobytes}KB (assuming a device pixel ratio of '
+                '$maxDevicePixelRatio).\n\n'
+                'Consider resizing the asset ahead of time, supplying a cacheWidth '
+                'parameter of $outputWidth, a cacheHeight parameter of '
+                '$outputHeight, or using a ResizeImage.',
+            library: 'painting library',
+            context: ErrorDescription('while painting an image'),
+          ));
+          // Invert the colors of the canvas.
+          canvas.saveLayer(
+            destinationRect,
+            Paint()
+              ..colorFilter = const ColorFilter.matrix(<double>[
+                -1,
+                0,
+                0,
+                0,
+                255,
+                0,
+                -1,
+                0,
+                0,
+                255,
+                0,
+                0,
+                -1,
+                0,
+                255,
+                0,
+                0,
+                0,
+                1,
+                0,
+              ]),
+          );
+          // Flip the canvas vertically.
+          final double dy = -(rect.top + rect.height / 2.0);
+          canvas.translate(0.0, -dy);
+          canvas.scale(1.0, -1.0);
+          canvas.translate(0.0, dy);
+          invertedCanvas = true;
+        }
+        return true;
+      }(),
+    );
     // Avoid emitting events that are the same as those emitted in the last frame.
     if (!kReleaseMode && !_lastFrameImageSizeInfo.contains(sizeInfo)) {
       final ImageSizeInfo? existingSizeInfo = _pendingImageSizeInfo[sizeInfo.source];
@@ -610,13 +631,10 @@ void paintImage({
         if (_pendingImageSizeInfo.isEmpty) {
           return;
         }
-        developer.postEvent(
-          'Flutter.ImageSizesForFrame',
-          <String, Object>{
-            for (final ImageSizeInfo imageSizeInfo in _pendingImageSizeInfo.values)
-              imageSizeInfo.source!: imageSizeInfo.toJson(),
-          },
-        );
+        developer.postEvent('Flutter.ImageSizesForFrame', <String, Object>{
+          for (final ImageSizeInfo imageSizeInfo in _pendingImageSizeInfo.values)
+            imageSizeInfo.source!: imageSizeInfo.toJson(),
+        });
         _pendingImageSizeInfo = <String, ImageSizeInfo>{};
       });
     }
@@ -636,9 +654,7 @@ void paintImage({
     canvas.translate(dx, 0.0);
   }
   if (centerSlice == null) {
-    final Rect sourceRect = alignment.inscribe(
-      sourceSize, Offset.zero & inputSize,
-    );
+    final Rect sourceRect = alignment.inscribe(sourceSize, Offset.zero & inputSize);
     if (repeat == ImageRepeat.noRepeat) {
       canvas.drawImageRect(image, sourceRect, destinationRect, paint);
     } else {
@@ -685,9 +701,13 @@ Iterable<Rect> _generateImageTileRects(Rect outputRect, Rect fundamentalRect, Im
 
   return <Rect>[
     for (int i = startX; i <= stopX; ++i)
-      for (int j = startY; j <= stopY; ++j)
-        fundamentalRect.shift(Offset(i * strideX, j * strideY)),
+      for (int j = startY; j <= stopY; ++j) fundamentalRect.shift(Offset(i * strideX, j * strideY)),
   ];
 }
 
-Rect _scaleRect(Rect rect, double scale) => Rect.fromLTRB(rect.left * scale, rect.top * scale, rect.right * scale, rect.bottom * scale);
+Rect _scaleRect(Rect rect, double scale) => Rect.fromLTRB(
+  rect.left * scale,
+  rect.top * scale,
+  rect.right * scale,
+  rect.bottom * scale,
+);

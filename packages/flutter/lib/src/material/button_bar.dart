@@ -219,20 +219,14 @@ class ButtonBar extends StatelessWidget {
         overflowDirection: overflowDirection ?? barTheme.overflowDirection ?? VerticalDirection.down,
         overflowButtonSpacing: overflowButtonSpacing,
         children: children.map<Widget>((Widget child) {
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: paddingUnit),
-            child: child,
-          );
+          return Padding(padding: EdgeInsets.symmetric(horizontal: paddingUnit), child: child);
         }).toList(),
       ),
     );
     switch (buttonTheme.layoutBehavior) {
       case ButtonBarLayoutBehavior.padded:
         return Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: 2.0 * paddingUnit,
-            horizontal: paddingUnit,
-          ),
+          padding: EdgeInsets.symmetric(vertical: 2.0 * paddingUnit, horizontal: paddingUnit),
           child: child,
         );
       case ButtonBarLayoutBehavior.constrained:
@@ -269,10 +263,7 @@ class _ButtonBarRow extends Flex {
     super.mainAxisAlignment,
     VerticalDirection overflowDirection = VerticalDirection.down,
     this.overflowButtonSpacing,
-  }) : super(
-    direction: Axis.horizontal,
-    verticalDirection: overflowDirection,
-  );
+  }) : super(direction: Axis.horizontal, verticalDirection: overflowDirection);
 
   final double? overflowButtonSpacing;
 

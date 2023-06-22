@@ -40,11 +40,7 @@ abstract class AlignmentGeometry {
   /// representing a combination of both is returned. That object can be turned
   /// into a concrete [Alignment] using [resolve].
   AlignmentGeometry add(AlignmentGeometry other) {
-    return _MixedAlignment(
-      _x + other._x,
-      _start + other._start,
-      _y + other._y,
-    );
+    return _MixedAlignment(_x + other._x, _start + other._start, _y + other._y);
   }
 
   /// Returns the negation of the given [AlignmentGeometry] object.
@@ -133,10 +129,7 @@ abstract class AlignmentGeometry {
 
   @override
   bool operator ==(Object other) {
-    return other is AlignmentGeometry
-        && other._x == _x
-        && other._start == _start
-        && other._y == _y;
+    return other is AlignmentGeometry && other._x == _x && other._start == _start && other._y == _y;
   }
 
   @override
@@ -308,10 +301,7 @@ class Alignment extends AlignmentGeometry {
   Offset withinRect(Rect rect) {
     final double halfWidth = rect.width / 2.0;
     final double halfHeight = rect.height / 2.0;
-    return Offset(
-      rect.left + halfWidth + x * halfWidth,
-      rect.top + halfHeight + y * halfHeight,
-    );
+    return Offset(rect.left + halfWidth + x * halfWidth, rect.top + halfHeight + y * halfHeight);
   }
 
   /// Returns a rect of the given size, aligned within given rect as specified
@@ -381,7 +371,7 @@ class Alignment extends AlignmentGeometry {
       return 'Alignment.bottomRight';
     }
     return 'Alignment(${x.toStringAsFixed(1)}, '
-                     '${y.toStringAsFixed(1)})';
+        '${y.toStringAsFixed(1)})';
   }
 
   @override
@@ -580,7 +570,7 @@ class AlignmentDirectional extends AlignmentGeometry {
       return 'AlignmentDirectional.bottomEnd';
     }
     return 'AlignmentDirectional(${start.toStringAsFixed(1)}, '
-                                '${y.toStringAsFixed(1)})';
+        '${y.toStringAsFixed(1)})';
   }
 
   @override
@@ -601,47 +591,27 @@ class _MixedAlignment extends AlignmentGeometry {
 
   @override
   _MixedAlignment operator -() {
-    return _MixedAlignment(
-      -_x,
-      -_start,
-      -_y,
-    );
+    return _MixedAlignment(-_x, -_start, -_y);
   }
 
   @override
   _MixedAlignment operator *(double other) {
-    return _MixedAlignment(
-      _x * other,
-      _start * other,
-      _y * other,
-    );
+    return _MixedAlignment(_x * other, _start * other, _y * other);
   }
 
   @override
   _MixedAlignment operator /(double other) {
-    return _MixedAlignment(
-      _x / other,
-      _start / other,
-      _y / other,
-    );
+    return _MixedAlignment(_x / other, _start / other, _y / other);
   }
 
   @override
   _MixedAlignment operator ~/(double other) {
-    return _MixedAlignment(
-      (_x ~/ other).toDouble(),
-      (_start ~/ other).toDouble(),
-      (_y ~/ other).toDouble(),
-    );
+    return _MixedAlignment((_x ~/ other).toDouble(), (_start ~/ other).toDouble(), (_y ~/ other).toDouble());
   }
 
   @override
   _MixedAlignment operator %(double other) {
-    return _MixedAlignment(
-      _x % other,
-      _start % other,
-      _y % other,
-    );
+    return _MixedAlignment(_x % other, _start % other, _y % other);
   }
 
   @override
@@ -684,8 +654,10 @@ class TextAlignVertical {
   /// Aligns a TextField's input Text with the topmost location within a
   /// TextField's input box.
   static const TextAlignVertical top = TextAlignVertical(y: -1.0);
+
   /// Aligns a TextField's input Text to the center of the TextField.
   static const TextAlignVertical center = TextAlignVertical(y: 0.0);
+
   /// Aligns a TextField's input Text with the bottommost location within a
   /// TextField.
   static const TextAlignVertical bottom = TextAlignVertical(y: 1.0);

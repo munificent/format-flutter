@@ -114,12 +114,7 @@ class ValueListenableBuilder<T> extends StatefulWidget {
   /// The [valueListenable] and [builder] arguments must not be null.
   /// The [child] is optional but is good practice to use if part of the widget
   /// subtree does not depend on the value of the [valueListenable].
-  const ValueListenableBuilder({
-    super.key,
-    required this.valueListenable,
-    required this.builder,
-    this.child,
-  });
+  const ValueListenableBuilder({super.key, required this.valueListenable, required this.builder, this.child});
 
   /// The [ValueListenable] whose value you depend on in order to build.
   ///
@@ -178,7 +173,9 @@ class _ValueListenableBuilderState<T> extends State<ValueListenableBuilder<T>> {
   }
 
   void _valueChanged() {
-    setState(() { value = widget.valueListenable.value; });
+    setState(() {
+      value = widget.valueListenable.value;
+    });
   }
 
   @override

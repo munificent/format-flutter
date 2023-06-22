@@ -178,8 +178,8 @@ class ActionChip extends StatelessWidget implements ChipAttributes, TappableChip
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     final ChipThemeData? defaults = Theme.of(context).useMaterial3
-      ? _ActionChipDefaultsM3(context, isEnabled, _chipVariant)
-      : null;
+        ? _ActionChipDefaultsM3(context, isEnabled, _chipVariant)
+        : null;
     return RawChip(
       defaultProperties: defaults,
       avatar: avatar,
@@ -229,8 +229,10 @@ class _ActionChipDefaultsM3 extends ChipThemeData {
 
   @override
   double? get elevation => _chipVariant == _ChipVariant.flat
-    ? 0.0
-    : isEnabled ? 1.0 : 0.0;
+      ? 0.0
+      : isEnabled
+          ? 1.0
+          : 0.0;
 
   @override
   double? get pressElevation => 1.0;
@@ -242,9 +244,7 @@ class _ActionChipDefaultsM3 extends ChipThemeData {
   Color? get backgroundColor => null;
 
   @override
-  Color? get shadowColor => _chipVariant == _ChipVariant.flat
-    ? Colors.transparent
-    : _colors.shadow;
+  Color? get shadowColor => _chipVariant == _ChipVariant.flat ? Colors.transparent : _colors.shadow;
 
   @override
   Color? get surfaceTintColor => _colors.surfaceTint;
@@ -256,27 +256,20 @@ class _ActionChipDefaultsM3 extends ChipThemeData {
   Color? get checkmarkColor => null;
 
   @override
-  Color? get disabledColor => _chipVariant == _ChipVariant.flat
-    ? null
-    : _colors.onSurface.withOpacity(0.12);
+  Color? get disabledColor => _chipVariant == _ChipVariant.flat ? null : _colors.onSurface.withOpacity(0.12);
 
   @override
   Color? get deleteIconColor => null;
 
   @override
   BorderSide? get side => _chipVariant == _ChipVariant.flat
-    ? isEnabled
-        ? BorderSide(color: _colors.outline)
-        : BorderSide(color: _colors.onSurface.withOpacity(0.12))
-    : const BorderSide(color: Colors.transparent);
+      ? isEnabled
+          ? BorderSide(color: _colors.outline)
+          : BorderSide(color: _colors.onSurface.withOpacity(0.12))
+      : const BorderSide(color: Colors.transparent);
 
   @override
-  IconThemeData? get iconTheme => IconThemeData(
-    color: isEnabled
-      ? _colors.primary
-      : _colors.onSurface,
-    size: 18.0,
-  );
+  IconThemeData? get iconTheme => IconThemeData(color: isEnabled ? _colors.primary : _colors.onSurface, size: 18.0);
 
   @override
   EdgeInsetsGeometry? get padding => const EdgeInsets.all(8.0);

@@ -177,10 +177,7 @@ class Card extends StatelessWidget {
           shape: shape ?? cardTheme.shape ?? defaults.shape,
           borderOnForeground: borderOnForeground,
           clipBehavior: clipBehavior ?? cardTheme.clipBehavior ?? defaults.clipBehavior!,
-          child: Semantics(
-            explicitChildNodes: !semanticContainer,
-            child: child,
-          ),
+          child: Semantics(explicitChildNodes: !semanticContainer, child: child),
         ),
       ),
     );
@@ -194,10 +191,8 @@ class _CardDefaultsM2 extends CardTheme {
         clipBehavior: Clip.none,
         elevation: 1.0,
         margin: const EdgeInsets.all(4.0),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        )
-    );
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
+      );
 
   final BuildContext context;
 

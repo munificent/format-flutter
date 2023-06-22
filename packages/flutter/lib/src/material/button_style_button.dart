@@ -184,7 +184,6 @@ abstract class ButtonStyleButton extends StatefulWidget {
     EdgeInsetsGeometry geometry3x,
     double textScaleFactor,
   ) {
-
     if (textScaleFactor <= 1) {
       return geometry1x;
     } else if (textScaleFactor >= 3) {
@@ -213,7 +212,7 @@ class _ButtonStyleState extends State<ButtonStyleButton> with TickerProviderStat
 
   void handleStatesControllerChange() {
     // Force a rebuild to resolve MaterialStateProperty properties
-    setState(() { });
+    setState(() {});
   }
 
   MaterialStatesController get statesController => widget.statesController ?? internalStatesController!;
@@ -267,18 +266,16 @@ class _ButtonStyleState extends State<ButtonStyleButton> with TickerProviderStat
     final ButtonStyle defaultStyle = widget.defaultStyleOf(context);
 
     T? effectiveValue<T>(T? Function(ButtonStyle? style) getProperty) {
-      final T? widgetValue  = getProperty(widgetStyle);
-      final T? themeValue   = getProperty(themeStyle);
+      final T? widgetValue = getProperty(widgetStyle);
+      final T? themeValue = getProperty(themeStyle);
       final T? defaultValue = getProperty(defaultStyle);
       return widgetValue ?? themeValue ?? defaultValue;
     }
 
     T? resolve<T>(MaterialStateProperty<T>? Function(ButtonStyle? style) getProperty) {
-      return effectiveValue(
-        (ButtonStyle? style) {
-          return getProperty(style)?.resolve(statesController.value);
-        },
-      );
+      return effectiveValue((ButtonStyle? style) {
+        return getProperty(style)?.resolve(statesController.value);
+      });
     }
 
     final double? resolvedElevation = resolve<double?>((ButtonStyle? style) => style?.elevation);
@@ -310,29 +307,23 @@ class _ButtonStyleState extends State<ButtonStyleButton> with TickerProviderStat
     final bool? resolvedEnableFeedback = effectiveValue((ButtonStyle? style) => style?.enableFeedback);
     final AlignmentGeometry? resolvedAlignment = effectiveValue((ButtonStyle? style) => style?.alignment);
     final Offset densityAdjustment = resolvedVisualDensity!.baseSizeAdjustment;
-    final InteractiveInkFeatureFactory? resolvedSplashFactory = effectiveValue((ButtonStyle? style) => style?.splashFactory);
-
-    BoxConstraints effectiveConstraints = resolvedVisualDensity.effectiveConstraints(
-      BoxConstraints(
-        minWidth: resolvedMinimumSize!.width,
-        minHeight: resolvedMinimumSize.height,
-        maxWidth: resolvedMaximumSize!.width,
-        maxHeight: resolvedMaximumSize.height,
-      ),
+    final InteractiveInkFeatureFactory? resolvedSplashFactory = effectiveValue(
+      (ButtonStyle? style) => style?.splashFactory,
     );
+
+    BoxConstraints effectiveConstraints = resolvedVisualDensity.effectiveConstraints(BoxConstraints(
+      minWidth: resolvedMinimumSize!.width,
+      minHeight: resolvedMinimumSize.height,
+      maxWidth: resolvedMaximumSize!.width,
+      maxHeight: resolvedMaximumSize.height,
+    ));
     if (resolvedFixedSize != null) {
       final Size size = effectiveConstraints.constrain(resolvedFixedSize);
       if (size.width.isFinite) {
-        effectiveConstraints = effectiveConstraints.copyWith(
-          minWidth: size.width,
-          maxWidth: size.width,
-        );
+        effectiveConstraints = effectiveConstraints.copyWith(minWidth: size.width, maxWidth: size.width);
       }
       if (size.height.isFinite) {
-        effectiveConstraints = effectiveConstraints.copyWith(
-          minHeight: size.height,
-          maxHeight: size.height,
-        );
+        effectiveConstraints = effectiveConstraints.copyWith(minHeight: size.height, maxHeight: size.height);
       }
     }
 
@@ -342,33 +333,31 @@ class _ButtonStyleState extends State<ButtonStyleButton> with TickerProviderStat
     // reduce the horizontal padding to zero.
     final double dy = densityAdjustment.dy;
     final double dx = math.max(0, densityAdjustment.dx);
-    final EdgeInsetsGeometry padding = resolvedPadding!
-      .add(EdgeInsets.fromLTRB(dx, dy, dx, dy))
-      .clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity); // ignore_clamp_double_lint
+    final EdgeInsetsGeometry padding = resolvedPadding!.add(EdgeInsets.fromLTRB(dx, dy, dx, dy)).clamp(
+      EdgeInsets.zero,
+      EdgeInsetsGeometry.infinity,
+    ); // ignore_clamp_double_lint
 
     // If an opaque button's background is becoming translucent while its
     // elevation is changing, change the elevation first. Material implicitly
     // animates its elevation but not its color. SKIA renders non-zero
     // elevations as a shadow colored fill behind the Material's background.
-    if (resolvedAnimationDuration! > Duration.zero
-        && elevation != null
-        && backgroundColor != null
-        && elevation != resolvedElevation
-        && backgroundColor!.value != resolvedBackgroundColor!.value
-        && backgroundColor!.opacity == 1
-        && resolvedBackgroundColor.opacity < 1
-        && resolvedElevation == 0) {
+    if (resolvedAnimationDuration! > Duration.zero &&
+        elevation != null &&
+        backgroundColor != null &&
+        elevation != resolvedElevation &&
+        backgroundColor!.value != resolvedBackgroundColor!.value &&
+        backgroundColor!.opacity == 1 &&
+        resolvedBackgroundColor.opacity < 1 &&
+        resolvedElevation == 0) {
       if (controller?.duration != resolvedAnimationDuration) {
         controller?.dispose();
-        controller = AnimationController(
-          duration: resolvedAnimationDuration,
-          vsync: this,
-        )
-        ..addStatusListener((AnimationStatus status) {
-          if (status == AnimationStatus.completed) {
-            setState(() { }); // Rebuild with the final background color.
-          }
-        });
+        controller = AnimationController(duration: resolvedAnimationDuration, vsync: this)
+          ..addStatusListener((AnimationStatus status) {
+            if (status == AnimationStatus.completed) {
+              setState(() {}); // Rebuild with the final background color.
+            }
+          });
       }
       resolvedBackgroundColor = backgroundColor; // Defer changing the background color.
       controller!.value = 0;
@@ -408,12 +397,7 @@ class _ButtonStyleState extends State<ButtonStyleButton> with TickerProviderStat
             data: IconThemeData(color: resolvedIconColor ?? resolvedForegroundColor, size: resolvedIconSize),
             child: Padding(
               padding: padding,
-              child: Align(
-                alignment: resolvedAlignment!,
-                widthFactor: 1.0,
-                heightFactor: 1.0,
-                child: widget.child,
-              ),
+              child: Align(alignment: resolvedAlignment!, widthFactor: 1.0, heightFactor: 1.0, child: widget.child),
             ),
           ),
         ),
@@ -437,10 +421,7 @@ class _ButtonStyleState extends State<ButtonStyleButton> with TickerProviderStat
       container: true,
       button: widget.isSemanticButton,
       enabled: widget.enabled,
-      child: _InputPadding(
-        minSize: minSize,
-        child: result,
-      ),
+      child: _InputPadding(minSize: minSize, child: result),
     );
   }
 }
@@ -463,10 +444,7 @@ class _MouseCursor extends MaterialStateMouseCursor {
 /// of the child. This increases the size of the button and the button's
 /// "tap target", but not its material or its ink splashes.
 class _InputPadding extends SingleChildRenderObjectWidget {
-  const _InputPadding({
-    super.child,
-    required this.minSize,
-  });
+  const _InputPadding({super.child, required this.minSize});
 
   final Size minSize;
 
@@ -538,18 +516,12 @@ class _RenderInputPadding extends RenderShiftedBox {
 
   @override
   Size computeDryLayout(BoxConstraints constraints) {
-    return _computeSize(
-      constraints: constraints,
-      layoutChild: ChildLayoutHelper.dryLayoutChild,
-    );
+    return _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.dryLayoutChild);
   }
 
   @override
   void performLayout() {
-    size = _computeSize(
-      constraints: constraints,
-      layoutChild: ChildLayoutHelper.layoutChild,
-    );
+    size = _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.layoutChild);
     if (child != null) {
       final BoxParentData childParentData = child!.parentData! as BoxParentData;
       childParentData.offset = Alignment.center.alongOffset(size - child!.size as Offset);
@@ -557,7 +529,7 @@ class _RenderInputPadding extends RenderShiftedBox {
   }
 
   @override
-  bool hitTest(BoxHitTestResult result, { required Offset position }) {
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
     if (super.hitTest(result, position: position)) {
       return true;
     }

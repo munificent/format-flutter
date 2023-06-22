@@ -110,10 +110,10 @@ abstract class ProgressIndicator extends StatefulWidget {
 
   Color _getValueColor(BuildContext context, {Color? defaultColor}) {
     return valueColor?.value ??
-      color ??
-      ProgressIndicatorTheme.of(context).color ??
-      defaultColor ??
-      Theme.of(context).colorScheme.primary;
+        color ??
+        ProgressIndicatorTheme.of(context).color ??
+        defaultColor ??
+        Theme.of(context).colorScheme.primary;
   }
 
   @override
@@ -122,19 +122,12 @@ abstract class ProgressIndicator extends StatefulWidget {
     properties.add(PercentProperty('value', value, showName: false, ifNull: '<indeterminate>'));
   }
 
-  Widget _buildSemanticsWrapper({
-    required BuildContext context,
-    required Widget child,
-  }) {
+  Widget _buildSemanticsWrapper({required BuildContext context, required Widget child}) {
     String? expandedSemanticsValue = semanticsValue;
     if (value != null) {
       expandedSemanticsValue ??= '${(value! * 100).round()}%';
     }
-    return Semantics(
-      label: semanticsLabel,
-      value: expandedSemanticsValue,
-      child: child,
-    );
+    return Semantics(label: semanticsLabel, value: expandedSemanticsValue, child: child);
   }
 }
 
@@ -157,11 +150,7 @@ class _LinearProgressIndicatorPainter extends CustomPainter {
 
   // The indeterminate progress animation displays two lines whose leading (head)
   // and trailing (tail) endpoints are defined by the following four curves.
-  static const Curve line1Head = Interval(
-    0.0,
-    750.0 / _kIndeterminateLinearDuration,
-    curve: Cubic(0.2, 0.0, 0.8, 1.0),
-  );
+  static const Curve line1Head = Interval(0.0, 750.0 / _kIndeterminateLinearDuration, curve: Cubic(0.2, 0.0, 0.8, 1.0));
   static const Curve line1Tail = Interval(
     333.0 / _kIndeterminateLinearDuration,
     (333.0 + 750.0) / _kIndeterminateLinearDuration,
@@ -224,12 +213,12 @@ class _LinearProgressIndicatorPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_LinearProgressIndicatorPainter oldPainter) {
-    return oldPainter.backgroundColor != backgroundColor
-        || oldPainter.valueColor != valueColor
-        || oldPainter.value != value
-        || oldPainter.animationValue != animationValue
-        || oldPainter.textDirection != textDirection
-        || oldPainter.indicatorBorderRadius != indicatorBorderRadius;
+    return oldPainter.backgroundColor != backgroundColor ||
+        oldPainter.valueColor != valueColor ||
+        oldPainter.value != value ||
+        oldPainter.animationValue != animationValue ||
+        oldPainter.textDirection != textDirection ||
+        oldPainter.indicatorBorderRadius != indicatorBorderRadius;
   }
 }
 
@@ -354,32 +343,21 @@ class _LinearProgressIndicatorState extends State<LinearProgressIndicator> with 
 
   Widget _buildIndicator(BuildContext context, double animationValue, TextDirection textDirection) {
     final ProgressIndicatorThemeData defaults = Theme.of(context).useMaterial3
-      ? _LinearProgressIndicatorDefaultsM3(context)
-      : _LinearProgressIndicatorDefaultsM2(context);
+        ? _LinearProgressIndicatorDefaultsM3(context)
+        : _LinearProgressIndicatorDefaultsM2(context);
 
     final ProgressIndicatorThemeData indicatorTheme = ProgressIndicatorTheme.of(context);
-    final Color trackColor = widget.backgroundColor ??
-      indicatorTheme.linearTrackColor ??
-      defaults.linearTrackColor!;
-    final double minHeight = widget.minHeight ??
-      indicatorTheme.linearMinHeight ??
-      defaults.linearMinHeight!;
+    final Color trackColor = widget.backgroundColor ?? indicatorTheme.linearTrackColor ?? defaults.linearTrackColor!;
+    final double minHeight = widget.minHeight ?? indicatorTheme.linearMinHeight ?? defaults.linearMinHeight!;
 
     return widget._buildSemanticsWrapper(
       context: context,
       child: Container(
         // Clip is only needed with indeterminate progress indicators
-        clipBehavior: (widget.borderRadius != BorderRadius.zero && widget.value == null)
-            ? Clip.antiAlias
-            : Clip.none,
-        decoration: ShapeDecoration(
-          color: trackColor,
-          shape: RoundedRectangleBorder(borderRadius: widget.borderRadius),
-        ),
-        constraints: BoxConstraints(
-          minWidth: double.infinity,
-          minHeight: minHeight,
-        ),
+        clipBehavior: (widget.borderRadius != BorderRadius.zero && widget.value == null) ? Clip.antiAlias : Clip.none,
+        decoration:
+            ShapeDecoration(color: trackColor, shape: RoundedRectangleBorder(borderRadius: widget.borderRadius)),
+        constraints: BoxConstraints(minWidth: double.infinity, minHeight: minHeight),
         child: CustomPaint(
           painter: _LinearProgressIndicatorPainter(
             backgroundColor: trackColor,
@@ -424,11 +402,11 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
     required this.strokeAlign,
     this.strokeCap,
   }) : arcStart = value != null
-         ? _startAngle
-         : _startAngle + tailValue * 3 / 2 * math.pi + rotationValue * math.pi * 2.0 + offsetValue * 0.5 * math.pi,
+           ? _startAngle
+           : _startAngle + tailValue * 3 / 2 * math.pi + rotationValue * math.pi * 2.0 + offsetValue * 0.5 * math.pi,
        arcSweep = value != null
-         ? clampDouble(value, 0.0, 1.0) * _sweep
-         : math.max(headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi, _epsilon);
+           ? clampDouble(value, 0.0, 1.0) * _sweep
+           : math.max(headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi, _epsilon);
 
   final Color? backgroundColor;
   final Color valueColor;
@@ -460,23 +438,14 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
     // as users are already familiar with.
     final double strokeOffset = strokeWidth / 2 * -strokeAlign;
     final Offset arcBaseOffset = Offset(strokeOffset, strokeOffset);
-    final Size arcActualSize = Size(
-      size.width - strokeOffset * 2,
-      size.height - strokeOffset * 2,
-    );
+    final Size arcActualSize = Size(size.width - strokeOffset * 2, size.height - strokeOffset * 2);
 
     if (backgroundColor != null) {
       final Paint backgroundPaint = Paint()
         ..color = backgroundColor!
         ..strokeWidth = strokeWidth
         ..style = PaintingStyle.stroke;
-      canvas.drawArc(
-        arcBaseOffset & arcActualSize,
-        0,
-        _sweep,
-        false,
-        backgroundPaint,
-      );
+      canvas.drawArc(arcBaseOffset & arcActualSize, 0, _sweep, false, backgroundPaint);
     }
 
     if (value == null && strokeCap == null) {
@@ -487,27 +456,21 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
       paint.strokeCap = strokeCap ?? StrokeCap.butt;
     }
 
-    canvas.drawArc(
-      arcBaseOffset & arcActualSize,
-      arcStart,
-      arcSweep,
-      false,
-      paint,
-    );
+    canvas.drawArc(arcBaseOffset & arcActualSize, arcStart, arcSweep, false, paint);
   }
 
   @override
   bool shouldRepaint(_CircularProgressIndicatorPainter oldPainter) {
-    return oldPainter.backgroundColor != backgroundColor
-        || oldPainter.valueColor != valueColor
-        || oldPainter.value != value
-        || oldPainter.headValue != headValue
-        || oldPainter.tailValue != tailValue
-        || oldPainter.offsetValue != offsetValue
-        || oldPainter.rotationValue != rotationValue
-        || oldPainter.strokeWidth != strokeWidth
-        || oldPainter.strokeAlign != strokeAlign
-        || oldPainter.strokeCap != strokeCap;
+    return oldPainter.backgroundColor != backgroundColor ||
+        oldPainter.valueColor != valueColor ||
+        oldPainter.value != value ||
+        oldPainter.headValue != headValue ||
+        oldPainter.tailValue != tailValue ||
+        oldPainter.offsetValue != offsetValue ||
+        oldPainter.rotationValue != rotationValue ||
+        oldPainter.strokeWidth != strokeWidth ||
+        oldPainter.strokeAlign != strokeAlign ||
+        oldPainter.strokeCap != strokeCap;
   }
 }
 
@@ -662,14 +625,10 @@ class _CircularProgressIndicatorState extends State<CircularProgressIndicator> w
 
   static final Animatable<double> _strokeHeadTween = CurveTween(
     curve: const Interval(0.0, 0.5, curve: Curves.fastOutSlowIn),
-  ).chain(CurveTween(
-    curve: const SawTooth(_pathCount),
-  ));
+  ).chain(CurveTween(curve: const SawTooth(_pathCount)));
   static final Animatable<double> _strokeTailTween = CurveTween(
     curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
-  ).chain(CurveTween(
-    curve: const SawTooth(_pathCount),
-  ));
+  ).chain(CurveTween(curve: const SawTooth(_pathCount)));
   static final Animatable<double> _offsetTween = CurveTween(curve: const SawTooth(_pathCount));
   static final Animatable<double> _rotationTween = CurveTween(curve: const SawTooth(_rotationCount));
 
@@ -708,10 +667,16 @@ class _CircularProgressIndicatorState extends State<CircularProgressIndicator> w
     return CupertinoActivityIndicator(key: widget.key, color: tickColor);
   }
 
-  Widget _buildMaterialIndicator(BuildContext context, double headValue, double tailValue, double offsetValue, double rotationValue) {
+  Widget _buildMaterialIndicator(
+    BuildContext context,
+    double headValue,
+    double tailValue,
+    double offsetValue,
+    double rotationValue,
+  ) {
     final ProgressIndicatorThemeData defaults = Theme.of(context).useMaterial3
-      ? _CircularProgressIndicatorDefaultsM3(context)
-      : _CircularProgressIndicatorDefaultsM2(context);
+        ? _CircularProgressIndicatorDefaultsM3(context)
+        : _CircularProgressIndicatorDefaultsM2(context);
     final Color? trackColor = widget.backgroundColor ?? ProgressIndicatorTheme.of(context).circularTrackColor;
 
     return widget._buildSemanticsWrapper(
@@ -807,7 +772,7 @@ class _RefreshProgressIndicatorPainter extends _CircularProgressIndicatorPainter
     assert(size.width == size.height);
     final double radius = size.width / 2.0;
     final double arrowheadPointX = radius + ux * radius + -uy * strokeWidth * 2.0 * arrowheadScale;
-    final double arrowheadPointY = radius + uy * radius +  ux * strokeWidth * 2.0 * arrowheadScale;
+    final double arrowheadPointY = radius + uy * radius + ux * strokeWidth * 2.0 * arrowheadScale;
     final double arrowheadRadius = strokeWidth * 2.0 * arrowheadScale;
     final double innerRadius = radius - arrowheadRadius;
     final double outerRadius = radius + arrowheadRadius;
@@ -891,24 +856,14 @@ class _RefreshProgressIndicatorState extends _CircularProgressIndicatorState {
   /// Interval for arrow head to fully grow.
   static const double _strokeHeadInterval = 0.33;
 
-  late final Animatable<double> _convertTween = CurveTween(
-    curve: const Interval(0.1, _strokeHeadInterval),
-  );
+  late final Animatable<double> _convertTween = CurveTween(curve: const Interval(0.1, _strokeHeadInterval));
 
-  late final Animatable<double> _additionalRotationTween = TweenSequence<double>(
-    <TweenSequenceItem<double>>[
-      // Makes arrow to expand a little bit earlier, to match the Android look.
-      TweenSequenceItem<double>(
-        tween: Tween<double>(begin: -0.1, end: -0.2),
-        weight: _strokeHeadInterval,
-      ),
-      // Additional rotation after the arrow expanded
-      TweenSequenceItem<double>(
-        tween: Tween<double>(begin: -0.2, end: 1.35),
-        weight: 1 - _strokeHeadInterval,
-      ),
-    ],
-  );
+  late final Animatable<double> _additionalRotationTween = TweenSequence<double>(<TweenSequenceItem<double>>[
+    // Makes arrow to expand a little bit earlier, to match the Android look.
+    TweenSequenceItem<double>(tween: Tween<double>(begin: -0.1, end: -0.2), weight: _strokeHeadInterval),
+    // Additional rotation after the arrow expanded
+    TweenSequenceItem<double>(tween: Tween<double>(begin: -0.2, end: 1.35), weight: 1 - _strokeHeadInterval),
+  ]);
 
   // Last value received from the widget before null.
   double? _lastValue;
@@ -924,8 +879,7 @@ class _RefreshProgressIndicatorState extends _CircularProgressIndicatorState {
     final double? value = widget.value;
     if (value != null) {
       _lastValue = value;
-      _controller.value = _convertTween.transform(value)
-        * (1333 / 2 / _kIndeterminateCircularDuration);
+      _controller.value = _convertTween.transform(value) * (1333 / 2 / _kIndeterminateCircularDuration);
     }
     return _buildAnimation();
   }
@@ -948,7 +902,13 @@ class _RefreshProgressIndicatorState extends _CircularProgressIndicatorState {
   }
 
   @override
-  Widget _buildMaterialIndicator(BuildContext context, double headValue, double tailValue, double offsetValue, double rotationValue) {
+  Widget _buildMaterialIndicator(
+    BuildContext context,
+    double headValue,
+    double tailValue,
+    double offsetValue,
+    double rotationValue,
+  ) {
     final double? value = widget.value;
     final double arrowheadScale = value == null ? 0.0 : const Interval(0.1, _strokeHeadInterval).transform(value);
     final double rotation;
@@ -963,10 +923,9 @@ class _RefreshProgressIndicatorState extends _CircularProgressIndicatorState {
     final double opacity = valueColor.opacity;
     valueColor = valueColor.withOpacity(1.0);
 
-    final Color backgroundColor =
-      widget.backgroundColor ??
-      ProgressIndicatorTheme.of(context).refreshBackgroundColor ??
-      Theme.of(context).canvasColor;
+    final Color backgroundColor = widget.backgroundColor ??
+        ProgressIndicatorTheme.of(context).refreshBackgroundColor ??
+        Theme.of(context).canvasColor;
 
     return widget._buildSemanticsWrapper(
       context: context,

@@ -11,11 +11,7 @@ class Tolerance {
   /// tolerances are all ±0.001; the constructor arguments override this.
   ///
   /// The arguments should all be positive values.
-  const Tolerance({
-    this.distance = _epsilonDefault,
-    this.time = _epsilonDefault,
-    this.velocity = _epsilonDefault,
-  });
+  const Tolerance({this.distance = _epsilonDefault, this.time = _epsilonDefault, this.velocity = _epsilonDefault});
 
   static const double _epsilonDefault = 1e-3;
 
@@ -44,5 +40,6 @@ class Tolerance {
   final double velocity;
 
   @override
-  String toString() => '${objectRuntimeType(this, 'Tolerance')}(distance: ±$distance, time: ±$time, velocity: ±$velocity)';
+  String toString() =>
+      '${objectRuntimeType(this, 'Tolerance')}(distance: ±$distance, time: ±$time, velocity: ±$velocity)';
 }

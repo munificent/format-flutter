@@ -47,9 +47,7 @@ class SnapshotController extends ChangeNotifier {
   /// Create a new [SnapshotController].
   ///
   /// By default, [allowSnapshotting] is `false` and cannot be `null`.
-  SnapshotController({
-    bool allowSnapshotting = false,
-  }) : _allowSnapshotting = allowSnapshotting;
+  SnapshotController({bool allowSnapshotting = false}) : _allowSnapshotting = allowSnapshotting;
 
   /// Reset the snapshot held by any listening [SnapshotWidget].
   ///
@@ -112,7 +110,7 @@ class SnapshotWidget extends SingleChildRenderObjectWidget {
     this.painter = const _DefaultSnapshotPainter(),
     this.autoresize = false,
     required this.controller,
-    required super.child
+    required super.child,
   });
 
   /// The controller that determines when to display the children as a snapshot.
@@ -202,8 +200,7 @@ class _RenderSnapshotWidget extends RenderProxyBox {
     final SnapshotPainter oldPainter = painter;
     oldPainter.removeListener(markNeedsPaint);
     _painter = value;
-    if (oldPainter.runtimeType != painter.runtimeType ||
-        painter.shouldRepaint(oldPainter)) {
+    if (oldPainter.runtimeType != painter.runtimeType || painter.shouldRepaint(oldPainter)) {
       markNeedsPaint();
     }
     if (attached) {
@@ -384,7 +381,7 @@ class _RenderSnapshotWidget extends RenderProxyBox {
 /// }
 /// ```
 /// {@end-tool}
-abstract class SnapshotPainter extends ChangeNotifier  {
+abstract class SnapshotPainter extends ChangeNotifier {
   /// Called whenever the [image] that represents a [SnapshotWidget]s child should be painted.
   ///
   /// The image is rasterized at the physical pixel resolution and should be scaled down by
@@ -410,7 +407,14 @@ abstract class SnapshotPainter extends ChangeNotifier  {
   /// }
   /// ```
   /// {@end-tool}
-  void paintSnapshot(PaintingContext context, Offset offset, Size size, ui.Image image, Size sourceSize, double pixelRatio);
+  void paintSnapshot(
+    PaintingContext context,
+    Offset offset,
+    Size size,
+    ui.Image image,
+    Size sourceSize,
+    double pixelRatio,
+  );
 
   /// Paint the child via [painter], applying any effects that would have been painted
   /// in [SnapshotPainter.paintSnapshot].
@@ -452,16 +456,16 @@ class _DefaultSnapshotPainter implements SnapshotPainter {
   const _DefaultSnapshotPainter();
 
   @override
-  void addListener(ui.VoidCallback listener) { }
+  void addListener(ui.VoidCallback listener) {}
 
   @override
-  void dispose() { }
+  void dispose() {}
 
   @override
   bool get hasListeners => false;
 
   @override
-  void notifyListeners() { }
+  void notifyListeners() {}
 
   @override
   void paint(PaintingContext context, ui.Offset offset, ui.Size size, PaintingContextCallback painter) {
@@ -469,16 +473,22 @@ class _DefaultSnapshotPainter implements SnapshotPainter {
   }
 
   @override
-  void paintSnapshot(PaintingContext context, ui.Offset offset, ui.Size size, ui.Image image, Size sourceSize, double pixelRatio) {
+  void paintSnapshot(
+    PaintingContext context,
+    ui.Offset offset,
+    ui.Size size,
+    ui.Image image,
+    Size sourceSize,
+    double pixelRatio,
+  ) {
     final Rect src = Rect.fromLTWH(0, 0, sourceSize.width, sourceSize.height);
     final Rect dst = Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
-    final Paint paint = Paint()
-      ..filterQuality = FilterQuality.low;
+    final Paint paint = Paint()..filterQuality = FilterQuality.low;
     context.canvas.drawImageRect(image, src, dst, paint);
   }
 
   @override
-  void removeListener(ui.VoidCallback listener) { }
+  void removeListener(ui.VoidCallback listener) {}
 
   @override
   bool shouldRepaint(covariant _DefaultSnapshotPainter oldPainter) => false;

@@ -167,13 +167,33 @@ class TextTheme with Diagnosticable {
     )
     TextStyle? overline,
   }) : assert(
-         (displayLarge == null && displayMedium == null && displaySmall == null && headlineMedium == null &&
-             headlineSmall == null && titleLarge == null && titleMedium == null && titleSmall == null &&
-             bodyLarge == null && bodyMedium == null && bodySmall == null && labelLarge == null && labelSmall == null) ||
-         (headline1 == null && headline2 == null && headline3 == null && headline4 == null &&
-             headline5 == null && headline6 == null && subtitle1 == null && subtitle2 == null &&
-             bodyText1 == null && bodyText2 == null && caption == null && button == null && overline == null),
-         'Cannot mix 2018 and 2021 terms in call to TextTheme() constructor.'
+         (displayLarge == null &&
+                 displayMedium == null &&
+                 displaySmall == null &&
+                 headlineMedium == null &&
+                 headlineSmall == null &&
+                 titleLarge == null &&
+                 titleMedium == null &&
+                 titleSmall == null &&
+                 bodyLarge == null &&
+                 bodyMedium == null &&
+                 bodySmall == null &&
+                 labelLarge == null &&
+                 labelSmall == null) ||
+             (headline1 == null &&
+                 headline2 == null &&
+                 headline3 == null &&
+                 headline4 == null &&
+                 headline5 == null &&
+                 headline6 == null &&
+                 subtitle1 == null &&
+                 subtitle2 == null &&
+                 bodyText1 == null &&
+                 bodyText2 == null &&
+                 caption == null &&
+                 button == null &&
+                 overline == null),
+         'Cannot mix 2018 and 2021 terms in call to TextTheme() constructor.',
        ),
        displayLarge = displayLarge ?? headline1,
        displayMedium = displayMedium ?? headline2,
@@ -503,13 +523,33 @@ class TextTheme with Diagnosticable {
     TextStyle? overline,
   }) {
     assert(
-      (displayLarge == null && displayMedium == null && displaySmall == null && headlineMedium == null &&
-          headlineSmall == null && titleLarge == null && titleMedium == null && titleSmall == null &&
-          bodyLarge == null && bodyMedium == null && bodySmall == null && labelLarge == null && labelSmall == null) ||
-      (headline1 == null && headline2 == null && headline3 == null && headline4 == null &&
-          headline5 == null && headline6 == null && subtitle1 == null && subtitle2 == null &&
-          bodyText1 == null && bodyText2 == null && caption == null && button == null && overline == null),
-      'Cannot mix 2018 and 2021 terms in call to TextTheme() constructor.'
+      (displayLarge == null &&
+              displayMedium == null &&
+              displaySmall == null &&
+              headlineMedium == null &&
+              headlineSmall == null &&
+              titleLarge == null &&
+              titleMedium == null &&
+              titleSmall == null &&
+              bodyLarge == null &&
+              bodyMedium == null &&
+              bodySmall == null &&
+              labelLarge == null &&
+              labelSmall == null) ||
+          (headline1 == null &&
+              headline2 == null &&
+              headline3 == null &&
+              headline4 == null &&
+              headline5 == null &&
+              headline6 == null &&
+              subtitle1 == null &&
+              subtitle2 == null &&
+              bodyText1 == null &&
+              bodyText2 == null &&
+              caption == null &&
+              button == null &&
+              overline == null),
+      'Cannot mix 2018 and 2021 terms in call to TextTheme() constructor.',
     );
     return TextTheme(
       displayLarge: displayLarge ?? headline1 ?? this.displayLarge,
@@ -829,22 +869,22 @@ class TextTheme with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is TextTheme
-      && displayLarge == other.displayLarge
-      && displayMedium == other.displayMedium
-      && displaySmall == other.displaySmall
-      && headlineLarge == other.headlineLarge
-      && headlineMedium == other.headlineMedium
-      && headlineSmall == other.headlineSmall
-      && titleLarge == other.titleLarge
-      && titleMedium == other.titleMedium
-      && titleSmall == other.titleSmall
-      && bodyLarge == other.bodyLarge
-      && bodyMedium == other.bodyMedium
-      && bodySmall == other.bodySmall
-      && labelLarge == other.labelLarge
-      && labelMedium == other.labelMedium
-      && labelSmall == other.labelSmall;
+    return other is TextTheme &&
+        displayLarge == other.displayLarge &&
+        displayMedium == other.displayMedium &&
+        displaySmall == other.displaySmall &&
+        headlineLarge == other.headlineLarge &&
+        headlineMedium == other.headlineMedium &&
+        headlineSmall == other.headlineSmall &&
+        titleLarge == other.titleLarge &&
+        titleMedium == other.titleMedium &&
+        titleSmall == other.titleSmall &&
+        bodyLarge == other.bodyLarge &&
+        bodyMedium == other.bodyMedium &&
+        bodySmall == other.bodySmall &&
+        labelLarge == other.labelLarge &&
+        labelMedium == other.labelMedium &&
+        labelSmall == other.labelSmall;
   }
 
   @override
@@ -870,12 +910,24 @@ class TextTheme with Diagnosticable {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     final TextTheme defaultTheme = Typography.material2018(platform: defaultTargetPlatform).black;
-    properties.add(DiagnosticsProperty<TextStyle>('displayLarge', displayLarge, defaultValue: defaultTheme.displayLarge));
-    properties.add(DiagnosticsProperty<TextStyle>('displayMedium', displayMedium, defaultValue: defaultTheme.displayMedium));
-    properties.add(DiagnosticsProperty<TextStyle>('displaySmall', displaySmall, defaultValue: defaultTheme.displaySmall));
-    properties.add(DiagnosticsProperty<TextStyle>('headlineLarge', headlineLarge, defaultValue: defaultTheme.headlineLarge));
-    properties.add(DiagnosticsProperty<TextStyle>('headlineMedium', headlineMedium, defaultValue: defaultTheme.headlineMedium));
-    properties.add(DiagnosticsProperty<TextStyle>('headlineSmall', headlineSmall, defaultValue: defaultTheme.headlineSmall));
+    properties.add(
+      DiagnosticsProperty<TextStyle>('displayLarge', displayLarge, defaultValue: defaultTheme.displayLarge),
+    );
+    properties.add(
+      DiagnosticsProperty<TextStyle>('displayMedium', displayMedium, defaultValue: defaultTheme.displayMedium),
+    );
+    properties.add(
+      DiagnosticsProperty<TextStyle>('displaySmall', displaySmall, defaultValue: defaultTheme.displaySmall),
+    );
+    properties.add(
+      DiagnosticsProperty<TextStyle>('headlineLarge', headlineLarge, defaultValue: defaultTheme.headlineLarge),
+    );
+    properties.add(
+      DiagnosticsProperty<TextStyle>('headlineMedium', headlineMedium, defaultValue: defaultTheme.headlineMedium),
+    );
+    properties.add(
+      DiagnosticsProperty<TextStyle>('headlineSmall', headlineSmall, defaultValue: defaultTheme.headlineSmall),
+    );
     properties.add(DiagnosticsProperty<TextStyle>('titleLarge', titleLarge, defaultValue: defaultTheme.titleLarge));
     properties.add(DiagnosticsProperty<TextStyle>('titleMedium', titleMedium, defaultValue: defaultTheme.titleMedium));
     properties.add(DiagnosticsProperty<TextStyle>('titleSmall', titleSmall, defaultValue: defaultTheme.titleSmall));

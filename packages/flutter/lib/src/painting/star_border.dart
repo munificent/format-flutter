@@ -50,21 +50,22 @@ class StarBorder extends OutlinedBorder {
     this.valleyRounding = 0,
     double rotation = 0,
     this.squash = 0,
-  })  : assert(squash >= 0),
-        assert(squash <= 1),
-        assert(pointRounding >= 0),
-        assert(pointRounding <= 1),
-        assert(valleyRounding >= 0),
-        assert(valleyRounding <= 1),
-        assert(
-            (valleyRounding + pointRounding) <= 1,
-            'The sum of valleyRounding ($valleyRounding) and '
-            'pointRounding ($pointRounding) must not exceed one.'),
-        assert(innerRadiusRatio >= 0),
-        assert(innerRadiusRatio <= 1),
-        assert(points >= 2),
-        _rotationRadians = rotation * _kDegToRad,
-        _innerRadiusRatio = innerRadiusRatio;
+  }) : assert(squash >= 0),
+       assert(squash <= 1),
+       assert(pointRounding >= 0),
+       assert(pointRounding <= 1),
+       assert(valleyRounding >= 0),
+       assert(valleyRounding <= 1),
+       assert(
+         (valleyRounding + pointRounding) <= 1,
+         'The sum of valleyRounding ($valleyRounding) and '
+         'pointRounding ($pointRounding) must not exceed one.',
+       ),
+       assert(innerRadiusRatio >= 0),
+       assert(innerRadiusRatio <= 1),
+       assert(points >= 2),
+       _rotationRadians = rotation * _kDegToRad,
+       _innerRadiusRatio = innerRadiusRatio;
 
   /// Create a const polygon border with the given number of [sides].
   const StarBorder.polygon({
@@ -73,15 +74,15 @@ class StarBorder extends OutlinedBorder {
     this.pointRounding = 0,
     double rotation = 0,
     this.squash = 0,
-  })  : assert(squash >= 0),
-        assert(squash <= 1),
-        assert(pointRounding >= 0),
-        assert(pointRounding <= 1),
-        assert(sides >= 2),
-        points = sides,
-        valleyRounding = 0,
-        _rotationRadians = rotation * _kDegToRad,
-        _innerRadiusRatio = null;
+  }) : assert(squash >= 0),
+       assert(squash <= 1),
+       assert(pointRounding >= 0),
+       assert(pointRounding <= 1),
+       assert(sides >= 2),
+       points = sides,
+       valleyRounding = 0,
+       _rotationRadians = rotation * _kDegToRad,
+       _innerRadiusRatio = null;
 
   /// The number of points in this star, or sides on a polygon.
   ///
@@ -423,14 +424,14 @@ class StarBorder extends OutlinedBorder {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is StarBorder
-        && other.side == side
-        && other.points == points
-        && other._innerRadiusRatio == _innerRadiusRatio
-        && other.pointRounding == pointRounding
-        && other.valleyRounding == valleyRounding
-        && other._rotationRadians == _rotationRadians
-        && other.squash == squash;
+    return other is StarBorder &&
+        other.side == side &&
+        other.points == points &&
+        other._innerRadiusRatio == _innerRadiusRatio &&
+        other.pointRounding == pointRounding &&
+        other.valleyRounding == valleyRounding &&
+        other._rotationRadians == _rotationRadians &&
+        other.squash == squash;
   }
 
   @override
@@ -468,16 +469,16 @@ class _StarGenerator {
     required this.valleyRounding,
     required this.rotation,
     required this.squash,
-  })  : assert(points > 1),
-        assert(innerRadiusRatio <= 1),
-        assert(innerRadiusRatio >= 0),
-        assert(squash >= 0),
-        assert(squash <= 1),
-        assert(pointRounding >= 0),
-        assert(pointRounding <= 1),
-        assert(valleyRounding >= 0),
-        assert(valleyRounding <= 1),
-        assert(pointRounding + valleyRounding <= 1);
+  }) : assert(points > 1),
+       assert(innerRadiusRatio <= 1),
+       assert(innerRadiusRatio >= 0),
+       assert(squash >= 0),
+       assert(squash <= 1),
+       assert(pointRounding >= 0),
+       assert(pointRounding <= 1),
+       assert(valleyRounding >= 0),
+       assert(valleyRounding <= 1),
+       assert(pointRounding + valleyRounding <= 1);
 
   final double points;
   final double innerRadiusRatio;
@@ -540,10 +541,7 @@ class _StarGenerator {
     final double step = math.pi / points;
     // Start initial rotation one step before zero.
     double angle = -math.pi / 2 - step;
-    Offset valley = Offset(
-      center.dx + math.cos(angle) * innerRadius,
-      center.dy + math.sin(angle) * innerRadius,
-    );
+    Offset valley = Offset(center.dx + math.cos(angle) * innerRadius, center.dy + math.sin(angle) * innerRadius);
 
     // In order to do overall scale properly, calculate the actual radius at the
     // point, taking into account the rounding of the points and the weight of
@@ -555,12 +553,7 @@ class _StarGenerator {
       return (a1 / 4 + b * w + c1 / 4) / (0.5 + w);
     }
 
-    double addPoint(
-      double pointAngle,
-      double pointStep,
-      double pointRadius,
-      double pointInnerRadius,
-    ) {
+    double addPoint(double pointAngle, double pointStep, double pointRadius, double pointInnerRadius) {
       pointAngle += pointStep;
       final Offset point = Offset(
         center.dx + math.cos(pointAngle) * pointRadius,
@@ -600,10 +593,20 @@ class _StarGenerator {
     final _PointInfo thisPoint = pointList[0];
     final _PointInfo nextPoint = pointList[1];
 
-    final Offset pointMidpoint =
-        getCurveMidpoint(thisPoint.valley, thisPoint.point, nextPoint.valley, thisPoint.pointArc1, thisPoint.pointArc2);
+    final Offset pointMidpoint = getCurveMidpoint(
+      thisPoint.valley,
+      thisPoint.point,
+      nextPoint.valley,
+      thisPoint.pointArc1,
+      thisPoint.pointArc2,
+    );
     final Offset valleyMidpoint = getCurveMidpoint(
-        thisPoint.point, nextPoint.valley, nextPoint.point, thisPoint.valleyArc2, nextPoint.valleyArc1);
+      thisPoint.point,
+      nextPoint.valley,
+      nextPoint.point,
+      thisPoint.valleyArc2,
+      nextPoint.valleyArc1,
+    );
     valleyRadius = (valleyMidpoint - center).distance;
     pointRadius = (pointMidpoint - center).distance;
 
@@ -644,7 +647,12 @@ class _StarGenerator {
       path.lineTo(point.valleyArc2.dx, point.valleyArc2.dy);
       if (valleyAngle != 180 && valleyAngle != 0) {
         path.conicTo(
-            nextPoint.valley.dx, nextPoint.valley.dy, nextPoint.valleyArc1.dx, nextPoint.valleyArc1.dy, valleyWeight);
+          nextPoint.valley.dx,
+          nextPoint.valley.dy,
+          nextPoint.valleyArc1.dx,
+          nextPoint.valleyArc1.dy,
+          valleyWeight,
+        );
       } else {
         path.lineTo(nextPoint.valleyArc1.dx, nextPoint.valleyArc1.dy);
       }

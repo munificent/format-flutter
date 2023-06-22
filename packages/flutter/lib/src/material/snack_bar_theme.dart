@@ -49,7 +49,6 @@ enum SnackBarBehavior {
 ///    application.
 @immutable
 class SnackBarThemeData with Diagnosticable {
-
   /// Creates a theme that can be used for [ThemeData.snackBarTheme].
   ///
   /// The [elevation] must be null or non-negative.
@@ -67,15 +66,21 @@ class SnackBarThemeData with Diagnosticable {
     this.closeIconColor,
     this.actionOverflowThreshold,
     this.actionBackgroundColor,
-    this.disabledActionBackgroundColor
-  })  : assert(elevation == null || elevation >= 0.0),
-        assert(width == null || identical(behavior, SnackBarBehavior.floating),
-          'Width can only be set if behaviour is SnackBarBehavior.floating'),
-        assert(actionOverflowThreshold == null || (actionOverflowThreshold >= 0 && actionOverflowThreshold <= 1),
-          'Action overflow threshold must be between 0 and 1 inclusive'),
-        assert(actionBackgroundColor is! MaterialStateColor || disabledActionBackgroundColor == null,
-          'disabledBackgroundColor must not be provided when background color is '
-          'a MaterialStateColor');
+    this.disabledActionBackgroundColor,
+  }) : assert(elevation == null || elevation >= 0.0),
+       assert(
+         width == null || identical(behavior, SnackBarBehavior.floating),
+         'Width can only be set if behaviour is SnackBarBehavior.floating',
+       ),
+       assert(
+         actionOverflowThreshold == null || (actionOverflowThreshold >= 0 && actionOverflowThreshold <= 1),
+         'Action overflow threshold must be between 0 and 1 inclusive',
+       ),
+       assert(
+         actionBackgroundColor is! MaterialStateColor || disabledActionBackgroundColor == null,
+         'disabledBackgroundColor must not be provided when background color is '
+         'a MaterialStateColor',
+       );
 
   /// Overrides the default value for [SnackBar.backgroundColor].
   ///
@@ -145,6 +150,7 @@ class SnackBarThemeData with Diagnosticable {
   ///
   /// Must be a value between 0 and 1, if present.
   final double? actionOverflowThreshold;
+
   /// Overrides default value for [SnackBarAction.backgroundColor].
   ///
   /// If null, [SnackBarAction] falls back to [Colors.transparent].
@@ -219,21 +225,21 @@ class SnackBarThemeData with Diagnosticable {
 
   @override
   int get hashCode => Object.hash(
-        backgroundColor,
-        actionTextColor,
-        disabledActionTextColor,
-        contentTextStyle,
-        elevation,
-        shape,
-        behavior,
-        width,
-        insetPadding,
-        showCloseIcon,
-        closeIconColor,
-        actionOverflowThreshold,
-        actionBackgroundColor,
-        disabledActionBackgroundColor
-      );
+    backgroundColor,
+    actionTextColor,
+    disabledActionTextColor,
+    contentTextStyle,
+    elevation,
+    shape,
+    behavior,
+    width,
+    insetPadding,
+    showCloseIcon,
+    closeIconColor,
+    actionOverflowThreshold,
+    actionBackgroundColor,
+    disabledActionBackgroundColor,
+  );
 
   @override
   bool operator ==(Object other) {
@@ -243,21 +249,21 @@ class SnackBarThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is SnackBarThemeData
-        && other.backgroundColor == backgroundColor
-        && other.actionTextColor == actionTextColor
-        && other.disabledActionTextColor == disabledActionTextColor
-        && other.contentTextStyle == contentTextStyle
-        && other.elevation == elevation
-        && other.shape == shape
-        && other.behavior == behavior
-        && other.width == width
-        && other.insetPadding == insetPadding
-        && other.showCloseIcon == showCloseIcon
-        && other.closeIconColor == closeIconColor
-        && other.actionOverflowThreshold == actionOverflowThreshold
-        && other.actionBackgroundColor == actionBackgroundColor
-        && other.disabledActionBackgroundColor == disabledActionBackgroundColor;
+    return other is SnackBarThemeData &&
+        other.backgroundColor == backgroundColor &&
+        other.actionTextColor == actionTextColor &&
+        other.disabledActionTextColor == disabledActionTextColor &&
+        other.contentTextStyle == contentTextStyle &&
+        other.elevation == elevation &&
+        other.shape == shape &&
+        other.behavior == behavior &&
+        other.width == width &&
+        other.insetPadding == insetPadding &&
+        other.showCloseIcon == showCloseIcon &&
+        other.closeIconColor == closeIconColor &&
+        other.actionOverflowThreshold == actionOverflowThreshold &&
+        other.actionBackgroundColor == actionBackgroundColor &&
+        other.disabledActionBackgroundColor == disabledActionBackgroundColor;
   }
 
   @override

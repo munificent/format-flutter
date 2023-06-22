@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -222,7 +221,10 @@ class GestureArenaManager {
     if (state == null) {
       return; // This arena has already resolved.
     }
-    assert(_debugLogDiagnostic(pointer, '${ disposition == GestureDisposition.accepted ? "Accepting" : "Rejecting" }: $member'));
+    assert(_debugLogDiagnostic(
+      pointer,
+      '${disposition == GestureDisposition.accepted ? "Accepting" : "Rejecting"}: $member',
+    ));
     assert(state.members.contains(member));
     if (disposition == GestureDisposition.rejected) {
       state.members.remove(member);
@@ -281,15 +283,21 @@ class GestureArenaManager {
     member.acceptGesture(pointer);
   }
 
-  bool _debugLogDiagnostic(int pointer, String message, [ _GestureArena? state ]) {
-    assert(() {
-      if (debugPrintGestureArenaDiagnostics) {
-        final int? count = state?.members.length;
-        final String s = count != 1 ? 's' : '';
-        debugPrint('Gesture arena ${pointer.toString().padRight(4)} ❙ $message${ count != null ? " with $count member$s." : ""}');
-      }
-      return true;
-    }());
+  bool _debugLogDiagnostic(int pointer, String message, [_GestureArena? state]) {
+    assert(
+      () {
+        if (debugPrintGestureArenaDiagnostics) {
+          final int? count = state?.members.length;
+          final String s = count != 1 ? 's' : '';
+          debugPrint(
+            'Gesture arena ${pointer.toString().padRight(
+              4,
+            )} ❙ $message${count != null ? " with $count member$s." : ""}',
+          );
+        }
+        return true;
+      }(),
+    );
     return true;
   }
 }

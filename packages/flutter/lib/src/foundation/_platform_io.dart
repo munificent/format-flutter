@@ -24,12 +24,14 @@ platform.TargetPlatform get defaultTargetPlatform {
   } else if (Platform.isWindows) {
     result = platform.TargetPlatform.windows;
   }
-  assert(() {
-    if (Platform.environment.containsKey('FLUTTER_TEST')) {
-      result = platform.TargetPlatform.android;
-    }
-    return true;
-  }());
+  assert(
+    () {
+      if (Platform.environment.containsKey('FLUTTER_TEST')) {
+        result = platform.TargetPlatform.android;
+      }
+      return true;
+    }(),
+  );
   if (platform.debugDefaultTargetPlatformOverride != null) {
     result = platform.debugDefaultTargetPlatformOverride;
   }

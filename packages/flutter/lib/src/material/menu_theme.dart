@@ -90,11 +90,7 @@ class MenuThemeData with Diagnosticable {
 class MenuTheme extends InheritedTheme {
   /// Creates a const theme that controls the configurations for the menus
   /// created by the [SubmenuButton] or [MenuAnchor] widgets.
-  const MenuTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const MenuTheme({super.key, required this.data, required super.child});
 
   /// The properties for [MenuBar] and [MenuItemButton] in this widget's
   /// descendants.

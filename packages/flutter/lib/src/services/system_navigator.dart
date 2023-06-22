@@ -82,7 +82,7 @@ abstract final class SystemNavigator {
   static Future<void> routeInformationUpdated({
     @Deprecated(
       'Pass Uri.parse(location) to uri parameter instead. '
-      'This feature was deprecated after v3.8.0-3.0.pre.'
+      'This feature was deprecated after v3.8.0-3.0.pre.',
     )
     String? location,
     Uri? uri,
@@ -91,13 +91,10 @@ abstract final class SystemNavigator {
   }) {
     assert((location != null) != (uri != null), 'One of uri or location must be provided, but not both.');
     uri ??= Uri.parse(location!);
-    return SystemChannels.navigation.invokeMethod<void>(
-      'routeInformationUpdated',
-      <String, dynamic>{
-        'uri': uri.toString(),
-        'state': state,
-        'replace': replace,
-      },
-    );
+    return SystemChannels.navigation.invokeMethod<void>('routeInformationUpdated', <String, dynamic>{
+      'uri': uri.toString(),
+      'state': state,
+      'replace': replace,
+    });
   }
 }

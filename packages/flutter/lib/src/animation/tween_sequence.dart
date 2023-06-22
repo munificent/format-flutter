@@ -50,8 +50,9 @@ class TweenSequence<T> extends Animatable<T> {
   /// There's a small cost associated with building a [TweenSequence] so it's
   /// best to reuse one, rather than rebuilding it on every frame, when that's
   /// possible.
-  TweenSequence(List<TweenSequenceItem<T>> items)
-      : assert(items.isNotEmpty) {
+  TweenSequence(
+    List<TweenSequenceItem<T>> items,
+  ) : assert(items.isNotEmpty) {
     _items.addAll(items);
 
     double totalWeight = 0.0;
@@ -153,7 +154,10 @@ class TweenSequenceItem<T> {
 }
 
 class _Interval {
-  const _Interval(this.start, this.end) : assert(end > start);
+  const _Interval(
+    this.start,
+    this.end,
+  ) : assert(end > start);
 
   final double start;
   final double end;

@@ -218,9 +218,11 @@ class _GlowingOverscrollIndicatorState extends State<GlowingOverscrollIndicator>
     // in this case, we should move the glow up 10.0 pixels and should not
     // overflow the scrollable widget's edge. https://github.com/flutter/flutter/issues/64149.
     _leadingController!._paintOffsetScrollPixels =
-      -math.min(notification.metrics.pixels - notification.metrics.minScrollExtent, _leadingController!._paintOffset);
-    _trailingController!._paintOffsetScrollPixels =
-      -math.min(notification.metrics.maxScrollExtent - notification.metrics.pixels, _trailingController!._paintOffset);
+        -math.min(notification.metrics.pixels - notification.metrics.minScrollExtent, _leadingController!._paintOffset);
+    _trailingController!._paintOffsetScrollPixels = -math.min(
+      notification.metrics.maxScrollExtent - notification.metrics.pixels,
+      _trailingController!._paintOffset,
+    );
 
     if (notification is OverscrollNotification) {
       _GlowController? controller;
@@ -233,7 +235,9 @@ class _GlowingOverscrollIndicatorState extends State<GlowingOverscrollIndicator>
       }
       final bool isLeading = controller == _leadingController;
       if (_lastNotificationType is! OverscrollNotification) {
-        final OverscrollIndicatorNotification confirmationNotification = OverscrollIndicatorNotification(leading: isLeading);
+        final OverscrollIndicatorNotification confirmationNotification = OverscrollIndicatorNotification(
+          leading: isLeading,
+        );
         confirmationNotification.dispatch(context);
         _accepted[isLeading] = confirmationNotification.accepted;
         if (_accepted[isLeading]!) {
@@ -254,15 +258,25 @@ class _GlowingOverscrollIndicatorState extends State<GlowingOverscrollIndicator>
             final Offset position = renderer.globalToLocal(notification.dragDetails!.globalPosition);
             switch (notification.metrics.axis) {
               case Axis.horizontal:
-                controller!.pull(notification.overscroll.abs(), size.width, clampDouble(position.dy, 0.0, size.height), size.height);
+                controller!.pull(
+                  notification.overscroll.abs(),
+                  size.width,
+                  clampDouble(position.dy, 0.0, size.height),
+                  size.height,
+                );
               case Axis.vertical:
-                controller!.pull(notification.overscroll.abs(), size.height, clampDouble(position.dx, 0.0, size.width), size.width);
+                controller!.pull(
+                  notification.overscroll.abs(),
+                  size.height,
+                  clampDouble(position.dx, 0.0, size.width),
+                  size.width,
+                );
             }
           }
         }
       }
     } else if ((notification is ScrollEndNotification && notification.dragDetails != null) ||
-               (notification is ScrollUpdateNotification && notification.dragDetails != null)) {
+        (notification is ScrollUpdateNotification && notification.dragDetails != null)) {
       _leadingController!.scrollEnd();
       _trailingController!.scrollEnd();
     }
@@ -289,9 +303,7 @@ class _GlowingOverscrollIndicatorState extends State<GlowingOverscrollIndicator>
             axisDirection: widget.axisDirection,
             repaint: _leadingAndTrailingListener,
           ),
-          child: RepaintBoundary(
-            child: widget.child,
-          ),
+          child: RepaintBoundary(child: widget.child),
         ),
       ),
     );
@@ -305,18 +317,12 @@ class _GlowingOverscrollIndicatorState extends State<GlowingOverscrollIndicator>
 enum _GlowState { idle, absorb, pull, recede }
 
 class _GlowController extends ChangeNotifier {
-  _GlowController({
-    required TickerProvider vsync,
-    required Color color,
-    required Axis axis,
-  }) : _color = color,
-       _axis = axis {
-    _glowController = AnimationController(vsync: vsync)
-      ..addStatusListener(_changePhase);
-    final Animation<double> decelerator = CurvedAnimation(
-      parent: _glowController,
-      curve: Curves.decelerate,
-    )..addListener(notifyListeners);
+  _GlowController({required TickerProvider vsync, required Color color, required Axis axis})
+    : _color = color,
+      _axis = axis {
+    _glowController = AnimationController(vsync: vsync)..addStatusListener(_changePhase);
+    final Animation<double> decelerator = CurvedAnimation(parent: _glowController, curve: Curves.decelerate)
+      ..addListener(notifyListeners);
     _glowOpacity = decelerator.drive(_glowOpacityTween);
     _glowSize = decelerator.drive(_glowSizeTween);
     _displacementTicker = vsync.createTicker(_tickDisplacement);
@@ -488,7 +494,8 @@ class _GlowController extends ChangeNotifier {
   void _tickDisplacement(Duration elapsed) {
     if (_displacementTickerLastElapsed != null) {
       final double t = (elapsed.inMicroseconds - _displacementTickerLastElapsed!.inMicroseconds).toDouble();
-      _displacement = _displacementTarget - (_displacementTarget - _displacement) * math.pow(2.0, -t / _crossAxisHalfTime.inMicroseconds);
+      _displacement = _displacementTarget -
+          (_displacementTarget - _displacement) * math.pow(2.0, -t / _crossAxisHalfTime.inMicroseconds);
       notifyListeners();
     }
     if (nearEqual(_displacementTarget, _displacement, Tolerance.defaultTolerance.distance)) {
@@ -547,7 +554,13 @@ class _GlowingOverscrollIndicatorPainter extends CustomPainter {
 
   static const double piOver2 = math.pi / 2.0;
 
-  void _paintSide(Canvas canvas, Size size, _GlowController? controller, AxisDirection axisDirection, GrowthDirection growthDirection) {
+  void _paintSide(
+    Canvas canvas,
+    Size size,
+    _GlowController? controller,
+    AxisDirection axisDirection,
+    GrowthDirection growthDirection,
+  ) {
     if (controller == null) {
       return;
     }
@@ -583,8 +596,7 @@ class _GlowingOverscrollIndicatorPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_GlowingOverscrollIndicatorPainter oldDelegate) {
-    return oldDelegate.leadingController != leadingController
-        || oldDelegate.trailingController != trailingController;
+    return oldDelegate.leadingController != leadingController || oldDelegate.trailingController != trailingController;
   }
 
   @override
@@ -597,6 +609,7 @@ enum _StretchDirection {
   /// The [trailing] direction indicates that the content will be stretched toward
   /// the trailing edge.
   trailing,
+
   /// The [leading] direction indicates that the content will be stretched toward
   /// the leading edge.
   leading,
@@ -708,7 +721,9 @@ class _StretchingOverscrollIndicatorState extends State<StretchingOverscrollIndi
     if (notification is OverscrollNotification) {
       _lastOverscrollNotification = notification;
       if (_lastNotification.runtimeType is! OverscrollNotification) {
-        final OverscrollIndicatorNotification confirmationNotification = OverscrollIndicatorNotification(leading: notification.overscroll < 0.0);
+        final OverscrollIndicatorNotification confirmationNotification = OverscrollIndicatorNotification(
+          leading: notification.overscroll < 0.0,
+        );
         confirmationNotification.dispatch(context);
         _accepted = confirmationNotification.accepted;
       }
@@ -751,17 +766,13 @@ class _StretchingOverscrollIndicatorState extends State<StretchingOverscrollIndi
             ? AlignmentDirectional.topCenter
             : AlignmentDirectional.bottomCenter;
       case AxisDirection.right:
-        return stretchDirection == _StretchDirection.trailing
-            ? Alignment.centerRight
-            : Alignment.centerLeft;
+        return stretchDirection == _StretchDirection.trailing ? Alignment.centerRight : Alignment.centerLeft;
       case AxisDirection.down:
         return stretchDirection == _StretchDirection.trailing
             ? AlignmentDirectional.bottomCenter
             : AlignmentDirectional.topCenter;
       case AxisDirection.left:
-        return stretchDirection == _StretchDirection.trailing
-            ? Alignment.centerLeft
-            : Alignment.centerRight;
+        return stretchDirection == _StretchDirection.trailing ? Alignment.centerLeft : Alignment.centerRight;
     }
   }
 
@@ -793,9 +804,7 @@ class _StretchingOverscrollIndicatorState extends State<StretchingOverscrollIndi
               mainAxisSize = size.height;
           }
 
-          final AlignmentGeometry alignment = _getAlignmentForAxisDirection(
-            _stretchController.stretchDirection,
-          );
+          final AlignmentGeometry alignment = _getAlignmentForAxisDirection(_stretchController.stretchDirection);
 
           final double viewportDimension = _lastOverscrollNotification?.metrics.viewportDimension ?? mainAxisSize;
 
@@ -809,9 +818,7 @@ class _StretchingOverscrollIndicatorState extends State<StretchingOverscrollIndi
           // screen size in the main axis. If the viewport takes up the whole
           // screen, overflow from transforming the viewport is irrelevant.
           return ClipRect(
-            clipBehavior: stretch != 0.0 && viewportDimension != mainAxisSize
-              ? widget.clipBehavior
-              : Clip.none,
+            clipBehavior: stretch != 0.0 && viewportDimension != mainAxisSize ? widget.clipBehavior : Clip.none,
             child: transform,
           );
         },
@@ -820,21 +827,13 @@ class _StretchingOverscrollIndicatorState extends State<StretchingOverscrollIndi
   }
 }
 
-enum _StretchState {
-  idle,
-  absorb,
-  pull,
-  recede,
-}
+enum _StretchState { idle, absorb, pull, recede }
 
 class _StretchController extends ChangeNotifier {
-  _StretchController({ required TickerProvider vsync }) {
-    _stretchController = AnimationController(vsync: vsync)
-      ..addStatusListener(_changePhase);
-    final Animation<double> decelerator = CurvedAnimation(
-      parent: _stretchController,
-      curve: Curves.decelerate,
-    )..addListener(notifyListeners);
+  _StretchController({required TickerProvider vsync}) {
+    _stretchController = AnimationController(vsync: vsync)..addStatusListener(_changePhase);
+    final Animation<double> decelerator = CurvedAnimation(parent: _stretchController, curve: Curves.decelerate)
+      ..addListener(notifyListeners);
     _stretchSize = decelerator.drive(_stretchSizeTween);
   }
 
@@ -879,7 +878,9 @@ class _StretchController extends ChangeNotifier {
   void pull(double normalizedOverscroll, double totalOverscroll) {
     assert(normalizedOverscroll >= 0.0);
 
-    final _StretchDirection newStretchDirection = totalOverscroll > 0 ? _StretchDirection.trailing : _StretchDirection.leading;
+    final _StretchDirection newStretchDirection = totalOverscroll > 0
+        ? _StretchDirection.trailing
+        : _StretchDirection.leading;
     if (_stretchDirection != newStretchDirection && _state == _StretchState.recede) {
       // When the stretch direction changes while we are in the recede state, we need to ignore the change.
       // If we don't, the stretch will instantly jump to the new direction with the recede animation still playing, which causes
@@ -891,7 +892,7 @@ class _StretchController extends ChangeNotifier {
     _stretchDirection = newStretchDirection;
     _pullDistance = normalizedOverscroll;
     _stretchSizeTween.begin = _stretchSize.value;
-    final double linearIntensity =_stretchIntensity * _pullDistance;
+    final double linearIntensity = _stretchIntensity * _pullDistance;
     final double exponentialIntensity = _stretchIntensity * (1 - math.exp(-_pullDistance * _exponentialScalar));
     _stretchSizeTween.end = linearIntensity + exponentialIntensity;
     _stretchController.duration = _stretchDuration;
@@ -966,9 +967,7 @@ class OverscrollIndicatorNotification extends Notification with ViewportNotifica
   /// [StretchingOverscrollIndicator] will start showing an overscroll indication.
   ///
   /// The [leading] argument must not be null.
-  OverscrollIndicatorNotification({
-    required this.leading,
-  });
+  OverscrollIndicatorNotification({required this.leading});
 
   /// Whether the indication will be shown on the leading edge of the scroll
   /// view.
@@ -990,6 +989,7 @@ class OverscrollIndicatorNotification extends Notification with ViewportNotifica
 
   @protected
   @visibleForTesting
+
   /// Whether the current overscroll event will allow for the indicator to be
   /// shown.
   ///

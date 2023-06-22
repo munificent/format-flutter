@@ -26,9 +26,7 @@ import 'overlay.dart';
 ///     be disabled and Flutter-rendered context menus to appear.
 class ContextMenuController {
   /// Creates a context menu that can be shown with [show].
-  ContextMenuController({
-    this.onRemove,
-  });
+  ContextMenuController({this.onRemove});
 
   /// Called when this menu is removed.
   final VoidCallback? onRemove;
@@ -44,17 +42,9 @@ class ContextMenuController {
   ///
   /// Since there can only be one shown context menu at a time, calling this
   /// will also remove any other context menu that is visible.
-  void show({
-    required BuildContext context,
-    required WidgetBuilder contextMenuBuilder,
-    Widget? debugRequiredFor,
-  }) {
+  void show({required BuildContext context, required WidgetBuilder contextMenuBuilder, Widget? debugRequiredFor}) {
     removeAny();
-    final OverlayState overlayState = Overlay.of(
-      context,
-      rootOverlay: true,
-      debugRequiredFor: debugRequiredFor,
-    );
+    final OverlayState overlayState = Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor);
     final CapturedThemes capturedThemes = InheritedTheme.capture(
       from: context,
       to: Navigator.maybeOf(context)?.context,

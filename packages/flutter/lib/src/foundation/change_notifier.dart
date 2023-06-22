@@ -174,16 +174,18 @@ mixin class ChangeNotifier implements Listenable {
   // implement ChangeNotifier instead of extending it (and so it is too breaking
   // to add a method, especially for debug).
   static bool debugAssertNotDisposed(ChangeNotifier notifier) {
-    assert(() {
-      if (notifier._debugDisposed) {
-        throw FlutterError(
-          'A ${notifier.runtimeType} was used after being disposed.\n'
-          'Once you have called dispose() on a ${notifier.runtimeType}, it '
-          'can no longer be used.',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (notifier._debugDisposed) {
+          throw FlutterError(
+            'A ${notifier.runtimeType} was used after being disposed.\n'
+            'Once you have called dispose() on a ${notifier.runtimeType}, it '
+            'can no longer be used.',
+          );
+        }
+        return true;
+      }(),
+    );
     return true;
   }
 
@@ -248,8 +250,7 @@ mixin class ChangeNotifier implements Listenable {
       if (_count == 0) {
         _listeners = List<VoidCallback?>.filled(1, null);
       } else {
-        final List<VoidCallback?> newListeners =
-            List<VoidCallback?>.filled(_listeners.length * 2, null);
+        final List<VoidCallback?> newListeners = List<VoidCallback?>.filled(_listeners.length * 2, null);
         for (int i = 0; i < _count; i++) {
           newListeners[i] = _listeners[i];
         }
@@ -349,10 +350,12 @@ mixin class ChangeNotifier implements Listenable {
       '"notifyListeners()". This is likely to cause errors since it modifies '
       'the list of listeners while the list is being used.',
     );
-    assert(() {
-      _debugDisposed = true;
-      return true;
-    }());
+    assert(
+      () {
+        _debugDisposed = true;
+        return true;
+      }(),
+    );
     if (kFlutterMemoryAllocationsEnabled && _creationDispatched) {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
@@ -408,12 +411,12 @@ mixin class ChangeNotifier implements Listenable {
           library: 'foundation library',
           context: ErrorDescription('while dispatching notifications for $runtimeType'),
           informationCollector: () => <DiagnosticsNode>[
-            DiagnosticsProperty<ChangeNotifier>(
-              'The $runtimeType sending notification was',
-              this,
-              style: DiagnosticsTreeStyle.errorProperty,
-            ),
-          ],
+                DiagnosticsProperty<ChangeNotifier>(
+                  'The $runtimeType sending notification was',
+                  this,
+                  style: DiagnosticsTreeStyle.errorProperty,
+                ),
+              ],
         ));
       }
     }

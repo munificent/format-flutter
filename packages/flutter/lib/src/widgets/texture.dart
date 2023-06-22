@@ -35,12 +35,7 @@ import 'framework.dart';
 class Texture extends LeafRenderObjectWidget {
   /// Creates a widget backed by the texture identified by [textureId], and use
   /// [filterQuality] to set texture's [FilterQuality].
-  const Texture({
-    super.key,
-    required this.textureId,
-    this.freeze = false,
-    this.filterQuality = FilterQuality.low,
-  });
+  const Texture({super.key, required this.textureId, this.freeze = false, this.filterQuality = FilterQuality.low});
 
   /// The identity of the backend texture.
   final int textureId;
@@ -59,7 +54,11 @@ class Texture extends LeafRenderObjectWidget {
   final FilterQuality filterQuality;
 
   @override
-  TextureBox createRenderObject(BuildContext context) => TextureBox(textureId: textureId, freeze: freeze, filterQuality: filterQuality);
+  TextureBox createRenderObject(BuildContext context) => TextureBox(
+    textureId: textureId,
+    freeze: freeze,
+    filterQuality: filterQuality,
+  );
 
   @override
   void updateRenderObject(BuildContext context, TextureBox renderObject) {

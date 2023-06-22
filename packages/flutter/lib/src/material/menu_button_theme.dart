@@ -105,11 +105,7 @@ class MenuButtonTheme extends InheritedTheme {
   /// Create a [MenuButtonTheme].
   ///
   /// The [data] parameter must not be null.
-  const MenuButtonTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const MenuButtonTheme({super.key, required this.data, required super.child});
 
   /// The configuration of this theme.
   final MenuButtonThemeData data;

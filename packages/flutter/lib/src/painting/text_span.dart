@@ -78,8 +78,7 @@ class TextSpan extends InlineSpan implements HitTestTarget, MouseTrackerAnnotati
     this.semanticsLabel,
     this.locale,
     this.spellOut,
-  }) : mouseCursor = mouseCursor ??
-         (recognizer == null ? MouseCursor.defer : SystemMouseCursors.click),
+  }) : mouseCursor = mouseCursor ?? (recognizer == null ? MouseCursor.defer : SystemMouseCursors.click),
        assert(!(text == null && semanticsLabel != null));
 
   /// The text contained in this span.
@@ -265,11 +264,7 @@ class TextSpan extends InlineSpan implements HitTestTarget, MouseTrackerAnnotati
   /// [TextPainter] class to paint [TextSpan] objects onto [Canvas]
   /// objects.
   @override
-  void build(
-    ui.ParagraphBuilder builder, {
-    double textScaleFactor = 1.0,
-    List<PlaceholderDimensions>? dimensions,
-  }) {
+  void build(ui.ParagraphBuilder builder, {double textScaleFactor = 1.0, List<PlaceholderDimensions>? dimensions}) {
     assert(debugAssertIsValid());
     final bool hasStyle = style != null;
     if (hasStyle) {
@@ -292,11 +287,7 @@ class TextSpan extends InlineSpan implements HitTestTarget, MouseTrackerAnnotati
     final List<InlineSpan>? children = this.children;
     if (children != null) {
       for (final InlineSpan child in children) {
-        child.build(
-          builder,
-          textScaleFactor: textScaleFactor,
-          dimensions: dimensions,
-        );
+        child.build(builder, textScaleFactor: textScaleFactor, dimensions: dimensions);
       }
     }
     if (hasStyle) {
@@ -357,11 +348,7 @@ class TextSpan extends InlineSpan implements HitTestTarget, MouseTrackerAnnotati
   }
 
   @override
-  void computeToPlainText(
-    StringBuffer buffer, {
-    bool includeSemanticsLabels = true,
-    bool includePlaceholders = true,
-  }) {
+  void computeToPlainText(StringBuffer buffer, {bool includeSemanticsLabels = true, bool includePlaceholders = true}) {
     assert(debugAssertIsValid());
     if (semanticsLabel != null && includeSemanticsLabels) {
       buffer.write(semanticsLabel);
@@ -370,7 +357,8 @@ class TextSpan extends InlineSpan implements HitTestTarget, MouseTrackerAnnotati
     }
     if (children != null) {
       for (final InlineSpan child in children!) {
-        child.computeToPlainText(buffer,
+        child.computeToPlainText(
+          buffer,
           includeSemanticsLabels: includeSemanticsLabels,
           includePlaceholders: includePlaceholders,
         );
@@ -459,14 +447,16 @@ class TextSpan extends InlineSpan implements HitTestTarget, MouseTrackerAnnotati
   /// ```
   @override
   bool debugAssertIsValid() {
-    assert(() {
-      if (children != null) {
-        for (final InlineSpan child in children!) {
-          assert(child.debugAssertIsValid());
+    assert(
+      () {
+        if (children != null) {
+          for (final InlineSpan child in children!) {
+            assert(child.debugAssertIsValid());
+          }
         }
-      }
-      return true;
-    }());
+        return true;
+      }(),
+    );
     return super.debugAssertIsValid();
   }
 
@@ -484,9 +474,9 @@ class TextSpan extends InlineSpan implements HitTestTarget, MouseTrackerAnnotati
         (style == null) != (textSpan.style == null)) {
       return RenderComparison.layout;
     }
-    RenderComparison result = recognizer == textSpan.recognizer ?
-      RenderComparison.identical :
-      RenderComparison.metadata;
+    RenderComparison result = recognizer == textSpan.recognizer
+        ? RenderComparison.identical
+        : RenderComparison.metadata;
     if (style != null) {
       final RenderComparison candidate = style!.compareTo(textSpan.style!);
       if (candidate.index > result.index) {
@@ -521,14 +511,14 @@ class TextSpan extends InlineSpan implements HitTestTarget, MouseTrackerAnnotati
     if (super != other) {
       return false;
     }
-    return other is TextSpan
-        && other.text == text
-        && other.recognizer == recognizer
-        && other.semanticsLabel == semanticsLabel
-        && onEnter == other.onEnter
-        && onExit == other.onExit
-        && mouseCursor == other.mouseCursor
-        && listEquals<InlineSpan>(other.children, children);
+    return other is TextSpan &&
+        other.text == text &&
+        other.recognizer == recognizer &&
+        other.semanticsLabel == semanticsLabel &&
+        onEnter == other.onEnter &&
+        onExit == other.onExit &&
+        mouseCursor == other.mouseCursor &&
+        listEquals<InlineSpan>(other.children, children);
   }
 
   @override
@@ -550,31 +540,19 @@ class TextSpan extends InlineSpan implements HitTestTarget, MouseTrackerAnnotati
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
 
-    properties.add(
-      StringProperty(
-        'text',
-        text,
-        showName: false,
-        defaultValue: null,
-      ),
-    );
+    properties.add(StringProperty('text', text, showName: false, defaultValue: null));
     if (style == null && text == null && children == null) {
       properties.add(DiagnosticsNode.message('(empty)'));
     }
 
     properties.add(DiagnosticsProperty<GestureRecognizer>(
-      'recognizer', recognizer,
+      'recognizer',
+      recognizer,
       description: recognizer?.runtimeType.toString(),
       defaultValue: null,
     ));
 
-    properties.add(FlagsSummary<Function?>(
-      'callbacks',
-      <String, Function?> {
-        'enter': onEnter,
-        'exit': onExit,
-      },
-    ));
+    properties.add(FlagsSummary<Function?>('callbacks', <String, Function?>{'enter': onEnter, 'exit': onExit}));
     properties.add(DiagnosticsProperty<MouseCursor>('mouseCursor', cursor, defaultValue: MouseCursor.defer));
 
     if (semanticsLabel != null) {
@@ -585,7 +563,8 @@ class TextSpan extends InlineSpan implements HitTestTarget, MouseTrackerAnnotati
   @override
   List<DiagnosticsNode> debugDescribeChildren() {
     return children?.map<DiagnosticsNode>((InlineSpan child) {
-      return child.toDiagnosticsNode();
-    }).toList() ?? const <DiagnosticsNode>[];
+          return child.toDiagnosticsNode();
+        }).toList() ??
+        const <DiagnosticsNode>[];
   }
 }

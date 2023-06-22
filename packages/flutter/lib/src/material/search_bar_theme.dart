@@ -157,38 +157,50 @@ class SearchBarThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is SearchBarThemeData
-      && other.elevation == elevation
-      && other.backgroundColor == backgroundColor
-      && other.shadowColor == shadowColor
-      && other.surfaceTintColor == surfaceTintColor
-      && other.overlayColor == overlayColor
-      && other.side == side
-      && other.shape == shape
-      && other.padding == padding
-      && other.textStyle == textStyle
-      && other.hintStyle == hintStyle
-      && other.constraints == constraints;
+    return other is SearchBarThemeData &&
+        other.elevation == elevation &&
+        other.backgroundColor == backgroundColor &&
+        other.shadowColor == shadowColor &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.overlayColor == overlayColor &&
+        other.side == side &&
+        other.shape == shape &&
+        other.padding == padding &&
+        other.textStyle == textStyle &&
+        other.hintStyle == hintStyle &&
+        other.constraints == constraints;
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<MaterialStateProperty<double?>>('elevation', elevation, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>('backgroundColor', backgroundColor, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<Color?>>('backgroundColor', backgroundColor, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>('shadowColor', shadowColor, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>('surfaceTintColor', surfaceTintColor, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>('overlayColor', overlayColor, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<Color?>>('surfaceTintColor', surfaceTintColor, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<Color?>>('overlayColor', overlayColor, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<MaterialStateProperty<BorderSide?>>('side', side, defaultValue: null));
     properties.add(DiagnosticsProperty<MaterialStateProperty<OutlinedBorder?>>('shape', shape, defaultValue: null));
-    properties.add(DiagnosticsProperty<MaterialStateProperty<EdgeInsetsGeometry?>>('padding', padding, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MaterialStateProperty<EdgeInsetsGeometry?>>('padding', padding, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<MaterialStateProperty<TextStyle?>>('textStyle', textStyle, defaultValue: null));
     properties.add(DiagnosticsProperty<MaterialStateProperty<TextStyle?>>('hintStyle', hintStyle, defaultValue: null));
     properties.add(DiagnosticsProperty<BoxConstraints>('constraints', constraints, defaultValue: null));
   }
 
   // Special case because BorderSide.lerp() doesn't support null arguments
-  static MaterialStateProperty<BorderSide?>? _lerpSides(MaterialStateProperty<BorderSide?>? a, MaterialStateProperty<BorderSide?>? b, double t) {
+  static MaterialStateProperty<BorderSide?>? _lerpSides(
+    MaterialStateProperty<BorderSide?>? a,
+    MaterialStateProperty<BorderSide?>? b,
+    double t,
+  ) {
     if (identical(a, b)) {
       return a;
     }
@@ -235,11 +247,7 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 ///    theme.
 class SearchBarTheme extends InheritedWidget {
   /// Constructs a search bar theme that configures all descendant [SearchBar] widgets.
-  const SearchBarTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const SearchBarTheme({super.key, required this.data, required super.child});
 
   /// The properties used for all descendant [SearchBar] widgets.
   final SearchBarThemeData data;

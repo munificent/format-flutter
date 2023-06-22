@@ -29,10 +29,7 @@ import 'theme.dart';
 class SegmentedButtonThemeData with Diagnosticable {
   /// Creates a [SegmentedButtonThemeData] that can be used to override default properties
   /// in a [SegmentedButtonTheme] widget.
-  const SegmentedButtonThemeData({
-    this.style,
-    this.selectedIcon,
-  });
+  const SegmentedButtonThemeData({this.style, this.selectedIcon});
 
   /// Overrides the [SegmentedButton]'s default style.
   ///
@@ -50,14 +47,8 @@ class SegmentedButtonThemeData with Diagnosticable {
 
   /// Creates a copy of this object with the given fields replaced with the
   /// new values.
-  SegmentedButtonThemeData copyWith({
-    ButtonStyle? style,
-    Widget? selectedIcon,
-  }) {
-    return SegmentedButtonThemeData(
-      style: style ?? this.style,
-      selectedIcon: selectedIcon ?? this.selectedIcon,
-    );
+  SegmentedButtonThemeData copyWith({ButtonStyle? style, Widget? selectedIcon}) {
+    return SegmentedButtonThemeData(style: style ?? this.style, selectedIcon: selectedIcon ?? this.selectedIcon);
   }
 
   /// Linearly interpolates between two segmented button themes.
@@ -72,10 +63,7 @@ class SegmentedButtonThemeData with Diagnosticable {
   }
 
   @override
-  int get hashCode => Object.hash(
-    style,
-    selectedIcon,
-  );
+  int get hashCode => Object.hash(style, selectedIcon);
 
   @override
   bool operator ==(Object other) {
@@ -85,9 +73,7 @@ class SegmentedButtonThemeData with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is SegmentedButtonThemeData
-        && other.style == style
-        && other.selectedIcon == selectedIcon;
+    return other is SegmentedButtonThemeData && other.style == style && other.selectedIcon == selectedIcon;
   }
 
   @override
@@ -106,11 +92,7 @@ class SegmentedButtonThemeData with Diagnosticable {
 class SegmentedButtonTheme extends InheritedTheme {
   /// Creates a [SegmentedButtonTheme] that controls visual parameters for
   /// descendent [SegmentedButton]s.
-  const SegmentedButtonTheme({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const SegmentedButtonTheme({super.key, required this.data, required super.child});
 
   /// Specifies the visual properties used by descendant [SegmentedButton]
   /// widgets.

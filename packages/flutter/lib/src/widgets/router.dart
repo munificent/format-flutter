@@ -45,7 +45,7 @@ class RouteInformation {
   const RouteInformation({
     @Deprecated(
       'Pass Uri.parse(location) to uri parameter instead. '
-      'This feature was deprecated after v3.8.0-3.0.pre.'
+      'This feature was deprecated after v3.8.0-3.0.pre.',
     )
     String? location,
     Uri? uri,
@@ -60,7 +60,7 @@ class RouteInformation {
   /// slashes in between. ex: `/`, `/path`, `/path/to/the/app`.
   @Deprecated(
     'Use uri instead. '
-    'This feature was deprecated after v3.8.0-3.0.pre.'
+    'This feature was deprecated after v3.8.0-3.0.pre.',
   )
   String get location {
     if (_location != null) {
@@ -74,6 +74,7 @@ class RouteInformation {
       ).toString(),
     );
   }
+
   final String? _location;
 
   /// The uri location of the application.
@@ -84,11 +85,12 @@ class RouteInformation {
   ///
   /// In web platform, the host and scheme are always empty.
   Uri get uri {
-    if (_uri != null){
+    if (_uri != null) {
       return _uri!;
     }
     return Uri.parse(_location!);
   }
+
   final Uri? _uri;
 
   /// The state of the application in the [uri].
@@ -382,11 +384,7 @@ class Router<T> extends StatefulWidget {
   /// null.
   ///
   /// The [RouterConfig.routerDelegate] must not be null.
-  factory Router.withConfig({
-    Key? key,
-    required RouterConfig<T> config,
-    String? restorationScopeId,
-  }) {
+  factory Router.withConfig({Key? key, required RouterConfig<T> config, String? restorationScopeId}) {
     return Router<T>(
       key: key,
       routeInformationProvider: config.routeInformationProvider,
@@ -474,16 +472,18 @@ class Router<T> extends StatefulWidget {
   ///    of throwing an exception if no [Router] ancestor exists.
   static Router<T> of<T extends Object?>(BuildContext context) {
     final _RouterScope? scope = context.dependOnInheritedWidgetOfExactType<_RouterScope>();
-    assert(() {
-      if (scope == null) {
-        throw FlutterError(
-          'Router operation requested with a context that does not include a Router.\n'
-          'The context used to retrieve the Router must be that of a widget that '
-          'is a descendant of a Router widget.',
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (scope == null) {
+          throw FlutterError(
+            'Router operation requested with a context that does not include a Router.\n'
+            'The context used to retrieve the Router must be that of a widget that '
+            'is a descendant of a Router widget.',
+          );
+        }
+        return true;
+      }(),
+    );
     return scope!.routerState.widget as Router<T>;
   }
 
@@ -530,9 +530,7 @@ class Router<T> extends StatefulWidget {
   ///  * [neglect]: which forces the [Router] to not create a new history entry
   ///    even if location does change.
   static void navigate(BuildContext context, VoidCallback callback) {
-    final _RouterScope scope = context
-      .getElementForInheritedWidgetOfExactType<_RouterScope>()!
-      .widget as _RouterScope;
+    final _RouterScope scope = context.getElementForInheritedWidgetOfExactType<_RouterScope>()!.widget as _RouterScope;
     scope.routerState._setStateWithExplicitReportStatus(RouteInformationReportingType.navigate, callback);
   }
 
@@ -559,9 +557,7 @@ class Router<T> extends StatefulWidget {
   ///  * [navigate]: which forces the [Router] to create a new history entry
   ///    even if location does not change.
   static void neglect(BuildContext context, VoidCallback callback) {
-    final _RouterScope scope = context
-      .getElementForInheritedWidgetOfExactType<_RouterScope>()!
-      .widget as _RouterScope;
+    final _RouterScope scope = context.getElementForInheritedWidgetOfExactType<_RouterScope>()!.widget as _RouterScope;
     scope.routerState._setStateWithExplicitReportStatus(RouteInformationReportingType.neglect, callback);
   }
 
@@ -587,9 +583,11 @@ enum RouteInformationReportingType {
   /// neither [Router.neglect] nor [Router.navigate] was used during the
   /// rebuild.
   none,
+
   /// The accompanying [RouteInformation] were generated during a
   /// [Router.neglect] call.
   neglect,
+
   /// The accompanying [RouteInformation] were generated during a
   /// [Router.navigate] call.
   navigate,
@@ -641,7 +639,10 @@ class _RouterState<T> extends State<Router<T>> with RestorationMixin {
     if (_routeInformation.value != null) {
       final RouteInformation currentRouteInformation = _routeInformation.value!;
       assert(_currentIntentionToReport != null);
-      widget.routeInformationProvider!.routerReportsNewRouteInformation(currentRouteInformation, type: _currentIntentionToReport!);
+      widget.routeInformationProvider!.routerReportsNewRouteInformation(
+        currentRouteInformation,
+        type: _currentIntentionToReport!,
+      );
     }
     _currentIntentionToReport = RouteInformationReportingType.none;
   }
@@ -654,27 +655,25 @@ class _RouterState<T> extends State<Router<T>> with RestorationMixin {
     return widget.routeInformationParser?.restoreRouteInformation(configuration);
   }
 
-  void _setStateWithExplicitReportStatus(
-    RouteInformationReportingType status,
-    VoidCallback fn,
-  ) {
+  void _setStateWithExplicitReportStatus(RouteInformationReportingType status, VoidCallback fn) {
     assert(status.index >= RouteInformationReportingType.neglect.index);
-    assert(() {
-      if (_currentIntentionToReport != null &&
-          _currentIntentionToReport != RouteInformationReportingType.none &&
-          _currentIntentionToReport != status) {
-        FlutterError.reportError(
-          const FlutterErrorDetails(
-            exception:
-              'Both Router.navigate and Router.neglect have been called in this '
-              'build cycle, and the Router cannot decide whether to report the '
-              'route information. Please make sure only one of them is called '
-              'within the same build cycle.',
-          ),
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_currentIntentionToReport != null &&
+            _currentIntentionToReport != RouteInformationReportingType.none &&
+            _currentIntentionToReport != status) {
+          FlutterError.reportError(
+            const FlutterErrorDetails(
+              exception: 'Both Router.navigate and Router.neglect have been called in this '
+                  'build cycle, and the Router cannot decide whether to report the '
+                  'route information. Please make sure only one of them is called '
+                  'within the same build cycle.',
+            ),
+          );
+        }
+        return true;
+      }(),
+    );
     _currentIntentionToReport = status;
     _scheduleRouteInformationReportingTask();
     fn();
@@ -740,12 +739,15 @@ class _RouterState<T> extends State<Router<T>> with RestorationMixin {
     assert(_routeParsePending);
     _routeParsePending = false;
     _currentRouterTransaction = Object();
-    widget.routeInformationParser!
-      .parseRouteInformationWithDependencies(information, context)
-      .then<void>(_processParsedRouteInformation(_currentRouterTransaction, delegateRouteSetter));
+    widget.routeInformationParser!.parseRouteInformationWithDependencies(information, context).then<void>(
+      _processParsedRouteInformation(_currentRouterTransaction, delegateRouteSetter),
+    );
   }
 
-  _RouteSetter<T> _processParsedRouteInformation(Object? transaction, ValueGetter<_RouteSetter<T>> delegateRouteSetter) {
+  _RouteSetter<T> _processParsedRouteInformation(
+    Object? transaction,
+    ValueGetter<_RouteSetter<T>> delegateRouteSetter,
+  ) {
     return (T data) async {
       if (_currentRouterTransaction != transaction) {
         return;
@@ -764,9 +766,7 @@ class _RouterState<T> extends State<Router<T>> with RestorationMixin {
 
   Future<bool> _handleBackButtonDispatcherNotification() {
     _currentRouterTransaction = Object();
-    return widget.routerDelegate
-      .popRoute()
-      .then<bool>(_handleRoutePopped(_currentRouterTransaction));
+    return widget.routerDelegate.popRoute().then<bool>(_handleRoutePopped(_currentRouterTransaction));
   }
 
   _AsyncPassthrough<bool> _handleRoutePopped(Object? transaction) {
@@ -822,7 +822,7 @@ class _RouterScope extends InheritedWidget {
     required this.routerDelegate,
     required this.routerState,
     required super.child,
-  })  : assert(routeInformationProvider == null || routeInformationParser != null);
+  }) : assert(routeInformationProvider == null || routeInformationParser != null);
 
   final ValueListenable<RouteInformation?>? routeInformationProvider;
   final BackButtonDispatcher? backButtonDispatcher;
@@ -833,10 +833,10 @@ class _RouterScope extends InheritedWidget {
   @override
   bool updateShouldNotify(_RouterScope oldWidget) {
     return routeInformationProvider != oldWidget.routeInformationProvider ||
-           backButtonDispatcher != oldWidget.backButtonDispatcher ||
-           routeInformationParser != oldWidget.routeInformationParser ||
-           routerDelegate != oldWidget.routerDelegate ||
-           routerState != oldWidget.routerState;
+        backButtonDispatcher != oldWidget.backButtonDispatcher ||
+        routeInformationParser != oldWidget.routeInformationParser ||
+        routerDelegate != oldWidget.routerDelegate ||
+        routerState != oldWidget.routerState;
   }
 }
 
@@ -896,12 +896,12 @@ class _CallbackHookProvider<T> {
         library: 'widget library',
         context: ErrorDescription('while invoking the callback for $runtimeType'),
         informationCollector: () => <DiagnosticsNode>[
-          DiagnosticsProperty<_CallbackHookProvider<T>>(
-            'The $runtimeType that invoked the callback was',
-            this,
-            style: DiagnosticsTreeStyle.errorProperty,
-          ),
-        ],
+              DiagnosticsProperty<_CallbackHookProvider<T>>(
+                'The $runtimeType that invoked the callback was',
+                this,
+                style: DiagnosticsTreeStyle.errorProperty,
+              ),
+            ],
       ));
       return defaultValue;
     }
@@ -925,7 +925,7 @@ class _CallbackHookProvider<T> {
 /// the pop request, and a future that completes to false otherwise.
 abstract class BackButtonDispatcher extends _CallbackHookProvider<Future<bool>> {
   late final LinkedHashSet<ChildBackButtonDispatcher> _children =
-    <ChildBackButtonDispatcher>{} as LinkedHashSet<ChildBackButtonDispatcher>;
+      <ChildBackButtonDispatcher>{} as LinkedHashSet<ChildBackButtonDispatcher>;
 
   @override
   bool get hasCallbacks => super.hasCallbacks || (_children.isNotEmpty);
@@ -961,17 +961,13 @@ abstract class BackButtonDispatcher extends _CallbackHookProvider<Future<bool>> 
         // child to handle the it.
         if (childIndex > 0) {
           childIndex -= 1;
-          return children[childIndex]
-            .notifiedByParent(defaultValue)
-            .then<bool>(notifyNextChild);
+          return children[childIndex].notifiedByParent(defaultValue).then<bool>(notifyNextChild);
         }
         // If none of the child handles the callback, the parent will then handle it.
         return super.invokeCallback(defaultValue);
       }
 
-      return children[childIndex]
-        .notifiedByParent(defaultValue)
-        .then<bool>(notifyNextChild);
+      return children[childIndex].notifiedByParent(defaultValue).then<bool>(notifyNextChild);
     }
     return super.invokeCallback(defaultValue);
   }
@@ -1140,11 +1136,7 @@ class BackButtonListener extends StatefulWidget {
   /// Creates a BackButtonListener widget .
   ///
   /// The [child] and [onBackButtonPressed] arguments must not be null.
-  const BackButtonListener({
-    super.key,
-    required this.child,
-    required this.onBackButtonPressed,
-  });
+  const BackButtonListener({super.key, required this.child, required this.onBackButtonPressed});
 
   /// The widget below this widget in the tree.
   final Widget child;
@@ -1229,7 +1221,7 @@ abstract class RouteInformationParser<T> {
   Future<T> parseRouteInformation(RouteInformation routeInformation) {
     throw UnimplementedError(
       'One of the parseRouteInformation or '
-      'parseRouteInformationWithDependencies must be implemented'
+      'parseRouteInformationWithDependencies must be implemented',
     );
   }
 
@@ -1444,7 +1436,10 @@ abstract class RouteInformationProvider extends ValueListenable<RouteInformation
   /// For more information on how [Router] determines a navigation event, see
   /// the "URL updates for web applications" section in the [Router]
   /// documentation.
-  void routerReportsNewRouteInformation(RouteInformation routeInformation, {RouteInformationReportingType type = RouteInformationReportingType.none}) {}
+  void routerReportsNewRouteInformation(
+    RouteInformation routeInformation, {
+    RouteInformationReportingType type = RouteInformationReportingType.none,
+  }) {}
 }
 
 /// The route information provider that propagates the platform route information changes.
@@ -1462,22 +1457,18 @@ class PlatformRouteInformationProvider extends RouteInformationProvider with Wid
   ///
   /// Use the [initialRouteInformation] to set the default route information for this
   /// provider.
-  PlatformRouteInformationProvider({
-    required RouteInformation initialRouteInformation,
-  }) : _value = initialRouteInformation;
+  PlatformRouteInformationProvider({required RouteInformation initialRouteInformation})
+    : _value = initialRouteInformation;
 
   @override
-  void routerReportsNewRouteInformation(RouteInformation routeInformation, {RouteInformationReportingType type = RouteInformationReportingType.none}) {
-    final bool replace =
-      type == RouteInformationReportingType.neglect ||
-      (type == RouteInformationReportingType.none &&
-       _valueInEngine.uri == routeInformation.uri);
+  void routerReportsNewRouteInformation(
+    RouteInformation routeInformation, {
+    RouteInformationReportingType type = RouteInformationReportingType.none,
+  }) {
+    final bool replace = type == RouteInformationReportingType.neglect ||
+        (type == RouteInformationReportingType.none && _valueInEngine.uri == routeInformation.uri);
     SystemNavigator.selectMultiEntryHistory();
-    SystemNavigator.routeInformationUpdated(
-      uri: routeInformation.uri,
-      state: routeInformation.state,
-      replace: replace,
-    );
+    SystemNavigator.routeInformationUpdated(uri: routeInformation.uri, state: routeInformation.state, replace: replace);
     _value = routeInformation;
     _valueInEngine = routeInformation;
   }
@@ -1486,7 +1477,9 @@ class PlatformRouteInformationProvider extends RouteInformationProvider with Wid
   RouteInformation get value => _value;
   RouteInformation _value;
 
-  RouteInformation _valueInEngine = RouteInformation(uri: Uri.parse(WidgetsBinding.instance.platformDispatcher.defaultRouteName));
+  RouteInformation _valueInEngine = RouteInformation(
+    uri: Uri.parse(WidgetsBinding.instance.platformDispatcher.defaultRouteName),
+  );
 
   void _platformReportsNewRouteInformation(RouteInformation routeInformation) {
     if (_value == routeInformation) {

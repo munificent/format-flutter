@@ -58,7 +58,7 @@ enum DeviceOrientation {
 @immutable
 class ApplicationSwitcherDescription {
   /// Creates an ApplicationSwitcherDescription.
-  const ApplicationSwitcherDescription({ this.label, this.primaryColor });
+  const ApplicationSwitcherDescription({this.label, this.primaryColor});
 
   /// A label and description of the current state of the application.
   final String? label;
@@ -314,7 +314,8 @@ class SystemUiOverlayStyle {
     return SystemUiOverlayStyle(
       systemNavigationBarColor: systemNavigationBarColor ?? this.systemNavigationBarColor,
       systemNavigationBarDividerColor: systemNavigationBarDividerColor ?? this.systemNavigationBarDividerColor,
-      systemNavigationBarContrastEnforced: systemNavigationBarContrastEnforced ?? this.systemNavigationBarContrastEnforced,
+      systemNavigationBarContrastEnforced:
+          systemNavigationBarContrastEnforced ?? this.systemNavigationBarContrastEnforced,
       statusBarColor: statusBarColor ?? this.statusBarColor,
       statusBarIconBrightness: statusBarIconBrightness ?? this.statusBarIconBrightness,
       statusBarBrightness: statusBarBrightness ?? this.statusBarBrightness,
@@ -340,21 +341,19 @@ class SystemUiOverlayStyle {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is SystemUiOverlayStyle
-        && other.systemNavigationBarColor == systemNavigationBarColor
-        && other.systemNavigationBarDividerColor == systemNavigationBarDividerColor
-        && other.systemNavigationBarContrastEnforced == systemNavigationBarContrastEnforced
-        && other.statusBarColor == statusBarColor
-        && other.statusBarIconBrightness == statusBarIconBrightness
-        && other.statusBarBrightness == statusBarBrightness
-        && other.systemStatusBarContrastEnforced == systemStatusBarContrastEnforced
-        && other.systemNavigationBarIconBrightness == systemNavigationBarIconBrightness;
+    return other is SystemUiOverlayStyle &&
+        other.systemNavigationBarColor == systemNavigationBarColor &&
+        other.systemNavigationBarDividerColor == systemNavigationBarDividerColor &&
+        other.systemNavigationBarContrastEnforced == systemNavigationBarContrastEnforced &&
+        other.statusBarColor == statusBarColor &&
+        other.statusBarIconBrightness == statusBarIconBrightness &&
+        other.statusBarBrightness == statusBarBrightness &&
+        other.systemStatusBarContrastEnforced == systemStatusBarContrastEnforced &&
+        other.systemNavigationBarIconBrightness == systemNavigationBarIconBrightness;
   }
 }
 
-List<String> _stringify(List<dynamic> list) => <String>[
-  for (final dynamic item in list) item.toString(),
-];
+List<String> _stringify(List<dynamic> list) => <String>[for (final dynamic item in list) item.toString()];
 
 /// Controls specific aspects of the operating system's graphical interface and
 /// how it interacts with the application.
@@ -377,10 +376,7 @@ abstract final class SystemChrome {
   /// Should you decide to opt out of multitasking you can do this by
   /// setting "Requires full screen" to true in the Xcode Deployment Info.
   static Future<void> setPreferredOrientations(List<DeviceOrientation> orientations) async {
-    await SystemChannels.platform.invokeMethod<void>(
-      'SystemChrome.setPreferredOrientations',
-      _stringify(orientations),
-    );
+    await SystemChannels.platform.invokeMethod<void>('SystemChrome.setPreferredOrientations', _stringify(orientations));
   }
 
   /// Specifies the description of the current state of the application as it
@@ -391,10 +387,7 @@ abstract final class SystemChrome {
   static Future<void> setApplicationSwitcherDescription(ApplicationSwitcherDescription description) async {
     await SystemChannels.platform.invokeMethod<void>(
       'SystemChrome.setApplicationSwitcherDescription',
-      <String, dynamic>{
-        'label': description.label,
-        'primaryColor': description.primaryColor,
-      },
+      <String, dynamic>{'label': description.label, 'primaryColor': description.primaryColor},
     );
   }
 
@@ -430,12 +423,9 @@ abstract final class SystemChrome {
   /// is true, the application is not fullscreen. See
   /// [SystemChrome.setSystemUIChangeCallback] to respond to these changes in a
   /// fullscreen application.
-  static Future<void> setEnabledSystemUIMode(SystemUiMode mode, { List<SystemUiOverlay>? overlays }) async {
+  static Future<void> setEnabledSystemUIMode(SystemUiMode mode, {List<SystemUiOverlay>? overlays}) async {
     if (mode != SystemUiMode.manual) {
-      await SystemChannels.platform.invokeMethod<void>(
-        'SystemChrome.setEnabledSystemUIMode',
-        mode.toString(),
-      );
+      await SystemChannels.platform.invokeMethod<void>('SystemChrome.setEnabledSystemUIMode', mode.toString());
     } else {
       assert(mode == SystemUiMode.manual && overlays != null);
       await SystemChannels.platform.invokeMethod<void>(
@@ -469,9 +459,7 @@ abstract final class SystemChrome {
     ServicesBinding.instance.setSystemUiChangeCallback(callback);
     // Skip setting up the listener if there is no callback.
     if (callback != null) {
-      await SystemChannels.platform.invokeMethod<void>(
-        'SystemChrome.setSystemUIChangeListener',
-      );
+      await SystemChannels.platform.invokeMethod<void>('SystemChrome.setSystemUIChangeListener');
     }
   }
 
@@ -485,9 +473,7 @@ abstract final class SystemChrome {
   /// On Android, the system UI cannot be changed until 1 second after the previous
   /// change. This is to prevent malware from permanently hiding navigation buttons.
   static Future<void> restoreSystemUIOverlays() async {
-    await SystemChannels.platform.invokeMethod<void>(
-      'SystemChrome.restoreSystemUIOverlays',
-    );
+    await SystemChannels.platform.invokeMethod<void>('SystemChrome.restoreSystemUIOverlays');
   }
 
   /// Specifies the style to use for the system overlays (e.g. the status bar on
@@ -559,10 +545,7 @@ abstract final class SystemChrome {
     scheduleMicrotask(() {
       assert(_pendingStyle != null);
       if (_pendingStyle != _latestStyle) {
-        SystemChannels.platform.invokeMethod<void>(
-          'SystemChrome.setSystemUIOverlayStyle',
-          _pendingStyle!._toMap(),
-        );
+        SystemChannels.platform.invokeMethod<void>('SystemChrome.setSystemUIOverlayStyle', _pendingStyle!._toMap());
         _latestStyle = _pendingStyle;
       }
       _pendingStyle = null;

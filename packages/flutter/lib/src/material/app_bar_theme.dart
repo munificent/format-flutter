@@ -253,22 +253,22 @@ class AppBarTheme with Diagnosticable {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is AppBarTheme
-        && other.backgroundColor == backgroundColor
-        && other.foregroundColor == foregroundColor
-        && other.elevation == elevation
-        && other.scrolledUnderElevation == scrolledUnderElevation
-        && other.shadowColor == shadowColor
-        && other.surfaceTintColor == surfaceTintColor
-        && other.shape == shape
-        && other.iconTheme == iconTheme
-        && other.actionsIconTheme == actionsIconTheme
-        && other.centerTitle == centerTitle
-        && other.titleSpacing == titleSpacing
-        && other.toolbarHeight == toolbarHeight
-        && other.toolbarTextStyle == toolbarTextStyle
-        && other.titleTextStyle == titleTextStyle
-        && other.systemOverlayStyle == systemOverlayStyle;
+    return other is AppBarTheme &&
+        other.backgroundColor == backgroundColor &&
+        other.foregroundColor == foregroundColor &&
+        other.elevation == elevation &&
+        other.scrolledUnderElevation == scrolledUnderElevation &&
+        other.shadowColor == shadowColor &&
+        other.surfaceTintColor == surfaceTintColor &&
+        other.shape == shape &&
+        other.iconTheme == iconTheme &&
+        other.actionsIconTheme == actionsIconTheme &&
+        other.centerTitle == centerTitle &&
+        other.titleSpacing == titleSpacing &&
+        other.toolbarHeight == toolbarHeight &&
+        other.toolbarTextStyle == toolbarTextStyle &&
+        other.titleTextStyle == titleTextStyle &&
+        other.systemOverlayStyle == systemOverlayStyle;
   }
 
   @override

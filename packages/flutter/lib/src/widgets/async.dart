@@ -40,7 +40,7 @@ import 'framework.dart';
 ///    recent interaction is needed for widget building.
 abstract class StreamBuilderBase<T, S> extends StatefulWidget {
   /// Creates a [StreamBuilderBase] connected to the specified [stream].
-  const StreamBuilderBase({ super.key, required this.stream });
+  const StreamBuilderBase({super.key, required this.stream});
 
   /// The asynchronous computation to which this builder is currently connected,
   /// possibly null. When changed, the current summary is updated using
@@ -127,19 +127,23 @@ class _StreamBuilderBaseState<T, S> extends State<StreamBuilderBase<T, S>> {
 
   void _subscribe() {
     if (widget.stream != null) {
-      _subscription = widget.stream!.listen((T data) {
-        setState(() {
-          _summary = widget.afterData(_summary, data);
-        });
-      }, onError: (Object error, StackTrace stackTrace) {
-        setState(() {
-          _summary = widget.afterError(_summary, error, stackTrace);
-        });
-      }, onDone: () {
-        setState(() {
-          _summary = widget.afterDone(_summary);
-        });
-      });
+      _subscription = widget.stream!.listen(
+        (T data) {
+          setState(() {
+            _summary = widget.afterData(_summary, data);
+          });
+        },
+        onError: (Object error, StackTrace stackTrace) {
+          setState(() {
+            _summary = widget.afterError(_summary, error, stackTrace);
+          });
+        },
+        onDone: () {
+          setState(() {
+            _summary = widget.afterDone(_summary);
+          });
+        },
+      );
       _summary = widget.afterConnected(_summary);
     }
   }
@@ -199,8 +203,12 @@ class AsyncSnapshot<T> {
   /// Creates an [AsyncSnapshot] with the specified [connectionState],
   /// and optionally either [data] or [error] with an optional [stackTrace]
   /// (but not both data and error).
-  const AsyncSnapshot._(this.connectionState, this.data, this.error, this.stackTrace)
-    : assert(!(data != null && error != null)),
+  const AsyncSnapshot._(
+    this.connectionState,
+    this.data,
+    this.error,
+    this.stackTrace,
+  ) : assert(!(data != null && error != null)),
       assert(stackTrace == null || error != null);
 
   /// Creates an [AsyncSnapshot] in [ConnectionState.none] with null data and error.
@@ -210,17 +218,14 @@ class AsyncSnapshot<T> {
   const AsyncSnapshot.waiting() : this._(ConnectionState.waiting, null, null, null);
 
   /// Creates an [AsyncSnapshot] in the specified [state] and with the specified [data].
-  const AsyncSnapshot.withData(ConnectionState state, T data): this._(state, data, null, null);
+  const AsyncSnapshot.withData(ConnectionState state, T data) : this._(state, data, null, null);
 
   /// Creates an [AsyncSnapshot] in the specified [state] with the specified [error]
   /// and a [stackTrace].
   ///
   /// If no [stackTrace] is explicitly specified, [StackTrace.empty] will be used instead.
-  const AsyncSnapshot.withError(
-    ConnectionState state,
-    Object error, [
-    StackTrace stackTrace = StackTrace.empty,
-  ]) : this._(state, null, error, stackTrace);
+  const AsyncSnapshot.withError(ConnectionState state, Object error, [StackTrace stackTrace = StackTrace.empty])
+    : this._(state, null, error, stackTrace);
 
   /// Current state of connection to the asynchronous computation.
   final ConnectionState connectionState;
@@ -294,11 +299,11 @@ class AsyncSnapshot<T> {
     if (identical(this, other)) {
       return true;
     }
-    return other is AsyncSnapshot<T>
-        && other.connectionState == connectionState
-        && other.data == data
-        && other.error == error
-        && other.stackTrace == stackTrace;
+    return other is AsyncSnapshot<T> &&
+        other.connectionState == connectionState &&
+        other.data == data &&
+        other.error == error &&
+        other.stackTrace == stackTrace;
   }
 
   @override
@@ -388,12 +393,7 @@ class StreamBuilder<T> extends StreamBuilderBase<T, AsyncSnapshot<T>> {
   /// The [initialData] is used to create the initial snapshot.
   ///
   /// The [builder] must not be null.
-  const StreamBuilder({
-    super.key,
-    this.initialData,
-    required super.stream,
-    required this.builder,
-  });
+  const StreamBuilder({super.key, this.initialData, required super.stream, required this.builder});
 
   /// The build strategy currently used by this builder.
   ///
@@ -519,12 +519,7 @@ class FutureBuilder<T> extends StatefulWidget {
   /// interaction with a [Future].
   ///
   /// The [builder] must not be null.
-  const FutureBuilder({
-    super.key,
-    required this.future,
-    this.initialData,
-    required this.builder,
-  });
+  const FutureBuilder({super.key, required this.future, this.initialData, required this.builder});
 
   /// The asynchronous computation to which this builder is currently connected,
   /// possibly null.
@@ -621,25 +616,30 @@ class _FutureBuilderState<T> extends State<FutureBuilder<T>> {
     if (widget.future != null) {
       final Object callbackIdentity = Object();
       _activeCallbackIdentity = callbackIdentity;
-      widget.future!.then<void>((T data) {
-        if (_activeCallbackIdentity == callbackIdentity) {
-          setState(() {
-            _snapshot = AsyncSnapshot<T>.withData(ConnectionState.done, data);
-          });
-        }
-      }, onError: (Object error, StackTrace stackTrace) {
-        if (_activeCallbackIdentity == callbackIdentity) {
-          setState(() {
-            _snapshot = AsyncSnapshot<T>.withError(ConnectionState.done, error, stackTrace);
-          });
-        }
-        assert(() {
-          if (FutureBuilder.debugRethrowError) {
-            Future<Object>.error(error, stackTrace);
+      widget.future!.then<void>(
+        (T data) {
+          if (_activeCallbackIdentity == callbackIdentity) {
+            setState(() {
+              _snapshot = AsyncSnapshot<T>.withData(ConnectionState.done, data);
+            });
           }
-          return true;
-        }());
-      });
+        },
+        onError: (Object error, StackTrace stackTrace) {
+          if (_activeCallbackIdentity == callbackIdentity) {
+            setState(() {
+              _snapshot = AsyncSnapshot<T>.withError(ConnectionState.done, error, stackTrace);
+            });
+          }
+          assert(
+            () {
+              if (FutureBuilder.debugRethrowError) {
+                Future<Object>.error(error, stackTrace);
+              }
+              return true;
+            }(),
+          );
+        },
+      );
       // An implementation like `SynchronousFuture` may have already called the
       // .then closure. Do not overwrite it in that case.
       if (_snapshot.connectionState != ConnectionState.done) {

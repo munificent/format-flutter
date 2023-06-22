@@ -244,7 +244,7 @@ class MaterialApp extends StatefulWidget {
     @Deprecated(
       'Remove this parameter as it is now ignored. '
       'MaterialApp never introduces its own MediaQuery; the View widget takes care of that. '
-      'This feature was deprecated after v3.7.0-29.0.pre.'
+      'This feature was deprecated after v3.7.0-29.0.pre.',
     )
     this.useInheritedMediaQuery = false,
   }) : routeInformationProvider = null,
@@ -293,7 +293,7 @@ class MaterialApp extends StatefulWidget {
     @Deprecated(
       'Remove this parameter as it is now ignored. '
       'MaterialApp never introduces its own MediaQuery; the View widget takes care of that. '
-      'This feature was deprecated after v3.7.0-29.0.pre.'
+      'This feature was deprecated after v3.7.0-29.0.pre.',
     )
     this.useInheritedMediaQuery = false,
   }) : assert(routerDelegate != null || routerConfig != null),
@@ -746,7 +746,7 @@ class MaterialApp extends StatefulWidget {
   @Deprecated(
     'This setting is now ignored. '
     'MaterialApp never introduces its own MediaQuery; the View widget takes care of that. '
-    'This feature was deprecated after v3.7.0-29.0.pre.'
+    'This feature was deprecated after v3.7.0-29.0.pre.',
   )
   final bool useInheritedMediaQuery;
 
@@ -803,7 +803,7 @@ class MaterialScrollBehavior extends ScrollBehavior {
   const MaterialScrollBehavior({
     @Deprecated(
       'Use ThemeData.useMaterial3 or override ScrollBehavior.buildOverscrollIndicator. '
-      'This feature was deprecated after v2.13.0-0.0.pre.'
+      'This feature was deprecated after v2.13.0-0.0.pre.',
     )
     super.androidOverscrollIndicator,
   }) : _androidOverscrollIndicator = androidOverscrollIndicator;
@@ -826,10 +826,7 @@ class MaterialScrollBehavior extends ScrollBehavior {
           case TargetPlatform.macOS:
           case TargetPlatform.windows:
             assert(details.controller != null);
-            return Scrollbar(
-              controller: details.controller,
-              child: child,
-            );
+            return Scrollbar(controller: details.controller, child: child);
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.iOS:
@@ -846,9 +843,8 @@ class MaterialScrollBehavior extends ScrollBehavior {
     if (Theme.of(context).useMaterial3) {
       indicator = AndroidOverscrollIndicator.stretch;
     } else {
-      indicator = _androidOverscrollIndicator
-        ?? Theme.of(context).androidOverscrollIndicator
-        ?? androidOverscrollIndicator;
+      indicator =
+          _androidOverscrollIndicator ?? Theme.of(context).androidOverscrollIndicator ?? androidOverscrollIndicator;
     }
     switch (getPlatform(context)) {
       case TargetPlatform.iOS:
@@ -896,19 +892,14 @@ class _MaterialAppState extends State<MaterialApp> {
   // _MaterialLocalizationsDelegate.
   Iterable<LocalizationsDelegate<dynamic>> get _localizationsDelegates {
     return <LocalizationsDelegate<dynamic>>[
-      if (widget.localizationsDelegates != null)
-        ...widget.localizationsDelegates!,
+      if (widget.localizationsDelegates != null) ...widget.localizationsDelegates!,
       DefaultMaterialLocalizations.delegate,
       DefaultCupertinoLocalizations.delegate,
     ];
   }
 
   Widget _inspectorSelectButtonBuilder(BuildContext context, VoidCallback onPressed) {
-    return FloatingActionButton(
-      onPressed: onPressed,
-      mini: true,
-      child: const Icon(Icons.search),
-    );
+    return FloatingActionButton(onPressed: onPressed, mini: true, child: const Icon(Icons.search));
   }
 
   ThemeData _themeBuilder(BuildContext context) {
@@ -916,8 +907,8 @@ class _MaterialAppState extends State<MaterialApp> {
     // Resolve which theme to use based on brightness and high contrast.
     final ThemeMode mode = widget.themeMode ?? ThemeMode.system;
     final Brightness platformBrightness = MediaQuery.platformBrightnessOf(context);
-    final bool useDarkTheme = mode == ThemeMode.dark
-      || (mode == ThemeMode.system && platformBrightness == ui.Brightness.dark);
+    final bool useDarkTheme =
+        mode == ThemeMode.dark || (mode == ThemeMode.system && platformBrightness == ui.Brightness.dark);
     final bool highContrast = MediaQuery.highContrastOf(context);
     if (useDarkTheme && highContrast && widget.highContrastDarkTheme != null) {
       theme = widget.highContrastDarkTheme;
@@ -932,7 +923,8 @@ class _MaterialAppState extends State<MaterialApp> {
 
   Widget _materialBuilder(BuildContext context, Widget? child) {
     final ThemeData theme = _themeBuilder(context);
-    final Color effectiveSelectionColor = theme.textSelectionTheme.selectionColor ?? theme.colorScheme.primary.withOpacity(0.40);
+    final Color effectiveSelectionColor =
+        theme.textSelectionTheme.selectionColor ?? theme.colorScheme.primary.withOpacity(0.40);
     final Color effectiveCursorColor = theme.textSelectionTheme.cursorColor ?? theme.colorScheme.primary;
 
     return ScaffoldMessenger(
@@ -945,23 +937,23 @@ class _MaterialAppState extends State<MaterialApp> {
           duration: widget.themeAnimationDuration,
           curve: widget.themeAnimationCurve,
           child: widget.builder != null
-            ? Builder(
-                builder: (BuildContext context) {
-                  // Why are we surrounding a builder with a builder?
-                  //
-                  // The widget.builder may contain code that invokes
-                  // Theme.of(), which should return the theme we selected
-                  // above in AnimatedTheme. However, if we invoke
-                  // widget.builder() directly as the child of AnimatedTheme
-                  // then there is no Context separating them, and the
-                  // widget.builder() will not find the theme. Therefore, we
-                  // surround widget.builder with yet another builder so that
-                  // a context separates them and Theme.of() correctly
-                  // resolves to the theme we passed to AnimatedTheme.
-                  return widget.builder!(context, child);
-                },
-              )
-            : child ?? const SizedBox.shrink(),
+              ? Builder(
+                  builder: (BuildContext context) {
+                    // Why are we surrounding a builder with a builder?
+                    //
+                    // The widget.builder may contain code that invokes
+                    // Theme.of(), which should return the theme we selected
+                    // above in AnimatedTheme. However, if we invoke
+                    // widget.builder() directly as the child of AnimatedTheme
+                    // then there is no Context separating them, and the
+                    // widget.builder() will not find the theme. Therefore, we
+                    // surround widget.builder with yet another builder so that
+                    // a context separates them and Theme.of() correctly
+                    // resolves to the theme we passed to AnimatedTheme.
+                    return widget.builder!(context, child);
+                  },
+                )
+              : child ?? const SizedBox.shrink(),
         ),
       ),
     );
@@ -1054,24 +1046,18 @@ class _MaterialAppState extends State<MaterialApp> {
       },
       child: result,
     );
-    assert(() {
-      if (widget.debugShowMaterialGrid) {
-        result = GridPaper(
-          color: const Color(0xE0F9BBE0),
-          interval: 8.0,
-          subdivisions: 1,
-          child: result,
-        );
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (widget.debugShowMaterialGrid) {
+          result = GridPaper(color: const Color(0xE0F9BBE0), interval: 8.0, subdivisions: 1, child: result);
+        }
+        return true;
+      }(),
+    );
 
     return ScrollConfiguration(
       behavior: widget.scrollBehavior ?? const MaterialScrollBehavior(),
-      child: HeroControllerScope(
-        controller: _heroController,
-        child: result,
-      ),
+      child: HeroControllerScope(controller: _heroController, child: result),
     );
   }
 }

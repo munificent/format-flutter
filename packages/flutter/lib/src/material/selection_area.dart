@@ -93,9 +93,7 @@ class SelectionArea extends StatefulWidget {
   final Widget child;
 
   static Widget _defaultContextMenuBuilder(BuildContext context, SelectableRegionState selectableRegionState) {
-    return AdaptiveTextSelectionToolbar.selectableRegion(
-      selectableRegionState: selectableRegionState,
-    );
+    return AdaptiveTextSelectionToolbar.selectableRegion(selectableRegionState: selectableRegionState);
   }
 
   @override
@@ -110,6 +108,7 @@ class _SelectionAreaState extends State<SelectionArea> {
     _internalNode ??= FocusNode();
     return _internalNode!;
   }
+
   FocusNode? _internalNode;
 
   @override

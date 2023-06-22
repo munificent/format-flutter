@@ -51,10 +51,7 @@ class ScrollAwareImageProvider<T extends Object> extends ImageProvider<T> {
   /// The [imageProvider] is used to create a key and load the image. It must
   /// not be null, and is assumed to interact with the cache in the normal way
   /// that [ImageProvider.resolveStreamForKey] does.
-  const ScrollAwareImageProvider({
-    required this.context,
-    required this.imageProvider,
-  });
+  const ScrollAwareImageProvider({required this.context, required this.imageProvider});
 
   /// The context that may or may not be enclosed by a [Scrollable].
   ///

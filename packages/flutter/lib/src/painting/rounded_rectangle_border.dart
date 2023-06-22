@@ -27,20 +27,14 @@ class RoundedRectangleBorder extends OutlinedBorder {
   /// Creates a rounded rectangle border.
   ///
   /// The arguments must not be null.
-  const RoundedRectangleBorder({
-    super.side,
-    this.borderRadius = BorderRadius.zero,
-  });
+  const RoundedRectangleBorder({super.side, this.borderRadius = BorderRadius.zero});
 
   /// The radii for each corner.
   final BorderRadiusGeometry borderRadius;
 
   @override
   ShapeBorder scale(double t) {
-    return RoundedRectangleBorder(
-      side: side.scale(t),
-      borderRadius: borderRadius * t,
-    );
+    return RoundedRectangleBorder(side: side.scale(t), borderRadius: borderRadius * t);
   }
 
   @override
@@ -84,29 +78,24 @@ class RoundedRectangleBorder extends OutlinedBorder {
   /// Returns a copy of this RoundedRectangleBorder with the given fields
   /// replaced with the new values.
   @override
-  RoundedRectangleBorder copyWith({ BorderSide? side, BorderRadiusGeometry? borderRadius }) {
-    return RoundedRectangleBorder(
-      side: side ?? this.side,
-      borderRadius: borderRadius ?? this.borderRadius,
-    );
+  RoundedRectangleBorder copyWith({BorderSide? side, BorderRadiusGeometry? borderRadius}) {
+    return RoundedRectangleBorder(side: side ?? this.side, borderRadius: borderRadius ?? this.borderRadius);
   }
 
   @override
-  Path getInnerPath(Rect rect, { TextDirection? textDirection }) {
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
     final RRect borderRect = borderRadius.resolve(textDirection).toRRect(rect);
     final RRect adjustedRect = borderRect.deflate(side.strokeInset);
-    return Path()
-      ..addRRect(adjustedRect);
+    return Path()..addRRect(adjustedRect);
   }
 
   @override
-  Path getOuterPath(Rect rect, { TextDirection? textDirection }) {
-    return Path()
-      ..addRRect(borderRadius.resolve(textDirection).toRRect(rect));
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    return Path()..addRRect(borderRadius.resolve(textDirection).toRRect(rect));
   }
 
   @override
-  void paintInterior(Canvas canvas, Rect rect, Paint paint, { TextDirection? textDirection }) {
+  void paintInterior(Canvas canvas, Rect rect, Paint paint, {TextDirection? textDirection}) {
     if (borderRadius == BorderRadius.zero) {
       canvas.drawRect(rect, paint);
     } else {
@@ -118,7 +107,7 @@ class RoundedRectangleBorder extends OutlinedBorder {
   bool get preferPaintInterior => true;
 
   @override
-  void paint(Canvas canvas, Rect rect, { TextDirection? textDirection }) {
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
     switch (side.style) {
       case BorderStyle.none:
         break;
@@ -126,8 +115,7 @@ class RoundedRectangleBorder extends OutlinedBorder {
         if (side.width == 0.0) {
           canvas.drawRRect(borderRadius.resolve(textDirection).toRRect(rect), side.toPaint());
         } else {
-          final Paint paint = Paint()
-            ..color = side.color;
+          final Paint paint = Paint()..color = side.color;
           final RRect borderRect = borderRadius.resolve(textDirection).toRRect(rect);
           final RRect inner = borderRect.deflate(side.strokeInset);
           final RRect outer = borderRect.inflate(side.strokeOutset);
@@ -141,9 +129,7 @@ class RoundedRectangleBorder extends OutlinedBorder {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is RoundedRectangleBorder
-        && other.side == side
-        && other.borderRadius == borderRadius;
+    return other is RoundedRectangleBorder && other.side == side && other.borderRadius == borderRadius;
   }
 
   @override
@@ -242,21 +228,11 @@ class _RoundedRectangleToCircleBorder extends OutlinedBorder {
     if (rect.width < rect.height) {
       final double partialDelta = (rect.height - rect.width) / 2;
       final double delta = circularity * partialDelta * (1.0 - eccentricity);
-      return Rect.fromLTRB(
-        rect.left,
-        rect.top + delta,
-        rect.right,
-        rect.bottom - delta,
-      );
+      return Rect.fromLTRB(rect.left, rect.top + delta, rect.right, rect.bottom - delta);
     } else {
       final double partialDelta = (rect.width - rect.height) / 2;
       final double delta = circularity * partialDelta * (1.0 - eccentricity);
-      return Rect.fromLTRB(
-        rect.left + delta,
-        rect.top,
-        rect.right - delta,
-        rect.bottom,
-      );
+      return Rect.fromLTRB(rect.left + delta, rect.top, rect.right - delta, rect.bottom);
     }
   }
 
@@ -284,21 +260,19 @@ class _RoundedRectangleToCircleBorder extends OutlinedBorder {
   }
 
   @override
-  Path getInnerPath(Rect rect, { TextDirection? textDirection }) {
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
     final RRect borderRect = _adjustBorderRadius(rect, textDirection)!.toRRect(_adjustRect(rect));
     final RRect adjustedRect = borderRect.deflate(ui.lerpDouble(side.width, 0, side.strokeAlign)!);
-    return Path()
-      ..addRRect(adjustedRect);
+    return Path()..addRRect(adjustedRect);
   }
 
   @override
-  Path getOuterPath(Rect rect, { TextDirection? textDirection }) {
-    return Path()
-      ..addRRect(_adjustBorderRadius(rect, textDirection)!.toRRect(_adjustRect(rect)));
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    return Path()..addRRect(_adjustBorderRadius(rect, textDirection)!.toRRect(_adjustRect(rect)));
   }
 
   @override
-  void paintInterior(Canvas canvas, Rect rect, Paint paint, { TextDirection? textDirection }) {
+  void paintInterior(Canvas canvas, Rect rect, Paint paint, {TextDirection? textDirection}) {
     final BorderRadius adjustedBorderRadius = _adjustBorderRadius(rect, textDirection)!;
     if (adjustedBorderRadius == BorderRadius.zero) {
       canvas.drawRect(_adjustRect(rect), paint);
@@ -311,7 +285,12 @@ class _RoundedRectangleToCircleBorder extends OutlinedBorder {
   bool get preferPaintInterior => true;
 
   @override
-  _RoundedRectangleToCircleBorder copyWith({ BorderSide? side, BorderRadiusGeometry? borderRadius, double? circularity, double? eccentricity }) {
+  _RoundedRectangleToCircleBorder copyWith({
+    BorderSide? side,
+    BorderRadiusGeometry? borderRadius,
+    double? circularity,
+    double? eccentricity,
+  }) {
     return _RoundedRectangleToCircleBorder(
       side: side ?? this.side,
       borderRadius: borderRadius ?? this.borderRadius,
@@ -321,7 +300,7 @@ class _RoundedRectangleToCircleBorder extends OutlinedBorder {
   }
 
   @override
-  void paint(Canvas canvas, Rect rect, { TextDirection? textDirection }) {
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
     switch (side.style) {
       case BorderStyle.none:
         break;
@@ -337,10 +316,10 @@ class _RoundedRectangleToCircleBorder extends OutlinedBorder {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is _RoundedRectangleToCircleBorder
-        && other.side == side
-        && other.borderRadius == borderRadius
-        && other.circularity == circularity;
+    return other is _RoundedRectangleToCircleBorder &&
+        other.side == side &&
+        other.borderRadius == borderRadius &&
+        other.circularity == circularity;
   }
 
   @override
@@ -349,8 +328,12 @@ class _RoundedRectangleToCircleBorder extends OutlinedBorder {
   @override
   String toString() {
     if (eccentricity != 0.0) {
-      return 'RoundedRectangleBorder($side, $borderRadius, ${(circularity * 100).toStringAsFixed(1)}% of the way to being a CircleBorder that is ${(eccentricity * 100).toStringAsFixed(1)}% oval)';
+      return 'RoundedRectangleBorder($side, $borderRadius, ${(circularity * 100).toStringAsFixed(
+        1,
+      )}% of the way to being a CircleBorder that is ${(eccentricity * 100).toStringAsFixed(1)}% oval)';
     }
-    return 'RoundedRectangleBorder($side, $borderRadius, ${(circularity * 100).toStringAsFixed(1)}% of the way to being a CircleBorder)';
+    return 'RoundedRectangleBorder($side, $borderRadius, ${(circularity * 100).toStringAsFixed(
+      1,
+    )}% of the way to being a CircleBorder)';
   }
 }

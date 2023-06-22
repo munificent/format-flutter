@@ -132,30 +132,30 @@ class NavigationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int totalNumberOfDestinations =
-        children.whereType<NavigationDrawerDestination>().toList().length;
+    final int totalNumberOfDestinations = children.whereType<NavigationDrawerDestination>().toList().length;
 
     int destinationIndex = 0;
     final List<Widget> wrappedChildren = <Widget>[];
     Widget wrapChild(Widget child, int index) => _SelectableAnimatedBuilder(
-        duration: const Duration(milliseconds: 500),
-        isSelected: index == selectedIndex,
-        builder: (BuildContext context, Animation<double> animation) {
-          return _NavigationDrawerDestinationInfo(
-            index: index,
-            totalNumberOfDestinations: totalNumberOfDestinations,
-            selectedAnimation: animation,
-            indicatorColor: indicatorColor,
-            indicatorShape: indicatorShape,
-            tilePadding: tilePadding,
-            onTap: () {
-              if (onDestinationSelected != null) {
-                onDestinationSelected!(index);
-              }
-            },
-            child: child,
-          );
-        });
+      duration: const Duration(milliseconds: 500),
+      isSelected: index == selectedIndex,
+      builder: (BuildContext context, Animation<double> animation) {
+        return _NavigationDrawerDestinationInfo(
+          index: index,
+          totalNumberOfDestinations: totalNumberOfDestinations,
+          selectedAnimation: animation,
+          indicatorColor: indicatorColor,
+          indicatorShape: indicatorShape,
+          tilePadding: tilePadding,
+          onTap: () {
+            if (onDestinationSelected != null) {
+              onDestinationSelected!(index);
+            }
+          },
+          child: child,
+        );
+      },
+    );
 
     for (int i = 0; i < children.length; i++) {
       if (children[i] is! NavigationDrawerDestination) {
@@ -171,12 +171,7 @@ class NavigationDrawer extends StatelessWidget {
       shadowColor: shadowColor,
       surfaceTintColor: surfaceTintColor,
       elevation: elevation,
-      child: SafeArea(
-        bottom: false,
-        child: ListView(
-          children: wrappedChildren,
-        ),
-      ),
+      child: SafeArea(bottom: false, child: ListView(children: wrappedChildren)),
     );
   }
 }
@@ -230,24 +225,18 @@ class NavigationDrawerDestination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Set<MaterialState> selectedState = <MaterialState>{
-      MaterialState.selected
-    };
+    const Set<MaterialState> selectedState = <MaterialState>{MaterialState.selected};
     const Set<MaterialState> unselectedState = <MaterialState>{};
 
-    final NavigationDrawerThemeData navigationDrawerTheme =
-        NavigationDrawerTheme.of(context);
-    final NavigationDrawerThemeData defaults =
-        _NavigationDrawerDefaultsM3(context);
+    final NavigationDrawerThemeData navigationDrawerTheme = NavigationDrawerTheme.of(context);
+    final NavigationDrawerThemeData defaults = _NavigationDrawerDefaultsM3(context);
 
-    final Animation<double> animation =
-        _NavigationDrawerDestinationInfo.of(context).selectedAnimation;
+    final Animation<double> animation = _NavigationDrawerDestinationInfo.of(context).selectedAnimation;
 
     return _NavigationDestinationBuilder(
       buildIcon: (BuildContext context) {
         final Widget selectedIconWidget = IconTheme.merge(
-          data: navigationDrawerTheme.iconTheme?.resolve(selectedState) ??
-              defaults.iconTheme!.resolve(selectedState)!,
+          data: navigationDrawerTheme.iconTheme?.resolve(selectedState) ?? defaults.iconTheme!.resolve(selectedState)!,
           child: selectedIcon ?? icon,
         );
         final Widget unselectedIconWidget = IconTheme.merge(
@@ -256,21 +245,19 @@ class NavigationDrawerDestination extends StatelessWidget {
           child: icon,
         );
 
-        return _isForwardOrCompleted(animation)
-            ? selectedIconWidget
-            : unselectedIconWidget;
+        return _isForwardOrCompleted(animation) ? selectedIconWidget : unselectedIconWidget;
       },
       buildLabel: (BuildContext context) {
         final TextStyle? effectiveSelectedLabelTextStyle =
             navigationDrawerTheme.labelTextStyle?.resolve(selectedState) ??
-            defaults.labelTextStyle!.resolve(selectedState);
+                defaults.labelTextStyle!.resolve(selectedState);
         final TextStyle? effectiveUnselectedLabelTextStyle =
             navigationDrawerTheme.labelTextStyle?.resolve(unselectedState) ??
-            defaults.labelTextStyle!.resolve(unselectedState);
+                defaults.labelTextStyle!.resolve(unselectedState);
         return DefaultTextStyle(
           style: _isForwardOrCompleted(animation)
-            ? effectiveSelectedLabelTextStyle!
-            : effectiveUnselectedLabelTextStyle!,
+              ? effectiveSelectedLabelTextStyle!
+              : effectiveUnselectedLabelTextStyle!,
           child: label,
         );
       },
@@ -292,10 +279,7 @@ class NavigationDrawerDestination extends StatelessWidget {
 /// See [NavigationDestination] for an example.
 class _NavigationDestinationBuilder extends StatelessWidget {
   /// Builds a destination (icon + label) to use in a Material 3 [NavigationDrawer].
-  const _NavigationDestinationBuilder({
-    required this.buildIcon,
-    required this.buildLabel,
-  });
+  const _NavigationDestinationBuilder({required this.buildIcon, required this.buildLabel});
 
   /// Builds the icon for a destination in a [NavigationDrawer].
   ///
@@ -375,9 +359,7 @@ class _NavigationDestinationBuilder extends StatelessWidget {
 class _NavigationDestinationSemantics extends StatelessWidget {
   /// Adds the appropriate semantics for navigation drawer destinations to the
   /// [child].
-  const _NavigationDestinationSemantics({
-    required this.child,
-  });
+  const _NavigationDestinationSemantics({required this.child});
 
   /// The widget that should receive the destination semantics.
   final Widget child;
@@ -421,11 +403,7 @@ class _NavigationDestinationSemantics extends StatelessWidget {
 /// [AnimatedBuilder] rebuilds every time the animation ticks.
 class _StatusTransitionWidgetBuilder extends StatusTransitionWidget {
   /// Creates a widget that rebuilds when the given animation changes status.
-  const _StatusTransitionWidgetBuilder({
-    required super.animation,
-    required this.builder,
-    this.child,
-  });
+  const _StatusTransitionWidgetBuilder({required super.animation, required this.builder, this.child});
 
   /// Called every time the [animation] changes [AnimationStatus].
   final TransitionBuilder builder;
@@ -535,7 +513,8 @@ class _NavigationDrawerDestinationInfo extends InheritedWidget {
   /// Used by widgets that are implementing a navigation destination info to
   /// get information like the selected animation and destination number.
   static _NavigationDrawerDestinationInfo of(BuildContext context) {
-    final _NavigationDrawerDestinationInfo? result = context.dependOnInheritedWidgetOfExactType<_NavigationDrawerDestinationInfo>();
+    final _NavigationDrawerDestinationInfo? result =
+        context.dependOnInheritedWidgetOfExactType<_NavigationDrawerDestinationInfo>();
     assert(
       result != null,
       'Navigation destinations need a _NavigationDrawerDestinationInfo parent, '
@@ -546,10 +525,10 @@ class _NavigationDrawerDestinationInfo extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_NavigationDrawerDestinationInfo oldWidget) {
-    return index != oldWidget.index
-        || totalNumberOfDestinations != oldWidget.totalNumberOfDestinations
-        || selectedAnimation != oldWidget.selectedAnimation
-        || onTap != oldWidget.onTap;
+    return index != oldWidget.index ||
+        totalNumberOfDestinations != oldWidget.totalNumberOfDestinations ||
+        selectedAnimation != oldWidget.selectedAnimation ||
+        onTap != oldWidget.onTap;
   }
 }
 
@@ -616,8 +595,7 @@ class _SelectableAnimatedBuilder extends StatefulWidget {
 
 /// State that manages the [AnimationController] that is passed to
 /// [_SelectableAnimatedBuilder.builder].
-class _SelectableAnimatedBuilderState extends State<_SelectableAnimatedBuilder>
-    with SingleTickerProviderStateMixin {
+class _SelectableAnimatedBuilderState extends State<_SelectableAnimatedBuilder> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -651,10 +629,7 @@ class _SelectableAnimatedBuilderState extends State<_SelectableAnimatedBuilder>
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(
-      context,
-      _controller,
-    );
+    return widget.builder(context, _controller);
   }
 }
 
@@ -701,9 +676,7 @@ class _NavigationDrawerDefaultsM3 extends NavigationDrawerThemeData {
     return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       return IconThemeData(
         size: 24.0,
-        color: states.contains(MaterialState.selected)
-            ? null
-            : _colors.onSurfaceVariant,
+        color: states.contains(MaterialState.selected) ? null : _colors.onSurfaceVariant,
       );
     });
   }
@@ -713,9 +686,7 @@ class _NavigationDrawerDefaultsM3 extends NavigationDrawerThemeData {
     return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       final TextStyle style = _textTheme.labelLarge!;
       return style.apply(
-        color: states.contains(MaterialState.selected)
-            ? _colors.onSecondaryContainer
-            : _colors.onSurfaceVariant,
+        color: states.contains(MaterialState.selected) ? _colors.onSecondaryContainer : _colors.onSurfaceVariant,
       );
     });
   }

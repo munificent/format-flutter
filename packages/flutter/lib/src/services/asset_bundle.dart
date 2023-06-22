@@ -86,7 +86,7 @@ abstract class AssetBundle {
   /// [Utf8Codec] will be used for decoding the string. If the string is
   /// larger than 50 KB, the decoding process is delegated to an
   /// isolate to avoid jank on the main thread.
-  Future<String> loadString(String key, { bool cache = true }) async {
+  Future<String> loadString(String key, {bool cache = true}) async {
     final ByteData data = await load(key);
     // 50 KB of data should take 2-3 ms to parse on a Moto G4, and about 400 μs
     // on a Pixel 4.
@@ -122,10 +122,10 @@ abstract class AssetBundle {
   /// If this is a caching asset bundle, and the given key describes a cached
   /// asset, then evict the asset from the cache so that the next time it is
   /// loaded, the cache will be reread from the asset bundle.
-  void evict(String key) { }
+  void evict(String key) {}
 
   /// If this is a caching asset bundle, clear all cached data.
-  void clear() { }
+  void clear() {}
 
   @override
   String toString() => '${describeIdentity(this)}()';
@@ -138,9 +138,7 @@ abstract class AssetBundle {
 class NetworkAssetBundle extends AssetBundle {
   /// Creates a network asset bundle that resolves asset keys as URLs relative
   /// to the given base URL.
-  NetworkAssetBundle(Uri baseUrl)
-    : _baseUrl = baseUrl,
-      _httpClient = HttpClient();
+  NetworkAssetBundle(Uri baseUrl) : _baseUrl = baseUrl, _httpClient = HttpClient();
 
   final Uri _baseUrl;
   final HttpClient _httpClient;
@@ -203,7 +201,7 @@ abstract class CachingAssetBundle extends AssetBundle {
   final Map<String, Future<dynamic>> _structuredBinaryDataCache = <String, Future<dynamic>>{};
 
   @override
-  Future<String> loadString(String key, { bool cache = true }) {
+  Future<String> loadString(String key, {bool cache = true}) {
     if (cache) {
       return _stringCache.putIfAbsent(key, () => super.loadString(key));
     }
@@ -269,9 +267,8 @@ abstract class CachingAssetBundle extends AssetBundle {
     Completer<T>? completer; // For async flow.
     SynchronousFuture<T>? result; // For sync flow.
 
-    load(key)
-      .then<T>(parser)
-      .then<void>((T value) {
+    load(key).then<T>(parser).then<void>(
+      (T value) {
         result = SynchronousFuture<T>(value);
         _structuredBinaryDataCache[key] = result!;
         if (completer != null) {
@@ -280,9 +277,11 @@ abstract class CachingAssetBundle extends AssetBundle {
           // was given the future of the completer.
           completer.complete(value);
         }
-      }, onError: (Object error, StackTrace stack) {
+      },
+      onError: (Object error, StackTrace stack) {
         completer!.completeError(error, stack);
-      });
+      },
+    );
 
     if (result != null) {
       // The above code ran synchronously. We can synchronously return the result.
@@ -323,18 +322,17 @@ class PlatformAssetBundle extends CachingAssetBundle {
   @override
   Future<ByteData> load(String key) {
     final Uint8List encoded = utf8.encoder.convert(Uri(path: Uri.encodeFull(key)).path);
-    final Future<ByteData>? future = ServicesBinding.instance.defaultBinaryMessenger.send(
-      'flutter/assets',
-      encoded.buffer.asByteData(),
-    )?.then((ByteData? asset) {
-      if (asset == null) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          _errorSummaryWithKey(key),
-          ErrorDescription('The asset does not exist or has empty data.'),
-        ]);
-      }
-      return asset;
-    });
+    final Future<ByteData>? future = ServicesBinding.instance.defaultBinaryMessenger
+        .send('flutter/assets', encoded.buffer.asByteData())
+        ?.then((ByteData? asset) {
+          if (asset == null) {
+            throw FlutterError.fromParts(<DiagnosticsNode>[
+              _errorSummaryWithKey(key),
+              ErrorDescription('The asset does not exist or has empty data.'),
+            ]);
+          }
+          return asset;
+        });
     if (future == null) {
       throw FlutterError.fromParts(<DiagnosticsNode>[
         _errorSummaryWithKey(key),
@@ -351,17 +349,19 @@ class PlatformAssetBundle extends CachingAssetBundle {
       return ui.ImmutableBuffer.fromUint8List(bytes.buffer.asUint8List());
     }
     bool debugUsePlatformChannel = false;
-    assert(() {
-      // dart:io is safe to use here since we early return for web
-      // above. If that code is changed, this needs to be guarded on
-      // web presence. Override how assets are loaded in tests so that
-      // the old loader behavior that allows tests to load assets from
-      // the current package using the package prefix.
-      if (Platform.environment.containsKey('UNIT_TEST_ASSETS')) {
-        debugUsePlatformChannel = true;
-      }
-      return true;
-    }());
+    assert(
+      () {
+        // dart:io is safe to use here since we early return for web
+        // above. If that code is changed, this needs to be guarded on
+        // web presence. Override how assets are loaded in tests so that
+        // the old loader behavior that allows tests to load assets from
+        // the current package using the package prefix.
+        if (Platform.environment.containsKey('UNIT_TEST_ASSETS')) {
+          debugUsePlatformChannel = true;
+        }
+        return true;
+      }(),
+    );
     if (debugUsePlatformChannel) {
       final ByteData bytes = await load(key);
       return ui.ImmutableBuffer.fromUint8List(bytes.buffer.asUint8List());
@@ -369,10 +369,7 @@ class PlatformAssetBundle extends CachingAssetBundle {
     try {
       return await ui.ImmutableBuffer.fromAsset(key);
     } on Exception catch (e) {
-      throw FlutterError.fromParts(<DiagnosticsNode>[
-        _errorSummaryWithKey(key),
-        ErrorDescription(e.toString()),
-      ]);
+      throw FlutterError.fromParts(<DiagnosticsNode>[_errorSummaryWithKey(key), ErrorDescription(e.toString())]);
     }
   }
 }

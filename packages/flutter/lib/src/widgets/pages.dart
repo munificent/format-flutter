@@ -16,11 +16,7 @@ import 'routes.dart';
 ///  * [Route], which documents the meaning of the `T` generic type argument.
 abstract class PageRoute<T> extends ModalRoute<T> {
   /// Creates a modal route that replaces the entire screen.
-  PageRoute({
-    super.settings,
-    this.fullscreenDialog = false,
-    this.allowSnapshotting = true,
-  });
+  PageRoute({super.settings, this.fullscreenDialog = false, this.allowSnapshotting = true});
 
   /// {@template flutter.widgets.PageRoute.fullscreenDialog}
   /// Whether this page route is a full-screen dialog.
@@ -48,7 +44,12 @@ abstract class PageRoute<T> extends ModalRoute<T> {
   bool canTransitionFrom(TransitionRoute<dynamic> previousRoute) => previousRoute is PageRoute;
 }
 
-Widget _defaultTransitionsBuilder(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+Widget _defaultTransitionsBuilder(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
   return child;
 }
 
@@ -126,7 +127,12 @@ class PageRouteBuilder<T> extends PageRoute<T> {
   }
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     return transitionsBuilder(context, animation, secondaryAnimation, child);
   }
 }

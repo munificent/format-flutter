@@ -130,7 +130,7 @@ abstract class CustomPainter extends Listenable {
   /// Creates a custom painter.
   ///
   /// The painter will repaint whenever `repaint` notifies its listeners.
-  const CustomPainter({ Listenable? repaint }) : _repaint = repaint;
+  const CustomPainter({Listenable? repaint}) : _repaint = repaint;
 
   final Listenable? _repaint;
 
@@ -266,7 +266,7 @@ abstract class CustomPainter extends Listenable {
   bool? hitTest(Offset position) => null;
 
   @override
-  String toString() => '${describeIdentity(this)}(${ _repaint?.toString() ?? "" })';
+  String toString() => '${describeIdentity(this)}(${_repaint?.toString() ?? ""})';
 }
 
 /// Contains properties describing information drawn in a rectangle contained by
@@ -288,13 +288,7 @@ class CustomPainterSemantics {
   /// Creates semantics information describing a rectangle on a canvas.
   ///
   /// Arguments `rect` and `properties` must not be null.
-  const CustomPainterSemantics({
-    this.key,
-    required this.rect,
-    required this.properties,
-    this.transform,
-    this.tags,
-  });
+  const CustomPainterSemantics({this.key, required this.rect, required this.properties, this.transform, this.tags});
 
   /// Identifies this object in a list of siblings.
   ///
@@ -380,6 +374,7 @@ class RenderCustomPaint extends RenderProxyBox {
   /// This painter, if non-null, is called to paint behind the children.
   CustomPainter? get painter => _painter;
   CustomPainter? _painter;
+
   /// Set a new background custom paint delegate.
   ///
   /// If the new delegate is the same as the previous one, this does nothing.
@@ -406,6 +401,7 @@ class RenderCustomPaint extends RenderProxyBox {
   /// This painter, if non-null, is called to paint in front of the children.
   CustomPainter? get foregroundPainter => _foregroundPainter;
   CustomPainter? _foregroundPainter;
+
   /// Set a new foreground custom paint delegate.
   ///
   /// If the new delegate is the same as the previous one, this does nothing.
@@ -537,7 +533,7 @@ class RenderCustomPaint extends RenderProxyBox {
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, { required Offset position }) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     if (_foregroundPainter != null && (_foregroundPainter!.hitTest(position) ?? false)) {
       return true;
     }
@@ -563,49 +559,55 @@ class RenderCustomPaint extends RenderProxyBox {
   void _paintWithPainter(Canvas canvas, Offset offset, CustomPainter painter) {
     late int debugPreviousCanvasSaveCount;
     canvas.save();
-    assert(() {
-      debugPreviousCanvasSaveCount = canvas.getSaveCount();
-      return true;
-    }());
+    assert(
+      () {
+        debugPreviousCanvasSaveCount = canvas.getSaveCount();
+        return true;
+      }(),
+    );
     if (offset != Offset.zero) {
       canvas.translate(offset.dx, offset.dy);
     }
     painter.paint(canvas, size);
-    assert(() {
-      // This isn't perfect. For example, we can't catch the case of
-      // someone first restoring, then setting a transform or whatnot,
-      // then saving.
-      // If this becomes a real problem, we could add logic to the
-      // Canvas class to lock the canvas at a particular save count
-      // such that restore() fails if it would take the lock count
-      // below that number.
-      final int debugNewCanvasSaveCount = canvas.getSaveCount();
-      if (debugNewCanvasSaveCount > debugPreviousCanvasSaveCount) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-            'The $painter custom painter called canvas.save() or canvas.saveLayer() at least '
-            '${debugNewCanvasSaveCount - debugPreviousCanvasSaveCount} more '
-            'time${debugNewCanvasSaveCount - debugPreviousCanvasSaveCount == 1 ? '' : 's' } '
-            'than it called canvas.restore().',
-          ),
-          ErrorDescription('This leaves the canvas in an inconsistent state and will probably result in a broken display.'),
-          ErrorHint('You must pair each call to save()/saveLayer() with a later matching call to restore().'),
-        ]);
-      }
-      if (debugNewCanvasSaveCount < debugPreviousCanvasSaveCount) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-            'The $painter custom painter called canvas.restore() '
-            '${debugPreviousCanvasSaveCount - debugNewCanvasSaveCount} more '
-            'time${debugPreviousCanvasSaveCount - debugNewCanvasSaveCount == 1 ? '' : 's' } '
-            'than it called canvas.save() or canvas.saveLayer().',
-          ),
-          ErrorDescription('This leaves the canvas in an inconsistent state and will result in a broken display.'),
-          ErrorHint('You should only call restore() if you first called save() or saveLayer().'),
-        ]);
-      }
-      return debugNewCanvasSaveCount == debugPreviousCanvasSaveCount;
-    }());
+    assert(
+      () {
+        // This isn't perfect. For example, we can't catch the case of
+        // someone first restoring, then setting a transform or whatnot,
+        // then saving.
+        // If this becomes a real problem, we could add logic to the
+        // Canvas class to lock the canvas at a particular save count
+        // such that restore() fails if it would take the lock count
+        // below that number.
+        final int debugNewCanvasSaveCount = canvas.getSaveCount();
+        if (debugNewCanvasSaveCount > debugPreviousCanvasSaveCount) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'The $painter custom painter called canvas.save() or canvas.saveLayer() at least '
+              '${debugNewCanvasSaveCount - debugPreviousCanvasSaveCount} more '
+              'time${debugNewCanvasSaveCount - debugPreviousCanvasSaveCount == 1 ? '' : 's'} '
+              'than it called canvas.restore().',
+            ),
+            ErrorDescription(
+              'This leaves the canvas in an inconsistent state and will probably result in a broken display.',
+            ),
+            ErrorHint('You must pair each call to save()/saveLayer() with a later matching call to restore().'),
+          ]);
+        }
+        if (debugNewCanvasSaveCount < debugPreviousCanvasSaveCount) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              'The $painter custom painter called canvas.restore() '
+              '${debugPreviousCanvasSaveCount - debugNewCanvasSaveCount} more '
+              'time${debugPreviousCanvasSaveCount - debugNewCanvasSaveCount == 1 ? '' : 's'} '
+              'than it called canvas.save() or canvas.saveLayer().',
+            ),
+            ErrorDescription('This leaves the canvas in an inconsistent state and will result in a broken display.'),
+            ErrorHint('You should only call restore() if you first called save() or saveLayer().'),
+          ]);
+        }
+        return debugNewCanvasSaveCount == debugPreviousCanvasSaveCount;
+      }(),
+    );
     canvas.restore();
   }
 
@@ -652,31 +654,29 @@ class RenderCustomPaint extends RenderProxyBox {
   List<SemanticsNode>? _foregroundSemanticsNodes;
 
   @override
-  void assembleSemanticsNode(
-    SemanticsNode node,
-    SemanticsConfiguration config,
-    Iterable<SemanticsNode> children,
-  ) {
-    assert(() {
-      if (child == null && children.isNotEmpty) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-            '$runtimeType does not have a child widget but received a non-empty list of child SemanticsNode:\n'
-            '${children.join('\n')}',
-          ),
-        ]);
-      }
-      return true;
-    }());
+  void assembleSemanticsNode(SemanticsNode node, SemanticsConfiguration config, Iterable<SemanticsNode> children) {
+    assert(
+      () {
+        if (child == null && children.isNotEmpty) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary(
+              '$runtimeType does not have a child widget but received a non-empty list of child SemanticsNode:\n'
+              '${children.join('\n')}',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
 
     final List<CustomPainterSemantics> backgroundSemantics = _backgroundSemanticsBuilder != null
-      ? _backgroundSemanticsBuilder!(size)
-      : const <CustomPainterSemantics>[];
+        ? _backgroundSemanticsBuilder!(size)
+        : const <CustomPainterSemantics>[];
     _backgroundSemanticsNodes = _updateSemanticsChildren(_backgroundSemanticsNodes, backgroundSemantics);
 
     final List<CustomPainterSemantics> foregroundSemantics = _foregroundSemanticsBuilder != null
-      ? _foregroundSemanticsBuilder!(size)
-      : const <CustomPainterSemantics>[];
+        ? _foregroundSemanticsBuilder!(size)
+        : const <CustomPainterSemantics>[];
     _foregroundSemanticsNodes = _updateSemanticsChildren(_foregroundSemanticsNodes, foregroundSemantics);
 
     final bool hasBackgroundSemantics = _backgroundSemanticsNodes != null && _backgroundSemanticsNodes!.isNotEmpty;
@@ -725,26 +725,28 @@ class RenderCustomPaint extends RenderProxyBox {
     oldSemantics = oldSemantics ?? const <SemanticsNode>[];
     newChildSemantics = newChildSemantics ?? const <CustomPainterSemantics>[];
 
-    assert(() {
-      final Map<Key, int> keys = HashMap<Key, int>();
-      final List<DiagnosticsNode> information = <DiagnosticsNode>[];
-      for (int i = 0; i < newChildSemantics!.length; i += 1) {
-        final CustomPainterSemantics child = newChildSemantics[i];
-        if (child.key != null) {
-          if (keys.containsKey(child.key)) {
-            information.add(ErrorDescription('- duplicate key ${child.key} found at position $i'));
+    assert(
+      () {
+        final Map<Key, int> keys = HashMap<Key, int>();
+        final List<DiagnosticsNode> information = <DiagnosticsNode>[];
+        for (int i = 0; i < newChildSemantics!.length; i += 1) {
+          final CustomPainterSemantics child = newChildSemantics[i];
+          if (child.key != null) {
+            if (keys.containsKey(child.key)) {
+              information.add(ErrorDescription('- duplicate key ${child.key} found at position $i'));
+            }
+            keys[child.key!] = i;
           }
-          keys[child.key!] = i;
         }
-      }
 
-      if (information.isNotEmpty) {
-        information.insert(0, ErrorSummary('Failed to update the list of CustomPainterSemantics:'));
-        throw FlutterError.fromParts(information);
-      }
+        if (information.isNotEmpty) {
+          information.insert(0, ErrorSummary('Failed to update the list of CustomPainterSemantics:'));
+          throw FlutterError.fromParts(information);
+        }
 
-      return true;
-    }());
+        return true;
+      }(),
+    );
 
     int newChildrenTop = 0;
     int oldChildrenTop = 0;
@@ -837,12 +839,14 @@ class RenderCustomPaint extends RenderProxyBox {
       oldChildrenTop += 1;
     }
 
-    assert(() {
-      for (final SemanticsNode? node in newChildren) {
-        assert(node != null);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        for (final SemanticsNode? node in newChildren) {
+          assert(node != null);
+        }
+        return true;
+      }(),
+    );
 
     return newChildren.cast<SemanticsNode>();
   }
@@ -862,9 +866,7 @@ class RenderCustomPaint extends RenderProxyBox {
   static SemanticsNode _updateSemanticsChild(SemanticsNode? oldChild, CustomPainterSemantics newSemantics) {
     assert(oldChild == null || _canUpdateSemanticsChild(oldChild, newSemantics));
 
-    final SemanticsNode newChild = oldChild ?? SemanticsNode(
-      key: newSemantics.key,
-    );
+    final SemanticsNode newChild = oldChild ?? SemanticsNode(key: newSemantics.key);
 
     final SemanticsProperties properties = newSemantics.properties;
     final SemanticsConfiguration config = SemanticsConfiguration();
@@ -1040,7 +1042,11 @@ class RenderCustomPaint extends RenderProxyBox {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(MessageProperty('painter', '$painter'));
-    properties.add(MessageProperty('foregroundPainter', '$foregroundPainter', level: foregroundPainter != null ? DiagnosticLevel.info : DiagnosticLevel.fine));
+    properties.add(MessageProperty(
+      'foregroundPainter',
+      '$foregroundPainter',
+      level: foregroundPainter != null ? DiagnosticLevel.info : DiagnosticLevel.fine,
+    ));
     properties.add(DiagnosticsProperty<Size>('preferredSize', preferredSize, defaultValue: Size.zero));
     properties.add(DiagnosticsProperty<bool>('isComplex', isComplex, defaultValue: false));
     properties.add(DiagnosticsProperty<bool>('willChange', willChange, defaultValue: false));

@@ -25,11 +25,7 @@ class _NoSplashFactory extends InteractiveInkFeatureFactory {
     double? radius,
     VoidCallback? onRemoved,
   }) {
-    return NoSplash(
-      controller: controller,
-      referenceBox: referenceBox,
-      color: color,
-    );
+    return NoSplash(controller: controller, referenceBox: referenceBox, color: color);
   }
 }
 
@@ -50,18 +46,12 @@ class _NoSplashFactory extends InteractiveInkFeatureFactory {
 /// ```
 class NoSplash extends InteractiveInkFeature {
   /// Create an [InteractiveInkFeature] that doesn't paint a splash.
-  NoSplash({
-    required super.controller,
-    required super.referenceBox,
-    required super.color,
-    super.onRemoved,
-  });
+  NoSplash({required super.controller, required super.referenceBox, required super.color, super.onRemoved});
 
   /// Used to specify this type of ink splash for an [InkWell], [InkResponse]
   /// material [Theme], or [ButtonStyle].
   static const InteractiveInkFeatureFactory splashFactory = _NoSplashFactory();
 
   @override
-  void paintFeature(Canvas canvas, Matrix4 transform) {
-  }
+  void paintFeature(Canvas canvas, Matrix4 transform) {}
 }

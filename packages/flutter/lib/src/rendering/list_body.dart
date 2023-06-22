@@ -8,7 +8,7 @@ import 'box.dart';
 import 'object.dart';
 
 /// Parent data for use with [RenderListBody].
-class ListBodyParentData extends ContainerBoxParentData<RenderBox> { }
+class ListBodyParentData extends ContainerBoxParentData<RenderBox> {}
 
 typedef _ChildSizingFunction = double Function(RenderBox child);
 
@@ -23,16 +23,15 @@ typedef _ChildSizingFunction = double Function(RenderBox child);
 /// must be given unlimited space in the main axis, typically by being contained
 /// in a viewport with a scrolling direction that matches the box's main axis.
 class RenderListBody extends RenderBox
-    with ContainerRenderObjectMixin<RenderBox, ListBodyParentData>,
-         RenderBoxContainerDefaultsMixin<RenderBox, ListBodyParentData> {
+    with
+        ContainerRenderObjectMixin<RenderBox, ListBodyParentData>,
+        RenderBoxContainerDefaultsMixin<RenderBox, ListBodyParentData> {
   /// Creates a render object that arranges its children sequentially along a
   /// given axis.
   ///
   /// By default, children are arranged along the vertical axis.
-  RenderListBody({
-    List<RenderBox>? children,
-    AxisDirection axisDirection = AxisDirection.down,
-  }) : _axisDirection = axisDirection {
+  RenderListBody({List<RenderBox>? children, AxisDirection axisDirection = AxisDirection.down})
+    : _axisDirection = axisDirection {
     addAll(children);
   }
 
@@ -89,62 +88,66 @@ class RenderListBody extends RenderBox
   }
 
   bool _debugCheckConstraints(BoxConstraints constraints) {
-    assert(() {
-      switch (mainAxis) {
-        case Axis.horizontal:
-          if (!constraints.hasBoundedWidth) {
-            return true;
-          }
-        case Axis.vertical:
-          if (!constraints.hasBoundedHeight) {
-            return true;
-          }
-      }
-      throw FlutterError.fromParts(<DiagnosticsNode>[
-        ErrorSummary('RenderListBody must have unlimited space along its main axis.'),
-        ErrorDescription(
-          'RenderListBody does not clip or resize its children, so it must be '
-          'placed in a parent that does not constrain the main '
-          'axis.',
-        ),
-        ErrorHint(
-          'You probably want to put the RenderListBody inside a '
-          'RenderViewport with a matching main axis.',
-        ),
-      ]);
-    }());
-    assert(() {
-      switch (mainAxis) {
-        case Axis.horizontal:
-          if (constraints.hasBoundedHeight) {
-            return true;
-          }
-        case Axis.vertical:
-          if (constraints.hasBoundedWidth) {
-            return true;
-          }
-      }
-      // TODO(ianh): Detect if we're actually nested blocks and say something
-      // more specific to the exact situation in that case, and don't mention
-      // nesting blocks in the negative case.
-      throw FlutterError.fromParts(<DiagnosticsNode>[
-        ErrorSummary('RenderListBody must have a bounded constraint for its cross axis.'),
-        ErrorDescription(
-          "RenderListBody forces its children to expand to fit the RenderListBody's container, "
-          'so it must be placed in a parent that constrains the cross '
-          'axis to a finite dimension.',
-        ),
-        // TODO(jacobr): this hint is a great candidate to promote to being an
-        // automated quick fix in the future.
-        ErrorHint(
-          'If you are attempting to nest a RenderListBody with '
-          'one direction inside one of another direction, you will want to '
-          'wrap the inner one inside a box that fixes the dimension in that direction, '
-          'for example, a RenderIntrinsicWidth or RenderIntrinsicHeight object. '
-          'This is relatively expensive, however.', // (that's why we don't do it automatically)
-        ),
-      ]);
-    }());
+    assert(
+      () {
+        switch (mainAxis) {
+          case Axis.horizontal:
+            if (!constraints.hasBoundedWidth) {
+              return true;
+            }
+          case Axis.vertical:
+            if (!constraints.hasBoundedHeight) {
+              return true;
+            }
+        }
+        throw FlutterError.fromParts(<DiagnosticsNode>[
+          ErrorSummary('RenderListBody must have unlimited space along its main axis.'),
+          ErrorDescription(
+            'RenderListBody does not clip or resize its children, so it must be '
+            'placed in a parent that does not constrain the main '
+            'axis.',
+          ),
+          ErrorHint(
+            'You probably want to put the RenderListBody inside a '
+            'RenderViewport with a matching main axis.',
+          ),
+        ]);
+      }(),
+    );
+    assert(
+      () {
+        switch (mainAxis) {
+          case Axis.horizontal:
+            if (constraints.hasBoundedHeight) {
+              return true;
+            }
+          case Axis.vertical:
+            if (constraints.hasBoundedWidth) {
+              return true;
+            }
+        }
+        // TODO(ianh): Detect if we're actually nested blocks and say something
+        // more specific to the exact situation in that case, and don't mention
+        // nesting blocks in the negative case.
+        throw FlutterError.fromParts(<DiagnosticsNode>[
+          ErrorSummary('RenderListBody must have a bounded constraint for its cross axis.'),
+          ErrorDescription(
+            "RenderListBody forces its children to expand to fit the RenderListBody's container, "
+            'so it must be placed in a parent that constrains the cross '
+            'axis to a finite dimension.',
+          ),
+          // TODO(jacobr): this hint is a great candidate to promote to being an
+          // automated quick fix in the future.
+          ErrorHint(
+            'If you are attempting to nest a RenderListBody with '
+            'one direction inside one of another direction, you will want to '
+            'wrap the inner one inside a box that fixes the dimension in that direction, '
+            'for example, a RenderIntrinsicWidth or RenderIntrinsicHeight object. '
+            'This is relatively expensive, however.', // (that's why we don't do it automatically)
+          ),
+        ]);
+      }(),
+    );
     return true;
   }
 
@@ -298,8 +301,7 @@ class RenderListBody extends RenderBox
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, { required Offset position }) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     return defaultHitTestChildren(result, position: position);
   }
-
 }
