@@ -21,12 +21,14 @@ void main() {
 
   testWidgets('Input PointerHoverEvent', (WidgetTester tester) async {
     PointerHoverEvent? hoverEvent;
-    await tester.pumpWidget(MaterialApp(home: MouseRegion(
-      child: const Text('Test'),
-      onHover: (PointerHoverEvent event) {
-        hoverEvent = event;
-      },
-    )));
+    await tester.pumpWidget(MaterialApp(
+      home: MouseRegion(
+        child: const Text('Test'),
+        onHover: (PointerHoverEvent event) {
+          hoverEvent = event;
+        },
+      ),
+    ));
     await tester.pump();
     final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     final Offset location = tester.getCenter(find.text('Test'));
@@ -38,18 +40,16 @@ void main() {
 
   testWidgets('hitTesting works when using setSurfaceSize', (WidgetTester tester) async {
     int invocations = 0;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Center(
-          child: GestureDetector(
-            onTap: () {
-              invocations++;
-            },
-            child: const Text('Test'),
-          ),
+    await tester.pumpWidget(MaterialApp(
+      home: Center(
+        child: GestureDetector(
+          onTap: () {
+            invocations++;
+          },
+          child: const Text('Test'),
         ),
       ),
-    );
+    ));
 
     await tester.tap(find.byType(Text));
     await tester.pump();
@@ -71,9 +71,7 @@ void main() {
   testWidgets('setSurfaceSize works', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: Center(child: Text('Test'))));
 
-    final Size windowCenter = tester.view.physicalSize /
-        tester.view.devicePixelRatio /
-        2;
+    final Size windowCenter = tester.view.physicalSize / tester.view.devicePixelRatio / 2;
     final double windowCenterX = windowCenter.width;
     final double windowCenterY = windowCenter.height;
 
@@ -100,33 +98,32 @@ void main() {
     await expectLater(tester.binding.reassembleApplication(), completes);
   }, timeout: const Timeout(Duration(seconds: 30)));
 
-  testWidgets('shouldPropagateDevicePointerEvents can override events from ${TestBindingEventSource.device}', (WidgetTester tester) async {
-    binding.shouldPropagateDevicePointerEvents = true;
+  testWidgets(
+    'shouldPropagateDevicePointerEvents can override events from ${TestBindingEventSource.device}',
+    (WidgetTester tester) async {
+      binding.shouldPropagateDevicePointerEvents = true;
 
-    await tester.pumpWidget(_ShowNumTaps());
+      await tester.pumpWidget(_ShowNumTaps());
 
-    final Offset position = tester.getCenter(find.text('0'));
+      final Offset position = tester.getCenter(find.text('0'));
 
-    // Simulates a real device tap.
-    //
-    // `handlePointerEventForSource defaults to sending events using
-    // TestBindingEventSource.device. This will not be forwarded to the actual
-    // gesture handlers, unless `shouldPropagateDevicePointerEvents` is true.
-    binding.handlePointerEventForSource(
-      PointerDownEvent(position: position),
-    );
-    binding.handlePointerEventForSource(
-      PointerUpEvent(position: position),
-    );
+      // Simulates a real device tap.
+      //
+      // `handlePointerEventForSource defaults to sending events using
+      // TestBindingEventSource.device. This will not be forwarded to the actual
+      // gesture handlers, unless `shouldPropagateDevicePointerEvents` is true.
+      binding.handlePointerEventForSource(PointerDownEvent(position: position));
+      binding.handlePointerEventForSource(PointerUpEvent(position: position));
 
-    await tester.pump();
+      await tester.pump();
 
-    expect(find.text('1'), findsOneWidget);
+      expect(find.text('1'), findsOneWidget);
 
-    // Reset the value, otherwise the test will fail when it checks that this
-    // has not been changed as an invariant.
-    binding.shouldPropagateDevicePointerEvents = false;
-  });
+      // Reset the value, otherwise the test will fail when it checks that this
+      // has not been changed as an invariant.
+      binding.shouldPropagateDevicePointerEvents = false;
+    },
+  );
 }
 
 /// A widget that shows the number of times it has been tapped.
@@ -146,10 +143,7 @@ class _ShowNumTapsState extends State<_ShowNumTaps> {
           _counter++;
         });
       },
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: Text(_counter.toString()),
-      ),
+      child: Directionality(textDirection: TextDirection.ltr, child: Text(_counter.toString())),
     );
   }
 }

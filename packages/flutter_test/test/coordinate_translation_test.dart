@@ -13,10 +13,7 @@ void main() {
     tester.view.devicePixelRatio = 3.0;
     final RenderView renderView = RenderView(
       view: tester.view,
-      configuration: TestViewConfiguration.fromView(
-        view: tester.view,
-        size: const Size(400, 200),
-      )
+      configuration: TestViewConfiguration.fromView(view: tester.view, size: const Size(400, 200)),
     );
 
     // The configuration above defines a view with a resolution of 2400x1800

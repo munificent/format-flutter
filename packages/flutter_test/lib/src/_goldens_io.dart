@@ -91,10 +91,7 @@ class LocalFileComparator extends GoldenFileComparator with LocalComparisonOutpu
 
   @override
   Future<bool> compare(Uint8List imageBytes, Uri golden) async {
-    final ComparisonResult result = await GoldenFileComparator.compareLists(
-      imageBytes,
-      await getGoldenBytes(golden),
-    );
+    final ComparisonResult result = await GoldenFileComparator.compareLists(imageBytes, await getGoldenBytes(golden));
 
     if (!result.passed) {
       final String error = await generateFailureOutput(result, golden, basedir);
@@ -117,9 +114,7 @@ class LocalFileComparator extends GoldenFileComparator with LocalComparisonOutpu
   Future<List<int>> getGoldenBytes(Uri golden) async {
     final File goldenFile = _getGoldenFile(golden);
     if (!goldenFile.existsSync()) {
-      fail(
-        'Could not be compared against non-existent file: "$golden"'
-      );
+      fail('Could not be compared against non-existent file: "$golden"');
     }
     final List<int> goldenBytes = await goldenFile.readAsBytes();
     return goldenBytes;
@@ -145,11 +140,7 @@ mixin LocalComparisonOutput {
       additionalFeedback = '\nFailure feedback can be found at ${path.join(basedir.path, 'failures')}';
       final Map<String, Image> diffs = result.diffs!;
       for (final MapEntry<String, Image> entry in diffs.entries) {
-        final File output = getFailureFile(
-          key.isEmpty ? entry.key : '${entry.key}_$key',
-          golden,
-          basedir,
-        );
+        final File output = getFailureFile(key.isEmpty ? entry.key : '${entry.key}_$key', golden, basedir);
         output.parent.createSync(recursive: true);
         final ByteData? pngBytes = await entry.value.toByteData(format: ImageByteFormat.png);
         output.writeAsBytesSync(pngBytes!.buffer.asUint8List());
@@ -162,10 +153,7 @@ mixin LocalComparisonOutput {
   File getFailureFile(String failure, Uri golden, Uri basedir) {
     final String fileName = golden.pathSegments.last;
     final String testName = '${fileName.split(path.extension(fileName))[0]}_$failure.png';
-    return File(path.join(
-      path.fromUri(basedir),
-      path.fromUri(Uri.parse('failures/$testName')),
-    ));
+    return File(path.join(path.fromUri(basedir), path.fromUri(Uri.parse('failures/$testName'))));
   }
 }
 
@@ -173,27 +161,18 @@ mixin LocalComparisonOutput {
 /// [test] and [master] image bytes provided.
 Future<ComparisonResult> compareLists(List<int>? test, List<int>? master) async {
   if (identical(test, master)) {
-    return ComparisonResult(
-      passed: true,
-      diffPercent: 0.0,
-    );
+    return ComparisonResult(passed: true, diffPercent: 0.0);
   }
 
   if (test == null || master == null || test.isEmpty || master.isEmpty) {
-    return ComparisonResult(
-      passed: false,
-      diffPercent: 1.0,
-      error: 'Pixel test failed, null image provided.',
-    );
+    return ComparisonResult(passed: false, diffPercent: 1.0, error: 'Pixel test failed, null image provided.');
   }
 
-  final Codec testImageCodec =
-      await instantiateImageCodec(Uint8List.fromList(test));
+  final Codec testImageCodec = await instantiateImageCodec(Uint8List.fromList(test));
   final Image testImage = (await testImageCodec.getNextFrame()).image;
   final ByteData? testImageRgba = await testImage.toByteData();
 
-  final Codec masterImageCodec =
-      await instantiateImageCodec(Uint8List.fromList(master));
+  final Codec masterImageCodec = await instantiateImageCodec(Uint8List.fromList(master));
   final Image masterImage = (await masterImageCodec.getNextFrame()).image;
   final ByteData? masterImageRgba = await masterImage.toByteData();
 
@@ -201,12 +180,12 @@ Future<ComparisonResult> compareLists(List<int>? test, List<int>? master) async 
   final int height = testImage.height;
 
   if (width != masterImage.width || height != masterImage.height) {
-    final ComparisonResult result =  ComparisonResult(
+    final ComparisonResult result = ComparisonResult(
       passed: false,
       diffPercent: 1.0,
       error: 'Pixel test failed, image sizes do not match.\n'
-        'Master Image: ${masterImage.width} X ${masterImage.height}\n'
-        'Test Image: ${testImage.width} X ${testImage.height}',
+          'Master Image: ${masterImage.width} X ${masterImage.height}\n'
+          'Test Image: ${testImage.width} X ${testImage.height}',
     );
     masterImage.dispose();
     testImage.dispose();
@@ -224,26 +203,23 @@ Future<ComparisonResult> compareLists(List<int>? test, List<int>? master) async 
   final ByteData isolatedDiffRgba = ByteData(width * height * 4);
 
   for (int x = 0; x < width; x++) {
-    for (int y =0; y < height; y++) {
+    for (int y = 0; y < height; y++) {
       final int byteOffset = (width * y + x) * 4;
       final int testPixel = testImageRgba.getUint32(byteOffset);
       final int masterPixel = masterImageRgba.getUint32(byteOffset);
 
-      final int diffPixel = (_readRed(testPixel) - _readRed(masterPixel)).abs()
-        + (_readGreen(testPixel) - _readGreen(masterPixel)).abs()
-        + (_readBlue(testPixel) - _readBlue(masterPixel)).abs()
-        + (_readAlpha(testPixel) - _readAlpha(masterPixel)).abs();
+      final int diffPixel = (_readRed(testPixel) - _readRed(masterPixel)).abs() +
+          (_readGreen(testPixel) - _readGreen(masterPixel)).abs() +
+          (_readBlue(testPixel) - _readBlue(masterPixel)).abs() +
+          (_readAlpha(testPixel) - _readAlpha(masterPixel)).abs();
 
-      if (diffPixel != 0 ) {
+      if (diffPixel != 0) {
         final int invertedMasterPixel = invertedMasterRgba.getUint32(byteOffset);
         final int invertedTestPixel = invertedTestRgba.getUint32(byteOffset);
         // We grab the max of the 0xAABBGGRR encoded bytes, and then convert
         // back to 0xRRGGBBAA for the actual pixel value, since this is how it
         // was historically done.
-        final int maskPixel = _toRGBA(math.max(
-          _toABGR(invertedMasterPixel),
-          _toABGR(invertedTestPixel),
-        ));
+        final int maskPixel = _toRGBA(math.max(_toABGR(invertedMasterPixel), _toABGR(invertedTestPixel)));
         maskedDiffRgba.setUint32(byteOffset, maskPixel);
         isolatedDiffRgba.setUint32(byteOffset, maskPixel);
         pixelDiffCount++;
@@ -257,13 +233,13 @@ Future<ComparisonResult> compareLists(List<int>? test, List<int>? master) async 
       passed: false,
       diffPercent: diffPercent,
       error: 'Pixel test failed, '
-        '${(diffPercent * 100).toStringAsFixed(2)}% '
-        'diff detected.',
-      diffs:  <String, Image>{
-        'masterImage' : masterImage,
-        'testImage' : testImage,
-        'maskedDiff' : await _createImage(maskedDiffRgba, width, height),
-        'isolatedDiff' : await _createImage(isolatedDiffRgba, width, height),
+          '${(diffPercent * 100).toStringAsFixed(2)}% '
+          'diff detected.',
+      diffs: <String, Image>{
+        'masterImage': masterImage,
+        'testImage': testImage,
+        'maskedDiff': await _createImage(maskedDiffRgba, width, height),
+        'isolatedDiff': await _createImage(isolatedDiffRgba, width, height),
       },
     );
   }
@@ -313,24 +289,14 @@ int _readAlpha(int pixel) => pixel & 0xff;
 /// Convenience wrapper around [decodeImageFromPixels].
 Future<Image> _createImage(ByteData bytes, int width, int height) {
   final Completer<Image> completer = Completer<Image>();
-  decodeImageFromPixels(
-    bytes.buffer.asUint8List(),
-    width,
-    height,
-    PixelFormat.rgba8888,
-    completer.complete,
-  );
+  decodeImageFromPixels(bytes.buffer.asUint8List(), width, height, PixelFormat.rgba8888, completer.complete);
   return completer.future;
 }
 
 // Converts a 32 bit rgba pixel to a 32 bit abgr pixel
-int _toABGR(int rgba) =>
-    (_readAlpha(rgba) << 24) |
-    (_readBlue(rgba) << 16) |
-    (_readGreen(rgba) << 8) |
-    _readRed(rgba);
+int _toABGR(int rgba) => (_readAlpha(rgba) << 24) | (_readBlue(rgba) << 16) | (_readGreen(rgba) << 8) | _readRed(rgba);
 
 // Converts a 32 bit abgr pixel to a 32 bit rgba pixel
 int _toRGBA(int abgr) =>
-  // This is just a mirror of the other conversion.
-  _toABGR(abgr);
+// This is just a mirror of the other conversion.
+_toABGR(abgr);

@@ -59,15 +59,9 @@ void main() {
     testWidgets('when image pixels do not match', (WidgetTester tester) async {
       final ui.Image red100 = await createTestImage(100, 100, red);
       final ui.Image transparentRed100 = await createTestImage(100, 100, transparentRed);
-      expect(
-        await matchesReferenceImage(red100).matchAsync(transparentRed100),
-        equals('does not match on 57 pixels'),
-      );
+      expect(await matchesReferenceImage(red100).matchAsync(transparentRed100), equals('does not match on 57 pixels'));
       final ui.Image green100 = await createTestImage(100, 100, green);
-      expect(
-        await matchesReferenceImage(red100).matchAsync(green100),
-        equals('does not match on 57 pixels'),
-      );
+      expect(await matchesReferenceImage(red100).matchAsync(green100), equals('does not match on 57 pixels'));
     });
   });
 }

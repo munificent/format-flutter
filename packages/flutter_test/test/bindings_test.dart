@@ -71,20 +71,22 @@ void main() {
     testWidgets('can use to simulate slow build', (WidgetTester tester) async {
       final DateTime beforeTime = binding.clock.now();
 
-      await tester.pumpWidget(Builder(builder: (_) {
-        bool timerCalled = false;
-        Timer.run(() => timerCalled = true);
+      await tester.pumpWidget(Builder(
+        builder: (_) {
+          bool timerCalled = false;
+          Timer.run(() => timerCalled = true);
 
-        binding.elapseBlocking(const Duration(seconds: 1));
+          binding.elapseBlocking(const Duration(seconds: 1));
 
-        // if we use `delayed` instead of `elapseBlocking`, such as
-        // binding.delayed(const Duration(seconds: 1));
-        // the timer will be called here. Surely, that violates how
-        // a flutter widget build works
-        expect(timerCalled, false);
+          // if we use `delayed` instead of `elapseBlocking`, such as
+          // binding.delayed(const Duration(seconds: 1));
+          // the timer will be called here. Surely, that violates how
+          // a flutter widget build works
+          expect(timerCalled, false);
 
-        return Container();
-      }));
+          return Container();
+        },
+      ));
 
       expect(binding.clock.now(), beforeTime.add(const Duration(seconds: 1)));
       binding.idle();

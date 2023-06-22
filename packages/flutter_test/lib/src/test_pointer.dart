@@ -20,12 +20,8 @@ class TestPointer {
   ///
   /// Multiple [TestPointer]s created with the same pointer identifier will
   /// interfere with each other if they are used in parallel.
-  TestPointer([
-    this.pointer = 1,
-    this.kind = PointerDeviceKind.touch,
-    int? device,
-    int buttons = kPrimaryButton,
-  ]) : _buttons = buttons {
+  TestPointer([this.pointer = 1, this.kind = PointerDeviceKind.touch, int? device, int buttons = kPrimaryButton])
+    : _buttons = buttons {
     switch (kind) {
       case PointerDeviceKind.mouse:
         _device = device ?? 1;
@@ -81,7 +77,6 @@ class TestPointer {
   Offset? get location => _location;
   Offset? _location;
 
-
   /// The pan offset of the last pointer pan/zoom event sent by this object.
   ///
   /// If no pan/zoom event has ever been sent by this object, returns null.
@@ -90,11 +85,7 @@ class TestPointer {
 
   /// If a custom event is created outside of this class, this function is used
   /// to set the [isDown].
-  bool setDownInfo(
-    PointerEvent event,
-    Offset newLocation, {
-    int? buttons,
-  }) {
+  bool setDownInfo(PointerEvent event, Offset newLocation, {int? buttons}) {
     _location = newLocation;
     if (buttons != null) {
       _buttons = buttons;
@@ -120,11 +111,7 @@ class TestPointer {
   ///
   /// By default, the set of buttons in the last down or move event is used.
   /// You can give a specific set of buttons by passing the `buttons` argument.
-  PointerDownEvent down(
-    Offset newLocation, {
-    Duration timeStamp = Duration.zero,
-    int? buttons,
-  }) {
+  PointerDownEvent down(Offset newLocation, {Duration timeStamp = Duration.zero, int? buttons}) {
     assert(!isDown);
     assert(!isPanZoomActive);
     _isDown = true;
@@ -152,16 +139,13 @@ class TestPointer {
   ///
   /// By default, the set of buttons in the last down or move event is used.
   /// You can give a specific set of buttons by passing the `buttons` argument.
-  PointerMoveEvent move(
-    Offset newLocation, {
-    Duration timeStamp = Duration.zero,
-    int? buttons,
-  }) {
+  PointerMoveEvent move(Offset newLocation, {Duration timeStamp = Duration.zero, int? buttons}) {
     assert(
-        isDown,
-        'Move events can only be generated when the pointer is down. To '
-        'create a movement event simulating a pointer move when the pointer is '
-        'up, use hover() instead.');
+      isDown,
+      'Move events can only be generated when the pointer is down. To '
+      'create a movement event simulating a pointer move when the pointer is '
+      'up, use hover() instead.',
+    );
     assert(!isPanZoomActive);
     final Offset delta = newLocation - location!;
     _location = newLocation;
@@ -185,17 +169,11 @@ class TestPointer {
   /// specific time stamp by passing the `timeStamp` argument.
   ///
   /// The object is no longer usable after this method has been called.
-  PointerUpEvent up({ Duration timeStamp = Duration.zero }) {
+  PointerUpEvent up({Duration timeStamp = Duration.zero}) {
     assert(!isPanZoomActive);
     assert(isDown);
     _isDown = false;
-    return PointerUpEvent(
-      timeStamp: timeStamp,
-      kind: kind,
-      device: _device,
-      pointer: pointer,
-      position: location!,
-    );
+    return PointerUpEvent(timeStamp: timeStamp, kind: kind, device: _device, pointer: pointer, position: location!);
   }
 
   /// Create a [PointerCancelEvent].
@@ -204,16 +182,10 @@ class TestPointer {
   /// specific time stamp by passing the `timeStamp` argument.
   ///
   /// The object is no longer usable after this method has been called.
-  PointerCancelEvent cancel({ Duration timeStamp = Duration.zero }) {
+  PointerCancelEvent cancel({Duration timeStamp = Duration.zero}) {
     assert(isDown);
     _isDown = false;
-    return PointerCancelEvent(
-      timeStamp: timeStamp,
-      kind: kind,
-      device: _device,
-      pointer: pointer,
-      position: location!,
-    );
+    return PointerCancelEvent(timeStamp: timeStamp, kind: kind, device: _device, pointer: pointer, position: location!);
   }
 
   /// Create a [PointerAddedEvent] with the [PointerDeviceKind] the pointer was
@@ -221,17 +193,9 @@ class TestPointer {
   ///
   /// By default, the time stamp on the event is [Duration.zero]. You can give a
   /// specific time stamp by passing the `timeStamp` argument.
-  PointerAddedEvent addPointer({
-    Duration timeStamp = Duration.zero,
-    Offset? location,
-  }) {
+  PointerAddedEvent addPointer({Duration timeStamp = Duration.zero, Offset? location}) {
     _location = location ?? _location;
-    return PointerAddedEvent(
-      timeStamp: timeStamp,
-      kind: kind,
-      device: _device,
-      position: _location ?? Offset.zero,
-    );
+    return PointerAddedEvent(timeStamp: timeStamp, kind: kind, device: _device, position: _location ?? Offset.zero);
   }
 
   /// Create a [PointerRemovedEvent] with the [PointerDeviceKind] the pointer
@@ -239,10 +203,7 @@ class TestPointer {
   ///
   /// By default, the time stamp on the event is [Duration.zero]. You can give a
   /// specific time stamp by passing the `timeStamp` argument.
-  PointerRemovedEvent removePointer({
-    Duration timeStamp = Duration.zero,
-    Offset? location,
-  }) {
+  PointerRemovedEvent removePointer({Duration timeStamp = Duration.zero, Offset? location}) {
     _location = location ?? _location;
     return PointerRemovedEvent(
       timeStamp: timeStamp,
@@ -260,14 +221,12 @@ class TestPointer {
   ///
   /// [isDown] must be false, since hover events can't be sent when the pointer
   /// is up.
-  PointerHoverEvent hover(
-    Offset newLocation, {
-    Duration timeStamp = Duration.zero,
-  }) {
+  PointerHoverEvent hover(Offset newLocation, {Duration timeStamp = Duration.zero}) {
     assert(
-        !isDown,
-        'Hover events can only be generated when the pointer is up. To '
-        'simulate movement when the pointer is down, use move() instead.');
+      !isDown,
+      'Hover events can only be generated when the pointer is up. To '
+      'simulate movement when the pointer is down, use move() instead.',
+    );
     final Offset delta = location != null ? newLocation - location! : Offset.zero;
     _location = newLocation;
     return PointerHoverEvent(
@@ -285,10 +244,7 @@ class TestPointer {
   ///
   /// By default, the time stamp on the event is [Duration.zero]. You can give a
   /// specific time stamp by passing the `timeStamp` argument.
-  PointerScrollEvent scroll(
-    Offset scrollDelta, {
-    Duration timeStamp = Duration.zero,
-  }) {
+  PointerScrollEvent scroll(Offset scrollDelta, {Duration timeStamp = Duration.zero}) {
     assert(kind != PointerDeviceKind.touch, "Touch pointers can't generate pointer signal events");
     assert(location != null);
     return PointerScrollEvent(
@@ -304,36 +260,20 @@ class TestPointer {
   ///
   /// By default, the time stamp on the event is [Duration.zero]. You can give a
   /// specific time stamp by passing the `timeStamp` argument.
-  PointerScrollInertiaCancelEvent scrollInertiaCancel({
-    Duration timeStamp = Duration.zero,
-  }) {
+  PointerScrollInertiaCancelEvent scrollInertiaCancel({Duration timeStamp = Duration.zero}) {
     assert(kind != PointerDeviceKind.touch, "Touch pointers can't generate pointer signal events");
     assert(location != null);
-    return PointerScrollInertiaCancelEvent(
-      timeStamp: timeStamp,
-      kind: kind,
-      device: _device,
-      position: location!
-    );
+    return PointerScrollInertiaCancelEvent(timeStamp: timeStamp, kind: kind, device: _device, position: location!);
   }
 
   /// Create a [PointerScaleEvent] (e.g., legacy pinch-to-zoom).
   ///
   /// By default, the time stamp on the event is [Duration.zero]. You can give a
   /// specific time stamp by passing the `timeStamp` argument.
-  PointerScaleEvent scale(
-    double scale, {
-    Duration timeStamp = Duration.zero,
-  }) {
+  PointerScaleEvent scale(double scale, {Duration timeStamp = Duration.zero}) {
     assert(kind != PointerDeviceKind.touch, "Touch pointers can't generate pointer signal events");
     assert(location != null);
-    return PointerScaleEvent(
-      timeStamp: timeStamp,
-      kind: kind,
-      device: _device,
-      position: location!,
-      scale: scale,
-    );
+    return PointerScaleEvent(timeStamp: timeStamp, kind: kind, device: _device, position: location!, scale: scale);
   }
 
   /// Create a [PointerPanZoomStartEvent] (e.g., trackpad scroll; not scroll wheel
@@ -341,21 +281,13 @@ class TestPointer {
   ///
   /// By default, the time stamp on the event is [Duration.zero]. You can give a
   /// specific time stamp by passing the `timeStamp` argument.
-  PointerPanZoomStartEvent panZoomStart(
-    Offset location, {
-    Duration timeStamp = Duration.zero
-  }) {
+  PointerPanZoomStartEvent panZoomStart(Offset location, {Duration timeStamp = Duration.zero}) {
     assert(!isPanZoomActive);
     assert(kind == PointerDeviceKind.trackpad);
     _location = location;
     _pan = Offset.zero;
     _isPanZoomActive = true;
-    return PointerPanZoomStartEvent(
-      timeStamp: timeStamp,
-      device: _device,
-      pointer: pointer,
-      position: location,
-    );
+    return PointerPanZoomStartEvent(timeStamp: timeStamp, device: _device, pointer: pointer, position: location);
   }
 
   /// Create a [PointerPanZoomUpdateEvent] to update the active pan/zoom sequence
@@ -394,19 +326,12 @@ class TestPointer {
   ///
   /// By default, the time stamp on the event is [Duration.zero]. You can give a
   /// specific time stamp by passing the `timeStamp` argument.
-  PointerPanZoomEndEvent panZoomEnd({
-    Duration timeStamp = Duration.zero
-  }) {
+  PointerPanZoomEndEvent panZoomEnd({Duration timeStamp = Duration.zero}) {
     assert(isPanZoomActive);
     assert(kind == PointerDeviceKind.trackpad);
     _isPanZoomActive = false;
     _pan = null;
-    return PointerPanZoomEndEvent(
-      timeStamp: timeStamp,
-      device: _device,
-      pointer: pointer,
-      position: location!,
-    );
+    return PointerPanZoomEndEvent(timeStamp: timeStamp, device: _device, pointer: pointer, position: location!);
   }
 }
 
@@ -450,8 +375,11 @@ class TestGesture {
 
   /// Dispatch a pointer down event at the given `downLocation`, caching the
   /// hit test result.
-  Future<void> down(Offset downLocation, { Duration timeStamp = Duration.zero }) async {
-    assert(_pointer.kind != PointerDeviceKind.trackpad, 'Trackpads are expected to send panZoomStart events, not down events.');
+  Future<void> down(Offset downLocation, {Duration timeStamp = Duration.zero}) async {
+    assert(
+      _pointer.kind != PointerDeviceKind.trackpad,
+      'Trackpads are expected to send panZoomStart events, not down events.',
+    );
     return TestAsyncUtils.guard<void>(() async {
       return _dispatcher(_pointer.down(downLocation, timeStamp: timeStamp));
     });
@@ -460,7 +388,10 @@ class TestGesture {
   /// Dispatch a pointer down event at the given `downLocation`, caching the
   /// hit test result with a custom down event.
   Future<void> downWithCustomEvent(Offset downLocation, PointerDownEvent event) async {
-    assert(_pointer.kind != PointerDeviceKind.trackpad, 'Trackpads are expected to send panZoomStart events, not down events');
+    assert(
+      _pointer.kind != PointerDeviceKind.trackpad,
+      'Trackpads are expected to send panZoomStart events, not down events',
+    );
     _pointer.setDownInfo(event, downLocation);
     return TestAsyncUtils.guard<void>(() async {
       return _dispatcher(event);
@@ -472,7 +403,7 @@ class TestGesture {
 
   /// In a test, send a move event that moves the pointer by the given offset.
   @visibleForTesting
-  Future<void> updateWithCustomEvent(PointerEvent event, { Duration timeStamp = Duration.zero }) {
+  Future<void> updateWithCustomEvent(PointerEvent event, {Duration timeStamp = Duration.zero}) {
     _pointer.setDownInfo(event, event.position);
     return TestAsyncUtils.guard<void>(() {
       return _dispatcher(event);
@@ -480,14 +411,14 @@ class TestGesture {
   }
 
   /// In a test, send a pointer add event for this pointer.
-  Future<void> addPointer({ Duration timeStamp = Duration.zero, Offset? location }) {
+  Future<void> addPointer({Duration timeStamp = Duration.zero, Offset? location}) {
     return TestAsyncUtils.guard<void>(() {
       return _dispatcher(_pointer.addPointer(timeStamp: timeStamp, location: location ?? _pointer.location));
     });
   }
 
   /// In a test, send a pointer remove event for this pointer.
-  Future<void> removePointer({ Duration timeStamp = Duration.zero, Offset? location }) {
+  Future<void> removePointer({Duration timeStamp = Duration.zero, Offset? location}) {
     return TestAsyncUtils.guard<void>(() {
       return _dispatcher(_pointer.removePointer(timeStamp: timeStamp, location: location ?? _pointer.location));
     });
@@ -503,14 +434,10 @@ class TestGesture {
   ///  * [WidgetController.timedDrag], a method to simulate the drag of a given widget in a given duration.
   ///    It sends move events at a given frequency and it is useful when there are listeners involved.
   ///  * [WidgetController.fling], a method to simulate a fling.
-  Future<void> moveBy(Offset offset, { Duration timeStamp = Duration.zero }) {
+  Future<void> moveBy(Offset offset, {Duration timeStamp = Duration.zero}) {
     assert(_pointer.location != null);
     if (_pointer.isPanZoomActive) {
-      return panZoomUpdate(
-        _pointer.location!,
-        pan: (_pointer.pan ?? Offset.zero) + offset,
-        timeStamp: timeStamp
-      );
+      return panZoomUpdate(_pointer.location!, pan: (_pointer.pan ?? Offset.zero) + offset, timeStamp: timeStamp);
     } else {
       return moveTo(_pointer.location! + offset, timeStamp: timeStamp);
     }
@@ -526,7 +453,7 @@ class TestGesture {
   ///  * [WidgetController.timedDrag], a method to simulate the drag of a given widget in a given duration.
   ///    It sends move events at a given frequency and it is useful when there are listeners involved.
   ///  * [WidgetController.fling], a method to simulate a fling.
-  Future<void> moveTo(Offset location, { Duration timeStamp = Duration.zero }) {
+  Future<void> moveTo(Offset location, {Duration timeStamp = Duration.zero}) {
     assert(_pointer.kind != PointerDeviceKind.trackpad);
     return TestAsyncUtils.guard<void>(() {
       if (_pointer._isDown) {
@@ -539,7 +466,7 @@ class TestGesture {
 
   /// End the gesture by releasing the pointer. For trackpad pointers this
   /// will send a panZoomEnd event instead of an up event.
-  Future<void> up({ Duration timeStamp = Duration.zero }) {
+  Future<void> up({Duration timeStamp = Duration.zero}) {
     return TestAsyncUtils.guard<void>(() async {
       if (_pointer.kind == PointerDeviceKind.trackpad) {
         assert(_pointer._isPanZoomActive);
@@ -556,7 +483,7 @@ class TestGesture {
   /// End the gesture by canceling the pointer (as would happen if the
   /// system showed a modal dialog on top of the Flutter application,
   /// for instance).
-  Future<void> cancel({ Duration timeStamp = Duration.zero }) {
+  Future<void> cancel({Duration timeStamp = Duration.zero}) {
     assert(_pointer.kind != PointerDeviceKind.trackpad, 'Trackpads do not send cancel events.');
     return TestAsyncUtils.guard<void>(() async {
       assert(_pointer._isDown);
@@ -567,7 +494,7 @@ class TestGesture {
 
   /// Dispatch a pointer pan zoom start event at the given `location`, caching the
   /// hit test result.
-  Future<void> panZoomStart(Offset location, { Duration timeStamp = Duration.zero }) async {
+  Future<void> panZoomStart(Offset location, {Duration timeStamp = Duration.zero}) async {
     assert(_pointer.kind == PointerDeviceKind.trackpad, 'Only trackpads can send PointerPanZoom events.');
     return TestAsyncUtils.guard<void>(() async {
       return _dispatcher(_pointer.panZoomStart(location, timeStamp: timeStamp));
@@ -576,32 +503,26 @@ class TestGesture {
 
   /// Dispatch a pointer pan zoom update event at the given `location`, caching the
   /// hit test result.
-  Future<void> panZoomUpdate(Offset location, {
+  Future<void> panZoomUpdate(
+    Offset location, {
     Offset pan = Offset.zero,
     double scale = 1,
     double rotation = 0,
-    Duration timeStamp = Duration.zero
+    Duration timeStamp = Duration.zero,
   }) async {
     assert(_pointer.kind == PointerDeviceKind.trackpad, 'Only trackpads can send PointerPanZoom events.');
     return TestAsyncUtils.guard<void>(() async {
-      return _dispatcher(_pointer.panZoomUpdate(location,
-        pan: pan,
-        scale: scale,
-        rotation: rotation,
-        timeStamp: timeStamp
-      ));
+      return _dispatcher(
+        _pointer.panZoomUpdate(location, pan: pan, scale: scale, rotation: rotation, timeStamp: timeStamp),
+      );
     });
   }
 
   /// Dispatch a pointer pan zoom end event, caching the hit test result.
-  Future<void> panZoomEnd({
-    Duration timeStamp = Duration.zero
-  }) async {
+  Future<void> panZoomEnd({Duration timeStamp = Duration.zero}) async {
     assert(_pointer.kind == PointerDeviceKind.trackpad, 'Only trackpads can send PointerPanZoom events.');
     return TestAsyncUtils.guard<void>(() async {
-      return _dispatcher(_pointer.panZoomEnd(
-        timeStamp: timeStamp
-      ));
+      return _dispatcher(_pointer.panZoomEnd(timeStamp: timeStamp));
     });
   }
 }

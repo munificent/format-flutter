@@ -42,8 +42,8 @@ class _InlineMockStreamHandler extends MockStreamHandler {
   _InlineMockStreamHandler({
     required MockStreamHandlerOnListenCallback onListen,
     MockStreamHandlerOnCancelCallback? onCancel,
-  })  : _onListenInline = onListen,
-        _onCancelInline = onCancel;
+  }) : _onListenInline = onListen,
+       _onCancelInline = onCancel;
 
   final MockStreamHandlerOnListenCallback _onListenInline;
   final MockStreamHandlerOnCancelCallback? _onCancelInline;
@@ -68,11 +68,9 @@ class MockStreamHandlerEventSink {
   void success(Object? event) => _sink.add(event);
 
   /// Send an error event.
-  void error({
-    required String code,
-    String? message,
-    Object? details,
-  }) => _sink.addError(PlatformException(code: code, message: message, details: details));
+  void error({required String code, String? message, Object? details}) => _sink.addError(
+    PlatformException(code: code, message: message, details: details),
+  );
 
   /// Send an end of stream event.
   void endOfStream() => _sink.close();

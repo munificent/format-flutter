@@ -16,9 +16,7 @@ import 'widget_tester.dart';
 /// The result of evaluating a semantics node by a [AccessibilityGuideline].
 class Evaluation {
   /// Create a passing evaluation.
-  const Evaluation.pass()
-      : passed = true,
-        reason = null;
+  const Evaluation.pass() : passed = true, reason = null;
 
   /// Create a failing evaluation, with an optional [reason] explaining the
   /// result.
@@ -50,10 +48,7 @@ class Evaluation {
     if (other.reason != null && other.reason!.isNotEmpty) {
       buffer.write(other.reason);
     }
-    return Evaluation._(
-      passed && other.passed,
-      buffer.isEmpty ? null : buffer.toString(),
-    );
+    return Evaluation._(passed && other.passed, buffer.isEmpty ? null : buffer.toString());
   }
 }
 
@@ -164,8 +159,7 @@ class MinimumTapTargetGuideline extends AccessibilityGuideline {
       }
       // skip node if it is touching the edge scrollable, since it might
       // be partially scrolled offscreen.
-      if (current.hasFlag(SemanticsFlag.hasImplicitScrolling) &&
-          _isAtBoundary(paintBounds, current.rect)) {
+      if (current.hasFlag(SemanticsFlag.hasImplicitScrolling) && _isAtBoundary(paintBounds, current.rect)) {
         return result;
       }
       current = current.parent;
@@ -206,8 +200,7 @@ class MinimumTapTargetGuideline extends AccessibilityGuideline {
   bool shouldSkipNode(SemanticsNode node) {
     final SemanticsData data = node.getSemanticsData();
     // Skip node if it has no actions, or is marked as hidden.
-    if ((!data.hasAction(ui.SemanticsAction.longPress) &&
-            !data.hasAction(ui.SemanticsAction.tap)) ||
+    if ((!data.hasAction(ui.SemanticsAction.longPress) && !data.hasAction(ui.SemanticsAction.tap)) ||
         data.hasFlag(ui.SemanticsFlag.isHidden)) {
       return true;
     }
@@ -262,8 +255,7 @@ class LabeledTapTargetGuideline extends AccessibilityGuideline {
     }
     final SemanticsData data = node.getSemanticsData();
     // Skip node if it has no actions, or is marked as hidden.
-    if (!data.hasAction(ui.SemanticsAction.longPress) &&
-        !data.hasAction(ui.SemanticsAction.tap)) {
+    if (!data.hasAction(ui.SemanticsAction.longPress) && !data.hasAction(ui.SemanticsAction.tap)) {
       return result;
     }
     if ((data.label.isEmpty) && (data.tooltip.isEmpty)) {
@@ -325,15 +317,13 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
       final SemanticsNode root = renderView.owner!.semanticsOwner!.rootSemanticsNode!;
 
       late ui.Image image;
-      final ByteData? byteData = await tester.binding.runAsync<ByteData?>(
-        () async {
-          // Needs to be the same pixel ratio otherwise our dimensions won't match
-          // the last transform layer.
-          final double ratio = 1 / view.devicePixelRatio;
-          image = await layer.toImage(renderView.paintBounds, pixelRatio: ratio);
-          return image.toByteData();
-        },
-      );
+      final ByteData? byteData = await tester.binding.runAsync<ByteData?>(() async {
+        // Needs to be the same pixel ratio otherwise our dimensions won't match
+        // the last transform layer.
+        final double ratio = 1 / view.devicePixelRatio;
+        image = await layer.toImage(renderView.paintBounds, pixelRatio: ratio);
+        return image.toByteData();
+      });
 
       result += await _evaluateNode(root, tester, image, byteData!, view);
     }
@@ -351,13 +341,9 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
     Evaluation result = const Evaluation.pass();
 
     // Skip disabled nodes, as they not required to pass contrast check.
-    final bool isDisabled = node.hasFlag(ui.SemanticsFlag.hasEnabledState) &&
-        !node.hasFlag(ui.SemanticsFlag.isEnabled);
+    final bool isDisabled = node.hasFlag(ui.SemanticsFlag.hasEnabledState) && !node.hasFlag(ui.SemanticsFlag.isEnabled);
 
-    if (node.isInvisible ||
-        node.isMergedIntoParent ||
-        node.hasFlag(ui.SemanticsFlag.isHidden) ||
-        isDisabled) {
+    if (node.isInvisible || node.isMergedIntoParent || node.hasFlag(ui.SemanticsFlag.isHidden) || isDisabled) {
       return result;
     }
 
@@ -447,7 +433,12 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
       return const Evaluation.pass();
     }
 
-    final Map<Color, int> colorHistogram = _colorsWithinRect(byteData, paintBoundsWithOffset, image.width, image.height);
+    final Map<Color, int> colorHistogram = _colorsWithinRect(
+      byteData,
+      paintBoundsWithOffset,
+      image.width,
+      image.height,
+    );
 
     // Node was too far off screen.
     if (colorHistogram.isEmpty) {
@@ -478,8 +469,7 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
   ///
   /// Skip routes which might have labels, and nodes without any text.
   bool shouldSkipNode(SemanticsData data) =>
-      data.hasFlag(ui.SemanticsFlag.scopesRoute) ||
-      (data.label.trim().isEmpty && data.value.trim().isEmpty);
+      data.hasFlag(ui.SemanticsFlag.scopesRoute) || (data.label.trim().isEmpty && data.value.trim().isEmpty);
 
   /// Returns if a rectangle of node is off the screen.
   ///
@@ -487,9 +477,9 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
   bool isNodeOffScreen(Rect paintBounds, ui.FlutterView window) {
     final Size windowPhysicalSize = window.physicalSize * window.devicePixelRatio;
     return paintBounds.top < -50.0 ||
-           paintBounds.left < -50.0 ||
-           paintBounds.bottom > windowPhysicalSize.height + 50.0 ||
-           paintBounds.right > windowPhysicalSize.width + 50.0;
+        paintBounds.left < -50.0 ||
+        paintBounds.bottom > windowPhysicalSize.height + 50.0 ||
+        paintBounds.right > windowPhysicalSize.width + 50.0;
   }
 
   /// Returns the required contrast ratio for the [fontSize] and [bold] setting.
@@ -497,8 +487,7 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
   /// Defined by http://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
   double targetContrastRatio(double? fontSize, {required bool bold}) {
     final double fontSizeOrDefault = fontSize ?? _kDefaultFontSize;
-    if ((bold && fontSizeOrDefault >= kBoldTextMinimumSize) ||
-        fontSizeOrDefault >= kLargeTextMinimumSize) {
+    if ((bold && fontSizeOrDefault >= kBoldTextMinimumSize) || fontSizeOrDefault >= kLargeTextMinimumSize) {
       return kMinimumRatioLargeText;
     }
     return kMinimumRatioNormalText;
@@ -662,10 +651,7 @@ class _ContrastReport {
     }
 
     // If there is only single color, it is reported as both dark and light.
-    return _ContrastReport._(
-      lightColor?.key ?? darkColor!.key,
-      darkColor?.key ?? lightColor!.key,
-    );
+    return _ContrastReport._(lightColor?.key ?? darkColor!.key, darkColor?.key ?? lightColor!.key);
   }
 
   const _ContrastReport._(this.lightColor, this.darkColor);
@@ -691,12 +677,7 @@ class _ContrastReport {
 /// in row-first order, where each pixel is given in 4 bytes in RGBA order,
 /// and [paintBounds], the rectangle, and [width] and [height],
 //  the dimensions of the [ByteData] returns color histogram.
-Map<Color, int> _colorsWithinRect(
-    ByteData data,
-    Rect paintBounds,
-    int width,
-    int height,
-) {
+Map<Color, int> _colorsWithinRect(ByteData data, Rect paintBounds, int width, int height) {
   final Rect truePaintBounds = paintBounds.intersect(Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble()));
 
   final int leftX = truePaintBounds.left.floor();
@@ -713,16 +694,12 @@ Map<Color, int> _colorsWithinRect(
 
   for (int x = leftX; x < rightX; x++) {
     for (int y = topY; y < bottomY; y++) {
-      rgbaToCount.update(
-        getPixel(data, x, y),
-        (int count) => count + 1,
-        ifAbsent: () => 1,
-      );
+      rgbaToCount.update(getPixel(data, x, y), (int count) => count + 1, ifAbsent: () => 1);
     }
   }
 
   return rgbaToCount.map<Color, int>((int rgba, int count) {
-    final int argb =  (rgba << 24) | (rgba >> 8) & 0xFFFFFFFF;
+    final int argb = (rgba << 24) | (rgba >> 8) & 0xFFFFFFFF;
     return MapEntry<Color, int>(Color(argb), count);
   });
 }

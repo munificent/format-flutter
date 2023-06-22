@@ -110,6 +110,7 @@ mixin TestDefaultBinaryMessengerBinding on BindingBase, ServicesBinding {
     Future<ByteData?> keyboardHandler(ByteData? message) async {
       return const StandardMethodCodec().encodeSuccessEnvelope(<int, int>{});
     }
+
     return TestDefaultBinaryMessenger(
       super.createBinaryMessenger(),
       outboundHandlers: <String, MessageHandler>{'flutter/keyboard': keyboardHandler},
@@ -127,11 +128,7 @@ mixin TestDefaultBinaryMessengerBinding on BindingBase, ServicesBinding {
 ///
 ///  * [WidgetTester.takeAnnouncements], which is the test API that uses this class.
 class CapturedAccessibilityAnnouncement {
-  const CapturedAccessibilityAnnouncement._(
-    this.message,
-    this.textDirection,
-    this.assertiveness,
-  );
+  const CapturedAccessibilityAnnouncement._(this.message, this.textDirection, this.assertiveness);
 
   /// The accessibility message announced by the framework.
   final String message;
@@ -175,22 +172,21 @@ class CapturedAccessibilityAnnouncement {
 /// Positions can be transformed between coordinate spaces with [localToGlobal]
 /// and [globalToLocal].
 abstract class TestWidgetsFlutterBinding extends BindingBase
-  with SchedulerBinding,
-       ServicesBinding,
-       GestureBinding,
-       SemanticsBinding,
-       RendererBinding,
-       PaintingBinding,
-       WidgetsBinding,
-       TestDefaultBinaryMessengerBinding {
-
+    with
+        SchedulerBinding,
+        ServicesBinding,
+        GestureBinding,
+        SemanticsBinding,
+        RendererBinding,
+        PaintingBinding,
+        WidgetsBinding,
+        TestDefaultBinaryMessengerBinding {
   /// Constructor for [TestWidgetsFlutterBinding].
   ///
   /// This constructor overrides the [debugPrint] global hook to point to
   /// [debugPrintOverride], which can be overridden by subclasses.
-  TestWidgetsFlutterBinding() : platformDispatcher = TestPlatformDispatcher(
-    platformDispatcher: PlatformDispatcher.instance,
-  ) {
+  TestWidgetsFlutterBinding()
+    : platformDispatcher = TestPlatformDispatcher(platformDispatcher: PlatformDispatcher.instance) {
     debugPrint = debugPrintOverride;
     debugDisableShadows = disableShadows;
   }
@@ -219,7 +215,7 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
   @Deprecated(
     'Use WidgetTester.platformDispatcher or WidgetTester.view instead. '
     'Deprecated to prepare for the upcoming multi-window support. '
-    'This feature was deprecated after v3.9.0-0.1.pre.'
+    'This feature was deprecated after v3.9.0-0.1.pre.',
   )
   @override
   late final TestWindow window;
@@ -232,6 +228,7 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
     _restorationManager ??= createRestorationManager();
     return _restorationManager!;
   }
+
   TestRestorationManager? _restorationManager;
 
   /// Called by the test framework at the beginning of a widget test to
@@ -319,9 +316,9 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
   /// For this reason, this method has been deprecated.
   @Deprecated(
     'This method has no effect. '
-    'This feature was deprecated after v2.6.0-1.0.pre.'
+    'This feature was deprecated after v2.6.0-1.0.pre.',
   )
-  void addTime(Duration duration) { }
+  void addTime(Duration duration) {}
 
   /// Delay for `duration` of time.
   ///
@@ -443,7 +440,7 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
   ///
   /// See also [LiveTestWidgetsFlutterBindingFramePolicy], which affects how
   /// this method works when the test is run with `flutter run`.
-  Future<void> pump([ Duration? duration, EnginePhase newPhase = EnginePhase.sendSemanticsUpdate ]);
+  Future<void> pump([Duration? duration, EnginePhase newPhase = EnginePhase.sendSemanticsUpdate]);
 
   /// Runs a `callback` that performs real asynchronous work.
   ///
@@ -472,7 +469,7 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
     Future<T> Function() callback, {
     @Deprecated(
       'This parameter has no effect. '
-      'This feature was deprecated after v2.6.0-1.0.pre.'
+      'This feature was deprecated after v2.6.0-1.0.pre.',
     )
     Duration additionalTime = const Duration(milliseconds: 1000),
   });
@@ -549,10 +546,7 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
     final FlutterView view = platformDispatcher.implicitView!;
     final double devicePixelRatio = view.devicePixelRatio;
     final Size size = _surfaceSize ?? view.physicalSize / devicePixelRatio;
-    return ViewConfiguration(
-      size: size,
-      devicePixelRatio: devicePixelRatio,
-    );
+    return ViewConfiguration(size: size, devicePixelRatio: devicePixelRatio);
   }
 
   /// Acts as if the application went idle.
@@ -714,13 +708,13 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
     _pendingExceptionDetails = null;
     return result;
   }
+
   FlutterExceptionHandler? _oldExceptionHandler;
   late StackTraceDemangler _oldStackTraceDemangler;
   FlutterErrorDetails? _pendingExceptionDetails;
 
   _MockMessageHandler? _announcementHandler;
-  List<CapturedAccessibilityAnnouncement> _announcements =
-      <CapturedAccessibilityAnnouncement>[];
+  List<CapturedAccessibilityAnnouncement> _announcements = <CapturedAccessibilityAnnouncement>[];
 
   /// {@template flutter.flutter_test.TakeAccessibilityAnnouncements}
   /// Returns a list of all the accessibility announcements made by the Flutter
@@ -736,25 +730,14 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
     return announcements;
   }
 
-  static const TextStyle _messageStyle = TextStyle(
-    color: Color(0xFF917FFF),
-    fontSize: 40.0,
-  );
+  static const TextStyle _messageStyle = TextStyle(color: Color(0xFF917FFF), fontSize: 40.0);
 
   static const Widget _preTestMessage = Center(
-    child: Text(
-      'Test starting...',
-      style: _messageStyle,
-      textDirection: TextDirection.ltr,
-    ),
+    child: Text('Test starting...', style: _messageStyle, textDirection: TextDirection.ltr),
   );
 
   static const Widget _postTestMessage = Center(
-    child: Text(
-      'Test finished.',
-      style: _messageStyle,
-      textDirection: TextDirection.ltr,
-    ),
+    child: Text('Test finished.', style: _messageStyle, textDirection: TextDirection.ltr),
   );
 
   /// Whether to include the output of debugDumpApp() when reporting
@@ -781,7 +764,7 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
     String description = '',
     @Deprecated(
       'This parameter has no effect. Use the `timeout` parameter on `testWidgets` instead. '
-      'This feature was deprecated after v2.6.0-1.0.pre.'
+      'This feature was deprecated after v2.6.0-1.0.pre.',
     )
     // TODO(pdblasi-google): Do not remove until https://github.com/flutter/flutter/issues/124346
     // is complete, as this removal will cascade into `integration_test`
@@ -830,35 +813,33 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
   Future<void> _handleAnnouncementMessage(Object? mockMessage) async {
     final Map<Object?, Object?> message = mockMessage! as Map<Object?, Object?>;
     if (message['type'] == 'announce') {
-      final Map<Object?, Object?> data =
-          message['data']! as Map<Object?, Object?>;
+      final Map<Object?, Object?> data = message['data']! as Map<Object?, Object?>;
       final String dataMessage = data['message'].toString();
-      final TextDirection textDirection =
-          TextDirection.values[data['textDirection']! as int];
+      final TextDirection textDirection = TextDirection.values[data['textDirection']! as int];
       final int assertivenessLevel = (data['assertiveness'] as int?) ?? 0;
-      final Assertiveness assertiveness =
-          Assertiveness.values[assertivenessLevel];
-      final CapturedAccessibilityAnnouncement announcement =
-          CapturedAccessibilityAnnouncement._(
-              dataMessage, textDirection, assertiveness);
+      final Assertiveness assertiveness = Assertiveness.values[assertivenessLevel];
+      final CapturedAccessibilityAnnouncement announcement = CapturedAccessibilityAnnouncement._(
+        dataMessage,
+        textDirection,
+        assertiveness,
+      );
       _announcements.add(announcement);
     }
   }
 
-  Future<void> _runTest(
-    Future<void> Function() testBody,
-    VoidCallback invariantTester,
-    String description,
-  ) {
+  Future<void> _runTest(Future<void> Function() testBody, VoidCallback invariantTester, String description) {
     assert(inTest);
 
     // Set the handler only if there is currently none.
-    if (TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .checkMockMessageHandler(SystemChannels.accessibility.name, null)) {
+    if (TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.checkMockMessageHandler(
+      SystemChannels.accessibility.name,
+      null,
+    )) {
       _announcementHandler = _handleAnnouncementMessage;
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockDecodedMessageHandler<dynamic>(
-              SystemChannels.accessibility, _announcementHandler);
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(
+        SystemChannels.accessibility,
+        _announcementHandler,
+      );
     }
 
     _oldExceptionHandler = FlutterError.onError;
@@ -875,7 +856,8 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
         }
         FlutterError.dumpErrorToConsole(details, forceReport: true);
         _pendingExceptionDetails = FlutterErrorDetails(
-          exception: 'Multiple exceptions ($exceptionCount) were detected during the running of the current test, and at least one was unexpected.',
+          exception:
+              'Multiple exceptions ($exceptionCount) were detected during the running of the current test, and at least one was unexpected.',
           library: 'Flutter test framework',
         );
       } else {
@@ -952,7 +934,10 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
         // by side-effects of the underlying issues causing the tree dumping code to flail.
         treeDump.toStringDeep();
       } catch (exception) {
-        treeDump = DiagnosticsNode.message('<additional error caught while dumping tree: $exception>', level: DiagnosticLevel.error);
+        treeDump = DiagnosticsNode.message(
+          '<additional error caught while dumping tree: $exception>',
+          level: DiagnosticLevel.error,
+        );
       }
       final List<DiagnosticsNode> omittedFrames = <DiagnosticsNode>[];
       final int stackLinesToOmit = reportExpectCall(stack, omittedFrames);
@@ -969,26 +954,40 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
             yield* omittedFrames;
           }
           if (showAppDumpInErrors) {
-            yield DiagnosticsProperty<DiagnosticsNode>('At the time of the failure, the widget tree looked as follows', treeDump, linePrefix: '# ', style: DiagnosticsTreeStyle.flat);
+            yield DiagnosticsProperty<DiagnosticsNode>(
+              'At the time of the failure, the widget tree looked as follows',
+              treeDump,
+              linePrefix: '# ',
+              style: DiagnosticsTreeStyle.flat,
+            );
           }
           if (description.isNotEmpty) {
-            yield DiagnosticsProperty<String>('The test description was', description, style: DiagnosticsTreeStyle.errorProperty);
+            yield DiagnosticsProperty<String>(
+              'The test description was',
+              description,
+              style: DiagnosticsTreeStyle.errorProperty,
+            );
           }
         },
       ));
       assert(_parentZone != null);
-      assert(_pendingExceptionDetails != null, 'A test overrode FlutterError.onError but either failed to return it to its original state, or had unexpected additional errors that it could not handle. Typically, this is caused by using expect() before restoring FlutterError.onError.');
+      assert(
+        _pendingExceptionDetails != null,
+        'A test overrode FlutterError.onError but either failed to return it to its original state, or had unexpected additional errors that it could not handle. Typically, this is caused by using expect() before restoring FlutterError.onError.',
+      );
       _parentZone!.run<void>(testCompletionHandler);
     }
+
     final ZoneSpecification errorHandlingZoneSpecification = ZoneSpecification(
       handleUncaughtError: (Zone self, ZoneDelegate parent, Zone zone, Object exception, StackTrace stack) {
         handleUncaughtError(exception, stack);
-      }
+      },
     );
     _parentZone = Zone.current;
     final Zone testZone = _parentZone!.fork(specification: errorHandlingZoneSpecification);
-    testZone.runBinary<Future<void>, Future<void> Function(), VoidCallback>(_runTestBody, testBody, invariantTester)
-      .whenComplete(testCompletionHandler);
+    testZone
+        .runBinary<Future<void>, Future<void> Function(), VoidCallback>(_runTestBody, testBody, invariantTester)
+        .whenComplete(testCompletionHandler);
     return testCompleter.future;
   }
 
@@ -1036,22 +1035,14 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
   late bool _beforeTestCheckIntrinsicSizes;
 
   void _verifyInvariants() {
-    assert(debugAssertNoTransientCallbacks(
-      'An animation is still running even after the widget tree was disposed.'
-    ));
-    assert(debugAssertNoPendingPerformanceModeRequests(
-      'A performance mode was requested and not disposed by a test.'
-    ));
-    assert(debugAssertNoTimeDilation(
-      'The timeDilation was changed and not reset by the test.'
-    ));
+    assert(debugAssertNoTransientCallbacks('An animation is still running even after the widget tree was disposed.'));
+    assert(debugAssertNoPendingPerformanceModeRequests('A performance mode was requested and not disposed by a test.'));
+    assert(debugAssertNoTimeDilation('The timeDilation was changed and not reset by the test.'));
     assert(debugAssertAllFoundationVarsUnset(
       'The value of a foundation debug variable was changed by the test.',
       debugPrintOverride: debugPrintOverride,
     ));
-    assert(debugAssertAllGesturesVarsUnset(
-      'The value of a gestures debug variable was changed by the test.',
-    ));
+    assert(debugAssertAllGesturesVarsUnset('The value of a gestures debug variable was changed by the test.'));
     assert(debugAssertAllPaintingVarsUnset(
       'The value of a painting debug variable was changed by the test.',
       debugDisableShadowsOverride: disableShadows,
@@ -1060,80 +1051,74 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
       'The value of a rendering debug variable was changed by the test.',
       debugCheckIntrinsicSizesOverride: _beforeTestCheckIntrinsicSizes,
     ));
-    assert(debugAssertAllWidgetVarsUnset(
-      'The value of a widget debug variable was changed by the test.',
-    ));
-    assert(debugAssertAllSchedulerVarsUnset(
-      'The value of a scheduler debug variable was changed by the test.',
-    ));
-    assert(debugAssertAllServicesVarsUnset(
-      'The value of a services debug variable was changed by the test.',
-    ));
+    assert(debugAssertAllWidgetVarsUnset('The value of a widget debug variable was changed by the test.'));
+    assert(debugAssertAllSchedulerVarsUnset('The value of a scheduler debug variable was changed by the test.'));
+    assert(debugAssertAllServicesVarsUnset('The value of a services debug variable was changed by the test.'));
   }
 
   void _verifyAutoUpdateGoldensUnset(bool valueBeforeTest) {
-    assert(() {
-      if (autoUpdateGoldenFiles != valueBeforeTest) {
-        FlutterError.reportError(FlutterErrorDetails(
-          exception: FlutterError(
-              'The value of autoUpdateGoldenFiles was changed by the test.',
-          ),
-          stack: StackTrace.current,
-          library: 'Flutter test framework',
-        ));
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (autoUpdateGoldenFiles != valueBeforeTest) {
+          FlutterError.reportError(FlutterErrorDetails(
+            exception: FlutterError('The value of autoUpdateGoldenFiles was changed by the test.'),
+            stack: StackTrace.current,
+            library: 'Flutter test framework',
+          ));
+        }
+        return true;
+      }(),
+    );
   }
 
   void _verifyReportTestExceptionUnset(TestExceptionReporter valueBeforeTest) {
-    assert(() {
-      if (reportTestException != valueBeforeTest) {
-        // We can't report this error to their modified reporter because we
-        // can't be guaranteed that their reporter will cause the test to fail.
-        // So we reset the error reporter to its initial value and then report
-        // this error.
-        reportTestException = valueBeforeTest;
-        FlutterError.reportError(FlutterErrorDetails(
-          exception: FlutterError(
-            'The value of reportTestException was changed by the test.',
-          ),
-          stack: StackTrace.current,
-          library: 'Flutter test framework',
-        ));
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (reportTestException != valueBeforeTest) {
+          // We can't report this error to their modified reporter because we
+          // can't be guaranteed that their reporter will cause the test to fail.
+          // So we reset the error reporter to its initial value and then report
+          // this error.
+          reportTestException = valueBeforeTest;
+          FlutterError.reportError(FlutterErrorDetails(
+            exception: FlutterError('The value of reportTestException was changed by the test.'),
+            stack: StackTrace.current,
+            library: 'Flutter test framework',
+          ));
+        }
+        return true;
+      }(),
+    );
   }
 
   void _verifyErrorWidgetBuilderUnset(ErrorWidgetBuilder valueBeforeTest) {
-    assert(() {
-      if (ErrorWidget.builder != valueBeforeTest) {
-        FlutterError.reportError(FlutterErrorDetails(
-          exception: FlutterError(
-              'The value of ErrorWidget.builder was changed by the test.',
-          ),
-          stack: StackTrace.current,
-          library: 'Flutter test framework',
-        ));
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (ErrorWidget.builder != valueBeforeTest) {
+          FlutterError.reportError(FlutterErrorDetails(
+            exception: FlutterError('The value of ErrorWidget.builder was changed by the test.'),
+            stack: StackTrace.current,
+            library: 'Flutter test framework',
+          ));
+        }
+        return true;
+      }(),
+    );
   }
 
   void _verifyShouldPropagateDevicePointerEventsUnset(bool valueBeforeTest) {
-    assert(() {
-      if (shouldPropagateDevicePointerEvents != valueBeforeTest) {
-        FlutterError.reportError(FlutterErrorDetails(
-          exception: FlutterError(
-              'The value of shouldPropagateDevicePointerEvents was changed by the test.',
-          ),
-          stack: StackTrace.current,
-          library: 'Flutter test framework',
-        ));
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (shouldPropagateDevicePointerEvents != valueBeforeTest) {
+          FlutterError.reportError(FlutterErrorDetails(
+            exception: FlutterError('The value of shouldPropagateDevicePointerEvents was changed by the test.'),
+            stack: StackTrace.current,
+            library: 'Flutter test framework',
+          ));
+        }
+        return true;
+      }(),
+    );
   }
 
   /// Called by the [testWidgets] function after a test is executed.
@@ -1145,11 +1130,14 @@ abstract class TestWidgetsFlutterBinding extends BindingBase
     _parentZone = null;
     buildOwner!.focusManager.dispose();
 
-    if (TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .checkMockMessageHandler(
-            SystemChannels.accessibility.name, _announcementHandler)) {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockDecodedMessageHandler(SystemChannels.accessibility, null);
+    if (TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.checkMockMessageHandler(
+      SystemChannels.accessibility.name,
+      _announcementHandler,
+    )) {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockDecodedMessageHandler(
+        SystemChannels.accessibility,
+        null,
+      );
       _announcementHandler = null;
     }
     _announcements = <CapturedAccessibilityAnnouncement>[];
@@ -1225,6 +1213,7 @@ class AutomatedTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
     assert(inTest);
     return _clock!;
   }
+
   Clock? _clock;
 
   @override
@@ -1246,7 +1235,7 @@ class AutomatedTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
   int get microtaskCount => _currentFakeAsync!.microtaskCount;
 
   @override
-  Future<void> pump([ Duration? duration, EnginePhase newPhase = EnginePhase.sendSemanticsUpdate ]) {
+  Future<void> pump([Duration? duration, EnginePhase newPhase = EnginePhase.sendSemanticsUpdate]) {
     return TestAsyncUtils.guard<void>(() {
       assert(inTest);
       assert(_clock != null);
@@ -1257,9 +1246,7 @@ class AutomatedTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
       if (hasScheduledFrame) {
         addTime(const Duration(milliseconds: 500));
         _currentFakeAsync!.flushMicrotasks();
-        handleBeginFrame(Duration(
-          milliseconds: _clock!.now().millisecondsSinceEpoch,
-        ));
+        handleBeginFrame(Duration(milliseconds: _clock!.now().millisecondsSinceEpoch));
         _currentFakeAsync!.flushMicrotasks();
         handleDrawFrame();
       }
@@ -1273,17 +1260,19 @@ class AutomatedTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
     Future<T> Function() callback, {
     Duration additionalTime = const Duration(milliseconds: 1000),
   }) {
-    assert(() {
-      if (_pendingAsyncTasks == null) {
-        return true;
-      }
-      fail(
-        'Reentrant call to runAsync() denied.\n'
-        'runAsync() was called, then before its future completed, it '
-        'was called again. You must wait for the first returned future '
-        'to complete before calling runAsync() again.'
-      );
-    }());
+    assert(
+      () {
+        if (_pendingAsyncTasks == null) {
+          return true;
+        }
+        fail(
+          'Reentrant call to runAsync() denied.\n'
+          'runAsync() was called, then before its future completed, it '
+          'was called again. You must wait for the first returned future '
+          'to complete before calling runAsync() again.',
+        );
+      }(),
+    );
 
     final Zone realAsyncZone = Zone.current.fork(
       specification: ZoneSpecification(
@@ -1293,7 +1282,8 @@ class AutomatedTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
         createTimer: (Zone self, ZoneDelegate parent, Zone zone, Duration duration, void Function() f) {
           return Zone.root.createTimer(duration, f);
         },
-        createPeriodicTimer: (Zone self, ZoneDelegate parent, Zone zone, Duration period, void Function(Timer timer) f) {
+        createPeriodicTimer:
+            (Zone self, ZoneDelegate parent, Zone zone, Duration period, void Function(Timer timer) f) {
           return Zone.root.createPeriodicTimer(period, f);
         },
       ),
@@ -1305,33 +1295,27 @@ class AutomatedTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
       final Completer<T?> result = Completer<T?>();
       _pendingAsyncTasks = Completer<void>();
       try {
-        callback().then(result.complete).catchError(
-          (Object exception, StackTrace stack) {
-            FlutterError.reportError(FlutterErrorDetails(
-              exception: exception,
-              stack: stack,
-              library: 'Flutter test framework',
-              context: ErrorDescription('while running async test code'),
-              informationCollector: () {
-                return <DiagnosticsNode>[
-                  ErrorHint('The exception was caught asynchronously.'),
-                ];
-              },
-            ));
-            result.complete(null);
-          },
-        );
+        callback().then(result.complete).catchError((Object exception, StackTrace stack) {
+          FlutterError.reportError(FlutterErrorDetails(
+            exception: exception,
+            stack: stack,
+            library: 'Flutter test framework',
+            context: ErrorDescription('while running async test code'),
+            informationCollector: () {
+              return <DiagnosticsNode>[ErrorHint('The exception was caught asynchronously.')];
+            },
+          ));
+          result.complete(null);
+        });
       } catch (exception, stack) {
         FlutterError.reportError(FlutterErrorDetails(
           exception: exception,
           stack: stack,
           library: 'Flutter test framework',
           context: ErrorDescription('while running async test code'),
-            informationCollector: () {
-              return <DiagnosticsNode>[
-                ErrorHint('The exception was caught synchronously.'),
-              ];
-            },
+          informationCollector: () {
+            return <DiagnosticsNode>[ErrorHint('The exception was caught synchronously.')];
+          },
         ));
         result.complete(null);
       }
@@ -1423,8 +1407,7 @@ class AutomatedTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
               renderView.compositeFrame(); // this sends the bits to the GPU
               if (_phase != EnginePhase.composite) {
                 pipelineOwner.flushSemantics();
-                assert(_phase == EnginePhase.flushSemantics ||
-                       _phase == EnginePhase.sendSemanticsUpdate);
+                assert(_phase == EnginePhase.flushSemantics || _phase == EnginePhase.sendSemanticsUpdate);
               }
             }
           }
@@ -1456,7 +1439,7 @@ class AutomatedTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
     String description = '',
     @Deprecated(
       'This parameter has no effect. Use the `timeout` parameter on `testWidgets` instead. '
-      'This feature was deprecated after v2.6.0-1.0.pre.'
+      'This feature was deprecated after v2.6.0-1.0.pre.',
     )
     // TODO(pdblasi-google): Do not remove until https://github.com/flutter/flutter/issues/124346
     // is complete, as this removal will cascade into `integration_test`
@@ -1513,17 +1496,17 @@ class AutomatedTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
     assert(inTest);
 
     bool timersPending = false;
-    if (_currentFakeAsync!.periodicTimerCount != 0 ||
-        _currentFakeAsync!.nonPeriodicTimerCount != 0) {
-        debugPrint('Pending timers:');
-        for (final FakeTimer timer in _currentFakeAsync!.pendingTimers) {
-          debugPrint(
-            'Timer (duration: ${timer.duration}, '
-            'periodic: ${timer.isPeriodic}), created:');
-          debugPrintStack(stackTrace: timer.creationStackTrace);
-          debugPrint('');
-        }
-        timersPending = true;
+    if (_currentFakeAsync!.periodicTimerCount != 0 || _currentFakeAsync!.nonPeriodicTimerCount != 0) {
+      debugPrint('Pending timers:');
+      for (final FakeTimer timer in _currentFakeAsync!.pendingTimers) {
+        debugPrint(
+          'Timer (duration: ${timer.duration}, '
+          'periodic: ${timer.isPeriodic}), created:',
+        );
+        debugPrintStack(stackTrace: timer.creationStackTrace);
+        debugPrint('');
+      }
+      timersPending = true;
     }
     assert(!timersPending, 'A Timer is still pending even after the widget tree was disposed.');
     assert(_currentFakeAsync!.microtaskCount == 0); // Shouldn't be possible.
@@ -1792,7 +1775,8 @@ class LiveTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
     _doDrawThisFrame = null;
     _viewNeedsPaint = false;
     _expectingFrameToReassemble = false;
-    if (_expectingFrame) { // set during pump
+    if (_expectingFrame) {
+      // set during pump
       assert(_pendingFrame != null);
       _pendingFrame!.complete(); // unlocks the test API
       _pendingFrame = null;
@@ -1808,10 +1792,7 @@ class LiveTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
   }
 
   TextPainter? _label;
-  static const TextStyle _labelStyle = TextStyle(
-    fontFamily: 'sans-serif',
-    fontSize: 10.0,
-  );
+  static const TextStyle _labelStyle = TextStyle(fontFamily: 'sans-serif', fontSize: 10.0);
 
   void _setDescription(String value) {
     if (value.isEmpty) {
@@ -1851,8 +1832,7 @@ class LiveTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
         }
         record.decay += 1;
       }
-      _pointerIdToPointerRecord
-          .keys
+      _pointerIdToPointerRecord.keys
           .where((int pointer) => _pointerIdToPointerRecord[pointer]!.decay == 0)
           .toList()
           .forEach(_pointerIdToPointerRecord.remove);
@@ -1897,10 +1877,7 @@ class LiveTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
           }
           _markViewNeedsPaint();
         } else if (event.down) {
-          _pointerIdToPointerRecord[event.pointer] = _LiveTestPointerRecord(
-            event.pointer,
-            event.position,
-          );
+          _pointerIdToPointerRecord[event.pointer] = _LiveTestPointerRecord(event.pointer, event.position);
           _markViewNeedsPaint();
         }
         super.handlePointerEvent(event);
@@ -1914,9 +1891,7 @@ class LiveTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
           // (see [handlePointerEventForSource]). Transform it to the local
           // coordinate space used by the testing widgets.
           final PointerEvent localEvent = event.copyWith(position: globalToLocal(event.position, renderView));
-          withPointerEventSource(TestBindingEventSource.device,
-            () => super.handlePointerEvent(localEvent)
-          );
+          withPointerEventSource(TestBindingEventSource.device, () => super.handlePointerEvent(localEvent));
         }
     }
   }
@@ -1940,7 +1915,7 @@ class LiveTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
   }
 
   @override
-  Future<void> pump([ Duration? duration, EnginePhase newPhase = EnginePhase.sendSemanticsUpdate ]) {
+  Future<void> pump([Duration? duration, EnginePhase newPhase = EnginePhase.sendSemanticsUpdate]) {
     assert(newPhase == EnginePhase.sendSemanticsUpdate);
     assert(inTest);
     assert(!_expectingFrame);
@@ -1969,17 +1944,19 @@ class LiveTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
     Future<T> Function() callback, {
     Duration additionalTime = const Duration(milliseconds: 1000),
   }) async {
-    assert(() {
-      if (!_runningAsyncTasks) {
-        return true;
-      }
-      fail(
-        'Reentrant call to runAsync() denied.\n'
-        'runAsync() was called, then before its future completed, it '
-        'was called again. You must wait for the first returned future '
-        'to complete before calling runAsync() again.'
-      );
-    }());
+    assert(
+      () {
+        if (!_runningAsyncTasks) {
+          return true;
+        }
+        fail(
+          'Reentrant call to runAsync() denied.\n'
+          'runAsync() was called, then before its future completed, it '
+          'was called again. You must wait for the first returned future '
+          'to complete before calling runAsync() again.',
+        );
+      }(),
+    );
 
     _runningAsyncTasks = true;
     try {
@@ -2004,7 +1981,7 @@ class LiveTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
     String description = '',
     @Deprecated(
       'This parameter has no effect. Use the `timeout` parameter on `testWidgets` instead. '
-      'This feature was deprecated after v2.6.0-1.0.pre.'
+      'This feature was deprecated after v2.6.0-1.0.pre.',
     )
     // TODO(pdblasi-google): Do not remove until https://github.com/flutter/flutter/issues/124346
     // is complete, as this removal will cascade into `integration_test`
@@ -2026,7 +2003,7 @@ class LiveTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
       '(If WidgetTester.takeException is called, the above exception will be ignored. '
       'If it is not, then the above exception will be dumped when another exception is '
       'caught by the framework or when the test ends, whichever happens first, and then '
-      'the test will fail due to having not caught or expected the exception.)'
+      'the test will fail due to having not caught or expected the exception.)',
     );
     debugPrint = testPrint;
   }
@@ -2059,10 +2036,7 @@ class LiveTestWidgetsFlutterBinding extends TestWidgetsFlutterBinding {
     assert(det != 0.0);
     // In order to use the transform, we need to translate the point first into
     // the physical coordinate space by applying the device pixel ratio.
-    return MatrixUtils.transformPoint(
-      transform,
-      point * view.configuration.devicePixelRatio,
-    );
+    return MatrixUtils.transformPoint(transform, point * view.configuration.devicePixelRatio);
   }
 
   @override
@@ -2094,12 +2068,9 @@ class TestViewConfiguration extends ViewConfiguration {
   @Deprecated(
     'Use TestViewConfiguration.fromView instead. '
     'Deprecated to prepare for the upcoming multi-window support. '
-    'This feature was deprecated after v3.7.0-32.0.pre.'
+    'This feature was deprecated after v3.7.0-32.0.pre.',
   )
-  factory TestViewConfiguration({
-    Size size = _kDefaultTestViewportSize,
-    ui.FlutterView? window,
-  }) {
+  factory TestViewConfiguration({Size size = _kDefaultTestViewportSize, ui.FlutterView? window}) {
     return TestViewConfiguration.fromView(size: size, view: window ?? ui.window);
   }
 
@@ -2107,8 +2078,8 @@ class TestViewConfiguration extends ViewConfiguration {
   ///
   /// The [size] defaults to 800x600.
   TestViewConfiguration.fromView({required ui.FlutterView view, super.size = _kDefaultTestViewportSize})
-      : _paintMatrix = _getMatrix(size, view.devicePixelRatio, view),
-        super(devicePixelRatio: view.devicePixelRatio);
+    : _paintMatrix = _getMatrix(size, view.devicePixelRatio, view),
+      super(devicePixelRatio: view.devicePixelRatio);
 
   static Matrix4 _getMatrix(Size size, double devicePixelRatio, ui.FlutterView window) {
     final double inverseRatio = devicePixelRatio / window.devicePixelRatio;
@@ -2146,10 +2117,8 @@ class TestViewConfiguration extends ViewConfiguration {
 const int _kPointerDecay = -2;
 
 class _LiveTestPointerRecord {
-  _LiveTestPointerRecord(
-    this.pointer,
-    this.position,
-  ) : color = HSVColor.fromAHSV(0.8, (35.0 * pointer) % 360.0, 1.0, 1.0).toColor(),
+  _LiveTestPointerRecord(this.pointer, this.position)
+    : color = HSVColor.fromAHSV(0.8, (35.0 * pointer) % 360.0, 1.0, 1.0).toColor(),
       decay = 1;
   final int pointer;
   final Color color;

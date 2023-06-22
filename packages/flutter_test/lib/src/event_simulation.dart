@@ -115,10 +115,10 @@ abstract final class KeyEventSimulator {
         case 'fuchsia':
           map = kFuchsiaToLogicalKey;
         case 'macos':
-        // macOS doesn't do key codes, just scan codes.
+          // macOS doesn't do key codes, just scan codes.
           return -1;
         case 'ios':
-        // iOS doesn't do key codes, just scan codes.
+          // iOS doesn't do key codes, just scan codes.
           return -1;
         case 'web':
           // web doesn't have int type code.
@@ -240,10 +240,7 @@ abstract final class KeyEventSimulator {
 
     assert(key.debugName != null);
 
-    final Map<String, dynamic> result = <String, dynamic>{
-      'type': isDown ? 'keydown' : 'keyup',
-      'keymap': platform,
-    };
+    final Map<String, dynamic> result = <String, dynamic>{'type': isDown ? 'keydown' : 'keyup', 'keymap': platform};
 
     final String resultCharacter = character ?? _keyLabel(key) ?? '';
     void assignWeb() {
@@ -254,6 +251,7 @@ abstract final class KeyEventSimulator {
       result['location'] = keyLocation.location;
       result['metaState'] = _getWebModifierFlags(key, isDown);
     }
+
     if (kIsWeb) {
       assignWeb();
       return result;
@@ -660,9 +658,10 @@ abstract final class KeyEventSimulator {
             result.complete(false);
             return;
           }
-          final Map<String, Object?> decoded = SystemChannels.keyEvent.codec.decodeMessage(data)! as Map<String, dynamic>;
+          final Map<String, Object?> decoded =
+              SystemChannels.keyEvent.codec.decodeMessage(data)! as Map<String, dynamic>;
           result.complete(decoded['handled']! as bool);
-        }
+        },
       );
       return result.future;
     });
@@ -698,10 +697,12 @@ abstract final class KeyEventSimulator {
   // is often set with [KeySimulationModeVariant].
   static KeyDataTransitMode get _transitMode {
     KeyDataTransitMode? result;
-    assert(() {
-      result = debugKeyEventSimulatorTransitModeOverride;
-      return true;
-    }());
+    assert(
+      () {
+        result = debugKeyEventSimulatorTransitModeOverride;
+        return true;
+      }(),
+    );
     return result ?? _defaultTransitMode;
   }
 
@@ -735,21 +736,20 @@ abstract final class KeyEventSimulator {
         return getKeyData(key, platform: platform!, physicalKey: physicalKey, character: character);
       });
     }
+
     switch (_transitMode) {
       case KeyDataTransitMode.rawKeyData:
         return simulateByRawEvent();
       case KeyDataTransitMode.keyDataThenRawKeyData:
         final LogicalKeyboardKey logicalKey = _getKeySynonym(key);
-        final bool resultByKeyEvent = ServicesBinding.instance.keyEventManager.handleKeyData(
-          ui.KeyData(
-            type: ui.KeyEventType.down,
-            physical: (physicalKey ?? _findPhysicalKey(logicalKey)).usbHidUsage,
-            logical: logicalKey.keyId,
-            timeStamp: Duration.zero,
-            character: character ?? _keyLabel(key),
-            synthesized: false,
-          ),
-        );
+        final bool resultByKeyEvent = ServicesBinding.instance.keyEventManager.handleKeyData(ui.KeyData(
+          type: ui.KeyEventType.down,
+          physical: (physicalKey ?? _findPhysicalKey(logicalKey)).usbHidUsage,
+          logical: logicalKey.keyId,
+          timeStamp: Duration.zero,
+          character: character ?? _keyLabel(key),
+          synthesized: false,
+        ));
         return (await simulateByRawEvent()) || resultByKeyEvent;
     }
   }
@@ -779,21 +779,20 @@ abstract final class KeyEventSimulator {
         return getKeyData(key, platform: platform!, isDown: false, physicalKey: physicalKey);
       });
     }
+
     switch (_transitMode) {
       case KeyDataTransitMode.rawKeyData:
         return simulateByRawEvent();
       case KeyDataTransitMode.keyDataThenRawKeyData:
         final LogicalKeyboardKey logicalKey = _getKeySynonym(key);
-        final bool resultByKeyEvent = ServicesBinding.instance.keyEventManager.handleKeyData(
-          ui.KeyData(
-            type: ui.KeyEventType.up,
-            physical: (physicalKey ?? _findPhysicalKey(logicalKey)).usbHidUsage,
-            logical: logicalKey.keyId,
-            timeStamp: Duration.zero,
-            character: null,
-            synthesized: false,
-          ),
-        );
+        final bool resultByKeyEvent = ServicesBinding.instance.keyEventManager.handleKeyData(ui.KeyData(
+          type: ui.KeyEventType.up,
+          physical: (physicalKey ?? _findPhysicalKey(logicalKey)).usbHidUsage,
+          logical: logicalKey.keyId,
+          timeStamp: Duration.zero,
+          character: null,
+          synthesized: false,
+        ));
         return (await simulateByRawEvent()) || resultByKeyEvent;
     }
   }
@@ -824,21 +823,20 @@ abstract final class KeyEventSimulator {
         return getKeyData(key, platform: platform!, physicalKey: physicalKey, character: character);
       });
     }
+
     switch (_transitMode) {
       case KeyDataTransitMode.rawKeyData:
         return simulateByRawEvent();
       case KeyDataTransitMode.keyDataThenRawKeyData:
         final LogicalKeyboardKey logicalKey = _getKeySynonym(key);
-        final bool resultByKeyEvent = ServicesBinding.instance.keyEventManager.handleKeyData(
-          ui.KeyData(
-            type: ui.KeyEventType.repeat,
-            physical: (physicalKey ?? _findPhysicalKey(logicalKey)).usbHidUsage,
-            logical: logicalKey.keyId,
-            timeStamp: Duration.zero,
-            character: character ?? _keyLabel(key),
-            synthesized: false,
-          ),
-        );
+        final bool resultByKeyEvent = ServicesBinding.instance.keyEventManager.handleKeyData(ui.KeyData(
+          type: ui.KeyEventType.repeat,
+          physical: (physicalKey ?? _findPhysicalKey(logicalKey)).usbHidUsage,
+          logical: logicalKey.keyId,
+          timeStamp: Duration.zero,
+          character: character ?? _keyLabel(key),
+          synthesized: false,
+        ));
         return (await simulateByRawEvent()) || resultByKeyEvent;
     }
   }
@@ -870,7 +868,12 @@ Future<bool> simulateKeyDownEvent(
   PhysicalKeyboardKey? physicalKey,
   String? character,
 }) async {
-  final bool handled = await KeyEventSimulator.simulateKeyDownEvent(key, platform: platform, physicalKey: physicalKey, character: character);
+  final bool handled = await KeyEventSimulator.simulateKeyDownEvent(
+    key,
+    platform: platform,
+    physicalKey: physicalKey,
+    character: character,
+  );
   final ServicesBinding binding = ServicesBinding.instance;
   if (!handled && binding is TestWidgetsFlutterBinding) {
     await binding.testTextInput.handleKeyDownEvent(key);
@@ -896,11 +899,7 @@ Future<bool> simulateKeyDownEvent(
 ///
 ///  * [simulateKeyDownEvent] and [simulateKeyRepeatEvent] to simulate the
 ///    corresponding key down and repeat event.
-Future<bool> simulateKeyUpEvent(
-  LogicalKeyboardKey key, {
-  String? platform,
-  PhysicalKeyboardKey? physicalKey,
-}) async {
+Future<bool> simulateKeyUpEvent(LogicalKeyboardKey key, {String? platform, PhysicalKeyboardKey? physicalKey}) async {
   final bool handled = await KeyEventSimulator.simulateKeyUpEvent(key, platform: platform, physicalKey: physicalKey);
   final ServicesBinding binding = ServicesBinding.instance;
   if (!handled && binding is TestWidgetsFlutterBinding) {
@@ -930,7 +929,12 @@ Future<bool> simulateKeyRepeatEvent(
   PhysicalKeyboardKey? physicalKey,
   String? character,
 }) {
-  return KeyEventSimulator.simulateKeyRepeatEvent(key, platform: platform, physicalKey: physicalKey, character: character);
+  return KeyEventSimulator.simulateKeyRepeatEvent(
+    key,
+    platform: platform,
+    physicalKey: physicalKey,
+    character: character,
+  );
 }
 
 /// A [TestVariant] that runs tests with transit modes set to different values
@@ -941,8 +945,7 @@ class KeySimulatorTransitModeVariant extends TestVariant<KeyDataTransitMode> {
 
   /// Creates a [KeySimulatorTransitModeVariant] for each value option of
   /// [KeyDataTransitMode].
-  KeySimulatorTransitModeVariant.all()
-    : this(KeyDataTransitMode.values.toSet());
+  KeySimulatorTransitModeVariant.all() : this(KeyDataTransitMode.values.toSet());
 
   /// Creates a [KeySimulatorTransitModeVariant] that only contains
   /// [KeyDataTransitMode.keyDataThenRawKeyData].

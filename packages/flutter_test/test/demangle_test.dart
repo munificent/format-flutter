@@ -14,36 +14,34 @@ Future<void> main() async {
   final AutomatedTestWidgetsFlutterBinding binding = AutomatedTestWidgetsFlutterBinding();
 
   test('FlutterErrorDetails demangles', () async {
-    await binding.runTest(() async {
-      // When we call toString on a FlutterErrorDetails, it attempts to parse and
-      // filter the stack trace, which fails if demangleStackTrace returns a
-      // mangled stack trace.
-      FlutterErrorDetails(
-        exception: const CustomException(),
-        stack: await getMangledStack(),
-      ).toString();
+    await binding.runTest(
+      () async {
+        // When we call toString on a FlutterErrorDetails, it attempts to parse and
+        // filter the stack trace, which fails if demangleStackTrace returns a
+        // mangled stack trace.
+        FlutterErrorDetails(exception: const CustomException(), stack: await getMangledStack()).toString();
 
-      // Additional logic is used to parse assertion stack traces.
-      FlutterErrorDetails(
-        exception: AssertionError('Some assertion'),
-        stack: await getMangledStack(),
-      ).toString();
-    }, () {});
+        // Additional logic is used to parse assertion stack traces.
+        FlutterErrorDetails(exception: AssertionError('Some assertion'), stack: await getMangledStack()).toString();
+      },
+      () {},
+    );
     binding.postTest();
   });
 
   test('debugPrintStack demangles', () async {
-    await binding.runTest(() async {
-      final DebugPrintCallback oldDebugPrint = debugPrint;
-      try {
-        debugPrint = (String? message, {int? wrapWidth}) {};
-        debugPrintStack(
-          stackTrace: await getMangledStack(),
-        );
-      } finally {
-        debugPrint = oldDebugPrint;
-      }
-    }, () {});
+    await binding.runTest(
+      () async {
+        final DebugPrintCallback oldDebugPrint = debugPrint;
+        try {
+          debugPrint = (String? message, {int? wrapWidth}) {};
+          debugPrintStack(stackTrace: await getMangledStack());
+        } finally {
+          debugPrint = oldDebugPrint;
+        }
+      },
+      () {},
+    );
     binding.postTest();
   });
 }

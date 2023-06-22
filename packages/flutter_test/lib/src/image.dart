@@ -24,11 +24,7 @@ final Map<int, ui.Image> _cache = <int, ui.Image>{};
 /// [FakeAsync] zones set up by [testWidgets]. Typically, it should be invoked
 /// as a setup step before [testWidgets] are run, such as [setUp] or [setUpAll].
 /// If needed, it can be invoked using [WidgetTester.runAsync].
-Future<ui.Image> createTestImage({
-  int width = 1,
-  int height = 1,
-  bool cache = true,
-}) => TestAsyncUtils.guard(() async {
+Future<ui.Image> createTestImage({int width = 1, int height = 1, bool cache = true}) => TestAsyncUtils.guard(() async {
   assert(width > 0);
   assert(height > 0);
 

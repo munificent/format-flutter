@@ -16,10 +16,7 @@ import 'package:flutter/widgets.dart';
 /// The same applies to any iterable obtained indirectly through this
 /// one, for example the results of calling `where` on this iterable
 /// are also cached.
-Iterable<Element> collectAllElementsFrom(
-  Element rootElement, {
-  required bool skipOffstage,
-}) {
+Iterable<Element> collectAllElementsFrom(Element rootElement, {required bool skipOffstage}) {
   return CachingIterable<Element>(_DepthFirstChildIterator(rootElement, skipOffstage));
 }
 

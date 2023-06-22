@@ -35,7 +35,7 @@ void verifyPropertyFaked<TProperty>({
     realValue == fakeValue,
     isFalse,
     reason: 'Since the real value and fake value are equal, we cannot validate '
-      'that a property has been faked. Choose a different fake value to test.',
+        'that a property has been faked. Choose a different fake value to test.',
   );
   expect(propertyBeforeFaking, matcher(realValue));
   expect(propertyAfterFaking, matcher(fakeValue));
@@ -81,7 +81,12 @@ class _FakeViewPaddingMatcher extends Matcher {
   }
 
   @override
-  Description describeMismatch(dynamic item, Description mismatchDescription, Map<dynamic, dynamic> matchState, bool verbose) {
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map<dynamic, dynamic> matchState,
+    bool verbose,
+  ) {
     assert(item is ViewPadding, 'Can only match against implementations of ViewPadding.');
     final ViewPadding actual = item as ViewPadding;
 
@@ -107,8 +112,8 @@ class _FakeViewPaddingMatcher extends Matcher {
     final ViewPadding actual = item as ViewPadding;
 
     return actual.left == expected.left &&
-      actual.top == expected.top &&
-      actual.right == expected.right &&
-      actual.bottom == expected.bottom;
+        actual.top == expected.top &&
+        actual.right == expected.right &&
+        actual.bottom == expected.bottom;
   }
 }

@@ -20,7 +20,7 @@ void main() async {
         additionalTime: Duration(seconds: 25),
       );
     },
-    () { },
+    () {},
     // This timeout will be removed and not replaced since there is no
     // equivalent API at this layer.
     timeout: Duration(minutes: 30),

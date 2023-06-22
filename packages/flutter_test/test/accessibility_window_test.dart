@@ -13,10 +13,7 @@ void main() {
 
     final Widget invalidButton = ElevatedButton(
       onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.orange,
-        backgroundColor: Colors.orangeAccent,
-      ),
+      style: ElevatedButton.styleFrom(foregroundColor: Colors.orange, backgroundColor: Colors.orangeAccent),
       child: const Text('Button'),
     );
     await tester.pumpWidget(MaterialApp(home: Scaffold(body: invalidButton)));
@@ -32,10 +29,7 @@ void main() {
 
     final Widget invalidButton = ElevatedButton(
       onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.orange,
-        backgroundColor: Colors.orangeAccent,
-      ),
+      style: ElevatedButton.styleFrom(foregroundColor: Colors.orange, backgroundColor: Colors.orangeAccent),
       child: const Text('Button'),
     );
     await tester.pumpWidget(MaterialApp(home: Scaffold(body: invalidButton)));

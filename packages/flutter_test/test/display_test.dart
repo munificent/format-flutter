@@ -133,11 +133,11 @@ void main() {
 }
 
 class DisplaySnapshot {
-  DisplaySnapshot(Display display) :
-    devicePixelRatio = display.devicePixelRatio,
-    refreshRate = display.refreshRate,
-    id = display.id,
-    size = display.size;
+  DisplaySnapshot(Display display)
+    : devicePixelRatio = display.devicePixelRatio,
+      refreshRate = display.refreshRate,
+      id = display.id,
+      size = display.size;
 
   final double devicePixelRatio;
   final double refreshRate;
@@ -159,15 +159,24 @@ class _DisplaySnapshotMatcher extends Matcher {
   }
 
   @override
-  Description describeMismatch(dynamic item, Description mismatchDescription, Map<dynamic, dynamic> matchState, bool verbose) {
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map<dynamic, dynamic> matchState,
+    bool verbose,
+  ) {
     assert(item is DisplaySnapshot, 'Can only match against snapshots of Display.');
     final DisplaySnapshot actual = item as DisplaySnapshot;
 
     if (actual.devicePixelRatio != expected.devicePixelRatio) {
-      mismatchDescription.add('actual.devicePixelRatio (${actual.devicePixelRatio}) did not match expected.devicePixelRatio (${expected.devicePixelRatio})');
+      mismatchDescription.add(
+        'actual.devicePixelRatio (${actual.devicePixelRatio}) did not match expected.devicePixelRatio (${expected.devicePixelRatio})',
+      );
     }
     if (actual.refreshRate != expected.refreshRate) {
-      mismatchDescription.add('actual.refreshRate (${actual.refreshRate}) did not match expected.refreshRate (${expected.refreshRate})');
+      mismatchDescription.add(
+        'actual.refreshRate (${actual.refreshRate}) did not match expected.refreshRate (${expected.refreshRate})',
+      );
     }
     if (actual.size != expected.size) {
       mismatchDescription.add('actual.size (${actual.size}) did not match expected.size (${expected.size})');
@@ -185,8 +194,8 @@ class _DisplaySnapshotMatcher extends Matcher {
     final DisplaySnapshot actual = item as DisplaySnapshot;
 
     return actual.devicePixelRatio == expected.devicePixelRatio &&
-      actual.refreshRate == expected.refreshRate &&
-      actual.size == expected.size &&
-      actual.id == expected.id;
+        actual.refreshRate == expected.refreshRate &&
+        actual.size == expected.size &&
+        actual.id == expected.id;
   }
 }
