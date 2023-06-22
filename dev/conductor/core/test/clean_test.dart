@@ -41,23 +41,14 @@ void main() {
         processManager: processManager,
         stdio: stdio,
       );
-      final CleanCommand command = CleanCommand(
-        checkouts: checkouts,
-      );
+      final CleanCommand command = CleanCommand(checkouts: checkouts);
       runner = CommandRunner<void>('clean-test', '')..addCommand(command);
     });
 
     test('throws if no state file found', () async {
       await expectLater(
-        () async => runner.run(<String>[
-          'clean',
-          '--$kStateOption',
-          stateFilePath,
-          '--$kYesFlag',
-        ]),
-        throwsExceptionWith(
-          'No persistent state file found at $stateFilePath',
-        ),
+        () async => runner.run(<String>['clean', '--$kStateOption', stateFilePath, '--$kYesFlag']),
+        throwsExceptionWith('No persistent state file found at $stateFilePath'),
       );
     });
 
@@ -65,12 +56,7 @@ void main() {
       final File stateFile = fileSystem.file(stateFilePath);
       stateFile.writeAsStringSync('');
 
-      await runner.run(<String>[
-        'clean',
-        '--$kStateOption',
-        stateFile.path,
-        '--$kYesFlag',
-      ]);
+      await runner.run(<String>['clean', '--$kStateOption', stateFile.path, '--$kYesFlag']);
 
       expect(stateFile.existsSync(), false);
     });
@@ -79,16 +65,9 @@ void main() {
       final File stateFile = fileSystem.file(stateFilePath);
       stateFile.writeAsStringSync('{status: pending}');
 
-      await runner.run(<String>[
-        'clean',
-        '--$kStateOption',
-        stateFile.path,
-        '--$kYesFlag',
-      ]);
+      await runner.run(<String>['clean', '--$kStateOption', stateFile.path, '--$kYesFlag']);
 
       expect(stateFile.existsSync(), false);
     });
-  }, onPlatform: <String, dynamic>{
-    'windows': const Skip('Flutter Conductor only supported on macos/linux'),
-  });
+  }, onPlatform: <String, dynamic>{'windows': const Skip('Flutter Conductor only supported on macos/linux')});
 }

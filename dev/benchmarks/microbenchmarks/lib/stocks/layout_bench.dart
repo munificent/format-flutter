@@ -18,7 +18,8 @@ Future<void> main() async {
 
   // We control the framePolicy below to prevent us from scheduling frames in
   // the engine, so that the engine does not interfere with our timings.
-  final LiveTestWidgetsFlutterBinding binding = TestWidgetsFlutterBinding.ensureInitialized() as LiveTestWidgetsFlutterBinding;
+  final LiveTestWidgetsFlutterBinding binding =
+      TestWidgetsFlutterBinding.ensureInitialized() as LiveTestWidgetsFlutterBinding;
 
   final Stopwatch watch = Stopwatch();
   int iterations = 0;
@@ -31,10 +32,7 @@ Future<void> main() async {
     await tester.pump(); // Start drawer animation
     await tester.pump(const Duration(seconds: 1)); // Complete drawer animation
 
-    final TestViewConfiguration big = TestViewConfiguration.fromView(
-      size: const Size(360.0, 640.0),
-      view: tester.view,
-    );
+    final TestViewConfiguration big = TestViewConfiguration.fromView(size: const Size(360.0, 640.0), view: tester.view);
     final TestViewConfiguration small = TestViewConfiguration.fromView(
       size: const Size(355.0, 635.0),
       view: tester.view,

@@ -48,21 +48,27 @@ void main() {
     bool called = false;
 
     Future<ui.Codec> decode(ui.ImmutableBuffer buffer, {ui.TargetImageSizeCallback? getTargetSize}) {
-      return PaintingBinding.instance.instantiateImageCodecWithSize(buffer, getTargetSize: (int intrinsicWidth, int intrinsicHeight) {
-        expect(getTargetSize, isNotNull);
-        final ui.TargetImageSize targetSize = getTargetSize!(intrinsicWidth, intrinsicHeight);
-        expect(targetSize.width, expectedCacheWidth);
-        expect(targetSize.height, expectedCacheHeight);
-        called = true;
-        return targetSize;
-      });
+      return PaintingBinding.instance.instantiateImageCodecWithSize(
+        buffer,
+        getTargetSize: (int intrinsicWidth, int intrinsicHeight) {
+          expect(getTargetSize, isNotNull);
+          final ui.TargetImageSize targetSize = getTargetSize!(intrinsicWidth, intrinsicHeight);
+          expect(targetSize.width, expectedCacheWidth);
+          expect(targetSize.height, expectedCacheHeight);
+          called = true;
+          return targetSize;
+        },
+      );
     }
 
     final ImageProvider resizeImage = image.image;
     expect(image.image, isA<ResizeImage>());
 
     final LoadTestImageProvider testProvider = LoadTestImageProvider(image.image);
-    final ImageStreamCompleter streamCompleter = testProvider.testLoad(await resizeImage.obtainKey(ImageConfiguration.empty), decode);
+    final ImageStreamCompleter streamCompleter = testProvider.testLoad(
+      await resizeImage.obtainKey(ImageConfiguration.empty),
+      decode,
+    );
 
     final Completer<void> completer = Completer<void>();
     int? imageInfoCachedWidth;

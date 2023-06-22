@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class NavigationRailTemplate extends TokenTemplate {
-  const NavigationRailTemplate(super.blockName, super.fileName, super.tokens, {
+  const NavigationRailTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
     super.textThemePrefix = '_textTheme.',
   });
@@ -30,11 +33,15 @@ class _${blockName}DefaultsM3 extends NavigationRailThemeData {
   @override Color? get backgroundColor => ${componentColor("md.comp.navigation-rail.container")};
 
   @override TextStyle? get unselectedLabelTextStyle {
-    return ${textStyle("md.comp.navigation-rail.label-text")}!.copyWith(color: ${componentColor("md.comp.navigation-rail.inactive.focus.label-text")});
+    return ${textStyle("md.comp.navigation-rail.label-text")}!.copyWith(color: ${componentColor(
+        "md.comp.navigation-rail.inactive.focus.label-text",
+      )});
   }
 
   @override TextStyle? get selectedLabelTextStyle {
-    return ${textStyle("md.comp.navigation-rail.label-text")}!.copyWith(color: ${componentColor("md.comp.navigation-rail.active.focus.label-text")});
+    return ${textStyle("md.comp.navigation-rail.label-text")}!.copyWith(color: ${componentColor(
+        "md.comp.navigation-rail.active.focus.label-text",
+      )});
   }
 
   @override IconThemeData? get unselectedIconTheme {

@@ -139,11 +139,7 @@ class Cocoon {
     resultFile.writeAsStringSync(json.encode(updateRequest));
   }
 
-  Map<String, dynamic> _constructUpdateRequest({
-    String? builderName,
-    required TaskResult result,
-    String? gitBranch,
-  }) {
+  Map<String, dynamic> _constructUpdateRequest({String? builderName, required TaskResult result, String? gitBranch}) {
     final Map<String, dynamic> updateRequest = <String, dynamic>{
       'CommitBranch': gitBranch,
       'CommitSha': commitSha,
@@ -204,8 +200,8 @@ class AuthenticatedCocoonClient extends BaseClient {
     this._serviceAccountTokenPath, {
     @visibleForTesting Client? httpClient,
     @visibleForTesting FileSystem? filesystem,
-  })  : _delegate = httpClient ?? Client(),
-        _fs = filesystem ?? const LocalFileSystem();
+  }) : _delegate = httpClient ?? Client(),
+       _fs = filesystem ?? const LocalFileSystem();
 
   /// Authentication token to have the ability to upload and record test results.
   ///
@@ -234,12 +230,13 @@ class AuthenticatedCocoonClient extends BaseClient {
 
     if (response.statusCode != 200) {
       throw ClientException(
-          'AuthenticatedClientError:\n'
-          '  URI: ${request.url}\n'
-          '  HTTP Status: ${response.statusCode}\n'
-          '  Response body:\n'
-          '${(await Response.fromStream(response)).body}',
-          request.url);
+        'AuthenticatedClientError:\n'
+        '  URI: ${request.url}\n'
+        '  HTTP Status: ${response.statusCode}\n'
+        '  Response body:\n'
+        '${(await Response.fromStream(response)).body}',
+        request.url,
+      );
     }
     return response;
   }

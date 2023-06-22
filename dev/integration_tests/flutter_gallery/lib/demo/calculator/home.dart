@@ -114,23 +114,14 @@ class CalculatorState extends State<Calculator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).canvasColor,
-        elevation: 0.0,
-      ),
+      appBar: AppBar(backgroundColor: Theme.of(context).canvasColor, elevation: 0.0),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           // Give the key-pad 3/5 of the vertical space and the display 2/5.
-          Expanded(
-            flex: 2,
-            child: CalcDisplay(content: _expression.toString()),
-          ),
+          Expanded(flex: 2, child: CalcDisplay(content: _expression.toString())),
           const Divider(height: 1.0),
-          Expanded(
-            flex: 3,
-            child: KeyPad(calcState: this),
-          ),
+          Expanded(flex: 3, child: KeyPad(calcState: this)),
         ],
       ),
     );
@@ -138,23 +129,18 @@ class CalculatorState extends State<Calculator> {
 }
 
 class CalcDisplay extends StatelessWidget {
-  const CalcDisplay({ super.key, this.content});
+  const CalcDisplay({super.key, this.content});
 
   final String? content;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        content!,
-        style: const TextStyle(fontSize: 24.0),
-      ),
-    );
+    return Center(child: Text(content!, style: const TextStyle(fontSize: 24.0)));
   }
 }
 
 class KeyPad extends StatelessWidget {
-  const KeyPad({ super.key, this.calcState });
+  const KeyPad({super.key, this.calcState});
 
   final CalculatorState? calcState;
 
@@ -177,21 +163,9 @@ class KeyPad extends StatelessWidget {
               flex: 3,
               child: Column(
                 children: <Widget>[
-                  KeyRow(<Widget>[
-                    NumberKey(7, calcState),
-                    NumberKey(8, calcState),
-                    NumberKey(9, calcState),
-                  ]),
-                  KeyRow(<Widget>[
-                    NumberKey(4, calcState),
-                    NumberKey(5, calcState),
-                    NumberKey(6, calcState),
-                  ]),
-                  KeyRow(<Widget>[
-                    NumberKey(1, calcState),
-                    NumberKey(2, calcState),
-                    NumberKey(3, calcState),
-                  ]),
+                  KeyRow(<Widget>[NumberKey(7, calcState), NumberKey(8, calcState), NumberKey(9, calcState)]),
+                  KeyRow(<Widget>[NumberKey(4, calcState), NumberKey(5, calcState), NumberKey(6, calcState)]),
+                  KeyRow(<Widget>[NumberKey(1, calcState), NumberKey(2, calcState), NumberKey(3, calcState)]),
                   KeyRow(<Widget>[
                     CalcKey('.', calcState!.handlePointTap),
                     NumberKey(0, calcState),
@@ -228,12 +202,7 @@ class KeyRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: keys,
-      ),
-    );
+    return Expanded(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: keys));
   }
 }
 
@@ -255,7 +224,7 @@ class CalcKey extends StatelessWidget {
             style: TextStyle(
               // This line is used as a sentinel in the hot reload tests: hot_mode_test.dart
               // in the devicelab.
-              fontSize: (orientation == Orientation.portrait) ? 32.0 : 24.0
+              fontSize: (orientation == Orientation.portrait) ? 32.0 : 24.0,
             ),
           ),
         ),
@@ -265,8 +234,11 @@ class CalcKey extends StatelessWidget {
 }
 
 class NumberKey extends CalcKey {
-  NumberKey(int value, CalculatorState? calcState, {Key? key})
-    : super('$value', () {
-        calcState!.handleNumberTap(value);
-      }, key: key);
+  NumberKey(
+    int value,
+    CalculatorState? calcState, {
+    Key? key,
+  }) : super('$value', () {
+         calcState!.handleNumberTap(value);
+       }, key: key);
 }

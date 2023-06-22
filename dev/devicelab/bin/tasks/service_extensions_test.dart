@@ -27,12 +27,17 @@ void main() {
       print('run: starting...');
       final Process run = await startFlutter(
         'run',
-        options: <String>['--verbose', '--no-fast-start', '--no-publish-port', '--disable-service-auth-codes', '-d', device.deviceId, 'lib/main.dart'],
+        options: <String>[
+          '--verbose',
+          '--no-fast-start',
+          '--no-publish-port',
+          '--disable-service-auth-codes',
+          '-d',
+          device.deviceId,
+          'lib/main.dart',
+        ],
       );
-      run.stdout
-          .transform<String>(utf8.decoder)
-          .transform<String>(const LineSplitter())
-          .listen((String line) {
+      run.stdout.transform<String>(utf8.decoder).transform<String>(const LineSplitter()).listen((String line) {
         print('run:stdout: $line');
         if (vmServicePort == null) {
           vmServicePort = parseServicePort(line);
@@ -44,14 +49,13 @@ void main() {
           }
         }
       });
-      run.stderr
-          .transform<String>(utf8.decoder)
-          .transform<String>(const LineSplitter())
-          .listen((String line) {
+      run.stderr.transform<String>(utf8.decoder).transform<String>(const LineSplitter()).listen((String line) {
         stderr.writeln('run:stderr: $line');
       });
-      unawaited(run.exitCode.then<void>((int exitCode) { ok = false; }));
-      await Future.any<dynamic>(<Future<dynamic>>[ ready.future, run.exitCode ]);
+      unawaited(run.exitCode.then<void>((int exitCode) {
+        ok = false;
+      }));
+      await Future.any<dynamic>(<Future<dynamic>>[ready.future, run.exitCode]);
       if (!ok) {
         throw 'Failed to run test app.';
       }

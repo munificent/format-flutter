@@ -11,15 +11,9 @@ import 'test_data.dart';
 
 /// Creates an infinite list of Material cards and scrolls it.
 class BenchCardInfiniteScroll extends WidgetRecorder {
-  BenchCardInfiniteScroll.forward()
-    : initialOffset = 0.0,
-      finalOffset = 30000.0,
-      super(name: benchmarkName);
+  BenchCardInfiniteScroll.forward() : initialOffset = 0.0, finalOffset = 30000.0, super(name: benchmarkName);
 
-  BenchCardInfiniteScroll.backward()
-    : initialOffset = 30000.0,
-      finalOffset = 0.0,
-      super(name: benchmarkNameBackward);
+  BenchCardInfiniteScroll.backward() : initialOffset = 30000.0, finalOffset = 0.0, super(name: benchmarkNameBackward);
 
   static const String benchmarkName = 'bench_card_infinite_scroll';
   static const String benchmarkNameBackward = 'bench_card_infinite_scroll_backward';
@@ -56,17 +50,11 @@ class _InfiniteScrollCardsState extends State<_InfiniteScrollCards> {
 
     offset = widget.initialOffset;
 
-    scrollController = ScrollController(
-      initialScrollOffset: offset,
-    );
+    scrollController = ScrollController(initialScrollOffset: offset);
 
     // Without the timer the animation doesn't begin.
     Timer.run(() async {
-      await scrollController.animateTo(
-        widget.finalOffset,
-        curve: Curves.linear,
-        duration: stepDuration,
-      );
+      await scrollController.animateTo(widget.finalOffset, curve: Curves.linear, duration: stepDuration);
     });
   }
 
@@ -86,10 +74,7 @@ class _InfiniteScrollCardsState extends State<_InfiniteScrollCards> {
           height: 100.0,
           child: Card(
             elevation: 16.0,
-            child: Text(
-              '${lipsum[index % lipsum.length]} $index',
-              textAlign: TextAlign.center,
-            ),
+            child: Text('${lipsum[index % lipsum.length]} $index', textAlign: TextAlign.center),
           ),
         );
       },

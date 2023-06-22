@@ -11,29 +11,16 @@ export '../../../../packages/flutter_tools/test/src/fake_process_manager.dart';
 
 Matcher throwsAssertionWith(String messageSubString) {
   return throwsA(
-      isA<AssertionError>().having(
-          (AssertionError e) => e.toString(),
-          'description',
-          contains(messageSubString),
-      ),
+    isA<AssertionError>().having((AssertionError e) => e.toString(), 'description', contains(messageSubString)),
   );
 }
 
 Matcher throwsExceptionWith(String messageSubString) {
-  return throwsA(
-      isA<Exception>().having(
-          (Exception e) => e.toString(),
-          'description',
-          contains(messageSubString),
-      ),
-  );
+  return throwsA(isA<Exception>().having((Exception e) => e.toString(), 'description', contains(messageSubString)));
 }
 
 class TestStdio extends Stdio {
-  TestStdio({
-    this.verbose = false,
-    List<String>? stdin,
-  }) : stdin = stdin ?? <String>[];
+  TestStdio({this.verbose = false, List<String>? stdin}) : stdin = stdin ?? <String>[];
 
   String get error => logs.where((String log) => log.startsWith(r'[error] ')).join('\n');
 
@@ -64,15 +51,15 @@ class FakeArgResults implements ArgResults {
     bool force = false,
     bool skipTagging = false,
   }) : _parsedArgs = <String, dynamic>{
-    'increment': level,
-    'candidate-branch': candidateBranch,
-    'remote': remote,
-    'just-print': justPrint,
-    'yes': autoApprove,
-    'help': help,
-    'force': force,
-    'skip-tagging': skipTagging,
-  };
+         'increment': level,
+         'candidate-branch': candidateBranch,
+         'remote': remote,
+         'just-print': justPrint,
+         'yes': autoApprove,
+         'help': help,
+         'force': force,
+         'skip-tagging': skipTagging,
+       };
 
   @override
   String? name;

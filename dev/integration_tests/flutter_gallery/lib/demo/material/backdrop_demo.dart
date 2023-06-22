@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 // (CategoryView) on top of the backdrop.
 
 class Category {
-  const Category({ this.title, this.assets });
+  const Category({this.title, this.assets});
   final String? title;
   final List<String>? assets;
   @override
@@ -32,12 +32,7 @@ const List<Category> allCategories = <Category>[
   ),
   Category(
     title: 'Blue',
-    assets: <String>[
-      'products/backpack.png',
-      'products/cup.png',
-      'products/napkins.png',
-      'products/top.png',
-    ],
+    assets: <String>['products/backpack.png', 'products/cup.png', 'products/napkins.png', 'products/top.png'],
   ),
   Category(
     title: 'Cold Weather',
@@ -61,12 +56,7 @@ const List<Category> allCategories = <Category>[
   ),
   Category(
     title: 'Tops',
-    assets: <String>[
-      'products/jumper.png',
-      'products/shirt.png',
-      'products/sweater.png',
-      'products/top.png',
-    ],
+    assets: <String>['products/jumper.png', 'products/shirt.png', 'products/sweater.png', 'products/top.png'],
   ),
   Category(
     title: 'Everything',
@@ -95,7 +85,7 @@ const List<Category> allCategories = <Category>[
 ];
 
 class CategoryView extends StatelessWidget {
-  const CategoryView({ super.key, this.category });
+  const CategoryView({super.key, this.category});
 
   final Category? category;
 
@@ -106,10 +96,7 @@ class CategoryView extends StatelessWidget {
       child: ListView(
         primary: true,
         key: PageStorageKey<Category?>(category),
-        padding: const EdgeInsets.symmetric(
-          vertical: 16.0,
-          horizontal: 64.0,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 64.0),
         children: category!.assets!.map<Widget>((String asset) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -120,18 +107,11 @@ class CategoryView extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Column(
                     children: <Widget>[
-                      Image.asset(
-                        asset,
-                        package: 'flutter_gallery_assets',
-                        fit: BoxFit.contain,
-                      ),
+                      Image.asset(asset, package: 'flutter_gallery_assets', fit: BoxFit.contain),
                       Container(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         alignment: AlignmentDirectional.center,
-                        child: Text(
-                          asset,
-                          style: theme.textTheme.bodySmall,
-                        ),
+                        child: Text(asset, style: theme.textTheme.bodySmall),
                       ),
                     ],
                   ),
@@ -169,10 +149,7 @@ class BackdropPanel extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     return Material(
       elevation: 2.0,
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(16.0),
-        topRight: Radius.circular(16.0),
-      ),
+      borderRadius: const BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -187,10 +164,7 @@ class BackdropPanel extends StatelessWidget {
               alignment: AlignmentDirectional.centerStart,
               child: DefaultTextStyle(
                 style: theme.textTheme.titleMedium!,
-                child: Tooltip(
-                  message: 'Tap to dismiss',
-                  child: title,
-                ),
+                child: Tooltip(message: 'Tap to dismiss', child: title),
               ),
             ),
           ),
@@ -204,10 +178,7 @@ class BackdropPanel extends StatelessWidget {
 
 // Cross fades between 'Select a Category' and 'Asset Viewer'.
 class BackdropTitle extends AnimatedWidget {
-  const BackdropTitle({
-    super.key,
-    required Animation<double> super.listenable,
-  });
+  const BackdropTitle({super.key, required Animation<double> super.listenable});
 
   @override
   Widget build(BuildContext context) {
@@ -219,17 +190,11 @@ class BackdropTitle extends AnimatedWidget {
       child: Stack(
         children: <Widget>[
           Opacity(
-            opacity: CurvedAnimation(
-              parent: ReverseAnimation(animation),
-              curve: const Interval(0.5, 1.0),
-            ).value,
+            opacity: CurvedAnimation(parent: ReverseAnimation(animation), curve: const Interval(0.5, 1.0)).value,
             child: const Text('Select a Category'),
           ),
           Opacity(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: const Interval(0.5, 1.0),
-            ).value,
+            opacity: CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)).value,
             child: const Text('Asset Viewer'),
           ),
         ],
@@ -256,11 +221,7 @@ class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      value: 1.0,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 300), value: 1.0, vsync: this);
   }
 
   @override
@@ -326,28 +287,22 @@ class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderSt
     final Size panelSize = constraints.biggest;
     final double panelTop = panelSize.height - panelTitleHeight;
 
-    final Animation<RelativeRect> panelAnimation = _controller.drive(
-      RelativeRectTween(
-        begin: RelativeRect.fromLTRB(
-          0.0,
-          panelTop - MediaQuery.of(context).padding.bottom,
-          0.0,
-          panelTop - panelSize.height,
-        ),
-        end: RelativeRect.fill,
+    final Animation<RelativeRect> panelAnimation = _controller.drive(RelativeRectTween(
+      begin: RelativeRect.fromLTRB(
+        0.0,
+        panelTop - MediaQuery.of(context).padding.bottom,
+        0.0,
+        panelTop - panelSize.height,
       ),
-    );
+      end: RelativeRect.fill,
+    ));
 
     final ThemeData theme = Theme.of(context);
     final List<Widget> backdropItems = allCategories.map<Widget>((Category category) {
       final bool selected = category == _category;
       return Material(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        ),
-        color: selected
-          ? Colors.white.withOpacity(0.25)
-          : Colors.transparent,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
+        color: selected ? Colors.white.withOpacity(0.25) : Colors.transparent,
         child: ListTile(
           title: Text(category.title!),
           selected: selected,
@@ -369,10 +324,7 @@ class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderSt
             selectedColor: theme.primaryTextTheme.titleLarge!.color,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: backdropItems,
-              ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: backdropItems),
             ),
           ),
           PositionedTransition(
@@ -395,23 +347,15 @@ class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderSt
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        title: BackdropTitle(
-          listenable: _controller.view,
-        ),
+        title: BackdropTitle(listenable: _controller.view),
         actions: <Widget>[
           IconButton(
             onPressed: _toggleBackdropPanelVisibility,
-            icon: AnimatedIcon(
-              icon: AnimatedIcons.close_menu,
-              semanticLabel: 'close',
-              progress: _controller.view,
-            ),
+            icon: AnimatedIcon(icon: AnimatedIcons.close_menu, semanticLabel: 'close', progress: _controller.view),
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: _buildStack,
-      ),
+      body: LayoutBuilder(builder: _buildStack),
     );
   }
 }

@@ -10,10 +10,7 @@ import '../framework/metrics_center.dart';
 class UploadResultsCommand extends Command<void> {
   UploadResultsCommand() {
     argParser.addOption('results-file', help: 'Test results JSON to upload to Cocoon.');
-    argParser.addOption(
-      'service-account-token-file',
-      help: 'Authentication token for uploading results.',
-    );
+    argParser.addOption('service-account-token-file', help: 'Authentication token for uploading results.');
     argParser.addOption('test-flaky', help: 'Flag to show whether the test is flaky: "True" or "False"');
     argParser.addOption(
       'git-branch',

@@ -16,12 +16,7 @@ class NewGalleryPerfTest extends PerfTest {
     String dartDefine = '',
     super.enableImpeller,
     super.timeoutSeconds,
-  }) : super(
-    galleryDir.path,
-    'test_driver/transitions_perf.dart',
-    timelineFileName,
-    dartDefine: dartDefine,
-  );
+  }) : super(galleryDir.path, 'test_driver/transitions_perf.dart', timelineFileName, dartDefine: dartDefine);
 
   @override
   Future<TaskResult> run() async {

@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoCard extends StatelessWidget {
-  const VideoCard({ super.key, this.controller, this.title, this.subtitle });
+  const VideoCard({super.key, this.controller, this.title, this.subtitle});
 
   final VideoPlayerController? controller;
   final String? title;
@@ -22,30 +22,16 @@ class VideoCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
       child: Center(
-        child: AspectRatio(
-          aspectRatio: 3 / 2,
-          child: Hero(
-            tag: controller!,
-            child: VideoPlayerLoading(controller),
-          ),
-        ),
+        child: AspectRatio(aspectRatio: 3 / 2, child: Hero(tag: controller!, child: VideoPlayerLoading(controller))),
       ),
     );
   }
 
   Widget _buildFullScreenVideo() {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title!),
-      ),
+      appBar: AppBar(title: Text(title!)),
       body: Center(
-        child: AspectRatio(
-          aspectRatio: 3 / 2,
-          child: Hero(
-            tag: controller!,
-            child: VideoPlayPause(controller),
-          ),
-        ),
+        child: AspectRatio(aspectRatio: 3 / 2, child: Hero(tag: controller!, child: VideoPlayPause(controller))),
       ),
     );
   }
@@ -81,10 +67,7 @@ class VideoCard extends StatelessWidget {
         child: Column(
           children: <Widget>[
             ListTile(title: Text(title!), subtitle: Text(subtitle!)),
-            GestureDetector(
-              onTap: pushFullScreenWidget,
-              child: _buildInlineVideo(),
-            ),
+            GestureDetector(onTap: pushFullScreenWidget, child: _buildInlineVideo()),
           ],
         ),
       ),
@@ -128,10 +111,7 @@ class _VideoPlayerLoadingState extends State<VideoPlayerLoading> {
     }
     return Stack(
       fit: StackFit.expand,
-      children: <Widget>[
-        VideoPlayer(widget.controller!),
-        const Center(child: CircularProgressIndicator()),
-      ],
+      children: <Widget>[VideoPlayer(widget.controller!), const Center(child: CircularProgressIndicator())],
     );
   }
 }
@@ -149,7 +129,7 @@ class _VideoPlayPauseState extends State<VideoPlayPause> {
   _VideoPlayPauseState() {
     listener = () {
       if (mounted) {
-        setState(() { });
+        setState(() {});
       }
     };
   }
@@ -184,14 +164,10 @@ class _VideoPlayPauseState extends State<VideoPlayPause> {
               return;
             }
             if (controller!.value.isPlaying) {
-              imageFadeAnimation = const FadeAnimation(
-                child: Icon(Icons.pause, size: 100.0),
-              );
+              imageFadeAnimation = const FadeAnimation(child: Icon(Icons.pause, size: 100.0));
               controller!.pause();
             } else {
-              imageFadeAnimation = const FadeAnimation(
-                child: Icon(Icons.play_arrow, size: 100.0),
-              );
+              imageFadeAnimation = const FadeAnimation(child: Icon(Icons.play_arrow, size: 100.0));
               controller!.play();
             }
           },
@@ -203,11 +179,7 @@ class _VideoPlayPauseState extends State<VideoPlayPause> {
 }
 
 class FadeAnimation extends StatefulWidget {
-  const FadeAnimation({
-    super.key,
-    this.child,
-    this.duration = const Duration(milliseconds: 500),
-  });
+  const FadeAnimation({super.key, this.child, this.duration = const Duration(milliseconds: 500)});
 
   final Widget? child;
   final Duration duration;
@@ -222,13 +194,10 @@ class _FadeAnimationState extends State<FadeAnimation> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    animationController = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    animationController = AnimationController(duration: widget.duration, vsync: this);
     animationController.addListener(() {
       if (mounted) {
-        setState(() { });
+        setState(() {});
       }
     });
     animationController.forward(from: 0.0);
@@ -257,20 +226,13 @@ class _FadeAnimationState extends State<FadeAnimation> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return animationController.isAnimating
-        ? Opacity(
-            opacity: 1.0 - animationController.value,
-            child: widget.child,
-          )
+        ? Opacity(opacity: 1.0 - animationController.value, child: widget.child)
         : Container();
   }
 }
 
 class ConnectivityOverlay extends StatefulWidget {
-  const ConnectivityOverlay({
-    super.key,
-    this.child,
-    this.connectedCompleter,
-  });
+  const ConnectivityOverlay({super.key, this.child, this.connectedCompleter});
 
   final Widget? child;
   final Completer<void>? connectedCompleter;
@@ -287,9 +249,7 @@ class _ConnectivityOverlayState extends State<ConnectivityOverlay> {
     backgroundColor: Colors.red,
     content: ListTile(
       title: Text('No network'),
-      subtitle: Text(
-        'To load the videos you must have an active network connection',
-      ),
+      subtitle: Text('To load the videos you must have an active network connection'),
     ),
   );
 
@@ -317,20 +277,18 @@ class _ConnectivityOverlayState extends State<ConnectivityOverlay> {
       }
       return;
     }
-    connectivitySubscription = connectivityStream().listen(
-      (ConnectivityResult connectivityResult) {
-        if (!mounted) {
-          return;
+    connectivitySubscription = connectivityStream().listen((ConnectivityResult connectivityResult) {
+      if (!mounted) {
+        return;
+      }
+      if (connectivityResult == ConnectivityResult.none) {
+        ScaffoldMessenger.of(context).showSnackBar(errorSnackBar);
+      } else {
+        if (!widget.connectedCompleter!.isCompleted) {
+          widget.connectedCompleter!.complete();
         }
-        if (connectivityResult == ConnectivityResult.none) {
-          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar);
-        } else {
-          if (!widget.connectedCompleter!.isCompleted) {
-            widget.connectedCompleter!.complete();
-          }
-        }
-      },
-    );
+      }
+    });
   }
 
   @override
@@ -344,7 +302,7 @@ class _ConnectivityOverlayState extends State<ConnectivityOverlay> {
 }
 
 class VideoDemo extends StatefulWidget {
-  const VideoDemo({ super.key });
+  const VideoDemo({super.key});
 
   static const String routeName = '/video';
 
@@ -355,9 +313,7 @@ class VideoDemo extends StatefulWidget {
 final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
 Future<bool> isIOSSimulator() async {
-  return !kIsWeb &&
-      Platform.isIOS &&
-      !(await deviceInfoPlugin.iosInfo).isPhysicalDevice;
+  return !kIsWeb && Platform.isIOS && !(await deviceInfoPlugin.iosInfo).isPhysicalDevice;
 }
 
 class _VideoDemoState extends State<VideoDemo> with SingleTickerProviderStateMixin {
@@ -389,7 +345,7 @@ class _VideoDemoState extends State<VideoDemo> with SingleTickerProviderStateMix
       await connectedCompleter.future;
       await controller.initialize();
       if (mounted) {
-        setState(() { });
+        setState(() {});
       }
     }
 
@@ -402,7 +358,7 @@ class _VideoDemoState extends State<VideoDemo> with SingleTickerProviderStateMix
 
   @override
   void dispose() {
-    isDisposed  = true;
+    isDisposed = true;
     butterflyController.dispose();
     beeController.dispose();
     super.dispose();
@@ -411,35 +367,21 @@ class _VideoDemoState extends State<VideoDemo> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Videos'),
-      ),
+      appBar: AppBar(title: const Text('Videos')),
       body: isSupported
-        ? ConnectivityOverlay(
-            connectedCompleter: connectedCompleter,
-            child: Scrollbar(
-              child: ListView(
-                primary: true,
-                children: <Widget>[
-                  VideoCard(
-                    title: 'Butterfly',
-                    subtitle: '… flutters by',
-                    controller: butterflyController,
-                  ),
-                  VideoCard(
-                    title: 'Bee',
-                    subtitle: '… gently buzzing',
-                    controller: beeController,
-                  ),
-                ],
+          ? ConnectivityOverlay(
+              connectedCompleter: connectedCompleter,
+              child: Scrollbar(
+                child: ListView(
+                  primary: true,
+                  children: <Widget>[
+                    VideoCard(title: 'Butterfly', subtitle: '… flutters by', controller: butterflyController),
+                    VideoCard(title: 'Bee', subtitle: '… gently buzzing', controller: beeController),
+                  ],
+                ),
               ),
-            ),
-          )
-        : const Center(
-            child: Text(
-              'Video playback not supported on the iOS Simulator.',
-            ),
-          ),
+            )
+          : const Center(child: Text('Video playback not supported on the iOS Simulator.')),
     );
   }
 }

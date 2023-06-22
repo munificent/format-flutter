@@ -23,11 +23,7 @@ void main() {
   void runAddListenerBenchmark(int iteration, {bool addResult = true}) {
     const String name = 'add';
     for (int listenerCount = 1; listenerCount <= 5; listenerCount += 1) {
-      final List<_Notifier> notifiers = List<_Notifier>.generate(
-        iteration,
-        (_) => _Notifier(),
-        growable: false,
-      );
+      final List<_Notifier> notifiers = List<_Notifier>.generate(iteration, (_) => _Notifier(), growable: false);
 
       final Stopwatch watch = Stopwatch();
       watch.start();
@@ -79,25 +75,15 @@ void main() {
 
   void runRemoveListenerBenchmark(int iteration, {bool addResult = true}) {
     const String name = 'remove';
-    final List<VoidCallback> listeners = <VoidCallback>[
-      () {},
-      () {},
-      () {},
-      () {},
-      () {},
-    ];
+    final List<VoidCallback> listeners = <VoidCallback>[() {}, () {}, () {}, () {}, () {}];
     for (int listenerCount = 1; listenerCount <= 5; listenerCount += 1) {
-      final List<_Notifier> notifiers = List<_Notifier>.generate(
-        iteration,
-        (_) {
-          final _Notifier notifier = _Notifier();
-          for (int l = 0; l < listenerCount; l += 1) {
-            notifier.addListener(listeners[l]);
-          }
-          return notifier;
-        },
-        growable: false,
-      );
+      final List<_Notifier> notifiers = List<_Notifier>.generate(iteration, (_) {
+        final _Notifier notifier = _Notifier();
+        for (int l = 0; l < listenerCount; l += 1) {
+          notifier.addListener(listeners[l]);
+        }
+        return notifier;
+      }, growable: false);
 
       final Stopwatch watch = Stopwatch();
       watch.start();
@@ -120,36 +106,25 @@ void main() {
     }
   }
 
-  void runRemoveListenerWhileNotifyingBenchmark(int iteration,
-      {bool addResult = true}) {
+  void runRemoveListenerWhileNotifyingBenchmark(int iteration, {bool addResult = true}) {
     const String name = 'removeWhileNotify';
 
-    final List<VoidCallback> listeners = <VoidCallback>[
-      () {},
-      () {},
-      () {},
-      () {},
-      () {},
-    ];
+    final List<VoidCallback> listeners = <VoidCallback>[() {}, () {}, () {}, () {}, () {}];
     for (int listenerCount = 1; listenerCount <= 5; listenerCount += 1) {
-      final List<_Notifier> notifiers = List<_Notifier>.generate(
-        iteration,
-        (_) {
-          final _Notifier notifier = _Notifier();
-          notifier.addListener(() {
-            // This listener will remove all other listeners. So that only this
-            // one is called and measured.
-            for (int l = 0; l < listenerCount; l += 1) {
-              notifier.removeListener(listeners[l]);
-            }
-          });
+      final List<_Notifier> notifiers = List<_Notifier>.generate(iteration, (_) {
+        final _Notifier notifier = _Notifier();
+        notifier.addListener(() {
+          // This listener will remove all other listeners. So that only this
+          // one is called and measured.
           for (int l = 0; l < listenerCount; l += 1) {
-            notifier.addListener(listeners[l]);
+            notifier.removeListener(listeners[l]);
           }
-          return notifier;
-        },
-        growable: false,
-      );
+        });
+        for (int l = 0; l < listenerCount; l += 1) {
+          notifier.addListener(listeners[l]);
+        }
+        return notifier;
+      }, growable: false);
 
       final Stopwatch watch = Stopwatch();
       watch.start();

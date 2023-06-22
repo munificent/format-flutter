@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class TimePickerTemplate extends TokenTemplate {
-  const TimePickerTemplate(super.blockName, super.fileName, super.tokens, {
+  const TimePickerTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   static const String tokenGroup = 'md.comp.time-picker';
@@ -219,10 +222,14 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
           overlayColor = ${componentColor('$hourMinuteComponent.unselected.pressed.state-layer')};
         } else if (states.contains(MaterialState.hovered)) {
           const double hoverOpacity = ${opacity('$hourMinuteComponent.hover.state-layer.opacity')};
-          overlayColor = ${componentColor('$hourMinuteComponent.unselected.hover.state-layer')}.withOpacity(hoverOpacity);
+          overlayColor = ${componentColor(
+        '$hourMinuteComponent.unselected.hover.state-layer',
+      )}.withOpacity(hoverOpacity);
         } else if (states.contains(MaterialState.focused)) {
           const double focusOpacity = ${opacity('$hourMinuteComponent.focus.state-layer.opacity')};
-          overlayColor = ${componentColor('$hourMinuteComponent.unselected.focus.state-layer')}.withOpacity(focusOpacity);
+          overlayColor = ${componentColor(
+        '$hourMinuteComponent.unselected.focus.state-layer',
+      )}.withOpacity(focusOpacity);
         }
         return Color.alphaBlend(overlayColor, ${componentColor('$hourMinuteComponent.unselected.container')});
       }

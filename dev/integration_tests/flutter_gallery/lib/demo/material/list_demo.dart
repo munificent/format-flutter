@@ -21,7 +21,7 @@ enum _MaterialListType {
 }
 
 class ListDemo extends StatefulWidget {
-  const ListDemo({ super.key });
+  const ListDemo({super.key});
 
   static const String routeName = '/material/list';
 
@@ -39,136 +39,134 @@ class _ListDemoState extends State<ListDemo> {
   bool? _showIcons = false;
   bool? _showDividers = false;
   bool _reverseSort = false;
-  List<String> items = <String>[
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-  ];
+  List<String> items = <String>['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
   void changeItemType(_MaterialListType? type) {
     setState(() {
       _itemType = type;
     });
-    _bottomSheet?.setState!(() { });
+    _bottomSheet?.setState!(() {});
   }
 
   void _showConfigurationSheet() {
-    final PersistentBottomSheetController<void> bottomSheet = scaffoldKey.currentState!.showBottomSheet<void>((BuildContext bottomSheetContext) {
-      return Container(
-        decoration: const BoxDecoration(
-          border: Border(top: BorderSide(color: Colors.black26)),
-        ),
-        child: ListView(
-          shrinkWrap: true,
-          primary: false,
-          children: <Widget>[
-            MergeSemantics(
-              child: ListTile(
-                dense: true,
-                title: const Text('One-line'),
-                trailing: Radio<_MaterialListType>(
-                  value: _showAvatars! ? _MaterialListType.oneLineWithAvatar : _MaterialListType.oneLine,
-                  groupValue: _itemType,
-                  onChanged: changeItemType,
+    final PersistentBottomSheetController<void> bottomSheet = scaffoldKey.currentState!.showBottomSheet<void>(
+      (BuildContext bottomSheetContext) {
+        return Container(
+          decoration: const BoxDecoration(border: Border(top: BorderSide(color: Colors.black26))),
+          child: ListView(
+            shrinkWrap: true,
+            primary: false,
+            children: <Widget>[
+              MergeSemantics(
+                child: ListTile(
+                  dense: true,
+                  title: const Text('One-line'),
+                  trailing: Radio<_MaterialListType>(
+                    value: _showAvatars! ? _MaterialListType.oneLineWithAvatar : _MaterialListType.oneLine,
+                    groupValue: _itemType,
+                    onChanged: changeItemType,
+                  ),
                 ),
               ),
-            ),
-            MergeSemantics(
-              child: ListTile(
-                dense: true,
-                title: const Text('Two-line'),
-                trailing: Radio<_MaterialListType>(
-                  value: _MaterialListType.twoLine,
-                  groupValue: _itemType,
-                  onChanged: changeItemType,
+              MergeSemantics(
+                child: ListTile(
+                  dense: true,
+                  title: const Text('Two-line'),
+                  trailing: Radio<_MaterialListType>(
+                    value: _MaterialListType.twoLine,
+                    groupValue: _itemType,
+                    onChanged: changeItemType,
+                  ),
                 ),
               ),
-            ),
-            MergeSemantics(
-              child: ListTile(
-                dense: true,
-                title: const Text('Three-line'),
-                trailing: Radio<_MaterialListType>(
-                  value: _MaterialListType.threeLine,
-                  groupValue: _itemType,
-                  onChanged: changeItemType,
+              MergeSemantics(
+                child: ListTile(
+                  dense: true,
+                  title: const Text('Three-line'),
+                  trailing: Radio<_MaterialListType>(
+                    value: _MaterialListType.threeLine,
+                    groupValue: _itemType,
+                    onChanged: changeItemType,
+                  ),
                 ),
               ),
-            ),
-            MergeSemantics(
-              child: ListTile(
-                dense: true,
-                title: const Text('Show avatar'),
-                trailing: Checkbox(
-                  value: _showAvatars,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _showAvatars = value;
-                    });
-                    final StateSetter? bottomSheetSetState = _bottomSheet?.setState;
-                    if (bottomSheetSetState != null) {
-                      bottomSheetSetState(() { });
-                    }
-                  },
+              MergeSemantics(
+                child: ListTile(
+                  dense: true,
+                  title: const Text('Show avatar'),
+                  trailing: Checkbox(
+                    value: _showAvatars,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _showAvatars = value;
+                      });
+                      final StateSetter? bottomSheetSetState = _bottomSheet?.setState;
+                      if (bottomSheetSetState != null) {
+                        bottomSheetSetState(() {});
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
-            MergeSemantics(
-              child: ListTile(
-                dense: true,
-                title: const Text('Show icon'),
-                trailing: Checkbox(
-                  value: _showIcons,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _showIcons = value;
-                    });
-                    final StateSetter? bottomSheetSetState = _bottomSheet?.setState;
-                    if (bottomSheetSetState != null) {
-                      bottomSheetSetState(() { });
-                    }
-                  },
+              MergeSemantics(
+                child: ListTile(
+                  dense: true,
+                  title: const Text('Show icon'),
+                  trailing: Checkbox(
+                    value: _showIcons,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _showIcons = value;
+                      });
+                      final StateSetter? bottomSheetSetState = _bottomSheet?.setState;
+                      if (bottomSheetSetState != null) {
+                        bottomSheetSetState(() {});
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
-            MergeSemantics(
-              child: ListTile(
-                dense: true,
-                title: const Text('Show dividers'),
-                trailing: Checkbox(
-                  value: _showDividers,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _showDividers = value;
-                    });
-                    final StateSetter? bottomSheetSetState = _bottomSheet?.setState;
-                    if (bottomSheetSetState != null) {
-                      bottomSheetSetState(() { });
-                    }
-                  },
+              MergeSemantics(
+                child: ListTile(
+                  dense: true,
+                  title: const Text('Show dividers'),
+                  trailing: Checkbox(
+                    value: _showDividers,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _showDividers = value;
+                      });
+                      final StateSetter? bottomSheetSetState = _bottomSheet?.setState;
+                      if (bottomSheetSetState != null) {
+                        bottomSheetSetState(() {});
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
-            MergeSemantics(
-              child: ListTile(
-                dense: true,
-                title: const Text('Dense layout'),
-                trailing: Checkbox(
-                  value: _dense,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _dense = value;
-                    });
-                    final StateSetter? bottomSheetSetState = _bottomSheet?.setState;
-                    if (bottomSheetSetState != null) {
-                      bottomSheetSetState(() { });
-                    }
-                  },
+              MergeSemantics(
+                child: ListTile(
+                  dense: true,
+                  title: const Text('Dense layout'),
+                  trailing: Checkbox(
+                    value: _dense,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _dense = value;
+                      });
+                      final StateSetter? bottomSheetSetState = _bottomSheet?.setState;
+                      if (bottomSheetSetState != null) {
+                        bottomSheetSetState(() {});
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      );
-    });
+            ],
+          ),
+        );
+      },
+    );
 
     setState(() {
       _bottomSheet = bottomSheet;
@@ -188,9 +186,7 @@ class _ListDemoState extends State<ListDemo> {
     if (_itemType == _MaterialListType.twoLine) {
       secondary = const Text('Additional item information.');
     } else if (_itemType == _MaterialListType.threeLine) {
-      secondary = const Text(
-        'Even more additional list item information appears on line three.',
-      );
+      secondary = const Text('Even more additional list item information appears on line three.');
     }
     return MergeSemantics(
       child: ListTile(
@@ -242,11 +238,7 @@ class _ListDemoState extends State<ListDemo> {
             },
           ),
           IconButton(
-            icon: Icon(
-              Theme.of(context).platform == TargetPlatform.iOS
-                  ? Icons.more_horiz
-                  : Icons.more_vert,
-            ),
+            icon: Icon(Theme.of(context).platform == TargetPlatform.iOS ? Icons.more_horiz : Icons.more_vert),
             tooltip: 'Show menu',
             onPressed: _bottomSheet == null ? _showConfigurationSheet : null,
           ),

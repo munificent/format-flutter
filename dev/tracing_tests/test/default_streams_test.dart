@@ -21,9 +21,7 @@ void main() {
       fail('This test _must_ be run with --enable-vmservice.');
     }
 
-    vmService = await vmServiceConnectUri(
-      'ws://localhost:${info.serverUri!.port}${info.serverUri!.path}ws',
-    );
+    vmService = await vmServiceConnectUri('ws://localhost:${info.serverUri!.port}${info.serverUri!.path}ws');
   });
 
   tearDownAll(() async {
@@ -32,10 +30,6 @@ void main() {
 
   test('Image cache tracing', () async {
     final TimelineFlags flags = await vmService.getVMTimelineFlags();
-    expect(flags.recordedStreams, containsAll(<String>[
-      'Dart',
-      'Embedder',
-      'GC',
-    ]));
+    expect(flags.recordedStreams, containsAll(<String>['Dart', 'Embedder', 'GC']));
   }, skip: isBrowser); // [intended] uses dart:isolate and io.
 }

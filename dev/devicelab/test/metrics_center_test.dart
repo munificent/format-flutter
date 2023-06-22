@@ -29,12 +29,8 @@ void main() {
         'CommitBranch': 'master',
         'CommitSha': 'abc',
         'BuilderName': 'Linux test',
-        'ResultData': <String, dynamic>{
-          'average_frame_build_time_millis': 0.4550425531914895,
-        },
-        'BenchmarkScoreKeys': <String>[
-          'average_frame_build_time_millis',
-        ],
+        'ResultData': <String, dynamic>{'average_frame_build_time_millis': 0.4550425531914895},
+        'BenchmarkScoreKeys': <String>['average_frame_build_time_millis'],
       };
       final List<MetricPoint> metricPoints = parse(results, <String, String>{}, 'test');
 
@@ -52,10 +48,7 @@ void main() {
           'average_frame_build_time_millis': 0.4550425531914895,
           '90th_percentile_frame_build_time_millis': 0.473,
         },
-        'BenchmarkScoreKeys': <String>[
-          'average_frame_build_time_millis',
-          '90th_percentile_frame_build_time_millis',
-        ],
+        'BenchmarkScoreKeys': <String>['average_frame_build_time_millis', '90th_percentile_frame_build_time_millis'],
       };
       final List<MetricPoint> metricPoints = parse(results, <String, String>{}, 'task abc');
 
@@ -72,10 +65,7 @@ void main() {
           'average_frame_build_time_millis': 0.4550425531914895,
           '90th_percentile_frame_build_time_millis': 0.473,
         },
-        'BenchmarkScoreKeys': <String>[
-          'average_frame_build_time_millis',
-          '90th_percentile_frame_build_time_millis',
-        ],
+        'BenchmarkScoreKeys': <String>['average_frame_build_time_millis', '90th_percentile_frame_build_time_millis'],
       };
       final Map<String, dynamic> tags = <String, dynamic>{
         'arch': 'intel',
@@ -116,10 +106,7 @@ void main() {
           'average_frame_build_time_millis': 0.4550425531914895,
           '90th_percentile_frame_build_time_millis': 0.473,
         },
-        'BenchmarkScoreKeys': <String>[
-          'average_frame_build_time_millis',
-          '90th_percentile_frame_build_time_millis',
-        ],
+        'BenchmarkScoreKeys': <String>['average_frame_build_time_millis', '90th_percentile_frame_build_time_millis'],
       };
       final List<MetricPoint> metricPoints = parse(results, <String, String>{}, 'task abc');
       final FakeFlutterDestination flutterDestination = FakeFlutterDestination();
@@ -140,10 +127,7 @@ void main() {
           'average_frame_build_time_millis': 0.4550425531914895,
           '90th_percentile_frame_build_time_millis': 0.473,
         },
-        'BenchmarkScoreKeys': <String>[
-          'average_frame_build_time_millis',
-          '90th_percentile_frame_build_time_millis',
-        ],
+        'BenchmarkScoreKeys': <String>['average_frame_build_time_millis', '90th_percentile_frame_build_time_millis'],
       };
       final List<MetricPoint> metricPoints = parse(results, <String, String>{}, 'task abc');
       final FakeFlutterDestination flutterDestination = FakeFlutterDestination();

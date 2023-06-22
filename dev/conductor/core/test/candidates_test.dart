@@ -28,9 +28,7 @@ void main() {
       fileSystem = MemoryFileSystem.test();
     });
 
-    CommandRunner<void> createRunner({
-      required Checkouts checkouts,
-    }) {
+    CommandRunner<void> createRunner({required Checkouts checkouts}) {
       final CandidatesCommand command = CandidatesCommand(
         checkouts: checkouts,
         flutterRoot: fileSystem.directory(flutterRoot),
@@ -43,29 +41,15 @@ void main() {
       const String branch = 'flutter-1.3-candidate.0';
 
       processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['git', 'fetch', remoteName],
-        ),
-        const FakeCommand(
-          command: <String>[flutterBinPath, 'help'],
-        ),
+        const FakeCommand(command: <String>['git', 'fetch', remoteName]),
+        const FakeCommand(command: <String>[flutterBinPath, 'help']),
         const FakeCommand(
           command: <String>[flutterBinPath, '--version', '--machine'],
           stdout: '{"frameworkVersion": "$currentVersion"}',
         ),
         FakeCommand(
-          command: const <String>[
-            'git',
-            'branch',
-            '--no-color',
-            '--remotes',
-            '--list',
-            '$remoteName/*',
-          ],
-          stdout: <String>[
-            'other-remote/flutter-5.0-candidate.0',
-            '$remoteName/$branch',
-          ].join('\n'),
+          command: const <String>['git', 'branch', '--no-color', '--remotes', '--list', '$remoteName/*'],
+          stdout: <String>['other-remote/flutter-5.0-candidate.0', '$remoteName/$branch'].join('\n'),
         ),
       ]);
       final String pathSeparator = operatingSystem == 'windows' ? r'\' : '/';
@@ -98,30 +82,15 @@ void main() {
       const String currentBranch = 'flutter-2.3-candidate.13';
 
       processManager = FakeProcessManager.list(<FakeCommand>[
-        const FakeCommand(
-          command: <String>['git', 'fetch', remoteName],
-        ),
-        const FakeCommand(
-          command: <String>[flutterBinPath, 'help'],
-        ),
+        const FakeCommand(command: <String>['git', 'fetch', remoteName]),
+        const FakeCommand(command: <String>[flutterBinPath, 'help']),
         const FakeCommand(
           command: <String>[flutterBinPath, '--version', '--machine'],
           stdout: '{"frameworkVersion": "$currentVersion"}',
         ),
         FakeCommand(
-          command: const <String>[
-            'git',
-            'branch',
-            '--no-color',
-            '--remotes',
-            '--list',
-            '$remoteName/*',
-          ],
-          stdout: <String>[
-            '$remoteName/$oldBranch',
-            '$remoteName/$currentBranch',
-            '$remoteName/$newBranch',
-          ].join('\n'),
+          command: const <String>['git', 'branch', '--no-color', '--remotes', '--list', '$remoteName/*'],
+          stdout: <String>['$remoteName/$oldBranch', '$remoteName/$currentBranch', '$remoteName/$newBranch'].join('\n'),
         ),
       ]);
       final String pathSeparator = operatingSystem == 'windows' ? r'\' : '/';
@@ -147,7 +116,5 @@ void main() {
       expect(stdio.stdout.contains(oldBranch), false);
       expect(stdio.stdout.contains(currentBranch), false);
     });
-  }, onPlatform: <String, dynamic>{
-    'windows': const Skip('Flutter Conductor only supported on macos/linux'),
-  });
+  }, onPlatform: <String, dynamic>{'windows': const Skip('Flutter Conductor only supported on macos/linux')});
 }

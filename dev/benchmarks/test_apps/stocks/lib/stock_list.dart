@@ -28,12 +28,7 @@ class StockList extends StatelessWidget {
       itemExtent: StockRow.kHeight,
       itemCount: stocks.length,
       itemBuilder: (BuildContext context, int index) {
-        return StockRow(
-          stock: stocks[index],
-          onPressed: onOpen,
-          onDoubleTap: onShow,
-          onLongPressed: onAction,
-        );
+        return StockRow(stock: stocks[index], onPressed: onOpen, onDoubleTap: onShow, onLongPressed: onAction);
       },
     );
   }

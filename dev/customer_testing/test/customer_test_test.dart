@@ -26,18 +26,15 @@ test.windows=.\test_utilities\bin\flutter_test_runner.bat repo_dashboard
 
     final CustomerTest test = CustomerTest(registryFile);
     expect(test.contacts, containsAll(<String>['abc@gmail.com']));
-    expect(
-        test.fetch,
-        containsAllInOrder(
-            <String>['git clone https://github.com/flutter/cocoon.git tests', 'git -C tests checkout abc123']));
+    expect(test.fetch, containsAllInOrder(<String>[
+      'git clone https://github.com/flutter/cocoon.git tests',
+      'git -C tests checkout abc123',
+    ]));
     if (Platform.isLinux || Platform.isMacOS) {
-      expect(
-        test.tests,
-        containsAllInOrder(<String>[
-          './test_utilities/bin/flutter_test_runner.sh app_flutter',
-          './test_utilities/bin/flutter_test_runner.sh repo_dashboard',
-        ]),
-      );
+      expect(test.tests, containsAllInOrder(<String>[
+        './test_utilities/bin/flutter_test_runner.sh app_flutter',
+        './test_utilities/bin/flutter_test_runner.sh repo_dashboard',
+      ]));
     } else if (Platform.isWindows) {
       expect(test.tests, containsAllInOrder(<String>['.\test_utilities\bin\flutter_test_runner.bat repo_dashboard']));
     }

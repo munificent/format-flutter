@@ -33,7 +33,7 @@ void main() {
         final SerializableFinder list = find.byValueKey(listKey);
         expect(list, isNotNull);
 
-        for (int j = 0; j < 5; j ++) {
+        for (int j = 0; j < 5; j++) {
           // Scroll down
           for (int i = 0; i < 5; i += 1) {
             await driver.scroll(list, 0.0, -300.0, const Duration(milliseconds: 300));

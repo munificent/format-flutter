@@ -32,10 +32,7 @@ class _CupertinoTextFieldDemoState extends State<CupertinoTextFieldDemo> {
       textCapitalization: TextCapitalization.sentences,
       placeholder: 'Text Message',
       decoration: BoxDecoration(
-        border: Border.all(
-          width: 0.0,
-          color: CupertinoColors.inactiveGray,
-        ),
+        border: Border.all(width: 0.0, color: CupertinoColors.inactiveGray),
         borderRadius: BorderRadius.circular(15.0),
       ),
       maxLines: null,
@@ -47,51 +44,35 @@ class _CupertinoTextFieldDemoState extends State<CupertinoTextFieldDemo> {
           minSize: 0.0,
           padding: const EdgeInsets.only(bottom: 4),
           onPressed: () => setState(() => _chatTextController!.clear()),
-          child: const Icon(
-            CupertinoIcons.arrow_up_circle_fill,
-            size: 28.0,
-            color: CupertinoColors.activeGreen,
-          ),
+          child: const Icon(CupertinoIcons.arrow_up_circle_fill, size: 28.0, color: CupertinoColors.activeGreen),
         ),
       ),
       autofocus: true,
       suffixMode: OverlayVisibilityMode.editing,
-      onSubmitted: (String text)=> setState(()=> _chatTextController!.clear()),
+      onSubmitted: (String text) => setState(() => _chatTextController!.clear()),
     );
   }
 
   Widget _buildNameField() {
     return const CupertinoTextField(
-      prefix: Icon(
-        CupertinoIcons.person_fill,
-        color: CupertinoColors.lightBackgroundGray,
-        size: 28.0,
-      ),
+      prefix: Icon(CupertinoIcons.person_fill, color: CupertinoColors.lightBackgroundGray, size: 28.0),
       padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
       clearButtonMode: OverlayVisibilityMode.editing,
       textCapitalization: TextCapitalization.words,
       autocorrect: false,
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray)),
-      ),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray))),
       placeholder: 'Name',
     );
   }
 
   Widget _buildEmailField() {
     return const CupertinoTextField(
-      prefix: Icon(
-        CupertinoIcons.envelope_fill,
-        color: CupertinoColors.lightBackgroundGray,
-        size: 26,
-      ),
+      prefix: Icon(CupertinoIcons.envelope_fill, color: CupertinoColors.lightBackgroundGray, size: 26),
       padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
       clearButtonMode: OverlayVisibilityMode.editing,
       keyboardType: TextInputType.emailAddress,
       autocorrect: false,
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray)),
-      ),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray))),
       placeholder: 'Email',
     );
   }
@@ -99,36 +80,25 @@ class _CupertinoTextFieldDemoState extends State<CupertinoTextFieldDemo> {
   Widget _buildLocationField() {
     return CupertinoTextField(
       controller: _locationTextController,
-      prefix: const Icon(
-        CupertinoIcons.location_fill,
-        color: CupertinoColors.lightBackgroundGray,
-        size: 26,
-      ),
+      prefix: const Icon(CupertinoIcons.location_fill, color: CupertinoColors.lightBackgroundGray, size: 26),
       padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
       clearButtonMode: OverlayVisibilityMode.editing,
       textCapitalization: TextCapitalization.words,
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray)),
-      ),
+      decoration:
+          const BoxDecoration(border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray))),
       placeholder: 'Location',
     );
   }
 
   Widget _buildPinField() {
     return const CupertinoTextField(
-      prefix: Icon(
-        CupertinoIcons.lock_open_fill,
-        color: CupertinoColors.lightBackgroundGray,
-        size: 26,
-      ),
+      prefix: Icon(CupertinoIcons.lock_open_fill, color: CupertinoColors.lightBackgroundGray, size: 26),
       padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
       clearButtonMode: OverlayVisibilityMode.editing,
       keyboardType: TextInputType.number,
       autocorrect: false,
       obscureText: true,
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray)),
-      ),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray))),
       placeholder: 'Create a PIN',
     );
   }
@@ -136,28 +106,18 @@ class _CupertinoTextFieldDemoState extends State<CupertinoTextFieldDemo> {
   Widget _buildTagsField() {
     return CupertinoTextField(
       controller: TextEditingController(text: 'colleague, reading club'),
-      prefix: const Icon(
-        CupertinoIcons.tag_fill,
-        color: CupertinoColors.lightBackgroundGray,
-        size: 26,
-      ),
+      prefix: const Icon(CupertinoIcons.tag_fill, color: CupertinoColors.lightBackgroundGray, size: 26),
       enabled: false,
       padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray)),
-      ),
+      decoration:
+          const BoxDecoration(border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray))),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
-      style: const TextStyle(
-        fontFamily: '.SF UI Text',
-        inherit: false,
-        fontSize: 17.0,
-        color: CupertinoColors.black,
-      ),
+      style: const TextStyle(fontFamily: '.SF UI Text', inherit: false, fontSize: 17.0, color: CupertinoColors.black),
       child: CupertinoPageScaffold(
         navigationBar: const CupertinoNavigationBar(
           // We're specifying a back label here because the previous page is a

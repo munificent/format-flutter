@@ -7,23 +7,13 @@ import 'package:flutter/material.dart';
 import '../../gallery/demo.dart';
 
 @visibleForTesting
-enum Location {
-  Barbados,
-  Bahamas,
-  Bermuda
-}
+enum Location { Barbados, Bahamas, Bermuda }
 
 typedef DemoItemBodyBuilder<T> = Widget Function(DemoItem<T> item);
 typedef ValueToString<T> = String? Function(T value);
 
 class DualHeaderWithHint extends StatelessWidget {
-  const DualHeaderWithHint({
-    super.key,
-    this.name,
-    this.value,
-    this.hint,
-    this.showHint,
-  });
+  const DualHeaderWithHint({super.key, this.name, this.value, this.hint, this.showHint});
 
   final String? name;
   final String? value;
@@ -56,10 +46,7 @@ class DualHeaderWithHint extends StatelessWidget {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
-              child: Text(
-                name!,
-                style: textTheme.bodyMedium!.copyWith(fontSize: 15.0),
-              ),
+              child: Text(name!, style: textTheme.bodyMedium!.copyWith(fontSize: 15.0)),
             ),
           ),
         ),
@@ -80,13 +67,7 @@ class DualHeaderWithHint extends StatelessWidget {
 }
 
 class CollapsibleBody extends StatelessWidget {
-  const CollapsibleBody({
-    super.key,
-    this.margin = EdgeInsets.zero,
-    this.child,
-    this.onSave,
-    this.onCancel,
-  });
+  const CollapsibleBody({super.key, this.margin = EdgeInsets.zero, this.child, this.onSave, this.onCancel});
 
   final EdgeInsets margin;
   final Widget? child;
@@ -101,17 +82,8 @@ class CollapsibleBody extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
-          margin: const EdgeInsets.only(
-            left: 24.0,
-            right: 24.0,
-            bottom: 24.0,
-          ) - margin,
-          child: Center(
-            child: DefaultTextStyle(
-              style: textTheme.bodySmall!.copyWith(fontSize: 15.0),
-              child: child!,
-            ),
-          ),
+          margin: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0) - margin,
+          child: Center(child: DefaultTextStyle(style: textTheme.bodySmall!.copyWith(fontSize: 15.0), child: child!)),
         ),
         const Divider(height: 1.0),
         Container(
@@ -123,19 +95,15 @@ class CollapsibleBody extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 8.0),
                 child: TextButton(
                   onPressed: onCancel,
-                  child: const Text('CANCEL', style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w500,
-                  )),
+                  child: const Text(
+                    'CANCEL',
+                    style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.w500),
+                  ),
                 ),
               ),
               Container(
                 margin: const EdgeInsets.only(right: 8.0),
-                child: TextButton(
-                  onPressed: onSave,
-                  child: const Text('SAVE'),
-                ),
+                child: TextButton(onPressed: onSave, child: const Text('SAVE')),
               ),
             ],
           ),
@@ -146,13 +114,8 @@ class CollapsibleBody extends StatelessWidget {
 }
 
 class DemoItem<T> {
-  DemoItem({
-    this.name,
-    this.value,
-    this.hint,
-    this.builder,
-    required this.valueToString,
-  }) : textController = TextEditingController(text: valueToString(value));
+  DemoItem({this.name, this.value, this.hint, this.builder, required this.valueToString})
+    : textController = TextEditingController(text: valueToString(value));
 
   final String? name;
   final String? hint;
@@ -164,12 +127,7 @@ class DemoItem<T> {
 
   ExpansionPanelHeaderBuilder get headerBuilder {
     return (BuildContext context, bool isExpanded) {
-      return DualHeaderWithHint(
-        name: name,
-        value: valueToString(value),
-        hint: hint,
-        showHint: isExpanded,
-      );
+      return DualHeaderWithHint(name: name, value: valueToString(value), hint: hint, showHint: isExpanded);
     };
   }
 
@@ -210,17 +168,22 @@ class _ExpansionPanelsDemoState extends State<ExpansionPanelsDemo> {
               builder: (BuildContext context) {
                 return CollapsibleBody(
                   margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                  onSave: () { Form.of(context).save(); close(); },
-                  onCancel: () { Form.of(context).reset(); close(); },
+                  onSave: () {
+                    Form.of(context).save();
+                    close();
+                  },
+                  onCancel: () {
+                    Form.of(context).reset();
+                    close();
+                  },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: TextFormField(
                       controller: item.textController,
-                      decoration: InputDecoration(
-                        hintText: item.hint,
-                        labelText: item.name,
-                      ),
-                      onSaved: (String? value) { item.value = value; },
+                      decoration: InputDecoration(hintText: item.hint, labelText: item.name),
+                      onSaved: (String? value) {
+                        item.value = value;
+                      },
                     ),
                   ),
                 );
@@ -240,15 +203,24 @@ class _ExpansionPanelsDemoState extends State<ExpansionPanelsDemo> {
               item.isExpanded = false;
             });
           }
+
           return Form(
             child: Builder(
               builder: (BuildContext context) {
                 return CollapsibleBody(
-                  onSave: () { Form.of(context).save(); close(); },
-                  onCancel: () { Form.of(context).reset(); close(); },
+                  onSave: () {
+                    Form.of(context).save();
+                    close();
+                  },
+                  onCancel: () {
+                    Form.of(context).reset();
+                    close();
+                  },
                   child: FormField<Location>(
                     initialValue: item.value,
-                    onSaved: (Location? result) { item.value = result; },
+                    onSaved: (Location? result) {
+                      item.value = result;
+                    },
                     builder: (FormFieldState<Location> field) {
                       return Column(
                         mainAxisSize: MainAxisSize.min,
@@ -277,7 +249,7 @@ class _ExpansionPanelsDemoState extends State<ExpansionPanelsDemo> {
                     },
                   ),
                 );
-              }
+              },
             ),
           );
         },
@@ -298,11 +270,19 @@ class _ExpansionPanelsDemoState extends State<ExpansionPanelsDemo> {
             child: Builder(
               builder: (BuildContext context) {
                 return CollapsibleBody(
-                  onSave: () { Form.of(context).save(); close(); },
-                  onCancel: () { Form.of(context).reset(); close(); },
+                  onSave: () {
+                    Form.of(context).save();
+                    close();
+                  },
+                  onCancel: () {
+                    Form.of(context).reset();
+                    close();
+                  },
                   child: FormField<double>(
                     initialValue: item.value,
-                    onSaved: (double? value) { item.value = value; },
+                    onSaved: (double? value) {
+                      item.value = value;
+                    },
                     builder: (FormFieldState<double> field) {
                       return Container(
                         // Allow room for the value indicator.
@@ -319,7 +299,7 @@ class _ExpansionPanelsDemoState extends State<ExpansionPanelsDemo> {
                     },
                   ),
                 );
-              }
+              },
             ),
           );
         },
@@ -332,9 +312,7 @@ class _ExpansionPanelsDemoState extends State<ExpansionPanelsDemo> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expansion panels'),
-        actions: <Widget>[
-          MaterialDemoDocumentationButton(ExpansionPanelsDemo.routeName),
-        ],
+        actions: <Widget>[MaterialDemoDocumentationButton(ExpansionPanelsDemo.routeName)],
       ),
       body: SingleChildScrollView(
         child: SafeArea(

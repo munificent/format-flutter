@@ -13,8 +13,8 @@ HostAgent get hostAgent => HostAgent(platform: const LocalPlatform(), fileSystem
 /// Host machine running the tests.
 class HostAgent {
   HostAgent({required Platform platform, required FileSystem fileSystem})
-      : _platform = platform,
-        _fileSystem = fileSystem;
+    : _platform = platform,
+      _fileSystem = fileSystem;
 
   final Platform _platform;
   final FileSystem _fileSystem;

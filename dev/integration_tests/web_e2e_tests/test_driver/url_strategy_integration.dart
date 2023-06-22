@@ -16,9 +16,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Can customize url strategy', (WidgetTester tester) async {
-    final TestUrlStrategy strategy = TestUrlStrategy.fromEntry(
-      const TestHistoryEntry('initial state', null, '/'),
-    );
+    final TestUrlStrategy strategy = TestUrlStrategy.fromEntry(const TestHistoryEntry('initial state', null, '/'));
     setUrlStrategy(strategy);
 
     app.appRoutes = <String, WidgetBuilder>{
@@ -48,14 +46,13 @@ void main() {
 class TestUrlStrategy extends UrlStrategy {
   /// Creates a instance of [TestUrlStrategy] with an empty string as the
   /// path.
-  factory TestUrlStrategy() =>
-      TestUrlStrategy.fromEntry(const TestHistoryEntry(null, null, ''));
+  factory TestUrlStrategy() => TestUrlStrategy.fromEntry(const TestHistoryEntry(null, null, ''));
 
   /// Creates an instance of [TestUrlStrategy] and populates it with a list
   /// that has [initialEntry] as the only item.
   TestUrlStrategy.fromEntry(TestHistoryEntry initialEntry)
-      : _currentEntryIndex = 0,
-        history = <TestHistoryEntry>[initialEntry];
+    : _currentEntryIndex = 0,
+      history = <TestHistoryEntry>[initialEntry];
 
   @override
   String getPath() => currentEntry.url;
@@ -151,10 +148,7 @@ class TestUrlStrategy extends UrlStrategy {
   /// like a real browser.
   void _firePopStateEvent() {
     assert(withinAppHistory);
-    final html.PopStateEvent event = html.PopStateEvent(
-      'popstate',
-      <String, dynamic>{'state': currentEntry.state},
-    );
+    final html.PopStateEvent event = html.PopStateEvent('popstate', <String, dynamic>{'state': currentEntry.state});
     for (int i = 0; i < listeners.length; i++) {
       listeners[i](event);
     }

@@ -13,20 +13,16 @@ import 'utils.dart';
 /// The data structure can be also loaded and saved to JSON, with the
 /// [PhysicalKeyData.fromJson] constructor and [toJson] method, respectively.
 class PhysicalKeyData {
-  factory PhysicalKeyData(
-    String chromiumHidCodes,
-    String androidKeyboardLayout,
-    String androidNameMap,
-  ) {
+  factory PhysicalKeyData(String chromiumHidCodes, String androidKeyboardLayout, String androidNameMap) {
     final Map<String, List<int>> nameToAndroidScanCodes = _readAndroidScanCodes(androidKeyboardLayout, androidNameMap);
-    final Map<String, PhysicalKeyEntry> data = _readHidEntries(
-      chromiumHidCodes,
-      nameToAndroidScanCodes,
-    );
-    final List<MapEntry<String, PhysicalKeyEntry>> sortedEntries = data.entries.toList()..sort(
-      (MapEntry<String, PhysicalKeyEntry> a, MapEntry<String, PhysicalKeyEntry> b) =>
-        PhysicalKeyEntry.compareByUsbHidCode(a.value, b.value),
-    );
+    final Map<String, PhysicalKeyEntry> data = _readHidEntries(chromiumHidCodes, nameToAndroidScanCodes);
+    final List<MapEntry<String, PhysicalKeyEntry>> sortedEntries = data.entries.toList()
+      ..sort(
+        (
+          MapEntry<String, PhysicalKeyEntry> a,
+          MapEntry<String, PhysicalKeyEntry> b,
+        ) => PhysicalKeyEntry.compareByUsbHidCode(a.value, b.value),
+      );
     data
       ..clear()
       ..addEntries(sortedEntries);
@@ -55,8 +51,7 @@ class PhysicalKeyData {
   /// Asserts if the name is not found.
   PhysicalKeyEntry entryByName(String name) {
     final PhysicalKeyEntry? entry = tryEntryByName(name);
-    assert(entry != null,
-        'Unable to find logical entry by name $name.');
+    assert(entry != null, 'Unable to find logical entry by name $name.');
     return entry!;
   }
 
@@ -98,7 +93,7 @@ class PhysicalKeyData {
       r'key\s+' // Literal "key"
       r'(?<id>[0-9]+)\s*' // ID section
       r'"?(?:KEY_)?(?<name>[0-9A-Z_]+|\(undefined\))"?\s*' // Name section
-      r'(?<function>FUNCTION)?' // Optional literal "FUNCTION"
+      r'(?<function>FUNCTION)?', // Optional literal "FUNCTION"
     );
     final Map<String, List<int>> androidNameToScanCodes = <String, List<int>>{};
     for (final RegExpMatch match in keyEntry.allMatches(keyboardLayout)) {
@@ -111,16 +106,15 @@ class PhysicalKeyData {
         // Skip undefined scan codes.
         continue;
       }
-      androidNameToScanCodes.putIfAbsent(name, () => <int>[])
-        .add(int.parse(match.namedGroup('id')!));
+      androidNameToScanCodes.putIfAbsent(name, () => <int>[]).add(int.parse(match.namedGroup('id')!));
     }
 
     // Cast Android dom map
     final Map<String, List<String>> nameToAndroidNames = (json.decode(nameMap) as Map<String, dynamic>)
-      .cast<String, List<dynamic>>()
-      .map<String, List<String>>((String key, List<dynamic> value) {
-        return MapEntry<String, List<String>>(key, value.cast<String>());
-      });
+        .cast<String, List<dynamic>>()
+        .map<String, List<String>>((String key, List<dynamic> value) {
+          return MapEntry<String, List<String>>(key, value.cast<String>());
+        });
 
     final Map<String, List<int>> result = nameToAndroidNames.map((String name, List<String> androidNames) {
       final Set<int> scanCodes = <int>{};
@@ -138,10 +132,7 @@ class PhysicalKeyData {
   /// Lines in this file look like this (without the ///):
   ///            USB       evdev   XKB     Win     Mac     Code     Enum
   /// DOM_CODE(0x000010, 0x0000, 0x0000, 0x0000, 0xffff, "Hyper", HYPER),
-  static Map<String, PhysicalKeyEntry> _readHidEntries(
-    String input,
-    Map<String, List<int>> nameToAndroidScanCodes,
-  ) {
+  static Map<String, PhysicalKeyEntry> _readHidEntries(String input, Map<String, List<int>> nameToAndroidScanCodes) {
     final Map<int, PhysicalKeyEntry> entries = <int, PhysicalKeyEntry>{};
     final RegExp usbMapRegExp = RegExp(
       r'DOM_CODE\s*\(\s*'
@@ -179,14 +170,16 @@ class PhysicalKeyData {
       if (existing != null && existing.name != 'Fn') {
         // If it's an existing entry, the only thing we currently support is
         // to insert an extra DOMKey. The other entries must be empty.
-        assert(evdevCode == 0
-            && xKbScanCode == 0
-            && windowsScanCode == 0
-            && macScanCode == 0xffff
-            && chromiumCode != null
-            && chromiumCode.isNotEmpty,
-            'Duplicate usbHidCode ${existing.usbHidCode} of key ${existing.name} '
-            'conflicts with existing ${entries[existing.usbHidCode]!.name}.');
+        assert(
+          evdevCode == 0 &&
+              xKbScanCode == 0 &&
+              windowsScanCode == 0 &&
+              macScanCode == 0xffff &&
+              chromiumCode != null &&
+              chromiumCode.isNotEmpty,
+          'Duplicate usbHidCode ${existing.usbHidCode} of key ${existing.name} '
+          'conflicts with existing ${entries[existing.usbHidCode]!.name}.',
+        );
         existing.otherWebCodes.add(chromiumCode!);
         continue;
       }
@@ -203,8 +196,7 @@ class PhysicalKeyData {
       );
       entries[newEntry.usbHidCode] = newEntry;
     }
-    return entries.map((int code, PhysicalKeyEntry entry) =>
-        MapEntry<String, PhysicalKeyEntry>(entry.name, entry));
+    return entries.map((int code, PhysicalKeyEntry entry) => MapEntry<String, PhysicalKeyEntry>(entry.name, entry));
   }
 }
 
@@ -252,24 +244,32 @@ class PhysicalKeyEntry {
 
   /// The Evdev scan code of the key, from Chromium's header file.
   final int? evdevCode;
+
   /// The XKb scan code of the key from Chromium's header file.
   final int? xKbScanCode;
+
   /// The Windows scan code of the key from Chromium's header file.
   final int? windowsScanCode;
+
   /// The macOS scan code of the key from Chromium's header file.
   final int? macOSScanCode;
+
   /// The iOS scan code of the key from UIKey's documentation (USB Hid table)
   final int? iOSScanCode;
+
   /// The list of Android scan codes matching this key, created by looking up
   /// the Android name in the Chromium data, and substituting the Android scan
   /// code value.
   final List<int> androidScanCodes;
+
   /// The name of the key, mostly derived from the DomKey name in Chromium,
   /// but where there was no DomKey representation, derived from the Chromium
   /// symbol name.
   final String name;
+
   /// The Chromium event code for the key.
   final String? chromiumCode;
+
   /// Other codes used by Web besides chromiumCode.
   final List<String> otherWebCodes;
 
@@ -283,10 +283,7 @@ class PhysicalKeyEntry {
   /// Creates a JSON map from the key data.
   Map<String, dynamic> toJson() {
     return removeEmptyValues(<String, dynamic>{
-      'names': <String, dynamic>{
-        'name': name,
-        'chromium': chromiumCode,
-      },
+      'names': <String, dynamic>{'name': name, 'chromium': chromiumCode},
       'otherWebCodes': otherWebCodes,
       'scanCodes': <String, dynamic>{
         'android': androidScanCodes,
@@ -339,9 +336,7 @@ class PhysicalKeyEntry {
 
   @override
   String toString() {
-    final String otherWebStr = otherWebCodes.isEmpty
-        ? ''
-        : ', otherWebCodes: [${otherWebCodes.join(', ')}]';
+    final String otherWebStr = otherWebCodes.isEmpty ? '' : ', otherWebCodes: [${otherWebCodes.join(', ')}]';
     return """'$constantName': (name: "$name", usbHidCode: ${toHex(usbHidCode)}, """
         'linuxScanCode: ${toHex(evdevCode)}, xKbScanCode: ${toHex(xKbScanCode)}, '
         'windowsKeyCode: ${toHex(windowsScanCode)}, macOSScanCode: ${toHex(macOSScanCode)}, '
@@ -349,6 +344,5 @@ class PhysicalKeyEntry {
         'iOSScanCode: ${toHex(iOSScanCode)})$otherWebStr';
   }
 
-  static int compareByUsbHidCode(PhysicalKeyEntry a, PhysicalKeyEntry b) =>
-      a.usbHidCode.compareTo(b.usbHidCode);
+  static int compareByUsbHidCode(PhysicalKeyEntry a, PhysicalKeyEntry b) => a.usbHidCode.compareTo(b.usbHidCode);
 }

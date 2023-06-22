@@ -18,13 +18,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const HomePage(),
-    );
+    return MaterialApp(title: 'Flutter Demo', theme: ThemeData(primarySwatch: Colors.blue), home: const HomePage());
   }
 }
 
@@ -43,8 +37,7 @@ class _HomePage extends State<HomePage> {
     // Trigger the second route.
     // https://github.com/flutter/flutter/issues/40126
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const SecondPage()));
+      Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const SecondPage()));
     });
   }
 
@@ -59,14 +52,6 @@ class SecondPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: AndroidView(viewType: 'simple')
-          ),
-        ],
-      ),
-    );
+    return const Scaffold(body: Column(children: <Widget>[Expanded(child: AndroidView(viewType: 'simple'))]));
   }
 }

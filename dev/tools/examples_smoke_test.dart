@@ -28,13 +28,7 @@ FutureOr<dynamic> main() async {
     return;
   }
   final Directory flutterDir = filesystem.directory(
-    path.absolute(
-      path.dirname(
-        path.dirname(
-          path.dirname(platform.script.toFilePath()),
-        ),
-      ),
-    ),
+    path.absolute(path.dirname(path.dirname(path.dirname(platform.script.toFilePath())))),
   );
   final Directory apiDir = flutterDir.childDirectory('examples').childDirectory('api');
   final File integrationTest = await generateTest(apiDir);
@@ -62,13 +56,11 @@ Future<void> runSmokeTests({
   required File integrationTest,
   required Directory apiDir,
 }) async {
-  final File flutterExe =
-      flutterDir.childDirectory('bin').childFile(platform.isWindows ? 'flutter.bat' : 'flutter');
+  final File flutterExe = flutterDir.childDirectory('bin').childFile(platform.isWindows ? 'flutter.bat' : 'flutter');
   final List<String> cmd = <String>[
     // If we're in a container with no X display, then use the virtual framebuffer.
-    if (platform.isLinux &&
-        (platform.environment['DISPLAY'] == null ||
-         platform.environment['DISPLAY']!.isEmpty)) '/usr/bin/xvfb-run',
+    if (platform.isLinux && (platform.environment['DISPLAY'] == null || platform.environment['DISPLAY']!.isEmpty))
+      '/usr/bin/xvfb-run',
     flutterExe.absolute.path,
     'test',
     '--reporter=expanded',
@@ -82,8 +74,8 @@ Future<void> runSmokeTests({
 // from for the tests.
 class ExampleInfo {
   ExampleInfo(this.file, Directory examplesLibDir)
-      : importPath = _getImportPath(file, examplesLibDir),
-        importName = '' {
+    : importPath = _getImportPath(file, examplesLibDir),
+      importName = '' {
     importName = importPath.replaceAll(RegExp(r'\.dart$'), '').replaceAll(RegExp(r'\W'), '_');
   }
 
@@ -92,8 +84,7 @@ class ExampleInfo {
   String importName;
 
   static String _getImportPath(File example, Directory examplesLibDir) {
-    final String relativePath =
-        path.relative(example.absolute.path, from: examplesLibDir.absolute.path);
+    final String relativePath = path.relative(example.absolute.path, from: examplesLibDir.absolute.path);
     // So that Windows paths are proper URIs in the import statements.
     return path.toUri(relativePath).toFilePath(windows: false);
   }
@@ -105,13 +96,14 @@ Future<File> generateTest(Directory apiDir) async {
 
   // Get files from git, to avoid any non-repo files that might be in someone's
   // workspace.
-  final List<String> gitFiles = (await runCommand(
-    <String>['git', 'ls-files', '**/*.dart'],
-    workingDirectory: examplesLibDir,
-    quiet: true,
-  )).replaceAll(r'\', '/')
-    .trim()
-    .split('\n');
+  final List<String> gitFiles = (await runCommand(<String>[
+        'git',
+        'ls-files',
+        '**/*.dart',
+      ], workingDirectory: examplesLibDir, quiet: true))
+      .replaceAll(r'\', '/')
+      .trim()
+      .split('\n');
   final Iterable<File> examples = gitFiles.map<File>((String examplePath) {
     return filesystem.file(path.join(examplesLibDir.absolute.path, examplePath));
   });
@@ -174,8 +166,7 @@ void main() {
   }
   buffer.writeln('}');
 
-  final File integrationTest =
-      apiDir.childDirectory('integration_test').childFile('smoke_integration_test.dart');
+  final File integrationTest = apiDir.childDirectory('integration_test').childFile('smoke_integration_test.dart');
   integrationTest.createSync(recursive: true);
   integrationTest.writeAsStringSync(buffer.toString());
   return integrationTest;
@@ -203,38 +194,33 @@ Future<String> runCommand(
   }
 
   try {
-    process = await processManager.start(
-      cmd,
-      workingDirectory: workingDirectory.absolute.path,
-      environment: environment,
-    );
-    process.stdout.listen(
-      (List<int> event) {
-        stdoutOutput.addAll(event);
-        combinedOutput.addAll(event);
-        if (!quiet) {
-          stdout.add(event);
-        }
-      },
-      onDone: () async => stdoutComplete.complete(),
-    );
-    process.stderr.listen(
-      (List<int> event) {
-        combinedOutput.addAll(event);
-        if (!quiet) {
-          stderr.add(event);
-        }
-      },
-      onDone: () async => stderrComplete.complete(),
-    );
+    process =
+        await processManager.start(cmd, workingDirectory: workingDirectory.absolute.path, environment: environment);
+    process.stdout.listen((List<int> event) {
+      stdoutOutput.addAll(event);
+      combinedOutput.addAll(event);
+      if (!quiet) {
+        stdout.add(event);
+      }
+    }, onDone: () async => stdoutComplete.complete());
+    process.stderr.listen((List<int> event) {
+      combinedOutput.addAll(event);
+      if (!quiet) {
+        stderr.add(event);
+      }
+    }, onDone: () async => stderrComplete.complete());
   } on ProcessException catch (e) {
-    stderr.writeln('Running "${cmd.join(' ')}" in ${workingDirectory.path} '
-        'failed with:\n$e');
+    stderr.writeln(
+      'Running "${cmd.join(' ')}" in ${workingDirectory.path} '
+      'failed with:\n$e',
+    );
     exitCode = 2;
     return utf8.decode(stdoutOutput);
   } on ArgumentError catch (e) {
-    stderr.writeln('Running "${cmd.join(' ')}" in ${workingDirectory.path} '
-        'failed with:\n$e');
+    stderr.writeln(
+      'Running "${cmd.join(' ')}" in ${workingDirectory.path} '
+      'failed with:\n$e',
+    );
     exitCode = 3;
     return utf8.decode(stdoutOutput);
   }

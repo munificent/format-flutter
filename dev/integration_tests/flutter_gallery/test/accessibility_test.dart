@@ -476,15 +476,9 @@ void main() {
   });
 
   group('All material demos meet text contrast guidelines', () {
-    final List<ThemeData> themes = <ThemeData>[
-      kLightGalleryTheme,
-      kDarkGalleryTheme,
-    ];
+    final List<ThemeData> themes = <ThemeData>[kLightGalleryTheme, kDarkGalleryTheme];
 
-    const List<String> themeNames = <String>[
-      'kLightGalleryTheme',
-      'kDarkGalleryTheme',
-    ];
+    const List<String> themeNames = <String>['kLightGalleryTheme', 'kDarkGalleryTheme'];
 
     for (int themeIndex = 0; themeIndex < themes.length; themeIndex += 1) {
       final ThemeData theme = themes[themeIndex];
@@ -611,9 +605,7 @@ void main() {
 
       testWidgets('modal_bottom_sheet_demo $themeName', (WidgetTester tester) async {
         final SemanticsHandle handle = tester.ensureSemantics();
-        await tester.pumpWidget(
-          MaterialApp(theme: theme, home: const ModalBottomSheetDemo())
-        );
+        await tester.pumpWidget(MaterialApp(theme: theme, home: const ModalBottomSheetDemo()));
         await expectLater(tester, meetsGuideline(textContrastGuideline));
         handle.dispose();
       });
@@ -634,9 +626,7 @@ void main() {
 
       testWidgets('persistent_bottom_sheet_demo $themeName', (WidgetTester tester) async {
         final SemanticsHandle handle = tester.ensureSemantics();
-        await tester.pumpWidget(
-          MaterialApp(theme: theme, home: const PersistentBottomSheetDemo())
-        );
+        await tester.pumpWidget(MaterialApp(theme: theme, home: const PersistentBottomSheetDemo()));
         await expectLater(tester, meetsGuideline(textContrastGuideline));
         handle.dispose();
       });
@@ -685,9 +675,7 @@ void main() {
 
       testWidgets('snack_bar_demo $themeName', (WidgetTester tester) async {
         final SemanticsHandle handle = tester.ensureSemantics();
-        await tester.pumpWidget(
-          MaterialApp(theme: theme, home: const SnackBarDemo())
-        );
+        await tester.pumpWidget(MaterialApp(theme: theme, home: const SnackBarDemo()));
         await expectLater(tester, meetsGuideline(textContrastGuideline));
         handle.dispose();
       });
@@ -743,10 +731,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Toggle dark mode.
-      final Finder themeToggleContainer = find.ancestor(
-        of: find.text('Theme'),
-        matching: find.byType(Container),
-      );
+      final Finder themeToggleContainer = find.ancestor(of: find.text('Theme'), matching: find.byType(Container));
       final Finder themeMenuButton = find.descendant(
         of: themeToggleContainer,
         matching: find.byIcon(Icons.arrow_drop_down),

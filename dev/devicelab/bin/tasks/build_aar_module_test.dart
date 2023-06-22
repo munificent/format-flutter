@@ -10,12 +10,11 @@ import 'package:flutter_devicelab/framework/task_result.dart';
 import 'package:flutter_devicelab/framework/utils.dart';
 import 'package:path/path.dart' as path;
 
-final String platformLineSep = Platform.isWindows ? '\r\n': '\n';
+final String platformLineSep = Platform.isWindows ? '\r\n' : '\n';
 
 /// Tests that AARs can be built on module projects.
 Future<void> main() async {
   await task(() async {
-
     section('Find Java');
 
     final String? javaHome = await findJavaHome();
@@ -30,10 +29,7 @@ Future<void> main() async {
       section('Create module project');
 
       await inDirectory(tempDir, () async {
-        await flutter(
-          'create',
-          options: <String>['--org', 'io.flutter.devicelab', '--template', 'module', 'hello'],
-        );
+        await flutter('create', options: <String>['--org', 'io.flutter.devicelab', '--template', 'module', 'hello']);
       });
 
       section('Create plugin that supports android platform');
@@ -41,7 +37,14 @@ Future<void> main() async {
       await inDirectory(tempDir, () async {
         await flutter(
           'create',
-          options: <String>['--org', 'io.flutter.devicelab', '--template', 'plugin', '--platforms=android', 'plugin_with_android'],
+          options: <String>[
+            '--org',
+            'io.flutter.devicelab',
+            '--template',
+            'plugin',
+            '--platforms=android',
+            'plugin_with_android',
+          ],
         );
       });
 
@@ -50,7 +53,14 @@ Future<void> main() async {
       await inDirectory(tempDir, () async {
         await flutter(
           'create',
-          options: <String>['--org', 'io.flutter.devicelab', '--template', 'plugin', '--platforms=ios', 'plugin_without_android'],
+          options: <String>[
+            '--org',
+            'io.flutter.devicelab',
+            '--template',
+            'plugin',
+            '--platforms=ios',
+            'plugin_without_android',
+          ],
         );
       });
 
@@ -61,52 +71,33 @@ Future<void> main() async {
       content = content.replaceFirst(
         '${platformLineSep}dependencies:$platformLineSep',
         '${platformLineSep}dependencies:$platformLineSep'
-          '  plugin_with_android:$platformLineSep'
-          '    path: ../plugin_with_android$platformLineSep'
-          '  plugin_without_android:$platformLineSep'
-          '    path: ../plugin_without_android$platformLineSep'
-          '  webcrypto: 0.5.2$platformLineSep', // Plugin that uses NDK.
+            '  plugin_with_android:$platformLineSep'
+            '    path: ../plugin_with_android$platformLineSep'
+            '  plugin_without_android:$platformLineSep'
+            '    path: ../plugin_without_android$platformLineSep'
+            '  webcrypto: 0.5.2$platformLineSep', // Plugin that uses NDK.
       );
       modulePubspec.writeAsStringSync(content, flush: true);
 
       section('Run packages get in module project');
 
       await inDirectory(projectDir, () async {
-        await flutter(
-          'packages',
-          options: <String>['get'],
-        );
+        await flutter('packages', options: <String>['get']);
       });
 
       section('Build release AAR');
 
       await inDirectory(projectDir, () async {
-        await flutter(
-          'build',
-          options: <String>['aar', '--verbose'],
-        );
+        await flutter('build', options: <String>['aar', '--verbose']);
       });
 
-      final String repoPath = path.join(
-        projectDir.path,
-        'build',
-        'host',
-        'outputs',
-        'repo',
-      );
+      final String repoPath = path.join(projectDir.path, 'build', 'host', 'outputs', 'repo');
 
       section('Check release Maven artifacts');
 
-      checkFileExists(path.join(
-        repoPath,
-        'io',
-        'flutter',
-        'devicelab',
-        'hello',
-        'flutter_release',
-        '1.0',
-        'flutter_release-1.0.aar',
-      ));
+      checkFileExists(
+        path.join(repoPath, 'io', 'flutter', 'devicelab', 'hello', 'flutter_release', '1.0', 'flutter_release-1.0.aar'),
+      );
 
       final String releasePom = path.join(
         repoPath,
@@ -163,32 +154,23 @@ Future<void> main() async {
           'jni/armeabi-v7a/libapp.so',
           'jni/x86_64/libapp.so',
         ],
-        await getFilesInAar(
-          path.join(
-            repoPath,
-            'io',
-            'flutter',
-            'devicelab',
-            'hello',
-            'flutter_release',
-            '1.0',
-            'flutter_release-1.0.aar',
-          )
-        )
+        await getFilesInAar(path.join(
+          repoPath,
+          'io',
+          'flutter',
+          'devicelab',
+          'hello',
+          'flutter_release',
+          '1.0',
+          'flutter_release-1.0.aar',
+        )),
       );
 
       section('Check debug Maven artifacts');
 
-      checkFileExists(path.join(
-        repoPath,
-        'io',
-        'flutter',
-        'devicelab',
-        'hello',
-        'flutter_debug',
-        '1.0',
-        'flutter_debug-1.0.aar',
-      ));
+      checkFileExists(
+        path.join(repoPath, 'io', 'flutter', 'devicelab', 'hello', 'flutter_debug', '1.0', 'flutter_debug-1.0.aar'),
+      );
 
       final String debugPom = path.join(
         repoPath,
@@ -238,21 +220,11 @@ Future<void> main() async {
 
       section('Check assets in debug AAR');
 
-      final Iterable<String> debugAar = await getFilesInAar(path.join(
-        repoPath,
-        'io',
-        'flutter',
-        'devicelab',
-        'hello',
-        'flutter_debug',
-        '1.0',
-        'flutter_debug-1.0.aar',
-      ));
+      final Iterable<String> debugAar = await getFilesInAar(
+        path.join(repoPath, 'io', 'flutter', 'devicelab', 'hello', 'flutter_debug', '1.0', 'flutter_debug-1.0.aar'),
+      );
 
-      checkCollectionContains<String>(<String>[
-        ...flutterAssets,
-        ...debugAssets,
-      ], debugAar);
+      checkCollectionContains<String>(<String>[...flutterAssets, ...debugAssets], debugAar);
 
       return TaskResult.success(null);
     } on TaskResult catch (taskResult) {

@@ -27,11 +27,10 @@ const MethodChannel kSemanticsChannel = MethodChannel('semantics');
 Future<void> setClipboard(String message) async {
   final Completer<void> completer = Completer<void>();
   Future<void> completeSetClipboard([Object? _]) async {
-    await kSemanticsChannel.invokeMethod<dynamic>('setClipboard', <String, dynamic>{
-      'message': message,
-    });
+    await kSemanticsChannel.invokeMethod<dynamic>('setClipboard', <String, dynamic>{'message': message});
     completer.complete();
   }
+
   if (SchedulerBinding.instance.hasScheduledFrame) {
     SchedulerBinding.instance.addPostFrameCallback(completeSetClipboard);
   } else {
@@ -44,11 +43,11 @@ Future<AndroidSemanticsNode> getSemantics(Finder finder, WidgetTester tester) as
   final int id = tester.getSemantics(finder).id;
   final Completer<String> completer = Completer<String>();
   Future<void> completeSemantics([Object? _]) async {
-    final dynamic result = await kSemanticsChannel.invokeMethod<dynamic>('getSemanticsNode', <String, dynamic>{
-      'id': id,
-    });
+    final dynamic result = await kSemanticsChannel
+        .invokeMethod<dynamic>('getSemanticsNode', <String, dynamic>{'id': id});
     completer.complete(json.encode(result));
   }
+
   if (SchedulerBinding.instance.hasScheduledFrame) {
     SchedulerBinding.instance.addPostFrameCallback(completeSemantics);
   } else {
@@ -86,66 +85,55 @@ Future<void> main() async {
         );
 
         await prepareTextField(tester);
-        expect(
-          await getSemantics(normalTextField, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.editText,
-            isEditable: true,
-            isFocusable: true,
-            isFocused: false,
-            isPassword: false,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-            // We can't predict the a11y focus when the screen changes.
-            ignoredActions: ignoredAccessibilityFocusActions,
-          ),
-        );
+        expect(await getSemantics(normalTextField, tester), hasAndroidSemantics(
+          className: AndroidClassName.editText,
+          isEditable: true,
+          isFocusable: true,
+          isFocused: false,
+          isPassword: false,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+          // We can't predict the a11y focus when the screen changes.
+          ignoredActions: ignoredAccessibilityFocusActions,
+        ));
         await tester.tap(normalTextField);
         await tester.pumpAndSettle();
 
-        expect(
-          await getSemantics(normalTextField, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.editText,
-            isFocusable: true,
-            isFocused: true,
-            isEditable: true,
-            isPassword: false,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-              AndroidSemanticsAction.paste,
-              AndroidSemanticsAction.setSelection,
-              AndroidSemanticsAction.setText,
-            ],
-            // We can't predict the a11y focus when the screen changes.
-            ignoredActions: ignoredAccessibilityFocusActions,
-          ),
-        );
+        expect(await getSemantics(normalTextField, tester), hasAndroidSemantics(
+          className: AndroidClassName.editText,
+          isFocusable: true,
+          isFocused: true,
+          isEditable: true,
+          isPassword: false,
+          actions: <AndroidSemanticsAction>[
+            AndroidSemanticsAction.click,
+            AndroidSemanticsAction.paste,
+            AndroidSemanticsAction.setSelection,
+            AndroidSemanticsAction.setText,
+          ],
+          // We can't predict the a11y focus when the screen changes.
+          ignoredActions: ignoredAccessibilityFocusActions,
+        ));
 
         await tester.enterText(normalTextField, 'hello world');
         await tester.pumpAndSettle();
 
-        expect(
-          await getSemantics(normalTextField, tester),
-          hasAndroidSemantics(
-            text: 'hello world',
-            className: AndroidClassName.editText,
-            isFocusable: true,
-            isFocused: true,
-            isEditable: true,
-            isPassword: false,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-              AndroidSemanticsAction.paste,
-              AndroidSemanticsAction.setSelection,
-              AndroidSemanticsAction.setText,
-              AndroidSemanticsAction.previousAtMovementGranularity,
-            ],
-            // We can't predict the a11y focus when the screen changes.
-            ignoredActions: ignoredAccessibilityFocusActions,
-          ),
-        );
+        expect(await getSemantics(normalTextField, tester), hasAndroidSemantics(
+          text: 'hello world',
+          className: AndroidClassName.editText,
+          isFocusable: true,
+          isFocused: true,
+          isEditable: true,
+          isPassword: false,
+          actions: <AndroidSemanticsAction>[
+            AndroidSemanticsAction.click,
+            AndroidSemanticsAction.paste,
+            AndroidSemanticsAction.setSelection,
+            AndroidSemanticsAction.setText,
+            AndroidSemanticsAction.previousAtMovementGranularity,
+          ],
+          // We can't predict the a11y focus when the screen changes.
+          ignoredActions: ignoredAccessibilityFocusActions,
+        ));
       }, timeout: Timeout.none);
 
       testWidgets('password TextField has correct Android semantics', (WidgetTester tester) async {
@@ -155,67 +143,56 @@ Future<void> main() async {
         );
 
         await prepareTextField(tester);
-        expect(
-          await getSemantics(passwordTextField, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.editText,
-            isEditable: true,
-            isFocusable: true,
-            isFocused: false,
-            isPassword: true,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-            // We can't predict the a11y focus when the screen changes.
-            ignoredActions: ignoredAccessibilityFocusActions,
-          ),
-        );
+        expect(await getSemantics(passwordTextField, tester), hasAndroidSemantics(
+          className: AndroidClassName.editText,
+          isEditable: true,
+          isFocusable: true,
+          isFocused: false,
+          isPassword: true,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+          // We can't predict the a11y focus when the screen changes.
+          ignoredActions: ignoredAccessibilityFocusActions,
+        ));
 
         await tester.tap(passwordTextField);
         await tester.pumpAndSettle();
 
-        expect(
-          await getSemantics(passwordTextField, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.editText,
-            isFocusable: true,
-            isFocused: true,
-            isEditable: true,
-            isPassword: true,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-              AndroidSemanticsAction.paste,
-              AndroidSemanticsAction.setSelection,
-              AndroidSemanticsAction.setText,
-            ],
-            // We can't predict the a11y focus when the screen changes.
-            ignoredActions: ignoredAccessibilityFocusActions,
-          ),
-        );
+        expect(await getSemantics(passwordTextField, tester), hasAndroidSemantics(
+          className: AndroidClassName.editText,
+          isFocusable: true,
+          isFocused: true,
+          isEditable: true,
+          isPassword: true,
+          actions: <AndroidSemanticsAction>[
+            AndroidSemanticsAction.click,
+            AndroidSemanticsAction.paste,
+            AndroidSemanticsAction.setSelection,
+            AndroidSemanticsAction.setText,
+          ],
+          // We can't predict the a11y focus when the screen changes.
+          ignoredActions: ignoredAccessibilityFocusActions,
+        ));
 
         await tester.enterText(passwordTextField, 'hello world');
         await tester.pumpAndSettle();
 
-        expect(
-          await getSemantics(passwordTextField, tester),
-          hasAndroidSemantics(
-            text: '\u{2022}' * ('hello world'.length),
-            className: AndroidClassName.editText,
-            isFocusable: true,
-            isFocused: true,
-            isEditable: true,
-            isPassword: true,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-              AndroidSemanticsAction.paste,
-              AndroidSemanticsAction.setSelection,
-              AndroidSemanticsAction.setText,
-              AndroidSemanticsAction.previousAtMovementGranularity,
-            ],
-            // We can't predict the a11y focus when the screen changes.
-            ignoredActions: ignoredAccessibilityFocusActions,
-          ),
-        );
+        expect(await getSemantics(passwordTextField, tester), hasAndroidSemantics(
+          text: '\u{2022}' * ('hello world'.length),
+          className: AndroidClassName.editText,
+          isFocusable: true,
+          isFocused: true,
+          isEditable: true,
+          isPassword: true,
+          actions: <AndroidSemanticsAction>[
+            AndroidSemanticsAction.click,
+            AndroidSemanticsAction.paste,
+            AndroidSemanticsAction.setSelection,
+            AndroidSemanticsAction.setText,
+            AndroidSemanticsAction.previousAtMovementGranularity,
+          ],
+          // We can't predict the a11y focus when the screen changes.
+          ignoredActions: ignoredAccessibilityFocusActions,
+        ));
       }, timeout: Timeout.none);
     });
 
@@ -232,124 +209,91 @@ Future<void> main() async {
         final Finder disabledCheckbox = find.byKey(const ValueKey<String>(disabledCheckboxKeyValue));
 
         await prepareSelectionControls(tester);
-        expect(
-          await getSemantics(checkbox, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.checkBox,
-            isChecked: false,
-            isCheckable: true,
-            isEnabled: true,
-            isFocusable: true,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-          ),
-        );
+        expect(await getSemantics(checkbox, tester), hasAndroidSemantics(
+          className: AndroidClassName.checkBox,
+          isChecked: false,
+          isCheckable: true,
+          isEnabled: true,
+          isFocusable: true,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+        ));
 
         await tester.tap(checkbox);
         await tester.pumpAndSettle();
 
-        expect(
-          await getSemantics(checkbox, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.checkBox,
-            isChecked: true,
-            isCheckable: true,
-            isEnabled: true,
-            isFocusable: true,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-          ),
-        );
-        expect(
-          await getSemantics(disabledCheckbox, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.checkBox,
-            isCheckable: true,
-            isEnabled: false,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: const <AndroidSemanticsAction>[],
-          ),
-        );
+        expect(await getSemantics(checkbox, tester), hasAndroidSemantics(
+          className: AndroidClassName.checkBox,
+          isChecked: true,
+          isCheckable: true,
+          isEnabled: true,
+          isFocusable: true,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+        ));
+        expect(await getSemantics(disabledCheckbox, tester), hasAndroidSemantics(
+          className: AndroidClassName.checkBox,
+          isCheckable: true,
+          isEnabled: false,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: const <AndroidSemanticsAction>[],
+        ));
       }, timeout: Timeout.none);
 
       testWidgets('Radio has correct Android semantics', (WidgetTester tester) async {
         final Finder radio = find.byKey(const ValueKey<String>(radio2KeyValue));
 
         await prepareSelectionControls(tester);
-        expect(
-          await getSemantics(radio, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.radio,
-            isChecked: false,
-            isCheckable: true,
-            isEnabled: true,
-            isFocusable: true,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-          ),
-        );
+        expect(await getSemantics(radio, tester), hasAndroidSemantics(
+          className: AndroidClassName.radio,
+          isChecked: false,
+          isCheckable: true,
+          isEnabled: true,
+          isFocusable: true,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+        ));
 
         await tester.tap(radio);
         await tester.pumpAndSettle();
 
-        expect(
-          await getSemantics(radio, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.radio,
-            isChecked: true,
-            isCheckable: true,
-            isEnabled: true,
-            isFocusable: true,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-          ),
-        );
+        expect(await getSemantics(radio, tester), hasAndroidSemantics(
+          className: AndroidClassName.radio,
+          isChecked: true,
+          isCheckable: true,
+          isEnabled: true,
+          isFocusable: true,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+        ));
       }, timeout: Timeout.none);
 
       testWidgets('Switch has correct Android semantics', (WidgetTester tester) async {
         final Finder switchFinder = find.byKey(const ValueKey<String>(switchKeyValue));
 
         await prepareSelectionControls(tester);
-        expect(
-          await getSemantics(switchFinder, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.toggleSwitch,
-            isChecked: false,
-            isCheckable: true,
-            isEnabled: true,
-            isFocusable: true,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-          ),
-        );
+        expect(await getSemantics(switchFinder, tester), hasAndroidSemantics(
+          className: AndroidClassName.toggleSwitch,
+          isChecked: false,
+          isCheckable: true,
+          isEnabled: true,
+          isFocusable: true,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+        ));
 
         await tester.tap(switchFinder);
         await tester.pumpAndSettle();
 
-        expect(
-          await getSemantics(switchFinder, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.toggleSwitch,
-            isChecked: true,
-            isCheckable: true,
-            isEnabled: true,
-            isFocusable: true,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-          ),
-        );
+        expect(await getSemantics(switchFinder, tester), hasAndroidSemantics(
+          className: AndroidClassName.toggleSwitch,
+          isChecked: true,
+          isCheckable: true,
+          isEnabled: true,
+          isFocusable: true,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+        ));
       }, timeout: Timeout.none);
 
       // Regression test for https://github.com/flutter/flutter/issues/20820.
@@ -357,21 +301,16 @@ Future<void> main() async {
         final Finder switchFinder = find.byKey(const ValueKey<String>(labeledSwitchKeyValue));
 
         await prepareSelectionControls(tester);
-        expect(
-          await getSemantics(switchFinder, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.toggleSwitch,
-            isChecked: false,
-            isCheckable: true,
-            isEnabled: true,
-            isFocusable: true,
-            contentDescription: switchLabel,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-          ),
-        );
+        expect(await getSemantics(switchFinder, tester), hasAndroidSemantics(
+          className: AndroidClassName.toggleSwitch,
+          isChecked: false,
+          isCheckable: true,
+          isEnabled: true,
+          isFocusable: true,
+          contentDescription: switchLabel,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+        ));
       }, timeout: Timeout.none);
     });
 
@@ -387,20 +326,15 @@ Future<void> main() async {
         final Finder popupButton = find.byKey(const ValueKey<String>(popupButtonKeyValue));
 
         await preparePopupControls(tester);
-        expect(
-          await getSemantics(popupButton, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.button,
-            isChecked: false,
-            isCheckable: false,
-            isEnabled: true,
-            isFocusable: true,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-          ),
-        );
+        expect(await getSemantics(popupButton, tester), hasAndroidSemantics(
+          className: AndroidClassName.button,
+          isChecked: false,
+          isCheckable: false,
+          isEnabled: true,
+          isFocusable: true,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+        ));
 
         await tester.tap(popupButton);
         await tester.pumpAndSettle();
@@ -416,9 +350,7 @@ Future<void> main() async {
                 isEnabled: true,
                 isFocusable: true,
                 ignoredActions: ignoredAccessibilityFocusActions,
-                actions: <AndroidSemanticsAction>[
-                  AndroidSemanticsAction.click,
-                ],
+                actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
               ),
               reason: "Popup $item doesn't have the right semantics",
             );
@@ -441,9 +373,7 @@ Future<void> main() async {
                 isEnabled: true,
                 isFocusable: true,
                 ignoredActions: ignoredAccessibilityFocusActions,
-                actions: <AndroidSemanticsAction>[
-                  AndroidSemanticsAction.click,
-                ],
+                actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
               ),
               reason: "Popup $item doesn't have the right semantics the second time",
             );
@@ -457,20 +387,15 @@ Future<void> main() async {
         final Finder dropdownButton = find.byKey(const ValueKey<String>(dropdownButtonKeyValue));
 
         await preparePopupControls(tester);
-        expect(
-          await getSemantics(dropdownButton, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.button,
-            isChecked: false,
-            isCheckable: false,
-            isEnabled: true,
-            isFocusable: true,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-          ),
-        );
+        expect(await getSemantics(dropdownButton, tester), hasAndroidSemantics(
+          className: AndroidClassName.button,
+          isChecked: false,
+          isCheckable: false,
+          isEnabled: true,
+          isFocusable: true,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+        ));
 
         await tester.tap(dropdownButton);
         await tester.pumpAndSettle();
@@ -480,13 +405,10 @@ Future<void> main() async {
             // There are two copies of each item, so we want to find the version
             // that is in the overlay, not the one in the dropdown.
             expect(
-              await getSemantics(
-                find.descendant(
-                  of: find.byType(Scrollable),
-                  matching: find.byKey(ValueKey<String>('$dropdownKeyValue.$item')),
-                ),
-                tester,
-              ),
+              await getSemantics(find.descendant(
+                of: find.byType(Scrollable),
+                matching: find.byKey(ValueKey<String>('$dropdownKeyValue.$item')),
+              ), tester),
               hasAndroidSemantics(
                 className: AndroidClassName.view,
                 isChecked: false,
@@ -494,19 +416,15 @@ Future<void> main() async {
                 isEnabled: true,
                 isFocusable: true,
                 ignoredActions: ignoredAccessibilityFocusActions,
-                actions: <AndroidSemanticsAction>[
-                  AndroidSemanticsAction.click,
-                ],
+                actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
               ),
               reason: "Dropdown $item doesn't have the right semantics",
             );
           }
-          await tester.tap(
-            find.descendant(
-              of: find.byType(Scrollable),
-              matching: find.byKey(ValueKey<String>('$dropdownKeyValue.${popupItems.first}')),
-            ),
-          );
+          await tester.tap(find.descendant(
+            of: find.byType(Scrollable),
+            matching: find.byKey(ValueKey<String>('$dropdownKeyValue.${popupItems.first}')),
+          ));
           await tester.pumpAndSettle();
 
           // Pop up the dropdown again, to verify that TalkBack gets the right answer
@@ -518,13 +436,10 @@ Future<void> main() async {
             // There are two copies of each item, so we want to find the version
             // that is in the overlay, not the one in the dropdown.
             expect(
-              await getSemantics(
-                find.descendant(
-                  of: find.byType(Scrollable),
-                  matching: find.byKey(ValueKey<String>('$dropdownKeyValue.$item')),
-                ),
-                tester,
-              ),
+              await getSemantics(find.descendant(
+                of: find.byType(Scrollable),
+                matching: find.byKey(ValueKey<String>('$dropdownKeyValue.$item')),
+              ), tester),
               hasAndroidSemantics(
                 className: AndroidClassName.view,
                 isChecked: false,
@@ -532,20 +447,16 @@ Future<void> main() async {
                 isEnabled: true,
                 isFocusable: true,
                 ignoredActions: ignoredAccessibilityFocusActions,
-                actions: <AndroidSemanticsAction>[
-                  AndroidSemanticsAction.click,
-                ],
+                actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
               ),
               reason: "Dropdown $item doesn't have the right semantics the second time.",
             );
           }
         } finally {
-          await tester.tap(
-            find.descendant(
-              of: find.byType(Scrollable),
-              matching: find.byKey(ValueKey<String>('$dropdownKeyValue.${popupItems.first}')),
-            ),
-          );
+          await tester.tap(find.descendant(
+            of: find.byType(Scrollable),
+            matching: find.byKey(ValueKey<String>('$dropdownKeyValue.${popupItems.first}')),
+          ));
         }
       }, timeout: Timeout.none);
 
@@ -553,20 +464,15 @@ Future<void> main() async {
         final Finder alertButton = find.byKey(const ValueKey<String>(alertButtonKeyValue));
 
         await preparePopupControls(tester);
-        expect(
-          await getSemantics(alertButton, tester),
-          hasAndroidSemantics(
-            className: AndroidClassName.button,
-            isChecked: false,
-            isCheckable: false,
-            isEnabled: true,
-            isFocusable: true,
-            ignoredActions: ignoredAccessibilityFocusActions,
-            actions: <AndroidSemanticsAction>[
-              AndroidSemanticsAction.click,
-            ],
-          ),
-        );
+        expect(await getSemantics(alertButton, tester), hasAndroidSemantics(
+          className: AndroidClassName.button,
+          isChecked: false,
+          isCheckable: false,
+          isEnabled: true,
+          isFocusable: true,
+          ignoredActions: ignoredAccessibilityFocusActions,
+          actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
+        ));
 
         await tester.tap(alertButton);
         await tester.pumpAndSettle();
@@ -581,9 +487,7 @@ Future<void> main() async {
               isEnabled: true,
               isFocusable: true,
               ignoredActions: ignoredAccessibilityFocusActions,
-              actions: <AndroidSemanticsAction>[
-                AndroidSemanticsAction.click,
-              ],
+              actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
             ),
             reason: "Alert OK button doesn't have the right semantics",
           );
@@ -621,9 +525,7 @@ Future<void> main() async {
               isEnabled: true,
               isFocusable: true,
               ignoredActions: ignoredAccessibilityFocusActions,
-              actions: <AndroidSemanticsAction>[
-                AndroidSemanticsAction.click,
-              ],
+              actions: <AndroidSemanticsAction>[AndroidSemanticsAction.click],
             ),
             reason: "Alert OK button doesn't have the right semantics",
           );

@@ -22,20 +22,9 @@ Future<void> main() async {
             child: Scaffold(
               appBar: AppBar(
                 title: Text('App $index'),
-                actions: const <Widget>[
-                  Icon(Icons.help),
-                  Icon(Icons.add),
-                  Icon(Icons.ac_unit),
-                ],
+                actions: const <Widget>[Icon(Icons.help), Icon(Icons.add), Icon(Icons.ac_unit)],
               ),
-              body: const Column(
-                children: <Widget>[
-                  Text('Item 1'),
-                  Text('Item 2'),
-                  Text('Item 3'),
-                  Text('Item 4'),
-                ],
-              ),
+              body: const Column(children: <Widget>[Text('Item 1'), Text('Item 2'), Text('Item 3'), Text('Item 4')]),
             ),
           );
         }),
@@ -67,10 +56,8 @@ Future<void> main() async {
 
   watch.start();
   for (int i = 0; i < _kNumIters; i += 1) {
-    final List<Element> allElements = collectAllElementsFrom(
-      WidgetsBinding.instance.rootElement!,
-      skipOffstage: false,
-    ).toList();
+    final List<Element> allElements =
+        collectAllElementsFrom(WidgetsBinding.instance.rootElement!, skipOffstage: false).toList();
     allElements.clear();
   }
   watch.stop();

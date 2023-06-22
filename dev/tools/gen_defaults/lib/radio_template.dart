@@ -5,9 +5,7 @@
 import 'template.dart';
 
 class RadioTemplate extends TokenTemplate {
-  const RadioTemplate(super.blockName, super.fileName, super.tokens, {
-    super.colorSchemePrefix = '_colors.',
-  });
+  const RadioTemplate(super.blockName, super.fileName, super.tokens, {super.colorSchemePrefix = '_colors.'});
 
   @override
   String generate() => '''

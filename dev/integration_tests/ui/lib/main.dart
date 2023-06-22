@@ -13,26 +13,13 @@ void main() {
       child: Builder(
         builder: (BuildContext context) {
           return TextButton(
-            child: const Text(
-              'flutter drive lib/xxx.dart',
-              textDirection: TextDirection.ltr,
-            ),
+            child: const Text('flutter drive lib/xxx.dart', textDirection: TextDirection.ltr),
             onPressed: () {
-              Navigator.push<Object?>(
-                context,
-                MaterialPageRoute<Object?>(
-                  builder: (BuildContext context) {
-                    return const Material(
-                      child: Center(
-                        child: Text(
-                          'navigated here',
-                          textDirection: TextDirection.ltr,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
+              Navigator.push<Object?>(context, MaterialPageRoute<Object?>(
+                builder: (BuildContext context) {
+                  return const Material(child: Center(child: Text('navigated here', textDirection: TextDirection.ltr)));
+                },
+              ));
             },
           );
         },

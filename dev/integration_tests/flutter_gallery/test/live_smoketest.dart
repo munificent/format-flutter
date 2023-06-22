@@ -24,19 +24,11 @@ const MethodChannel _kTestChannel = MethodChannel('io.flutter.demo.gallery/TestL
 
 // We don't want to wait for animations to complete before tapping the
 // back button in the demos with these titles.
-const List<String> _kUnsynchronizedDemoTitles = <String>[
-  'Progress indicators',
-  'Activity Indicator',
-  'Video',
-];
+const List<String> _kUnsynchronizedDemoTitles = <String>['Progress indicators', 'Activity Indicator', 'Video'];
 
 // These demos can't be backed out of by tapping a button whose
 // tooltip is 'Back'.
-const List<String> _kSkippedDemoTitles = <String>[
-  'Progress indicators',
-  'Activity Indicator',
-  'Video',
-];
+const List<String> _kSkippedDemoTitles = <String>['Progress indicators', 'Activity Indicator', 'Video'];
 
 // There are 3 places where the Gallery demos are traversed.
 // 1- In widget tests such as dev/integration_tests/flutter_gallery/test/smoke_test.dart
@@ -91,19 +83,16 @@ Future<void> main() async {
   }
 }
 
-final Finder backFinder = find.byElementPredicate(
-  (Element element) {
-    final Widget widget = element.widget;
-    if (widget is Tooltip) {
-      return widget.message == 'Back';
-    }
-    if (widget is CupertinoNavigationBarBackButton) {
-      return true;
-    }
-    return false;
-  },
-  description: 'Material or Cupertino back button',
-);
+final Finder backFinder = find.byElementPredicate((Element element) {
+  final Widget widget = element.widget;
+  if (widget is Tooltip) {
+    return widget.message == 'Back';
+  }
+  if (widget is CupertinoNavigationBarBackButton) {
+    return true;
+  }
+  return false;
+}, description: 'Material or Cupertino back button');
 
 class _LiveWidgetController extends LiveWidgetController {
   _LiveWidgetController(super.binding);
@@ -138,12 +127,16 @@ class _LiveWidgetController extends LiveWidgetController {
   }
 
   @override
-  Future<void> tap(Finder finder, { int? pointer, int buttons = kPrimaryButton, bool warnIfMissed = true }) async {
+  Future<void> tap(Finder finder, {int? pointer, int buttons = kPrimaryButton, bool warnIfMissed = true}) async {
     await super.tap(await _waitForElement(finder), pointer: pointer, buttons: buttons, warnIfMissed: warnIfMissed);
   }
 
   Future<void> scrollIntoView(Finder finder, {required double alignment}) async {
     final Finder target = await _waitForElement(finder);
-    await Scrollable.ensureVisible(target.evaluate().single, duration: const Duration(milliseconds: 100), alignment: alignment);
+    await Scrollable.ensureVisible(
+      target.evaluate().single,
+      duration: const Duration(milliseconds: 100),
+      alignment: alignment,
+    );
   }
 }

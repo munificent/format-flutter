@@ -22,10 +22,7 @@ class ImagesDemo extends StatelessWidget {
           exampleCodeTag: 'animated_image',
           demoWidget: Semantics(
             label: 'Example of animated WEBP',
-            child: Image.asset(
-              'animated_images/animated_flutter_stickers.webp',
-              package: 'flutter_gallery_assets',
-            ),
+            child: Image.asset('animated_images/animated_flutter_stickers.webp', package: 'flutter_gallery_assets'),
           ),
         ),
         ComponentDemoTabData(
@@ -34,10 +31,7 @@ class ImagesDemo extends StatelessWidget {
           exampleCodeTag: 'animated_image',
           demoWidget: Semantics(
             label: 'Example of animated GIF',
-            child: Image.asset(
-              'animated_images/animated_flutter_lgtm.gif',
-              package: 'flutter_gallery_assets',
-            ),
+            child: Image.asset('animated_images/animated_flutter_lgtm.gif', package: 'flutter_gallery_assets'),
           ),
         ),
       ],

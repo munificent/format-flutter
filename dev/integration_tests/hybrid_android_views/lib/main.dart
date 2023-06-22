@@ -10,10 +10,7 @@ import 'motion_events_page.dart';
 import 'nested_view_event_page.dart';
 import 'page.dart';
 
-final List<PageWidget> _allPages = <PageWidget>[
-  const MotionEventsPage(),
-  const NestedViewEventPage(),
-];
+final List<PageWidget> _allPages = <PageWidget>[const MotionEventsPage(), const NestedViewEventPage()];
 
 void main() {
   enableFlutterDriverExtension(handler: driverDataHandler.handleMessage);
@@ -25,25 +22,20 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-         children: _allPages.map((PageWidget p) => _buildPageListTile(context, p)).toList(),
-      ),
-    );
+    return Scaffold(body: ListView(children: _allPages.map((PageWidget p) => _buildPageListTile(context, p)).toList()));
   }
 
   Widget _buildPageListTile(BuildContext context, PageWidget page) {
     return ListTile(
       title: Text(page.title),
       key: page.tileKey,
-      onTap: () { _pushPage(context, page); },
+      onTap: () {
+        _pushPage(context, page);
+      },
     );
   }
 
   void _pushPage(BuildContext context, PageWidget page) {
-    Navigator.of(context).push(MaterialPageRoute<void>(
-        builder: (_) => Scaffold(
-              body: page,
-            )));
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => Scaffold(body: page)));
   }
 }

@@ -6,11 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 
 class TestSpecs {
-
-  TestSpecs({
-    required this.path,
-    required this.startTime,
-  });
+  TestSpecs({required this.path, required this.startTime});
 
   final String path;
   int startTime;
@@ -32,18 +28,12 @@ class TestSpecs {
   }
 
   String toJson() {
-    return json.encode(
-      <String, String>{'path': path, 'runtime': milliseconds.toString()}
-    );
+    return json.encode(<String, String>{'path': path, 'runtime': milliseconds.toString()});
   }
 }
 
 class TestFileReporterResults {
-  TestFileReporterResults._({
-    required this.allTestSpecs,
-    required this.hasFailedTests,
-    required this.errors,
-  });
+  TestFileReporterResults._({required this.allTestSpecs, required this.hasFailedTests, required this.errors});
 
   /// Intended to parse the output file of `dart test --file-reporter json:file_name
   factory TestFileReporterResults.fromFile(File metrics) {
@@ -79,12 +69,8 @@ class TestFileReporterResults {
   final bool hasFailedTests;
   final List<String> errors;
 
-
   static void addTestSpec(Map<String, Object?> suite, int time, Map<int, TestSpecs> allTestSpecs) {
-    allTestSpecs[suite['id']! as int] = TestSpecs(
-      path: suite['path']! as String,
-      startTime: time,
-    );
+    allTestSpecs[suite['id']! as int] = TestSpecs(path: suite['path']! as String, startTime: time);
   }
 
   static void addMetricDone(int suiteID, int time, Map<int, TestSpecs> allTestSpecs) {

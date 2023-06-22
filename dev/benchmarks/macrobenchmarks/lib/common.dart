@@ -46,8 +46,10 @@ const String kOpacityPeepholeOpacityOfGridRouteName = '$kOpacityPeepholeRouteNam
 const String kOpacityPeepholeOpacityOfColOfRowsRouteName = '$kOpacityPeepholeRouteName/opacity_of_col_of_rows';
 const String kOpacityPeepholeFadeTransitionTextRouteName = '$kOpacityPeepholeRouteName/fade_transition_text';
 const String kOpacityPeepholeGridOfRectsWithAlphaRouteName = '$kOpacityPeepholeRouteName/grid_of_rects_with_alpha';
-const String kOpacityPeepholeGridOfAlphaSaveLayerRectsRouteName = '$kOpacityPeepholeRouteName/grid_of_alpha_savelayer_rects';
-const String kOpacityPeepholeColumnOfAlphaSaveLayerRowsOfRectsRouteName = '$kOpacityPeepholeRouteName/column_of_alpha_save_layer_rows_of_rects';
+const String kOpacityPeepholeGridOfAlphaSaveLayerRectsRouteName =
+    '$kOpacityPeepholeRouteName/grid_of_alpha_savelayer_rects';
+const String kOpacityPeepholeColumnOfAlphaSaveLayerRowsOfRectsRouteName =
+    '$kOpacityPeepholeRouteName/column_of_alpha_save_layer_rows_of_rects';
 
 const String kGradientPerfRecreateDynamicRouteName = '$kGradientPerfRouteName/recreate_dynamic';
 const String kGradientPerfRecreateConsistentRouteName = '$kGradientPerfRouteName/recreate_consistent';

@@ -20,19 +20,17 @@ export 'conductor_state.pbenum.dart';
 
 class Remote extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Remote',
-      package: const $pb.PackageName(
-          const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'conductor_state'),
-      createEmptyInstance: create)
+    const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Remote',
+    package:
+        const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'conductor_state'),
+    createEmptyInstance: create,
+  )
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'name')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'url')
     ..hasRequiredFields = false;
 
   Remote._() : super();
-  factory Remote({
-    $core.String? name,
-    $core.String? url,
-  }) {
+  factory Remote({$core.String? name, $core.String? url}) {
     final _result = create();
     if (name != null) {
       _result.name = name;
@@ -46,13 +44,17 @@ class Remote extends $pb.GeneratedMessage {
       create()..mergeFromBuffer(i, r);
   factory Remote.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+    'Using this can add significant overhead to your binary. '
+    'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+    'Will be removed in next major version',
+  )
   Remote clone() => Remote()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+    'Using this can add significant overhead to your binary. '
+    'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+    'Will be removed in next major version',
+  )
   Remote copyWith(void Function(Remote) updates) =>
       super.copyWith((message) => updates(message as Remote)) as Remote; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
@@ -91,25 +93,33 @@ class Remote extends $pb.GeneratedMessage {
 
 class Cherrypick extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Cherrypick',
-      package: const $pb.PackageName(
-          const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'conductor_state'),
-      createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'trunkRevision',
-        protoName: 'trunkRevision')
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'appliedRevision',
-        protoName: 'appliedRevision')
+    const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Cherrypick',
+    package:
+        const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'conductor_state'),
+    createEmptyInstance: create,
+  )
+    ..aOS(
+      1,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'trunkRevision',
+      protoName: 'trunkRevision',
+    )
+    ..aOS(
+      2,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'appliedRevision',
+      protoName: 'appliedRevision',
+    )
     ..e<CherrypickState>(
-        3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'state', $pb.PbFieldType.OE,
-        defaultOrMaker: CherrypickState.PENDING, valueOf: CherrypickState.valueOf, enumValues: CherrypickState.values)
+      3,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'state',
+      $pb.PbFieldType.OE,
+      defaultOrMaker: CherrypickState.PENDING,
+      valueOf: CherrypickState.valueOf,
+      enumValues: CherrypickState.values,
+    )
     ..hasRequiredFields = false;
 
   Cherrypick._() : super();
-  factory Cherrypick({
-    $core.String? trunkRevision,
-    $core.String? appliedRevision,
-    CherrypickState? state,
-  }) {
+  factory Cherrypick({$core.String? trunkRevision, $core.String? appliedRevision, CherrypickState? state}) {
     final _result = create();
     if (trunkRevision != null) {
       _result.trunkRevision = trunkRevision;
@@ -126,13 +136,17 @@ class Cherrypick extends $pb.GeneratedMessage {
       create()..mergeFromBuffer(i, r);
   factory Cherrypick.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+    'Using this can add significant overhead to your binary. '
+    'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+    'Will be removed in next major version',
+  )
   Cherrypick clone() => Cherrypick()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+    'Using this can add significant overhead to your binary. '
+    'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+    'Will be removed in next major version',
+  )
   Cherrypick copyWith(void Function(Cherrypick) updates) =>
       super.copyWith((message) => updates(message as Cherrypick)) as Cherrypick; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
@@ -183,29 +197,57 @@ class Cherrypick extends $pb.GeneratedMessage {
 
 class Repository extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Repository',
-      package: const $pb.PackageName(
-          const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'conductor_state'),
-      createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'candidateBranch',
-        protoName: 'candidateBranch')
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'startingGitHead',
-        protoName: 'startingGitHead')
-    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'currentGitHead',
-        protoName: 'currentGitHead')
-    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'checkoutPath',
-        protoName: 'checkoutPath')
-    ..aOM<Remote>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'upstream',
-        subBuilder: Remote.create)
-    ..aOM<Remote>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'mirror',
-        subBuilder: Remote.create)
+    const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Repository',
+    package:
+        const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'conductor_state'),
+    createEmptyInstance: create,
+  )
+    ..aOS(
+      1,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'candidateBranch',
+      protoName: 'candidateBranch',
+    )
+    ..aOS(
+      2,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'startingGitHead',
+      protoName: 'startingGitHead',
+    )
+    ..aOS(
+      3,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'currentGitHead',
+      protoName: 'currentGitHead',
+    )
+    ..aOS(
+      4,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'checkoutPath',
+      protoName: 'checkoutPath',
+    )
+    ..aOM<Remote>(
+      5,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'upstream',
+      subBuilder: Remote.create,
+    )
+    ..aOM<Remote>(
+      6,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'mirror',
+      subBuilder: Remote.create,
+    )
     ..pc<Cherrypick>(
-        7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cherrypicks', $pb.PbFieldType.PM,
-        subBuilder: Cherrypick.create)
-    ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'dartRevision',
-        protoName: 'dartRevision')
-    ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'workingBranch',
-        protoName: 'workingBranch')
+      7,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cherrypicks',
+      $pb.PbFieldType.PM,
+      subBuilder: Cherrypick.create,
+    )
+    ..aOS(
+      8,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'dartRevision',
+      protoName: 'dartRevision',
+    )
+    ..aOS(
+      9,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'workingBranch',
+      protoName: 'workingBranch',
+    )
     ..hasRequiredFields = false;
 
   Repository._() : super();
@@ -254,13 +296,17 @@ class Repository extends $pb.GeneratedMessage {
       create()..mergeFromBuffer(i, r);
   factory Repository.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+    'Using this can add significant overhead to your binary. '
+    'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+    'Will be removed in next major version',
+  )
   Repository clone() => Repository()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+    'Using this can add significant overhead to your binary. '
+    'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+    'Will be removed in next major version',
+  )
   Repository copyWith(void Function(Repository) updates) =>
       super.copyWith((message) => updates(message as Repository)) as Repository; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
@@ -378,37 +424,65 @@ class Repository extends $pb.GeneratedMessage {
 
 class ConductorState extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ConductorState',
-      package: const $pb.PackageName(
-          const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'conductor_state'),
-      createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'releaseChannel',
-        protoName: 'releaseChannel')
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'releaseVersion',
-        protoName: 'releaseVersion')
-    ..aOM<Repository>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'engine',
-        subBuilder: Repository.create)
-    ..aOM<Repository>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'framework',
-        subBuilder: Repository.create)
-    ..aInt64(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'createdDate',
-        protoName: 'createdDate')
-    ..aInt64(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lastUpdatedDate',
-        protoName: 'lastUpdatedDate')
+    const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ConductorState',
+    package:
+        const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'conductor_state'),
+    createEmptyInstance: create,
+  )
+    ..aOS(
+      1,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'releaseChannel',
+      protoName: 'releaseChannel',
+    )
+    ..aOS(
+      2,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'releaseVersion',
+      protoName: 'releaseVersion',
+    )
+    ..aOM<Repository>(
+      4,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'engine',
+      subBuilder: Repository.create,
+    )
+    ..aOM<Repository>(
+      5,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'framework',
+      subBuilder: Repository.create,
+    )
+    ..aInt64(
+      6,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'createdDate',
+      protoName: 'createdDate',
+    )
+    ..aInt64(
+      7,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lastUpdatedDate',
+      protoName: 'lastUpdatedDate',
+    )
     ..pPS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'logs')
     ..e<ReleasePhase>(
-        9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'currentPhase', $pb.PbFieldType.OE,
-        protoName: 'currentPhase',
-        defaultOrMaker: ReleasePhase.APPLY_ENGINE_CHERRYPICKS,
-        valueOf: ReleasePhase.valueOf,
-        enumValues: ReleasePhase.values)
-    ..aOS(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'conductorVersion',
-        protoName: 'conductorVersion')
+      9,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'currentPhase',
+      $pb.PbFieldType.OE,
+      protoName: 'currentPhase',
+      defaultOrMaker: ReleasePhase.APPLY_ENGINE_CHERRYPICKS,
+      valueOf: ReleasePhase.valueOf,
+      enumValues: ReleasePhase.values,
+    )
+    ..aOS(
+      10,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'conductorVersion',
+      protoName: 'conductorVersion',
+    )
     ..e<ReleaseType>(
-        11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'releaseType', $pb.PbFieldType.OE,
-        protoName: 'releaseType',
-        defaultOrMaker: ReleaseType.STABLE_INITIAL,
-        valueOf: ReleaseType.valueOf,
-        enumValues: ReleaseType.values)
+      11,
+      const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'releaseType',
+      $pb.PbFieldType.OE,
+      protoName: 'releaseType',
+      defaultOrMaker: ReleaseType.STABLE_INITIAL,
+      valueOf: ReleaseType.valueOf,
+      enumValues: ReleaseType.values,
+    )
     ..hasRequiredFields = false;
 
   ConductorState._() : super();
@@ -461,13 +535,17 @@ class ConductorState extends $pb.GeneratedMessage {
       create()..mergeFromBuffer(i, r);
   factory ConductorState.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+    'Using this can add significant overhead to your binary. '
+    'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+    'Will be removed in next major version',
+  )
   ConductorState clone() => ConductorState()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+    'Using this can add significant overhead to your binary. '
+    'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+    'Will be removed in next major version',
+  )
   ConductorState copyWith(void Function(ConductorState) updates) =>
       super.copyWith((message) => updates(message as ConductorState))
           as ConductorState; // ignore: deprecated_member_use

@@ -62,11 +62,7 @@ class TestStepResult {
   final dynamic error;
 
   static const TextStyle bold = TextStyle(fontWeight: FontWeight.bold);
-  static const TestStepResult complete = TestStepResult(
-    'Test complete',
-    nothing,
-    TestStatus.complete,
-  );
+  static const TestStepResult complete = TestStepResult('Test complete', nothing, TestStatus.complete);
 
   Widget asWidget(BuildContext context) {
     return Column(
@@ -81,12 +77,7 @@ class TestStepResult {
         Text('Msg echo: ${_toString(messageEcho)}'),
         Text('Error: ${_toString(error)}'),
         const Text(' '),
-        Text(
-          status.name,
-          key: ValueKey<String>(
-              status == TestStatus.pending ? 'nostatus' : 'status'),
-          style: bold,
-        ),
+        Text(status.name, key: ValueKey<String>(status == TestStatus.pending ? 'nostatus' : 'status'), style: bold),
       ],
     );
   }
@@ -136,9 +127,7 @@ Future<TestStepResult> resultOfHandshake(
 
 String _toString(dynamic message) {
   if (message is ByteData) {
-    return message.buffer
-        .asUint8List(message.offsetInBytes, message.lengthInBytes)
-        .toString();
+    return message.buffer.asUint8List(message.offsetInBytes, message.lengthInBytes).toString();
   } else {
     return '$message';
   }

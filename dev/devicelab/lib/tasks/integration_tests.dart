@@ -9,17 +9,12 @@ import '../framework/task_result.dart';
 import '../framework/utils.dart';
 
 TaskFunction createChannelsIntegrationTest() {
-  return IntegrationTest(
-    '${flutterDirectory.path}/dev/integration_tests/channels',
-    'integration_test/main_test.dart',
-  ).call;
+  return IntegrationTest('${flutterDirectory.path}/dev/integration_tests/channels', 'integration_test/main_test.dart')
+      .call;
 }
 
 TaskFunction createPlatformInteractionTest() {
-  return DriverTest(
-    '${flutterDirectory.path}/dev/integration_tests/platform_interaction',
-    'lib/main.dart',
-  ).call;
+  return DriverTest('${flutterDirectory.path}/dev/integration_tests/platform_interaction', 'lib/main.dart').call;
 }
 
 TaskFunction createFlavorsTest() {
@@ -39,10 +34,7 @@ TaskFunction createIntegrationTestFlavorsTest() {
 }
 
 TaskFunction createExternalUiIntegrationTest() {
-  return DriverTest(
-    '${flutterDirectory.path}/dev/integration_tests/external_ui',
-    'lib/main.dart',
-  ).call;
+  return DriverTest('${flutterDirectory.path}/dev/integration_tests/external_ui', 'lib/main.dart').call;
 }
 
 TaskFunction createPlatformChannelSampleTest({String? deviceIdOverride}) {
@@ -54,24 +46,15 @@ TaskFunction createPlatformChannelSampleTest({String? deviceIdOverride}) {
 }
 
 TaskFunction createPlatformChannelSwiftSampleTest() {
-  return DriverTest(
-    '${flutterDirectory.path}/examples/platform_channel_swift',
-    'test_driver/button_tap.dart',
-  ).call;
+  return DriverTest('${flutterDirectory.path}/examples/platform_channel_swift', 'test_driver/button_tap.dart').call;
 }
 
 TaskFunction createEmbeddedAndroidViewsIntegrationTest() {
-  return DriverTest(
-    '${flutterDirectory.path}/dev/integration_tests/android_views',
-    'lib/main.dart',
-  ).call;
+  return DriverTest('${flutterDirectory.path}/dev/integration_tests/android_views', 'lib/main.dart').call;
 }
 
 TaskFunction createHybridAndroidViewsIntegrationTest() {
-  return DriverTest(
-    '${flutterDirectory.path}/dev/integration_tests/hybrid_android_views',
-    'lib/main.dart',
-  ).call;
+  return DriverTest('${flutterDirectory.path}/dev/integration_tests/hybrid_android_views', 'lib/main.dart').call;
 }
 
 TaskFunction createAndroidSemanticsIntegrationTest() {
@@ -86,62 +69,41 @@ TaskFunction createIOSPlatformViewTests() {
   return DriverTest(
     '${flutterDirectory.path}/dev/integration_tests/ios_platform_view_tests',
     'lib/main.dart',
-    extraOptions: <String>[
-      '--dart-define=ENABLE_DRIVER_EXTENSION=true',
-    ],
+    extraOptions: <String>['--dart-define=ENABLE_DRIVER_EXTENSION=true'],
   ).call;
 }
 
 TaskFunction createEndToEndKeyboardTest() {
-  return DriverTest(
-    '${flutterDirectory.path}/dev/integration_tests/ui',
-    'lib/keyboard_resize.dart',
-  ).call;
+  return DriverTest('${flutterDirectory.path}/dev/integration_tests/ui', 'lib/keyboard_resize.dart').call;
 }
 
 TaskFunction createEndToEndFrameNumberTest() {
-  return DriverTest(
-    '${flutterDirectory.path}/dev/integration_tests/ui',
-    'lib/frame_number.dart',
-  ).call;
+  return DriverTest('${flutterDirectory.path}/dev/integration_tests/ui', 'lib/frame_number.dart').call;
 }
 
 TaskFunction createEndToEndDriverTest() {
-  return DriverTest(
-    '${flutterDirectory.path}/dev/integration_tests/ui',
-    'lib/driver.dart',
-  ).call;
+  return DriverTest('${flutterDirectory.path}/dev/integration_tests/ui', 'lib/driver.dart').call;
 }
 
 TaskFunction createEndToEndScreenshotTest() {
-  return DriverTest(
-    '${flutterDirectory.path}/dev/integration_tests/ui',
-    'lib/screenshot.dart',
-  ).call;
+  return DriverTest('${flutterDirectory.path}/dev/integration_tests/ui', 'lib/screenshot.dart').call;
 }
 
 TaskFunction createEndToEndKeyboardTextfieldTest() {
-  return DriverTest(
-    '${flutterDirectory.path}/dev/integration_tests/ui',
-    'lib/keyboard_textfield.dart',
-  ).call;
+  return DriverTest('${flutterDirectory.path}/dev/integration_tests/ui', 'lib/keyboard_textfield.dart').call;
 }
 
 TaskFunction dartDefinesTask() {
   return DriverTest(
     '${flutterDirectory.path}/dev/integration_tests/ui',
-    'lib/defines.dart', extraOptions: <String>[
-    '--dart-define=test.valueA=Example,A',
-    '--dart-define=test.valueB=Value',
-    ],
+    'lib/defines.dart',
+    extraOptions: <String>['--dart-define=test.valueA=Example,A', '--dart-define=test.valueB=Value'],
   ).call;
 }
 
 TaskFunction createEndToEndIntegrationTest() {
-  return IntegrationTest(
-    '${flutterDirectory.path}/dev/integration_tests/ui',
-    'integration_test/integration_test.dart',
-  ).call;
+  return IntegrationTest('${flutterDirectory.path}/dev/integration_tests/ui', 'integration_test/integration_test.dart')
+      .call;
 }
 
 TaskFunction createSpellCheckIntegrationTest() {
@@ -168,13 +130,7 @@ TaskFunction createWideGamutTest() {
 }
 
 class DriverTest {
-  DriverTest(
-    this.testDirectory,
-    this.testTarget, {
-      this.extraOptions = const <String>[],
-      this.deviceIdOverride,
-    }
-  );
+  DriverTest(this.testDirectory, this.testTarget, {this.extraOptions = const <String>[], this.deviceIdOverride});
 
   final String testDirectory;
   final String testTarget;
@@ -213,11 +169,10 @@ class IntegrationTest {
   IntegrationTest(
     this.testDirectory,
     this.testTarget, {
-      this.extraOptions = const <String>[],
-      this.createPlatforms = const <String>[],
-      this.withTalkBack = false,
-    }
-  );
+    this.extraOptions = const <String>[],
+    this.createPlatforms = const <String>[],
+    this.withTalkBack = false,
+  });
 
   final String testDirectory;
   final String testTarget;
@@ -233,12 +188,7 @@ class IntegrationTest {
       await flutter('packages', options: <String>['get']);
 
       if (createPlatforms.isNotEmpty) {
-        await flutter('create', options: <String>[
-          '--platforms',
-          createPlatforms.join(','),
-          '--no-overwrite',
-          '.'
-        ]);
+        await flutter('create', options: <String>['--platforms', createPlatforms.join(','), '--no-overwrite', '.']);
       }
 
       if (withTalkBack) {
@@ -248,13 +198,7 @@ class IntegrationTest {
         await enableTalkBack();
       }
 
-      final List<String> options = <String>[
-        '-v',
-        '-d',
-        deviceId,
-        testTarget,
-        ...extraOptions,
-      ];
+      final List<String> options = <String>['-v', '-d', deviceId, testTarget, ...extraOptions];
       await flutter('test', options: options);
 
       if (withTalkBack) {

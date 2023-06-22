@@ -9,14 +9,18 @@ import 'package:flutter/material.dart';
 // dirty children even without explicit repaint boundaries. These intentionally use
 // text to ensure we don't measure the opacity peephole case.
 class AnimatedComplexImageFiltered extends StatefulWidget {
-  const AnimatedComplexImageFiltered({ super.key });
+  const AnimatedComplexImageFiltered({super.key});
 
   @override
   State<AnimatedComplexImageFiltered> createState() => _AnimatedComplexImageFilteredState();
 }
 
-class _AnimatedComplexImageFilteredState extends State<AnimatedComplexImageFiltered> with SingleTickerProviderStateMixin {
-  late final AnimationController controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 5000));
+class _AnimatedComplexImageFilteredState extends State<AnimatedComplexImageFiltered>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 5000),
+  );
   late final Animation<double> animation = controller.drive(Tween<double>(begin: 0.0, end: 1.0));
   ui.ImageFilter imageFilter = ui.ImageFilter.blur();
 
@@ -44,12 +48,10 @@ class _AnimatedComplexImageFilteredState extends State<AnimatedComplexImageFilte
         body: ListView(
           children: <Widget>[
             for (int i = 0; i < 20; i++)
-            ImageFiltered(
-              imageFilter: imageFilter,
-              child: Center(
-                child: Transform.scale(scale: 1.01, child: const ModeratelyComplexWidget()),
+              ImageFiltered(
+                imageFilter: imageFilter,
+                child: Center(child: Transform.scale(scale: 1.01, child: const ModeratelyComplexWidget())),
               ),
-            ),
           ],
         ),
       ),
@@ -58,7 +60,7 @@ class _AnimatedComplexImageFilteredState extends State<AnimatedComplexImageFilte
 }
 
 class ModeratelyComplexWidget extends StatelessWidget {
-  const ModeratelyComplexWidget({ super.key });
+  const ModeratelyComplexWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

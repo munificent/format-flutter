@@ -26,7 +26,7 @@ void main() {
 }
 
 class Home extends StatefulWidget {
-  const Home({ super.key });
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -43,51 +43,45 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.red.shade800,
-                  ),
-                  onPressed: () { Navigator.pushNamed(context, 'underlines'); },
+                  style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.red.shade800),
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'underlines');
+                  },
                   child: const Text('Test Underlines'),
                 ),
                 TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.orange.shade700,
-                  ),
-                  onPressed: () { Navigator.pushNamed(context, 'fallback'); },
+                  style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.orange.shade700),
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'fallback');
+                  },
                   child: const Text('Test Font Fallback'),
                 ),
                 TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.yellow.shade700,
-                  ),
-                  onPressed: () { Navigator.pushNamed(context, 'bidi'); },
+                  style: TextButton.styleFrom(foregroundColor: Colors.black, backgroundColor: Colors.yellow.shade700),
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'bidi');
+                  },
                   child: const Text('Test Bidi Formatting'),
                 ),
                 TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.green.shade400,
-                  ),
-                  onPressed: () { Navigator.pushNamed(context, 'fuzzer'); },
+                  style: TextButton.styleFrom(foregroundColor: Colors.black, backgroundColor: Colors.green.shade400),
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'fuzzer');
+                  },
                   child: const Text('TextSpan Fuzzer'),
                 ),
                 TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue.shade400,
-                  ),
-                  onPressed: () { Navigator.pushNamed(context, 'zalgo'); },
+                  style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.blue.shade400),
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'zalgo');
+                  },
                   child: const Text('Diacritics Fuzzer'),
                 ),
                 TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.purple.shade200,
-                  ),
-                  onPressed: () { Navigator.pushNamed(context, 'painting'); },
+                  style: TextButton.styleFrom(foregroundColor: Colors.black, backgroundColor: Colors.purple.shade200),
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'painting');
+                  },
                   child: const Text('Painting Fuzzer'),
                 ),
               ],
@@ -107,10 +101,7 @@ class _HomeState extends State<Home> {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10.0),
-            child: Text('Random seed for fuzzers: $seed'),
-          ),
+          Padding(padding: const EdgeInsets.only(bottom: 10.0), child: Text('Random seed for fuzzers: $seed')),
         ],
       ),
     );
@@ -118,7 +109,7 @@ class _HomeState extends State<Home> {
 }
 
 class Fuzzer extends StatefulWidget {
-  const Fuzzer({ super.key, required this.seed });
+  const Fuzzer({super.key, required this.seed});
 
   final int seed;
 
@@ -153,7 +144,9 @@ class _FuzzerState extends State<Fuzzer> with SingleTickerProviderStateMixin {
     return TextSpan(
       text: _fiddleWithText(node.text),
       style: _fiddleWithStyle(node.style),
-      children: _fiddleWithChildren(node.children?.map((InlineSpan child) => _fiddleWith(child as TextSpan)).toList() ?? <TextSpan>[]),
+      children: _fiddleWithChildren(
+        node.children?.map((InlineSpan child) => _fiddleWith(child as TextSpan)).toList() ?? <TextSpan>[],
+      ),
     );
   }
 
@@ -240,7 +233,11 @@ class _FuzzerState extends State<Fuzzer> with SingleTickerProviderStateMixin {
       case 92:
         return TextDecoration.combine(<TextDecoration>[TextDecoration.lineThrough, TextDecoration.overline]);
       case 93:
-        return TextDecoration.combine(<TextDecoration>[TextDecoration.underline, TextDecoration.lineThrough, TextDecoration.overline]);
+        return TextDecoration.combine(<TextDecoration>[
+          TextDecoration.underline,
+          TextDecoration.lineThrough,
+          TextDecoration.overline,
+        ]);
     }
     return null;
   }
@@ -352,9 +349,7 @@ class _FuzzerState extends State<Fuzzer> with SingleTickerProviderStateMixin {
   }
 
   TextSpan _createRandomTextSpan() {
-    return TextSpan(
-      text: _createRandomText(),
-    );
+    return TextSpan(text: _createRandomText());
   }
 
   String? _createRandomText() {
@@ -509,12 +504,7 @@ class _FuzzerState extends State<Fuzzer> with SingleTickerProviderStateMixin {
         children: <Widget>[
           Expanded(
             child: SingleChildScrollView(
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: RichText(text: _textSpan),
-                ),
-              ),
+              child: SafeArea(child: Padding(padding: const EdgeInsets.all(10.0), child: RichText(text: _textSpan))),
             ),
           ),
           Material(
@@ -540,14 +530,13 @@ class _FuzzerState extends State<Fuzzer> with SingleTickerProviderStateMixin {
 }
 
 class Underlines extends StatefulWidget {
-  const Underlines({ super.key });
+  const Underlines({super.key});
 
   @override
   State<Underlines> createState() => _UnderlinesState();
 }
 
 class _UnderlinesState extends State<Underlines> {
-
   String _text = 'i';
 
   final TextStyle _style = TextStyle(
@@ -563,8 +552,14 @@ class _UnderlinesState extends State<Underlines> {
       alignment: Alignment.centerLeft,
       heightFactor: 1.0,
       child: Container(
-        decoration: const BoxDecoration(color: Color(0xFF333333), border: Border(right: BorderSide(color: Colors.white, width: 0.0))),
-        child: Text(_text, style: style != null ? _style.copyWith(decoration: TextDecoration.underline, decorationStyle: style) : _style),
+        decoration: const BoxDecoration(
+          color: Color(0xFF333333),
+          border: Border(right: BorderSide(color: Colors.white, width: 0.0)),
+        ),
+        child: Text(
+          _text,
+          style: style != null ? _style.copyWith(decoration: TextDecoration.underline, decorationStyle: style) : _style,
+        ),
       ),
     );
   }
@@ -580,10 +575,7 @@ class _UnderlinesState extends State<Underlines> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.1,
-                  vertical: size.height * 0.1,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.1, vertical: size.height * 0.1),
                 child: ListBody(
                   children: <Widget>[
                     _wrap(null),
@@ -606,9 +598,7 @@ class _UnderlinesState extends State<Underlines> {
                         _text += 'i';
                       });
                     },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.yellow,
-                    ),
+                    style: TextButton.styleFrom(backgroundColor: Colors.yellow),
                     child: const Text('ADD i'),
                   ),
                   TextButton(
@@ -617,21 +607,18 @@ class _UnderlinesState extends State<Underlines> {
                         _text += 'w';
                       });
                     },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.yellow,
-                    ),
+                    style: TextButton.styleFrom(backgroundColor: Colors.yellow),
                     child: const Text('ADD w'),
                   ),
                   TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.red,
-                    ),
-                    onPressed: _text == '' ? null : () {
-                      setState(() {
-                        _text = _text.substring(0, _text.length - 1);
-                      });
-                    },
+                    style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.red),
+                    onPressed: _text == ''
+                        ? null
+                        : () {
+                            setState(() {
+                              _text = _text.substring(0, _text.length - 1);
+                            });
+                          },
                     child: const Text('REMOVE'),
                   ),
                 ],
@@ -645,14 +632,15 @@ class _UnderlinesState extends State<Underlines> {
 }
 
 class Fallback extends StatefulWidget {
-  const Fallback({ super.key });
+  const Fallback({super.key});
 
   @override
   State<Fallback> createState() => _FallbackState();
 }
 
 class _FallbackState extends State<Fallback> {
-  static const String multiScript = 'A1!aÀàĀāƁƀḂⱠꜲꬰəͲἀἏЀЖԠꙐꙮՁخ‎ࡔࠇܦআਉઐଘஇఘಧൺඣᭆᯔᮯ᳇ꠈᜅᩌꪈ༇ꥄꡙꫤ᧰៘꧁꧂ᜰᨏᯤᢆᣭᗗꗃⵞ𐒎߷ጩꬤ𖠺‡₩℻Ⅷ↹⋇⏳ⓖ╋▒◛⚧⑆שׁ🅕㊼龜ポ䷤🂡';
+  static const String multiScript =
+      'A1!aÀàĀāƁƀḂⱠꜲꬰəͲἀἏЀЖԠꙐꙮՁخ‎ࡔࠇܦআਉઐଘஇఘಧൺඣᭆᯔᮯ᳇ꠈᜅᩌꪈ༇ꥄꡙꫤ᧰៘꧁꧂ᜰᨏᯤᢆᣭᗗꗃⵞ𐒎߷ጩꬤ𖠺‡₩℻Ⅷ↹⋇⏳ⓖ╋▒◛⚧⑆שׁ🅕㊼龜ポ䷤🂡';
 
   static const List<String> androidFonts = <String>[
     'sans-serif',
@@ -665,10 +653,7 @@ class _FallbackState extends State<Fallback> {
     'sans-serif-smallcaps',
   ];
 
-  static const TextStyle style = TextStyle(
-    inherit: false,
-    color: Colors.white,
-  );
+  static const TextStyle style = TextStyle(inherit: false, color: Colors.white);
 
   double _fontSize = 3.0;
 
@@ -684,21 +669,12 @@ class _FallbackState extends State<Fallback> {
               scrollDirection: Axis.horizontal,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: size.width * 0.1,
-                    vertical: size.height * 0.1,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.1, vertical: size.height * 0.1),
                   child: IntrinsicWidth(
                     child: ListBody(
                       children: <Widget>[
                         for (final String font in androidFonts)
-                          Text(
-                            multiScript,
-                            style: style.copyWith(
-                              fontFamily: font,
-                              fontSize: math.exp(_fontSize),
-                            ),
-                          ),
+                          Text(multiScript, style: style.copyWith(fontFamily: font, fontSize: math.exp(_fontSize))),
                       ],
                     ),
                   ),
@@ -712,10 +688,7 @@ class _FallbackState extends State<Fallback> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 10.0),
-                    child: Text('Font size'),
-                  ),
+                  const Padding(padding: EdgeInsets.only(bottom: 10.0), child: Text('Font size')),
                   Expanded(
                     child: Slider(
                       min: 2.0,
@@ -740,7 +713,7 @@ class _FallbackState extends State<Fallback> {
 }
 
 class Bidi extends StatefulWidget {
-  const Bidi({ super.key });
+  const Bidi({super.key});
 
   @override
   State<Bidi> createState() => _BidiState();
@@ -757,11 +730,26 @@ class _BidiState extends State<Bidi> {
           RichText(
             text: TextSpan(
               children: <TextSpan>[
-                TextSpan(text: 'abc', style: TextStyle(fontWeight: FontWeight.w100, fontSize: 40.0, color: Colors.blue.shade100)),
-                TextSpan(text: 'ghi', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 40.0, color: Colors.blue.shade500)),
-                TextSpan(text: 'mno', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 40.0, color: Colors.blue.shade900)),
-                TextSpan(text: 'LKJ', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 40.0, color: Colors.blue.shade700)),
-                TextSpan(text: 'FED', style: TextStyle(fontWeight: FontWeight.w300, fontSize: 40.0, color: Colors.blue.shade300)),
+                TextSpan(
+                  text: 'abc',
+                  style: TextStyle(fontWeight: FontWeight.w100, fontSize: 40.0, color: Colors.blue.shade100),
+                ),
+                TextSpan(
+                  text: 'ghi',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 40.0, color: Colors.blue.shade500),
+                ),
+                TextSpan(
+                  text: 'mno',
+                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 40.0, color: Colors.blue.shade900),
+                ),
+                TextSpan(
+                  text: 'LKJ',
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 40.0, color: Colors.blue.shade700),
+                ),
+                TextSpan(
+                  text: 'FED',
+                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 40.0, color: Colors.blue.shade300),
+                ),
               ],
             ),
             textAlign: TextAlign.center,
@@ -770,11 +758,26 @@ class _BidiState extends State<Bidi> {
           RichText(
             text: TextSpan(
               children: <TextSpan>[
-                TextSpan(text: '${Unicode.LRO}abc', style: TextStyle(fontWeight: FontWeight.w100, fontSize: 40.0, color: Colors.blue.shade100)),
-                TextSpan(text: '${Unicode.RLO}DEF', style: TextStyle(fontWeight: FontWeight.w300, fontSize: 40.0, color: Colors.blue.shade300)),
-                TextSpan(text: '${Unicode.LRO}ghi', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 40.0, color: Colors.blue.shade500)),
-                TextSpan(text: '${Unicode.RLO}JKL', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 40.0, color: Colors.blue.shade700)),
-                TextSpan(text: '${Unicode.LRO}mno', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 40.0, color: Colors.blue.shade900)),
+                TextSpan(
+                  text: '${Unicode.LRO}abc',
+                  style: TextStyle(fontWeight: FontWeight.w100, fontSize: 40.0, color: Colors.blue.shade100),
+                ),
+                TextSpan(
+                  text: '${Unicode.RLO}DEF',
+                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 40.0, color: Colors.blue.shade300),
+                ),
+                TextSpan(
+                  text: '${Unicode.LRO}ghi',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 40.0, color: Colors.blue.shade500),
+                ),
+                TextSpan(
+                  text: '${Unicode.RLO}JKL',
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 40.0, color: Colors.blue.shade700),
+                ),
+                TextSpan(
+                  text: '${Unicode.LRO}mno',
+                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 40.0, color: Colors.blue.shade900),
+                ),
               ],
             ),
             textAlign: TextAlign.center,
@@ -784,9 +787,18 @@ class _BidiState extends State<Bidi> {
           RichText(
             text: TextSpan(
               children: <TextSpan>[
-                TextSpan(text: '${Unicode.LRO}abc${Unicode.RLO}D', style: TextStyle(fontWeight: FontWeight.w100, fontSize: 40.0, color: Colors.orange.shade100)),
-                TextSpan(text: 'EF${Unicode.LRO}gh', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 50.0, color: Colors.orange.shade500)),
-                TextSpan(text: 'i${Unicode.RLO}JKL${Unicode.LRO}mno', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 60.0, color: Colors.orange.shade900)),
+                TextSpan(
+                  text: '${Unicode.LRO}abc${Unicode.RLO}D',
+                  style: TextStyle(fontWeight: FontWeight.w100, fontSize: 40.0, color: Colors.orange.shade100),
+                ),
+                TextSpan(
+                  text: 'EF${Unicode.LRO}gh',
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 50.0, color: Colors.orange.shade500),
+                ),
+                TextSpan(
+                  text: 'i${Unicode.RLO}JKL${Unicode.LRO}mno',
+                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 60.0, color: Colors.orange.shade900),
+                ),
               ],
             ),
             textAlign: TextAlign.center,
@@ -795,19 +807,41 @@ class _BidiState extends State<Bidi> {
           RichText(
             text: TextSpan(
               children: <TextSpan>[
-                TextSpan(text: 'abc', style: TextStyle(fontWeight: FontWeight.w100, fontSize: 40.0, color: Colors.orange.shade100)),
-                TextSpan(text: 'gh', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 50.0, color: Colors.orange.shade500)),
-                TextSpan(text: 'imno', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 60.0, color: Colors.orange.shade900)),
-                TextSpan(text: 'LKJ', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 60.0, color: Colors.orange.shade900)),
-                TextSpan(text: 'FE', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 50.0, color: Colors.orange.shade500)),
-                TextSpan(text: 'D', style: TextStyle(fontWeight: FontWeight.w100, fontSize: 40.0, color: Colors.orange.shade100)),
+                TextSpan(
+                  text: 'abc',
+                  style: TextStyle(fontWeight: FontWeight.w100, fontSize: 40.0, color: Colors.orange.shade100),
+                ),
+                TextSpan(
+                  text: 'gh',
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 50.0, color: Colors.orange.shade500),
+                ),
+                TextSpan(
+                  text: 'imno',
+                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 60.0, color: Colors.orange.shade900),
+                ),
+                TextSpan(
+                  text: 'LKJ',
+                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 60.0, color: Colors.orange.shade900),
+                ),
+                TextSpan(
+                  text: 'FE',
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 50.0, color: Colors.orange.shade500),
+                ),
+                TextSpan(
+                  text: 'D',
+                  style: TextStyle(fontWeight: FontWeight.w100, fontSize: 40.0, color: Colors.orange.shade100),
+                ),
               ],
             ),
             textAlign: TextAlign.center,
             textDirection: TextDirection.ltr,
           ),
           const SizedBox(height: 40.0),
-          const Text('The pairs of lines above should match exactly.', textAlign: TextAlign.center, style: TextStyle(inherit: false, fontSize: 14.0, color: Colors.white)),
+          const Text(
+            'The pairs of lines above should match exactly.',
+            textAlign: TextAlign.center,
+            style: TextStyle(inherit: false, fontSize: 14.0, color: Colors.white),
+          ),
         ],
       ),
     );
@@ -815,7 +849,7 @@ class _BidiState extends State<Bidi> {
 }
 
 class Zalgo extends StatefulWidget {
-  const Zalgo({ super.key, required this.seed });
+  const Zalgo({super.key, required this.seed});
 
   final int seed;
 
@@ -864,14 +898,8 @@ class _ZalgoState extends State<Zalgo> with SingleTickerProviderStateMixin {
           Expanded(
             child: Center(
               child: RichText(
-                text: TextSpan(
-                  text: _text,
-                  style: TextStyle(
-                    inherit: false,
-                    fontSize: 96.0,
-                    color: Colors.red.shade200,
-                  ),
-                ),
+                text:
+                    TextSpan(text: _text, style: TextStyle(inherit: false, fontSize: 96.0, color: Colors.red.shade200)),
               ),
             ),
           ),
@@ -921,7 +949,7 @@ class _ZalgoState extends State<Zalgo> with SingleTickerProviderStateMixin {
 }
 
 class Painting extends StatefulWidget {
-  const Painting({ super.key, required this.seed });
+  const Painting({super.key, required this.seed});
 
   final int seed;
 
@@ -1000,18 +1028,15 @@ class _PaintingState extends State<Painting> with SingleTickerProviderStateMixin
                     right: 0.0,
                     child: Align(
                       alignment: Alignment.topCenter,
-                      child: IntrinsicWidth( // to test shrink-wrap vs rendering
+                      child: IntrinsicWidth(
+                        // to test shrink-wrap vs rendering
                         child: RichText(
                           key: intrinsicKey,
                           textAlign: TextAlign.center,
                           overflow: _ellipsize ? TextOverflow.ellipsis : TextOverflow.clip,
                           text: TextSpan(
                             text: _text,
-                            style: const TextStyle(
-                              inherit: false,
-                              fontSize: 28.0,
-                              color: Colors.red,
-                            ),
+                            style: const TextStyle(inherit: false, fontSize: 28.0, color: Colors.red),
                           ),
                         ),
                       ),
@@ -1027,11 +1052,7 @@ class _PaintingState extends State<Painting> with SingleTickerProviderStateMixin
                       overflow: _ellipsize ? TextOverflow.ellipsis : TextOverflow.clip,
                       text: TextSpan(
                         text: _text,
-                        style: const TextStyle(
-                          inherit: false,
-                          fontSize: 28.0,
-                          color: Colors.white,
-                        ),
+                        style: const TextStyle(inherit: false, fontSize: 28.0, color: Colors.white),
                       ),
                     ),
                   ),
@@ -1069,10 +1090,7 @@ class _PaintingState extends State<Painting> with SingleTickerProviderStateMixin
                     });
                   },
                 ),
-                const ListTile(
-                  title: Text('There should be no red visible.'),
-                ),
-
+                const ListTile(title: Text('There should be no red visible.')),
                 Container(
                   alignment: AlignmentDirectional.centerEnd,
                   padding: const EdgeInsets.all(8),
@@ -1084,10 +1102,16 @@ class _PaintingState extends State<Painting> with SingleTickerProviderStateMixin
                         child: const Text('ITERATE'),
                       ),
                       TextButton(
-                        onPressed: _ticker.isActive ? null : () {
-                          print('The currently visible text is: $_text');
-                          print(_text?.runes.map<String>((int value) => 'U+${value.toRadixString(16).padLeft(4, '0').toUpperCase()}').join(' '));
-                        },
+                        onPressed: _ticker.isActive
+                            ? null
+                            : () {
+                                print('The currently visible text is: $_text');
+                                print(_text?.runes
+                                    .map<String>(
+                                      (int value) => 'U+${value.toRadixString(16).padLeft(4, '0').toUpperCase()}',
+                                    )
+                                    .join(' '));
+                              },
                         child: const Text('DUMP TEXT TO LOGS'),
                       ),
                     ],
@@ -1102,15 +1126,17 @@ class _PaintingState extends State<Painting> with SingleTickerProviderStateMixin
   }
 }
 
-String zalgo(math.Random random, int targetLength, { bool includeSpacingCombiningMarks = false, String? base }) {
+String zalgo(math.Random random, int targetLength, {bool includeSpacingCombiningMarks = false, String? base}) {
   // The following three tables are derived from UnicodeData.txt:
   //   http://unicode.org/Public/UNIDATA/UnicodeData.txt
   // There are three groups, character classes Mc, Me, and Mn.
-  const List<int> enclosingCombiningMarks = <int>[ // Me
+  const List<int> enclosingCombiningMarks = <int>[
+    // Me
     0x00488, 0x00489, 0x01ABE, 0x020DD, 0x020DE, 0x020DF, 0x020E0,
     0x020E2, 0x020E3, 0x020E4, 0x0A670, 0x0A671, 0x0A672,
   ];
-  const List<int> nonspacingCombiningMarks = <int>[ // Mn
+  const List<int> nonspacingCombiningMarks = <int>[
+    // Mn
     0x00300, 0x00301, 0x00302, 0x00303, 0x00304, 0x00305, 0x00306,
     0x00307, 0x00308, 0x00309, 0x0030A, 0x0030B, 0x0030C, 0x0030D,
     0x0030E, 0x0030F, 0x00310, 0x00311, 0x00312, 0x00313, 0x00314,
@@ -1364,7 +1390,8 @@ String zalgo(math.Random random, int targetLength, { bool includeSpacingCombinin
     0xE01E3, 0xE01E4, 0xE01E5, 0xE01E6, 0xE01E7, 0xE01E8, 0xE01E9,
     0xE01EA, 0xE01EB, 0xE01EC, 0xE01ED, 0xE01EE, 0xE01EF,
   ];
-  const List<int> spacingCombiningMarks = <int>[ // Mc
+  const List<int> spacingCombiningMarks = <int>[
+    // Mc
     0x00903, 0x0093B, 0x0093E, 0x0093F, 0x00940, 0x00949, 0x0094A,
     0x0094B, 0x0094C, 0x0094E, 0x0094F, 0x00982, 0x00983, 0x009BE,
     0x009BF, 0x009C0, 0x009C7, 0x009C8, 0x009CB, 0x009CC, 0x009D7,

@@ -6,10 +6,7 @@ import 'template.dart';
 
 class AppBarTemplate extends TokenTemplate {
   const AppBarTemplate(super.blockName, super.fileName, super.tokens)
-    : super(
-      colorSchemePrefix: '_colors.',
-      textThemePrefix: '_textTheme.',
-    );
+    : super(colorSchemePrefix: '_colors.', textThemePrefix: '_textTheme.');
 
   @override
   String generate() => '''
@@ -72,11 +69,15 @@ class _MediumScrollUnderFlexibleConfig with _ScrollUnderFlexibleConfig {
 
   @override
   TextStyle? get collapsedTextStyle =>
-    ${textStyle('md.comp.top-app-bar.small.headline')}?.apply(color: ${color('md.comp.top-app-bar.small.headline.color')});
+    ${textStyle('md.comp.top-app-bar.small.headline')}?.apply(color: ${color(
+        'md.comp.top-app-bar.small.headline.color',
+      )});
 
   @override
   TextStyle? get expandedTextStyle =>
-    ${textStyle('md.comp.top-app-bar.medium.headline')}?.apply(color: ${color('md.comp.top-app-bar.medium.headline.color')});
+    ${textStyle('md.comp.top-app-bar.medium.headline')}?.apply(color: ${color(
+        'md.comp.top-app-bar.medium.headline.color',
+      )});
 
   @override
   EdgeInsetsGeometry get expandedTitlePadding => const EdgeInsets.fromLTRB(16, 0, 16, 20);
@@ -95,11 +96,15 @@ class _LargeScrollUnderFlexibleConfig with _ScrollUnderFlexibleConfig {
 
   @override
   TextStyle? get collapsedTextStyle =>
-    ${textStyle('md.comp.top-app-bar.small.headline')}?.apply(color: ${color('md.comp.top-app-bar.small.headline.color')});
+    ${textStyle('md.comp.top-app-bar.small.headline')}?.apply(color: ${color(
+        'md.comp.top-app-bar.small.headline.color',
+      )});
 
   @override
   TextStyle? get expandedTextStyle =>
-    ${textStyle('md.comp.top-app-bar.large.headline')}?.apply(color: ${color('md.comp.top-app-bar.large.headline.color')});
+    ${textStyle('md.comp.top-app-bar.large.headline')}?.apply(color: ${color(
+        'md.comp.top-app-bar.large.headline.color',
+      )});
 
   @override
   EdgeInsetsGeometry get expandedTitlePadding => const EdgeInsets.fromLTRB(16, 0, 16, 28);

@@ -5,9 +5,7 @@
 import 'template.dart';
 
 class SwitchTemplate extends TokenTemplate {
-  const SwitchTemplate(super.blockName, super.fileName, super.tokens, {
-    super.colorSchemePrefix = '_colors.',
-  });
+  const SwitchTemplate(super.blockName, super.fileName, super.tokens, {super.colorSchemePrefix = '_colors.'});
 
   @override
   String generate() => '''
@@ -56,9 +54,13 @@ class _${blockName}DefaultsM3 extends SwitchThemeData {
     return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
       if (states.contains(MaterialState.disabled)) {
         if (states.contains(MaterialState.selected)) {
-          return ${componentColor('md.comp.switch.disabled.selected.track')}.withOpacity(${opacity('md.comp.switch.disabled.track.opacity')});
+          return ${componentColor('md.comp.switch.disabled.selected.track')}.withOpacity(${opacity(
+        'md.comp.switch.disabled.track.opacity',
+      )});
         }
-        return ${componentColor('md.comp.switch.disabled.unselected.track')}.withOpacity(${opacity('md.comp.switch.disabled.track.opacity')});
+        return ${componentColor('md.comp.switch.disabled.unselected.track')}.withOpacity(${opacity(
+        'md.comp.switch.disabled.track.opacity',
+      )});
       }
       if (states.contains(MaterialState.selected)) {
         if (states.contains(MaterialState.pressed)) {
@@ -92,7 +94,9 @@ class _${blockName}DefaultsM3 extends SwitchThemeData {
         return Colors.transparent;
       }
       if (states.contains(MaterialState.disabled)) {
-        return ${componentColor('md.comp.switch.disabled.unselected.track.outline')}.withOpacity(${opacity('md.comp.switch.disabled.track.opacity')});
+        return ${componentColor('md.comp.switch.disabled.unselected.track.outline')}.withOpacity(${opacity(
+        'md.comp.switch.disabled.track.opacity',
+      )});
       }
       return ${componentColor('md.comp.switch.unselected.track.outline')};
     });
@@ -127,7 +131,9 @@ class _${blockName}DefaultsM3 extends SwitchThemeData {
   }
 
   @override
-  MaterialStatePropertyAll<double> get trackOutlineWidth => const MaterialStatePropertyAll<double>(${getToken('md.comp.switch.track.outline.width')});
+  MaterialStatePropertyAll<double> get trackOutlineWidth => const MaterialStatePropertyAll<double>(${getToken(
+        'md.comp.switch.track.outline.width',
+      )});
 
   @override
   double get splashRadius => ${getToken('md.comp.switch.state-layer.size')} / 2;
@@ -219,5 +225,4 @@ class _SwitchConfigM3 with _SwitchConfig {
   double? get thumbOffset => null;
 }
 ''';
-
 }

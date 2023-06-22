@@ -7,7 +7,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class DrawPointsPage extends StatefulWidget  {
+class DrawPointsPage extends StatefulWidget {
   const DrawPointsPage({super.key});
 
   @override
@@ -36,14 +36,9 @@ class _DrawPointsPageState extends State<DrawPointsPage> with SingleTickerProvid
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: const Size(500, 500),
-      painter: PointsPainter(tick),
-      child: Container(),
-    );
+    return CustomPaint(size: const Size(500, 500), painter: PointsPainter(tick), child: Container());
   }
 }
 

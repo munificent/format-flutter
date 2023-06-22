@@ -70,7 +70,8 @@ class MacrobenchmarksApp extends StatelessWidget {
         kColorFilterCacheRouteName: (BuildContext context) => const ColorFilterCachePage(),
         kColorFilterWithUnstableChildName: (BuildContext context) => const ColorFilterWithUnstableChildPage(),
         kFadingChildAnimationRouteName: (BuildContext context) => const FilteredChildAnimationPage(FilterType.opacity),
-        kImageFilteredTransformAnimationRouteName: (BuildContext context) => const FilteredChildAnimationPage(FilterType.rotateFilter),
+        kImageFilteredTransformAnimationRouteName:
+            (BuildContext context) => const FilteredChildAnimationPage(FilterType.rotateFilter),
         kMultiWidgetConstructionRouteName: (BuildContext context) => const MultiWidgetConstructTable(10, 20),
         kHeavyGridViewRouteName: (BuildContext context) => const HeavyGridViewPage(),
         kRasterCacheUseMemory: (BuildContext context) => const RasterCacheUseMemory(),
@@ -336,7 +337,7 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.pushNamed(context, kDrawPointsPageRougeName);
             },
-          )
+          ),
         ],
       ),
     );

@@ -17,14 +17,16 @@ import 'common.dart';
 
 void main() {
   late ProcessResult processResult;
-  ProcessResult runSyncStub(String executable, List<String> args,
-          {Map<String, String>? environment,
-          bool includeParentEnvironment = true,
-          bool runInShell = false,
-          Encoding? stderrEncoding,
-          Encoding? stdoutEncoding,
-          String? workingDirectory}) =>
-      processResult;
+  ProcessResult runSyncStub(
+    String executable,
+    List<String> args, {
+    Map<String, String>? environment,
+    bool includeParentEnvironment = true,
+    bool runInShell = false,
+    Encoding? stderrEncoding,
+    Encoding? stdoutEncoding,
+    String? workingDirectory,
+  }) => processResult;
 
   // Expected test values.
   const String commitSha = 'a4952838bf288a81d8ea11edfd4b4cd649fa94cc';
@@ -72,18 +74,11 @@ void main() {
       processResult = ProcessResult(1, 0, commitSha, '');
       final TaskResult result = TaskResult.fromJson(<String, dynamic>{
         'success': true,
-        'data': <String, dynamic>{
-          'i': 0,
-          'j': 0,
-          'not_a_metric': 'something',
-        },
+        'data': <String, dynamic>{'i': 0, 'j': 0, 'not_a_metric': 'something'},
         'benchmarkScoreKeys': <String>['i', 'j'],
       });
 
-      cocoon = Cocoon(
-        fs: fs,
-        processRunSync: runSyncStub,
-      );
+      cocoon = Cocoon(fs: fs, processRunSync: runSyncStub);
 
       const String resultsPath = 'results.json';
       await cocoon.writeTaskResultToFile(

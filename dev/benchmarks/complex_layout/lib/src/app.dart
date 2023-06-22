@@ -24,7 +24,8 @@ class ComplexLayoutAppState extends State<ComplexLayoutApp> {
     return MaterialApp(
       theme: lightTheme ? ThemeData.light() : ThemeData.dark(),
       title: 'Advanced Layout',
-      home: scrollMode == ScrollMode.complex ? ComplexLayout(badScroll: widget.badScroll) : const TileScrollLayout());
+      home: scrollMode == ScrollMode.complex ? ComplexLayout(badScroll: widget.badScroll) : const TileScrollLayout(),
+    );
   }
 
   bool _lightTheme = true;
@@ -51,7 +52,7 @@ class ComplexLayoutAppState extends State<ComplexLayoutApp> {
 }
 
 class TileScrollLayout extends StatelessWidget {
-  const TileScrollLayout({ super.key });
+  const TileScrollLayout({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +64,7 @@ class TileScrollLayout extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.all(5.0),
-            child: Material(
-              elevation: (index % 5 + 1).toDouble(),
-              color: Colors.white,
-              child: const IconBar(),
-            ),
+            child: Material(elevation: (index % 5 + 1).toDouble(), color: Colors.white, child: const IconBar()),
           );
         },
       ),
@@ -77,7 +74,7 @@ class TileScrollLayout extends StatelessWidget {
 }
 
 class ComplexLayout extends StatefulWidget {
-  const ComplexLayout({ super.key, required this.badScroll });
+  const ComplexLayout({super.key, required this.badScroll});
 
   final bool badScroll;
 
@@ -92,7 +89,7 @@ class ComplexLayoutState extends State<ComplexLayout> {
   Widget build(BuildContext context) {
     Widget body = ListView.builder(
       key: const Key('complex-scroll'), // this key is used by the driver test
-      controller: ScrollController(),  // So that the scroll offset can be tracked
+      controller: ScrollController(), // So that the scroll offset can be tracked
       itemCount: widget.badScroll ? 500 : null,
       shrinkWrap: widget.badScroll,
       itemBuilder: (BuildContext context, int index) {
@@ -104,10 +101,7 @@ class ComplexLayoutState extends State<ComplexLayout> {
       },
     );
     if (widget.badScroll) {
-      body = ListView(
-        key: const Key('complex-scroll-bad'),
-        children: <Widget>[body],
-      );
+      body = ListView(key: const Key('complex-scroll-bad'), children: <Widget>[body]);
     }
 
     return Scaffold(
@@ -124,12 +118,7 @@ class ComplexLayoutState extends State<ComplexLayout> {
           const TopBarMenu(),
         ],
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(child: body),
-          const BottomBar(),
-        ],
-      ),
+      body: Column(children: <Widget>[Expanded(child: body), const BottomBar()]),
       drawer: const GalleryDrawer(),
     );
   }
@@ -141,49 +130,21 @@ class TopBarMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      onSelected: (String value) { print('Selected: $value'); },
+      onSelected: (String value) {
+        print('Selected: $value');
+      },
       itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
-        const PopupMenuItem<String>(
-          value: 'Friends',
-          child: MenuItemWithIcon(Icons.people, 'Friends', '5 new'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Events',
-          child: MenuItemWithIcon(Icons.event, 'Events', '12 upcoming'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Events',
-          child: MenuItemWithIcon(Icons.group, 'Groups', '14'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Events',
-          child: MenuItemWithIcon(Icons.image, 'Pictures', '12'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Events',
-          child: MenuItemWithIcon(Icons.near_me, 'Nearby', '33'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Friends',
-          child: MenuItemWithIcon(Icons.people, 'Friends', '5'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Events',
-          child: MenuItemWithIcon(Icons.event, 'Events', '12'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Events',
-          child: MenuItemWithIcon(Icons.group, 'Groups', '14'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Events',
-          child: MenuItemWithIcon(Icons.image, 'Pictures', '12'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Events',
-          child: MenuItemWithIcon(Icons.near_me, 'Nearby', '33'),
-        ),
-      ],
+            const PopupMenuItem<String>(value: 'Friends', child: MenuItemWithIcon(Icons.people, 'Friends', '5 new')),
+            const PopupMenuItem<String>(value: 'Events', child: MenuItemWithIcon(Icons.event, 'Events', '12 upcoming')),
+            const PopupMenuItem<String>(value: 'Events', child: MenuItemWithIcon(Icons.group, 'Groups', '14')),
+            const PopupMenuItem<String>(value: 'Events', child: MenuItemWithIcon(Icons.image, 'Pictures', '12')),
+            const PopupMenuItem<String>(value: 'Events', child: MenuItemWithIcon(Icons.near_me, 'Nearby', '33')),
+            const PopupMenuItem<String>(value: 'Friends', child: MenuItemWithIcon(Icons.people, 'Friends', '5')),
+            const PopupMenuItem<String>(value: 'Events', child: MenuItemWithIcon(Icons.event, 'Events', '12')),
+            const PopupMenuItem<String>(value: 'Events', child: MenuItemWithIcon(Icons.group, 'Groups', '14')),
+            const PopupMenuItem<String>(value: 'Events', child: MenuItemWithIcon(Icons.image, 'Pictures', '12')),
+            const PopupMenuItem<String>(value: 'Events', child: MenuItemWithIcon(Icons.near_me, 'Nearby', '33')),
+          ],
     );
   }
 }
@@ -200,10 +161,7 @@ class MenuItemWithIcon extends StatelessWidget {
     return Row(
       children: <Widget>[
         Icon(icon),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-          child: Text(title),
-        ),
+        Padding(padding: const EdgeInsets.only(left: 8.0, right: 8.0), child: Text(title)),
         Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
       ],
     );
@@ -223,10 +181,7 @@ class FancyImageItem extends StatelessWidget {
         const ItemDescription(),
         const ItemImageBox(),
         const InfoBar(),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: Divider(),
-        ),
+        const Padding(padding: EdgeInsets.symmetric(horizontal: 8.0), child: Divider()),
         const IconBar(),
         const FatDivider(),
       ],
@@ -245,10 +200,7 @@ class FancyGalleryItem extends StatelessWidget {
         const UserHeader('Ali Connors'),
         ItemGalleryBox(index),
         const InfoBar(),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: Divider(),
-        ),
+        const Padding(padding: EdgeInsets.symmetric(horizontal: 8.0), child: Divider()),
         const IconBar(),
         const FatDivider(),
       ],
@@ -306,7 +258,9 @@ class IconWithText extends StatelessWidget {
       children: <Widget>[
         IconButton(
           icon: Icon(icon),
-          onPressed: () { print('Pressed $title button'); },
+          onPressed: () {
+            print('Pressed $title button');
+          },
         ),
         Text(title),
       ],
@@ -330,10 +284,7 @@ class MiniIconWithText extends StatelessWidget {
           child: Container(
             width: 16.0,
             height: 16.0,
-            decoration: ShapeDecoration(
-              color: Theme.of(context).primaryColor,
-              shape: const CircleBorder(),
-            ),
+            decoration: ShapeDecoration(color: Theme.of(context).primaryColor, shape: const CircleBorder()),
             child: Icon(icon, color: Colors.white, size: 12.0),
           ),
         ),
@@ -348,10 +299,7 @@ class FatDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 8.0,
-      color: Theme.of(context).dividerColor,
-    );
+    return Container(height: 8.0, color: Theme.of(context).dividerColor);
   }
 }
 
@@ -379,14 +327,16 @@ class UserHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                RichText(text: TextSpan(
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  children: <TextSpan>[
-                    TextSpan(text: userName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    const TextSpan(text: ' shared a new '),
-                    const TextSpan(text: 'photo', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                )),
+                RichText(
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    children: <TextSpan>[
+                      TextSpan(text: userName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const TextSpan(text: ' shared a new '),
+                      const TextSpan(text: 'photo', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
                 Row(
                   children: <Widget>[
                     Text('Yesterday at 11:55 • ', style: Theme.of(context).textTheme.bodySmall),
@@ -410,7 +360,9 @@ class ItemDescription extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.all(8.0),
-      child: Text('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+      child: Text(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      ),
     );
   }
 }
@@ -430,9 +382,8 @@ class ItemImageBox extends StatelessWidget {
               children: <Widget>[
                 const SizedBox(
                   height: 230.0,
-                  child: Image(
-                    image: AssetImage('packages/flutter_gallery_assets/places/india_chettinad_silk_maker.png')
-                  ),
+                  child:
+                      Image(image: AssetImage('packages/flutter_gallery_assets/places/india_chettinad_silk_maker.png')),
                 ),
                 Theme(
                   data: ThemeData.dark(),
@@ -441,11 +392,15 @@ class ItemImageBox extends StatelessWidget {
                     children: <Widget>[
                       IconButton(
                         icon: const Icon(Icons.edit),
-                        onPressed: () { print('Pressed edit button'); },
+                        onPressed: () {
+                          print('Pressed edit button');
+                        },
                       ),
                       IconButton(
                         icon: const Icon(Icons.zoom_in),
-                        onPressed: () { print('Pressed zoom button'); },
+                        onPressed: () {
+                          print('Pressed zoom button');
+                        },
                       ),
                     ],
                   ),
@@ -454,30 +409,21 @@ class ItemImageBox extends StatelessWidget {
                   bottom: 4.0,
                   left: 4.0,
                   child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(2.0),
-                    ),
+                    decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(2.0)),
                     padding: const EdgeInsets.all(4.0),
                     child: RichText(
                       text: const TextSpan(
                         style: TextStyle(color: Colors.white),
                         children: <TextSpan>[
-                          TextSpan(
-                            text: 'Photo by '
-                          ),
-                          TextSpan(
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            text: 'Chris Godley',
-                          ),
+                          TextSpan(text: 'Photo by '),
+                          TextSpan(style: TextStyle(fontWeight: FontWeight.bold), text: 'Chris Godley'),
                         ],
                       ),
                     ),
                   ),
                 ),
               ],
-            )
-            ,
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -503,9 +449,7 @@ class ItemGalleryBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> tabNames = <String>[
-      'A', 'B', 'C', 'D',
-    ];
+    final List<String> tabNames = <String>['A', 'B', 'C', 'D'];
 
     return SizedBox(
       height: 200.0,
@@ -527,7 +471,10 @@ class ItemGalleryBox extends StatelessWidget {
                               child: ColoredBox(
                                 color: Theme.of(context).primaryColor,
                                 child: Center(
-                                  child: Text(tabName, style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.white)),
+                                  child: Text(
+                                    tabName,
+                                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.white),
+                                  ),
                                 ),
                               ),
                             ),
@@ -535,11 +482,15 @@ class ItemGalleryBox extends StatelessWidget {
                               children: <Widget>[
                                 IconButton(
                                   icon: const Icon(Icons.share),
-                                  onPressed: () { print('Pressed share'); },
+                                  onPressed: () {
+                                    print('Pressed share');
+                                  },
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.event),
-                                  onPressed: () { print('Pressed event'); },
+                                  onPressed: () {
+                                    print('Pressed event');
+                                  },
                                 ),
                                 Expanded(
                                   child: Padding(
@@ -571,13 +522,7 @@ class BottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: Theme.of(context).dividerColor,
-          ),
-        ),
-      ),
+      decoration: BoxDecoration(border: Border(top: BorderSide(color: Theme.of(context).dividerColor))),
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -606,7 +551,9 @@ class BottomBarButton extends StatelessWidget {
         children: <Widget>[
           IconButton(
             icon: Icon(icon),
-            onPressed: () { print('Pressed: $title'); },
+            onPressed: () {
+              print('Pressed: $title');
+            },
           ),
           Text(title, style: Theme.of(context).textTheme.bodySmall),
         ],
@@ -616,7 +563,7 @@ class BottomBarButton extends StatelessWidget {
 }
 
 class GalleryDrawer extends StatelessWidget {
-  const GalleryDrawer({ super.key });
+  const GalleryDrawer({super.key});
 
   void _changeTheme(BuildContext context, bool value) {
     ComplexLayoutApp.of(context)?.lightTheme = value;
@@ -643,30 +590,38 @@ class GalleryDrawer extends StatelessWidget {
             title: const Text('Scroll Mode'),
             onTap: () {
               _changeScrollMode(context, currentMode == ScrollMode.complex ? ScrollMode.tile : ScrollMode.complex);
-             Navigator.pop(context);
+              Navigator.pop(context);
             },
             trailing: Text(currentMode == ScrollMode.complex ? 'Tile' : 'Complex'),
           ),
           ListTile(
             leading: const Icon(Icons.brightness_5),
             title: const Text('Light'),
-            onTap: () { _changeTheme(context, true); },
+            onTap: () {
+              _changeTheme(context, true);
+            },
             selected: ComplexLayoutApp.of(context)!.lightTheme,
             trailing: Radio<bool>(
               value: true,
               groupValue: ComplexLayoutApp.of(context)!.lightTheme,
-              onChanged: (bool? value) { _changeTheme(context, value!); },
+              onChanged: (bool? value) {
+                _changeTheme(context, value!);
+              },
             ),
           ),
           ListTile(
             leading: const Icon(Icons.brightness_7),
             title: const Text('Dark'),
-            onTap: () { _changeTheme(context, false); },
+            onTap: () {
+              _changeTheme(context, false);
+            },
             selected: !ComplexLayoutApp.of(context)!.lightTheme,
             trailing: Radio<bool>(
               value: false,
               groupValue: ComplexLayoutApp.of(context)!.lightTheme,
-              onChanged: (bool? value) { _changeTheme(context, value!); },
+              onChanged: (bool? value) {
+                _changeTheme(context, value!);
+              },
             ),
           ),
           const Divider(),
@@ -674,10 +629,14 @@ class GalleryDrawer extends StatelessWidget {
             leading: const Icon(Icons.hourglass_empty),
             title: const Text('Animate Slowly'),
             selected: timeDilation != 1.0,
-            onTap: () { ComplexLayoutApp.of(context)!.toggleAnimationSpeed(); },
+            onTap: () {
+              ComplexLayoutApp.of(context)!.toggleAnimationSpeed();
+            },
             trailing: Checkbox(
               value: timeDilation != 1.0,
-              onChanged: (bool? value) { ComplexLayoutApp.of(context)!.toggleAnimationSpeed(); },
+              onChanged: (bool? value) {
+                ComplexLayoutApp.of(context)!.toggleAnimationSpeed();
+              },
             ),
           ),
         ],
@@ -691,13 +650,6 @@ class FancyDrawerHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.purple,
-      height: 200.0,
-      child: const SafeArea(
-        bottom: false,
-        child: Placeholder(),
-      ),
-    );
+    return Container(color: Colors.purple, height: 200.0, child: const SafeArea(bottom: false, child: Placeholder()));
   }
 }

@@ -33,7 +33,7 @@ class FortnightlyDemo extends StatelessWidget {
 }
 
 class ShortAppBar extends StatelessWidget {
-  const ShortAppBar({ super.key, this.onBackPressed });
+  const ShortAppBar({super.key, this.onBackPressed});
 
   final VoidCallback? onBackPressed;
 
@@ -45,21 +45,12 @@ class ShortAppBar extends StatelessWidget {
       child: Material(
         color: Theme.of(context).colorScheme.surface,
         elevation: 4,
-        shape: const BeveledRectangleBorder(
-          borderRadius: BorderRadius.only(bottomRight: Radius.circular(22)),
-        ),
+        shape: const BeveledRectangleBorder(borderRadius: BorderRadius.only(bottomRight: Radius.circular(22))),
         child: Row(
           children: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.arrow_back),
-              tooltip: 'Back',
-              onPressed: onBackPressed,
-            ),
+            IconButton(icon: const Icon(Icons.arrow_back), tooltip: 'Back', onPressed: onBackPressed),
             const SizedBox(width: 12),
-            Image.asset(
-              'logos/fortnightly/fortnightly_logo.png',
-              package: 'flutter_gallery_assets',
-            ),
+            Image.asset('logos/fortnightly/fortnightly_logo.png', package: 'flutter_gallery_assets'),
           ],
         ),
       ),
@@ -76,7 +67,8 @@ covered in a fuzz somewhere between peach skin and a spider web. And it's
 hard as soft lumber. You'd be forgiven for thinking it's veneered Larch-wood.
 But inhale the aroma and you'll instantly know you have something wonderful.
 Its scent can fill a room for days. And all this before you've even cooked it.
-'''.replaceAll('\n', ' ');
+'''
+      .replaceAll('\n', ' ');
 
   static final String paragraph2 = '''
 Pomegranates on the other hand have become
@@ -86,7 +78,8 @@ gas stations. But at what cost? The pomegranate juice craze of the aughts made
 of water to make that much pomegranate juice. Water the Resnicks get from their
 majority stake in the Kern Water Bank. How did one family come to hold control
 over water meant for the whole central valley of California? The story will shock you.
-'''.replaceAll('\n', ' ');
+'''
+      .replaceAll('\n', ' ');
 
   @override
   Widget build(BuildContext context) {
@@ -101,11 +94,7 @@ over water meant for the whole central valley of California? The story will shoc
             children: <Widget>[
               Container(
                 constraints: const BoxConstraints.expand(height: 248),
-                child: Image.asset(
-                  'food/fruits.png',
-                  package: 'flutter_gallery_assets',
-                  fit: BoxFit.fitWidth,
-                ),
+                child: Image.asset('food/fruits.png', package: 'flutter_gallery_assets', fit: BoxFit.fitWidth),
               ),
               const SizedBox(height: 17),
               Padding(
@@ -115,19 +104,13 @@ over water meant for the whole central valley of California? The story will shoc
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Text(
-                          'US',
-                          style: textTheme.labelSmall,
-                        ),
+                        Text('US', style: textTheme.labelSmall),
                         Text(
                           ' ¬ ',
                           // TODO(larche): Replace textTheme.headline2.color with a ColorScheme value when known.
                           style: textTheme.labelSmall!.apply(color: textTheme.displayMedium!.color),
                         ),
-                        Text(
-                          'CULTURE',
-                          style: textTheme.labelSmall,
-                        ),
+                        Text('CULTURE', style: textTheme.labelSmall),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -138,7 +121,7 @@ over water meant for the whole central valley of California? The story will shoc
                     const SizedBox(height: 10),
                     Text(
                       'How these crazy fruits sweetened our hearts, relationships, '
-                          'and puffed pastries',
+                      'and puffed pastries',
                       style: textTheme.bodyMedium,
                     ),
                     Padding(
@@ -146,17 +129,12 @@ over water meant for the whole central valley of California? The story will shoc
                       child: Row(
                         children: <Widget>[
                           const CircleAvatar(
-                            backgroundImage: ExactAssetImage(
-                              'people/square/trevor.png',
-                              package: 'flutter_gallery_assets',
-                            ),
+                            backgroundImage:
+                                ExactAssetImage('people/square/trevor.png', package: 'flutter_gallery_assets'),
                             radius: 20,
                           ),
                           const SizedBox(width: 12),
-                          Text(
-                            'by',
-                            style: textTheme.displayMedium,
-                          ),
+                          Text('by', style: textTheme.displayMedium),
                           const SizedBox(width: 4),
                           const Text(
                             'Connor Eghan',
@@ -170,10 +148,7 @@ over water meant for the whole central valley of California? The story will shoc
                         ],
                       ),
                     ),
-                    Text(
-                      '$paragraph1\n\n$paragraph2',
-                      style: textTheme.bodyLarge,
-                    ),
+                    Text('$paragraph1\n\n$paragraph2', style: textTheme.bodyLarge),
                   ],
                 ),
               ),
@@ -189,10 +164,7 @@ final ThemeData _fortnightlyTheme = _buildFortnightlyTheme();
 
 ThemeData _buildFortnightlyTheme() {
   final ThemeData base = ThemeData.light();
-  return base.copyWith(
-    primaryTextTheme: _buildTextTheme(base.primaryTextTheme),
-    scaffoldBackgroundColor: Colors.white,
-  );
+  return base.copyWith(primaryTextTheme: _buildTextTheme(base.primaryTextTheme), scaffoldBackgroundColor: Colors.white);
 }
 
 TextTheme _buildTextTheme(TextTheme base) {
@@ -230,12 +202,8 @@ TextTheme _buildTextTheme(TextTheme base) {
       height: 1.4,
       letterSpacing: .25,
     ),
-    labelSmall: const TextStyle(
-      fontFamily: 'LibreFranklin',
-      fontSize: 10,
-      fontWeight: FontWeight.w700,
-      color: Colors.black,
-    ),
+    labelSmall:
+        const TextStyle(fontFamily: 'LibreFranklin', fontSize: 10, fontWeight: FontWeight.w700, color: Colors.black),
   );
 
   return theme;

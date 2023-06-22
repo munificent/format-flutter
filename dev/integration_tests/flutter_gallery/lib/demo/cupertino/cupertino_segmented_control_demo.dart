@@ -21,28 +21,12 @@ class CupertinoSegmentedControlDemo extends StatefulWidget {
 }
 
 class _CupertinoSegmentedControlDemoState extends State<CupertinoSegmentedControlDemo> {
-  final Map<int, Widget> children = const <int, Widget>{
-    0: Text('Small'),
-    1: Text('Medium'),
-    2: Text('Large'),
-  };
+  final Map<int, Widget> children = const <int, Widget>{0: Text('Small'), 1: Text('Medium'), 2: Text('Large')};
 
   final Map<int, Widget> icons = const <int, Widget>{
-    0: Center(
-      child: FlutterLogo(
-        size: 100.0,
-      ),
-    ),
-    1: Center(
-      child: FlutterLogo(
-        size: 200.0,
-      ),
-    ),
-    2: Center(
-      child: FlutterLogo(
-        size: 300.0,
-      ),
-    ),
+    0: Center(child: FlutterLogo(size: 100.0)),
+    1: Center(child: FlutterLogo(size: 200.0)),
+    2: Center(child: FlutterLogo(size: 300.0)),
   };
 
   int? currentSegment = 0;
@@ -91,19 +75,13 @@ class _CupertinoSegmentedControlDemoState extends State<CupertinoSegmentedContro
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 32.0,
-                    horizontal: 16.0,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
                   child: CupertinoUserInterfaceLevel(
                     data: CupertinoUserInterfaceLevelData.elevated,
                     child: Builder(
                       builder: (BuildContext context) {
                         return Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 64.0,
-                            horizontal: 16.0,
-                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 64.0, horizontal: 16.0),
                           decoration: BoxDecoration(
                             color: CupertinoTheme.of(context).scaffoldBackgroundColor,
                             borderRadius: BorderRadius.circular(3.0),
@@ -114,16 +92,8 @@ class _CupertinoSegmentedControlDemoState extends State<CupertinoSegmentedContro
                                 spreadRadius: -1.0,
                                 color: _kKeyUmbraOpacity,
                               ),
-                              BoxShadow(
-                                offset: Offset(0.0, 6.0),
-                                blurRadius: 10.0,
-                                color: _kKeyPenumbraOpacity,
-                              ),
-                              BoxShadow(
-                                offset: Offset(0.0, 1.0),
-                                blurRadius: 18.0,
-                                color: _kAmbientShadowOpacity,
-                              ),
+                              BoxShadow(offset: Offset(0.0, 6.0), blurRadius: 10.0, color: _kKeyPenumbraOpacity),
+                              BoxShadow(offset: Offset(0.0, 1.0), blurRadius: 18.0, color: _kAmbientShadowOpacity),
                             ],
                           ),
                           child: icons[currentSegment!],

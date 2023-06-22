@@ -8,14 +8,10 @@ import 'package:intl/intl.dart';
 // This demo is based on
 // https://material.io/design/components/dialogs.html#full-screen-dialog
 
-enum DismissDialogAction {
-  cancel,
-  discard,
-  save,
-}
+enum DismissDialogAction { cancel, discard, save }
 
 class DateTimeItem extends StatelessWidget {
-  DateTimeItem({ super.key, required DateTime dateTime, required this.onChanged })
+  DateTimeItem({super.key, required DateTime dateTime, required this.onChanged})
     : date = DateTime(dateTime.year, dateTime.month, dateTime.day),
       time = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
 
@@ -34,9 +30,7 @@ class DateTimeItem extends StatelessWidget {
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: theme.dividerColor))
-              ),
+              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: theme.dividerColor))),
               child: InkWell(
                 onTap: () {
                   showDatePicker(
@@ -44,8 +38,7 @@ class DateTimeItem extends StatelessWidget {
                     initialDate: date,
                     firstDate: date.subtract(const Duration(days: 30)),
                     lastDate: date.add(const Duration(days: 30)),
-                  )
-                  .then((DateTime? value) {
+                  ).then((DateTime? value) {
                     if (value != null) {
                       onChanged(DateTime(value.year, value.month, value.day, time.hour, time.minute));
                     }
@@ -64,16 +57,10 @@ class DateTimeItem extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(left: 8.0),
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: theme.dividerColor))
-            ),
+            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: theme.dividerColor))),
             child: InkWell(
               onTap: () {
-                showTimePicker(
-                  context: context,
-                  initialTime: time,
-                )
-                .then((TimeOfDay? value) {
+                showTimePicker(context: context, initialTime: time).then((TimeOfDay? value) {
                   if (value != null) {
                     onChanged(DateTime(date.year, date.month, date.day, value.hour, value.minute));
                   }
@@ -122,10 +109,7 @@ class FullScreenDialogDemoState extends State<FullScreenDialogDemo> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(
-            'Discard new event?',
-            style: dialogTextStyle,
-          ),
+          content: Text('Discard new event?', style: dialogTextStyle),
           actions: <Widget>[
             TextButton(
               child: const Text('CANCEL'),
@@ -152,7 +136,7 @@ class FullScreenDialogDemoState extends State<FullScreenDialogDemo> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_hasName ? _eventName : 'Event Name TBD'),
-        actions: <Widget> [
+        actions: <Widget>[
           TextButton(
             child: Text('SAVE', style: theme.textTheme.bodyMedium!.copyWith(color: Colors.white)),
             onPressed: () {
@@ -172,10 +156,7 @@ class FullScreenDialogDemoState extends State<FullScreenDialogDemo> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 alignment: Alignment.bottomLeft,
                 child: TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Event name',
-                    filled: true,
-                  ),
+                  decoration: const InputDecoration(labelText: 'Event name', filled: true),
                   style: theme.textTheme.headlineSmall,
                   onChanged: (String value) {
                     setState(() {
@@ -191,11 +172,8 @@ class FullScreenDialogDemoState extends State<FullScreenDialogDemo> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 alignment: Alignment.bottomLeft,
                 child: TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Location',
-                    hintText: 'Where is the event?',
-                    filled: true,
-                  ),
+                  decoration:
+                      const InputDecoration(labelText: 'Location', hintText: 'Where is the event?', filled: true),
                   onChanged: (String value) {
                     setState(() {
                       _hasLocation = value.isNotEmpty;
@@ -235,11 +213,9 @@ class FullScreenDialogDemoState extends State<FullScreenDialogDemo> {
                 ],
               ),
               Container(
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: theme.dividerColor))
-                ),
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: theme.dividerColor))),
                 child: Row(
-                  children: <Widget> [
+                  children: <Widget>[
                     Checkbox(
                       value: _allDayValue,
                       onChanged: (bool? value) {
@@ -253,15 +229,9 @@ class FullScreenDialogDemoState extends State<FullScreenDialogDemo> {
                   ],
                 ),
               ),
-            ]
-            .map<Widget>((Widget child) {
-              return Container(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                height: 96.0,
-                child: child,
-              );
-            })
-            .toList(),
+            ].map<Widget>((Widget child) {
+              return Container(padding: const EdgeInsets.symmetric(vertical: 8.0), height: 96.0, child: child);
+            }).toList(),
           ),
         ),
       ),

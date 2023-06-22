@@ -40,15 +40,7 @@ final Map<VersionType, RegExp> versionPatterns = <VersionType, RegExp>{
 };
 
 class Version {
-  Version({
-    required this.x,
-    required this.y,
-    required this.z,
-    this.m,
-    this.n,
-    this.commits,
-    required this.type,
-  }) {
+  Version({required this.x, required this.y, required this.z, this.m, this.n, this.commits, required this.type}) {
     switch (type) {
       case VersionType.stable:
         assert(m == null);
@@ -73,47 +65,26 @@ class Version {
   /// `flutter --version` and match one of `stablePattern`, `developmentPattern`
   /// and `latestPattern`.
   factory Version.fromString(String versionString) {
-
     versionString = versionString.trim();
     // stable tag
     Match? match = versionPatterns[VersionType.stable]!.firstMatch(versionString);
     if (match != null) {
       // parse stable
-      final List<int> parts = match
-          .groups(<int>[1, 2, 3])
-          .map((String? s) => int.parse(s!))
-          .toList();
-      return Version(
-        x: parts[0],
-        y: parts[1],
-        z: parts[2],
-        type: VersionType.stable,
-      );
+      final List<int> parts = match.groups(<int>[1, 2, 3]).map((String? s) => int.parse(s!)).toList();
+      return Version(x: parts[0], y: parts[1], z: parts[2], type: VersionType.stable);
     }
     // development tag
     match = versionPatterns[VersionType.development]!.firstMatch(versionString);
     if (match != null) {
       // parse development
-      final List<int> parts =
-          match.groups(<int>[1, 2, 3, 4, 5]).map((String? s) => int.parse(s!)).toList();
-      return Version(
-        x: parts[0],
-        y: parts[1],
-        z: parts[2],
-        m: parts[3],
-        n: parts[4],
-        type: VersionType.development,
-      );
+      final List<int> parts = match.groups(<int>[1, 2, 3, 4, 5]).map((String? s) => int.parse(s!)).toList();
+      return Version(x: parts[0], y: parts[1], z: parts[2], m: parts[3], n: parts[4], type: VersionType.development);
     }
     // latest tag
     match = versionPatterns[VersionType.latest]!.firstMatch(versionString);
     if (match != null) {
       // parse latest
-      final List<int> parts = match.groups(
-        <int>[1, 2, 3, 4, 5, 6],
-      ).map(
-        (String? s) => int.parse(s!),
-      ).toList();
+      final List<int> parts = match.groups(<int>[1, 2, 3, 4, 5, 6]).map((String? s) => int.parse(s!)).toList();
       return Version(
         x: parts[0],
         y: parts[1],
@@ -133,26 +104,14 @@ class Version {
       final int? m = int.tryParse(match.group(5) ?? '');
       final int? n = int.tryParse(match.group(6) ?? '');
       final int commits = int.parse(match.group(7)!);
-      return Version(
-        x: x,
-        y: y,
-        z: z,
-        m: m,
-        n: n,
-        commits: commits,
-        type: VersionType.gitDescribe,
-      );
+      return Version(x: x, y: y, z: z, m: m, n: n, commits: commits, type: VersionType.gitDescribe);
     }
     throw Exception('${versionString.trim()} cannot be parsed');
   }
 
   // Returns a new version with the given [increment] part incremented.
   // NOTE new version must be of same type as previousVersion.
-  factory Version.increment(
-    Version previousVersion,
-    String increment, {
-    VersionType? nextVersionType,
-  }) {
+  factory Version.increment(Version previousVersion, String increment, {VersionType? nextVersionType}) {
     final int nextX = previousVersion.x;
     int nextY = previousVersion.y;
     int nextZ = previousVersion.z;
@@ -190,14 +149,7 @@ class Version {
       default:
         throw Exception('Unknown increment level $increment.');
     }
-    return Version(
-      x: nextX,
-      y: nextY,
-      z: nextZ,
-      m: nextM,
-      n: nextN,
-      type: nextVersionType,
-    );
+    return Version(x: nextX, y: nextY, z: nextZ, m: nextM, n: nextN, type: nextVersionType);
   }
 
   factory Version.fromCandidateBranch(String branchName) {
@@ -215,14 +167,7 @@ class Version {
       throw ConductorException('branch named $branchName not recognized as a valid candidate branch');
     }
 
-    return Version(
-      type: VersionType.development,
-      x: x,
-      y: y,
-      z: 0,
-      m: m,
-      n: 0,
-    );
+    return Version(type: VersionType.development, x: x, y: y, z: 0, m: m, n: 0);
   }
 
   /// Major version.
@@ -282,7 +227,9 @@ class Version {
     }
 
     // stable type versions don't have an m field set
-    if (type != VersionType.stable && releaseType != ReleaseType.STABLE_HOTFIX && releaseType != ReleaseType.STABLE_INITIAL) {
+    if (type != VersionType.stable &&
+        releaseType != ReleaseType.STABLE_HOTFIX &&
+        releaseType != ReleaseType.STABLE_INITIAL) {
       final String branchM = branchMatch.group(3)!;
       if (m != int.tryParse(branchM)) {
         throw ConductorException(

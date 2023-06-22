@@ -16,19 +16,9 @@ class NavigationIconView {
   }) : _icon = icon,
        _color = color,
        _title = title,
-       item = BottomNavigationBarItem(
-         icon: icon,
-         activeIcon: activeIcon,
-         label: title,
-         backgroundColor: color,
-       ),
-       controller = AnimationController(
-         duration: kThemeAnimationDuration,
-         vsync: vsync,
-       ) {
-    _animation = controller.drive(CurveTween(
-      curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
-    ));
+       item = BottomNavigationBarItem(icon: icon, activeIcon: activeIcon, label: title, backgroundColor: color),
+       controller = AnimationController(duration: kThemeAnimationDuration, vsync: vsync) {
+    _animation = controller.drive(CurveTween(curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn)));
   }
 
   final Widget _icon;
@@ -45,29 +35,16 @@ class NavigationIconView {
     } else {
       final ThemeData theme = Theme.of(context);
       final ColorScheme colorScheme = theme.colorScheme;
-      iconColor = theme.brightness == Brightness.light
-          ? colorScheme.primary
-          : colorScheme.secondary;
+      iconColor = theme.brightness == Brightness.light ? colorScheme.primary : colorScheme.secondary;
     }
 
     return FadeTransition(
       opacity: _animation,
       child: SlideTransition(
-        position: _animation.drive(
-          Tween<Offset>(
-            begin: const Offset(0.0, 0.02), // Slightly down.
-            end: Offset.zero,
-          ),
-        ),
+        position: _animation.drive(Tween<Offset>(begin: const Offset(0.0, 0.02), // Slightly down. end: Offset.zero)),
         child: IconTheme(
-          data: IconThemeData(
-            color: iconColor,
-            size: 120.0,
-          ),
-          child: Semantics(
-            label: 'Placeholder for $_title tab',
-            child: _icon,
-          ),
+          data: IconThemeData(color: iconColor, size: 120.0),
+          child: Semantics(label: 'Placeholder for $_title tab', child: _icon),
         ),
       ),
     );
@@ -99,9 +76,7 @@ class CustomInactiveIcon extends StatelessWidget {
       margin: const EdgeInsets.all(4.0),
       width: iconTheme.size! - 8.0,
       height: iconTheme.size! - 8.0,
-      decoration: BoxDecoration(
-        border: Border.all(color: iconTheme.color!, width: 2.0),
-      ),
+      decoration: BoxDecoration(border: Border.all(color: iconTheme.color!, width: 2.0)),
     );
   }
 }
@@ -115,8 +90,7 @@ class BottomNavigationDemo extends StatefulWidget {
   State<BottomNavigationDemo> createState() => _BottomNavigationDemoState();
 }
 
-class _BottomNavigationDemoState extends State<BottomNavigationDemo>
-    with TickerProviderStateMixin {
+class _BottomNavigationDemoState extends State<BottomNavigationDemo> with TickerProviderStateMixin {
   int _currentIndex = 0;
   BottomNavigationBarType _type = BottomNavigationBarType.shifting;
   late List<NavigationIconView> _navigationViews;
@@ -125,12 +99,7 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo>
   void initState() {
     super.initState();
     _navigationViews = <NavigationIconView>[
-      NavigationIconView(
-        icon: const Icon(Icons.access_alarm),
-        title: 'Alarm',
-        color: Colors.deepPurple,
-        vsync: this,
-      ),
+      NavigationIconView(icon: const Icon(Icons.access_alarm), title: 'Alarm', color: Colors.deepPurple, vsync: this),
       NavigationIconView(
         activeIcon: const CustomIcon(),
         icon: const CustomInactiveIcon(),
@@ -152,12 +121,7 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo>
         color: Colors.indigo,
         vsync: this,
       ),
-      NavigationIconView(
-        icon: const Icon(Icons.event_available),
-        title: 'Event',
-        color: Colors.pink,
-        vsync: this,
-      ),
+      NavigationIconView(icon: const Icon(Icons.event_available), title: 'Event', color: Colors.pink, vsync: this),
     ];
 
     _navigationViews[_currentIndex].controller.value = 1.0;
@@ -191,9 +155,9 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo>
   @override
   Widget build(BuildContext context) {
     final BottomNavigationBar botNavBar = BottomNavigationBar(
-      items: _navigationViews
-          .map<BottomNavigationBarItem>((NavigationIconView navigationView) => navigationView.item)
-          .toList(),
+      items: _navigationViews.map<BottomNavigationBarItem>(
+        (NavigationIconView navigationView) => navigationView.item,
+      ).toList(),
       currentIndex: _currentIndex,
       type: _type,
       onTap: (int index) {
@@ -217,21 +181,19 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo>
               });
             },
             itemBuilder: (BuildContext context) => <PopupMenuItem<BottomNavigationBarType>>[
-              const PopupMenuItem<BottomNavigationBarType>(
-                value: BottomNavigationBarType.fixed,
-                child: Text('Fixed'),
-              ),
-              const PopupMenuItem<BottomNavigationBarType>(
-                value: BottomNavigationBarType.shifting,
-                child: Text('Shifting'),
-              ),
-            ],
+                  const PopupMenuItem<BottomNavigationBarType>(
+                    value: BottomNavigationBarType.fixed,
+                    child: Text('Fixed'),
+                  ),
+                  const PopupMenuItem<BottomNavigationBarType>(
+                    value: BottomNavigationBarType.shifting,
+                    child: Text('Shifting'),
+                  ),
+                ],
           ),
         ],
       ),
-      body: Center(
-        child: _buildTransitionsStack(),
-      ),
+      body: Center(child: _buildTransitionsStack()),
       bottomNavigationBar: botNavBar,
     );
   }

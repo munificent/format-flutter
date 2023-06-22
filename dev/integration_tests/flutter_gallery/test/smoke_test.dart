@@ -33,7 +33,12 @@ void reportToStringError(String name, String route, int lineNumber, List<String>
   const int margin = 5;
   final int firstLine = math.max(0, lineNumber - margin);
   final int lastLine = math.min(lines.length, lineNumber + margin);
-  print('$name : $route : line $lineNumber of ${lines.length} : $message; nearby lines were:\n  ${lines.sublist(firstLine, lastLine).join("\n  ")}');
+  print(
+    '$name : $route : line $lineNumber of ${lines.length} : $message; nearby lines were:\n  ${lines.sublist(
+      firstLine,
+      lastLine,
+    ).join("\n  ")}',
+  );
   toStringErrors += 1;
 }
 
@@ -80,7 +85,11 @@ Future<void> smokeDemo(WidgetTester tester, GalleryDemo demo) async {
   final String routeName = demo.routeName;
   verifyToStringOutput('debugDumpApp', routeName, WidgetsBinding.instance.rootElement!.toStringDeep());
   verifyToStringOutput('debugDumpRenderTree', routeName, RendererBinding.instance.renderView.toStringDeep());
-  verifyToStringOutput('debugDumpLayerTree', routeName, RendererBinding.instance.renderView.debugLayer?.toStringDeep() ?? '');
+  verifyToStringOutput(
+    'debugDumpLayerTree',
+    routeName,
+    RendererBinding.instance.renderView.debugLayer?.toStringDeep() ?? '',
+  );
   verifyToStringOutput('debugDumpFocusTree', routeName, WidgetsBinding.instance.focusManager.toStringDeep());
 
   // Scroll the demo around a bit more.
@@ -120,7 +129,10 @@ Future<void> smokeOptionsPage(WidgetTester tester) async {
   // Switch back to system theme setting: first menu button, choose 'System Default'
   await tester.tap(find.byIcon(Icons.arrow_drop_down).first);
   await tester.pumpAndSettle();
-  await tester.tap(find.text('System Default').at(1), warnIfMissed: false); // https://github.com/flutter/flutter/issues/82908
+  await tester.tap(
+    find.text('System Default').at(1),
+    warnIfMissed: false,
+  ); // https://github.com/flutter/flutter/issues/82908
   await tester.pumpAndSettle();
 
   // Switch text direction: first switch
@@ -146,14 +158,12 @@ Future<void> smokeOptionsPage(WidgetTester tester) async {
 Future<void> smokeGallery(WidgetTester tester) async {
   bool sendFeedbackButtonPressed = false;
 
-  await tester.pumpWidget(
-    GalleryApp(
-      testMode: true,
-      onSendFeedback: () {
-        sendFeedbackButtonPressed = true; // see smokeOptionsPage()
-      },
-    ),
-  );
+  await tester.pumpWidget(GalleryApp(
+    testMode: true,
+    onSendFeedback: () {
+      sendFeedbackButtonPressed = true; // see smokeOptionsPage()
+    },
+  ));
   await tester.pump(); // see https://github.com/flutter/flutter/issues/1865
   await tester.pump(); // triggers a frame
 
@@ -181,7 +191,7 @@ void main() {
   testWidgets(
     'Flutter Gallery app smoke test',
     smokeGallery,
-    variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.android, TargetPlatform.macOS }),
+    variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.android, TargetPlatform.macOS}),
   );
 
   testWidgets('Flutter Gallery app smoke test with semantics', (WidgetTester tester) async {

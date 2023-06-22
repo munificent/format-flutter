@@ -5,7 +5,10 @@
 import 'template.dart';
 
 class TabsTemplate extends TokenTemplate {
-  const TabsTemplate(super.blockName, super.fileName, super.tokens, {
+  const TabsTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
     super.textThemePrefix = '_textTheme.',
   });
@@ -34,7 +37,9 @@ class _${blockName}PrimaryDefaultsM3 extends TabBarTheme {
   TextStyle? get labelStyle => ${textStyle("md.comp.primary-navigation-tab.with-label-text.label-text")};
 
   @override
-  Color? get unselectedLabelColor => ${componentColor("md.comp.primary-navigation-tab.with-label-text.inactive.label-text")};
+  Color? get unselectedLabelColor => ${componentColor(
+        "md.comp.primary-navigation-tab.with-label-text.inactive.label-text",
+      )};
 
   @override
   TextStyle? get unselectedLabelStyle => ${textStyle("md.comp.primary-navigation-tab.with-label-text.label-text")};
@@ -138,5 +143,4 @@ class _${blockName}SecondaryDefaultsM3 extends TabBarTheme {
   TabAlignment? get tabAlignment => isScrollable ? TabAlignment.start : TabAlignment.fill;
 }
 ''';
-
 }

@@ -59,12 +59,7 @@ class Git {
     );
   }
 
-  Never _reportFailureAndExit(
-    List<String> args,
-    String workingDirectory,
-    ProcessResult result,
-    String explanation,
-  ) {
+  Never _reportFailureAndExit(List<String> args, String workingDirectory, ProcessResult result, String explanation) {
     final StringBuffer message = StringBuffer();
     if (result.exitCode != 0) {
       message.writeln(

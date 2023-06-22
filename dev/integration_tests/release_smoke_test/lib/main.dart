@@ -17,11 +17,7 @@ Future<void> main() async {
   // regression test for https://github.com/flutter/flutter/issues/49601
   final List<int> computed = await compute(_utf8Encode, 'test', debugLabel: null);
   print(computed);
-  runApp(
-    const Center(
-      child: text,
-    ),
-  );
+  runApp(const Center(child: text));
 }
 
 List<int> _utf8Encode(String data) {

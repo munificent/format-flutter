@@ -18,7 +18,9 @@ import 'utils.dart';
 /// If `expectNonZeroExit` is false and the process exits with a non-zero exit
 /// code fails the test immediately by exiting the test process with exit code
 /// 1.
-Stream<String> runAndGetStdout(String executable, List<String> arguments, {
+Stream<String> runAndGetStdout(
+  String executable,
+  List<String> arguments, {
   String? workingDirectory,
   Map<String, String>? environment,
   bool expectNonZeroExit = false,
@@ -82,7 +84,9 @@ class CommandResult {
 ///
 /// `outputMode` controls where the standard output from the command process
 /// goes. See [OutputMode].
-Future<Command> startCommand(String executable, List<String> arguments, {
+Future<Command> startCommand(
+  String executable,
+  List<String> arguments, {
   String? workingDirectory,
   Map<String, String>? environment,
   OutputMode outputMode = OutputMode.print,
@@ -94,44 +98,38 @@ Future<Command> startCommand(String executable, List<String> arguments, {
   print('RUNNING: cd $cyan$relativeWorkingDir$reset; $green$commandDescription$reset');
 
   final Stopwatch time = Stopwatch()..start();
-  final io.Process process = await io.Process.start(executable, arguments,
-    workingDirectory: workingDirectory,
-    environment: environment,
-  );
+  final io.Process process =
+      await io.Process.start(executable, arguments, workingDirectory: workingDirectory, environment: environment);
   return Command._(
     process,
     time,
     process.stdout
-      .transform<String>(const Utf8Decoder())
-      .transform(const LineSplitter())
-      .where((String line) => removeLine == null || !removeLine(line))
-      .map<String>((String line) {
-        final String formattedLine = '$line\n';
-        if (outputListener != null) {
-          outputListener(formattedLine, process);
-        }
-        switch (outputMode) {
-          case OutputMode.print:
-            print(line);
-          case OutputMode.capture:
-            break;
-        }
-        return line;
-      })
-      .join('\n'),
-    process.stderr
-      .transform<String>(const Utf8Decoder())
-      .transform(const LineSplitter())
-      .map<String>((String line) {
-        switch (outputMode) {
-          case OutputMode.print:
-            print(line);
-          case OutputMode.capture:
-            break;
-        }
-        return line;
-      })
-      .join('\n'),
+        .transform<String>(const Utf8Decoder())
+        .transform(const LineSplitter())
+        .where((String line) => removeLine == null || !removeLine(line))
+        .map<String>((String line) {
+          final String formattedLine = '$line\n';
+          if (outputListener != null) {
+            outputListener(formattedLine, process);
+          }
+          switch (outputMode) {
+            case OutputMode.print:
+              print(line);
+            case OutputMode.capture:
+              break;
+          }
+          return line;
+        })
+        .join('\n'),
+    process.stderr.transform<String>(const Utf8Decoder()).transform(const LineSplitter()).map<String>((String line) {
+      switch (outputMode) {
+        case OutputMode.print:
+          print(line);
+        case OutputMode.capture:
+          break;
+      }
+      return line;
+    }).join('\n'),
   );
 }
 
@@ -149,7 +147,9 @@ Future<Command> startCommand(String executable, List<String> arguments, {
 ///
 /// `outputMode` controls where the standard output from the command process
 /// goes. See [OutputMode].
-Future<CommandResult> runCommand(String executable, List<String> arguments, {
+Future<CommandResult> runCommand(
+  String executable,
+  List<String> arguments, {
   String? workingDirectory,
   Map<String, String>? environment,
   bool expectNonZeroExit = false,
@@ -162,7 +162,9 @@ Future<CommandResult> runCommand(String executable, List<String> arguments, {
   final String commandDescription = '${path.relative(executable, from: workingDirectory)} ${arguments.join(' ')}';
   final String relativeWorkingDir = path.relative(workingDirectory ?? io.Directory.current.path);
 
-  final Command command = await startCommand(executable, arguments,
+  final Command command = await startCommand(
+    executable,
+    arguments,
     workingDirectory: workingDirectory,
     environment: environment,
     outputMode: outputMode,
@@ -177,7 +179,8 @@ Future<CommandResult> runCommand(String executable, List<String> arguments, {
     await command._savedStderr,
   );
 
-  if ((result.exitCode == 0) == expectNonZeroExit || (expectedExitCode != null && result.exitCode != expectedExitCode)) {
+  if ((result.exitCode == 0) == expectNonZeroExit ||
+      (expectedExitCode != null && result.exitCode != expectedExitCode)) {
     // Print the output when we get unexpected results (unless output was
     // printed already).
     switch (outputMode) {
@@ -197,17 +200,19 @@ Future<CommandResult> runCommand(String executable, List<String> arguments, {
       allOutput = '';
     }
     foundError(<String>[
-      if (failureMessage != null)
-        failureMessage,
+      if (failureMessage != null) failureMessage,
       '${bold}Command: $green$commandDescription$reset',
       if (failureMessage == null)
         '$bold${red}Command exited with exit code ${result.exitCode} but expected ${expectNonZeroExit ? (expectedExitCode ?? 'non-zero') : 'zero'} exit code.$reset',
       '${bold}Working directory: $cyan${path.absolute(relativeWorkingDir)}$reset',
-      if (allOutput.isNotEmpty)
-        '${bold}stdout and stderr output:\n$allOutput',
+      if (allOutput.isNotEmpty) '${bold}stdout and stderr output:\n$allOutput',
     ]);
   } else {
-    print('ELAPSED TIME: ${prettyPrintDuration(result.elapsedTime)} for $green$commandDescription$reset in $cyan$relativeWorkingDir$reset');
+    print(
+      'ELAPSED TIME: ${prettyPrintDuration(
+        result.elapsedTime,
+      )} for $green$commandDescription$reset in $cyan$relativeWorkingDir$reset',
+    );
   }
   return result;
 }

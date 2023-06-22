@@ -21,10 +21,7 @@ Future<void> main() async {
         'install',
         canFail: true,
         stderr: stderr,
-        options: <String>[
-          '--d', 'macos',
-          '--flavor', 'free'
-        ],
+        options: <String>['--d', 'macos', '--flavor', 'free'],
       );
 
       final String stderrString = stderr.toString();

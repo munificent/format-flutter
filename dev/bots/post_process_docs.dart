@@ -32,33 +32,20 @@ Future<void> postProcess() async {
   }
   final String checkoutPath = Platform.environment['SDK_CHECKOUT_PATH']!;
   final String docsPath = path.join(checkoutPath, 'dev', 'docs');
-  await runProcessWithValidations(
-    <String>[
-      'curl',
-      '-L',
-      'https://storage.googleapis.com/flutter_infra_release/flutter/$revision/api_docs.zip',
-      '--output',
-      zipDestination,
-      '--fail',
-    ],
-    docsPath,
-  );
+  await runProcessWithValidations(<String>[
+    'curl',
+    '-L',
+    'https://storage.googleapis.com/flutter_infra_release/flutter/$revision/api_docs.zip',
+    '--output',
+    zipDestination,
+    '--fail',
+  ], docsPath);
 
   // Unzip to docs folder.
-  await runProcessWithValidations(
-    <String>[
-      'unzip',
-      '-o',
-      zipDestination,
-    ],
-    docsPath,
-  );
+  await runProcessWithValidations(<String>['unzip', '-o', zipDestination], docsPath);
 
   // Generate versions file.
-  await runProcessWithValidations(
-    <String>['flutter', '--version'],
-    docsPath,
-  );
+  await runProcessWithValidations(<String>['flutter', '--version'], docsPath);
   final File versionFile = File('version');
   final String version = versionFile.readAsStringSync();
   // Recreate footer
@@ -96,8 +83,11 @@ Future<void> runProcessWithValidations(
   @visibleForTesting ProcessManager processManager = const LocalProcessManager(),
   bool verbose = true,
 }) async {
-  final ProcessResult result =
-      processManager.runSync(command, stdoutEncoding: utf8, workingDirectory: workingDirectory);
+  final ProcessResult result = processManager.runSync(
+    command,
+    stdoutEncoding: utf8,
+    workingDirectory: workingDirectory,
+  );
   if (result.exitCode == 0) {
     if (verbose) {
       print('stdout: ${result.stdout}');
@@ -134,10 +124,13 @@ Future<String> getBranchName({
 /// Updates the footer of the api documentation with the correct branch and versions.
 /// [footerPath] is the path to the location of the footer js file and [version] is a
 /// string with the version calculated by the flutter tool.
-Future<void> createFooter(File footerFile, String version,
-    {@visibleForTesting String? timestampParam,
-    @visibleForTesting String? branchParam,
-    @visibleForTesting String? revisionParam}) async {
+Future<void> createFooter(
+  File footerFile,
+  String version, {
+  @visibleForTesting String? timestampParam,
+  @visibleForTesting String? branchParam,
+  @visibleForTesting String? revisionParam,
+}) async {
   final String timestamp = timestampParam ?? DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
   final String gitBranch = branchParam ?? await getBranchName();
   final String revision = revisionParam ?? await gitRevision();

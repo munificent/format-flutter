@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    title: 'Focus Demo',
-    home: FocusDemo(),
-  ));
+  runApp(const MaterialApp(title: 'Focus Demo', home: FocusDemo()));
 }
 
 class DemoButton extends StatefulWidget {
@@ -24,10 +21,7 @@ class DemoButton extends StatefulWidget {
 }
 
 class _DemoButtonState extends State<DemoButton> {
-  late final FocusNode focusNode = FocusNode(
-      debugLabel: widget.name,
-      canRequestFocus: widget.canRequestFocus,
-  );
+  late final FocusNode focusNode = FocusNode(debugLabel: widget.name, canRequestFocus: widget.canRequestFocus);
 
   @override
   void dispose() {
@@ -140,65 +134,42 @@ class _FocusDemoState extends State<FocusDemo> {
         child: DefaultTextStyle(
           style: textTheme.headlineMedium!,
           child: Scaffold(
-            appBar: AppBar(
-              title: const Text('Focus Demo'),
-            ),
-            floatingActionButton: FloatingActionButton(
-              child: const Text('+'),
-              onPressed: () {},
-            ),
+            appBar: AppBar(title: const Text('Focus Demo')),
+            floatingActionButton: FloatingActionButton(child: const Text('+'), onPressed: () {}),
             body: Center(
-              child: Builder(builder: (BuildContext context) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        DemoButton(
-                          name: 'One',
-                          autofocus: true,
-                        ),
-                      ],
-                    ),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        DemoButton(name: 'Two'),
-                        DemoButton(
-                          name: 'Three',
-                          canRequestFocus: false,
-                        ),
-                      ],
-                    ),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        DemoButton(name: 'Four'),
-                        DemoButton(name: 'Five'),
-                        DemoButton(name: 'Six'),
-                      ],
-                    ),
-                    OutlinedButton(onPressed: () => print('pressed'), child: const Text('PRESS ME')),
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(labelText: 'Enter Text', filled: true),
+              child: Builder(
+                builder: (BuildContext context) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[DemoButton(name: 'One', autofocus: true)],
                       ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Enter Text',
-                          filled: false,
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[DemoButton(name: 'Two'), DemoButton(name: 'Three', canRequestFocus: false)],
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[DemoButton(name: 'Four'), DemoButton(name: 'Five'), DemoButton(name: 'Six')],
+                      ),
+                      OutlinedButton(onPressed: () => print('pressed'), child: const Text('PRESS ME')),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: TextField(decoration: InputDecoration(labelText: 'Enter Text', filled: true)),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration:
+                              InputDecoration(border: OutlineInputBorder(), labelText: 'Enter Text', filled: false),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              }),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),

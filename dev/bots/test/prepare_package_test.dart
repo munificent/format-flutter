@@ -20,57 +20,56 @@ void main() {
     // it can't find an executable.
     final ProcessRunner processRunner = ProcessRunner(subprocessOutput: false);
     expect(
-        expectAsync1((List<String> commandLine) async {
-          return processRunner.runProcess(commandLine);
-        })(<String>['this_executable_better_not_exist_2857632534321']),
-        throwsA(isA<PreparePackageException>()));
+      expectAsync1((List<String> commandLine) async {
+        return processRunner.runProcess(commandLine);
+      })(<String>['this_executable_better_not_exist_2857632534321']),
+      throwsA(isA<PreparePackageException>()),
+    );
 
     await expectLater(
       () => processRunner.runProcess(<String>['this_executable_better_not_exist_2857632534321']),
       throwsA(isA<PreparePackageException>().having(
         (PreparePackageException error) => error.message,
         'message',
-        contains('ProcessException: Failed to find "this_executable_better_not_exist_2857632534321" in the search path'),
+        contains(
+          'ProcessException: Failed to find "this_executable_better_not_exist_2857632534321" in the search path',
+        ),
       )),
     );
   });
   for (final String platformName in <String>[Platform.macOS, Platform.linux, Platform.windows]) {
     final FakePlatform platform = FakePlatform(
       operatingSystem: platformName,
-      environment: <String, String>{
-        'DEPOT_TOOLS': path.join('D:', 'depot_tools'),
-      },
+      environment: <String, String>{'DEPOT_TOOLS': path.join('D:', 'depot_tools')},
     );
     group('ProcessRunner for $platform', () {
       test('Returns stdout', () async {
         final FakeProcessManager fakeProcessManager = FakeProcessManager.list(<FakeCommand>[
-          const FakeCommand(
-            command: <String>['echo', 'test',],
-            stdout: 'output',
-            stderr: 'error',
-          ),
+          const FakeCommand(command: <String>['echo', 'test'], stdout: 'output', stderr: 'error'),
         ]);
         final ProcessRunner processRunner = ProcessRunner(
-            subprocessOutput: false, platform: platform, processManager: fakeProcessManager);
+          subprocessOutput: false,
+          platform: platform,
+          processManager: fakeProcessManager,
+        );
         final String output = await processRunner.runProcess(<String>['echo', 'test']);
         expect(output, equals('output'));
       });
       test('Throws on process failure', () async {
         final FakeProcessManager fakeProcessManager = FakeProcessManager.list(<FakeCommand>[
-          const FakeCommand(
-            command: <String>['echo', 'test',],
-            stdout: 'output',
-            stderr: 'error',
-            exitCode: -1,
-          ),
+          const FakeCommand(command: <String>['echo', 'test'], stdout: 'output', stderr: 'error', exitCode: -1),
         ]);
         final ProcessRunner processRunner = ProcessRunner(
-            subprocessOutput: false, platform: platform, processManager: fakeProcessManager);
+          subprocessOutput: false,
+          platform: platform,
+          processManager: fakeProcessManager,
+        );
         expect(
-            expectAsync1((List<String> commandLine) async {
-              return processRunner.runProcess(commandLine);
-            })(<String>['echo', 'test']),
-            throwsA(isA<PreparePackageException>()));
+          expectAsync1((List<String> commandLine) async {
+            return processRunner.runProcess(commandLine);
+          })(<String>['echo', 'test']),
+          throwsA(isA<PreparePackageException>()),
+        );
       });
     });
     group('ArchiveCreator for $platformName', () {
@@ -107,10 +106,8 @@ void main() {
           platform: platform,
           httpReader: fakeHttpReader,
         );
-        flutter = path.join(creator.flutterRoot.absolute.path,
-          'bin', 'flutter');
-        dart = path.join(creator.flutterRoot.absolute.path,
-          'bin', 'cache', 'dart-sdk', 'bin', 'dart');
+        flutter = path.join(creator.flutterRoot.absolute.path, 'bin', 'flutter');
+        dart = path.join(creator.flutterRoot.absolute.path, 'bin', 'cache', 'dart-sdk', 'bin', 'dart');
       });
 
       tearDown(() async {
@@ -119,8 +116,10 @@ void main() {
 
       test('sets PUB_CACHE properly', () async {
         final String createBase = path.join(tempDir.absolute.path, 'create_');
-        final String archiveName = path.join(tempDir.absolute.path,
-            'flutter_${platformName}_v1.2.3-beta${platform.isLinux ? '.tar.xz' : '.zip'}');
+        final String archiveName = path.join(
+          tempDir.absolute.path,
+          'flutter_${platformName}_v1.2.3-beta${platform.isLinux ? '.tar.xz' : '.zip'}',
+        );
 
         processManager.addCommands(convertResults(<String, List<ProcessResult>?>{
           'git clone -b beta https://flutter.googlesource.com/mirrors/flutter': null,
@@ -133,7 +132,12 @@ void main() {
             ProcessResult(0, 0, '{"dartSdkVersion": "3.2.1"}', ''),
           ],
           '$dart --version': <ProcessResult>[
-            ProcessResult(0, 0, 'Dart SDK version: 2.17.0-63.0.beta (beta) (Wed Jan 26 03:48:52 2022 -0800) on "${platformName}_x64"', ''),
+            ProcessResult(
+              0,
+              0,
+              'Dart SDK version: 2.17.0-63.0.beta (beta) (Wed Jan 26 03:48:52 2022 -0800) on "${platformName}_x64"',
+              '',
+            ),
           ],
           if (platform.isWindows) '7za x ${path.join(tempDir.path, 'mingit.zip')}': null,
           '$flutter doctor': null,
@@ -143,14 +147,26 @@ void main() {
           '$flutter create --template=app ${createBase}app': null,
           '$flutter create --template=package ${createBase}package': null,
           '$flutter create --template=plugin ${createBase}plugin': null,
-          '$flutter pub cache list': <ProcessResult>[ProcessResult(0,0,'{"packages":{}}','')],
+          '$flutter pub cache list': <ProcessResult>[ProcessResult(0, 0, '{"packages":{}}', '')],
           'git clean -f -x -- **/.packages': null,
           'git clean -f -x -- **/.dart_tool/': null,
-          if (platform.isMacOS) 'codesign -vvvv --check-notarization ${path.join(tempDir.path, 'flutter', 'bin', 'cache', 'dart-sdk', 'bin', 'dart')}': null,
+          if (platform.isMacOS)
+            'codesign -vvvv --check-notarization ${path.join(
+              tempDir.path,
+              'flutter',
+              'bin',
+              'cache',
+              'dart-sdk',
+              'bin',
+              'dart',
+            )}': null,
           if (platform.isWindows) 'attrib -h .git': null,
-          if (platform.isWindows) '7za a -tzip -mx=9 $archiveName flutter': null
-          else if (platform.isMacOS) 'zip -r -9 --symlinks $archiveName flutter': null
-          else if (platform.isLinux) 'tar cJf $archiveName flutter': null,
+          if (platform.isWindows)
+            '7za a -tzip -mx=9 $archiveName flutter': null
+          else if (platform.isMacOS)
+            'zip -r -9 --symlinks $archiveName flutter': null
+          else if (platform.isLinux)
+            'tar cJf $archiveName flutter': null,
         }));
         await creator.initializeRepo();
         await creator.createArchive();
@@ -158,8 +174,10 @@ void main() {
 
       test('calls the right commands for archive output', () async {
         final String createBase = path.join(tempDir.absolute.path, 'create_');
-        final String archiveName = path.join(tempDir.absolute.path,
-            'flutter_${platformName}_v1.2.3-beta${platform.isLinux ? '.tar.xz' : '.zip'}');
+        final String archiveName = path.join(
+          tempDir.absolute.path,
+          'flutter_${platformName}_v1.2.3-beta${platform.isLinux ? '.tar.xz' : '.zip'}',
+        );
         final Map<String, List<ProcessResult>?> calls = <String, List<ProcessResult>?>{
           'git clone -b beta https://flutter.googlesource.com/mirrors/flutter': null,
           'git reset --hard $testRef': null,
@@ -171,7 +189,12 @@ void main() {
             ProcessResult(0, 0, '{"dartSdkVersion": "3.2.1"}', ''),
           ],
           '$dart --version': <ProcessResult>[
-            ProcessResult(0, 0, 'Dart SDK version: 2.17.0-63.0.beta (beta) (Wed Jan 26 03:48:52 2022 -0800) on "${platformName}_x64"', ''),
+            ProcessResult(
+              0,
+              0,
+              'Dart SDK version: 2.17.0-63.0.beta (beta) (Wed Jan 26 03:48:52 2022 -0800) on "${platformName}_x64"',
+              '',
+            ),
           ],
           if (platform.isWindows) '7za x ${path.join(tempDir.path, 'mingit.zip')}': null,
           '$flutter doctor': null,
@@ -181,14 +204,26 @@ void main() {
           '$flutter create --template=app ${createBase}app': null,
           '$flutter create --template=package ${createBase}package': null,
           '$flutter create --template=plugin ${createBase}plugin': null,
-          '$flutter pub cache list': <ProcessResult>[ProcessResult(0,0,'{"packages":{}}','')],
+          '$flutter pub cache list': <ProcessResult>[ProcessResult(0, 0, '{"packages":{}}', '')],
           'git clean -f -x -- **/.packages': null,
           'git clean -f -x -- **/.dart_tool/': null,
-          if (platform.isMacOS) 'codesign -vvvv --check-notarization ${path.join(tempDir.path, 'flutter', 'bin', 'cache', 'dart-sdk', 'bin', 'dart')}': null,
+          if (platform.isMacOS)
+            'codesign -vvvv --check-notarization ${path.join(
+              tempDir.path,
+              'flutter',
+              'bin',
+              'cache',
+              'dart-sdk',
+              'bin',
+              'dart',
+            )}': null,
           if (platform.isWindows) 'attrib -h .git': null,
-          if (platform.isWindows) '7za a -tzip -mx=9 $archiveName flutter': null
-          else if (platform.isMacOS) 'zip -r -9 --symlinks $archiveName flutter': null
-          else if (platform.isLinux) 'tar cJf $archiveName flutter': null,
+          if (platform.isWindows)
+            '7za a -tzip -mx=9 $archiveName flutter': null
+          else if (platform.isMacOS)
+            'zip -r -9 --symlinks $archiveName flutter': null
+          else if (platform.isLinux)
+            'tar cJf $archiveName flutter': null,
         };
         processManager.addCommands(convertResults(calls));
         creator = ArchiveCreator(
@@ -207,8 +242,10 @@ void main() {
 
       test('adds the arch name to the archive for non-x64', () async {
         final String createBase = path.join(tempDir.absolute.path, 'create_');
-        final String archiveName = path.join(tempDir.absolute.path,
-            'flutter_${platformName}_arm64_v1.2.3-beta${platform.isLinux ? '.tar.xz' : '.zip'}');
+        final String archiveName = path.join(
+          tempDir.absolute.path,
+          'flutter_${platformName}_arm64_v1.2.3-beta${platform.isLinux ? '.tar.xz' : '.zip'}',
+        );
         final Map<String, List<ProcessResult>?> calls = <String, List<ProcessResult>?>{
           'git clone -b beta https://flutter.googlesource.com/mirrors/flutter': null,
           'git reset --hard $testRef': null,
@@ -220,7 +257,12 @@ void main() {
             ProcessResult(0, 0, '{"dartSdkVersion": "3.2.1"}', ''),
           ],
           '$dart --version': <ProcessResult>[
-            ProcessResult(0, 0, 'Dart SDK version: 2.17.0-63.0.beta (beta) (Wed Jan 26 03:48:52 2022 -0800) on "${platformName}_arm64"', ''),
+            ProcessResult(
+              0,
+              0,
+              'Dart SDK version: 2.17.0-63.0.beta (beta) (Wed Jan 26 03:48:52 2022 -0800) on "${platformName}_arm64"',
+              '',
+            ),
           ],
           if (platform.isWindows) '7za x ${path.join(tempDir.path, 'mingit.zip')}': null,
           '$flutter doctor': null,
@@ -230,14 +272,26 @@ void main() {
           '$flutter create --template=app ${createBase}app': null,
           '$flutter create --template=package ${createBase}package': null,
           '$flutter create --template=plugin ${createBase}plugin': null,
-          '$flutter pub cache list': <ProcessResult>[ProcessResult(0,0,'{"packages":{}}','')],
+          '$flutter pub cache list': <ProcessResult>[ProcessResult(0, 0, '{"packages":{}}', '')],
           'git clean -f -x -- **/.packages': null,
           'git clean -f -x -- **/.dart_tool/': null,
-          if (platform.isMacOS) 'codesign -vvvv --check-notarization ${path.join(tempDir.path, 'flutter', 'bin', 'cache', 'dart-sdk', 'bin', 'dart')}': null,
+          if (platform.isMacOS)
+            'codesign -vvvv --check-notarization ${path.join(
+              tempDir.path,
+              'flutter',
+              'bin',
+              'cache',
+              'dart-sdk',
+              'bin',
+              'dart',
+            )}': null,
           if (platform.isWindows) 'attrib -h .git': null,
-          if (platform.isWindows) '7za a -tzip -mx=9 $archiveName flutter': null
-          else if (platform.isMacOS) 'zip -r -9 --symlinks $archiveName flutter': null
-          else if (platform.isLinux) 'tar cJf $archiveName flutter': null,
+          if (platform.isWindows)
+            '7za a -tzip -mx=9 $archiveName flutter': null
+          else if (platform.isMacOS)
+            'zip -r -9 --symlinks $archiveName flutter': null
+          else if (platform.isLinux)
+            'tar cJf $archiveName flutter': null,
         };
         processManager.addCommands(convertResults(calls));
         creator = ArchiveCreator(
@@ -256,8 +310,9 @@ void main() {
 
       test('throws when a command errors out', () async {
         final Map<String, List<ProcessResult>> calls = <String, List<ProcessResult>>{
-          'git clone -b beta https://flutter.googlesource.com/mirrors/flutter':
-              <ProcessResult>[ProcessResult(0, 0, 'output1', '')],
+          'git clone -b beta https://flutter.googlesource.com/mirrors/flutter': <ProcessResult>[
+            ProcessResult(0, 0, 'output1', ''),
+          ],
           'git reset --hard $testRef': <ProcessResult>[ProcessResult(0, -1, 'output2', '')],
         };
         processManager.addCommands(convertResults(calls));
@@ -266,8 +321,10 @@ void main() {
 
       test('non-strict mode calls the right commands', () async {
         final String createBase = path.join(tempDir.absolute.path, 'create_');
-        final String archiveName = path.join(tempDir.absolute.path,
-            'flutter_${platformName}_v1.2.3-beta${platform.isLinux ? '.tar.xz' : '.zip'}');
+        final String archiveName = path.join(
+          tempDir.absolute.path,
+          'flutter_${platformName}_v1.2.3-beta${platform.isLinux ? '.tar.xz' : '.zip'}',
+        );
         final Map<String, List<ProcessResult>?> calls = <String, List<ProcessResult>?>{
           'git clone -b beta https://flutter.googlesource.com/mirrors/flutter': null,
           'git reset --hard $testRef': null,
@@ -279,7 +336,12 @@ void main() {
             ProcessResult(0, 0, '{"dartSdkVersion": "3.2.1"}', ''),
           ],
           '$dart --version': <ProcessResult>[
-            ProcessResult(0, 0, 'Dart SDK version: 2.17.0-63.0.beta (beta) (Wed Jan 26 03:48:52 2022 -0800) on "${platformName}_x64"', ''),
+            ProcessResult(
+              0,
+              0,
+              'Dart SDK version: 2.17.0-63.0.beta (beta) (Wed Jan 26 03:48:52 2022 -0800) on "${platformName}_x64"',
+              '',
+            ),
           ],
           if (platform.isWindows) '7za x ${path.join(tempDir.path, 'mingit.zip')}': null,
           '$flutter doctor': null,
@@ -289,13 +351,16 @@ void main() {
           '$flutter create --template=app ${createBase}app': null,
           '$flutter create --template=package ${createBase}package': null,
           '$flutter create --template=plugin ${createBase}plugin': null,
-          '$flutter pub cache list': <ProcessResult>[ProcessResult(0,0,'{"packages":{}}','')],
+          '$flutter pub cache list': <ProcessResult>[ProcessResult(0, 0, '{"packages":{}}', '')],
           'git clean -f -x -- **/.packages': null,
           'git clean -f -x -- **/.dart_tool/': null,
           if (platform.isWindows) 'attrib -h .git': null,
-          if (platform.isWindows) '7za a -tzip -mx=9 $archiveName flutter': null
-          else if (platform.isMacOS) 'zip -r -9 --symlinks $archiveName flutter': null
-          else if (platform.isLinux) 'tar cJf $archiveName flutter': null,
+          if (platform.isWindows)
+            '7za a -tzip -mx=9 $archiveName flutter': null
+          else if (platform.isMacOS)
+            'zip -r -9 --symlinks $archiveName flutter': null
+          else if (platform.isLinux)
+            'tar cJf $archiveName flutter': null,
         };
         processManager.addCommands(convertResults(calls));
         creator = ArchiveCreator(
@@ -315,8 +380,10 @@ void main() {
 
       test('fails if binary is not codesigned', () async {
         final String createBase = path.join(tempDir.absolute.path, 'create_');
-        final String archiveName = path.join(tempDir.absolute.path,
-            'flutter_${platformName}_v1.2.3-beta${platform.isLinux ? '.tar.xz' : '.zip'}');
+        final String archiveName = path.join(
+          tempDir.absolute.path,
+          'flutter_${platformName}_v1.2.3-beta${platform.isLinux ? '.tar.xz' : '.zip'}',
+        );
         final ProcessResult codesignFailure = ProcessResult(1, 1, '', 'code object is not signed at all');
         final String binPath = path.join(tempDir.path, 'flutter', 'bin', 'cache', 'dart-sdk', 'bin', 'dart');
         final Map<String, List<ProcessResult>?> calls = <String, List<ProcessResult>?>{
@@ -330,7 +397,12 @@ void main() {
             ProcessResult(0, 0, '{"dartSdkVersion": "3.2.1"}', ''),
           ],
           '$dart --version': <ProcessResult>[
-            ProcessResult(0, 0, 'Dart SDK version: 2.17.0-63.0.beta (beta) (Wed Jan 26 03:48:52 2022 -0800) on "${platformName}_x64"', ''),
+            ProcessResult(
+              0,
+              0,
+              'Dart SDK version: 2.17.0-63.0.beta (beta) (Wed Jan 26 03:48:52 2022 -0800) on "${platformName}_x64"',
+              '',
+            ),
           ],
           if (platform.isWindows) '7za x ${path.join(tempDir.path, 'mingit.zip')}': null,
           '$flutter doctor': null,
@@ -340,14 +412,17 @@ void main() {
           '$flutter create --template=app ${createBase}app': null,
           '$flutter create --template=package ${createBase}package': null,
           '$flutter create --template=plugin ${createBase}plugin': null,
-          '$flutter pub cache list': <ProcessResult>[ProcessResult(0,0,'{"packages":{}}','')],
+          '$flutter pub cache list': <ProcessResult>[ProcessResult(0, 0, '{"packages":{}}', '')],
           'git clean -f -x -- **/.packages': null,
           'git clean -f -x -- **/.dart_tool/': null,
           if (platform.isMacOS) 'codesign -vvvv --check-notarization $binPath': <ProcessResult>[codesignFailure],
           if (platform.isWindows) 'attrib -h .git': null,
-          if (platform.isWindows) '7za a -tzip -mx=9 $archiveName flutter': null
-          else if (platform.isMacOS) 'zip -r -9 --symlinks $archiveName flutter': null
-          else if (platform.isLinux) 'tar cJf $archiveName flutter': null,
+          if (platform.isWindows)
+            '7za a -tzip -mx=9 $archiveName flutter': null
+          else if (platform.isMacOS)
+            'zip -r -9 --symlinks $archiveName flutter': null
+          else if (platform.isLinux)
+            'tar cJf $archiveName flutter': null,
         };
         processManager.addCommands(convertResults(calls));
         creator = ArchiveCreator(
@@ -362,14 +437,11 @@ void main() {
         );
         await creator.initializeRepo();
 
-        await expectLater(
-          () => creator.createArchive(),
-          throwsA(isA<PreparePackageException>().having(
-            (PreparePackageException exception) => exception.message,
-            'message',
-            contains('The binary $binPath was not codesigned!'),
-          )),
-        );
+        await expectLater(() => creator.createArchive(), throwsA(isA<PreparePackageException>().having(
+          (PreparePackageException exception) => exception.message,
+          'message',
+          contains('The binary $binPath was not codesigned!'),
+        )));
       }, skip: !platform.isMacOS); // [intended] codesign is only available on macOS
     });
 
@@ -450,21 +522,11 @@ void main() {
         final File outputFile = File(path.join(tempDir.absolute.path, archiveName));
         outputFile.createSync();
         assert(tempDir.existsSync());
-        final ArchivePublisher publisher = ArchivePublisher(
-          tempDir,
-          testRef,
-          Branch.stable,
-          <String, String>{
-            'frameworkVersionFromGit': 'v1.2.3',
-            'dartSdkVersion': '3.2.1',
-            'dartTargetArch': 'x64',
-          },
-          outputFile,
-          false,
-          processManager: processManager,
-          subprocessOutput: false,
-          platform: platform,
-        );
+        final ArchivePublisher publisher = ArchivePublisher(tempDir, testRef, Branch.stable, <String, String>{
+          'frameworkVersionFromGit': 'v1.2.3',
+          'dartSdkVersion': '3.2.1',
+          'dartTargetArch': 'x64',
+        }, outputFile, false, processManager: processManager, subprocessOutput: false, platform: platform);
         assert(tempDir.existsSync());
         await publisher.generateLocalMetadata();
         await publisher.publishArchive();
@@ -551,21 +613,11 @@ void main() {
         final File outputFile = File(path.join(tempDir.absolute.path, archiveName));
         outputFile.createSync();
         assert(tempDir.existsSync());
-        final ArchivePublisher publisher = ArchivePublisher(
-          tempDir,
-          testRef,
-          Branch.stable,
-          <String, String>{
-            'frameworkVersionFromGit': 'v1.2.3',
-            'dartSdkVersion': '3.2.1',
-            'dartTargetArch': 'x64',
-          },
-          outputFile,
-          false,
-          processManager: processManager,
-          subprocessOutput: false,
-          platform: platform,
-        );
+        final ArchivePublisher publisher = ArchivePublisher(tempDir, testRef, Branch.stable, <String, String>{
+          'frameworkVersionFromGit': 'v1.2.3',
+          'dartSdkVersion': '3.2.1',
+          'dartTargetArch': 'x64',
+        }, outputFile, false, processManager: processManager, subprocessOutput: false, platform: platform);
         assert(tempDir.existsSync());
         await publisher.generateLocalMetadata();
         await publisher.publishArchive();
@@ -616,21 +668,11 @@ void main() {
         final File outputFile = File(path.join(tempDir.absolute.path, archiveName));
         outputFile.createSync();
         assert(tempDir.existsSync());
-        final ArchivePublisher publisher = ArchivePublisher(
-          tempDir,
-          testRef,
-          Branch.stable,
-          <String, String>{
-            'frameworkVersionFromGit': 'v1.2.3',
-            'dartSdkVersion': '3.2.1',
-            'dartTargetArch': 'arm64',
-          },
-          outputFile,
-          false,
-          processManager: processManager,
-          subprocessOutput: false,
-          platform: platform,
-        );
+        final ArchivePublisher publisher = ArchivePublisher(tempDir, testRef, Branch.stable, <String, String>{
+          'frameworkVersionFromGit': 'v1.2.3',
+          'dartSdkVersion': '3.2.1',
+          'dartTargetArch': 'arm64',
+        }, outputFile, false, processManager: processManager, subprocessOutput: false, platform: platform);
         assert(tempDir.existsSync());
         await publisher.generateLocalMetadata();
         await publisher.publishArchive();
@@ -641,7 +683,6 @@ void main() {
         final Map<String, dynamic> releases = jsonDecode(contents) as Map<String, dynamic>;
         expect((releases['releases'] as List<dynamic>).length, equals(2));
       });
-
 
       test('updates base_url from old bucket to new bucket', () async {
         final String archivePath = path.join(tempDir.absolute.path, archiveName);
@@ -697,21 +738,11 @@ void main() {
         final File outputFile = File(path.join(tempDir.absolute.path, archiveName));
         outputFile.createSync();
         assert(tempDir.existsSync());
-        final ArchivePublisher publisher = ArchivePublisher(
-          tempDir,
-          testRef,
-          Branch.stable,
-          <String, String>{
-            'frameworkVersionFromGit': 'v1.2.3',
-            'dartSdkVersion': '3.2.1',
-            'dartTargetArch': 'x64',
-          },
-          outputFile,
-          false,
-          processManager: processManager,
-          subprocessOutput: false,
-          platform: platform,
-        );
+        final ArchivePublisher publisher = ArchivePublisher(tempDir, testRef, Branch.stable, <String, String>{
+          'frameworkVersionFromGit': 'v1.2.3',
+          'dartSdkVersion': '3.2.1',
+          'dartTargetArch': 'x64',
+        }, outputFile, false, processManager: processManager, subprocessOutput: false, platform: platform);
         assert(tempDir.existsSync());
         await publisher.generateLocalMetadata();
         await publisher.publishArchive();
@@ -726,21 +757,11 @@ void main() {
       test('publishArchive throws if forceUpload is false and artifact already exists on cloud storage', () async {
         final String archiveName = platform.isLinux ? 'archive.tar.xz' : 'archive.zip';
         final File outputFile = File(path.join(tempDir.absolute.path, archiveName));
-        final ArchivePublisher publisher = ArchivePublisher(
-          tempDir,
-          testRef,
-          Branch.stable,
-          <String, String>{
-            'frameworkVersionFromGit': 'v1.2.3',
-            'dartSdkVersion': '3.2.1',
-            'dartTargetArch': 'x64',
-          },
-          outputFile,
-          false,
-          processManager: processManager,
-          subprocessOutput: false,
-          platform: platform,
-        );
+        final ArchivePublisher publisher = ArchivePublisher(tempDir, testRef, Branch.stable, <String, String>{
+          'frameworkVersionFromGit': 'v1.2.3',
+          'dartSdkVersion': '3.2.1',
+          'dartTargetArch': 'x64',
+        }, outputFile, false, processManager: processManager, subprocessOutput: false, platform: platform);
         final Map<String, List<ProcessResult>> calls = <String, List<ProcessResult>>{
           // This process returns 0 because file already exists
           '$gsutilCall -- stat $gsArchivePath': <ProcessResult>[ProcessResult(0, 0, '', '')],
@@ -749,28 +770,20 @@ void main() {
         expect(() async => publisher.publishArchive(), throwsException);
       });
 
-      test('publishArchive does not throw if forceUpload is true and artifact already exists on cloud storage', () async {
-        final String archiveName = platform.isLinux ? 'archive.tar.xz' : 'archive.zip';
-        final File outputFile = File(path.join(tempDir.absolute.path, archiveName));
-        final ArchivePublisher publisher = ArchivePublisher(
-          tempDir,
-          testRef,
-          Branch.stable,
-          <String, String>{
+      test(
+        'publishArchive does not throw if forceUpload is true and artifact already exists on cloud storage',
+        () async {
+          final String archiveName = platform.isLinux ? 'archive.tar.xz' : 'archive.zip';
+          final File outputFile = File(path.join(tempDir.absolute.path, archiveName));
+          final ArchivePublisher publisher = ArchivePublisher(tempDir, testRef, Branch.stable, <String, String>{
             'frameworkVersionFromGit': 'v1.2.3',
             'dartSdkVersion': '3.2.1',
             'dartTargetArch': 'x64',
-          },
-          outputFile,
-          false,
-          processManager: processManager,
-          subprocessOutput: false,
-          platform: platform,
-        );
-        final String archivePath = path.join(tempDir.absolute.path, archiveName);
-        final String jsonPath = path.join(tempDir.absolute.path, releasesName);
-        final String gsJsonPath = 'gs://flutter_infra_release/releases/$releasesName';
-        final String releasesJson = '''
+          }, outputFile, false, processManager: processManager, subprocessOutput: false, platform: platform);
+          final String archivePath = path.join(tempDir.absolute.path, archiveName);
+          final String jsonPath = path.join(tempDir.absolute.path, releasesName);
+          final String gsJsonPath = 'gs://flutter_infra_release/releases/$releasesName';
+          final String releasesJson = '''
 {
   "base_url": "https://storage.googleapis.com/flutter_infra_release/releases",
   "current_release": {
@@ -805,20 +818,22 @@ void main() {
   ]
 }
 ''';
-        File(jsonPath).writeAsStringSync(releasesJson);
-        File(archivePath).writeAsStringSync('archive contents');
-        final Map<String, List<ProcessResult>?> calls = <String, List<ProcessResult>?>{
-          '$gsutilCall -- cp $gsJsonPath $jsonPath': null,
-          '$gsutilCall -- rm $gsArchivePath': null,
-          '$gsutilCall -- -h Content-Type:$archiveMime cp $archivePath $gsArchivePath': null,
-          '$gsutilCall -- rm $gsJsonPath': null,
-          '$gsutilCall -- -h Content-Type:application/json -h Cache-Control:max-age=60 cp $jsonPath $gsJsonPath': null,
-        };
-        processManager.addCommands(convertResults(calls));
-        assert(tempDir.existsSync());
-        await publisher.generateLocalMetadata();
-        await publisher.publishArchive(true);
-      });
+          File(jsonPath).writeAsStringSync(releasesJson);
+          File(archivePath).writeAsStringSync('archive contents');
+          final Map<String, List<ProcessResult>?> calls = <String, List<ProcessResult>?>{
+            '$gsutilCall -- cp $gsJsonPath $jsonPath': null,
+            '$gsutilCall -- rm $gsArchivePath': null,
+            '$gsutilCall -- -h Content-Type:$archiveMime cp $archivePath $gsArchivePath': null,
+            '$gsutilCall -- rm $gsJsonPath': null,
+            '$gsutilCall -- -h Content-Type:application/json -h Cache-Control:max-age=60 cp $jsonPath $gsJsonPath':
+                null,
+          };
+          processManager.addCommands(convertResults(calls));
+          assert(tempDir.existsSync());
+          await publisher.generateLocalMetadata();
+          await publisher.publishArchive(true);
+        },
+      );
     });
   }
 }
@@ -829,9 +844,7 @@ List<FakeCommand> convertResults(Map<String, List<ProcessResult>?> results) {
     final List<ProcessResult>? candidates = results[key];
     final List<String> args = key.split(' ');
     if (candidates == null) {
-      commands.add(FakeCommand(
-        command: args,
-      ));
+      commands.add(FakeCommand(command: args));
     } else {
       for (final ProcessResult result in candidates) {
         commands.add(FakeCommand(

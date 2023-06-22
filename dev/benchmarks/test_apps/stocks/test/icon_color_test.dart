@@ -14,6 +14,7 @@ Element? findElementOfExactWidgetTypeGoingDown(Element node, Type targetType) {
     }
     child.visitChildElements(walker);
   }
+
   try {
     walker(node);
   } on Element catch (result) {
@@ -31,6 +32,7 @@ Element? findElementOfExactWidgetTypeGoingUp(Element node, Type targetType) {
     }
     return true;
   }
+
   node.visitAncestorElements(walker);
   return result;
 }

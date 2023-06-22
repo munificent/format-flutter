@@ -55,13 +55,19 @@ class KeyboardKeysCodeGenerator extends BaseCodeGenerator {
   String get _physicalDefinitions {
     final OutputLines<int> lines = OutputLines<int>('Physical Key Definition');
     for (final PhysicalKeyEntry entry in keyData.entries) {
-      final String firstComment = _wrapString('Represents the location of the '
-        '"${entry.commentName}" key on a generalized keyboard.');
-      final String otherComments = _wrapString('See the function '
-        '[RawKeyEvent.physicalKey] for more information.');
+      final String firstComment = _wrapString(
+        'Represents the location of the '
+        '"${entry.commentName}" key on a generalized keyboard.',
+      );
+      final String otherComments = _wrapString(
+        'See the function '
+        '[RawKeyEvent.physicalKey] for more information.',
+      );
       lines.add(entry.usbHidCode, '''
 $firstComment  ///
-$otherComments  static const PhysicalKeyboardKey ${entry.constantName} = PhysicalKeyboardKey(${toHex(entry.usbHidCode)});
+$otherComments  static const PhysicalKeyboardKey ${entry.constantName} = PhysicalKeyboardKey(${toHex(
+        entry.usbHidCode,
+      )});
 ''');
     }
     return lines.sortedJoin().trimRight();
@@ -89,23 +95,19 @@ $otherComments  static const LogicalKeyboardKey $constantName = LogicalKeyboardK
     }
 
     for (final LogicalKeyEntry entry in logicalData.entries) {
-      printKey(
-        entry.value,
-        entry.constantName,
-        entry.commentName,
-        otherComments: _otherComments(entry.name),
-      );
+      printKey(entry.value, entry.constantName, entry.commentName, otherComments: _otherComments(entry.name));
     }
     return lines.sortedJoin().trimRight();
   }
 
   String? _otherComments(String name) {
     if (synonyms.containsKey(name)) {
-      final Set<String> unionNames = synonyms[name]!.keys.map(
-        (LogicalKeyEntry entry) => entry.constantName).toSet();
-      return _wrapString('This key represents the union of the keys '
-              '$unionNames when comparing keys. This key will never be generated '
-              'directly, its main use is in defining key maps.');
+      final Set<String> unionNames = synonyms[name]!.keys.map((LogicalKeyEntry entry) => entry.constantName).toSet();
+      return _wrapString(
+        'This key represents the union of the keys '
+        '$unionNames when comparing keys. This key will never be generated '
+        'directly, its main use is in defining key maps.',
+      );
     }
     return null;
   }
@@ -179,15 +181,9 @@ ${_wrapString(constant.description)}  ///
 
   late final Map<String, SynonymKeyInfo> synonyms = Map<String, SynonymKeyInfo>.fromEntries(
     LogicalKeyData.synonyms.entries.map((MapEntry<String, List<String>> synonymDefinition) {
-      final List<LogicalKeyEntry> entries = synonymDefinition.value.map(
-        (String name) => logicalData.entryByName(name)).toList();
-      return MapEntry<String, SynonymKeyInfo>(
-        synonymDefinition.key,
-        SynonymKeyInfo(
-          entries,
-          synonymDefinition.key,
-        ),
-      );
+      final List<LogicalKeyEntry> entries =
+          synonymDefinition.value.map((String name) => logicalData.entryByName(name)).toList();
+      return MapEntry<String, SynonymKeyInfo>(synonymDefinition.key, SynonymKeyInfo(entries, synonymDefinition.key));
     }),
   );
 }

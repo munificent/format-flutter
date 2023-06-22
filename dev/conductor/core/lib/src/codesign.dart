@@ -28,39 +28,29 @@ const String kSignatures = 'signatures';
 const String kRevision = 'revision';
 const String kUpstream = 'upstream';
 
-
 /// Command to codesign and verify the signatures of cached binaries.
 class CodesignCommand extends Command<void> {
-  CodesignCommand({
-    required this.checkouts,
-    required this.flutterRoot,
-    FrameworkRepository? framework,
-  })  : fileSystem = checkouts.fileSystem,
-        platform = checkouts.platform,
-        stdio = checkouts.stdio,
-        processManager = checkouts.processManager {
+  CodesignCommand({required this.checkouts, required this.flutterRoot, FrameworkRepository? framework})
+    : fileSystem = checkouts.fileSystem,
+      platform = checkouts.platform,
+      stdio = checkouts.stdio,
+      processManager = checkouts.processManager {
     if (framework != null) {
       _framework = framework;
     }
-    argParser.addFlag(
-      kVerify,
-      help: 'Only verify expected binaries exist and are codesigned with entitlements.',
-    );
+    argParser.addFlag(kVerify, help: 'Only verify expected binaries exist and are codesigned with entitlements.');
     argParser.addFlag(
       kSignatures,
       defaultsTo: true,
       help: 'When off, this command will only verify the existence of binaries, and not their\n'
-            'signatures or entitlements. Must be used with --verify flag.',
+          'signatures or entitlements. Must be used with --verify flag.',
     );
     argParser.addOption(
       kUpstream,
       defaultsTo: FrameworkRepository.defaultUpstream,
       help: "The git remote URL to use as the Flutter framework's upstream.",
     );
-    argParser.addOption(
-      kRevision,
-      help: 'The Flutter framework revision to use.',
-    );
+    argParser.addOption(kRevision, help: 'The Flutter framework revision to use.');
   }
 
   final Checkouts checkouts;
@@ -76,10 +66,7 @@ class CodesignCommand extends Command<void> {
   FrameworkRepository get framework {
     return _framework ??= FrameworkRepository(
       checkouts,
-      upstreamRemote: Remote(
-        name: RemoteName.upstream,
-        url: argResults![kUpstream] as String,
-      ),
+      upstreamRemote: Remote(name: RemoteName.upstream, url: argResults![kUpstream] as String),
     );
   }
 
@@ -87,8 +74,7 @@ class CodesignCommand extends Command<void> {
   String get name => 'codesign';
 
   @override
-  String get description =>
-      'For codesigning and verifying the signatures of engine binaries.';
+  String get description => 'For codesigning and verifying the signatures of engine binaries.';
 
   @override
   Future<void> run() async {
@@ -115,10 +101,9 @@ class CodesignCommand extends Command<void> {
       );
       revision = argResults![kRevision] as String;
     } else {
-      revision = ((await processManager.run(
-        <String>['git', 'rev-parse', 'HEAD'],
-        workingDirectory: flutterRoot.path,
-      )).stdout as String).trim();
+      revision = ((await processManager.run(<String>['git', 'rev-parse', 'HEAD'], workingDirectory: flutterRoot.path))
+              .stdout as String)
+          .trim();
       assert(revision.isNotEmpty);
     }
 
@@ -171,10 +156,7 @@ class CodesignCommand extends Command<void> {
       'dart-sdk/bin/dartaotruntime',
       'dart-sdk/bin/utils/gen_snapshot',
       'dart-sdk/bin/utils/wasm-opt',
-    ]
-        .map((String relativePath) =>
-            fileSystem.path.join(frameworkCacheDirectory, relativePath))
-        .toList();
+    ].map((String relativePath) => fileSystem.path.join(frameworkCacheDirectory, relativePath)).toList();
   }
 
   /// Binaries that are only expected to be codesigned.
@@ -198,10 +180,7 @@ class CodesignCommand extends Command<void> {
       'artifacts/engine/ios/Flutter.xcframework/ios-arm64/Flutter.framework/Flutter',
       'artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator/Flutter.framework/Flutter',
       'artifacts/ios-deploy/ios-deploy',
-    ]
-        .map((String relativePath) =>
-            fileSystem.path.join(frameworkCacheDirectory, relativePath))
-        .toList();
+    ].map((String relativePath) => fileSystem.path.join(frameworkCacheDirectory, relativePath)).toList();
   }
 
   /// Verify the existence of all expected binaries in cache.
@@ -214,26 +193,19 @@ class CodesignCommand extends Command<void> {
   @visibleForTesting
   Future<void> verifyExist() async {
     final Set<String> foundFiles = <String>{};
-    for (final String binaryPath
-        in await findBinaryPaths(await framework.cacheDirectory)) {
+    for (final String binaryPath in await findBinaryPaths(await framework.cacheDirectory)) {
       if ((await binariesWithEntitlements).contains(binaryPath)) {
         foundFiles.add(binaryPath);
       } else if ((await binariesWithoutEntitlements).contains(binaryPath)) {
         foundFiles.add(binaryPath);
       } else {
-        throw ConductorException(
-            'Found unexpected binary in cache: $binaryPath');
+        throw ConductorException('Found unexpected binary in cache: $binaryPath');
       }
     }
 
-    final List<String> allExpectedFiles =
-        (await binariesWithEntitlements) + (await binariesWithoutEntitlements);
+    final List<String> allExpectedFiles = (await binariesWithEntitlements) + (await binariesWithoutEntitlements);
     if (foundFiles.length < allExpectedFiles.length) {
-      final List<String> unfoundFiles = allExpectedFiles
-          .where(
-            (String file) => !foundFiles.contains(file),
-          )
-          .toList();
+      final List<String> unfoundFiles = allExpectedFiles.where((String file) => !foundFiles.contains(file)).toList();
       stdio.printError(
         'Expected binaries not found in cache:\n\n${unfoundFiles.join('\n')}\n\n'
         'If this commit is removing binaries from the cache, this test should be fixed by\n'
@@ -252,8 +224,7 @@ class CodesignCommand extends Command<void> {
     final List<String> unsignedBinaries = <String>[];
     final List<String> wrongEntitlementBinaries = <String>[];
     final List<String> unexpectedBinaries = <String>[];
-    for (final String binaryPath
-        in await findBinaryPaths(await framework.cacheDirectory)) {
+    for (final String binaryPath in await findBinaryPaths(await framework.cacheDirectory)) {
       bool verifySignature = false;
       bool verifyEntitlements = false;
       if ((await binariesWithEntitlements).contains(binaryPath)) {
@@ -269,13 +240,7 @@ class CodesignCommand extends Command<void> {
         continue;
       }
       stdio.printTrace('Verifying the code signature of $binaryPath');
-      final io.ProcessResult codeSignResult = await processManager.run(
-        <String>[
-          'codesign',
-          '-vvv',
-          binaryPath,
-        ],
-      );
+      final io.ProcessResult codeSignResult = await processManager.run(<String>['codesign', '-vvv', binaryPath]);
       if (codeSignResult.exitCode != 0) {
         unsignedBinaries.add(binaryPath);
         stdio.printError(
@@ -344,18 +309,8 @@ class CodesignCommand extends Command<void> {
       return _allBinaryPaths!;
     }
     final List<String> allBinaryPaths = <String>[];
-    final io.ProcessResult result = await processManager.run(
-      <String>[
-        'find',
-        rootDirectory,
-        '-type',
-        'f',
-      ],
-    );
-    final List<String> allFiles = (result.stdout as String)
-        .split('\n')
-        .where((String s) => s.isNotEmpty)
-        .toList();
+    final io.ProcessResult result = await processManager.run(<String>['find', rootDirectory, '-type', 'f']);
+    final List<String> allFiles = (result.stdout as String).split('\n').where((String s) => s.isNotEmpty).toList();
 
     await Future.forEach(allFiles, (String filePath) async {
       if (await isBinary(filePath)) {
@@ -368,28 +323,19 @@ class CodesignCommand extends Command<void> {
 
   /// Check mime-type of file at [filePath] to determine if it is binary.
   Future<bool> isBinary(String filePath) async {
-    final io.ProcessResult result = await processManager.run(
-      <String>[
-        'file',
-        '--mime-type',
-        '-b', // is binary
-        filePath,
-      ],
-    );
+    final io.ProcessResult result = await processManager.run(<String>[
+      'file',
+      '--mime-type',
+      '-b', // is binary
+      filePath,
+    ]);
     return (result.stdout as String).contains('application/x-mach-binary');
   }
 
   /// Check if the binary has the expected entitlements.
   Future<bool> hasExpectedEntitlements(String binaryPath) async {
-    final io.ProcessResult entitlementResult = await processManager.run(
-      <String>[
-        'codesign',
-        '--display',
-        '--entitlements',
-        ':-',
-        binaryPath,
-      ],
-    );
+    final io.ProcessResult entitlementResult = await processManager
+        .run(<String>['codesign', '--display', '--entitlements', ':-', binaryPath]);
 
     if (entitlementResult.exitCode != 0) {
       stdio.printError(
@@ -402,8 +348,7 @@ class CodesignCommand extends Command<void> {
     bool passes = true;
     final String output = entitlementResult.stdout as String;
     for (final String entitlement in expectedEntitlements) {
-      final bool entitlementExpected =
-          (await binariesWithEntitlements).contains(binaryPath);
+      final bool entitlementExpected = (await binariesWithEntitlements).contains(binaryPath);
       if (output.contains(entitlement) != entitlementExpected) {
         stdio.printError(
           'File "$binaryPath" ${entitlementExpected ? 'does not have expected' : 'has unexpected'} '

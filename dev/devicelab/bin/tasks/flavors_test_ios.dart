@@ -15,21 +15,10 @@ Future<void> main() async {
     await createIntegrationTestFlavorsTest().call();
     // test install and uninstall of flavors app
     await inDirectory('${flutterDirectory.path}/dev/integration_tests/flavors', () async {
-      await flutter(
-        'install',
-        options: <String>['--flavor', 'paid'],
-      );
-      await flutter(
-        'install',
-        options: <String>['--flavor', 'paid', '--uninstall-only'],
-      );
+      await flutter('install', options: <String>['--flavor', 'paid']);
+      await flutter('install', options: <String>['--flavor', 'paid', '--uninstall-only']);
       final StringBuffer stderr = StringBuffer();
-      await evalFlutter(
-        'install',
-        canFail: true,
-        stderr: stderr,
-        options: <String>['--flavor', 'bogus'],
-      );
+      await evalFlutter('install', canFail: true, stderr: stderr, options: <String>['--flavor', 'bogus']);
 
       final String stderrString = stderr.toString();
       if (!stderrString.contains('install failed, bogus flavor not found')) {

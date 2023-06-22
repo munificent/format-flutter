@@ -29,11 +29,7 @@ Future<void> run(
   ProcessManager processManager = const LocalProcessManager(),
 }) async {
   final ArgParser parser = ArgParser();
-  parser.addOption(
-    kTokenOption,
-    help: 'Path to GitHub access token file.',
-    mandatory: true,
-  );
+  parser.addOption(kTokenOption, help: 'Path to GitHub access token file.', mandatory: true);
   parser.addOption(
     kGithubClient,
     help: 'Path to GitHub CLI client. If not provided, it is assumed `gh` is '
@@ -69,15 +65,11 @@ ${parser.usage}
   final String tokenPath = results[kTokenOption]! as String;
   final File tokenFile = fs.file(tokenPath);
   if (!tokenFile.existsSync()) {
-    throw ArgumentError(
-      'Provided token path $tokenPath but no file exists at ${tokenFile.absolute.path}',
-    );
+    throw ArgumentError('Provided token path $tokenPath but no file exists at ${tokenFile.absolute.path}');
   }
   final String token = tokenFile.readAsStringSync().trim();
   if (token.isEmpty) {
-    throw ArgumentError(
-      'Tried to read a GitHub access token from file ${tokenFile.path} but it was empty',
-    );
+    throw ArgumentError('Tried to read a GitHub access token from file ${tokenFile.path} but it was empty');
   }
 
   final FrameworkRepository framework = FrameworkRepository(
@@ -99,9 +91,7 @@ String _parseOrgName(String remoteUrl) {
   final RegExp pattern = RegExp(r'^https:\/\/github\.com\/(.*)\/');
   final RegExpMatch? match = pattern.firstMatch(remoteUrl);
   if (match == null) {
-    throw FormatException(
-      'Malformed upstream URL "$remoteUrl", should start with "https://github.com/"',
-    );
+    throw FormatException('Malformed upstream URL "$remoteUrl", should start with "https://github.com/"');
   }
   return match.group(1)!;
 }
@@ -110,11 +100,7 @@ Checkouts get _localCheckouts {
   const FileSystem fileSystem = LocalFileSystem();
   const ProcessManager processManager = LocalProcessManager();
   const Platform platform = LocalPlatform();
-  final Stdio stdio = VerboseStdio(
-    stdout: io.stdout,
-    stderr: io.stderr,
-    stdin: io.stdin,
-  );
+  final Stdio stdio = VerboseStdio(stdout: io.stdout, stderr: io.stderr, stdin: io.stdin);
   return Checkouts(
     fileSystem: fileSystem,
     parentDirectory: _localFlutterRoot.parent,
@@ -130,19 +116,15 @@ Directory get _localFlutterRoot {
   const Platform platform = LocalPlatform();
 
   filePath = platform.script.toFilePath();
-  final String checkoutsDirname = fileSystem.path.normalize(
-    fileSystem.path.join(
-      fileSystem.path.dirname(filePath), // flutter/dev/conductor/core/bin
-      '..', // flutter/dev/conductor/core
-      '..', // flutter/dev/conductor
-      '..', // flutter/dev
-      '..', // flutter
-    ),
-  );
+  final String checkoutsDirname = fileSystem.path.normalize(fileSystem.path.join(
+    fileSystem.path.dirname(filePath), // flutter/dev/conductor/core/bin
+    '..', // flutter/dev/conductor/core
+    '..', // flutter/dev/conductor
+    '..', // flutter/dev
+    '..', // flutter
+  ));
   return fileSystem.directory(checkoutsDirname);
 }
 
 @visibleForTesting
-void validateTokenFile(String filePath, [FileSystem fs = const LocalFileSystem()]) {
-
-}
+void validateTokenFile(String filePath, [FileSystem fs = const LocalFileSystem()]) {}

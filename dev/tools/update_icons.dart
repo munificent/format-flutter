@@ -29,11 +29,7 @@ const String _defaultIconsPath = 'packages/flutter/lib/src/material/icons.dart';
 const String _defaultNewCodepointsPath = 'codepoints';
 const String _defaultOldCodepointsPath = 'bin/cache/artifacts/material_fonts/codepoints';
 const String _defaultFontFamily = 'MaterialIcons';
-const List<String> _defaultPossibleStyleSuffixes = <String>[
-  '_outlined',
-  '_rounded',
-  '_sharp',
-];
+const List<String> _defaultPossibleStyleSuffixes = <String>['_outlined', '_rounded', '_sharp'];
 const String _defaultClassName = 'Icons';
 const String _defaultDemoFilePath = '/tmp/new_icons_demo.dart';
 
@@ -240,46 +236,58 @@ void main(List<String> args) {
 
 ArgResults _handleArguments(List<String> args) {
   final ArgParser argParser = ArgParser()
-    ..addOption(_iconsPathOption,
-        defaultsTo: _defaultIconsPath,
-        help: 'Location of the material icons file')
-    ..addOption(_iconsTemplatePathOption,
-        defaultsTo: _defaultIconsPath,
-        help:
-            'Location of the material icons file template. Usually the same as --$_iconsPathOption')
-    ..addOption(_newCodepointsPathOption,
-        defaultsTo: _defaultNewCodepointsPath,
-        help: 'Location of the new codepoints directory')
-    ..addOption(_oldCodepointsPathOption,
-        defaultsTo: _defaultOldCodepointsPath,
-        help: 'Location of the existing codepoints directory')
-    ..addOption(_fontFamilyOption,
-        defaultsTo: _defaultFontFamily,
-        help: 'The font family to use for the IconData constants')
-    ..addMultiOption(_possibleStyleSuffixesOption,
-        defaultsTo: _defaultPossibleStyleSuffixes,
-        help: 'A comma-separated list of suffixes (typically an optional '
-              'family + a style) e.g. _outlined, _monoline_filled')
-    ..addOption(_classNameOption,
-        defaultsTo: _defaultClassName,
-        help: 'The containing class for all icons')
-    ..addFlag(_enforceSafetyChecks,
-        defaultsTo: true,
-        help: 'Whether to exit if safety checks fail (e.g. codepoints are missing or unstable')
+    ..addOption(_iconsPathOption, defaultsTo: _defaultIconsPath, help: 'Location of the material icons file')
+    ..addOption(
+      _iconsTemplatePathOption,
+      defaultsTo: _defaultIconsPath,
+      help: 'Location of the material icons file template. Usually the same as --$_iconsPathOption',
+    )
+    ..addOption(
+      _newCodepointsPathOption,
+      defaultsTo: _defaultNewCodepointsPath,
+      help: 'Location of the new codepoints directory',
+    )
+    ..addOption(
+      _oldCodepointsPathOption,
+      defaultsTo: _defaultOldCodepointsPath,
+      help: 'Location of the existing codepoints directory',
+    )
+    ..addOption(
+      _fontFamilyOption,
+      defaultsTo: _defaultFontFamily,
+      help: 'The font family to use for the IconData constants',
+    )
+    ..addMultiOption(
+      _possibleStyleSuffixesOption,
+      defaultsTo: _defaultPossibleStyleSuffixes,
+      help: 'A comma-separated list of suffixes (typically an optional '
+          'family + a style) e.g. _outlined, _monoline_filled',
+    )
+    ..addOption(_classNameOption, defaultsTo: _defaultClassName, help: 'The containing class for all icons')
+    ..addFlag(
+      _enforceSafetyChecks,
+      defaultsTo: true,
+      help: 'Whether to exit if safety checks fail (e.g. codepoints are missing or unstable',
+    )
     ..addFlag(_dryRunOption);
-  argParser.addFlag('help', abbr: 'h', negatable: false, callback: (bool help) {
-    if (help) {
-      print(argParser.usage);
-      exit(1);
-    }
-  });
+  argParser.addFlag(
+    'help',
+    abbr: 'h',
+    negatable: false,
+    callback: (bool help) {
+      if (help) {
+        print(argParser.usage);
+        exit(1);
+      }
+    },
+  );
   return argParser.parse(args);
 }
 
 Map<String, String> stringToTokenPairMap(String codepointData) {
-  final Iterable<String> cleanData = LineSplitter.split(codepointData)
-      .map((String line) => line.trim())
-      .where((String line) => line.isNotEmpty);
+  final Iterable<String> cleanData = LineSplitter.split(codepointData).map((String line) => line.trim()).where(
+    (String line) => line.isNotEmpty,
+  );
 
   final Map<String, String> pairs = <String, String>{};
 
@@ -295,16 +303,15 @@ Map<String, String> stringToTokenPairMap(String codepointData) {
 }
 
 String _regenerateIconsFile(
-    String templateFileContents,
-    Map<String, String> tokenPairMap,
-    String fontFamily,
-    String className,
-    bool enforceSafetyChecks,
-  ) {
-  final List<Icon> newIcons = tokenPairMap.entries
-      .map((MapEntry<String, String> entry) =>
-        Icon(entry, fontFamily: fontFamily, className: className))
-      .toList();
+  String templateFileContents,
+  Map<String, String> tokenPairMap,
+  String fontFamily,
+  String className,
+  bool enforceSafetyChecks,
+) {
+  final List<Icon> newIcons = tokenPairMap.entries.map(
+    (MapEntry<String, String> entry) => Icon(entry, fontFamily: fontFamily, className: className),
+  ).toList();
   newIcons.sort((Icon a, Icon b) => a._compareTo(b));
 
   final StringBuffer buf = StringBuffer();
@@ -324,14 +331,14 @@ String _regenerateIconsFile(
         for (final String style in <String>['', '_outlined', '_rounded', '_sharp']) {
           try {
             final Icon agnosticIcon = newIcons.firstWhere(
-                (Icon icon) => icon.id == '${ids[0]}$style',
-                orElse: () => throw ids[0]);
-            final Icon iOSIcon = newIcons.firstWhere(
-                (Icon icon) => icon.id == '${ids[1]}$style',
-                orElse: () => throw ids[1]);
-            platformAdaptiveDeclarations.add(
-              agnosticIcon.platformAdaptiveDeclaration('$flutterId$style', iOSIcon),
+              (Icon icon) => icon.id == '${ids[0]}$style',
+              orElse: () => throw ids[0],
             );
+            final Icon iOSIcon = newIcons.firstWhere(
+              (Icon icon) => icon.id == '${ids[1]}$style',
+              orElse: () => throw ids[1],
+            );
+            platformAdaptiveDeclarations.add(agnosticIcon.platformAdaptiveDeclaration('$flutterId$style', iOSIcon));
           } catch (e) {
             if (style == '') {
               // Throw an error for baseline icons.
@@ -376,8 +383,9 @@ bool testIsSuperset(Map<String, String> newCodepoints, Map<String, String> oldCo
   }
   if (!newCodepointsSet.containsAll(oldCodepointsSet)) {
     stderr.writeln(
-        '❌ new codepoints file does not contain all ${oldCodepointsSet.length} '
-        'existing codepoints. Missing: ${oldCodepointsSet.difference(newCodepointsSet)}');
+      '❌ new codepoints file does not contain all ${oldCodepointsSet.length} '
+      'existing codepoints. Missing: ${oldCodepointsSet.difference(newCodepointsSet)}',
+    );
     return false;
   } else {
     stderr.writeln('✅ new codepoints file contains all ${oldCodepointsSet.length} existing codepoints');
@@ -454,7 +462,8 @@ void _generateIconDemo(File demoFilePath, Map<String, String> tokenPairMap) {
 
 class Icon {
   // Parse tokenPair (e.g. {"6_ft_apart_outlined": "e004"}).
-  Icon(MapEntry<String, String> tokenPair, {
+  Icon(
+    MapEntry<String, String> tokenPair, {
     this.fontFamily = _defaultFontFamily,
     this.possibleStyleSuffixes = _defaultPossibleStyleSuffixes,
     this.className = _defaultClassName,
@@ -493,7 +502,6 @@ class Icon {
     _generateFlutterId();
   }
 
-
   late String id; // e.g. 5g, 5g_outlined, 5g_rounded, 5g_sharp
   late String shortId; // e.g. 5g
   late String flutterId; // e.g. five_g, five_g_outlined, five_g_rounded, five_g_sharp
@@ -513,9 +521,7 @@ class Icon {
 
   String get usage => 'Icon($className.$flutterId),';
 
-  String get mirroredInRTL => _iconsMirroredWhenRTL.contains(shortId)
-      ? ', matchTextDirection: true'
-      : '';
+  String get mirroredInRTL => _iconsMirroredWhenRTL.contains(shortId) ? ', matchTextDirection: true' : '';
 
   String get declaration =>
       "static const IconData $flutterId = IconData(0x$hexCodepoint, fontFamily: '$fontFamily'$mirroredInRTL);";
@@ -565,19 +571,13 @@ class Icon {
     // Exact identifier rewrites.
     for (final MapEntry<String, String> rewritePair in _identifierExactRewrites.entries) {
       if (shortId == rewritePair.key) {
-        flutterId = id.replaceFirst(
-          rewritePair.key,
-          _identifierExactRewrites[rewritePair.key]!,
-        );
+        flutterId = id.replaceFirst(rewritePair.key, _identifierExactRewrites[rewritePair.key]!);
       }
     }
     // Prefix identifier rewrites.
     for (final MapEntry<String, String> rewritePair in _identifierPrefixRewrites.entries) {
       if (id.startsWith(rewritePair.key)) {
-        flutterId = id.replaceFirst(
-          rewritePair.key,
-          _identifierPrefixRewrites[rewritePair.key]!,
-        );
+        flutterId = id.replaceFirst(rewritePair.key, _identifierPrefixRewrites[rewritePair.key]!);
       }
     }
 

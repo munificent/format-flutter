@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class FilterChipTemplate extends TokenTemplate {
-  const FilterChipTemplate(super.blockName, super.fileName, super.tokens, {
+  const FilterChipTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   static const String tokenGroup = 'md.comp.filter-chip';
@@ -37,7 +40,9 @@ class _${blockName}DefaultsM3 extends ChipThemeData {
   @override
   double? get elevation => _chipVariant == _ChipVariant.flat
     ? ${elevation("$tokenGroup$flatVariant.container")}
-    : isEnabled ? ${elevation("$tokenGroup$elevatedVariant.container")} : ${elevation("$tokenGroup$elevatedVariant.disabled.container")};
+    : isEnabled ? ${elevation("$tokenGroup$elevatedVariant.container")} : ${elevation(
+        "$tokenGroup$elevatedVariant.disabled.container",
+      )};
 
   @override
   double? get pressElevation => ${elevation("$tokenGroup$elevatedVariant.pressed.container")};

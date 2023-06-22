@@ -16,10 +16,12 @@ const String kDocRoot = 'dev/docs/doc';
 Future<void> main(List<String> args) async {
   final String engineVersion = File('bin/internal/engine.version').readAsStringSync().trim();
 
-  final String javadocUrl = 'https://storage.googleapis.com/flutter_infra_release/flutter/$engineVersion/android-javadoc.zip';
+  final String javadocUrl =
+      'https://storage.googleapis.com/flutter_infra_release/flutter/$engineVersion/android-javadoc.zip';
   generateDocs(javadocUrl, 'javadoc', 'io/flutter/view/FlutterView.html');
 
-  final String objcdocUrl = 'https://storage.googleapis.com/flutter_infra_release/flutter/$engineVersion/ios-objcdoc.zip';
+  final String objcdocUrl =
+      'https://storage.googleapis.com/flutter_infra_release/flutter/$engineVersion/ios-objcdoc.zip';
   generateDocs(objcdocUrl, 'objcdoc', 'Classes/FlutterViewController.html');
 }
 
@@ -34,7 +36,7 @@ Future<Archive?> fetchArchive(String url, int maxTries) async {
       responseBytes = response.bodyBytes;
       break;
     }
-    stderr.writeln('Failed attempt ${i+1} to fetch $url.');
+    stderr.writeln('Failed attempt ${i + 1} to fetch $url.');
 
     // On failure print a short snipped from the body in case it's helpful.
     final int bodyLength = min(1024, response.body.length);
@@ -80,8 +82,7 @@ Future<void> generateDocs(String url, String docName, String checkFile) async {
 
 /// Copies the files in a directory recursively to a new location.
 void copyFolder(Directory source, Directory destination) {
-  source.listSync()
-  .forEach((FileSystemEntity entity) {
+  source.listSync().forEach((FileSystemEntity entity) {
     if (entity is Directory) {
       final Directory newDirectory = Directory(path.join(destination.absolute.path, path.basename(entity.path)));
       newDirectory.createSync();

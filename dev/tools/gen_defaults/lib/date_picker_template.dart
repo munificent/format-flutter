@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class DatePickerTemplate extends TokenTemplate {
-  const DatePickerTemplate(super.blockName, super.fileName, super.tokens, {
+  const DatePickerTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   String _layerOpacity(String layerToken) {
@@ -25,10 +28,8 @@ class DatePickerTemplate extends TokenTemplate {
 
   String _stateColor(String componentToken, String? type, String state) {
     final String baseColor = color(
-      type != null
-        ? '$componentToken.$type.$state.state-layer.color'
-        : '$componentToken.$state.state-layer.color',
-      ''
+      type != null ? '$componentToken.$type.$state.state-layer.color' : '$componentToken.$state.state-layer.color',
+      '',
     );
     if (baseColor.isEmpty) {
       return 'null';
@@ -155,7 +156,9 @@ class _${blockName}DefaultsM3 extends DatePickerThemeData {
       if (states.contains(MaterialState.selected)) {
         return ${componentColor('md.comp.date-picker.modal.year-selection.year.selected.label-text')};
       } else if (states.contains(MaterialState.disabled)) {
-        return ${componentColor('md.comp.date-picker.modal.year-selection.year.unselected.label-text')}.withOpacity(0.38);
+        return ${componentColor(
+        'md.comp.date-picker.modal.year-selection.year.unselected.label-text',
+      )}.withOpacity(0.38);
       }
       return ${componentColor('md.comp.date-picker.modal.year-selection.year.unselected.label-text')};
     });
@@ -197,13 +200,19 @@ class _${blockName}DefaultsM3 extends DatePickerThemeData {
     });
 
     @override
-    Color? get rangePickerShadowColor => ${colorOrTransparent("md.comp.date-picker.modal.range-selection.container.shadow-color")};
+    Color? get rangePickerShadowColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.range-selection.container.shadow-color",
+      )};
 
     @override
-    Color? get rangePickerSurfaceTintColor => ${colorOrTransparent("md.comp.date-picker.modal.range-selection.container.surface-tint-layer.color")};
+    Color? get rangePickerSurfaceTintColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.range-selection.container.surface-tint-layer.color",
+      )};
 
     @override
-    Color? get rangeSelectionBackgroundColor => ${colorOrTransparent("md.comp.date-picker.modal.range-selection.active-indicator.container.color")};
+    Color? get rangeSelectionBackgroundColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.range-selection.active-indicator.container.color",
+      )};
 
   @override
   MaterialStateProperty<Color?>? get rangeSelectionOverlayColor =>
@@ -221,13 +230,19 @@ class _${blockName}DefaultsM3 extends DatePickerThemeData {
     });
 
   @override
-  Color? get rangePickerHeaderBackgroundColor => ${colorOrTransparent("md.comp.date-picker.modal.header.container.color")};
+  Color? get rangePickerHeaderBackgroundColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.header.container.color",
+      )};
 
   @override
-  Color? get rangePickerHeaderForegroundColor => ${colorOrTransparent("md.comp.date-picker.modal.header.headline.color")};
+  Color? get rangePickerHeaderForegroundColor => ${colorOrTransparent(
+        "md.comp.date-picker.modal.header.headline.color",
+      )};
 
   @override
-  TextStyle? get rangePickerHeaderHeadlineStyle => ${textStyle("md.comp.date-picker.modal.range-selection.header.headline")};
+  TextStyle? get rangePickerHeaderHeadlineStyle => ${textStyle(
+        "md.comp.date-picker.modal.range-selection.header.headline",
+      )};
 
   @override
   TextStyle? get rangePickerHeaderHelpStyle => ${textStyle("md.comp.date-picker.modal.range-selection.month.subhead")};

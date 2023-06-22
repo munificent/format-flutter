@@ -10,7 +10,7 @@ import 'package:flutter_devicelab/framework/task_result.dart';
 import 'package:flutter_devicelab/framework/utils.dart';
 import 'package:path/path.dart' as path;
 
-final String platformLineSep = Platform.isWindows ? '\r\n': '\n';
+final String platformLineSep = Platform.isWindows ? '\r\n' : '\n';
 
 /// Tests that a plugin A can depend on platform code from a plugin B
 /// as long as plugin B is defined as a pub dependency of plugin A.
@@ -19,7 +19,6 @@ final String platformLineSep = Platform.isWindows ? '\r\n': '\n';
 /// contains "Unresolved reference: plugin_b".
 Future<void> main() async {
   await task(() async {
-
     section('Find Java');
 
     final String? javaHome = await findJavaHome();
@@ -31,7 +30,6 @@ Future<void> main() async {
 
     final Directory tempDir = Directory.systemTemp.createTempSync('flutter_plugin_dependencies.');
     try {
-
       section('Create plugin A');
 
       final Directory pluginADirectory = Directory(path.join(tempDir.path, 'plugin_a'));
@@ -80,10 +78,7 @@ Future<void> main() async {
         );
       });
 
-      checkDirectoryNotExists(path.join(
-        pluginCDirectory.path,
-        'android',
-      ));
+      checkDirectoryNotExists(path.join(pluginCDirectory.path, 'android'));
 
       final File pluginCpubspec = File(path.join(pluginCDirectory.path, 'pubspec.yaml'));
       await pluginCpubspec.writeAsString('''
@@ -121,21 +116,13 @@ environment:
         );
       });
 
-      checkDirectoryNotExists(path.join(
-        pluginDDirectory.path,
-        'ios',
-      ));
+      checkDirectoryNotExists(path.join(pluginDDirectory.path, 'ios'));
 
       section('Write dummy Kotlin code in plugin B');
 
-      final File pluginBKotlinClass = File(path.join(
-        pluginBDirectory.path,
-        'android',
-        'src',
-        'main',
-        'kotlin',
-        'DummyPluginBClass.kt',
-      ));
+      final File pluginBKotlinClass = File(
+        path.join(pluginBDirectory.path, 'android', 'src', 'main', 'kotlin', 'DummyPluginBClass.kt'),
+      );
 
       await pluginBKotlinClass.writeAsString('''
 package io.flutter.devicelab.plugin_b
@@ -155,25 +142,20 @@ public class DummyPluginBClass {
       pluginApubspecContent = pluginApubspecContent.replaceFirst(
         '${platformLineSep}dependencies:$platformLineSep',
         '${platformLineSep}dependencies:$platformLineSep'
-        '  plugin_b:$platformLineSep'
-        '    path: ${pluginBDirectory.path}$platformLineSep'
-        '  plugin_c:$platformLineSep'
-        '    path: ${pluginCDirectory.path}$platformLineSep'
-        '  plugin_d:$platformLineSep'
-        '    path: ${pluginDDirectory.path}$platformLineSep',
+            '  plugin_b:$platformLineSep'
+            '    path: ${pluginBDirectory.path}$platformLineSep'
+            '  plugin_c:$platformLineSep'
+            '    path: ${pluginCDirectory.path}$platformLineSep'
+            '  plugin_d:$platformLineSep'
+            '    path: ${pluginDDirectory.path}$platformLineSep',
       );
       await pluginApubspec.writeAsString(pluginApubspecContent, flush: true);
 
       section('Write Kotlin code in plugin A that references Kotlin code from plugin B');
 
-      final File pluginAKotlinClass = File(path.join(
-        pluginADirectory.path,
-        'android',
-        'src',
-        'main',
-        'kotlin',
-        'DummyPluginAClass.kt',
-      ));
+      final File pluginAKotlinClass = File(
+        path.join(pluginADirectory.path, 'android', 'src', 'main', 'kotlin', 'DummyPluginAClass.kt'),
+      );
 
       await pluginAKotlinClass.writeAsString('''
 package io.flutter.devicelab.plugin_a
@@ -193,14 +175,10 @@ public class DummyPluginAClass {
       final Directory exampleApp = Directory(path.join(pluginADirectory.path, 'example'));
 
       await inDirectory(exampleApp, () async {
-        await flutter(
-          'packages',
-          options: <String>['get'],
-        );
+        await flutter('packages', options: <String>['get']);
       });
 
-      final File flutterPluginsDependenciesFile =
-          File(path.join(exampleApp.path, '.flutter-plugins-dependencies'));
+      final File flutterPluginsDependenciesFile = File(path.join(exampleApp.path, '.flutter-plugins-dependencies'));
 
       if (!flutterPluginsDependenciesFile.existsSync()) {
         return TaskResult.failure("${flutterPluginsDependenciesFile.path} doesn't exist");
@@ -208,39 +186,39 @@ public class DummyPluginAClass {
 
       final String flutterPluginsDependenciesFileContent = flutterPluginsDependenciesFile.readAsStringSync();
 
-      final Map<String, dynamic> jsonContent = json.decode(flutterPluginsDependenciesFileContent) as Map<String, dynamic>;
+      final Map<String, dynamic> jsonContent =
+          json.decode(flutterPluginsDependenciesFileContent) as Map<String, dynamic>;
 
       // Verify the dependencyGraph object is valid. The rest of the contents of this file are not relevant to the
       // dependency graph and are tested by unit tests.
       final List<dynamic> dependencyGraph = jsonContent['dependencyGraph'] as List<dynamic>;
-      const String kExpectedPluginsDependenciesContent =
-        '['
+      const String kExpectedPluginsDependenciesContent = '['
           '{'
-            '"name":"integration_test",'
-            '"dependencies":[]'
+          '"name":"integration_test",'
+          '"dependencies":[]'
           '},'
           '{'
-            '"name":"plugin_a",'
-            '"dependencies":["plugin_b","plugin_c","plugin_d"]'
+          '"name":"plugin_a",'
+          '"dependencies":["plugin_b","plugin_c","plugin_d"]'
           '},'
           '{'
-            '"name":"plugin_b",'
-            '"dependencies":[]'
+          '"name":"plugin_b",'
+          '"dependencies":[]'
           '},'
           '{'
-            '"name":"plugin_c",'
-            '"dependencies":[]'
+          '"name":"plugin_c",'
+          '"dependencies":[]'
           '},'
           '{'
-            '"name":"plugin_d",'
-            '"dependencies":[]'
+          '"name":"plugin_d",'
+          '"dependencies":[]'
           '}'
-        ']';
+          ']';
       final String graphString = json.encode(dependencyGraph);
       if (graphString != kExpectedPluginsDependenciesContent) {
         return TaskResult.failure(
           'Unexpected file content in ${flutterPluginsDependenciesFile.path}: '
-          'Found "$graphString" instead of "$kExpectedPluginsDependenciesContent"'
+          'Found "$graphString" instead of "$kExpectedPluginsDependenciesContent"',
         );
       }
 
@@ -260,16 +238,9 @@ public class DummyPluginAClass {
         return TaskResult.failure('plugin_a cannot reference plugin_b');
       }
 
-      final bool pluginAExampleApk = exists(File(path.join(
-        pluginADirectory.path,
-        'example',
-        'build',
-        'app',
-        'outputs',
-        'apk',
-        'release',
-        'app-release.apk',
-      )));
+      final bool pluginAExampleApk = exists(File(
+        path.join(pluginADirectory.path, 'example', 'build', 'app', 'outputs', 'apk', 'release', 'app-release.apk'),
+      ));
 
       if (!pluginAExampleApk) {
         return TaskResult.failure('Failed to build plugin A example APK');
@@ -279,51 +250,23 @@ public class DummyPluginAClass {
         section('Build plugin A example iOS app');
 
         await inDirectory(exampleApp, () async {
-          await evalFlutter(
-            'build',
-            options: <String>[
-              'ios',
-              '--no-codesign',
-              '--verbose',
-            ],
-          );
+          await evalFlutter('build', options: <String>['ios', '--no-codesign', '--verbose']);
         });
 
-        final Directory appBundle = Directory(path.join(
-          pluginADirectory.path,
-          'example',
-          'build',
-          'ios',
-          'iphoneos',
-          'Runner.app',
-        ));
+        final Directory appBundle = Directory(
+          path.join(pluginADirectory.path, 'example', 'build', 'ios', 'iphoneos', 'Runner.app'),
+        );
 
         if (!exists(appBundle)) {
           return TaskResult.failure('Failed to build plugin A example iOS app');
         }
 
-        checkDirectoryExists(path.join(
-          appBundle.path,
-          'Frameworks',
-          'plugin_a.framework',
-        ));
-        checkDirectoryExists(path.join(
-          appBundle.path,
-          'Frameworks',
-          'plugin_b.framework',
-        ));
-        checkDirectoryExists(path.join(
-          appBundle.path,
-          'Frameworks',
-          'plugin_c.framework',
-        ));
+        checkDirectoryExists(path.join(appBundle.path, 'Frameworks', 'plugin_a.framework'));
+        checkDirectoryExists(path.join(appBundle.path, 'Frameworks', 'plugin_b.framework'));
+        checkDirectoryExists(path.join(appBundle.path, 'Frameworks', 'plugin_c.framework'));
 
         // Plugin D is Android only and should not be embedded.
-        checkDirectoryNotExists(path.join(
-          appBundle.path,
-          'Frameworks',
-          'plugin_d.framework',
-        ));
+        checkDirectoryNotExists(path.join(appBundle.path, 'Frameworks', 'plugin_d.framework'));
       }
 
       return TaskResult.success(null);

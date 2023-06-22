@@ -20,21 +20,24 @@ import '../framework/utils.dart';
 const int benchmarkServerPort = 9999;
 const int chromeDebugPort = 10000;
 
-Future<TaskResult> runWebBenchmark({ required bool useCanvasKit }) async {
+Future<TaskResult> runWebBenchmark({required bool useCanvasKit}) async {
   // Reduce logging level. Otherwise, package:webkit_inspection_protocol is way too spammy.
   Logger.root.level = Level.INFO;
   final String macrobenchmarksDirectory = path.join(flutterDirectory.path, 'dev', 'benchmarks', 'macrobenchmarks');
   return inDirectory(macrobenchmarksDirectory, () async {
     await flutter('clean');
-    await evalFlutter('build', options: <String>[
-      'web',
-      '--dart-define=FLUTTER_WEB_ENABLE_PROFILING=true',
-      '--web-renderer=${useCanvasKit ? 'canvaskit' : 'html'}',
-      '--profile',
-      '--no-web-resources-cdn',
-      '-t',
-      'lib/web_benchmarks.dart',
-    ]);
+    await evalFlutter(
+      'build',
+      options: <String>[
+        'web',
+        '--dart-define=FLUTTER_WEB_ENABLE_PROFILING=true',
+        '--web-renderer=${useCanvasKit ? 'canvaskit' : 'html'}',
+        '--profile',
+        '--no-web-resources-cdn',
+        '-t',
+        'lib/web_benchmarks.dart',
+      ],
+    );
     final Completer<List<Map<String, dynamic>>> profileData = Completer<List<Map<String, dynamic>>>();
     final List<Map<String, dynamic>> collectedProfiles = <Map<String, dynamic>>[];
     List<String>? benchmarks;
@@ -107,16 +110,13 @@ Future<TaskResult> runWebBenchmark({ required bool useCanvasKit }) async {
           print('[APP] $message');
           return Response.ok('Reported.');
         } else {
-          return Response.notFound(
-              'This request is not handled by the profile-data handler.');
+          return Response.notFound('This request is not handled by the profile-data handler.');
         }
       } catch (error, stackTrace) {
         profileData.completeError(error, stackTrace);
         return Response.internalServerError(body: '$error');
       }
-    }).add(createBuildDirectoryHandler(
-      path.join(macrobenchmarksDirectory, 'build', 'web'),
-    ));
+    }).add(createBuildDirectoryHandler(path.join(macrobenchmarksDirectory, 'build', 'web')));
 
     server = await io.HttpServer.bind('localhost', benchmarkServerPort);
     try {
@@ -199,10 +199,12 @@ Handler createBuildDirectoryHandler(String buildDirectoryPath) {
     // crossOriginIsolated. This will make sure that we get high-resolution
     // timers for our benchmark measurements.
     if (mimeType == 'text/html' || mimeType == 'text/javascript') {
-      return response.change(headers: <String, String>{
-        'Cross-Origin-Opener-Policy': 'same-origin',
-        'Cross-Origin-Embedder-Policy': 'require-corp',
-      });
+      return response.change(
+        headers: <String, String>{
+          'Cross-Origin-Opener-Policy': 'same-origin',
+          'Cross-Origin-Embedder-Policy': 'require-corp',
+        },
+      );
     } else {
       return response;
     }

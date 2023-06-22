@@ -75,7 +75,7 @@ void main() {
       if (parsedFrames.isEmpty) {
         throw Exception(
           'Failed to parse stack trace. Got empty list of stack frames.\n'
-          'Stack trace:\n$expectedStackTrace'
+          'Stack trace:\n$expectedStackTrace',
         );
       }
 
@@ -97,11 +97,7 @@ void main() {
     output.writeln('--- TEST FAILED ---');
   }
   print(output);
-  html.HttpRequest.request(
-    '/test-result',
-    method: 'POST',
-    sendData: '$output',
-  );
+  html.HttpRequest.request('/test-result', method: 'POST', sendData: '$output');
 }
 
 @noInline
@@ -121,16 +117,14 @@ void baz() {
 
 void _checkStackFrameContents(List<StackFrame> parsedFrames, List<StackFrame> expectedFrames, dynamic stackTrace) {
   // Filter out stack frames outside this library so this test is less brittle.
-  final List<StackFrame> actual = parsedFrames
-    .where((StackFrame frame) => callChain.contains(frame.method))
-    .toList();
+  final List<StackFrame> actual = parsedFrames.where((StackFrame frame) => callChain.contains(frame.method)).toList();
   final bool stackFramesAsExpected = ListEquality<StackFrame>(StackFrameEquality()).equals(actual, expectedFrames);
   if (!stackFramesAsExpected) {
     throw Exception(
       'Stack frames parsed incorrectly:\n'
       'Expected:\n${expectedFrames.join('\n')}\n'
       'Actual:\n${actual.join('\n')}\n'
-      'Stack trace:\n$stackTrace'
+      'Stack trace:\n$stackTrace',
     );
   }
 }
@@ -141,13 +135,13 @@ class StackFrameEquality implements Equality<StackFrame> {
   @override
   bool equals(StackFrame e1, StackFrame e2) {
     return e1.number == e2.number &&
-           e1.packageScheme == e2.packageScheme &&
-           e1.package == e2.package &&
-           e1.packagePath == e2.packagePath &&
-           e1.line == e2.line &&
-           e1.column == e2.column &&
-           e1.className == e2.className &&
-           e1.method == e2.method;
+        e1.packageScheme == e2.packageScheme &&
+        e1.package == e2.package &&
+        e1.packagePath == e2.packagePath &&
+        e1.line == e2.line &&
+        e1.column == e2.column &&
+        e1.className == e2.className &&
+        e1.method == e2.method;
   }
 
   @override

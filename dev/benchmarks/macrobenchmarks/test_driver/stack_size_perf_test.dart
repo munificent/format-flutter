@@ -27,9 +27,7 @@ void main() {
 
     await fs.directory(testOutputsDirectory).create(recursive: true);
     final File file = fs.file(path.join(testOutputsDirectory, 'stack_size.json'));
-    await file.writeAsString(_encodeJson(<String, dynamic>{
-      'stack_size': stackSizeInBytes,
-    }));
+    await file.writeAsString(_encodeJson(<String, dynamic>{'stack_size': stackSizeInBytes}));
   }, timeout: Timeout.none);
 }
 

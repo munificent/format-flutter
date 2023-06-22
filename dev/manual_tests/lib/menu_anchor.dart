@@ -6,14 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp(
-    const MaterialApp(
-      title: 'Menu Tester',
-      home: Material(
-        child: Home(),
-      ),
-    ),
-  );
+  runApp(const MaterialApp(title: 'Menu Tester', home: Material(child: Home())));
 }
 
 class Home extends StatefulWidget {
@@ -43,17 +36,11 @@ class _HomeState extends State<Home> {
       menuTheme = const MenuThemeData(
         style: MenuStyle(
           shape: MaterialStatePropertyAll<OutlinedBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-            ),
+            RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
           ),
           backgroundColor: MaterialStatePropertyAll<Color?>(Colors.blue),
           elevation: MaterialStatePropertyAll<double?>(10),
-          padding: MaterialStatePropertyAll<EdgeInsetsDirectional>(
-            EdgeInsetsDirectional.all(20),
-          ),
+          padding: MaterialStatePropertyAll<EdgeInsetsDirectional>(EdgeInsetsDirectional.all(20)),
         ),
       );
       menuButtonTheme = const MenuButtonThemeData(
@@ -68,9 +55,7 @@ class _HomeState extends State<Home> {
           shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder()),
           backgroundColor: MaterialStatePropertyAll<Color?>(Colors.blue),
           elevation: MaterialStatePropertyAll<double?>(10),
-          padding: MaterialStatePropertyAll<EdgeInsetsDirectional>(
-            EdgeInsetsDirectional.all(20),
-          ),
+          padding: MaterialStatePropertyAll<EdgeInsetsDirectional>(EdgeInsetsDirectional.all(20)),
         ),
       );
     }
@@ -85,9 +70,7 @@ class _HomeState extends State<Home> {
               menuTheme: _transparent
                   ? MenuThemeData(
                       style: MenuStyle(
-                        backgroundColor: MaterialStatePropertyAll<Color>(
-                          Colors.blue.withOpacity(0.12),
-                        ),
+                        backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue.withOpacity(0.12)),
                         elevation: const MaterialStatePropertyAll<double>(0),
                       ),
                     )
@@ -98,11 +81,7 @@ class _HomeState extends State<Home> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _TestMenus(
-                  menuController: _controller,
-                  accelerators: _accelerators,
-                  addItem: _addItem,
-                ),
+                _TestMenus(menuController: _controller, accelerators: _accelerators, addItem: _addItem),
                 Expanded(
                   child: SingleChildScrollView(
                     child: _Controls(
@@ -272,12 +251,7 @@ class _ControlsState extends State<_Controls> {
                     min: -4,
                     divisions: 12,
                     onChanged: (double value) {
-                      widget.onDensityChanged(
-                        VisualDensity(
-                          horizontal: value,
-                          vertical: widget.density.vertical,
-                        ),
-                      );
+                      widget.onDensityChanged(VisualDensity(horizontal: value, vertical: widget.density.vertical));
                     },
                   ),
                   _ControlSlider(
@@ -287,12 +261,7 @@ class _ControlsState extends State<_Controls> {
                     min: -4,
                     divisions: 12,
                     onChanged: (double value) {
-                      widget.onDensityChanged(
-                        VisualDensity(
-                          horizontal: widget.density.horizontal,
-                          vertical: value,
-                        ),
-                      );
+                      widget.onDensityChanged(VisualDensity(horizontal: widget.density.horizontal, vertical: value));
                     },
                   ),
                 ],
@@ -314,7 +283,7 @@ class _ControlsState extends State<_Controls> {
                         }
                       },
                     ),
-                    const Text('RTL Text')
+                    const Text('RTL Text'),
                   ],
                 ),
                 Row(
@@ -330,7 +299,7 @@ class _ControlsState extends State<_Controls> {
                         }
                       },
                     ),
-                    const Text('Add Item')
+                    const Text('Add Item'),
                   ],
                 ),
                 Row(
@@ -346,7 +315,7 @@ class _ControlsState extends State<_Controls> {
                         }
                       },
                     ),
-                    const Text('Enable Accelerators')
+                    const Text('Enable Accelerators'),
                   ],
                 ),
                 Row(
@@ -362,7 +331,7 @@ class _ControlsState extends State<_Controls> {
                         }
                       },
                     ),
-                    const Text('Transparent')
+                    const Text('Transparent'),
                   ],
                 ),
                 Row(
@@ -378,7 +347,7 @@ class _ControlsState extends State<_Controls> {
                         }
                       },
                     ),
-                    const Text('Funky Theme')
+                    const Text('Funky Theme'),
                   ],
                 ),
               ],
@@ -421,26 +390,14 @@ class _ControlSlider extends StatelessWidget {
           constraints: const BoxConstraints(minWidth: 150),
           child: Text(label),
         ),
-        Expanded(
-          child: Slider(
-            value: value,
-            min: min,
-            max: max,
-            divisions: divisions,
-            onChanged: onChanged,
-          ),
-        ),
+        Expanded(child: Slider(value: value, min: min, max: max, divisions: divisions, onChanged: onChanged)),
       ],
     );
   }
 }
 
 class _TestMenus extends StatefulWidget {
-  const _TestMenus({
-    required this.menuController,
-    this.addItem = false,
-    this.accelerators = false,
-  });
+  const _TestMenus({required this.menuController, this.addItem = false, this.accelerators = false});
 
   final MenuController menuController;
   final bool addItem;
@@ -578,10 +535,7 @@ List<Widget> createTestMenus({
   bool includeExtraGroups = false,
   bool accelerators = false,
 }) {
-  Widget submenuButton(
-    TestMenu menu, {
-    required List<Widget> menuChildren,
-  }) {
+  Widget submenuButton(TestMenu menu, {required List<Widget> menuChildren}) {
     return SubmenuButton(
       onOpen: onOpen != null ? () => onOpen(menu) : null,
       onClose: onClose != null ? () => onClose(menu) : null,
@@ -590,13 +544,7 @@ List<Widget> createTestMenus({
     );
   }
 
-  Widget menuItemButton(
-    TestMenu menu, {
-    bool enabled = true,
-    Widget? leadingIcon,
-    Widget? trailingIcon,
-    Key? key,
-  }) {
+  Widget menuItemButton(TestMenu menu, {bool enabled = true, Widget? leadingIcon, Widget? trailingIcon, Key? key}) {
     return MenuItemButton(
       key: key,
       onPressed: enabled && onPressed != null ? () => onPressed(menu) : null,
@@ -650,31 +598,11 @@ List<Widget> createTestMenus({
     submenuButton(
       TestMenu.mainMenu1,
       menuChildren: <Widget>[
-        checkboxMenuButton(
-          TestMenu.subMenu1,
-          tristate: true,
-          trailingIcon: const Icon(Icons.assessment),
-        ),
-        radioMenuButton(
-          TestMenu.radioMenu1,
-          toggleable: true,
-          trailingIcon: const Icon(Icons.assessment),
-        ),
-        radioMenuButton(
-          TestMenu.radioMenu2,
-          toggleable: true,
-          trailingIcon: const Icon(Icons.assessment),
-        ),
-        radioMenuButton(
-          TestMenu.radioMenu3,
-          toggleable: true,
-          trailingIcon: const Icon(Icons.assessment),
-        ),
-        menuItemButton(
-          TestMenu.subMenu2,
-          leadingIcon: const Icon(Icons.send),
-          trailingIcon: const Icon(Icons.mail),
-        ),
+        checkboxMenuButton(TestMenu.subMenu1, tristate: true, trailingIcon: const Icon(Icons.assessment)),
+        radioMenuButton(TestMenu.radioMenu1, toggleable: true, trailingIcon: const Icon(Icons.assessment)),
+        radioMenuButton(TestMenu.radioMenu2, toggleable: true, trailingIcon: const Icon(Icons.assessment)),
+        radioMenuButton(TestMenu.radioMenu3, toggleable: true, trailingIcon: const Icon(Icons.assessment)),
+        menuItemButton(TestMenu.subMenu2, leadingIcon: const Icon(Icons.send), trailingIcon: const Icon(Icons.mail)),
       ],
     ),
     submenuButton(
@@ -702,12 +630,7 @@ List<Widget> createTestMenus({
         menuItemButton(TestMenu.subMenu3),
       ],
     ),
-    submenuButton(
-      TestMenu.mainMenu3,
-      menuChildren: <Widget>[
-        menuItemButton(TestMenu.subMenu8),
-      ],
-    ),
+    submenuButton(TestMenu.mainMenu3, menuChildren: <Widget>[menuItemButton(TestMenu.subMenu8)]),
     submenuButton(
       TestMenu.mainMenu4,
       menuChildren: <Widget>[
@@ -731,12 +654,7 @@ List<Widget> createTestMenus({
             menuItemButton(TestMenu.subSubMenu1),
             menuItemButton(TestMenu.subSubMenu2),
             if (includeExtraGroups)
-              submenuButton(
-                TestMenu.subSubMenu3,
-                menuChildren: <Widget>[
-                  menuItemButton(TestMenu.subSubSubMenu1),
-                ],
-              ),
+              submenuButton(TestMenu.subSubMenu3, menuChildren: <Widget>[menuItemButton(TestMenu.subSubSubMenu1)]),
           ],
         ),
         menuItemButton(TestMenu.subMenu6, enabled: false),

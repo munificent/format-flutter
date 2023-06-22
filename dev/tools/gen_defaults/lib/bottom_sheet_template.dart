@@ -5,12 +5,7 @@
 import 'template.dart';
 
 class BottomSheetTemplate extends TokenTemplate {
-  const BottomSheetTemplate(
-    super.blockName,
-    super.fileName,
-    super.tokens, {
-    super.colorSchemePrefix = '_colors.',
-  });
+  const BottomSheetTemplate(super.blockName, super.fileName, super.tokens, {super.colorSchemePrefix = '_colors.'});
 
   @override
   String generate() => '''

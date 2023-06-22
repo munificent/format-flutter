@@ -16,11 +16,8 @@ void main() {
 class ShowLicenses extends StatelessWidget {
   const ShowLicenses({super.key});
 
-  Widget _buildTestResultWidget(
-    BuildContext context,
-    AsyncSnapshot<List<LicenseEntry>> snapshot,
-  ) {
-    final List<LicenseEntry> entries = snapshot.data  ?? <LicenseEntry>[];
+  Widget _buildTestResultWidget(BuildContext context, AsyncSnapshot<List<LicenseEntry>> snapshot) {
+    final List<LicenseEntry> entries = snapshot.data ?? <LicenseEntry>[];
     String flutterPackage = '';
     final List<String> flutterParagraphs = <String>[];
     String enginePackage = '';
@@ -28,15 +25,11 @@ class ShowLicenses extends StatelessWidget {
     for (final LicenseEntry entry in entries) {
       if (entry.packages.contains('flutter')) {
         flutterPackage = 'flutter';
-        flutterParagraphs.addAll(
-          entry.paragraphs.map<String>((LicenseParagraph para) => para.text),
-        );
+        flutterParagraphs.addAll(entry.paragraphs.map<String>((LicenseParagraph para) => para.text));
       }
       if (entry.packages.contains('engine')) {
         enginePackage = 'engine';
-        engineParagraphs.addAll(
-          entry.paragraphs.map<String>((LicenseParagraph para) => para.text),
-        );
+        engineParagraphs.addAll(entry.paragraphs.map<String>((LicenseParagraph para) => para.text));
       }
     }
 
@@ -51,9 +44,7 @@ class ShowLicenses extends StatelessWidget {
       Text('${engineParagraphs.length}', key: const ValueKey<String>('EngineCount')),
     ]);
 
-    return ListView(
-      children: result,
-    );
+    return ListView(children: result);
   }
 
   @override

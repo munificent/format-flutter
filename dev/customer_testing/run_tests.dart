@@ -17,14 +17,12 @@ Future<void> main(List<String> arguments) async {
 
 // Return true if successful, false if failed.
 Future<bool> run(List<String> arguments) async {
-  final ArgParser argParser = ArgParser(
-    allowTrailingOptions: false,
-    usageLineLength: 72,
-  )
+  final ArgParser argParser = ArgParser(allowTrailingOptions: false, usageLineLength: 72)
     ..addOption(
       'repeat',
       defaultsTo: '1',
-      help: 'How many times to run each test. Set to a high value to look for flakes. If a test specifies a number of iterations, the lower of the two values is used.',
+      help:
+          'How many times to run each test. Set to a high value to look for flakes. If a test specifies a number of iterations, the lower of the two values is used.',
       valueHelp: 'count',
     )
     ..addOption(
@@ -39,23 +37,10 @@ Future<bool> run(List<String> arguments) async {
       help: 'The current shard to run the tests with the range [0 .. shards - 1]. Used in continuous integration.',
       valueHelp: 'count',
     )
-    ..addFlag(
-      'skip-on-fetch-failure',
-      help: 'Whether to skip tests that we fail to download.',
-    )
-    ..addFlag(
-      'skip-template',
-      help: 'Whether to skip tests named "template.test".',
-    )
-    ..addFlag(
-      'verbose',
-      help: 'Describe what is happening in detail.',
-    )
-    ..addFlag(
-      'help',
-      negatable: false,
-      help: 'Print this help message.',
-    );
+    ..addFlag('skip-on-fetch-failure', help: 'Whether to skip tests that we fail to download.')
+    ..addFlag('skip-template', help: 'Whether to skip tests named "template.test".')
+    ..addFlag('verbose', help: 'Describe what is happening in detail.')
+    ..addFlag('help', negatable: false, help: 'Print this help message.');
 
   void printHelp() {
     print('run_tests.dart [options...] path/to/file1.test path/to/file2.test...');
@@ -82,14 +67,19 @@ Future<bool> run(List<String> arguments) async {
   final bool help = parsedArguments['help'] as bool;
   final int? numberShards = int.tryParse(parsedArguments['shards'] as String);
   final int? shardIndex = int.tryParse(parsedArguments['shard-index'] as String);
-  final List<File> files = parsedArguments
-    .rest
-    .expand((String path) => Glob(path).listFileSystemSync(const LocalFileSystem()))
-    .whereType<File>()
-    .where((File file) => !skipTemplate || path.basename(file.path) != 'template.test')
-    .toList();
+  final List<File> files = parsedArguments.rest
+      .expand((String path) => Glob(path).listFileSystemSync(const LocalFileSystem()))
+      .whereType<File>()
+      .where((File file) => !skipTemplate || path.basename(file.path) != 'template.test')
+      .toList();
 
-  if (help || repeat == null || files.isEmpty || numberShards == null || numberShards <= 0 || shardIndex == null || shardIndex < 0) {
+  if (help ||
+      repeat == null ||
+      files.isEmpty ||
+      numberShards == null ||
+      numberShards <= 0 ||
+      shardIndex == null ||
+      shardIndex < 0) {
     printHelp();
     if (verbose) {
       if (repeat == null) {
@@ -117,7 +107,7 @@ Future<bool> run(List<String> arguments) async {
   if (shardIndex > numberShards - 1) {
     print(
       'Error: The specified shard index ($shardIndex) is more than the specified number of shards ($numberShards). '
-      'It must be in the range [0 .. shards - 1].'
+      'It must be in the range [0 .. shards - 1].',
     );
     return false;
   }

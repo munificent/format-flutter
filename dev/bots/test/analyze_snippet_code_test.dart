@@ -53,15 +53,12 @@ void main() {
   }
 
   test('analyze_snippet_code smoke test', () {
-    final ProcessResult process = Process.runSync(
-      '../../bin/cache/dart-sdk/bin/dart',
-      <String>[
-        '--enable-asserts',
-        'analyze_snippet_code.dart',
-        '--no-include-dart-ui',
-        'test/analyze-snippet-code-test-input',
-      ],
-    );
+    final ProcessResult process = Process.runSync('../../bin/cache/dart-sdk/bin/dart', <String>[
+      '--enable-asserts',
+      'analyze_snippet_code.dart',
+      '--no-include-dart-ui',
+      'test/analyze-snippet-code-test-input',
+    ]);
     expect(process.stdout, isEmpty);
     final List<String> stderrLines = process.stderr.toString().split('\n');
     expect(stderrLines.length, stderrLines.toSet().length, reason: 'found duplicates in $stderrLines');
@@ -76,15 +73,12 @@ void main() {
   });
 
   test('Analyzes dart:ui code', () {
-    final ProcessResult process = Process.runSync(
-      '../../bin/cache/dart-sdk/bin/dart',
-      <String>[
-        '--enable-asserts',
-        'analyze_snippet_code.dart',
-        '--dart-ui-location=test/analyze-snippet-code-test-dart-ui',
-        'test/analyze-snippet-code-test-input',
-      ],
-    );
+    final ProcessResult process = Process.runSync('../../bin/cache/dart-sdk/bin/dart', <String>[
+      '--enable-asserts',
+      'analyze_snippet_code.dart',
+      '--dart-ui-location=test/analyze-snippet-code-test-dart-ui',
+      'test/analyze-snippet-code-test-input',
+    ]);
     expect(process.stdout, isEmpty);
     final List<String> stderrLines = process.stderr.toString().split('\n');
     expect(stderrLines.length, stderrLines.toSet().length, reason: 'found duplicates in $stderrLines');

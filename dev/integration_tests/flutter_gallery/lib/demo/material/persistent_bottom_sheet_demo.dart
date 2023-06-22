@@ -27,30 +27,27 @@ class _PersistentBottomSheetDemoState extends State<PersistentBottomSheetDemo> {
   }
 
   void _showBottomSheet() {
-    setState(() { // disable the button
+    setState(() {
+      // disable the button
       _showBottomSheetCallback = null;
     });
     _scaffoldKey.currentState!.showBottomSheet<void>((BuildContext context) {
       final ThemeData themeData = Theme.of(context);
       return Container(
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: themeData.disabledColor))
-        ),
+        decoration: BoxDecoration(border: Border(top: BorderSide(color: themeData.disabledColor))),
         child: Padding(
           padding: const EdgeInsets.all(32.0),
-          child: Text('This is a Material persistent bottom sheet. Drag downwards to dismiss it.',
+          child: Text(
+            'This is a Material persistent bottom sheet. Drag downwards to dismiss it.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: themeData.colorScheme.secondary,
-              fontSize: 24.0,
-            ),
+            style: TextStyle(color: themeData.colorScheme.secondary, fontSize: 24.0),
           ),
         ),
       );
-    })
-    .closed.whenComplete(() {
+    }).closed.whenComplete(() {
       if (mounted) {
-        setState(() { // re-enable the button
+        setState(() {
+          // re-enable the button
           _showBottomSheetCallback = _showBottomSheet;
         });
       }
@@ -82,24 +79,14 @@ class _PersistentBottomSheetDemoState extends State<PersistentBottomSheetDemo> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('Persistent bottom sheet'),
-        actions: <Widget>[
-          MaterialDemoDocumentationButton(PersistentBottomSheetDemo.routeName),
-        ],
+        actions: <Widget>[MaterialDemoDocumentationButton(PersistentBottomSheetDemo.routeName)],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showMessage,
         backgroundColor: Colors.redAccent,
-        child: const Icon(
-          Icons.add,
-          semanticLabel: 'Add',
-        ),
+        child: const Icon(Icons.add, semanticLabel: 'Add'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: _showBottomSheetCallback,
-          child: const Text('SHOW BOTTOM SHEET'),
-        ),
-      ),
+      body: Center(child: ElevatedButton(onPressed: _showBottomSheetCallback, child: const Text('SHOW BOTTOM SHEET'))),
     );
   }
 }

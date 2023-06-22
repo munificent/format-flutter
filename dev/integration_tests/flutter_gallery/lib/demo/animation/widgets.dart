@@ -10,7 +10,7 @@ const double kSectionIndicatorWidth = 32.0;
 
 // The card for a single section. Displays the section's gradient and background image.
 class SectionCard extends StatelessWidget {
-  const SectionCard({ super.key, required this.section });
+  const SectionCard({super.key, required this.section});
 
   final Section section;
 
@@ -20,14 +20,7 @@ class SectionCard extends StatelessWidget {
       label: section.title,
       button: true,
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: <Color>[
-              section.leftColor!,
-              section.rightColor!,
-            ],
-          ),
-        ),
+        decoration: BoxDecoration(gradient: LinearGradient(colors: <Color>[section.leftColor!, section.rightColor!])),
         child: Image.asset(
           section.backgroundAsset!,
           package: section.backgroundAssetPackage,
@@ -63,9 +56,7 @@ class SectionTitle extends StatelessWidget {
     textBaseline: TextBaseline.alphabetic,
   );
 
-  static final TextStyle sectionTitleShadowStyle = sectionTitleStyle.copyWith(
-    color: const Color(0x19000000),
-  );
+  static final TextStyle sectionTitleShadowStyle = sectionTitleStyle.copyWith(color: const Color(0x19000000));
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +68,7 @@ class SectionTitle extends StatelessWidget {
           alignment: Alignment.center,
           child: Stack(
             children: <Widget>[
-              Positioned(
-                top: 4.0,
-                child: Text(section.title!, style: sectionTitleShadowStyle),
-              ),
+              Positioned(top: 4.0, child: Text(section.title!, style: sectionTitleShadowStyle)),
               Text(section.title!, style: sectionTitleStyle),
             ],
           ),
@@ -92,27 +80,25 @@ class SectionTitle extends StatelessWidget {
 
 // Small horizontal bar that indicates the selected section.
 class SectionIndicator extends StatelessWidget {
-  const SectionIndicator({ super.key, this.opacity = 1.0 });
+  const SectionIndicator({super.key, this.opacity = 1.0});
 
   final double opacity;
 
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: Container(
-        width: kSectionIndicatorWidth,
-        height: 3.0,
-        color: Colors.white.withOpacity(opacity),
-      ),
+      child: Container(width: kSectionIndicatorWidth, height: 3.0, color: Colors.white.withOpacity(opacity)),
     );
   }
 }
 
 // Display a single SectionDetail.
 class SectionDetailView extends StatelessWidget {
-  SectionDetailView({ super.key, required this.detail })
-    : assert(detail.imageAsset != null),
-      assert((detail.imageAsset ?? detail.title) != null);
+  SectionDetailView({
+    super.key,
+    required this.detail,
+  }) : assert(detail.imageAsset != null),
+       assert((detail.imageAsset ?? detail.title) != null);
 
   final SectionDetail detail;
 
@@ -122,10 +108,7 @@ class SectionDetailView extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6.0),
         image: DecorationImage(
-          image: AssetImage(
-            detail.imageAsset!,
-            package: detail.imageAssetPackage,
-          ),
+          image: AssetImage(detail.imageAsset!, package: detail.imageAssetPackage),
           fit: BoxFit.cover,
         ),
       ),
@@ -136,11 +119,7 @@ class SectionDetailView extends StatelessWidget {
       item = Container(
         height: 240.0,
         padding: const EdgeInsets.all(16.0),
-        child: SafeArea(
-          top: false,
-          bottom: false,
-          child: image,
-        ),
+        child: SafeArea(top: false, bottom: false, child: image),
       );
     } else {
       item = ListTile(
@@ -150,9 +129,6 @@ class SectionDetailView extends StatelessWidget {
       );
     }
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: Colors.grey.shade200),
-      child: item,
-    );
+    return DecoratedBox(decoration: BoxDecoration(color: Colors.grey.shade200), child: item);
   }
 }

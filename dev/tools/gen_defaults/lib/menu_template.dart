@@ -5,9 +5,7 @@
 import 'template.dart';
 
 class MenuTemplate extends TokenTemplate {
-  const MenuTemplate(super.blockName, super.fileName, super.tokens, {
-    super.colorSchemePrefix = '_colors.',
-  });
+  const MenuTemplate(super.blockName, super.fileName, super.tokens, {super.colorSchemePrefix = '_colors.'});
 
   @override
   String generate() => '''

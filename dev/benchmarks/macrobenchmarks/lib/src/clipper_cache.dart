@@ -13,8 +13,7 @@ class ClipperCachePage extends StatefulWidget {
   State<ClipperCachePage> createState() => _ClipperCachePageState();
 }
 
-class _ClipperCachePageState extends State<ClipperCachePage>
-    with TickerProviderStateMixin {
+class _ClipperCachePageState extends State<ClipperCachePage> with TickerProviderStateMixin {
   final double _animateOffset = 100;
   final ScrollController _controller = ScrollController();
   final bool _isComplex = true;
@@ -55,18 +54,9 @@ class _ClipperCachePageState extends State<ClipperCachePage>
         controller: _controller,
         children: <Widget>[
           SizedBox(height: _topMargin),
-          ClipPath(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: _makeChild(0, _isComplex)
-          ),
-          ClipRect(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: _makeChild(1, _isComplex)
-          ),
-          ClipRRect(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: _makeChild(2, _isComplex)
-          ),
+          ClipPath(clipBehavior: Clip.antiAliasWithSaveLayer, child: _makeChild(0, _isComplex)),
+          ClipRect(clipBehavior: Clip.antiAliasWithSaveLayer, child: _makeChild(1, _isComplex)),
+          ClipRRect(clipBehavior: Clip.antiAliasWithSaveLayer, child: _makeChild(2, _isComplex)),
           const SizedBox(height: 1000),
         ],
       ),
@@ -76,11 +66,7 @@ class _ClipperCachePageState extends State<ClipperCachePage>
   Widget _makeChild(int itemIndex, bool complex) {
     final BoxDecoration decoration = BoxDecoration(
       color: Colors.white70,
-      boxShadow: const <BoxShadow>[
-        BoxShadow(
-          blurRadius: 5.0,
-        ),
-      ],
+      boxShadow: const <BoxShadow>[BoxShadow(blurRadius: 5.0)],
       borderRadius: BorderRadius.circular(5.0),
     );
     return RepaintBoundary(

@@ -5,12 +5,7 @@
 import 'package:flutter/material.dart';
 
 class TextStyleItem extends StatelessWidget {
-  const TextStyleItem({
-    super.key,
-    required this.name,
-    required this.style,
-    required this.text,
-  });
+  const TextStyleItem({super.key, required this.name, required this.style, required this.text});
 
   final String name;
   final TextStyle style;
@@ -25,13 +20,8 @@ class TextStyleItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          SizedBox(
-            width: 72.0,
-            child: Text(name, style: nameStyle),
-          ),
-          Expanded(
-            child: Text(text, style: style.copyWith(height: 1.0)),
-          ),
+          SizedBox(width: 72.0, child: Text(name, style: nameStyle)),
+          Expanded(child: Text(text, style: style.copyWith(height: 1.0))),
         ],
       ),
     );
@@ -66,16 +56,7 @@ class TypographyDemo extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Typography')),
-      body: SafeArea(
-        top: false,
-        bottom: false,
-        child: Scrollbar(
-          child: ListView(
-            primary: true,
-            children: styleItems,
-          ),
-        ),
-      ),
+      body: SafeArea(top: false, bottom: false, child: Scrollbar(child: ListView(primary: true, children: styleItems))),
     );
   }
 }

@@ -45,7 +45,7 @@ bool _isTaskRegistered = false;
 ///
 /// If no `processManager` is provided, a default [LocalProcessManager] is created
 /// for the task.
-Future<TaskResult> task(TaskFunction task, { ProcessManager? processManager }) async {
+Future<TaskResult> task(TaskFunction task, {ProcessManager? processManager}) async {
   if (_isTaskRegistered) {
     throw StateError('A task is already registered');
   }
@@ -66,12 +66,12 @@ Future<TaskResult> task(TaskFunction task, { ProcessManager? processManager }) a
 
 class _TaskRunner {
   _TaskRunner(this.task, this.processManager) {
-    registerExtension('ext.cocoonRunTask',
-        (String method, Map<String, String> parameters) async {
+    registerExtension('ext.cocoonRunTask', (String method, Map<String, String> parameters) async {
       final Duration? taskTimeout = parameters.containsKey('timeoutInMinutes')
-        ? Duration(minutes: int.parse(parameters['timeoutInMinutes']!))
-        : null;
-      final bool runFlutterConfig = parameters['runFlutterConfig'] != 'false'; // used by tests to avoid changing the configuration
+          ? Duration(minutes: int.parse(parameters['timeoutInMinutes']!))
+          : null;
+      final bool runFlutterConfig =
+          parameters['runFlutterConfig'] != 'false'; // used by tests to avoid changing the configuration
       final bool runProcessCleanup = parameters['runProcessCleanup'] != 'false';
       final String? localEngine = parameters['localEngine'];
       final TaskResult result = await run(
@@ -82,8 +82,7 @@ class _TaskRunner {
       );
       return ServiceExtensionResponse.result(json.encode(result.toJson()));
     });
-    registerExtension('ext.cocoonRunnerReady',
-        (String method, Map<String, String> parameters) async {
+    registerExtension('ext.cocoonRunnerReady', (String method, Map<String, String> parameters) async {
       return ServiceExtensionResponse.result('"ready"');
     });
   }
@@ -111,7 +110,8 @@ class _TaskRunner {
   /// Signals that this task runner finished running the task.
   Future<TaskResult> get whenDone => _completer.future;
 
-  Future<TaskResult> run(Duration? taskTimeout, {
+  Future<TaskResult> run(
+    Duration? taskTimeout, {
     bool runFlutterConfig = true,
     bool runProcessCleanup = true,
     required String? localEngine,
@@ -123,10 +123,7 @@ class _TaskRunner {
       late Set<RunningProcessInfo> beforeRunningDartInstances;
       if (runProcessCleanup) {
         section('Checking running Dart$exe processes');
-        beforeRunningDartInstances = await getRunningProcesses(
-          processName: 'dart$exe',
-          processManager: processManager,
-        );
+        beforeRunningDartInstances = await getRunningProcesses(processName: 'dart$exe', processManager: processManager);
         final Set<RunningProcessInfo> allProcesses = await getRunningProcesses(processManager: processManager);
         beforeRunningDartInstances.forEach(print);
         for (final RunningProcessInfo info in allProcesses) {
@@ -178,10 +175,8 @@ class _TaskRunner {
 
       if (runProcessCleanup) {
         section('Terminating lingering Dart$exe processes after task...');
-        final Set<RunningProcessInfo> afterRunningDartInstances = await getRunningProcesses(
-          processName: 'dart$exe',
-          processManager: processManager,
-        );
+        final Set<RunningProcessInfo> afterRunningDartInstances =
+            await getRunningProcesses(processName: 'dart$exe', processManager: processManager);
         for (final RunningProcessInfo info in afterRunningDartInstances) {
           if (!beforeRunningDartInstances.contains(info)) {
             print('$info was leaked by this test.');
@@ -270,23 +265,26 @@ class _TaskRunner {
 
   Future<TaskResult> _performTask() {
     final Completer<TaskResult> completer = Completer<TaskResult>();
-    Chain.capture(() async {
-      completer.complete(await task());
-    }, onError: (dynamic taskError, Chain taskErrorStack) {
-      final String message = 'Task failed: $taskError';
-      stderr
-        ..writeln(message)
-        ..writeln('\nStack trace:')
-        ..writeln(taskErrorStack.terse);
-      // IMPORTANT: We're completing the future _successfully_ but with a value
-      // that indicates a task failure. This is intentional. At this point we
-      // are catching errors coming from arbitrary (and untrustworthy) task
-      // code. Our goal is to convert the failure into a readable message.
-      // Propagating it further is not useful.
-      if (!completer.isCompleted) {
-        completer.complete(TaskResult.failure(message));
-      }
-    });
+    Chain.capture(
+      () async {
+        completer.complete(await task());
+      },
+      onError: (dynamic taskError, Chain taskErrorStack) {
+        final String message = 'Task failed: $taskError';
+        stderr
+          ..writeln(message)
+          ..writeln('\nStack trace:')
+          ..writeln(taskErrorStack.terse);
+        // IMPORTANT: We're completing the future _successfully_ but with a value
+        // that indicates a task failure. This is intentional. At this point we
+        // are catching errors coming from arbitrary (and untrustworthy) task
+        // code. Our goal is to convert the failure into a readable message.
+        // Propagating it further is not useful.
+        if (!completer.isCompleted) {
+          completer.complete(TaskResult.failure(message));
+        }
+      },
+    );
     return completer.future;
   }
 }

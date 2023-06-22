@@ -139,11 +139,7 @@ class ProcessRunner {
   ///
   /// Set `failOk` if [runProcess] should not throw an exception when the
   /// command completes with a non-zero exit code.
-  Future<String> runProcess(
-    List<String> commandLine, {
-    Directory? workingDirectory,
-    bool failOk = false,
-  }) async {
+  Future<String> runProcess(List<String> commandLine, {Directory? workingDirectory, bool failOk = false}) async {
     workingDirectory ??= defaultWorkingDirectory ?? Directory.current;
     if (subprocessOutput) {
       stderr.write('Running "${commandLine.join(' ')}" in ${workingDirectory.path}.\n');
@@ -164,22 +160,16 @@ class ProcessRunner {
         workingDirectory: workingDirectory.absolute.path,
         environment: environment,
       );
-      process.stdout.listen(
-        (List<int> event) {
-          output.addAll(event);
-          if (subprocessOutput) {
-            stdout.add(event);
-          }
-        },
-        onDone: () async => stdoutComplete.complete(),
-      );
+      process.stdout.listen((List<int> event) {
+        output.addAll(event);
+        if (subprocessOutput) {
+          stdout.add(event);
+        }
+      }, onDone: () async => stdoutComplete.complete());
       if (subprocessOutput) {
-        process.stderr.listen(
-          (List<int> event) {
-            stderr.add(event);
-          },
-          onDone: () async => stderrComplete.complete(),
-        );
+        process.stderr.listen((List<int> event) {
+          stderr.add(event);
+        }, onDone: () async => stderrComplete.complete());
       } else {
         stderrComplete.complete();
       }
@@ -196,10 +186,7 @@ class ProcessRunner {
     final int exitCode = await allComplete();
     if (exitCode != 0 && !failOk) {
       final String message = 'Running "${commandLine.join(' ')}" in ${workingDirectory.path} failed';
-      throw UnpublishException(
-        message,
-        ProcessResult(0, exitCode, null, 'returned $exitCode'),
-      );
+      throw UnpublishException(message, ProcessResult(0, exitCode, null, 'returned $exitCode'));
     }
     return utf8.decoder.convert(output).trim();
   }
@@ -214,12 +201,12 @@ class ArchiveUnpublisher {
     this.confirmed = false,
     ProcessManager? processManager,
     bool subprocessOutput = true,
-  })  : assert(revisionsBeingRemoved.length == 40),
-        metadataGsPath = '$gsReleaseFolder/${getMetadataFilename(platform)}',
-        _processRunner = ProcessRunner(
-          processManager: processManager ?? const LocalProcessManager(),
-          subprocessOutput: subprocessOutput,
-        );
+  }) : assert(revisionsBeingRemoved.length == 40),
+       metadataGsPath = '$gsReleaseFolder/${getMetadataFilename(platform)}',
+       _processRunner = ProcessRunner(
+         processManager: processManager ?? const LocalProcessManager(),
+         subprocessOutput: subprocessOutput,
+       );
 
   final PublishedPlatform platform;
   final String metadataGsPath;
@@ -233,12 +220,16 @@ class ArchiveUnpublisher {
   /// Remove the archive from Google Storage.
   Future<void> unpublishArchive() async {
     final Map<String, dynamic> jsonData = await _loadMetadata();
-    final List<Map<String, String>> releases = (jsonData['releases'] as List<dynamic>).map<Map<String, String>>((dynamic entry) {
-      final Map<String, dynamic> mapEntry = entry as Map<String, dynamic>;
-      return mapEntry.cast<String, String>();
-    }).toList();
+    final List<Map<String, String>> releases =
+        (jsonData['releases'] as List<dynamic>).map<Map<String, String>>((dynamic entry) {
+          final Map<String, dynamic> mapEntry = entry as Map<String, dynamic>;
+          return mapEntry.cast<String, String>();
+        }).toList();
     final Map<Channel, Map<String, String>> paths = await _getArchivePaths(releases);
-    releases.removeWhere((Map<String, String> value) => revisionsBeingRemoved.contains(value['hash']) && channels.contains(fromChannelName(value['channel'])));
+    releases.removeWhere(
+      (Map<String, String> value) =>
+          revisionsBeingRemoved.contains(value['hash']) && channels.contains(fromChannelName(value['channel'])),
+    );
     releases.sort((Map<String, String> a, Map<String, String> b) {
       final DateTime aDate = DateTime.parse(a['release_date']!);
       final DateTime bDate = DateTime.parse(b['release_date']!);
@@ -246,15 +237,21 @@ class ArchiveUnpublisher {
     });
     jsonData['releases'] = releases;
     for (final Channel channel in channels) {
-      if (!revisionsBeingRemoved.contains((jsonData['current_release'] as Map<String, dynamic>)[getChannelName(channel)])) {
+      if (!revisionsBeingRemoved.contains(
+        (jsonData['current_release'] as Map<String, dynamic>)[getChannelName(channel)],
+      )) {
         // Don't replace the current release if it's not one of the revisions we're removing.
         continue;
       }
-      final Map<String, String> replacementRelease = releases.firstWhere((Map<String, String> value) => value['channel'] == getChannelName(channel));
+      final Map<String, String> replacementRelease = releases.firstWhere(
+        (Map<String, String> value) => value['channel'] == getChannelName(channel),
+      );
       (jsonData['current_release'] as Map<String, dynamic>)[getChannelName(channel)] = replacementRelease['hash'];
       print(
         '${confirmed ? 'Reverting' : 'Would revert'} current ${getChannelName(channel)} '
-        '${getPublishedPlatform(platform)} release to ${replacementRelease['hash']} (version ${replacementRelease['version']}).'
+        '${getPublishedPlatform(
+          platform,
+        )} release to ${replacementRelease['hash']} (version ${replacementRelease['version']}).',
       );
     }
     await _cloudRemoveArchive(paths);
@@ -276,15 +273,15 @@ class ArchiveUnpublisher {
     final Set<String> missingRevisions = revisionsBeingRemoved.difference(hashes.intersection(revisionsBeingRemoved));
     if (missingRevisions.isNotEmpty) {
       final bool plural = missingRevisions.length > 1;
-      throw UnpublishException('Revision${plural ? 's' : ''} $missingRevisions ${plural ? 'are' : 'is'} not present in the server metadata.');
+      throw UnpublishException(
+        'Revision${plural ? 's' : ''} $missingRevisions ${plural ? 'are' : 'is'} not present in the server metadata.',
+      );
     }
     return paths;
   }
 
   Future<Map<String, dynamic>> _loadMetadata() async {
-    final File metadataFile = File(
-      path.join(tempDir.absolute.path, getMetadataFilename(platform)),
-    );
+    final File metadataFile = File(path.join(tempDir.absolute.path, getMetadataFilename(platform)));
     // Always run this, even in dry runs.
     await _runGsUtil(<String>['cp', metadataGsPath, metadataFile.absolute.path], confirm: true);
     final String currentMetadata = metadataFile.readAsStringSync();
@@ -307,12 +304,12 @@ class ArchiveUnpublisher {
     // Windows wants to echo the commands that execute in gsutil.bat to the
     // stdout when we do that. So, we copy the file locally and then read it
     // back in.
-    final File metadataFile = File(
-      path.join(tempDir.absolute.path, getMetadataFilename(platform)),
-    );
+    final File metadataFile = File(path.join(tempDir.absolute.path, getMetadataFilename(platform)));
     const JsonEncoder encoder = JsonEncoder.withIndent('  ');
     metadataFile.writeAsStringSync(encoder.convert(jsonData));
-    print('${confirmed ? 'Overwriting' : 'Would overwrite'} $metadataGsPath with contents of ${metadataFile.absolute.path}');
+    print(
+      '${confirmed ? 'Overwriting' : 'Would overwrite'} $metadataGsPath with contents of ${metadataFile.absolute.path}',
+    );
     await _cloudReplaceDest(metadataFile.absolute.path, metadataGsPath);
   }
 
@@ -324,11 +321,7 @@ class ArchiveUnpublisher {
   }) async {
     final List<String> command = <String>['gsutil', '--', ...args];
     if (confirm) {
-      return _processRunner.runProcess(
-        command,
-        workingDirectory: workingDirectory,
-        failOk: failOk,
-      );
+      return _processRunner.runProcess(command, workingDirectory: workingDirectory, failOk: failOk);
     } else {
       print('Would run: ${command.join(' ')}');
       return '';
@@ -386,8 +379,10 @@ void _printBanner(String message) {
 
 /// Prepares a flutter git repo to be removed from the published cloud storage.
 Future<void> main(List<String> rawArguments) async {
-  final List<String> allowedChannelValues = Channel.values.map<String>((Channel channel) => getChannelName(channel)).toList();
-  final List<String> allowedPlatformNames = PublishedPlatform.values.map<String>((PublishedPlatform platform) => getPublishedPlatform(platform)).toList();
+  final List<String> allowedChannelValues =
+      Channel.values.map<String>((Channel channel) => getChannelName(channel)).toList();
+  final List<String> allowedPlatformNames =
+      PublishedPlatform.values.map<String>((PublishedPlatform platform) => getPublishedPlatform(platform)).toList();
   final ArgParser argParser = ArgParser();
   argParser.addOption(
     'temp_dir',
@@ -396,11 +391,13 @@ Future<void> main(List<String> rawArguments) async {
         'specified, then by default a generated temporary directory will be '
         'created, used, and removed automatically when the script exits.',
   );
-  argParser.addMultiOption('revision',
-      help: 'The Flutter git repo revisions to remove from the published site. '
-          'Must be full 40-character hashes. More than one may be specified, '
-          'either by giving the option more than once, or by giving a comma '
-          'separated list. Required.');
+  argParser.addMultiOption(
+    'revision',
+    help: 'The Flutter git repo revisions to remove from the published site. '
+        'Must be full 40-character hashes. More than one may be specified, '
+        'either by giving the option more than once, or by giving a comma '
+        'separated list. Required.',
+  );
   argParser.addMultiOption(
     'channel',
     allowed: allowedChannelValues,
@@ -426,11 +423,7 @@ Future<void> main(List<String> rawArguments) async {
         'must be set to perform any action on the server, otherwise only a dry '
         'run is performed.',
   );
-  argParser.addFlag(
-    'help',
-    negatable: false,
-    help: 'Print help for this command.',
-  );
+  argParser.addFlag('help', negatable: false, help: 'Print help for this command.');
 
   final ArgResults parsedArguments = argParser.parse(rawArguments);
 
@@ -480,7 +473,8 @@ Future<void> main(List<String> rawArguments) async {
   final Set<Channel> channels = channelOptions.map<Channel>((String value) => fromChannelName(value)).toSet();
   final List<String> platformArg = parsedArguments['platform'] as List<String>;
   final List<String> platformOptions = platformArg.isNotEmpty ? platformArg : allowedPlatformNames;
-  final List<PublishedPlatform> platforms = platformOptions.map<PublishedPlatform>((String value) => fromPublishedPlatform(value)).toList();
+  final List<PublishedPlatform> platforms =
+      platformOptions.map<PublishedPlatform>((String value) => fromPublishedPlatform(value)).toList();
   int exitCode = 0;
   late String message;
   late String stack;

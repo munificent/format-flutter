@@ -25,26 +25,19 @@ void macroPerfTestE2E(
   ControlCallback? body,
   ControlCallback? setup,
 }) {
-  macroPerfTestMultiPageE2E(
-    testName,
-    <ScrollableButtonRoute>[
-      ScrollableButtonRoute(kScrollableName, routeName),
-    ],
-    pageDelay: pageDelay,
-    duration: duration,
-    body: body,
-    setup: setup,
-  );
+  macroPerfTestMultiPageE2E(testName, <ScrollableButtonRoute>[
+    ScrollableButtonRoute(kScrollableName, routeName),
+  ], pageDelay: pageDelay, duration: duration, body: body, setup: setup);
 }
 
 void macroPerfTestMultiPageE2E(
-    String testName,
-    List<ScrollableButtonRoute> routes, {
-      Duration? pageDelay,
-      Duration duration = const Duration(seconds: 3),
-      ControlCallback? body,
-      ControlCallback? setup,
-    }) {
+  String testName,
+  List<ScrollableButtonRoute> routes, {
+  Duration? pageDelay,
+  Duration duration = const Duration(seconds: 3),
+  ControlCallback? body,
+  ControlCallback? setup,
+}) {
   final WidgetsBinding widgetsBinding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   assert(widgetsBinding is IntegrationTestWidgetsFlutterBinding);
   final IntegrationTestWidgetsFlutterBinding binding = widgetsBinding as IntegrationTestWidgetsFlutterBinding;

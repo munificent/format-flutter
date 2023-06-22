@@ -15,14 +15,7 @@ Future<void> main() async {
     await inDirectory(projectDirectory, () async {
       section('Build gallery app');
 
-      await flutter(
-        'build',
-        options: <String>[
-          'macos',
-          '-v',
-          '--debug',
-        ],
-      );
+      await flutter('build', options: <String>['macos', '-v', '--debug']);
     });
 
     section('Run platform unit tests');

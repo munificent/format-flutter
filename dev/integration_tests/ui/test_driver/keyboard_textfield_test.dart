@@ -28,12 +28,7 @@ void main() {
 
       // Align TextField with bottom edge to ensure it would be covered when keyboard comes up.
       await driver.waitForAbsent(textFieldFinder);
-      await driver.scrollUntilVisible(
-        listViewFinder,
-        textFieldFinder,
-        alignment: 1.0,
-        dyScroll: -20.0,
-      );
+      await driver.scrollUntilVisible(listViewFinder, textFieldFinder, alignment: 1.0, dyScroll: -20.0);
       await driver.waitFor(textFieldFinder);
       final double scrollOffsetWithoutKeyboard = double.parse(await driver.getText(offsetFinder));
 

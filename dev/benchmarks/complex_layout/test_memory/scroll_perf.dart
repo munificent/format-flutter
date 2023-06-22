@@ -27,9 +27,7 @@ Future<void> main() async {
       ready.complete();
     },
     behavior: HitTestBehavior.opaque,
-    child: const IgnorePointer(
-      child: ComplexLayoutApp(),
-    ),
+    child: const IgnorePointer(child: ComplexLayoutApp()),
   ));
   await SchedulerBinding.instance.endOfFrame;
 
@@ -43,12 +41,7 @@ Future<void> main() async {
   debugPrint('Continuing...');
 
   // remove onTap handler, enable pointer events for app
-  runApp(GestureDetector(
-    child: const IgnorePointer(
-      ignoring: false,
-      child: ComplexLayoutApp(),
-    ),
-  ));
+  runApp(GestureDetector(child: const IgnorePointer(ignoring: false, child: ComplexLayoutApp())));
   await SchedulerBinding.instance.endOfFrame;
 
   final WidgetController controller = LiveWidgetController(WidgetsBinding.instance);

@@ -43,8 +43,7 @@ bool _isAlmost(double x, double y, double epsilon) {
 
 List<double> _deepRed = <double>[1.0931, -0.2268, -0.1501];
 
-bool _findRGBAF16Color(
-    Uint8List bytes, int width, int height, List<double> color) {
+bool _findRGBAF16Color(Uint8List bytes, int width, int height, List<double> color) {
   final ByteData byteData = ByteData.sublistView(bytes);
   expect(bytes.lengthInBytes, width * height * 8);
   expect(bytes.lengthInBytes, byteData.lengthInBytes);
@@ -54,17 +53,14 @@ bool _findRGBAF16Color(
     final double blue = _decodeHalf((pixel >> 32) & 0xffff);
     final double green = _decodeHalf((pixel >> 16) & 0xffff);
     final double red = _decodeHalf((pixel >> 0) & 0xffff);
-    if (_isAlmost(red, color[0], 0.01) &&
-        _isAlmost(green, color[1], 0.01) &&
-        _isAlmost(blue, color[2], 0.01)) {
+    if (_isAlmost(red, color[0], 0.01) && _isAlmost(green, color[1], 0.01) && _isAlmost(blue, color[2], 0.01)) {
       foundDeepRed = true;
     }
   }
   return foundDeepRed;
 }
 
-bool _findBGRA10Color(
-    Uint8List bytes, int width, int height, List<double> color) {
+bool _findBGRA10Color(Uint8List bytes, int width, int height, List<double> color) {
   final ByteData byteData = ByteData.sublistView(bytes);
   expect(bytes.lengthInBytes, width * height * 8);
   expect(bytes.lengthInBytes, byteData.lengthInBytes);
@@ -74,17 +70,14 @@ bool _findBGRA10Color(
     final double blue = _decodeBGR10((pixel >> 6) & 0x3ff);
     final double green = _decodeBGR10((pixel >> 22) & 0x3ff);
     final double red = _decodeBGR10((pixel >> 38) & 0x3ff);
-    if (_isAlmost(red, color[0], 0.01) &&
-        _isAlmost(green, color[1], 0.01) &&
-        _isAlmost(blue, color[2], 0.01)) {
+    if (_isAlmost(red, color[0], 0.01) && _isAlmost(green, color[1], 0.01) && _isAlmost(blue, color[2], 0.01)) {
       foundDeepRed = true;
     }
   }
   return foundDeepRed;
 }
 
-bool _findBGR10Color(
-    Uint8List bytes, int width, int height, List<double> color) {
+bool _findBGR10Color(Uint8List bytes, int width, int height, List<double> color) {
   final ByteData byteData = ByteData.sublistView(bytes);
   expect(bytes.lengthInBytes, width * height * 4);
   expect(bytes.lengthInBytes, byteData.lengthInBytes);
@@ -94,9 +87,7 @@ bool _findBGR10Color(
     final double blue = _decodeBGR10(pixel & 0x3ff);
     final double green = _decodeBGR10((pixel >> 10) & 0x3ff);
     final double red = _decodeBGR10((pixel >> 20) & 0x3ff);
-    if (_isAlmost(red, color[0], 0.01) &&
-        _isAlmost(green, color[1], 0.01) &&
-        _isAlmost(blue, color[2], 0.01)) {
+    if (_isAlmost(red, color[0], 0.01) && _isAlmost(green, color[1], 0.01) && _isAlmost(blue, color[2], 0.01)) {
       foundDeepRed = true;
     }
   }
@@ -129,8 +120,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
       const MethodChannel channel = MethodChannel('flutter/screenshot');
-      final List<Object?> result =
-          await channel.invokeMethod('test') as List<Object?>;
+      final List<Object?> result = await channel.invokeMethod('test') as List<Object?>;
       expect(_findColor(result, _deepRed), isTrue);
     });
     testWidgets('look for display p3 deepest red', (WidgetTester tester) async {
@@ -138,8 +128,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
       const MethodChannel channel = MethodChannel('flutter/screenshot');
-      final List<Object?> result =
-          await channel.invokeMethod('test') as List<Object?>;
+      final List<Object?> result = await channel.invokeMethod('test') as List<Object?>;
       expect(_findColor(result, _deepRed), isTrue);
     });
     testWidgets('no p3 deepest red without image', (WidgetTester tester) async {
@@ -147,8 +136,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
       const MethodChannel channel = MethodChannel('flutter/screenshot');
-      final List<Object?> result =
-          await channel.invokeMethod('test') as List<Object?>;
+      final List<Object?> result = await channel.invokeMethod('test') as List<Object?>;
       expect(_findColor(result, _deepRed), isFalse);
       expect(_findColor(result, <double>[0.0, 1.0, 0.0]), isFalse);
     });
@@ -157,8 +145,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
       const MethodChannel channel = MethodChannel('flutter/screenshot');
-      final List<Object?> result =
-          await channel.invokeMethod('test') as List<Object?>;
+      final List<Object?> result = await channel.invokeMethod('test') as List<Object?>;
       expect(_findColor(result, _deepRed), isTrue);
       expect(_findColor(result, <double>[0.0, 1.0, 0.0]), isTrue);
     });
@@ -167,8 +154,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
       const MethodChannel channel = MethodChannel('flutter/screenshot');
-      final List<Object?> result =
-          await channel.invokeMethod('test') as List<Object?>;
+      final List<Object?> result = await channel.invokeMethod('test') as List<Object?>;
       expect(_findColor(result, <double>[0.0, 1.0, 0.0]), isTrue);
     });
   });

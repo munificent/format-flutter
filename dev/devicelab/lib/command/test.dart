@@ -8,13 +8,17 @@ import '../framework/runner.dart';
 
 class TestCommand extends Command<void> {
   TestCommand() {
-    argParser.addOption('task',
-        abbr: 't',
-        help: 'The name of a task listed under bin/tasks.\n'
-            '   Example: complex_layout__start_up.\n');
-    argParser.addMultiOption('task-args',
-        help: 'The name of a task listed under bin/tasks.\n'
-            'For example, "--task-args build" is passed as "bin/task/task.dart --build"');
+    argParser.addOption(
+      'task',
+      abbr: 't',
+      help: 'The name of a task listed under bin/tasks.\n'
+          '   Example: complex_layout__start_up.\n',
+    );
+    argParser.addMultiOption(
+      'task-args',
+      help: 'The name of a task listed under bin/tasks.\n'
+          'For example, "--task-args build" is passed as "bin/task/task.dart --build"',
+    );
     argParser.addOption(
       'device-id',
       abbr: 'd',
@@ -44,17 +48,13 @@ class TestCommand extends Command<void> {
           'the location based on the value of the --flutter-root option.',
     );
     argParser.addOption('luci-builder', help: '[Flutter infrastructure] Name of the LUCI builder being run on.');
-    argParser.addOption('results-file',
-        help: '[Flutter infrastructure] File path for test results. If passed with\n'
-            'task, will write test results to the file.');
-    argParser.addFlag(
-      'silent',
-      help: 'Suppresses standard output and only print standard error output.',
+    argParser.addOption(
+      'results-file',
+      help: '[Flutter infrastructure] File path for test results. If passed with\n'
+          'task, will write test results to the file.',
     );
-    argParser.addFlag(
-      'use-emulator',
-      help: 'Use an emulator instead of a device to run tests.'
-    );
+    argParser.addFlag('silent', help: 'Suppresses standard output and only print standard error output.');
+    argParser.addFlag('use-emulator', help: 'Use an emulator instead of a device to run tests.');
   }
 
   @override

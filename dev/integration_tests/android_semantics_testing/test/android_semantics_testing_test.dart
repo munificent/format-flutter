@@ -83,7 +83,7 @@ void main() {
         contentDescription: 'other hello',
         className: 'android.view.View',
         id: 23,
-        rect:  const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
+        rect: const Rect.fromLTRB(0.0, 0.0, 10.0, 10.0),
         actions: <AndroidSemanticsAction>[
           AndroidSemanticsAction.focus,
           AndroidSemanticsAction.clearFocus,

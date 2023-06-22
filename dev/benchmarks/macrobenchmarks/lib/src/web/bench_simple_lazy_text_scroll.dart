@@ -25,11 +25,8 @@ class BenchSimpleLazyTextScroll extends WidgetRecorder {
       child: Row(
         children: <Widget>[
           Flexible(
-            child: _TestScrollingWidget(
-              initialScrollOffset: 0,
-              scrollDistance: 300,
-              scrollDuration: Duration(seconds: 1),
-            ),
+            child:
+                _TestScrollingWidget(initialScrollOffset: 0, scrollDistance: 300, scrollDuration: Duration(seconds: 1)),
           ),
           Flexible(
             child: _TestScrollingWidget(
@@ -75,18 +72,14 @@ class _TestScrollingWidgetState extends State<_TestScrollingWidget> {
   void initState() {
     super.initState();
 
-    scrollController = ScrollController(
-      initialScrollOffset: widget.initialScrollOffset,
-    );
+    scrollController = ScrollController(initialScrollOffset: widget.initialScrollOffset);
 
     // Without the timer the animation doesn't begin.
     Timer.run(() async {
       bool forward = true;
       while (true) {
         await scrollController.animateTo(
-          forward
-              ? widget.initialScrollOffset + widget.scrollDistance
-              : widget.initialScrollOffset,
+          forward ? widget.initialScrollOffset + widget.scrollDistance : widget.initialScrollOffset,
           curve: Curves.linear,
           duration: widget.scrollDuration,
         );

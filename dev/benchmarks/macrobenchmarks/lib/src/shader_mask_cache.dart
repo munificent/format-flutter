@@ -12,8 +12,7 @@ class ShaderMaskCachePage extends StatefulWidget {
   State<ShaderMaskCachePage> createState() => _ShaderMaskCachePageState();
 }
 
-class _ShaderMaskCachePageState extends State<ShaderMaskCachePage>
-    with TickerProviderStateMixin {
+class _ShaderMaskCachePageState extends State<ShaderMaskCachePage> with TickerProviderStateMixin {
   final ScrollController _controller = ScrollController();
 
   @override
@@ -60,12 +59,7 @@ class _ShaderMaskCachePageState extends State<ShaderMaskCachePage>
       },
       child: Container(
         clipBehavior: Clip.antiAlias,
-        decoration: const BoxDecoration(boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Colors.white,
-            blurRadius: 5.0,
-          ),
-        ]),
+        decoration: const BoxDecoration(boxShadow: <BoxShadow>[BoxShadow(color: Colors.white, blurRadius: 5.0)]),
         child: ListItem(index: index),
       ),
     );

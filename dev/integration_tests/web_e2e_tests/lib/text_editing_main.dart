@@ -34,66 +34,44 @@ class _MyHomePageState extends State<MyHomePage> {
   // Controller with no initial value;
   final TextEditingController _emptyController = TextEditingController();
 
-  final TextEditingController _controller =
-      TextEditingController(text: 'Text1');
+  final TextEditingController _controller = TextEditingController(text: 'Text1');
 
-  final TextEditingController _controller2 =
-      TextEditingController(text: 'Text2');
+  final TextEditingController _controller2 = TextEditingController(text: 'Text2');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title ?? ''),
-      ),
+      appBar: AppBar(title: Text(widget.title ?? '')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Text Editing Test 1',
-            ),
+            const Text('Text Editing Test 1'),
             TextFormField(
               key: const Key('empty-input'),
               enabled: true,
               controller: _emptyController,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(10.0),
-                labelText: 'Empty Input Field:',
-              ),
+              decoration: const InputDecoration(contentPadding: EdgeInsets.all(10.0), labelText: 'Empty Input Field:'),
             ),
-            const Text(
-              'Text Editing Test 2',
-            ),
+            const Text('Text Editing Test 2'),
             TextFormField(
               key: const Key('input'),
               enabled: true,
               controller: _controller,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(10.0),
-                labelText: 'Text Input Field:',
-              ),
+              decoration: const InputDecoration(contentPadding: EdgeInsets.all(10.0), labelText: 'Text Input Field:'),
             ),
-            const Text(
-              'Text Editing Test 3',
-            ),
+            const Text('Text Editing Test 3'),
             TextFormField(
               key: const Key('input2'),
               enabled: true,
               controller: _controller2,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(10.0),
-                labelText: 'Text Input Field 2:',
-              ),
+              decoration: const InputDecoration(contentPadding: EdgeInsets.all(10.0), labelText: 'Text Input Field 2:'),
               onFieldSubmitted: (String str) {
                 print('event received');
                 setState(() => infoText = 'enter pressed');
               },
             ),
-            Text(
-              infoText,
-              key: const Key('text'),
-            ),
+            Text(infoText, key: const Key('text')),
             const Padding(
               padding: EdgeInsets.all(12.0),
               child: SelectableText(

@@ -8,14 +8,8 @@ import 'package:flutter/services.dart';
 void main() {
   runApp(MaterialApp(
     title: 'Hardware Key Demo',
-    home: Scaffold(
-      appBar: AppBar(
-        title: const Text('Hardware Key Demo'),
-      ),
-      body: const Center(
-        child: RawKeyboardDemo(),
-      ),
-    ),
+    home:
+        Scaffold(appBar: AppBar(title: const Text('Hardware Key Demo')), body: const Center(child: RawKeyboardDemo())),
   ));
 }
 
@@ -75,7 +69,10 @@ class _HardwareKeyDemoState extends State<RawKeyboardDemo> {
           }
 
           final RawKeyEventData? data = _event?.data;
-          final String? modifierList = data?.modifiersPressed.keys.map<String>(_getEnumName).join(', ').replaceAll('Modifier', '');
+          final String? modifierList = data?.modifiersPressed.keys.map<String>(_getEnumName).join(', ').replaceAll(
+            'Modifier',
+            '',
+          );
           final List<Widget> dataText = <Widget>[
             Text('${_event.runtimeType}'),
             if (_event?.character?.isNotEmpty ?? false) Text('character produced: "${_event?.character}"'),
@@ -86,7 +83,9 @@ class _HardwareKeyDemoState extends State<RawKeyboardDemo> {
             final String codePointChar = String.fromCharCode(combiningCharacterMask & data.codePoint);
             dataText.add(Text('codePoint: ${data.codePoint} (${_asHex(data.codePoint)}: $codePointChar)'));
             final String plainCodePointChar = String.fromCharCode(combiningCharacterMask & data.plainCodePoint);
-            dataText.add(Text('plainCodePoint: ${data.plainCodePoint} (${_asHex(data.plainCodePoint)}: $plainCodePointChar)'));
+            dataText.add(
+              Text('plainCodePoint: ${data.plainCodePoint} (${_asHex(data.plainCodePoint)}: $plainCodePointChar)'),
+            );
             dataText.add(Text('keyCode: ${data.keyCode} (${_asHex(data.keyCode)})'));
             dataText.add(Text('scanCode: ${data.scanCode} (${_asHex(data.scanCode)})'));
             dataText.add(Text('metaState: ${data.metaState} (${_asHex(data.metaState)})'));
@@ -140,10 +139,7 @@ class _HardwareKeyDemoState extends State<RawKeyboardDemo> {
           dataText.add(Text(pressed.join(' ')));
           return DefaultTextStyle(
             style: textTheme.titleMedium!,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: dataText,
-            ),
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: dataText),
           );
         },
       ),

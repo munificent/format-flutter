@@ -11,10 +11,7 @@ final TokenLogger tokenLogger = TokenLogger();
 class TokenLogger {
   TokenLogger();
 
-  void init({
-    required Map<String, dynamic> allTokens,
-    required Map<String, List<String>> versionMap
-  }){
+  void init({required Map<String, dynamic> allTokens, required Map<String, List<String>> versionMap}) {
     _allTokens = allTokens;
     _versionMap = versionMap;
   }

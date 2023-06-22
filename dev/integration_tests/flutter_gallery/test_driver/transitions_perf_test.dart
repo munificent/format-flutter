@@ -71,7 +71,9 @@ Future<void> saveDurationsHistogram(List<Map<String, dynamic>> events, String ou
   });
 
   if (unexpectedValueCounts.isNotEmpty) {
-    final StringBuffer error = StringBuffer('Some routes recorded wrong number of values (expected 2 values/route):\n\n');
+    final StringBuffer error = StringBuffer(
+      'Some routes recorded wrong number of values (expected 2 values/route):\n\n',
+    );
     // When run with --trace-startup, the VM stores trace events in an endless buffer instead of a ring buffer.
     error.write('You must add the --trace-startup parameter to run the test. \n\n');
     unexpectedValueCounts.forEach((String routeName, int count) {
@@ -89,8 +91,8 @@ Future<void> saveDurationsHistogram(List<Map<String, dynamic>> events, String ou
       }
 
       final String routeName = eventName == 'Start Transition'
-        ? (eventIter.current['args'] as Map<String, dynamic>)['to'] as String
-        : '';
+          ? (eventIter.current['args'] as Map<String, dynamic>)['to'] as String
+          : '';
 
       if (eventName == lastEventName && routeName == lastRouteName) {
         error.write('.');
@@ -138,10 +140,7 @@ Future<void> runDemos(List<String> demos, FlutterDriver driver) async {
     currentDemoCategory = demoCategory;
 
     final SerializableFinder demoItem = find.text(demoName);
-    await driver.scrollUntilVisible(demoList, demoItem,
-      dyScroll: -48.0,
-      alignment: 0.5,
-    );
+    await driver.scrollUntilVisible(demoList, demoItem, dyScroll: -48.0, alignment: 0.5);
 
     for (int i = 0; i < 2; i += 1) {
       await driver.tap(demoItem); // Launch the demo
@@ -185,34 +184,29 @@ void main([List<String> args = const <String>[]]) {
     });
 
     tearDownAll(() async {
-        await driver.close();
+      await driver.close();
     });
 
-    test('find.bySemanticsLabel', () async {
-      // Assert that we can use semantics related finders in profile mode.
-      final int id = await driver.getSemanticsId(find.bySemanticsLabel('Material'));
-      expect(id, greaterThan(-1));
-    },
-        skip: !withSemantics, // [intended] test only makes sense when semantics are turned on.
-        timeout: Timeout.none,
+    test(
+      'find.bySemanticsLabel',
+      () async {
+        // Assert that we can use semantics related finders in profile mode.
+        final int id = await driver.getSemanticsId(find.bySemanticsLabel('Material'));
+        expect(id, greaterThan(-1));
+      },
+      skip: !withSemantics, // [intended] test only makes sense when semantics are turned on.
+      timeout: Timeout.none,
     );
 
     test('all demos', () async {
       // Collect timeline data for just a limited set of demos to avoid OOMs.
-      final Timeline timeline = await driver.traceAction(
-        () async {
-          if (hybrid) {
-            await driver.requestData('profileDemos');
-          } else {
-            await runDemos(kProfiledDemos, driver);
-          }
-        },
-        streams: const <TimelineStream>[
-          TimelineStream.dart,
-          TimelineStream.embedder,
-          TimelineStream.gc,
-        ],
-      );
+      final Timeline timeline = await driver.traceAction(() async {
+        if (hybrid) {
+          await driver.requestData('profileDemos');
+        } else {
+          await runDemos(kProfiledDemos, driver);
+        }
+      }, streams: const <TimelineStream>[TimelineStream.dart, TimelineStream.embedder, TimelineStream.gc]);
 
       // Save the duration (in microseconds) of the first timeline Frame event
       // that follows a 'Start Transition' event. The Gallery app adds a
@@ -221,8 +215,9 @@ void main([List<String> args = const <String>[]]) {
       await summary.writeTimelineToFile('transitions', pretty: true);
       final String histogramPath = path.join(testOutputsDirectory, 'transition_durations.timeline.json');
       await saveDurationsHistogram(
-          List<Map<String, dynamic>>.from(timeline.json['traceEvents'] as List<dynamic>),
-          histogramPath);
+        List<Map<String, dynamic>>.from(timeline.json['traceEvents'] as List<dynamic>),
+        histogramPath,
+      );
 
       // Execute the remaining tests.
       if (hybrid) {
@@ -231,7 +226,6 @@ void main([List<String> args = const <String>[]]) {
         final Set<String> unprofiledDemos = Set<String>.from(_allDemos)..removeAll(kProfiledDemos);
         await runDemos(unprofiledDemos.toList(), driver);
       }
-
     }, timeout: Timeout.none);
   });
 }

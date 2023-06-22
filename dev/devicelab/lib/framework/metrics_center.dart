@@ -74,13 +74,10 @@ List<MetricPoint> parse(Map<String, dynamic> resultsJson, Map<String, dynamic> b
     };
     // Append additional benchmark tags, which will surface in Skia Perf dashboards.
     tags = mergeMaps<String, String>(
-        tags, benchmarkTags.map((String key, dynamic value) => MapEntry<String, String>(key, value.toString())));
-    metricPoints.add(
-      MetricPoint(
-        (resultData[scoreKey] as num).toDouble(),
-        tags,
-      ),
+      tags,
+      benchmarkTags.map((String key, dynamic value) => MapEntry<String, String>(key, value.toString())),
     );
+    metricPoints.add(MetricPoint((resultData[scoreKey] as num).toDouble(), tags));
   }
   return metricPoints;
 }
@@ -102,10 +99,7 @@ Future<void> upload(
 ) async {
   await metricsDestination.update(
     metricPoints,
-    DateTime.fromMillisecondsSinceEpoch(
-      commitTimeSinceEpoch,
-      isUtc: true,
-    ),
+    DateTime.fromMillisecondsSinceEpoch(commitTimeSinceEpoch, isUtc: true),
     taskName,
   );
 }
@@ -133,12 +127,7 @@ Future<void> uploadToSkiaPerf(String? resultsPath, String? commitTime, String? t
   resultsJson = json.decode(await resultFile.readAsString()) as Map<String, dynamic>;
   final List<MetricPoint> metricPoints = parse(resultsJson, benchmarkTagsMap, taskName);
   final FlutterDestination metricsDestination = await connectFlutterDestination();
-  await upload(
-    metricsDestination,
-    metricPoints,
-    commitTimeSinceEpoch,
-    metricFileName(taskName, benchmarkTagsMap),
-  );
+  await upload(metricsDestination, metricPoints, commitTimeSinceEpoch, metricFileName(taskName, benchmarkTagsMap));
 }
 
 /// Create metric file name based on `taskName`, `arch`, `host type`, and `device type`.
@@ -152,10 +141,7 @@ Future<void> uploadToSkiaPerf(String? resultsPath, String? commitTime, String? t
 /// For example:
 ///   Old file name: `backdrop_filter_perf__timeline_summary`
 ///   New file name: `backdrop_filter_perf__timeline_summary_intel_linux_motoG4`
-String metricFileName(
-  String taskName,
-  Map<String, dynamic> benchmarkTagsMap,
-) {
+String metricFileName(String taskName, Map<String, dynamic> benchmarkTagsMap) {
   final StringBuffer fileName = StringBuffer(taskName);
   if (benchmarkTagsMap.containsKey('arch')) {
     fileName

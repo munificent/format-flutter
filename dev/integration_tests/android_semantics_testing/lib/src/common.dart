@@ -174,7 +174,6 @@ class AndroidSemanticsNode {
   }
 }
 
-
 /// A Dart VM implementation of a rectangle.
 ///
 /// Created to mirror the implementation of [ui.Rect].
@@ -205,11 +204,7 @@ class Rect {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is Rect
-        && other.top == top
-        && other.left == left
-        && other.right == right
-        && other.bottom == bottom;
+    return other is Rect && other.top == top && other.left == left && other.right == right && other.bottom == bottom;
   }
 
   @override
@@ -238,9 +233,7 @@ class Size {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is Size
-        && other.width == width
-        && other.height == height;
+    return other is Size && other.width == width && other.height == height;
   }
 
   @override

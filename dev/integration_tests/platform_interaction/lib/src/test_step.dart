@@ -38,11 +38,7 @@ class TestStepResult {
   final TestStatus status;
 
   static const TextStyle bold = TextStyle(fontWeight: FontWeight.bold);
-  static const TestStepResult complete = TestStepResult(
-    'Test complete',
-    nothing,
-    TestStatus.complete,
-  );
+  static const TestStepResult complete = TestStepResult('Test complete', nothing, TestStatus.complete);
 
   Widget asWidget(BuildContext context) {
     return Column(
@@ -53,8 +49,7 @@ class TestStepResult {
         const Text(' '),
         Text(
           status.toString().substring('TestStatus.'.length),
-          key: ValueKey<String>(
-              status == TestStatus.pending ? 'nostatus' : 'status'),
+          key: ValueKey<String>(status == TestStatus.pending ? 'nostatus' : 'status'),
           style: bold,
         ),
       ],

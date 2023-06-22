@@ -34,7 +34,9 @@ Future<bool> runTests({
     final String s = files.length == 1 ? '' : 's';
     if (numberShards > 1) {
       final String ss = shardedFiles.length == 1 ? '' : 's';
-      print('${files.length} file$s specified. ${shardedFiles.length} test$ss in shard #$shardIndex ($numberShards shards total).');
+      print(
+        '${files.length} file$s specified. ${shardedFiles.length} test$ss in shard #$shardIndex ($numberShards shards total).',
+      );
     } else {
       print('${files.length} file$s specified.');
     }
@@ -85,14 +87,22 @@ Future<bool> runTests({
 
     bool success = true;
 
-    final Directory checkout = Directory.systemTemp.createTempSync('flutter_customer_testing.${path.basenameWithoutExtension(file.path)}.');
+    final Directory checkout = Directory.systemTemp.createTempSync(
+      'flutter_customer_testing.${path.basenameWithoutExtension(file.path)}.',
+    );
     if (verbose) {
       print('Created temporary directory: ${checkout.path}');
     }
     try {
       assert(instructions.fetch.isNotEmpty);
       for (final String fetchCommand in instructions.fetch) {
-        success = await shell(fetchCommand, checkout, verbose: verbose, silentFailure: skipOnFetchFailure, failedCallback: printHeader);
+        success = await shell(
+          fetchCommand,
+          checkout,
+          verbose: verbose,
+          silentFailure: skipOnFetchFailure,
+          failedCallback: printHeader,
+        );
         if (!success) {
           if (skipOnFetchFailure) {
             if (verbose) {
@@ -114,16 +124,26 @@ Future<bool> runTests({
             print('Updating code in ${resolvedUpdateDirectory.path}...');
           }
           if (!File(path.join(resolvedUpdateDirectory.path, 'pubspec.yaml')).existsSync()) {
-            failure('The directory ${updateDirectory.path}, which was specified as an update directory, does not contain a "pubspec.yaml" file.');
+            failure(
+              'The directory ${updateDirectory.path}, which was specified as an update directory, does not contain a "pubspec.yaml" file.',
+            );
             success = false;
             break;
           }
-          success = await shell('flutter packages get', resolvedUpdateDirectory, verbose: verbose, failedCallback: printHeader);
+          success = await shell(
+            'flutter packages get',
+            resolvedUpdateDirectory,
+            verbose: verbose,
+            failedCallback: printHeader,
+          );
           if (!success) {
-            failure('Could not run "flutter pub get" in ${updateDirectory.path}, which was specified as an update directory.');
+            failure(
+              'Could not run "flutter pub get" in ${updateDirectory.path}, which was specified as an update directory.',
+            );
             break;
           }
-          success = await shell('dart fix --apply', resolvedUpdateDirectory, verbose: verbose, failedCallback: printHeader);
+          success =
+              await shell('dart fix --apply', resolvedUpdateDirectory, verbose: verbose, failedCallback: printHeader);
           if (!success) {
             failure('Could not run "dart fix" in ${updateDirectory.path}, which was specified as an update directory.');
             break;
@@ -136,7 +156,9 @@ Future<bool> runTests({
           if (instructions.iterations != null && instructions.iterations! < repeat) {
             if (verbose) {
               final String s = instructions.iterations == 1 ? '' : 's';
-              print('Limiting to ${instructions.iterations} round$s rather than $repeat rounds because of "iterations" directive.');
+              print(
+                'Limiting to ${instructions.iterations} round$s rather than $repeat rounds because of "iterations" directive.',
+              );
             }
             repeat = instructions.iterations!;
           }
@@ -156,7 +178,9 @@ Future<bool> runTests({
           }
           stopwatch.stop();
           if (verbose && success) {
-            print('Tests finished in ${(stopwatch.elapsed.inSeconds / repeat).toStringAsFixed(2)} seconds per iteration.');
+            print(
+              'Tests finished in ${(stopwatch.elapsed.inSeconds / repeat).toStringAsFixed(2)} seconds per iteration.',
+            );
           }
         }
       }
@@ -189,7 +213,13 @@ Future<bool> runTests({
 
 final RegExp _spaces = RegExp(r' +');
 
-Future<bool> shell(String command, Directory directory, { bool verbose = false, bool silentFailure = false, void Function()? failedCallback }) async {
+Future<bool> shell(
+  String command,
+  Directory directory, {
+  bool verbose = false,
+  bool silentFailure = false,
+  void Function()? failedCallback,
+}) async {
   if (verbose) {
     print('>> $command');
   }

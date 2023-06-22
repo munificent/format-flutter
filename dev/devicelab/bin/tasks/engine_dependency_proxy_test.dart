@@ -29,53 +29,46 @@ Future<void> main() async {
     await runProjectTest((FlutterProject flutterProject) async {
       await inDirectory(path.join(flutterProject.rootPath, 'android'), () async {
         section('Insert gradle testing script');
-        final File build = File(path.join(
-	    flutterProject.rootPath, 'android', 'app', 'build.gradle'));
-        build.writeAsStringSync(
-          '''
+        final File build = File(path.join(flutterProject.rootPath, 'android', 'app', 'build.gradle'));
+        build.writeAsStringSync('''
 task printEngineMavenUrl() {
     doLast {
         println project.repositories.find { it.name == 'maven' }.url
     }
 }
-          ''',
-          mode: FileMode.append,
-          flush: true,
-        );
+          ''', mode: FileMode.append, flush: true);
 
         section('Checking default maven URL');
-        String gradleOutput = await eval(
-          gradlewExecutable,
-          <String>['printEngineMavenUrl', '-q'],
-        );
+        String gradleOutput = await eval(gradlewExecutable, <String>['printEngineMavenUrl', '-q']);
         const LineSplitter splitter = LineSplitter();
         List<String> outputLines = splitter.convert(gradleOutput);
         String mavenUrl = outputLines.last;
         print('Returned maven url: $mavenUrl');
 
         if (mavenUrl != 'https://storage.googleapis.com/download.flutter.io') {
-          throw TaskResult.failure('Expected Android engine maven dependency URL to '
-              'resolve to https://storage.googleapis.com/download.flutter.io. Got '
-              '$mavenUrl instead');
+          throw TaskResult.failure(
+            'Expected Android engine maven dependency URL to '
+            'resolve to https://storage.googleapis.com/download.flutter.io. Got '
+            '$mavenUrl instead',
+          );
         }
 
         section('Checking overridden maven URL');
         gradleOutput = await eval(
-	    gradlewExecutable,
-	    <String>['printEngineMavenUrl','-q'],
-	    environment: <String, String>{
-              'FLUTTER_STORAGE_BASE_URL': 'https://my.special.proxy',
-            }
-	);
+          gradlewExecutable,
+          <String>['printEngineMavenUrl', '-q'],
+          environment: <String, String>{'FLUTTER_STORAGE_BASE_URL': 'https://my.special.proxy'},
+        );
         outputLines = splitter.convert(gradleOutput);
         mavenUrl = outputLines.last;
 
         if (mavenUrl != 'https://my.special.proxy/download.flutter.io') {
           throw TaskResult.failure(
-	      'Expected overridden Android engine maven '
-              'dependency URL to resolve to proxy location '
-              'https://my.special.proxy/download.flutter.io. Got '
-              '$mavenUrl instead');
+            'Expected overridden Android engine maven '
+            'dependency URL to resolve to proxy location '
+            'https://my.special.proxy/download.flutter.io. Got '
+            '$mavenUrl instead',
+          );
         }
       });
     });

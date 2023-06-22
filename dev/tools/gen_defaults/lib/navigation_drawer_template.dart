@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class NavigationDrawerTemplate extends TokenTemplate {
-  const NavigationDrawerTemplate(super.blockName, super.fileName, super.tokens, {
+  const NavigationDrawerTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   @override
@@ -18,7 +21,9 @@ class _${blockName}DefaultsM3 extends NavigationDrawerThemeData {
         elevation: ${elevation("md.comp.navigation-drawer.modal.container")},
         tileHeight: ${getToken("md.comp.navigation-drawer.active-indicator.height")},
         indicatorShape: ${shape("md.comp.navigation-drawer.active-indicator")},
-        indicatorSize: const Size(${getToken("md.comp.navigation-drawer.active-indicator.width")}, ${getToken("md.comp.navigation-drawer.active-indicator.height")}),
+        indicatorSize: const Size(${getToken("md.comp.navigation-drawer.active-indicator.width")}, ${getToken(
+        "md.comp.navigation-drawer.active-indicator.height",
+      )}),
       );
 
   final BuildContext context;

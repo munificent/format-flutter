@@ -22,16 +22,15 @@ class ShoppingCartPage extends StatefulWidget {
 
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
   List<Widget> _createShoppingCartRows(AppStateModel model) {
-    return model.productsInCart.keys
-        .map((int id) => ShoppingCartRow(
-            product: model.getProductById(id),
-            quantity: model.productsInCart[id],
-            onPressed: () {
-              model.removeItemFromCart(id);
-            },
-          ),
-        )
-        .toList();
+    return model.productsInCart.keys.map(
+      (int id) => ShoppingCartRow(
+        product: model.getProductById(id),
+        quantity: model.productsInCart[id],
+        onPressed: () {
+          model.removeItemFromCart(id);
+        },
+      ),
+    ).toList();
   }
 
   @override
@@ -56,18 +55,13 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                             onPressed: () => ExpandingBottomSheet.of(context)!.close(),
                           ),
                         ),
-                        Text(
-                          'CART',
-                          style: localTheme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
-                        ),
+                        Text('CART', style: localTheme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600)),
                         const SizedBox(width: 16.0),
                         Text('${model.totalCartQuantity} ITEMS'),
                       ],
                     ),
                     const SizedBox(height: 16.0),
-                    Column(
-                      children: _createShoppingCartRows(model),
-                    ),
+                    Column(children: _createShoppingCartRows(model)),
                     ShoppingCartSummary(model: model),
                     const SizedBox(height: 100.0),
                   ],
@@ -79,14 +73,9 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kShrinePink100,
-                      shape: const BeveledRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                      ),
+                      shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7.0))),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12.0),
-                      child: Text('CLEAR CART'),
-                    ),
+                    child: const Padding(padding: EdgeInsets.symmetric(vertical: 12.0), child: Text('CLEAR CART')),
                     onPressed: () {
                       model.clearCart();
                       ExpandingBottomSheet.of(context)!.close();
@@ -126,49 +115,29 @@ class ShoppingCartSummary extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    const Expanded(
-                      child: Text('TOTAL'),
-                    ),
-                    Text(
-                      formatter.format(model!.totalCost),
-                      style: largeAmountStyle,
-                    ),
+                    const Expanded(child: Text('TOTAL')),
+                    Text(formatter.format(model!.totalCost), style: largeAmountStyle),
                   ],
                 ),
                 const SizedBox(height: 16.0),
                 Row(
                   children: <Widget>[
-                    const Expanded(
-                      child: Text('Subtotal:'),
-                    ),
-                    Text(
-                      formatter.format(model!.subtotalCost),
-                      style: smallAmountStyle,
-                    ),
+                    const Expanded(child: Text('Subtotal:')),
+                    Text(formatter.format(model!.subtotalCost), style: smallAmountStyle),
                   ],
                 ),
                 const SizedBox(height: 4.0),
                 Row(
                   children: <Widget>[
-                    const Expanded(
-                      child: Text('Shipping:'),
-                    ),
-                    Text(
-                      formatter.format(model!.shippingCost),
-                      style: smallAmountStyle,
-                    ),
+                    const Expanded(child: Text('Shipping:')),
+                    Text(formatter.format(model!.shippingCost), style: smallAmountStyle),
                   ],
                 ),
                 const SizedBox(height: 4.0),
                 Row(
                   children: <Widget>[
-                    const Expanded(
-                      child: Text('Tax:'),
-                    ),
-                    Text(
-                      formatter.format(model!.tax),
-                      style: smallAmountStyle,
-                    ),
+                    const Expanded(child: Text('Tax:')),
+                    Text(formatter.format(model!.tax), style: smallAmountStyle),
                   ],
                 ),
               ],
@@ -181,12 +150,7 @@ class ShoppingCartSummary extends StatelessWidget {
 }
 
 class ShoppingCartRow extends StatelessWidget {
-  const ShoppingCartRow({
-    super.key,
-    required this.product,
-    required this.quantity,
-    this.onPressed,
-  });
+  const ShoppingCartRow({super.key, required this.product, required this.quantity, this.onPressed});
 
   final Product product;
   final int? quantity;
@@ -208,10 +172,7 @@ class ShoppingCartRow extends StatelessWidget {
         children: <Widget>[
           SizedBox(
             width: _leftColumnWidth,
-            child: IconButton(
-              icon: const Icon(Icons.remove_circle_outline),
-              onPressed: onPressed,
-            ),
+            child: IconButton(icon: const Icon(Icons.remove_circle_outline), onPressed: onPressed),
           ),
           Expanded(
             child: Padding(
@@ -235,9 +196,7 @@ class ShoppingCartRow extends StatelessWidget {
                           children: <Widget>[
                             Row(
                               children: <Widget>[
-                                Expanded(
-                                  child: Text('Quantity: $quantity'),
-                                ),
+                                Expanded(child: Text('Quantity: $quantity')),
                                 Text('x ${formatter.format(product.price)}'),
                               ],
                             ),
@@ -251,10 +210,7 @@ class ShoppingCartRow extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16.0),
-                  const Divider(
-                    color: kShrineBrown900,
-                    height: 10.0,
-                  ),
+                  const Divider(color: kShrineBrown900, height: 10.0),
                 ],
               ),
             ),

@@ -38,11 +38,7 @@ void checkForUnresolvedDirectives(String htmlOutputPath) {
     'rendering',
     'flutter_driver',
   ];
-  final List<String> canaryFiles = <String>[
-    'Widget-class.html',
-    'Material-class.html',
-    'Canvas-class.html',
-  ];
+  final List<String> canaryFiles = <String>['Widget-class.html', 'Material-class.html', 'Canvas-class.html'];
 
   print('Scanning for unresolved dartdoc directives...');
 
@@ -79,8 +75,7 @@ void checkForUnresolvedDirectives(String htmlOutputPath) {
 
 int _scanFile(File file) {
   assert(path.extension(file.path) == '.html');
-  final Iterable<String> matches = _pattern.allMatches(file.readAsStringSync())
-      .map((RegExpMatch m ) => m.group(0)!);
+  final Iterable<String> matches = _pattern.allMatches(file.readAsStringSync()).map((RegExpMatch m) => m.group(0)!);
 
   if (matches.isNotEmpty) {
     stderr.writeln('Found unresolved dartdoc directives in ${file.path}:');

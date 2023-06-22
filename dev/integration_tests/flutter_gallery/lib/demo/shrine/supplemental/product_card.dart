@@ -10,8 +10,11 @@ import '../model/app_state_model.dart';
 import '../model/product.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({ super.key, this.imageAspectRatio = 33 / 49, this.product })
-      : assert(imageAspectRatio > 0);
+  const ProductCard({
+    super.key,
+    this.imageAspectRatio = 33 / 49,
+    this.product,
+  }) : assert(imageAspectRatio > 0);
 
   final double imageAspectRatio;
   final Product? product;
@@ -27,11 +30,7 @@ class ProductCard extends StatelessWidget {
 
     final ThemeData theme = Theme.of(context);
 
-    final Image imageWidget = Image.asset(
-      product!.assetName,
-      package: product!.assetPackage,
-      fit: BoxFit.cover,
-    );
+    final Image imageWidget = Image.asset(product!.assetName, package: product!.assetPackage, fit: BoxFit.cover);
 
     return ScopedModelDescendant<AppStateModel>(
       builder: (BuildContext context, Widget? child, AppStateModel model) {
@@ -47,10 +46,7 @@ class ProductCard extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              AspectRatio(
-                aspectRatio: imageAspectRatio,
-                child: imageWidget,
-              ),
+              AspectRatio(aspectRatio: imageAspectRatio, child: imageWidget),
               SizedBox(
                 height: kTextBoxHeight * MediaQuery.of(context).textScaleFactor,
                 width: 121.0,
@@ -65,19 +61,13 @@ class ProductCard extends StatelessWidget {
                       maxLines: 1,
                     ),
                     const SizedBox(height: 4.0),
-                    Text(
-                      product == null ? '' : formatter.format(product!.price),
-                      style: theme.textTheme.bodySmall,
-                    ),
+                    Text(product == null ? '' : formatter.format(product!.price), style: theme.textTheme.bodySmall),
                   ],
                 ),
               ),
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Icon(Icons.add_shopping_cart),
-          ),
+          const Padding(padding: EdgeInsets.all(16.0), child: Icon(Icons.add_shopping_cart)),
         ],
       ),
     );

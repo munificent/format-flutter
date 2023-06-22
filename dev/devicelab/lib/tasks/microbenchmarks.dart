@@ -24,8 +24,7 @@ TaskFunction createMicrobenchmarkTask({bool? enableImpeller}) {
     Future<Map<String, double>> runMicrobench(String benchmarkPath) async {
       Future<Map<String, double>> run() async {
         print('Running $benchmarkPath');
-        final Directory appDir = dir(
-            path.join(flutterDirectory.path, 'dev/benchmarks/microbenchmarks'));
+        final Directory appDir = dir(path.join(flutterDirectory.path, 'dev/benchmarks/microbenchmarks'));
         final Process flutterProcess = await inDirectory(appDir, () async {
           final List<String> options = <String>[
             '-v',
@@ -38,10 +37,7 @@ TaskFunction createMicrobenchmarkTask({bool? enableImpeller}) {
             device.deviceId,
           ];
           options.add(benchmarkPath);
-          return startFlutter(
-            'run',
-            options: options,
-          );
+          return startFlutter('run', options: options);
         });
 
         return readJsonResults(flutterProcess);
@@ -73,7 +69,6 @@ TaskFunction createMicrobenchmarkTask({bool? enableImpeller}) {
       ...await runMicrobench('lib/ui/image_bench.dart'),
     };
 
-    return TaskResult.success(allResults,
-        benchmarkScoreKeys: allResults.keys.toList());
+    return TaskResult.success(allResults, benchmarkScoreKeys: allResults.keys.toList());
   };
 }

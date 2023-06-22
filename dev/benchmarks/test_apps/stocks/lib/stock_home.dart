@@ -16,6 +16,7 @@ import 'stock_types.dart';
 typedef ModeUpdater = void Function(StockMode mode);
 
 enum _StockMenuItem { autorefresh, refresh, speedUp, speedDown }
+
 enum StockHomeTab { market, portfolio }
 
 class _NotImplementedDialog extends StatelessWidget {
@@ -31,13 +32,8 @@ class _NotImplementedDialog extends StatelessWidget {
           onPressed: debugDumpApp,
           child: Row(
             children: <Widget>[
-              const Icon(
-                Icons.dvr,
-                size: 18.0,
-              ),
-              Container(
-                width: 8.0,
-              ),
+              const Icon(Icons.dvr, size: 18.0),
+              Container(width: 8.0),
               const Text('DUMP APP TO CONSOLE'),
             ],
           ),
@@ -95,10 +91,7 @@ class StockHomeState extends State<StockHome> {
           _autorefresh = !_autorefresh;
         });
       case _StockMenuItem.refresh:
-        showDialog<void>(
-          context: context,
-          builder: (BuildContext context) => const _NotImplementedDialog(),
-        );
+        showDialog<void>(context: context, builder: (BuildContext context) => const _NotImplementedDialog());
       case _StockMenuItem.speedUp:
         timeDilation /= 5.0;
       case _StockMenuItem.speedDown:
@@ -112,16 +105,8 @@ class StockHomeState extends State<StockHome> {
         dragStartBehavior: DragStartBehavior.down,
         children: <Widget>[
           const DrawerHeader(child: Center(child: Text('Stocks'))),
-          const ListTile(
-            leading: Icon(Icons.assessment),
-            title: Text('Stock List'),
-            selected: true,
-          ),
-          const ListTile(
-            leading: Icon(Icons.account_balance),
-            title: Text('Account Balance'),
-            enabled: false,
-          ),
+          const ListTile(leading: Icon(Icons.assessment), title: Text('Stock List'), selected: true),
+          const ListTile(leading: Icon(Icons.account_balance), title: Text('Account Balance'), enabled: false),
           ListTile(
             leading: const Icon(Icons.dvr),
             title: const Text('Dump App to Console'),
@@ -162,16 +147,8 @@ class StockHomeState extends State<StockHome> {
             },
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: _handleShowSettings,
-          ),
-          ListTile(
-            leading: const Icon(Icons.help),
-            title: const Text('About'),
-            onTap: _handleShowAbout,
-          ),
+          ListTile(leading: const Icon(Icons.settings), title: const Text('Settings'), onTap: _handleShowSettings),
+          ListTile(leading: const Icon(Icons.help), title: const Text('About'), onTap: _handleShowAbout),
         ],
       ),
     );
@@ -190,47 +167,37 @@ class StockHomeState extends State<StockHome> {
       elevation: 0.0,
       title: Text(StockStrings.of(context).title),
       actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: _handleSearchBegin,
-          tooltip: 'Search',
-        ),
+        IconButton(icon: const Icon(Icons.search), onPressed: _handleSearchBegin, tooltip: 'Search'),
         PopupMenuButton<_StockMenuItem>(
-          onSelected: (_StockMenuItem value) { _handleStockMenu(context, value); },
+          onSelected: (_StockMenuItem value) {
+            _handleStockMenu(context, value);
+          },
           itemBuilder: (BuildContext context) => <PopupMenuItem<_StockMenuItem>>[
-            CheckedPopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.autorefresh,
-              checked: _autorefresh,
-              child: const Text('Autorefresh'),
-            ),
-            const PopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.refresh,
-              child: Text('Refresh'),
-            ),
-            const PopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.speedUp,
-              child: Text('Increase animation speed'),
-            ),
-            const PopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.speedDown,
-              child: Text('Decrease animation speed'),
-            ),
-          ],
+                CheckedPopupMenuItem<_StockMenuItem>(
+                  value: _StockMenuItem.autorefresh,
+                  checked: _autorefresh,
+                  child: const Text('Autorefresh'),
+                ),
+                const PopupMenuItem<_StockMenuItem>(value: _StockMenuItem.refresh, child: Text('Refresh')),
+                const PopupMenuItem<_StockMenuItem>(
+                  value: _StockMenuItem.speedUp,
+                  child: Text('Increase animation speed'),
+                ),
+                const PopupMenuItem<_StockMenuItem>(
+                  value: _StockMenuItem.speedDown,
+                  child: Text('Decrease animation speed'),
+                ),
+              ],
         ),
       ],
       bottom: TabBar(
-        tabs: <Widget>[
-          Tab(text: StockStrings.of(context).market),
-          Tab(text: StockStrings.of(context).portfolio),
-        ],
+        tabs: <Widget>[Tab(text: StockStrings.of(context).market), Tab(text: StockStrings.of(context).portfolio)],
       ),
     );
   }
 
   static Iterable<Stock> _getStockList(StockData stocks, Iterable<String> symbols) {
-    return symbols.map<Stock?>((String symbol) => stocks[symbol])
-      .where((Stock? stock) => stock != null)
-      .cast<Stock>();
+    return symbols.map<Stock?>((String symbol) => stocks[symbol]).where((Stock? stock) => stock != null).cast<Stock>();
   }
 
   Iterable<Stock> _filterBySearchQuery(Iterable<Stock> stocks) {
@@ -265,7 +232,9 @@ class StockHomeState extends State<StockHome> {
         Navigator.pushNamed(context, '/stock', arguments: stock.symbol);
       },
       onShow: (Stock stock) {
-        _scaffoldKey.currentState!.showBottomSheet<void>((BuildContext context) => StockSymbolBottomSheet(stock: stock));
+        _scaffoldKey.currentState!.showBottomSheet<void>(
+          (BuildContext context) => StockSymbolBottomSheet(stock: stock),
+        );
       },
     );
   }
@@ -280,29 +249,22 @@ class StockHomeState extends State<StockHome> {
     );
   }
 
-  static const List<String> portfolioSymbols = <String>['AAPL','FIZZ', 'FIVE', 'FLAT', 'ZINC', 'ZNGA'];
+  static const List<String> portfolioSymbols = <String>['AAPL', 'FIZZ', 'FIVE', 'FLAT', 'ZINC', 'ZNGA'];
 
   AppBar buildSearchBar() {
     return AppBar(
-      leading: BackButton(
-        color: Theme.of(context).colorScheme.secondary,
-      ),
+      leading: BackButton(color: Theme.of(context).colorScheme.secondary),
       title: TextField(
         controller: _searchQuery,
         autofocus: true,
-        decoration: const InputDecoration(
-          hintText: 'Search stocks',
-        ),
+        decoration: const InputDecoration(hintText: 'Search stocks'),
       ),
       backgroundColor: Theme.of(context).canvasColor,
     );
   }
 
   void _handleCreateCompany() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) => const _CreateCompanySheet(),
-    );
+    showModalBottomSheet<void>(context: context, builder: (BuildContext context) => const _CreateCompanySheet());
   }
 
   Widget buildFloatingActionButton() {
@@ -343,12 +305,7 @@ class _CreateCompanySheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Column(
       children: <Widget>[
-        TextField(
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: 'Company Name',
-          ),
-        ),
+        TextField(autofocus: true, decoration: InputDecoration(hintText: 'Company Name')),
         Text('(This demo is not yet complete.)'),
         // For example, we could add a button that actually updates the list
         // and then contacts the server, etc.

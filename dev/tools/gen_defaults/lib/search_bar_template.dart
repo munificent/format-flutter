@@ -5,9 +5,12 @@
 import 'template.dart';
 
 class SearchBarTemplate extends TokenTemplate {
-  const SearchBarTemplate(super.blockName, super.fileName, super.tokens, {
+  const SearchBarTemplate(
+    super.blockName,
+    super.fileName,
+    super.tokens, {
     super.colorSchemePrefix = '_colors.',
-    super.textThemePrefix = '_textTheme.'
+    super.textThemePrefix = '_textTheme.',
   });
 
   @override
@@ -70,7 +73,9 @@ class _SearchBarDefaultsM3 extends SearchBarThemeData {
 
   @override
   BoxConstraints get constraints =>
-    const BoxConstraints(minWidth: 360.0, maxWidth: 800.0, minHeight: ${getToken('md.comp.search-bar.container.height')});
+    const BoxConstraints(minWidth: 360.0, maxWidth: 800.0, minHeight: ${getToken(
+        'md.comp.search-bar.container.height',
+      )});
 }
 ''';
 }

@@ -28,7 +28,7 @@ class Commit {
 
   static Commit parse(String line) {
     final int space = line.indexOf(' ');
-    return Commit(line.substring(0, space), DateTime.parse(line.substring(space+1, line.length).trimRight()));
+    return Commit(line.substring(0, space), DateTime.parse(line.substring(space + 1, line.length).trimRight()));
   }
 
   static List<Commit> parseList(String lines) {
@@ -46,10 +46,16 @@ String findCommit({
   final Commit anchor;
   if (primaryBranch == primaryTrunk) {
     log('on $primaryTrunk, using last commit as anchor');
-    anchor = Commit.parse(git(primaryRepoDirectory, <String>['log', Commit.formatArgument, '--max-count=1', primaryBranch, '--']));
+    anchor = Commit.parse(
+      git(primaryRepoDirectory, <String>['log', Commit.formatArgument, '--max-count=1', primaryBranch, '--']),
+    );
   } else {
-    final List<Commit> branchCommits = Commit.parseList(git(primaryRepoDirectory, <String>['log', Commit.formatArgument, primaryBranch, '--']));
-    final List<Commit> trunkCommits = Commit.parseList(git(primaryRepoDirectory, <String>['log', Commit.formatArgument, primaryTrunk, '--']));
+    final List<Commit> branchCommits = Commit.parseList(
+      git(primaryRepoDirectory, <String>['log', Commit.formatArgument, primaryBranch, '--']),
+    );
+    final List<Commit> trunkCommits = Commit.parseList(
+      git(primaryRepoDirectory, <String>['log', Commit.formatArgument, primaryTrunk, '--']),
+    );
     if (branchCommits.isEmpty || trunkCommits.isEmpty || branchCommits.first.hash != trunkCommits.first.hash) {
       throw StateError('Branch $primaryBranch does not seem to have a common history with trunk $primaryTrunk.');
     }
@@ -58,10 +64,14 @@ String findCommit({
       anchor = trunkCommits.last;
     } else {
       int index = 0;
-      while (branchCommits.length > index && trunkCommits.length > index && branchCommits[index].hash == trunkCommits[index].hash) {
+      while (branchCommits.length > index &&
+          trunkCommits.length > index &&
+          branchCommits[index].hash == trunkCommits[index].hash) {
         index += 1;
       }
-      log('$primaryBranch branched from $primaryTrunk ${branchCommits.length - index} commits ago, trunk has advanced by ${trunkCommits.length - index} commits since then.');
+      log(
+        '$primaryBranch branched from $primaryTrunk ${branchCommits.length - index} commits ago, trunk has advanced by ${trunkCommits.length - index} commits since then.',
+      );
       anchor = trunkCommits[index - 1];
     }
   }
@@ -91,17 +101,19 @@ void main(List<String> arguments) {
       'when the commit in the primary repo was created. If that commit is on a\n'
       "branch, then the date of the branch's creation is used instead.\n"
       'If <path-to-primary-repo> is omitted, the current directory is used for the\n'
-      'primary repo.'
+      'primary repo.',
     );
   } else {
     final String primaryRepo = arguments.length == 1 ? '.' : arguments.first;
     final String secondaryRepo = arguments.last;
-    print(findCommit(
-      primaryRepoDirectory: primaryRepo,
-      primaryBranch: git(primaryRepo, <String>['rev-parse', '--abbrev-ref', 'HEAD']).trim(),
-      primaryTrunk: 'master',
-      secondaryRepoDirectory: secondaryRepo,
-      secondaryBranch: 'master',
-    ).trim());
+    print(
+      findCommit(
+        primaryRepoDirectory: primaryRepo,
+        primaryBranch: git(primaryRepo, <String>['rev-parse', '--abbrev-ref', 'HEAD']).trim(),
+        primaryTrunk: 'master',
+        secondaryRepoDirectory: secondaryRepo,
+        secondaryBranch: 'master',
+      ).trim(),
+    );
   }
 }

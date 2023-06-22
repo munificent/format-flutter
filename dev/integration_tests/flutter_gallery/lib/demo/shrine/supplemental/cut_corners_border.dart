@@ -15,12 +15,7 @@ class CutCornersBorder extends OutlineInputBorder {
   });
 
   @override
-  CutCornersBorder copyWith({
-    BorderSide? borderSide,
-    BorderRadius? borderRadius,
-    double? gapPadding,
-    double? cut,
-  }) {
+  CutCornersBorder copyWith({BorderSide? borderSide, BorderRadius? borderRadius, double? gapPadding, double? cut}) {
     return CutCornersBorder(
       borderSide: borderSide ?? this.borderSide,
       borderRadius: borderRadius ?? this.borderRadius,
@@ -64,7 +59,9 @@ class CutCornersBorder extends OutlineInputBorder {
     if (start > 0.0 || extent! > 0.0) {
       path.relativeMoveTo(extent! + start, center.top);
       _notchedSidesAndBottom(center, path);
-      path..lineTo(center.left + cut, center.top)..lineTo(start, center.top);
+      path
+        ..lineTo(center.left + cut, center.top)
+        ..lineTo(start, center.top);
     } else {
       path.moveTo(center.left + cut, center.top);
       _notchedSidesAndBottom(center, path);
@@ -102,16 +99,18 @@ class CutCornersBorder extends OutlineInputBorder {
     } else {
       final double? extent = lerpDouble(0.0, gapExtent + gapPadding * 2.0, gapPercentage);
       switch (textDirection) {
-        case TextDirection.rtl: {
-          final Path path = _notchedCornerPath(outer.middleRect, gapStart + gapPadding - extent!, extent);
-          canvas.drawPath(path, paint);
-          break;
-        }
-        case TextDirection.ltr: {
-          final Path path = _notchedCornerPath(outer.middleRect, gapStart - gapPadding, extent);
-          canvas.drawPath(path, paint);
-          break;
-        }
+        case TextDirection.rtl:
+          {
+            final Path path = _notchedCornerPath(outer.middleRect, gapStart + gapPadding - extent!, extent);
+            canvas.drawPath(path, paint);
+            break;
+          }
+        case TextDirection.ltr:
+          {
+            final Path path = _notchedCornerPath(outer.middleRect, gapStart - gapPadding, extent);
+            canvas.drawPath(path, paint);
+            break;
+          }
         case null:
           break;
       }

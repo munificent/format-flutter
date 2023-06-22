@@ -11,7 +11,7 @@ import '../../gallery/demo.dart';
 enum IndicatorType { overscroll, refresh }
 
 class OverscrollDemo extends StatefulWidget {
-  const OverscrollDemo({ super.key });
+  const OverscrollDemo({super.key});
 
   static const String routeName = '/material/overscroll';
 
@@ -21,9 +21,7 @@ class OverscrollDemo extends StatefulWidget {
 
 class OverscrollDemoState extends State<OverscrollDemo> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
-  static final List<String> _items = <String>[
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-  ];
+  static final List<String> _items = <String>['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
   Future<void> _handleRefresh() {
     final Completer<void> completer = Completer<void>();

@@ -66,12 +66,7 @@ const String dataDir = 'dev/tools/gen_defaults/data';
 Future<void> main(List<String> args) async {
   // Parse arguments
   final ArgParser parser = ArgParser();
-  parser.addFlag(
-    'verbose',
-    abbr: 'v',
-    help: 'Enable verbose output',
-    negatable: false,
-  );
+  parser.addFlag('verbose', abbr: 'v', help: 'Enable verbose output', negatable: false);
   final ArgResults argResults = parser.parse(args);
   final bool verbose = argResults['verbose'] as bool;
 
@@ -108,12 +103,14 @@ Future<void> main(List<String> args) async {
   BottomSheetTemplate('BottomSheet', '$materialLib/bottom_sheet.dart', tokens).updateFile();
   ButtonTemplate('md.comp.elevated-button', 'ElevatedButton', '$materialLib/elevated_button.dart', tokens).updateFile();
   ButtonTemplate('md.comp.filled-button', 'FilledButton', '$materialLib/filled_button.dart', tokens).updateFile();
-  ButtonTemplate('md.comp.filled-tonal-button', 'FilledTonalButton', '$materialLib/filled_button.dart', tokens).updateFile();
+  ButtonTemplate('md.comp.filled-tonal-button', 'FilledTonalButton', '$materialLib/filled_button.dart', tokens)
+      .updateFile();
   ButtonTemplate('md.comp.outlined-button', 'OutlinedButton', '$materialLib/outlined_button.dart', tokens).updateFile();
   ButtonTemplate('md.comp.text-button', 'TextButton', '$materialLib/text_button.dart', tokens).updateFile();
   CardTemplate('Card', '$materialLib/card.dart', tokens).updateFile();
   CheckboxTemplate('Checkbox', '$materialLib/checkbox.dart', tokens).updateFile();
-  ColorSchemeTemplate(colorLightTokens, colorDarkTokens, 'ColorScheme', '$materialLib/theme_data.dart', tokens).updateFile();
+  ColorSchemeTemplate(colorLightTokens, colorDarkTokens, 'ColorScheme', '$materialLib/theme_data.dart', tokens)
+      .updateFile();
   DatePickerTemplate('DatePicker', '$materialLib/date_picker_theme.dart', tokens).updateFile();
   DialogFullscreenTemplate('DialogFullscreen', '$materialLib/dialog.dart', tokens).updateFile();
   DialogTemplate('Dialog', '$materialLib/dialog.dart', tokens).updateFile();
@@ -124,9 +121,16 @@ Future<void> main(List<String> args) async {
   FilterChipTemplate('ChoiceChip', '$materialLib/choice_chip.dart', tokens).updateFile();
   FilterChipTemplate('FilterChip', '$materialLib/filter_chip.dart', tokens).updateFile();
   IconButtonTemplate('md.comp.icon-button', 'IconButton', '$materialLib/icon_button.dart', tokens).updateFile();
-  IconButtonTemplate('md.comp.filled-icon-button', 'FilledIconButton', '$materialLib/icon_button.dart', tokens).updateFile();
-  IconButtonTemplate('md.comp.filled-tonal-icon-button', 'FilledTonalIconButton', '$materialLib/icon_button.dart', tokens).updateFile();
-  IconButtonTemplate('md.comp.outlined-icon-button', 'OutlinedIconButton', '$materialLib/icon_button.dart', tokens).updateFile();
+  IconButtonTemplate('md.comp.filled-icon-button', 'FilledIconButton', '$materialLib/icon_button.dart', tokens)
+      .updateFile();
+  IconButtonTemplate(
+    'md.comp.filled-tonal-icon-button',
+    'FilledTonalIconButton',
+    '$materialLib/icon_button.dart',
+    tokens,
+  ).updateFile();
+  IconButtonTemplate('md.comp.outlined-icon-button', 'OutlinedIconButton', '$materialLib/icon_button.dart', tokens)
+      .updateFile();
   InputChipTemplate('InputChip', '$materialLib/input_chip.dart', tokens).updateFile();
   ListTileTemplate('LisTile', '$materialLib/list_tile.dart', tokens).updateFile();
   InputDecoratorTemplate('InputDecorator', '$materialLib/input_decorator.dart', tokens).updateFile();
@@ -139,7 +143,12 @@ Future<void> main(List<String> args) async {
   RadioTemplate('Radio<T>', '$materialLib/radio.dart', tokens).updateFile();
   SearchBarTemplate('SearchBar', '$materialLib/search_anchor.dart', tokens).updateFile();
   SearchViewTemplate('SearchView', '$materialLib/search_anchor.dart', tokens).updateFile();
-  SegmentedButtonTemplate('md.comp.outlined-segmented-button', 'SegmentedButton', '$materialLib/segmented_button.dart', tokens).updateFile();
+  SegmentedButtonTemplate(
+    'md.comp.outlined-segmented-button',
+    'SegmentedButton',
+    '$materialLib/segmented_button.dart',
+    tokens,
+  ).updateFile();
   SnackbarTemplate('md.comp.snackbar', 'Snackbar', '$materialLib/snack_bar.dart', tokens).updateFile();
   SliderTemplate('md.comp.slider', 'Slider', '$materialLib/slider.dart', tokens).updateFile();
   SurfaceTintTemplate('SurfaceTint', '$materialLib/elevation_overlay.dart', tokens).updateFile();

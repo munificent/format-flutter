@@ -48,7 +48,6 @@ static final String tokenBar = 'Barfoo';
 
 // END GENERATED TOKEN PROPERTIES - Test
 ''');
-
     } finally {
       tempDir.deleteSync(recursive: true);
     }
@@ -100,7 +99,6 @@ static final String tokenBar = 'bar';
 
 // END GENERATED TOKEN PROPERTIES - Test
 ''');
-
     } finally {
       tempDir.deleteSync(recursive: true);
     }
@@ -212,7 +210,6 @@ static final String tokenBar = 'foo';
 
 // END GENERATED TOKEN PROPERTIES - Block 2
 ''');
-
     } finally {
       tempDir.deleteSync(recursive: true);
     }
@@ -229,12 +226,13 @@ static final String tokenBar = 'foo';
         'bottomLeft': 3.0,
         'bottomRight': 4.0,
       },
-      'shape.full': <String, dynamic>{
-        'family': 'SHAPE_FAMILY_CIRCULAR',
-      },
+      'shape.full': <String, dynamic>{'family': 'SHAPE_FAMILY_CIRCULAR'},
     };
     final TestTemplate template = TestTemplate('Test', 'foobar.dart', tokens);
-    expect(template.shape('foo'), 'const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(1.0), topRight: Radius.circular(2.0), bottomLeft: Radius.circular(3.0), bottomRight: Radius.circular(4.0)))');
+    expect(
+      template.shape('foo'),
+      'const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(1.0), topRight: Radius.circular(2.0), bottomLeft: Radius.circular(3.0), bottomRight: Radius.circular(4.0)))',
+    );
     expect(template.shape('bar'), 'const StadiumBorder()');
   });
 
@@ -245,13 +243,13 @@ static final String tokenBar = 'foo';
 
     // Add to printLog instead of printing to stdout
     void Function() overridePrint(void Function() testFn) => () {
-      final ZoneSpecification spec = ZoneSpecification(
-        print: (_, __, ___, String msg) {
-          printLog.add(msg);
-        }
-      );
-      return Zone.current.fork(specification: spec).run<void>(testFn);
-    };
+          final ZoneSpecification spec = ZoneSpecification(
+            print: (_, __, ___, String msg) {
+              printLog.add(msg);
+            },
+          );
+          return Zone.current.fork(specification: spec).run<void>(testFn);
+        };
 
     setUp(() {
       logger.init(allTokens: allTokens, versionMap: versionMap);

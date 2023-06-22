@@ -46,8 +46,7 @@ class PluginTest {
   final String template;
 
   Future<TaskResult> call() async {
-    final Directory tempDir =
-        Directory.systemTemp.createTempSync('flutter_devicelab_plugin_test.');
+    final Directory tempDir = Directory.systemTemp.createTempSync('flutter_devicelab_plugin_test.');
     // FFI plugins do not have support for `flutter test`.
     // `flutter test` does not do a native build.
     // Supporting `flutter test` would require invoking a native build.
@@ -55,8 +54,13 @@ class PluginTest {
     try {
       section('Create plugin');
       final _FlutterProject plugin = await _FlutterProject.create(
-          tempDir, options, buildTarget,
-          name: 'plugintest', template: template, environment: pluginCreateEnvironment);
+        tempDir,
+        options,
+        buildTarget,
+        name: 'plugintest',
+        template: template,
+        environment: pluginCreateEnvironment,
+      );
       if (dartOnlyPlugin) {
         await plugin.convertDefaultPluginToDartPlugin();
       }
@@ -71,12 +75,17 @@ class PluginTest {
         }
       }
       section('Create Flutter app');
-      final _FlutterProject app = await _FlutterProject.create(tempDir, options, buildTarget,
-          name: 'plugintestapp', template: 'app', environment: appCreateEnvironment);
+      final _FlutterProject app = await _FlutterProject.create(
+        tempDir,
+        options,
+        buildTarget,
+        name: 'plugintestapp',
+        template: 'app',
+        environment: appCreateEnvironment,
+      );
       try {
         section('Add plugins');
-        await app.addPlugin('plugintest',
-            pluginPath: path.join('..', 'plugintest'));
+        await app.addPlugin('plugintest', pluginPath: path.join('..', 'plugintest'));
         await app.addPlugin('path_provider');
         section('Build app');
         await app.build(buildTarget, validateNativeBuildProject: !dartOnlyPlugin);
@@ -114,12 +123,8 @@ class _FlutterProject {
   Future<void> addPlugin(String plugin, {String? pluginPath}) async {
     final File pubspec = pubspecFile;
     String content = await pubspec.readAsString();
-    final String dependency =
-        pluginPath != null ? '$plugin:\n    path: $pluginPath' : '$plugin:';
-    content = content.replaceFirst(
-      '\ndependencies:\n',
-      '\ndependencies:\n  $dependency\n',
-    );
+    final String dependency = pluginPath != null ? '$plugin:\n    path: $pluginPath' : '$plugin:';
+    content = content.replaceFirst('\ndependencies:\n', '\ndependencies:\n  $dependency\n');
     await pubspec.writeAsString(content, flush: true);
   }
 
@@ -130,10 +135,7 @@ class _FlutterProject {
     // Convert the metadata.
     final File pubspec = pubspecFile;
     String content = await pubspec.readAsString();
-    content = content.replaceAll(
-      RegExp(r' pluginClass: .*?\n'),
-      ' dartPluginClass: $dartPluginClass\n',
-    );
+    content = content.replaceAll(RegExp(r' pluginClass: .*?\n'), ' dartPluginClass: $dartPluginClass\n');
     await pubspec.writeAsString(content, flush: true);
 
     // Add the Dart registration hook that the build will generate a call to.
@@ -149,13 +151,7 @@ class $dartPluginClass {
     await dartCode.writeAsString(content, flush: true);
 
     // Remove any native plugin code.
-    const List<String> platforms = <String>[
-      'android',
-      'ios',
-      'linux',
-      'macos',
-      'windows',
-    ];
+    const List<String> platforms = <String>['android', 'ios', 'linux', 'macos', 'windows'];
     for (final String platform in platforms) {
       final Directory platformDir = Directory(path.join(rootPath, platform));
       if (platformDir.existsSync()) {
@@ -176,14 +172,8 @@ class $dartPluginClass {
       print(pubspecContent);
       throw TaskResult.failure('Missing expected darwin platform plugin keys');
     }
-    pubspecContent = pubspecContent.replaceAll(
-        originalIOSKey,
-        '$originalIOSKey        sharedDarwinSource: true\n'
-    );
-    pubspecContent = pubspecContent.replaceAll(
-        originalMacOSKey,
-        '$originalMacOSKey        sharedDarwinSource: true\n'
-    );
+    pubspecContent = pubspecContent.replaceAll(originalIOSKey, '$originalIOSKey        sharedDarwinSource: true\n');
+    pubspecContent = pubspecContent.replaceAll(originalMacOSKey, '$originalMacOSKey        sharedDarwinSource: true\n');
     await pubspec.writeAsString(pubspecContent, flush: true);
 
     // Copy ios to darwin, and delete macos.
@@ -203,7 +193,10 @@ class $dartPluginClass {
 
     // Remove "s.platform = :ios" to work on all platforms, including macOS.
     podspecContent = podspecContent.replaceFirst(RegExp(r'.*s\.platform.*'), '');
-    podspecContent = podspecContent.replaceFirst("s.dependency 'Flutter'", "s.ios.dependency 'Flutter'\ns.osx.dependency 'FlutterMacOS'");
+    podspecContent = podspecContent.replaceFirst(
+      "s.dependency 'Flutter'",
+      "s.ios.dependency 'Flutter'\ns.osx.dependency 'FlutterMacOS'",
+    );
 
     await podspec.writeAsString(podspecContent, flush: true);
 
@@ -254,12 +247,10 @@ public class $pluginClass: NSObject, FlutterPlugin {
 
     switch (buildTarget) {
       case 'apk':
-        if (await exec(
-          path.join('.', 'gradlew'),
-          <String>['testDebugUnitTest'],
-          workingDirectory: path.join(rootPath, 'android'),
-          canFail: true,
-        ) != 0) {
+        if (await exec(path.join('.', 'gradlew'), <String>[
+              'testDebugUnitTest',
+            ], workingDirectory: path.join(rootPath, 'android'), canFail: true) !=
+            0) {
           throw TaskResult.failure('Platform unit tests failed');
         }
       case 'ios':
@@ -276,10 +267,11 @@ public class $pluginClass: NSObject, FlutterPlugin {
         });
       case 'linux':
         if (await exec(
-          path.join(rootPath, 'build', 'linux', 'x64', 'release', 'plugins', 'plugintest', 'plugintest_test'),
-          <String>[],
-          canFail: true,
-        ) != 0) {
+              path.join(rootPath, 'build', 'linux', 'x64', 'release', 'plugins', 'plugintest', 'plugintest_test'),
+              <String>[],
+              canFail: true,
+            ) !=
+            0) {
           throw TaskResult.failure('Platform unit tests failed');
         }
       case 'macos':
@@ -294,34 +286,28 @@ public class $pluginClass: NSObject, FlutterPlugin {
         }
       case 'windows':
         if (await exec(
-          path.join(rootPath, 'build', 'windows', 'plugins', 'plugintest', 'Release', 'plugintest_test.exe'),
-          <String>[],
-          canFail: true,
-        ) != 0) {
+              path.join(rootPath, 'build', 'windows', 'plugins', 'plugintest', 'Release', 'plugintest_test.exe'),
+              <String>[],
+              canFail: true,
+            ) !=
+            0) {
           throw TaskResult.failure('Platform unit tests failed');
         }
     }
   }
 
   static Future<_FlutterProject> create(
-      Directory directory,
-      List<String> options,
-      String target,
-      {
-        required String name,
-        required String template,
-        Map<String, String>? environment,
-      }) async {
+    Directory directory,
+    List<String> options,
+    String target, {
+    required String name,
+    required String template,
+    Map<String, String>? environment,
+  }) async {
     await inDirectory(directory, () async {
       await flutter(
         'create',
-        options: <String>[
-          '--template=$template',
-          '--org',
-          'io.flutter.devicelab',
-          ...options,
-          name,
-        ],
+        options: <String>['--template=$template', '--org', 'io.flutter.devicelab', ...options, name],
         environment: environment,
       );
     });
@@ -340,9 +326,7 @@ public class $pluginClass: NSObject, FlutterPlugin {
     if (!podspec.existsSync()) {
       throw TaskResult.failure('podspec file missing at ${podspec.path}');
     }
-    final String versionString = target == 'ios'
-        ? "s.platform = :ios, '11.0'"
-        : "s.platform = :osx, '10.11'";
+    final String versionString = target == 'ios' ? "s.platform = :ios, '11.0'" : "s.platform = :osx, '10.11'";
     String podspecContent = podspec.readAsStringSync();
     if (!podspecContent.contains(versionString)) {
       throw TaskResult.failure('Update this test to match plugin minimum $target deployment version');
@@ -365,12 +349,8 @@ s.dependency 'AppAuth', '1.6.0'
 
   Future<void> build(String target, {bool validateNativeBuildProject = true}) async {
     await inDirectory(Directory(rootPath), () async {
-      final String buildOutput =  await evalFlutter('build', options: <String>[
-        target,
-        '-v',
-        if (target == 'ios')
-          '--no-codesign',
-      ]);
+      final String buildOutput =
+          await evalFlutter('build', options: <String>[target, '-v', if (target == 'ios') '--no-codesign']);
 
       if (target == 'ios' || target == 'macos') {
         // This warning is confusing and shouldn't be emitted. Plugins often support lower versions than the
@@ -425,8 +405,7 @@ s.dependency 'AppAuth', '1.6.0'
     if (Platform.isWindows) {
       // A running Gradle daemon might prevent us from deleting the project
       // folder on Windows.
-      final String wrapperPath =
-          path.absolute(path.join(rootPath, 'android', 'gradlew.bat'));
+      final String wrapperPath = path.absolute(path.join(rootPath, 'android', 'gradlew.bat'));
       if (File(wrapperPath).existsSync()) {
         await exec(wrapperPath, <String>['--stop'], canFail: true);
       }

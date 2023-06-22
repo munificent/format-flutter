@@ -48,18 +48,23 @@ void main() {
           await driver.setSemantics(true),
           isTrue,
           reason: 'Could not toggle semantics to on because semantics were already '
-                  'on, but the test needs to toggle semantics to measure the initial '
-                  'semantics tree generation in isolation.'
+              'on, but the test needs to toggle semantics to measure the initial '
+              'semantics tree generation in isolation.',
         );
       });
 
-      final Iterable<TimelineEvent>? semanticsEvents = timeline.events?.where((TimelineEvent event) => event.name == 'SEMANTICS');
+      final Iterable<TimelineEvent>? semanticsEvents = timeline.events?.where(
+        (TimelineEvent event) => event.name == 'SEMANTICS',
+      );
       if (semanticsEvents?.length != 2) {
         fail('Expected exactly two "SEMANTICS" events, got ${semanticsEvents?.length}:\n$semanticsEvents');
       }
-      final Duration semanticsTreeCreation = Duration(microseconds: semanticsEvents!.last.timestampMicros! - semanticsEvents.first.timestampMicros!);
+      final Duration semanticsTreeCreation = Duration(
+        microseconds: semanticsEvents!.last.timestampMicros! - semanticsEvents.first.timestampMicros!,
+      );
 
-      final String jsonEncoded = json.encode(<String, dynamic>{'initialSemanticsTreeCreation': semanticsTreeCreation.inMilliseconds});
+      final String jsonEncoded = json
+          .encode(<String, dynamic>{'initialSemanticsTreeCreation': semanticsTreeCreation.inMilliseconds});
       File(p.join(testOutputsDirectory, 'complex_layout_semantics_perf.json')).writeAsStringSync(jsonEncoded);
     }, timeout: Timeout.none);
   });

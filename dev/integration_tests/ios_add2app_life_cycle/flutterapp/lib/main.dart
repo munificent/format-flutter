@@ -42,9 +42,7 @@ class _LifeCycleSpyState extends State<LifeCycleSpy> with WidgetsBindingObserver
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _actualLifeCycleSequence =  <AppLifecycleState?>[
-      ServicesBinding.instance.lifecycleState,
-    ];
+    _actualLifeCycleSequence = <AppLifecycleState?>[ServicesBinding.instance.lifecycleState];
   }
 
   @override
@@ -67,10 +65,7 @@ class _LifeCycleSpyState extends State<LifeCycleSpy> with WidgetsBindingObserver
       // Rewires the semantics harness if test passes.
       SwitchableSemanticsBinding.instance.semanticsEnabled = true;
     }
-    return const MaterialApp(
-      title: 'Flutter View',
-      home: Text('test'),
-    );
+    return const MaterialApp(title: 'Flutter View', home: Text('test'));
   }
 }
 

@@ -65,10 +65,7 @@ abstract class _Benchmark {
 
   Directory get directory;
 
-  List<String> get options => <String>[
-        '--benchmark',
-        if (watch) '--watch',
-      ];
+  List<String> get options => <String>['--benchmark', if (watch) '--watch'];
 
   Future<double> execute(int iteration, int targetIterations) async {
     section('Analyze $title ${watch ? 'with watcher' : ''} - ${iteration + 1} / $targetIterations');
@@ -118,9 +115,6 @@ Future<_BenchmarkResult> _run(_Benchmark benchmark) async {
     results.add(await benchmark.execute(i, _kRunsPerBenchmark));
   }
   results.sort();
-  final double sum = results.fold<double>(
-    0.0,
-    (double previousValue, double element) => previousValue + element,
-  );
+  final double sum = results.fold<double>(0.0, (double previousValue, double element) => previousValue + element);
   return _BenchmarkResult(sum / results.length, results.first, results.last);
 }

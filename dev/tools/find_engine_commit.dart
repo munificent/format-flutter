@@ -47,56 +47,31 @@ Future<void> main(List<String> args) async {
 
 Future<void> _fetchUpstream([String workingDirectory = '.']) async {
   print('Fetching remotes for "$workingDirectory" - you may be prompted for SSH credentials by git.');
-  final ProcessResult fetchResult = await Process.run(
-    'git',
-    <String>[
-      'fetch',
-      '--all',
-    ],
-    workingDirectory: workingDirectory,
-  );
+  final ProcessResult fetchResult =
+      await Process.run('git', <String>['fetch', '--all'], workingDirectory: workingDirectory);
   if (fetchResult.exitCode != 0) {
     throw Exception('Failed to fetch upstream in repository $workingDirectory');
   }
 }
 
 Future<String> _tagsForRevision(String flutterRevision) async {
-  final ProcessResult tagResult = await Process.run(
-    'git',
-    <String>[
-      'tag',
-      '--contains',
-      flutterRevision,
-    ],
-  );
+  final ProcessResult tagResult = await Process.run('git', <String>['tag', '--contains', flutterRevision]);
   return tagResult.stdout as String;
 }
 
 Future<bool> containsRevision(String ancestorRevision, String revision) async {
-  final ProcessResult result = await Process.run(
-    'git',
-    <String>[
-      'merge-base',
-      '--is-ancestor',
-      ancestorRevision,
-      revision,
-    ],
-    workingDirectory: engineRepo,
-  );
+  final ProcessResult result = await Process.run('git', <String>[
+    'merge-base',
+    '--is-ancestor',
+    ancestorRevision,
+    revision,
+  ], workingDirectory: engineRepo);
   return result.exitCode == 0;
 }
 
 Stream<FlutterEngineRevision> _logEngineVersions() async* {
-  final ProcessResult result = await Process.run(
-    'git',
-    <String>[
-      'log',
-      '--oneline',
-      '-p',
-      '--',
-      'bin/internal/engine.version',
-    ],
-  );
+  final ProcessResult result =
+      await Process.run('git', <String>['log', '--oneline', '-p', '--', 'bin/internal/engine.version']);
   if (result.exitCode != 0) {
     print(result.stderr);
     throw Exception('Failed to log bin/internal/engine.version');

@@ -22,24 +22,18 @@ const String kLuciPackagingConsoleLink = 'https://ci.chromium.org/p/flutter/g/pa
 
 const String kWebsiteReleasesUrl = 'https://docs.flutter.dev/development/tools/sdk/releases';
 
-const String discordReleaseChannel =
-    'https://discord.com/channels/608014603317936148/783492179922124850';
+const String discordReleaseChannel = 'https://discord.com/channels/608014603317936148/783492179922124850';
 
-const String flutterReleaseHotline =
-    'https://mail.google.com/chat/u/0/#chat/space/AAAA6RKcK2k';
+const String flutterReleaseHotline = 'https://mail.google.com/chat/u/0/#chat/space/AAAA6RKcK2k';
 
-const String hotfixToStableWiki =
-    'https://github.com/flutter/flutter/wiki/Hotfixes-to-the-Stable-Channel';
+const String hotfixToStableWiki = 'https://github.com/flutter/flutter/wiki/Hotfixes-to-the-Stable-Channel';
 
-const String flutterAnnounceGroup =
-    'https://groups.google.com/g/flutter-announce';
+const String flutterAnnounceGroup = 'https://groups.google.com/g/flutter-announce';
 
 const String hotfixDocumentationBestPractices =
     'https://github.com/flutter/flutter/wiki/Hotfix-Documentation-Best-Practices';
 
-final RegExp releaseCandidateBranchRegex = RegExp(
-  r'flutter-(\d+)\.(\d+)-candidate\.(\d+)',
-);
+final RegExp releaseCandidateBranchRegex = RegExp(r'flutter-(\d+)\.(\d+)-candidate\.(\d+)');
 
 /// Cast a dynamic to String and trim.
 String stdoutToString(dynamic input) {
@@ -60,10 +54,12 @@ bool assertsEnabled() {
   // Verify asserts enabled
   bool assertsEnabled = false;
 
-  assert(() {
-    assertsEnabled = true;
-    return true;
-  }());
+  assert(
+    () {
+      assertsEnabled = true;
+      return true;
+    }(),
+  );
   return assertsEnabled;
 }
 
@@ -74,12 +70,7 @@ bool assertsEnabled() {
 ///
 /// The environment is favored over CLI args since the latter can have a default
 /// value, which the environment should be able to override.
-String? getValueFromEnvOrArgs(
-  String name,
-  ArgResults argResults,
-  Map<String, String> env, {
-  bool allowNull = false,
-}) {
+String? getValueFromEnvOrArgs(String name, ArgResults argResults, Map<String, String> env, {bool allowNull = false}) {
   final String envName = fromArgToEnvName(name);
   if (env[envName] != null) {
     return env[envName];
@@ -92,15 +83,13 @@ String? getValueFromEnvOrArgs(
   if (allowNull) {
     return null;
   }
-  throw ConductorException('Expected either the CLI arg --$name or the environment variable $envName '
-      'to be provided!');
+  throw ConductorException(
+    'Expected either the CLI arg --$name or the environment variable $envName '
+    'to be provided!',
+  );
 }
 
-bool getBoolFromEnvOrArgs(
-  String name,
-  ArgResults argResults,
-  Map<String, String> env,
-) {
+bool getBoolFromEnvOrArgs(String name, ArgResults argResults, Map<String, String> env) {
   final String envName = fromArgToEnvName(name);
   if (env[envName] != null) {
     return env[envName]?.toUpperCase() == 'TRUE';
@@ -117,11 +106,7 @@ bool getBoolFromEnvOrArgs(
 ///
 /// The environment is favored over CLI args since the latter can have a default
 /// value, which the environment should be able to override.
-List<String> getValuesFromEnvOrArgs(
-  String name,
-  ArgResults argResults,
-  Map<String, String> env,
-) {
+List<String> getValuesFromEnvOrArgs(String name, ArgResults argResults, Map<String, String> env) {
   final String envName = fromArgToEnvName(name);
   if (env[envName] != null && env[envName] != '') {
     return env[envName]!.split(',');
@@ -131,8 +116,10 @@ List<String> getValuesFromEnvOrArgs(
     return argValues;
   }
 
-  throw ConductorException('Expected either the CLI arg --$name or the environment variable $envName '
-      'to be provided!');
+  throw ConductorException(
+    'Expected either the CLI arg --$name or the environment variable $envName '
+    'to be provided!',
+  );
 }
 
 /// Translate CLI arg names to env variable names.
@@ -145,11 +132,7 @@ String fromArgToEnvName(String argName) {
 /// Return a web link for the user to open a new PR.
 ///
 /// Includes PR title and body via query params.
-String getNewPrLink({
-  required String userName,
-  required String repoName,
-  required pb.ConductorState state,
-}) {
+String getNewPrLink({required String userName, required String repoName, required pb.ConductorState state}) {
   assert(state.releaseChannel.isNotEmpty);
   assert(state.releaseVersion.isNotEmpty);
   late final String candidateBranch;

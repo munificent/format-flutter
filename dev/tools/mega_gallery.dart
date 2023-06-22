@@ -62,7 +62,9 @@ void main(List<String> args) {
   print('');
   print('Stats:');
   print('  packages/flutter            : ${getStatsFor(Directory("packages/flutter"))}');
-  print('  dev/integration_tests/flutter_gallery    : ${getStatsFor(Directory("dev/integration_tests/flutter_gallery"))}');
+  print(
+    '  dev/integration_tests/flutter_gallery    : ${getStatsFor(Directory("dev/integration_tests/flutter_gallery"))}',
+  );
 
   final Directory lib = _dir(out, 'lib');
   if (lib.existsSync()) {

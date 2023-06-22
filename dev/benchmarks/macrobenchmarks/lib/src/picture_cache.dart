@@ -19,9 +19,7 @@ class PictureCachePage extends StatelessWidget {
           // pinned: true,
           // expandedHeight: 50.0,
           // forceElevated: innerBoxIsScrolled,
-          bottom: TabBar(
-            tabs: kTabNames.map((String name) => Tab(text: name)).toList(),
-          ),
+          bottom: TabBar(tabs: kTabNames.map((String name) => Tab(text: name)).toList()),
         ),
         body: TabBarView(
           key: const Key('tabbar_view'), // this key is used by the driver test
@@ -31,9 +29,7 @@ class PictureCachePage extends StatelessWidget {
               bottom: false,
               child: Builder(
                 builder: (BuildContext context) {
-                  return ListView.builder(
-                    itemBuilder: (BuildContext context, int index) => ListItem(index: index),
-                  );
+                  return ListView.builder(itemBuilder: (BuildContext context, int index) => ListItem(index: index));
                 },
               ),
             );
@@ -55,46 +51,22 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> contents = <Widget>[
-      const SizedBox(
-        height: 15,
-      ),
-      _buildUserInfo(),
-      const SizedBox(
-        height: 10,
-      ),
-    ];
+    final List<Widget> contents = <Widget>[const SizedBox(height: 15), _buildUserInfo(), const SizedBox(height: 10)];
     if (index % 3 != 0) {
       contents.add(_buildImageContent());
     } else {
       contents.addAll(<Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 40, right: 15),
-          child: _buildContentText(),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 40, right: 15),
-          child: _buildBottomRow(),
-        ),
+        Padding(padding: const EdgeInsets.only(left: 40, right: 15), child: _buildContentText()),
+        const SizedBox(height: 10),
+        Padding(padding: const EdgeInsets.only(left: 40, right: 15), child: _buildBottomRow()),
       ]);
     }
-    contents.addAll(<Widget>[
-      const SizedBox(
-        height: 13,
-      ),
-      buildDivider(0.5, const EdgeInsets.only(left: 40, right: 15)),
-    ]);
+    contents
+        .addAll(<Widget>[const SizedBox(height: 13), buildDivider(0.5, const EdgeInsets.only(left: 40, right: 15))]);
     return MaterialButton(
       onPressed: () {},
       padding: EdgeInsets.zero,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: contents,
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: contents),
     );
   }
 
@@ -112,21 +84,14 @@ class ListItem extends StatelessWidget {
   Widget _buildImageContent() {
     return Row(
       children: <Widget>[
-        const SizedBox(
-          width: 40,
-        ),
+        const SizedBox(width: 40),
         Expanded(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 30),
-                child: _buildContentText(),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
+              Padding(padding: const EdgeInsets.only(right: 30), child: _buildContentText()),
+              const SizedBox(height: 10),
               _buildBottomRow(),
             ],
           ),
@@ -138,72 +103,37 @@ class ListItem extends StatelessWidget {
           width: 110,
           height: 70,
         ),
-        const SizedBox(
-          width: 15,
-        ),
+        const SizedBox(width: 15),
       ],
     );
   }
 
   Widget _buildContentText() {
-    return const Text(
-      kMockChineseTitle,
-      style: TextStyle(
-        fontSize: 16,
-      ),
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-    );
+    return const Text(kMockChineseTitle, style: TextStyle(fontSize: 16), maxLines: 2, overflow: TextOverflow.ellipsis);
   }
 
   Widget _buildBottomRow() {
     return Row(
       children: <Widget>[
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 7,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 7),
           height: 16,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: const Color(0xFFFBEEEE),
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFFFBEEEE)),
           child: Row(
             children: <Widget>[
-              const SizedBox(
-                width: 3,
-              ),
+              const SizedBox(width: 3),
               Text(
                 'hot:${_convertCountToStr(kMockCount)}',
-                style: const TextStyle(
-                  color: Color(0xFFE5645F),
-                  fontSize: 11,
-                ),
+                style: const TextStyle(color: Color(0xFFE5645F), fontSize: 11),
               ),
             ],
           ),
         ),
-        const SizedBox(
-          width: 9,
-        ),
-        const Text(
-          'ans:$kMockCount',
-          style: TextStyle(
-            color: Color(0xFF999999),
-            fontSize: 11,
-          ),
-        ),
-        const SizedBox(
-          width: 9,
-        ),
-        const Text(
-          'like:$kMockCount',
-          style: TextStyle(
-            color: Color(0xFF999999),
-            fontSize: 11,
-          ),
-        ),
+        const SizedBox(width: 9),
+        const Text('ans:$kMockCount', style: TextStyle(color: Color(0xFF999999), fontSize: 11)),
+        const SizedBox(width: 9),
+        const Text('like:$kMockCount', style: TextStyle(color: Color(0xFF999999), fontSize: 11)),
       ],
     );
   }
@@ -223,42 +153,26 @@ class ListItem extends StatelessWidget {
       onTap: () {},
       child: Row(
         children: <Widget>[
-          Container(
-              width: 40, alignment: Alignment.center, child: _buildRankText()),
-          const CircleAvatar(
-            radius: 11.5,
-          ),
-          const SizedBox(
-            width: 6,
-          ),
+          Container(width: 40, alignment: Alignment.center, child: _buildRankText()),
+          const CircleAvatar(radius: 11.5),
+          const SizedBox(width: 6),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 250),
             child: const Text(
               kMockName,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(
-            width: 4,
-          ),
-          const SizedBox(
-            width: 15,
-          ),
+          const SizedBox(width: 4),
+          const SizedBox(width: 15),
         ],
       ),
     );
   }
 
   Widget buildDivider(double height, EdgeInsets padding) {
-    return Container(
-      padding: padding,
-      height: height,
-      color: const Color(0xFFF5F5F5),
-    );
+    return Container(padding: padding, height: height, color: const Color(0xFFF5F5F5));
   }
 }

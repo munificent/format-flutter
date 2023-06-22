@@ -11,8 +11,7 @@ class ColorFilterCachePage extends StatefulWidget {
   State<ColorFilterCachePage> createState() => _ColorFilterCachePageState();
 }
 
-class _ColorFilterCachePageState extends State<ColorFilterCachePage>
-    with TickerProviderStateMixin {
+class _ColorFilterCachePageState extends State<ColorFilterCachePage> with TickerProviderStateMixin {
   final ScrollController _controller = ScrollController();
   @override
   void initState() {
@@ -41,12 +40,11 @@ class _ColorFilterCachePageState extends State<ColorFilterCachePage>
             colorFilter: ColorFilter.mode(Colors.green[300]!, BlendMode.luminosity),
             child: Container(
               clipBehavior: Clip.antiAlias,
-              decoration: const BoxDecoration(boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.red,
-                  blurRadius: 5.0,
-                ),
-              ], color: Colors.blue, backgroundBlendMode: BlendMode.luminosity),
+              decoration: const BoxDecoration(
+                boxShadow: <BoxShadow>[BoxShadow(color: Colors.red, blurRadius: 5.0)],
+                color: Colors.blue,
+                backgroundBlendMode: BlendMode.luminosity,
+              ),
               child: Column(
                 children: <Widget>[
                   const Text('Color Filter Cache Pref Test'),

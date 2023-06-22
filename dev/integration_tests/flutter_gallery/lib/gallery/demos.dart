@@ -9,10 +9,7 @@ import 'icons.dart';
 
 @immutable
 class GalleryDemoCategory {
-  const GalleryDemoCategory._({
-    required this.name,
-    required this.icon,
-  });
+  const GalleryDemoCategory._({required this.name, required this.icon});
 
   final String name;
   final IconData icon;
@@ -25,9 +22,7 @@ class GalleryDemoCategory {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is GalleryDemoCategory
-        && other.name == name
-        && other.icon == icon;
+    return other is GalleryDemoCategory && other.name == name && other.icon == icon;
   }
 
   @override
@@ -39,15 +34,9 @@ class GalleryDemoCategory {
   }
 }
 
-const GalleryDemoCategory _kDemos = GalleryDemoCategory._(
-  name: 'Studies',
-  icon: GalleryIcons.animation,
-);
+const GalleryDemoCategory _kDemos = GalleryDemoCategory._(name: 'Studies', icon: GalleryIcons.animation);
 
-const GalleryDemoCategory _kStyle = GalleryDemoCategory._(
-  name: 'Style',
-  icon: GalleryIcons.custom_typography,
-);
+const GalleryDemoCategory _kStyle = GalleryDemoCategory._(name: 'Style', icon: GalleryIcons.custom_typography);
 
 const GalleryDemoCategory _kMaterialComponents = GalleryDemoCategory._(
   name: 'Material',
@@ -59,10 +48,7 @@ const GalleryDemoCategory _kCupertinoComponents = GalleryDemoCategory._(
   icon: GalleryIcons.phone_iphone,
 );
 
-const GalleryDemoCategory _kMedia = GalleryDemoCategory._(
-  name: 'Media',
-  icon: GalleryIcons.drive_video,
-);
+const GalleryDemoCategory _kMedia = GalleryDemoCategory._(name: 'Media', icon: GalleryIcons.drive_video);
 
 class GalleryDemo {
   const GalleryDemo({
@@ -570,15 +556,15 @@ List<GalleryDemo> _buildGalleryDemos() {
 final List<GalleryDemo> kAllGalleryDemos = _buildGalleryDemos();
 
 final Set<GalleryDemoCategory> kAllGalleryDemoCategories =
-  kAllGalleryDemos.map<GalleryDemoCategory>((GalleryDemo demo) => demo.category).toSet();
+    kAllGalleryDemos.map<GalleryDemoCategory>((GalleryDemo demo) => demo.category).toSet();
 
 final Map<GalleryDemoCategory, List<GalleryDemo>> kGalleryCategoryToDemos =
-  Map<GalleryDemoCategory, List<GalleryDemo>>.fromIterable(
-    kAllGalleryDemoCategories,
-    value: (dynamic category) {
-      return kAllGalleryDemos.where((GalleryDemo demo) => demo.category == category).toList();
-    },
-  );
+    Map<GalleryDemoCategory, List<GalleryDemo>>.fromIterable(
+  kAllGalleryDemoCategories,
+  value: (dynamic category) {
+    return kAllGalleryDemos.where((GalleryDemo demo) => demo.category == category).toList();
+  },
+);
 
 final Map<String, String?> kDemoDocumentationUrl = <String, String?>{
   for (final GalleryDemo demo in kAllGalleryDemos)

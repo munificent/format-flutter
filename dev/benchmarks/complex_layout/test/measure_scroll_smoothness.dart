@@ -26,15 +26,8 @@ Iterable<PointerEvent> dragInputEvents(
   // We test 90Hz input on 60Hz device here, which shows similar pattern.
   final int moveEventCount = totalTime.inMicroseconds * frequency ~/ const Duration(seconds: 1).inMicroseconds;
   final Offset movePerEvent = totalMove / moveEventCount.toDouble();
-  yield PointerAddedEvent(
-    timeStamp: epoch,
-    position: startLocation,
-  );
-  yield PointerDownEvent(
-    timeStamp: epoch,
-    position: startLocation,
-    pointer: 1,
-  );
+  yield PointerAddedEvent(timeStamp: epoch, position: startLocation);
+  yield PointerDownEvent(timeStamp: epoch, position: startLocation, pointer: 1);
   for (int t = 0; t < moveEventCount + 1; t++) {
     final Offset position = startLocation + movePerEvent * t.toDouble();
     yield PointerMoveEvent(
@@ -45,19 +38,10 @@ Iterable<PointerEvent> dragInputEvents(
     );
   }
   final Offset position = startLocation + totalMove;
-  yield PointerUpEvent(
-    timeStamp: epoch + totalTime,
-    position: position,
-    pointer: 1,
-  );
+  yield PointerUpEvent(timeStamp: epoch + totalTime, position: position, pointer: 1);
 }
 
-enum TestScenario {
-  resampleOn90Hz,
-  resampleOn59Hz,
-  resampleOff90Hz,
-  resampleOff59Hz,
-}
+enum TestScenario { resampleOn90Hz, resampleOn59Hz, resampleOff90Hz, resampleOff59Hz }
 
 class ResampleFlagVariant extends TestVariant<TestScenario> {
   ResampleFlagVariant(this.binding);
@@ -77,6 +61,7 @@ class ResampleFlagVariant extends TestVariant<TestScenario> {
         return false;
     }
   }
+
   double get frequency {
     switch (currentValue) {
       case TestScenario.resampleOn90Hz:
@@ -148,11 +133,8 @@ Future<void> main() async {
     Future<void> scroll() async {
       // Extra 50ms to avoid timeouts.
       final Duration startTime = const Duration(milliseconds: 500) + now();
-      for (final PointerEvent event in dragInputEvents(
-        startTime,
-        tester.getCenter(scrollerFinder),
-        frequency: variant.frequency,
-      )) {
+      for (final PointerEvent event
+          in dragInputEvents(startTime, tester.getCenter(scrollerFinder), frequency: variant.frequency)) {
         await tester.binding.delayed(event.timeStamp - now());
         // This now measures how accurate the above delayed is.
         final Duration delay = now() - event.timeStamp;
@@ -221,23 +203,19 @@ Future<void> main() async {
 /// `frame_timestamp`.
 /// `input_delay`: the list of maximum delay time of the input simulation during
 /// a frame. Its length is the same as `frame_timestamp`
-Map<String, dynamic> scrollSummary(
-  List<double> scrollOffset,
-  List<Duration> delays,
-  List<int> frameTimestamp,
-) {
+Map<String, dynamic> scrollSummary(List<double> scrollOffset, List<Duration> delays, List<int> frameTimestamp) {
   double jankyCount = 0;
   double absJerkAvg = 0;
   int lostFrame = 0;
-  for (int i = 1; i < scrollOffset.length-1; i += 1) {
-    if (frameTimestamp[i+1] - frameTimestamp[i-1] > 40E3 ||
+  for (int i = 1; i < scrollOffset.length - 1; i += 1) {
+    if (frameTimestamp[i + 1] - frameTimestamp[i - 1] > 40E3 ||
         (i >= delays.length || delays[i] > const Duration(milliseconds: 16))) {
       // filter data points from slow frame building or input simulation artifact
       lostFrame += 1;
       continue;
     }
     //
-    final double absJerk = (scrollOffset[i-1] + scrollOffset[i+1] - 2*scrollOffset[i]).abs();
+    final double absJerk = (scrollOffset[i - 1] + scrollOffset[i + 1] - 2 * scrollOffset[i]).abs();
     absJerkAvg += absJerk;
     if (absJerk > 0.5) {
       jankyCount += 1;
