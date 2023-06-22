@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Can pull down to reveal CupertinoSliverRefreshControl', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.RefreshControlApp(),
-    );
+    await tester.pumpWidget(const example.RefreshControlApp());
 
     expect(find.byType(CupertinoSliverRefreshControl), findsNothing);
     expect(find.byType(Container), findsNWidgets(3));

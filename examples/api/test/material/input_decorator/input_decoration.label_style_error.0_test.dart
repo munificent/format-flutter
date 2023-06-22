@@ -8,12 +8,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('InputDecorator label uses error color', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.LabelStyleErrorExampleApp(),
-    );
+    await tester.pumpWidget(const example.LabelStyleErrorExampleApp());
     final Theme theme = tester.firstWidget(find.byType(Theme));
 
-    final AnimatedDefaultTextStyle label = tester.firstWidget(find.ancestor(of: find.text('Name'), matching: find.byType(AnimatedDefaultTextStyle)));
+    final AnimatedDefaultTextStyle label = tester.firstWidget(
+      find.ancestor(of: find.text('Name'), matching: find.byType(AnimatedDefaultTextStyle)),
+    );
     expect(label.style.color, theme.data.colorScheme.error);
   });
 }

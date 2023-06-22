@@ -14,12 +14,7 @@ class RadioExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Radio Sample')),
-        body: const Center(
-          child: RadioExample(),
-        ),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('Radio Sample')), body: const Center(child: RadioExample())),
     );
   }
 }

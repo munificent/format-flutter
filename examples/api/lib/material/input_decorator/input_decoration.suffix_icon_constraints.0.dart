@@ -33,22 +33,14 @@ class SuffixIconConstraintsExample extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Normal Icon Constraints',
-              suffixIcon: Icon(Icons.search),
-            ),
-          ),
+          TextField(decoration: InputDecoration(hintText: 'Normal Icon Constraints', suffixIcon: Icon(Icons.search))),
           SizedBox(height: 10),
           TextField(
             decoration: InputDecoration(
               isDense: true,
               hintText: 'Smaller Icon Constraints',
               suffixIcon: Icon(Icons.search),
-              suffixIconConstraints: BoxConstraints(
-                minHeight: 32,
-                minWidth: 32,
-              ),
+              suffixIconConstraints: BoxConstraints(minHeight: 32, minWidth: 32),
             ),
           ),
         ],

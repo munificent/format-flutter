@@ -3,20 +3,14 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_api_samples/material/progress_indicator/circular_progress_indicator.1.dart'
-    as example;
+import 'package:flutter_api_samples/material/progress_indicator/circular_progress_indicator.1.dart' as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Finds CircularProgressIndicator', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.ProgressIndicatorApp(),
-    );
+    await tester.pumpWidget(const example.ProgressIndicatorApp());
 
-    expect(
-      find.bySemanticsLabel('Circular progress indicator').first,
-      findsOneWidget,
-    );
+    expect(find.bySemanticsLabel('Circular progress indicator').first, findsOneWidget);
 
     // Test if CircularProgressIndicator is animating.
     expect(tester.hasRunningAnimations, isTrue);

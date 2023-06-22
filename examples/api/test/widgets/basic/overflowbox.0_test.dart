@@ -8,12 +8,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('OverflowBox allows child widget to overflow parent container', (WidgetTester tester) async {
-    const Size containerSize =  Size(100, 100);
+    const Size containerSize = Size(100, 100);
     const Size maxSize = Size(200, 200);
 
-    await tester.pumpWidget(
-      const example.OverflowBoxApp(),
-    );
+    await tester.pumpWidget(const example.OverflowBoxApp());
 
     // The parent container has fixed width and height of 100 pixels.
     expect(tester.getSize(find.byType(Container).first), containerSize);

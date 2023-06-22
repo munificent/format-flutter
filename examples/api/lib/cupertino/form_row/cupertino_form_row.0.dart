@@ -13,10 +13,7 @@ class CupertinoFormRowApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      home: CupertinoFormRowExample(),
-    );
+    return const CupertinoApp(theme: CupertinoThemeData(brightness: Brightness.light), home: CupertinoFormRowExample());
   }
 }
 
@@ -33,9 +30,7 @@ class _CupertinoFormRowExampleState extends State<CupertinoFormRowExample> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('CupertinoFormSection Sample'),
-      ),
+      navigationBar: const CupertinoNavigationBar(middle: Text('CupertinoFormSection Sample')),
       // Add safe area widget to place the CupertinoFormSection below the navigation bar.
       child: SafeArea(
         child: CupertinoFormSection(
@@ -57,11 +52,7 @@ class _CupertinoFormRowExampleState extends State<CupertinoFormRowExample> {
               ),
             ),
             const CupertinoFormRow(
-              prefix: PrefixWidget(
-                icon: CupertinoIcons.wifi,
-                title: 'Wi-Fi',
-                color: CupertinoColors.systemBlue,
-              ),
+              prefix: PrefixWidget(icon: CupertinoIcons.wifi, title: 'Wi-Fi', color: CupertinoColors.systemBlue),
               error: Text('Home network unavailable'),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -69,28 +60,18 @@ class _CupertinoFormRowExampleState extends State<CupertinoFormRowExample> {
               ),
             ),
             const CupertinoFormRow(
-              prefix: PrefixWidget(
-                icon: CupertinoIcons.bluetooth,
-                title: 'Bluetooth',
-                color: CupertinoColors.activeBlue,
-              ),
+              prefix:
+                  PrefixWidget(icon: CupertinoIcons.bluetooth, title: 'Bluetooth', color: CupertinoColors.activeBlue),
               helper: Padding(
                 padding: EdgeInsets.symmetric(vertical: 4.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Headphone'),
-                    Text('Connected'),
-                  ],
+                  children: <Widget>[Text('Headphone'), Text('Connected')],
                 ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Text('On'),
-                  SizedBox(width: 5),
-                  Icon(CupertinoIcons.forward),
-                ],
+                children: <Widget>[Text('On'), SizedBox(width: 5), Icon(CupertinoIcons.forward)],
               ),
             ),
             const CupertinoFormRow(
@@ -109,12 +90,7 @@ class _CupertinoFormRowExampleState extends State<CupertinoFormRowExample> {
 }
 
 class PrefixWidget extends StatelessWidget {
-  const PrefixWidget({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.color,
-  });
+  const PrefixWidget({super.key, required this.icon, required this.title, required this.color});
 
   final IconData icon;
   final String title;
@@ -126,14 +102,11 @@ class PrefixWidget extends StatelessWidget {
       children: <Widget>[
         Container(
           padding: const EdgeInsets.all(4.0),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(4.0),
-          ),
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4.0)),
           child: Icon(icon, color: CupertinoColors.white),
         ),
         const SizedBox(width: 15),
-        Text(title)
+        Text(title),
       ],
     );
   }

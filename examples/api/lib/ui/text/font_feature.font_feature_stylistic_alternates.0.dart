@@ -31,12 +31,7 @@ class ExampleWidget extends StatelessWidget {
     // (https://www.google.com/fonts).
     return const Text(
       r'Agile Game - $100 initial bet',
-      style: TextStyle(
-        fontFamily: 'Source Code Pro',
-        fontFeatures: <FontFeature>[
-          FontFeature.stylisticAlternates(),
-        ],
-      ),
+      style: TextStyle(fontFamily: 'Source Code Pro', fontFeatures: <FontFeature>[FontFeature.stylisticAlternates()]),
     );
   }
 }

@@ -41,18 +41,12 @@ class _DatePickerExampleState extends State<DatePickerExample> with RestorationM
   late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture = RestorableRouteFuture<DateTime?>(
     onComplete: _selectDate,
     onPresent: (NavigatorState navigator, Object? arguments) {
-      return navigator.restorablePush(
-        _datePickerRoute,
-        arguments: _selectedDate.value.millisecondsSinceEpoch,
-      );
+      return navigator.restorablePush(_datePickerRoute, arguments: _selectedDate.value.millisecondsSinceEpoch);
     },
   );
 
   @pragma('vm:entry-point')
-  static Route<DateTime> _datePickerRoute(
-    BuildContext context,
-    Object? arguments,
-  ) {
+  static Route<DateTime> _datePickerRoute(BuildContext context, Object? arguments) {
     return DialogRoute<DateTime>(
       context: context,
       builder: (BuildContext context) {

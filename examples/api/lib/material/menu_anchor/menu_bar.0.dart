@@ -14,8 +14,12 @@ void main() => runApp(const MenuBarApp());
 /// This sort of class is not required, but illustrates one way that defining
 /// menus could be done.
 class MenuEntry {
-  const MenuEntry({required this.label, this.shortcut, this.onPressed, this.menuChildren})
-      : assert(menuChildren == null || onPressed == null, 'onPressed is ignored if menuChildren are provided');
+  const MenuEntry({
+    required this.label,
+    this.shortcut,
+    this.onPressed,
+    this.menuChildren,
+  }) : assert(menuChildren == null || onPressed == null, 'onPressed is ignored if menuChildren are provided');
   final String label;
 
   final MenuSerializableShortcut? shortcut;
@@ -25,16 +29,9 @@ class MenuEntry {
   static List<Widget> build(List<MenuEntry> selections) {
     Widget buildSelection(MenuEntry selection) {
       if (selection.menuChildren != null) {
-        return SubmenuButton(
-          menuChildren: MenuEntry.build(selection.menuChildren!),
-          child: Text(selection.label),
-        );
+        return SubmenuButton(menuChildren: MenuEntry.build(selection.menuChildren!), child: Text(selection.label));
       }
-      return MenuItemButton(
-        shortcut: selection.shortcut,
-        onPressed: selection.onPressed,
-        child: Text(selection.label),
-      );
+      return MenuItemButton(shortcut: selection.shortcut, onPressed: selection.onPressed, child: Text(selection.label));
     }
 
     return selections.map<Widget>(buildSelection).toList();
@@ -56,10 +53,7 @@ class MenuEntry {
 }
 
 class MyMenuBar extends StatefulWidget {
-  const MyMenuBar({
-    super.key,
-    required this.message,
-  });
+  const MyMenuBar({super.key, required this.message});
 
   final String message;
 
@@ -103,13 +97,7 @@ class _MyMenuBarState extends State<MyMenuBar> {
       children: <Widget>[
         Row(
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Expanded(
-              child: MenuBar(
-                children: MenuEntry.build(_getMenus()),
-              ),
-            ),
-          ],
+          children: <Widget>[Expanded(child: MenuBar(children: MenuEntry.build(_getMenus())))],
         ),
         Expanded(
           child: Container(
@@ -120,10 +108,7 @@ class _MyMenuBarState extends State<MyMenuBar> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    showingMessage ? widget.message : '',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
+                  child: Text(showingMessage ? widget.message : '', style: Theme.of(context).textTheme.headlineSmall),
                 ),
                 Text(_lastSelection != null ? 'Last Selected: $_lastSelection' : ''),
               ],
@@ -142,11 +127,7 @@ class _MyMenuBarState extends State<MyMenuBar> {
           MenuEntry(
             label: 'About',
             onPressed: () {
-              showAboutDialog(
-                context: context,
-                applicationName: 'MenuBar Sample',
-                applicationVersion: '1.0.0',
-              );
+              showAboutDialog(context: context, applicationName: 'MenuBar Sample', applicationVersion: '1.0.0');
               setState(() {
                 _lastSelection = 'About';
               });
@@ -229,8 +210,6 @@ class MenuBarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: MyMenuBar(message: kMessage)),
-    );
+    return const MaterialApp(home: Scaffold(body: MyMenuBar(message: kMessage)));
   }
 }

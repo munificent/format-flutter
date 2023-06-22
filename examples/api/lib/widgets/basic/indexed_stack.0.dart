@@ -14,10 +14,7 @@ class IndexedStackApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('IndexedStack Sample')),
-        body: const IndexedStackExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('IndexedStack Sample')), body: const IndexedStackExample()),
     );
   }
 }
@@ -42,10 +39,8 @@ class _IndexedStackExampleState extends State<IndexedStackExample> {
         SizedBox(
           width: 300,
           child: TextField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter the name for a person to track',
-            ),
+            decoration:
+                const InputDecoration(border: OutlineInputBorder(), hintText: 'Enter the name for a person to track'),
             onSubmitted: (String value) {
               setState(() {
                 names.add(value);
@@ -77,7 +72,7 @@ class _IndexedStackExampleState extends State<IndexedStackExample> {
                 IndexedStack(
                   index: index,
                   children: <Widget>[for (final String name in names) PersonTracker(name: name)],
-                )
+                ),
               ],
             ),
             GestureDetector(
@@ -93,7 +88,7 @@ class _IndexedStackExampleState extends State<IndexedStackExample> {
               child: const Icon(Icons.chevron_right, key: Key('gesture2')),
             ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -131,7 +126,7 @@ class _PersonTrackerState extends State<PersonTracker> {
               });
             },
             label: const Text('Increment'),
-          )
+          ),
         ],
       ),
     );

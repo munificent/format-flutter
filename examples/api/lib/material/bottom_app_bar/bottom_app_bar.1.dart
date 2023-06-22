@@ -44,29 +44,13 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text('Bottom App Bar Demo'),
-        ),
+        appBar: AppBar(automaticallyImplyLeading: false, title: const Text('Bottom App Bar Demo')),
         body: ListView(
           padding: const EdgeInsets.only(bottom: 88),
           children: <Widget>[
-            SwitchListTile(
-              title: const Text(
-                'Floating Action Button',
-              ),
-              value: _showFab,
-              onChanged: _onShowFabChanged,
-            ),
-            SwitchListTile(
-              title: const Text('Notch'),
-              value: _showNotch,
-              onChanged: _onShowNotchChanged,
-            ),
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text('Floating action button position'),
-            ),
+            SwitchListTile(title: const Text('Floating Action Button'), value: _showFab, onChanged: _onShowFabChanged),
+            SwitchListTile(title: const Text('Notch'), value: _showNotch, onChanged: _onShowNotchChanged),
+            const Padding(padding: EdgeInsets.all(16), child: Text('Floating action button position')),
             RadioListTile<FloatingActionButtonLocation>(
               title: const Text('Docked - End'),
               value: FloatingActionButtonLocation.endDocked,
@@ -94,17 +78,11 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
           ],
         ),
         floatingActionButton: _showFab
-            ? FloatingActionButton(
-                onPressed: () {},
-                tooltip: 'Create',
-                child: const Icon(Icons.add),
-              )
+            ? FloatingActionButton(onPressed: () {}, tooltip: 'Create', child: const Icon(Icons.add))
             : null,
         floatingActionButtonLocation: _fabLocation,
-        bottomNavigationBar: _DemoBottomAppBar(
-          fabLocation: _fabLocation,
-          shape: _showNotch ? const CircularNotchedRectangle() : null,
-        ),
+        bottomNavigationBar:
+            _DemoBottomAppBar(fabLocation: _fabLocation, shape: _showNotch ? const CircularNotchedRectangle() : null),
       ),
     );
   }
@@ -133,22 +111,10 @@ class _DemoBottomAppBar extends StatelessWidget {
         data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
         child: Row(
           children: <Widget>[
-            IconButton(
-              tooltip: 'Open navigation menu',
-              icon: const Icon(Icons.menu),
-              onPressed: () {},
-            ),
+            IconButton(tooltip: 'Open navigation menu', icon: const Icon(Icons.menu), onPressed: () {}),
             if (centerLocations.contains(fabLocation)) const Spacer(),
-            IconButton(
-              tooltip: 'Search',
-              icon: const Icon(Icons.search),
-              onPressed: () {},
-            ),
-            IconButton(
-              tooltip: 'Favorite',
-              icon: const Icon(Icons.favorite),
-              onPressed: () {},
-            ),
+            IconButton(tooltip: 'Search', icon: const Icon(Icons.search), onPressed: () {}),
+            IconButton(tooltip: 'Favorite', icon: const Icon(Icons.favorite), onPressed: () {}),
           ],
         ),
       ),

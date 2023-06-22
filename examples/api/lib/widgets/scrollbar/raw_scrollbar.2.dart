@@ -14,10 +14,7 @@ class RawScrollbarExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('RawScrollbar Sample')),
-        body: const RawScrollbarExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('RawScrollbar Sample')), body: const RawScrollbarExample()),
     );
   }
 }
@@ -42,9 +39,7 @@ class _RawScrollbarExampleState extends State<RawScrollbarExample> {
         itemCount: 120,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         itemBuilder: (BuildContext context, int index) {
-          return Center(
-            child: Text('item $index'),
-          );
+          return Center(child: Text('item $index'));
         },
       ),
     );

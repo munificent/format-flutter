@@ -14,12 +14,7 @@ class TooltipExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Tooltip Sample')),
-        body: const Center(
-          child: TooltipSample(),
-        ),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('Tooltip Sample')), body: const Center(child: TooltipSample())),
     );
   }
 }
@@ -34,10 +29,7 @@ class TooltipSample extends StatelessWidget {
         text: 'I am a rich tooltip. ',
         style: TextStyle(color: Colors.red),
         children: <InlineSpan>[
-          TextSpan(
-            text: 'I am another span of this rich tooltip',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          TextSpan(text: 'I am another span of this rich tooltip', style: TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
       child: Text('Tap this text and hold down to show a tooltip.'),

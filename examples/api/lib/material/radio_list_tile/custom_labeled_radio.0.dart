@@ -17,10 +17,8 @@ class LabeledRadioApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Custom Labeled Radio Sample')),
-        body: const LabeledRadioExample(),
-      ),
+      home:
+          Scaffold(appBar: AppBar(title: const Text('Custom Labeled Radio Sample')), body: const LabeledRadioExample()),
     );
   }
 }
@@ -57,10 +55,7 @@ class LinkedLabelRadio extends StatelessWidget {
           RichText(
             text: TextSpan(
               text: label,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                decoration: TextDecoration.underline,
-              ),
+              style: TextStyle(color: Theme.of(context).colorScheme.primary, decoration: TextDecoration.underline),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   debugPrint('Label has been tapped.');

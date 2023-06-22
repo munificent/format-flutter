@@ -14,10 +14,7 @@ class ElevatedButtonExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('ElevatedButton Sample')),
-        body: const ElevatedButtonExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('ElevatedButton Sample')), body: const ElevatedButtonExample()),
     );
   }
 }
@@ -38,17 +35,9 @@ class _ElevatedButtonExampleState extends State<ElevatedButtonExample> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          ElevatedButton(
-            style: style,
-            onPressed: null,
-            child: const Text('Disabled'),
-          ),
+          ElevatedButton(style: style, onPressed: null, child: const Text('Disabled')),
           const SizedBox(height: 30),
-          ElevatedButton(
-            style: style,
-            onPressed: () {},
-            child: const Text('Enabled'),
-          ),
+          ElevatedButton(style: style, onPressed: () {}, child: const Text('Enabled')),
         ],
       ),
     );

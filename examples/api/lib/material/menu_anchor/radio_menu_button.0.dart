@@ -92,11 +92,7 @@ class _MyRadioMenuState extends State<MyRadioMenu> {
             );
           },
         ),
-        Expanded(
-          child: Container(
-            color: _backgroundColor,
-          ),
-        ),
+        Expanded(child: Container(color: _backgroundColor)),
       ],
     );
   }
@@ -107,8 +103,6 @@ class MenuApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: MyRadioMenu()),
-    );
+    return const MaterialApp(home: Scaffold(body: MyRadioMenu()));
   }
 }

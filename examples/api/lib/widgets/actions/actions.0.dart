@@ -14,12 +14,7 @@ class ActionsExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Actions Sample')),
-        body: const Center(
-          child: ActionsExample(),
-        ),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('Actions Sample')), body: const Center(child: ActionsExample())),
     );
   }
 }
@@ -98,9 +93,7 @@ class _SaveButtonState extends State<SaveButton> {
           icon: const Icon(Icons.save),
           label: Text('$savedValue'),
           style: ButtonStyle(
-            foregroundColor: MaterialStatePropertyAll<Color>(
-              widget.valueNotifier.value ? Colors.red : Colors.green,
-            ),
+            foregroundColor: MaterialStatePropertyAll<Color>(widget.valueNotifier.value ? Colors.red : Colors.green),
           ),
           onPressed: () {
             setState(() {
@@ -127,10 +120,7 @@ class _ActionsExampleState extends State<ActionsExample> {
   @override
   Widget build(BuildContext context) {
     return Actions(
-      actions: <Type, Action<Intent>>{
-        ModifyIntent: ModifyAction(model),
-        SaveIntent: SaveAction(model),
-      },
+      actions: <Type, Action<Intent>>{ModifyIntent: ModifyAction(model), SaveIntent: SaveAction(model)},
       child: Builder(
         builder: (BuildContext context) {
           return Row(
@@ -147,13 +137,14 @@ class _ActionsExampleState extends State<ActionsExample> {
                     },
                   ),
                   AnimatedBuilder(
-                      animation: model.data,
-                      builder: (BuildContext context, Widget? child) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('${model.data.value}', style: Theme.of(context).textTheme.headlineMedium),
-                        );
-                      }),
+                    animation: model.data,
+                    builder: (BuildContext context, Widget? child) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('${model.data.value}', style: Theme.of(context).textTheme.headlineMedium),
+                      );
+                    },
+                  ),
                   IconButton(
                     icon: const Icon(Icons.exposure_minus_1),
                     onPressed: () {

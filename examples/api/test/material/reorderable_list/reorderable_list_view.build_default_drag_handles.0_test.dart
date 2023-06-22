@@ -18,18 +18,10 @@ void main() {
   }
 
   testWidgets('Reorder list item', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: example.ReorderableApp(),
-      ),
-    );
+    await tester.pumpWidget(const MaterialApp(home: example.ReorderableApp()));
 
     expect(tester.getCenter(find.text('Item 3')).dy, 280.0);
-    await longPressDrag(
-      tester,
-      tester.getCenter(find.text('Item 3')),
-      tester.getCenter(find.text('Item 2')),
-    );
+    await longPressDrag(tester, tester.getCenter(find.text('Item 3')), tester.getCenter(find.text('Item 2')));
     await tester.pumpAndSettle();
     expect(tester.getCenter(find.text('Item 3')).dy, 216.0);
   });

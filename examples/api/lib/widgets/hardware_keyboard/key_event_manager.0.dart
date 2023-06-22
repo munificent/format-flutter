@@ -8,15 +8,7 @@ import 'package:flutter/services.dart';
 /// Flutter code sample for [KeyEventManager.keyMessageHandler].
 
 void main() {
-  runApp(
-    const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: FallbackDemo(),
-        ),
-      ),
-    ),
-  );
+  runApp(const MaterialApp(home: Scaffold(body: Center(child: FallbackDemo()))));
 }
 
 class FallbackDemo extends StatefulWidget {
@@ -53,8 +45,10 @@ class FallbackDemoState extends State<FallbackDemo> {
         constraints: const BoxConstraints(maxWidth: 500, maxHeight: 400),
         child: Column(
           children: <Widget>[
-            const Text('This area handles key presses that are unhandled by any shortcuts, by '
-                'displaying them below. Try text shortcuts such as Ctrl-A!'),
+            const Text(
+              'This area handles key presses that are unhandled by any shortcuts, by '
+              'displaying them below. Try text shortcuts such as Ctrl-A!',
+            ),
             Text(_capture == null ? '' : '$_capture is not handled by shortcuts.'),
             const TextField(decoration: InputDecoration(label: Text('Text field 1'))),
             Shortcuts(
@@ -62,9 +56,8 @@ class FallbackDemoState extends State<FallbackDemo> {
                 const SingleActivator(LogicalKeyboardKey.keyQ): VoidCallbackIntent(() {}),
               },
               child: const TextField(
-                decoration: InputDecoration(
-                  label: Text('This field also considers key Q as a shortcut (that does nothing).'),
-                ),
+                decoration:
+                    InputDecoration(label: Text('This field also considers key Q as a shortcut (that does nothing).')),
               ),
             ),
           ],
@@ -158,11 +151,7 @@ class FallbackKeyEventRegistrar {
 /// [FallbackKeyEventRegistrar]. The inner this widget is, the later its node
 /// will be added to the registrar's list when focused on.
 class FallbackFocus extends StatelessWidget {
-  const FallbackFocus({
-    super.key,
-    required this.node,
-    required this.child,
-  });
+  const FallbackFocus({super.key, required this.node, required this.child});
 
   final Widget child;
   final FallbackFocusNode node;
@@ -178,9 +167,6 @@ class FallbackFocus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      onFocusChange: _onFocusChange,
-      child: child,
-    );
+    return Focus(onFocusChange: _onFocusChange, child: child);
   }
 }

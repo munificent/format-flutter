@@ -26,10 +26,7 @@ class _ListenableBuilderExampleState extends State<ListenableBuilderExample> {
       home: Scaffold(
         appBar: AppBar(title: const Text('ListenableBuilder Example')),
         body: CounterBody(counterValueNotifier: _counter),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _counter.value++,
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton: FloatingActionButton(onPressed: () => _counter.value++, child: const Icon(Icons.add)),
       ),
     );
   }

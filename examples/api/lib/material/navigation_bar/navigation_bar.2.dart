@@ -32,8 +32,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin<Home> {
   int selectedIndex = 0;
 
   AnimationController buildFaderController() {
-    final AnimationController controller =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    final AnimationController controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
     controller.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.dismissed) {
         setState(() {}); // Rebuild unselected destinations offstage.
@@ -53,10 +55,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin<Home> {
     destinationViews = allDestinations.map((Destination destination) {
       return FadeTransition(
         opacity: destinationFaders[destination.index].drive(CurveTween(curve: Curves.fastOutSlowIn)),
-        child: DestinationView(
-          destination: destination,
-          navigatorKey: navigatorKeys[destination.index],
-        ),
+        child: DestinationView(destination: destination, navigatorKey: navigatorKeys[destination.index]),
       );
     }).toList();
   }
@@ -158,10 +157,7 @@ class RootPage extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${destination.title} RootPage - /'),
-        backgroundColor: destination.color,
-      ),
+      appBar: AppBar(title: Text('${destination.title} RootPage - /'), backgroundColor: destination.color),
       backgroundColor: destination.color[50],
       body: Center(
         child: Column(
@@ -178,11 +174,7 @@ class RootPage extends StatelessWidget {
             ElevatedButton(
               style: buttonStyle,
               onPressed: () {
-                showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: _buildDialog,
-                );
+                showDialog(context: context, useRootNavigator: false, builder: _buildDialog);
               },
               child: const Text('Local Dialog'),
             ),
@@ -190,11 +182,7 @@ class RootPage extends StatelessWidget {
             ElevatedButton(
               style: buttonStyle,
               onPressed: () {
-                showDialog(
-                  context: context,
-                  useRootNavigator: true,
-                  builder: _buildDialog,
-                );
+                showDialog(context: context, useRootNavigator: true, builder: _buildDialog);
               },
               child: const Text('Root Dialog'),
             ),
@@ -246,10 +234,7 @@ class ListPage extends StatelessWidget {
       textStyle: Theme.of(context).textTheme.headlineSmall,
     );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${destination.title} ListPage - /list'),
-        backgroundColor: destination.color,
-      ),
+      appBar: AppBar(title: Text('${destination.title} ListPage - /list'), backgroundColor: destination.color),
       backgroundColor: destination.color[50],
       body: SizedBox.expand(
         child: ListView.builder(
@@ -314,16 +299,9 @@ class _TextPageState extends State<TextPage> {
         alignment: Alignment.center,
         child: TextField(
           controller: textController,
-          style: theme.primaryTextTheme.headlineMedium?.copyWith(
-            color: widget.destination.color,
-          ),
+          style: theme.primaryTextTheme.headlineMedium?.copyWith(color: widget.destination.color),
           decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: widget.destination.color,
-                width: 3.0,
-              ),
-            ),
+            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: widget.destination.color, width: 3.0)),
           ),
         ),
       ),
@@ -332,11 +310,7 @@ class _TextPageState extends State<TextPage> {
 }
 
 class DestinationView extends StatefulWidget {
-  const DestinationView({
-    super.key,
-    required this.destination,
-    required this.navigatorKey,
-  });
+  const DestinationView({super.key, required this.destination, required this.navigatorKey});
 
   final Destination destination;
   final Key navigatorKey;

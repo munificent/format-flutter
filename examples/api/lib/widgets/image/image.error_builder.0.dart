@@ -13,13 +13,7 @@ class ErrorBuilderExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: ErrorBuilderExample(),
-        ),
-      ),
-    );
+    return const MaterialApp(home: Scaffold(body: Center(child: ErrorBuilderExample())));
   }
 }
 
@@ -29,11 +23,7 @@ class ErrorBuilderExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(),
-        borderRadius: BorderRadius.circular(20),
-      ),
+      decoration: BoxDecoration(color: Colors.white, border: Border.all(), borderRadius: BorderRadius.circular(20)),
       child: Image.network(
         'https://example.does.not.exist/image.jpg',
         errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {

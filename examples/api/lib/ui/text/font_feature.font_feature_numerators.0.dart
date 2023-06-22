@@ -32,12 +32,7 @@ class ExampleWidget extends StatelessWidget {
     // (https://www.google.com/fonts).
     return const Text(
       'Fractions: 1/2 2/3 3/4 4/5',
-      style: TextStyle(
-        fontFamily: 'Piazzolla',
-        fontFeatures: <FontFeature>[
-          FontFeature.numerators(),
-        ],
-      ),
+      style: TextStyle(fontFamily: 'Piazzolla', fontFeatures: <FontFeature>[FontFeature.numerators()]),
     );
   }
 }

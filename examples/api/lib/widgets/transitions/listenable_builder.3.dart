@@ -67,9 +67,7 @@ class ListBody extends StatelessWidget {
                 // so that the framework knows to update the rendering.
                 final List<int> values = listNotifier.values; // copy the list
                 return ListView.builder(
-                  itemBuilder: (BuildContext context, int index) => ListTile(
-                    title: Text('${values[index]}'),
-                  ),
+                  itemBuilder: (BuildContext context, int index) => ListTile(title: Text('${values[index]}')),
                   itemCount: values.length,
                 );
               },

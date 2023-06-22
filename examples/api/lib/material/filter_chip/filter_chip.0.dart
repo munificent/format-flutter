@@ -17,12 +17,7 @@ class ChipApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('FilterChip Sample'),
-        ),
-        body: const FilterChipExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('FilterChip Sample')), body: const FilterChipExample()),
     );
   }
 }
@@ -66,10 +61,7 @@ class _FilterChipExampleState extends State<FilterChipExample> {
             }).toList(),
           ),
           const SizedBox(height: 10.0),
-          Text(
-            'Looking for: ${filters.map((ExerciseFilter e) => e.name).join(', ')}',
-            style: textTheme.labelLarge,
-          ),
+          Text('Looking for: ${filters.map((ExerciseFilter e) => e.name).join(', ')}', style: textTheme.labelLarge),
         ],
       ),
     );

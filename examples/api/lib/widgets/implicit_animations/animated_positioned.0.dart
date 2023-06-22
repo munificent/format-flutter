@@ -16,9 +16,7 @@ class AnimatedPositionedExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('AnimatedPositioned Sample')),
-        body: const Center(
-          child: AnimatedPositionedExample(),
-        ),
+        body: const Center(child: AnimatedPositionedExample()),
       ),
     );
   }
@@ -53,10 +51,7 @@ class _AnimatedPositionedExampleState extends State<AnimatedPositionedExample> {
                   selected = !selected;
                 });
               },
-              child: const ColoredBox(
-                color: Colors.blue,
-                child: Center(child: Text('Tap me')),
-              ),
+              child: const ColoredBox(color: Colors.blue, child: Center(child: Text('Tap me'))),
             ),
           ),
         ],

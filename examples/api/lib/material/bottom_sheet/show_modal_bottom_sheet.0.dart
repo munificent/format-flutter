@@ -14,10 +14,7 @@ class BottomSheetApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Bottom Sheet Sample')),
-        body: const BottomSheetExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('Bottom Sheet Sample')), body: const BottomSheetExample()),
     );
   }
 }
@@ -43,10 +40,7 @@ class BottomSheetExample extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       const Text('Modal BottomSheet'),
-                      ElevatedButton(
-                        child: const Text('Close BottomSheet'),
-                        onPressed: () => Navigator.pop(context),
-                      ),
+                      ElevatedButton(child: const Text('Close BottomSheet'), onPressed: () => Navigator.pop(context)),
                     ],
                   ),
                 ),

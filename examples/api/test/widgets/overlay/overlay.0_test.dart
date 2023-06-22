@@ -12,9 +12,7 @@ void main() {
     const String commutePage = 'Commute page';
     const String savedPage = 'Saved page';
 
-    await tester.pumpWidget(
-      const example.OverlayApp(),
-    );
+    await tester.pumpWidget(const example.OverlayApp());
 
     expect(find.text(explorePage), findsNothing);
     expect(find.text(commutePage), findsNothing);

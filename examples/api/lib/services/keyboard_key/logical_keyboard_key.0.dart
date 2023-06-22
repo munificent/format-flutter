@@ -16,10 +16,7 @@ class KeyExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Key Handling Example')),
-        body: const MyKeyExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('Key Handling Example')), body: const MyKeyExample()),
     );
   }
 }

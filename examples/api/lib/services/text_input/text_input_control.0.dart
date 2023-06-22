@@ -15,9 +15,7 @@ class TextInputControlExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: TextInputControlExample(),
-    );
+    return const MaterialApp(home: TextInputControlExample());
   }
 }
 
@@ -104,10 +102,7 @@ class MyVirtualKeyboardState extends State<MyVirtualKeyboard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   for (final String key in <String>['A', 'B', 'C'])
-                    ElevatedButton(
-                      child: Text(key),
-                      onPressed: () => _handleKeyPress(key),
-                    ),
+                    ElevatedButton(child: Text(key), onPressed: () => _handleKeyPress(key)),
                 ],
               ),
             ),
@@ -145,10 +140,7 @@ class MyTextInputControl with TextInputControl {
   /// Updates the internal editing state by inserting the input text,
   /// and by replacing the current selection if any.
   void processUserInput(String input) {
-    _editingState = _editingState.copyWith(
-      text: _insertText(input),
-      selection: _replaceSelection(input),
-    );
+    _editingState = _editingState.copyWith(text: _insertText(input), selection: _replaceSelection(input));
 
     // Request the attached client to update accordingly.
     TextInput.updateEditingValue(_editingState);

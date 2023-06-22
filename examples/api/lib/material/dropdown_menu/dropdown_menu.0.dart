@@ -27,9 +27,7 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
   Widget build(BuildContext context) {
     final List<DropdownMenuEntry<ColorLabel>> colorEntries = <DropdownMenuEntry<ColorLabel>>[];
     for (final ColorLabel color in ColorLabel.values) {
-      colorEntries.add(
-        DropdownMenuEntry<ColorLabel>(value: color, label: color.label, enabled: color.label != 'Grey'),
-      );
+      colorEntries.add(DropdownMenuEntry<ColorLabel>(value: color, label: color.label, enabled: color.label != 'Grey'));
     }
 
     final List<DropdownMenuEntry<IconLabel>> iconEntries = <DropdownMenuEntry<IconLabel>>[];
@@ -38,10 +36,7 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
     }
 
     return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.green,
-      ),
+      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.green),
       home: Scaffold(
         body: SafeArea(
           child: Column(
@@ -69,16 +64,14 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
                       leadingIcon: const Icon(Icons.search),
                       label: const Text('Icon'),
                       dropdownMenuEntries: iconEntries,
-                      inputDecorationTheme: const InputDecorationTheme(
-                        filled: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 5.0),
-                      ),
+                      inputDecorationTheme:
+                          const InputDecorationTheme(filled: true, contentPadding: EdgeInsets.symmetric(vertical: 5.0)),
                       onSelected: (IconLabel? icon) {
                         setState(() {
                           selectedIcon = icon;
                         });
                       },
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -89,15 +82,12 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
                     Text('You selected a ${selectedColor?.label} ${selectedIcon?.label}'),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Icon(
-                        selectedIcon?.icon,
-                        color: selectedColor?.color,
-                      ),
-                    )
+                      child: Icon(selectedIcon?.icon, color: selectedColor?.color),
+                    ),
                   ],
                 )
               else
-                const Text('Please select a color and an icon.')
+                const Text('Please select a color and an icon.'),
             ],
           ),
         ),
@@ -120,10 +110,7 @@ enum ColorLabel {
 
 enum IconLabel {
   smile('Smile', Icons.sentiment_satisfied_outlined),
-  cloud(
-    'Cloud',
-    Icons.cloud_outlined,
-  ),
+  cloud('Cloud', Icons.cloud_outlined),
   brush('Brush', Icons.brush_outlined),
   heart('Heart', Icons.favorite);
 

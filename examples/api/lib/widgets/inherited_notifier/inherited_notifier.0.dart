@@ -15,18 +15,12 @@ class InheritedNotifierExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: InheritedNotifierExample(),
-    );
+    return const MaterialApp(home: InheritedNotifierExample());
   }
 }
 
 class SpinModel extends InheritedNotifier<AnimationController> {
-  const SpinModel({
-    super.key,
-    super.notifier,
-    required super.child,
-  });
+  const SpinModel({super.key, super.notifier, required super.child});
 
   static double of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<SpinModel>()!.notifier!.value;
@@ -40,14 +34,7 @@ class Spinner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Transform.rotate(
       angle: SpinModel.of(context) * 2.0 * math.pi,
-      child: Container(
-        width: 100,
-        height: 100,
-        color: Colors.green,
-        child: const Center(
-          child: Text('Whee!'),
-        ),
-      ),
+      child: Container(width: 100, height: 100, color: Colors.green, child: const Center(child: Text('Whee!'))),
     );
   }
 }
@@ -67,10 +54,7 @@ class _InheritedNotifierExampleState extends State<InheritedNotifierExample> wit
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 10),
-      vsync: this,
-    )..repeat();
+    _controller = AnimationController(duration: const Duration(seconds: 10), vsync: this)..repeat();
   }
 
   @override
@@ -85,11 +69,7 @@ class _InheritedNotifierExampleState extends State<InheritedNotifierExample> wit
       notifier: _controller,
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Spinner(),
-          Spinner(),
-          Spinner(),
-        ],
+        children: <Widget>[Spinner(), Spinner(), Spinner()],
       ),
     );
   }

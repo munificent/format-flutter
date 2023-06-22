@@ -11,9 +11,7 @@ void main() {
   testWidgets('IgnorePointer ignores pointer on the ElevatedButton', (WidgetTester tester) async {
     const String clickButtonText = 'Click me!';
 
-    await tester.pumpWidget(
-      const example.IgnorePointerApp(),
-    );
+    await tester.pumpWidget(const example.IgnorePointerApp());
 
     // The ElevatedButton is clickable.
     expect(find.text('Ignoring: false'), findsOneWidget);

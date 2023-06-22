@@ -26,11 +26,7 @@ class _SliverAnimatedListSampleState extends State<SliverAnimatedListSample> {
   @override
   void initState() {
     super.initState();
-    _list = ListModel<int>(
-      listKey: _listKey,
-      initialItems: <int>[0, 1, 2],
-      removedItemBuilder: _buildRemovedItem,
-    );
+    _list = ListModel<int>(listKey: _listKey, initialItems: <int>[0, 1, 2], removedItemBuilder: _buildRemovedItem);
     _nextItem = 3;
   }
 
@@ -56,10 +52,7 @@ class _SliverAnimatedListSampleState extends State<SliverAnimatedListSample> {
   /// widget will be used by the [AnimatedListState.removeItem] method's
   /// [AnimatedRemovedItemBuilder] parameter.
   Widget _buildRemovedItem(int item, BuildContext context, Animation<double> animation) {
-    return CardItem(
-      animation: animation,
-      item: item,
-    );
+    return CardItem(animation: animation, item: item);
   }
 
   // Insert the "next item" into the list model.
@@ -76,12 +69,9 @@ class _SliverAnimatedListSampleState extends State<SliverAnimatedListSample> {
         _selectedItem = null;
       });
     } else {
-      _scaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(
-        content: Text(
-          'Select an item to remove from the list.',
-          style: TextStyle(fontSize: 20),
-        ),
-      ));
+      _scaffoldMessengerKey.currentState!.showSnackBar(
+        const SnackBar(content: Text('Select an item to remove from the list.', style: TextStyle(fontSize: 20))),
+      );
     }
   }
 
@@ -94,10 +84,7 @@ class _SliverAnimatedListSampleState extends State<SliverAnimatedListSample> {
         body: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
-              title: const Text(
-                'SliverAnimatedList',
-                style: TextStyle(fontSize: 30),
-              ),
+              title: const Text('SliverAnimatedList', style: TextStyle(fontSize: 30)),
               expandedHeight: 60,
               centerTitle: true,
               backgroundColor: Colors.amber[900],
@@ -116,11 +103,7 @@ class _SliverAnimatedListSampleState extends State<SliverAnimatedListSample> {
                 ),
               ],
             ),
-            SliverAnimatedList(
-              key: _listKey,
-              initialItemCount: _list.length,
-              itemBuilder: _buildItem,
-            ),
+            SliverAnimatedList(key: _listKey, initialItemCount: _list.length, itemBuilder: _buildItem),
           ],
         ),
       ),
@@ -140,11 +123,8 @@ typedef RemovedItemBuilder<E> = Widget Function(E item, BuildContext context, An
 // mutate the list must make the same changes to the animated list in terms
 // of [AnimatedListState.insertItem] and [AnimatedList.removeItem].
 class ListModel<E> {
-  ListModel({
-    required this.listKey,
-    required this.removedItemBuilder,
-    Iterable<E>? initialItems,
-  }) : _items = List<E>.from(initialItems ?? <E>[]);
+  ListModel({required this.listKey, required this.removedItemBuilder, Iterable<E>? initialItems})
+    : _items = List<E>.from(initialItems ?? <E>[]);
 
   final GlobalKey<SliverAnimatedListState> listKey;
   final RemovedItemBuilder<E> removedItemBuilder;
@@ -198,11 +178,7 @@ class CardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 2.0,
-        right: 2.0,
-        top: 2.0,
-      ),
+      padding: const EdgeInsets.only(left: 2.0, right: 2.0, top: 2.0),
       child: SizeTransition(
         sizeFactor: animation,
         child: GestureDetector(
@@ -211,12 +187,7 @@ class CardItem extends StatelessWidget {
             height: 80.0,
             child: Card(
               color: selected ? Colors.black12 : Colors.primaries[item % Colors.primaries.length],
-              child: Center(
-                child: Text(
-                  'Item $item',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-              ),
+              child: Center(child: Text('Item $item', style: Theme.of(context).textTheme.headlineMedium)),
             ),
           ),
         ),

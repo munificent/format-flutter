@@ -39,8 +39,8 @@ class _ProgressIndicatorExampleState extends State<ProgressIndicatorExample> wit
       vsync: this,
       duration: const Duration(seconds: 2),
     )..addListener(() {
-        setState(() {});
-      });
+      setState(() {});
+    });
     controller.repeat(reverse: true);
     super.initState();
   }
@@ -59,24 +59,13 @@ class _ProgressIndicatorExampleState extends State<ProgressIndicatorExample> wit
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Circular progress indicator',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text('Circular progress indicator', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 30),
-            CircularProgressIndicator(
-              value: controller.value,
-              semanticsLabel: 'Circular progress indicator',
-            ),
+            CircularProgressIndicator(value: controller.value, semanticsLabel: 'Circular progress indicator'),
             const SizedBox(height: 10),
             Row(
               children: <Widget>[
-                Expanded(
-                  child: Text(
-                    'determinate Mode',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                ),
+                Expanded(child: Text('determinate Mode', style: Theme.of(context).textTheme.titleSmall)),
                 Switch(
                   value: determinate,
                   onChanged: (bool value) {

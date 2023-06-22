@@ -16,10 +16,7 @@ class MenuAnchorApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: const MenuAnchorExample(),
-    );
+    return MaterialApp(theme: ThemeData(useMaterial3: true), home: const MenuAnchorExample());
   }
 }
 
@@ -39,8 +36,7 @@ class _MenuAnchorExampleState extends State<MenuAnchorExample> {
       appBar: AppBar(title: const Text('MenuAnchorButton')),
       body: Center(
         child: MenuAnchor(
-          builder:
-              (BuildContext context, MenuController controller, Widget? child) {
+          builder: (BuildContext context, MenuController controller, Widget? child) {
             return IconButton(
               onPressed: () {
                 if (controller.isOpen) {
@@ -51,7 +47,8 @@ class _MenuAnchorExampleState extends State<MenuAnchorExample> {
               },
               icon: const Icon(Icons.more_horiz),
               tooltip: 'Show menu',
-            );},
+            );
+          },
           menuChildren: List<MenuItemButton>.generate(
             3,
             (int index) => MenuItemButton(

@@ -17,9 +17,7 @@ class LogicalKeySetExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('LogicalKeySet Sample')),
-        body: const Center(
-          child: LogicalKeySetExample(),
-        ),
+        body: const Center(child: LogicalKeySetExample()),
       ),
     );
   }
@@ -55,12 +53,7 @@ class _LogicalKeySetExampleState extends State<LogicalKeySetExample> {
         },
         child: Focus(
           autofocus: true,
-          child: Column(
-            children: <Widget>[
-              const Text('Add to the counter by pressing Ctrl+C'),
-              Text('count: $count'),
-            ],
-          ),
+          child: Column(children: <Widget>[const Text('Add to the counter by pressing Ctrl+C'), Text('count: $count')]),
         ),
       ),
     );

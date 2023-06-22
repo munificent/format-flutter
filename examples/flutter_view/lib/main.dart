@@ -15,13 +15,7 @@ class FlutterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter View',
-      theme: ThemeData(
-        primarySwatch: Colors.grey,
-      ),
-      home: const MyHomePage(),
-    );
+    return MaterialApp(title: 'Flutter View', theme: ThemeData(primarySwatch: Colors.grey), home: const MyHomePage());
   }
 }
 
@@ -36,8 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const String _channel = 'increment';
   static const String _pong = 'pong';
   static const String _emptyMessage = '';
-  static const BasicMessageChannel<String?> platform =
-      BasicMessageChannel<String?>(_channel, StringCodec());
+  static const BasicMessageChannel<String?> platform = BasicMessageChannel<String?>(_channel, StringCodec());
 
   int _counter = 0;
 
@@ -67,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             child: Center(
               child: Text(
-                'Platform button tapped $_counter time${ _counter == 1 ? '' : 's' }.',
+                'Platform button tapped $_counter time${_counter == 1 ? '' : 's'}.',
                 style: const TextStyle(fontSize: 17.0),
               ),
             ),
@@ -83,10 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _sendFlutterIncrement,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: FloatingActionButton(onPressed: _sendFlutterIncrement, child: const Icon(Icons.add)),
     );
   }
 }

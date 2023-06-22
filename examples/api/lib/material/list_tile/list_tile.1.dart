@@ -13,10 +13,7 @@ class ListTileApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: const LisTileExample(),
-    );
+    return MaterialApp(theme: ThemeData(useMaterial3: true), home: const LisTileExample());
   }
 }
 
@@ -30,18 +27,8 @@ class LisTileExample extends StatelessWidget {
       body: ListView(
         children: const <Widget>[
           Card(child: ListTile(title: Text('One-line ListTile'))),
-          Card(
-            child: ListTile(
-              leading: FlutterLogo(),
-              title: Text('One-line with leading widget'),
-            ),
-          ),
-          Card(
-            child: ListTile(
-              title: Text('One-line with trailing widget'),
-              trailing: Icon(Icons.more_vert),
-            ),
-          ),
+          Card(child: ListTile(leading: FlutterLogo(), title: Text('One-line with leading widget'))),
+          Card(child: ListTile(title: Text('One-line with trailing widget'), trailing: Icon(Icons.more_vert))),
           Card(
             child: ListTile(
               leading: FlutterLogo(),
@@ -49,12 +36,7 @@ class LisTileExample extends StatelessWidget {
               trailing: Icon(Icons.more_vert),
             ),
           ),
-          Card(
-            child: ListTile(
-              title: Text('One-line dense ListTile'),
-              dense: true,
-            ),
-          ),
+          Card(child: ListTile(title: Text('One-line dense ListTile'), dense: true)),
           Card(
             child: ListTile(
               leading: FlutterLogo(size: 56.0),

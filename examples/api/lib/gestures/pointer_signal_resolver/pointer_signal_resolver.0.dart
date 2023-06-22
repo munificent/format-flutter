@@ -15,19 +15,12 @@ class PointerSignalResolverExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: PointerSignalResolverExample(),
-    );
+    return const MaterialApp(home: PointerSignalResolverExample());
   }
 }
 
 class ColorChanger extends StatefulWidget {
-  const ColorChanger({
-    super.key,
-    required this.initialColor,
-    required this.useResolver,
-    this.child,
-  });
+  const ColorChanger({super.key, required this.initialColor, required this.useResolver, this.child});
 
   final HSVColor initialColor;
   final bool useResolver;
@@ -55,10 +48,7 @@ class _ColorChangerState extends State<ColorChanger> {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        border: const Border.fromBorderSide(BorderSide()),
-        color: color.toColor(),
-      ),
+      decoration: BoxDecoration(border: const Border.fromBorderSide(BorderSide()), color: color.toColor()),
       child: Listener(
         onPointerSignal: (PointerSignalEvent event) {
           if (widget.useResolver) {
@@ -71,10 +61,7 @@ class _ColorChangerState extends State<ColorChanger> {
         },
         child: Stack(
           fit: StackFit.expand,
-          children: <Widget>[
-            const AbsorbPointer(),
-            if (widget.child != null) widget.child!,
-          ],
+          children: <Widget>[const AbsorbPointer(), if (widget.child != null) widget.child!],
         ),
       ),
     );
@@ -103,10 +90,7 @@ class _PointerSignalResolverExampleState extends State<PointerSignalResolverExam
             child: FractionallySizedBox(
               widthFactor: 0.5,
               heightFactor: 0.5,
-              child: ColorChanger(
-                initialColor: const HSVColor.fromAHSV(1, 60.0, 1, 1),
-                useResolver: useResolver,
-              ),
+              child: ColorChanger(initialColor: const HSVColor.fromAHSV(1, 60.0, 1, 1), useResolver: useResolver),
             ),
           ),
           Align(
@@ -121,10 +105,7 @@ class _PointerSignalResolverExampleState extends State<PointerSignalResolverExam
                     });
                   },
                 ),
-                const Text(
-                  'Use the PointerSignalResolver?',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+                const Text('Use the PointerSignalResolver?', style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
           ),

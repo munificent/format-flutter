@@ -14,9 +14,7 @@ class ExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyWidget(),
-    );
+    return const MaterialApp(home: MyWidget());
   }
 }
 
@@ -29,8 +27,32 @@ class MyWidget extends StatefulWidget {
 
 class _MyWidgetState extends State<MyWidget> {
   final List<String> alphabet = <String>[
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-    'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
   ];
   final Widget spacer = const SizedBox.square(dimension: 10);
   ScrollDirection scrollDirection = ScrollDirection.idle;
@@ -41,28 +63,16 @@ class _MyWidgetState extends State<MyWidget> {
     switch (_axisDirection) {
       case AxisDirection.up:
         arrow = const Icon(Icons.arrow_upward_rounded);
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[arrow, arrow],
-        );
+        return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[arrow, arrow]);
       case AxisDirection.down:
         arrow = const Icon(Icons.arrow_downward_rounded);
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[arrow, arrow],
-        );
+        return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[arrow, arrow]);
       case AxisDirection.left:
         arrow = const Icon(Icons.arrow_back_rounded);
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[arrow, arrow],
-        );
+        return Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[arrow, arrow]);
       case AxisDirection.right:
         arrow = const Icon(Icons.arrow_forward_rounded);
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[arrow, arrow],
-        );
+        return Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[arrow, arrow]);
     }
   }
 
@@ -100,9 +110,7 @@ class _MyWidgetState extends State<MyWidget> {
     return DefaultTextStyle(
       style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       child: RadioTheme(
-        data: RadioThemeData(
-          fillColor: MaterialStateProperty.all<Color>(Colors.white),
-        ),
+        data: RadioThemeData(fillColor: MaterialStateProperty.all<Color>(Colors.white)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -159,10 +167,7 @@ class _MyWidgetState extends State<MyWidget> {
         title: const Text('ScrollDirections'),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(50),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: _getRadioRow(),
-          ),
+          child: Padding(padding: const EdgeInsets.all(8.0), child: _getRadioRow()),
         ),
       ),
       body: NotificationListener<UserScrollNotification>(
@@ -190,10 +195,7 @@ class _MyWidgetState extends State<MyWidget> {
                     child: Center(child: Text(alphabet[index - 1])),
                   );
                 }
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: child,
-                );
+                return Padding(padding: const EdgeInsets.all(8.0), child: child);
               },
             ),
           ],

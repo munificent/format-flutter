@@ -9,9 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Dragged Card is elevated', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.ReorderableApp(),
-    );
+    await tester.pumpWidget(const example.ReorderableApp());
 
     Card findCardOne() {
       return tester.widget<Card>(find.ancestor(of: find.text('Card 1'), matching: find.byType(Card)));

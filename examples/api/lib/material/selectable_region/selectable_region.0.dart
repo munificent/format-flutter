@@ -45,30 +45,18 @@ class MySelectableAdapter extends StatelessWidget {
     if (registrar == null) {
       return child;
     }
-    return MouseRegion(
-      cursor: SystemMouseCursors.text,
-      child: _SelectableAdapter(
-        registrar: registrar,
-        child: child,
-      ),
-    );
+    return MouseRegion(cursor: SystemMouseCursors.text, child: _SelectableAdapter(registrar: registrar, child: child));
   }
 }
 
 class _SelectableAdapter extends SingleChildRenderObjectWidget {
-  const _SelectableAdapter({
-    required this.registrar,
-    required Widget child,
-  }) : super(child: child);
+  const _SelectableAdapter({required this.registrar, required Widget child}) : super(child: child);
 
   final SelectionRegistrar registrar;
 
   @override
   _RenderSelectableAdapter createRenderObject(BuildContext context) {
-    return _RenderSelectableAdapter(
-      DefaultSelectionStyle.of(context).selectionColor!,
-      registrar,
-    );
+    return _RenderSelectableAdapter(DefaultSelectionStyle.of(context).selectionColor!, registrar);
   }
 
   @override
@@ -80,11 +68,9 @@ class _SelectableAdapter extends SingleChildRenderObjectWidget {
 }
 
 class _RenderSelectableAdapter extends RenderProxyBox with Selectable, SelectionRegistrant {
-  _RenderSelectableAdapter(
-    Color selectionColor,
-    SelectionRegistrar registrar,
-  )   : _selectionColor = selectionColor,
-        _geometry = ValueNotifier<SelectionGeometry>(_noSelection) {
+  _RenderSelectableAdapter(Color selectionColor, SelectionRegistrar registrar)
+    : _selectionColor = selectionColor,
+      _geometry = ValueNotifier<SelectionGeometry>(_noSelection) {
     this.registrar = registrar;
     _geometry.addListener(markNeedsPaint);
   }
@@ -294,20 +280,14 @@ class _RenderSelectableAdapter extends RenderProxyBox with Selectable, Selection
     // Push the layer links if any.
     if (_startHandle != null) {
       context.pushLayer(
-        LeaderLayer(
-          link: _startHandle!,
-          offset: offset + value.startSelectionPoint!.localPosition,
-        ),
+        LeaderLayer(link: _startHandle!, offset: offset + value.startSelectionPoint!.localPosition),
         (PaintingContext context, Offset offset) {},
         Offset.zero,
       );
     }
     if (_endHandle != null) {
       context.pushLayer(
-        LeaderLayer(
-          link: _endHandle!,
-          offset: offset + value.endSelectionPoint!.localPosition,
-        ),
+        LeaderLayer(link: _endHandle!, offset: offset + value.endSelectionPoint!.localPosition),
         (PaintingContext context, Offset offset) {},
         Offset.zero,
       );

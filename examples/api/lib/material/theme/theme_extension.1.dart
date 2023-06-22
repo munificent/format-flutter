@@ -9,20 +9,14 @@ import 'package:flutter/scheduler.dart';
 
 @immutable
 class MyColors extends ThemeExtension<MyColors> {
-  const MyColors({
-    required this.brandColor,
-    required this.danger,
-  });
+  const MyColors({required this.brandColor, required this.danger});
 
   final Color? brandColor;
   final Color? danger;
 
   @override
   MyColors copyWith({Color? brandColor, Color? danger}) {
-    return MyColors(
-      brandColor: brandColor ?? this.brandColor,
-      danger: danger ?? this.danger,
-    );
+    return MyColors(brandColor: brandColor ?? this.brandColor, danger: danger ?? this.danger);
   }
 
   @override
@@ -65,36 +59,19 @@ class _ThemeExtensionExampleAppState extends State<ThemeExtensionExampleApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light().copyWith(
-        extensions: <ThemeExtension<dynamic>>[
-          const MyColors(
-            brandColor: Color(0xFF1E88E5),
-            danger: Color(0xFFE53935),
-          ),
-        ],
+        extensions: <ThemeExtension<dynamic>>[const MyColors(brandColor: Color(0xFF1E88E5), danger: Color(0xFFE53935))],
       ),
       darkTheme: ThemeData.dark().copyWith(
-        extensions: <ThemeExtension<dynamic>>[
-          const MyColors(
-            brandColor: Color(0xFF90CAF9),
-            danger: Color(0xFFEF9A9A),
-          ),
-        ],
+        extensions: <ThemeExtension<dynamic>>[const MyColors(brandColor: Color(0xFF90CAF9), danger: Color(0xFFEF9A9A))],
       ),
       themeMode: isLightTheme ? ThemeMode.light : ThemeMode.dark,
-      home: Home(
-        isLightTheme: isLightTheme,
-        toggleTheme: toggleTheme,
-      ),
+      home: Home(isLightTheme: isLightTheme, toggleTheme: toggleTheme),
     );
   }
 }
 
 class Home extends StatelessWidget {
-  const Home({
-    super.key,
-    required this.isLightTheme,
-    required this.toggleTheme,
-  });
+  const Home({super.key, required this.isLightTheme, required this.toggleTheme});
 
   final bool isLightTheme;
   final void Function() toggleTheme;
@@ -111,10 +88,7 @@ class Home extends StatelessWidget {
             const SizedBox(width: 10),
             Container(width: 100, height: 100, color: myColors.danger),
             const SizedBox(width: 50),
-            IconButton(
-              icon: Icon(isLightTheme ? Icons.nightlight : Icons.wb_sunny),
-              onPressed: toggleTheme,
-            ),
+            IconButton(icon: Icon(isLightTheme ? Icons.nightlight : Icons.wb_sunny), onPressed: toggleTheme),
           ],
         ),
       ),

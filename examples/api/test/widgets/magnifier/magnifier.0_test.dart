@@ -3,8 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_api_samples/widgets/magnifier/magnifier.0.dart'
-    as example;
+import 'package:flutter_api_samples/widgets/magnifier/magnifier.0.dart' as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -19,10 +18,7 @@ void main() {
       );
     }
 
-    expect(
-      tester.widget(find.byType(Positioned)),
-      isPositionedAt(Offset.zero),
-    );
+    expect(tester.widget(find.byType(Positioned)), isPositionedAt(Offset.zero));
 
     final Offset centerOfFlutterLogo = tester.getCenter(find.byType(Positioned));
     final Offset topLeftOfFlutterLogo = tester.getTopLeft(find.byType(FlutterLogo));
@@ -48,9 +44,6 @@ void main() {
     await tester.dragFrom(centerOfFlutterLogo, dragDistance);
     await tester.pump();
 
-    await expectLater(
-      find.byType(RepaintBoundary).last,
-      matchesGoldenFile('magnifier.0_test.png'),
-    );
+    await expectLater(find.byType(RepaintBoundary).last, matchesGoldenFile('magnifier.0_test.png'));
   });
 }

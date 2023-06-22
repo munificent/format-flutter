@@ -9,9 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Dragged item color is updated', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.ReorderableApp(),
-    );
+    await tester.pumpWidget(const example.ReorderableApp());
 
     final ThemeData theme = Theme.of(tester.element(find.byType(MaterialApp)));
 
@@ -19,10 +17,9 @@ void main() {
     final TestGesture drag = await tester.startGesture(tester.getCenter(find.text('Item 1')));
     await tester.pump(kLongPressTimeout + kPressTimeout);
     await tester.pumpAndSettle();
-    final Material material = tester.widget<Material>(find.ancestor(
-      of: find.text('Item 1'),
-      matching: find.byType(Material),
-    ));
+    final Material material = tester.widget<Material>(
+      find.ancestor(of: find.text('Item 1'), matching: find.byType(Material)),
+    );
     expect(material.color, theme.colorScheme.secondary);
 
     // Ends the drag gesture.

@@ -13,9 +13,7 @@ class PositionedTransitionExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: PositionedTransitionExample(),
-    );
+    return const MaterialApp(home: PositionedTransitionExample());
   }
 }
 
@@ -29,10 +27,8 @@ class PositionedTransitionExample extends StatefulWidget {
 /// [AnimationController]s can be created with `vsync: this` because of
 /// [TickerProviderStateMixin].
 class _PositionedTransitionExampleState extends State<PositionedTransitionExample> with TickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 2),
-    vsync: this,
-  )..repeat(reverse: true);
+  late final AnimationController _controller = AnimationController(duration: const Duration(seconds: 2), vsync: this)
+    ..repeat(reverse: true);
 
   @override
   void dispose() {
@@ -52,22 +48,13 @@ class _PositionedTransitionExampleState extends State<PositionedTransitionExampl
           children: <Widget>[
             PositionedTransition(
               rect: RelativeRectTween(
-                begin: RelativeRect.fromSize(
-                  const Rect.fromLTWH(0, 0, smallLogo, smallLogo),
-                  biggest,
-                ),
+                begin: RelativeRect.fromSize(const Rect.fromLTWH(0, 0, smallLogo, smallLogo), biggest),
                 end: RelativeRect.fromSize(
                   Rect.fromLTWH(biggest.width - bigLogo, biggest.height - bigLogo, bigLogo, bigLogo),
                   biggest,
                 ),
-              ).animate(CurvedAnimation(
-                parent: _controller,
-                curve: Curves.elasticInOut,
-              )),
-              child: const Padding(
-                padding: EdgeInsets.all(8),
-                child: FlutterLogo(),
-              ),
+              ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticInOut)),
+              child: const Padding(padding: EdgeInsets.all(8), child: FlutterLogo()),
             ),
           ],
         );

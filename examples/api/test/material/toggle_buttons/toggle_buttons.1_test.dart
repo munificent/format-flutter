@@ -10,10 +10,7 @@ void main() {
   testWidgets('ToggleButtons allows multiple or no selection', (WidgetTester tester) async {
     final ThemeData theme = ThemeData(useMaterial3: true);
     Finder findButton(String text) {
-      return find.descendant(
-        of: find.byType(ToggleButtons),
-        matching: find.widgetWithText(TextButton, text),
-      );
+      return find.descendant(of: find.byType(ToggleButtons), matching: find.widgetWithText(TextButton, text));
     }
 
     await tester.pumpWidget(const example.ToggleButtonsApp());
@@ -22,14 +19,8 @@ void main() {
     TextButton toggleXLButton = tester.widget<TextButton>(findButton('XL'));
 
     // Initially, only M is selected.
-    expect(
-      toggleMButton.style!.backgroundColor!.resolve(enabled),
-      theme.colorScheme.primary.withOpacity(0.12),
-    );
-    expect(
-      toggleXLButton.style!.backgroundColor!.resolve(enabled),
-      theme.colorScheme.surface.withOpacity(0.0),
-    );
+    expect(toggleMButton.style!.backgroundColor!.resolve(enabled), theme.colorScheme.primary.withOpacity(0.12));
+    expect(toggleXLButton.style!.backgroundColor!.resolve(enabled), theme.colorScheme.surface.withOpacity(0.0));
 
     // Tap on XL.
     await tester.tap(findButton('XL'));
@@ -39,14 +30,8 @@ void main() {
     toggleMButton = tester.widget<TextButton>(findButton('M'));
     toggleXLButton = tester.widget<TextButton>(findButton('XL'));
 
-    expect(
-      toggleMButton.style!.backgroundColor!.resolve(enabled),
-      theme.colorScheme.primary.withOpacity(0.12),
-    );
-    expect(
-      toggleXLButton.style!.backgroundColor!.resolve(enabled),
-      theme.colorScheme.primary.withOpacity(0.12),
-    );
+    expect(toggleMButton.style!.backgroundColor!.resolve(enabled), theme.colorScheme.primary.withOpacity(0.12));
+    expect(toggleXLButton.style!.backgroundColor!.resolve(enabled), theme.colorScheme.primary.withOpacity(0.12));
 
     // Tap M to deselect it.
     await tester.tap(findButton('M'));
@@ -60,14 +45,8 @@ void main() {
     toggleMButton = tester.widget<TextButton>(findButton('M'));
     toggleXLButton = tester.widget<TextButton>(findButton('XL'));
 
-    expect(
-      toggleMButton.style!.backgroundColor!.resolve(enabled),
-      theme.colorScheme.surface.withOpacity(0.0),
-    );
-    expect(
-      toggleXLButton.style!.backgroundColor!.resolve(enabled),
-      theme.colorScheme.surface.withOpacity(0.0),
-    );
+    expect(toggleMButton.style!.backgroundColor!.resolve(enabled), theme.colorScheme.surface.withOpacity(0.0));
+    expect(toggleXLButton.style!.backgroundColor!.resolve(enabled), theme.colorScheme.surface.withOpacity(0.0));
   });
 
   testWidgets('SegmentedButton allows multiple or no selection', (WidgetTester tester) async {
@@ -81,14 +60,12 @@ void main() {
 
     await tester.pumpWidget(const example.ToggleButtonsApp());
 
-    Material segmentMButton = tester.widget<Material>(find.descendant(
-      of: findButton('M'),
-      matching: find.byType(Material),
-    ));
-    Material segmentXLButton = tester.widget<Material>(find.descendant(
-      of: findButton('XL'),
-      matching: find.byType(Material),
-    ));
+    Material segmentMButton = tester.widget<Material>(
+      find.descendant(of: findButton('M'), matching: find.byType(Material)),
+    );
+    Material segmentXLButton = tester.widget<Material>(
+      find.descendant(of: findButton('XL'), matching: find.byType(Material)),
+    );
 
     // Initially, only M is selected.
     expect(segmentMButton.color, theme.colorScheme.secondaryContainer);
@@ -99,14 +76,8 @@ void main() {
     await tester.pumpAndSettle();
 
     // // Now both M and XL are selected.
-    segmentMButton = tester.widget<Material>(find.descendant(
-      of: findButton('M'),
-      matching: find.byType(Material),
-    ));
-    segmentXLButton = tester.widget<Material>(find.descendant(
-      of: findButton('XL'),
-      matching: find.byType(Material),
-    ));
+    segmentMButton = tester.widget<Material>(find.descendant(of: findButton('M'), matching: find.byType(Material)));
+    segmentXLButton = tester.widget<Material>(find.descendant(of: findButton('XL'), matching: find.byType(Material)));
 
     expect(segmentMButton.color, theme.colorScheme.secondaryContainer);
     expect(segmentXLButton.color, theme.colorScheme.secondaryContainer);
@@ -120,18 +91,12 @@ void main() {
     await tester.pumpAndSettle();
 
     // Now neither M nor XL are selected.
-    segmentMButton = tester.widget<Material>(find.descendant(
-      of: findButton('M'),
-      matching: find.byType(Material),
-    ));
-    segmentXLButton = tester.widget<Material>(find.descendant(
-      of: findButton('XL'),
-      matching: find.byType(Material),
-    ));
+    segmentMButton = tester.widget<Material>(find.descendant(of: findButton('M'), matching: find.byType(Material)));
+    segmentXLButton = tester.widget<Material>(find.descendant(of: findButton('XL'), matching: find.byType(Material)));
 
     expect(segmentMButton.color, Colors.transparent);
     expect(segmentXLButton.color, Colors.transparent);
   });
 }
 
-Set<MaterialState> enabled = <MaterialState>{ };
+Set<MaterialState> enabled = <MaterialState>{};

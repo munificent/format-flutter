@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Has exactly 1 CupertinoListSection inset grouped widget', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.CupertinoListSectionInsetApp(),
-    );
+    await tester.pumpWidget(const example.CupertinoListSectionInsetApp());
 
     final Finder listSectionFinder = find.byType(CupertinoListSection);
     expect(listSectionFinder, findsOneWidget);
@@ -20,9 +18,7 @@ void main() {
   });
 
   testWidgets('CupertinoListSection has 3 CupertinoListTile children', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.CupertinoListSectionInsetApp(),
-    );
+    await tester.pumpWidget(const example.CupertinoListSectionInsetApp());
 
     expect(find.byType(CupertinoListTile), findsNWidgets(3));
   });

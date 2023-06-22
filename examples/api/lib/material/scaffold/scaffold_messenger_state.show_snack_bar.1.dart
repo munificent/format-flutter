@@ -13,9 +13,7 @@ class SnackBarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SnackBarExample(),
-    );
+    return const MaterialApp(home: SnackBarExample());
   }
 }
 
@@ -61,14 +59,8 @@ class _SnackBarExampleState extends State<SnackBarExample> {
       // If the Widget provided to the floatingActionButton slot takes up too much space
       // for the SnackBar to be visible, an error will be thrown.
       floatingActionButton: Container(
-        constraints: BoxConstraints.tightFor(
-          width: 150,
-          height: _largeLogo ? double.infinity : 150,
-        ),
-        decoration: const BoxDecoration(
-          color: Colors.blueGrey,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
+        constraints: BoxConstraints.tightFor(width: 150, height: _largeLogo ? double.infinity : 150),
+        decoration: const BoxDecoration(color: Colors.blueGrey, borderRadius: BorderRadius.all(Radius.circular(20))),
         child: const FlutterLogo(),
       ),
     );

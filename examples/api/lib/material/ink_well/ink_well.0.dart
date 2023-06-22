@@ -14,12 +14,7 @@ class InkWellExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('InkWell Sample')),
-        body: const Center(
-          child: InkWellExample(),
-        ),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('InkWell Sample')), body: const Center(child: InkWellExample())),
     );
   }
 }

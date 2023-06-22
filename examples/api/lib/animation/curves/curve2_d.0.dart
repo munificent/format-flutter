@@ -13,9 +13,7 @@ class Curve2DExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Curve2DExample(),
-    );
+    return const MaterialApp(home: Curve2DExample());
   }
 }
 
@@ -23,20 +21,16 @@ class Curve2DExampleApp extends StatelessWidget {
 // that the coordinates can be specified that it must pass through. If the
 // tension is set to 1.0, it will linearly interpolate between those points,
 // instead of interpolating smoothly.
-final CatmullRomSpline path = CatmullRomSpline(
-  const <Offset>[
-    Offset(0.05, 0.75),
-    Offset(0.18, 0.23),
-    Offset(0.32, 0.04),
-    Offset(0.73, 0.5),
-    Offset(0.42, 0.74),
-    Offset(0.73, 0.01),
-    Offset(0.93, 0.93),
-    Offset(0.05, 0.75),
-  ],
-  startHandle: const Offset(0.93, 0.93),
-  endHandle: const Offset(0.18, 0.23),
-);
+final CatmullRomSpline path = CatmullRomSpline(const <Offset>[
+  Offset(0.05, 0.75),
+  Offset(0.18, 0.23),
+  Offset(0.32, 0.04),
+  Offset(0.73, 0.5),
+  Offset(0.42, 0.74),
+  Offset(0.73, 0.01),
+  Offset(0.93, 0.93),
+  Offset(0.05, 0.75),
+], startHandle: const Offset(0.93, 0.93), endHandle: const Offset(0.18, 0.23));
 
 class FollowCurve2D extends StatefulWidget {
   const FollowCurve2D({
@@ -84,10 +78,7 @@ class _FollowCurve2DState extends State<FollowCurve2D> with TickerProviderStateM
   Widget build(BuildContext context) {
     // Scale the path values to match the -1.0 to 1.0 domain of the Alignment widget.
     final Offset position = widget.path.transform(animation.value) * 2.0 - const Offset(1.0, 1.0);
-    return Align(
-      alignment: Alignment(position.dx, position.dy),
-      child: widget.child,
-    );
+    return Align(alignment: Alignment(position.dx, position.dy), child: widget.child);
   }
 }
 

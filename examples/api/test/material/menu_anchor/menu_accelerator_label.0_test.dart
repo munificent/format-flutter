@@ -10,12 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('Can open menu', (WidgetTester tester) async {
     Finder findMenu(String label) {
-      return find
-          .ancestor(
-            of: find.text(label, findRichText: true),
-            matching: find.byType(FocusScope),
-          )
-          .first;
+      return find.ancestor(of: find.text(label, findRichText: true), matching: find.byType(FocusScope)).first;
     }
 
     await tester.pumpWidget(const example.MenuAcceleratorApp());
@@ -27,10 +22,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('About', findRichText: true), findsOneWidget);
-    expect(
-      tester.getRect(findMenu('About')),
-      equals(const Rect.fromLTRB(4.0, 48.0, 111.0, 208.0)),
-    );
+    expect(tester.getRect(findMenu('About')), equals(const Rect.fromLTRB(4.0, 48.0, 111.0, 208.0)));
     expect(find.text('Save', findRichText: true), findsOneWidget);
     expect(find.text('Quit', findRichText: true), findsOneWidget);
     expect(find.text('Magnify', findRichText: true), findsNothing);

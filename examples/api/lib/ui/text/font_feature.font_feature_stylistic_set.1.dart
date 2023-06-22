@@ -33,10 +33,7 @@ class ExampleWidget extends StatelessWidget {
       '-> MCMXCVII <-', // 1997
       style: TextStyle(
         fontFamily: 'Piazzolla',
-        fontFeatures: <FontFeature>[
-          FontFeature.stylisticSet(1),
-          FontFeature.stylisticSet(2),
-        ],
+        fontFeatures: <FontFeature>[FontFeature.stylisticSet(1), FontFeature.stylisticSet(2)],
       ),
     );
   }

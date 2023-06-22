@@ -14,12 +14,7 @@ class TooltipExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Tooltip Sample')),
-        body: const Center(
-          child: TooltipSample(),
-        ),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('Tooltip Sample')), body: const Center(child: TooltipSample())),
     );
   }
 }
@@ -29,9 +24,6 @@ class TooltipSample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Tooltip(
-      message: 'I am a Tooltip',
-      child: Text('Hover over the text to show a tooltip.'),
-    );
+    return const Tooltip(message: 'I am a Tooltip', child: Text('Hover over the text to show a tooltip.'));
   }
 }

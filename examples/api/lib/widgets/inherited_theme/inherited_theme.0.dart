@@ -26,21 +26,15 @@ class MyAppBody extends StatelessWidget {
     final CapturedThemes themes = InheritedTheme.capture(from: context, to: navigator.context);
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (BuildContext _) {
-              // Wrap the actual child of the route in the previously
-              // captured themes.
-              return themes.wrap(
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.white,
-                  child: const Text('Hello World'),
-                ),
-              );
-            },
-          ),
-        );
+        Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (BuildContext _) {
+            // Wrap the actual child of the route in the previously
+            // captured themes.
+            return themes.wrap(
+              Container(alignment: Alignment.center, color: Colors.white, child: const Text('Hello World')),
+            );
+          },
+        ));
       },
       child: const Center(child: Text('Tap Here')),
     );
@@ -56,10 +50,7 @@ class InheritedThemeExampleApp extends StatelessWidget {
       home: Scaffold(
         // Override the DefaultTextStyle defined by the Scaffold.
         // Descendant widgets will inherit this big blue text style.
-        body: DefaultTextStyle(
-          style: TextStyle(fontSize: 48, color: Colors.blue),
-          child: MyAppBody(),
-        ),
+        body: DefaultTextStyle(style: TextStyle(fontSize: 48, color: Colors.blue), child: MyAppBody()),
       ),
     );
   }

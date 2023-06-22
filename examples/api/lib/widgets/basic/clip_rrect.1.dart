@@ -14,10 +14,7 @@ class ClipRRectApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('ClipRRect Sample')),
-        body: const ClipRRectExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('ClipRRect Sample')), body: const ClipRRectExample()),
     );
   }
 }
@@ -31,12 +28,7 @@ class ClipRRectExample extends StatelessWidget {
       padding: const EdgeInsets.all(40.0),
       constraints: const BoxConstraints.expand(),
       // Add a FittedBox to make ClipRRect sized accordingly to the image it contains
-      child: FittedBox(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(40.0),
-          child: const _FakedImage(),
-        ),
-      ),
+      child: FittedBox(child: ClipRRect(borderRadius: BorderRadius.circular(40.0), child: const _FakedImage())),
     );
   }
 }

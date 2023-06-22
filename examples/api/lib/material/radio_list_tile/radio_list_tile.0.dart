@@ -15,10 +15,7 @@ class RadioListTileApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('RadioListTile Sample')),
-        body: const RadioListTileExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('RadioListTile Sample')), body: const RadioListTileExample()),
     );
   }
 }

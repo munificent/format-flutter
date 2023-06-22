@@ -13,9 +13,7 @@ class ProgressIndicatorApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: ProgressIndicatorExample(),
-    );
+    return const MaterialApp(home: ProgressIndicatorExample());
   }
 }
 
@@ -37,8 +35,8 @@ class _ProgressIndicatorExampleState extends State<ProgressIndicatorExample> wit
       vsync: this,
       duration: const Duration(seconds: 5),
     )..addListener(() {
-        setState(() {});
-      });
+      setState(() {});
+    });
     controller.repeat(reverse: true);
     super.initState();
   }
@@ -57,14 +55,8 @@ class _ProgressIndicatorExampleState extends State<ProgressIndicatorExample> wit
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            const Text(
-              'Linear progress indicator with a fixed color',
-              style: TextStyle(fontSize: 20),
-            ),
-            LinearProgressIndicator(
-              value: controller.value,
-              semanticsLabel: 'Linear progress indicator',
-            ),
+            const Text('Linear progress indicator with a fixed color', style: TextStyle(fontSize: 20)),
+            LinearProgressIndicator(value: controller.value, semanticsLabel: 'Linear progress indicator'),
           ],
         ),
       ),

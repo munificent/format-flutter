@@ -46,9 +46,7 @@ class _EditableTextToolbarBuilderExampleAppState extends State<EditableTextToolb
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Custom button appearance'),
-        ),
+        appBar: AppBar(title: const Text('Custom button appearance')),
         body: Center(
           child: Column(
             children: <Widget>[
@@ -71,9 +69,7 @@ class _EditableTextToolbarBuilderExampleAppState extends State<EditableTextToolb
                         pressedOpacity: 0.7,
                         child: SizedBox(
                           width: 200.0,
-                          child: Text(
-                            CupertinoTextSelectionToolbarButton.getButtonLabel(context, buttonItem),
-                          ),
+                          child: Text(CupertinoTextSelectionToolbarButton.getButtonLabel(context, buttonItem)),
                         ),
                       );
                     }).toList(),

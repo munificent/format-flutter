@@ -31,12 +31,7 @@ class ExampleWidget extends StatelessWidget {
     // (https://www.google.com/fonts).
     return const Text(
       '(A) [A] {A} «A» A/B A•B',
-      style: TextStyle(
-        fontFamily: 'Piazzolla',
-        fontFeatures: <FontFeature>[
-          FontFeature.caseSensitiveForms(),
-        ],
-      ),
+      style: TextStyle(fontFamily: 'Piazzolla', fontFeatures: <FontFeature>[FontFeature.caseSensitiveForms()]),
     );
   }
 }

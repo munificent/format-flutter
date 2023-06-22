@@ -15,10 +15,7 @@ class MaterialStateExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('InputDecoration Sample')),
-        body: const MaterialStateExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('InputDecoration Sample')), body: const MaterialStateExample()),
     );
   }
 }
@@ -32,25 +29,18 @@ class MaterialStateExample extends StatelessWidget {
     return Theme(
       data: themeData.copyWith(
         inputDecorationTheme: themeData.inputDecorationTheme.copyWith(
-          prefixIconColor: MaterialStateColor.resolveWith(
-            (Set<MaterialState> states) {
-              if (states.contains(MaterialState.focused)) {
-                return Colors.green;
-              }
-              if (states.contains(MaterialState.error)) {
-                return Colors.red;
-              }
-              return Colors.grey;
-            },
-          ),
+          prefixIconColor: MaterialStateColor.resolveWith((Set<MaterialState> states) {
+            if (states.contains(MaterialState.focused)) {
+              return Colors.green;
+            }
+            if (states.contains(MaterialState.error)) {
+              return Colors.red;
+            }
+            return Colors.grey;
+          }),
         ),
       ),
-      child: TextFormField(
-        initialValue: 'abc',
-        decoration: const InputDecoration(
-          prefixIcon: Icon(Icons.person),
-        ),
-      ),
+      child: TextFormField(initialValue: 'abc', decoration: const InputDecoration(prefixIcon: Icon(Icons.person))),
     );
   }
 }

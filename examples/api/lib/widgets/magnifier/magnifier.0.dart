@@ -29,26 +29,21 @@ class _MagnifierExampleAppState extends State<MagnifierExampleApp> {
                 child: Stack(
                   children: <Widget>[
                     GestureDetector(
-                      onPanUpdate: (DragUpdateDetails details) => setState(
-                        () {
-                          dragGesturePosition = details.localPosition;
-                        },
-                      ),
+                      onPanUpdate: (DragUpdateDetails details) => setState(() {
+                        dragGesturePosition = details.localPosition;
+                      }),
                       child: const FlutterLogo(size: 200),
                     ),
                     Positioned(
                       left: dragGesturePosition.dx,
                       top: dragGesturePosition.dy,
                       child: const RawMagnifier(
-                        decoration: MagnifierDecoration(
-                          shape: CircleBorder(
-                            side: BorderSide(color: Colors.pink, width: 3),
-                          ),
-                        ),
+                        decoration:
+                            MagnifierDecoration(shape: CircleBorder(side: BorderSide(color: Colors.pink, width: 3))),
                         size: Size(100, 100),
                         magnificationScale: 2,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

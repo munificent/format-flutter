@@ -19,9 +19,7 @@ class NonStopVSync implements TickerProvider {
 
 void main() {
   // We first create a render object that represents a green box.
-  final RenderBox green = RenderDecoratedBox(
-    decoration: const BoxDecoration(color: Color(0xFF00FF00)),
-  );
+  final RenderBox green = RenderDecoratedBox(decoration: const BoxDecoration(color: Color(0xFF00FF00)));
   // Second, we wrap that green box in a render object that forces the green box
   // to have a specific size.
   final RenderBox square = RenderConstrainedBox(
@@ -38,18 +36,14 @@ void main() {
     child: square,
   );
   // Finally, we center the spinning green square...
-  final RenderBox root = RenderPositionedBox(
-    child: spin,
-  );
+  final RenderBox root = RenderPositionedBox(child: spin);
   // and attach it to the window.
   RenderingFlutterBinding(root: root);
 
   // To make the square spin, we use an animation that repeats every 1800
   // milliseconds.
-  final AnimationController animation = AnimationController(
-    duration: const Duration(milliseconds: 1800),
-    vsync: const NonStopVSync(),
-  )..repeat();
+  final AnimationController animation =
+      AnimationController(duration: const Duration(milliseconds: 1800), vsync: const NonStopVSync())..repeat();
   // The animation will produce a value between 0.0 and 1.0 each frame, but we
   // want to rotate the square using a value between 0.0 and math.pi. To change
   // the range of the animation, we use a Tween.

@@ -52,10 +52,7 @@ class _AnimatedFractionallySizedBoxExampleState extends State<AnimatedFractional
               alignment: selected ? Alignment.topLeft : Alignment.bottomRight,
               duration: const Duration(seconds: 1),
               curve: Curves.fastOutSlowIn,
-              child: const ColoredBox(
-                color: Colors.blue,
-                child: FlutterLogo(size: 75),
-              ),
+              child: const ColoredBox(color: Colors.blue, child: FlutterLogo(size: 75)),
             ),
           ),
         ),

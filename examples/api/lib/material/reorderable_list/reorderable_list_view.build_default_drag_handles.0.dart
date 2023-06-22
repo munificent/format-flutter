@@ -14,10 +14,7 @@ class ReorderableApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('ReorderableListView Sample')),
-        body: const ReorderableExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('ReorderableListView Sample')), body: const ReorderableExample()),
     );
   }
 }
@@ -51,13 +48,8 @@ class _ReorderableExampleState extends State<ReorderableExample> {
                   width: 64,
                   height: 64,
                   padding: const EdgeInsets.all(8),
-                  child: ReorderableDragStartListener(
-                    index: index,
-                    child: Card(
-                      color: colorScheme.primary,
-                      elevation: 2,
-                    ),
-                  ),
+                  child:
+                      ReorderableDragStartListener(index: index, child: Card(color: colorScheme.primary, elevation: 2)),
                 ),
                 Text('Item ${_items[index]}'),
               ],

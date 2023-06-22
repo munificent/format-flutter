@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Checkbox aligns appropriately', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.CheckboxListTileApp(),
-    );
+    await tester.pumpWidget(const example.CheckboxListTileApp());
 
     expect(find.byType(CheckboxListTile), findsNWidgets(3));
 
@@ -34,9 +32,7 @@ void main() {
   });
 
   testWidgets('Checkboxes can be checked', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.CheckboxListTileApp(),
-    );
+    await tester.pumpWidget(const example.CheckboxListTileApp());
 
     expect(find.byType(CheckboxListTile), findsNWidgets(3));
 

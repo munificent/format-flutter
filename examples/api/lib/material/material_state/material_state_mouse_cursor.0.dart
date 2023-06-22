@@ -16,9 +16,7 @@ class MaterialStateMouseCursorExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('MaterialStateMouseCursor Sample')),
-        body: const Center(
-          child: MaterialStateMouseCursorExample(),
-        ),
+        body: const Center(child: MaterialStateMouseCursorExample()),
       ),
     );
   }
@@ -44,10 +42,6 @@ class MaterialStateMouseCursorExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ListTile(
-      title: Text('Disabled ListTile'),
-      enabled: false,
-      mouseCursor: ListTileCursor(),
-    );
+    return const ListTile(title: Text('Disabled ListTile'), enabled: false, mouseCursor: ListTileCursor());
   }
 }

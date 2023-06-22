@@ -27,10 +27,7 @@ void main() {
     await tester.pump();
 
     final Size canvasSize = tester.getSize(find.byType(example.OverlayPortalExampleApp));
-    expect(
-      tester.getBottomRight(find.text(tooltipText)),
-      canvasSize - const Size(50, 50),
-    );
+    expect(tester.getBottomRight(find.text(tooltipText)), canvasSize - const Size(50, 50));
   });
 
   testWidgets('Tooltip is shown with the right font size', (WidgetTester tester) async {

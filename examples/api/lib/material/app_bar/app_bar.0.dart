@@ -13,9 +13,7 @@ class AppBarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: AppBarExample(),
-    );
+    return const MaterialApp(home: AppBarExample());
   }
 }
 
@@ -42,15 +40,8 @@ class AppBarExample extends StatelessWidget {
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
                   return Scaffold(
-                    appBar: AppBar(
-                      title: const Text('Next page'),
-                    ),
-                    body: const Center(
-                      child: Text(
-                        'This is the next page',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    ),
+                    appBar: AppBar(title: const Text('Next page')),
+                    body: const Center(child: Text('This is the next page', style: TextStyle(fontSize: 24))),
                   );
                 },
               ));
@@ -58,12 +49,7 @@ class AppBarExample extends StatelessWidget {
           ),
         ],
       ),
-      body: const Center(
-        child: Text(
-          'This is the home page',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
+      body: const Center(child: Text('This is the home page', style: TextStyle(fontSize: 24))),
     );
   }
 }

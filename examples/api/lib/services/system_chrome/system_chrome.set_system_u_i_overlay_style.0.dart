@@ -17,10 +17,7 @@ class SystemOverlayStyleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-      ),
+      theme: ThemeData(useMaterial3: true, brightness: Brightness.light),
       home: const SystemOverlayStyleExample(),
     );
   }
@@ -38,33 +35,17 @@ class _SystemOverlayStyleExampleState extends State<SystemOverlayStyleExample> {
   SystemUiOverlayStyle _currentStyle = SystemUiOverlayStyle.light;
 
   void _changeColor() {
-    final Color color = Color.fromRGBO(
-      _random.nextInt(255),
-      _random.nextInt(255),
-      _random.nextInt(255),
-      1.0,
-    );
+    final Color color = Color.fromRGBO(_random.nextInt(255), _random.nextInt(255), _random.nextInt(255), 1.0);
     setState(() {
-      _currentStyle = SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: color,
-        systemNavigationBarColor: color,
-      );
+      _currentStyle = SystemUiOverlayStyle.dark.copyWith(statusBarColor: color, systemNavigationBarColor: color);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SystemUiOverlayStyle Sample'),
-        systemOverlayStyle: _currentStyle,
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: _changeColor,
-          child: const Text('Change Color'),
-        ),
-      ),
+      appBar: AppBar(title: const Text('SystemUiOverlayStyle Sample'), systemOverlayStyle: _currentStyle),
+      body: Center(child: ElevatedButton(onPressed: _changeColor, child: const Text('Change Color'))),
     );
   }
 }

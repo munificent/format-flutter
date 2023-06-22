@@ -128,10 +128,7 @@ class _MyContextMenuState extends State<MyContextMenu> {
           controller: _menuController,
           anchorTapClosesMenu: true,
           menuChildren: <Widget>[
-            MenuItemButton(
-              child: Text(MenuEntry.about.label),
-              onPressed: () => _activate(MenuEntry.about),
-            ),
+            MenuItemButton(child: Text(MenuEntry.about.label), onPressed: () => _activate(MenuEntry.about)),
             if (_showingMessage)
               MenuItemButton(
                 onPressed: () => _activate(MenuEntry.hideMessage),
@@ -177,10 +174,7 @@ class _MyContextMenuState extends State<MyContextMenu> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    showingMessage ? widget.message : '',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
+                  child: Text(showingMessage ? widget.message : '', style: Theme.of(context).textTheme.headlineSmall),
                 ),
                 Text(_lastSelection != null ? 'Last Selected: ${_lastSelection!.label}' : ''),
               ],
@@ -197,11 +191,7 @@ class _MyContextMenuState extends State<MyContextMenu> {
     });
     switch (selection) {
       case MenuEntry.about:
-        showAboutDialog(
-          context: context,
-          applicationName: 'MenuBar Sample',
-          applicationVersion: '1.0.0',
-        );
+        showAboutDialog(context: context, applicationName: 'MenuBar Sample', applicationVersion: '1.0.0');
       case MenuEntry.showMessage:
       case MenuEntry.hideMessage:
         showingMessage = !showingMessage;

@@ -13,10 +13,7 @@ class SearchTextFieldApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      home: SearchTextFieldExample(),
-    );
+    return const CupertinoApp(theme: CupertinoThemeData(brightness: Brightness.light), home: SearchTextFieldExample());
   }
 }
 
@@ -33,9 +30,7 @@ class _SearchTextFieldExampleState extends State<SearchTextFieldExample> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('CupertinoSearchTextField Sample'),
-      ),
+      navigationBar: const CupertinoNavigationBar(middle: Text('CupertinoSearchTextField Sample')),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -59,10 +54,7 @@ class _SearchTextFieldExampleState extends State<SearchTextFieldExample> {
 }
 
 class SearchTextField extends StatelessWidget {
-  const SearchTextField({
-    super.key,
-    required this.fieldValue,
-  });
+  const SearchTextField({super.key, required this.fieldValue});
 
   final ValueChanged<String> fieldValue;
 

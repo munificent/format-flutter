@@ -14,10 +14,7 @@ class TextButtonExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('TextButton Sample')),
-        body: const TextButtonExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('TextButton Sample')), body: const TextButtonExample()),
     );
   }
 }
@@ -32,17 +29,13 @@ class TextButtonExample extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           TextButton(
-            style: TextButton.styleFrom(
-              textStyle: const TextStyle(fontSize: 20),
-            ),
+            style: TextButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
             onPressed: null,
             child: const Text('Disabled'),
           ),
           const SizedBox(height: 30),
           TextButton(
-            style: TextButton.styleFrom(
-              textStyle: const TextStyle(fontSize: 20),
-            ),
+            style: TextButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
             onPressed: () {},
             child: const Text('Enabled'),
           ),
@@ -54,13 +47,8 @@ class TextButtonExample extends StatelessWidget {
                 Positioned.fill(
                   child: Container(
                     decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: <Color>[
-                          Color(0xFF0D47A1),
-                          Color(0xFF1976D2),
-                          Color(0xFF42A5F5),
-                        ],
-                      ),
+                      gradient:
+                          LinearGradient(colors: <Color>[Color(0xFF0D47A1), Color(0xFF1976D2), Color(0xFF42A5F5)]),
                     ),
                   ),
                 ),

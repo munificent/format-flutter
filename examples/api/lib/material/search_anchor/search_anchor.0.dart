@@ -38,22 +38,22 @@ class _SearchBarAppState extends State<SearchBarApp> {
   Iterable<Widget> getSuggestions(SearchController controller) {
     final String input = controller.value.text;
     return ColorLabel.values.where((ColorLabel color) => color.label.contains(input)).map(
-          (ColorLabel filteredColor) => ListTile(
-            leading: CircleAvatar(backgroundColor: filteredColor.color),
-            title: Text(filteredColor.label),
-            trailing: IconButton(
-              icon: const Icon(Icons.call_missed),
-              onPressed: () {
-                controller.text = filteredColor.label;
-                controller.selection = TextSelection.collapsed(offset: controller.text.length);
-              },
-            ),
-            onTap: () {
-              controller.closeView(filteredColor.label);
-              handleSelection(filteredColor);
-            },
-          ),
-        );
+      (ColorLabel filteredColor) => ListTile(
+        leading: CircleAvatar(backgroundColor: filteredColor.color),
+        title: Text(filteredColor.label),
+        trailing: IconButton(
+          icon: const Icon(Icons.call_missed),
+          onPressed: () {
+            controller.text = filteredColor.label;
+            controller.selection = TextSelection.collapsed(offset: controller.text.length);
+          },
+        ),
+        onTap: () {
+          controller.closeView(filteredColor.label);
+          handleSelection(filteredColor);
+        },
+      ),
+    );
   }
 
   void handleSelection(ColorLabel selectedColor) {
@@ -106,10 +106,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
   }
 }
 
-SizedBox cardSize = const SizedBox(
-  width: 80,
-  height: 30,
-);
+SizedBox cardSize = const SizedBox(width: 80, height: 30);
 
 enum ColorLabel {
   red('red', Colors.red),

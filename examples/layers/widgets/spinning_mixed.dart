@@ -8,7 +8,7 @@ import 'package:flutter/rendering.dart';
 import '../rendering/src/solid_color_box.dart';
 
 // Solid color, RenderObject version
-void addFlexChildSolidColor(RenderFlex parent, Color backgroundColor, { int flex = 0 }) {
+void addFlexChildSolidColor(RenderFlex parent, Color backgroundColor, {int flex = 0}) {
   final RenderSolidColorBox child = RenderSolidColorBox(backgroundColor);
   parent.add(child);
   final FlexParentData childParentData = child.parentData! as FlexParentData;
@@ -17,17 +17,13 @@ void addFlexChildSolidColor(RenderFlex parent, Color backgroundColor, { int flex
 
 // Solid color, Widget version
 class Rectangle extends StatelessWidget {
-  const Rectangle(this.color, { super.key });
+  const Rectangle(this.color, {super.key});
 
   final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        color: color,
-      ),
-    );
+    return Expanded(child: Container(color: color));
   }
 }
 

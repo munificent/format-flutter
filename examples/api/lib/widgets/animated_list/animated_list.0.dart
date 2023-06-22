@@ -26,11 +26,7 @@ class _AnimatedListSampleState extends State<AnimatedListSample> {
   @override
   void initState() {
     super.initState();
-    _list = ListModel<int>(
-      listKey: _listKey,
-      initialItems: <int>[0, 1, 2],
-      removedItemBuilder: _buildRemovedItem,
-    );
+    _list = ListModel<int>(listKey: _listKey, initialItems: <int>[0, 1, 2], removedItemBuilder: _buildRemovedItem);
     _nextItem = 3;
   }
 
@@ -86,25 +82,13 @@ class _AnimatedListSampleState extends State<AnimatedListSample> {
         appBar: AppBar(
           title: const Text('AnimatedList'),
           actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.add_circle),
-              onPressed: _insert,
-              tooltip: 'insert a new item',
-            ),
-            IconButton(
-              icon: const Icon(Icons.remove_circle),
-              onPressed: _remove,
-              tooltip: 'remove the selected item',
-            ),
+            IconButton(icon: const Icon(Icons.add_circle), onPressed: _insert, tooltip: 'insert a new item'),
+            IconButton(icon: const Icon(Icons.remove_circle), onPressed: _remove, tooltip: 'remove the selected item'),
           ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: AnimatedList(
-            key: _listKey,
-            initialItemCount: _list.length,
-            itemBuilder: _buildItem,
-          ),
+          child: AnimatedList(key: _listKey, initialItemCount: _list.length, itemBuilder: _buildItem),
         ),
       ),
     );
@@ -123,11 +107,8 @@ typedef RemovedItemBuilder<T> = Widget Function(T item, BuildContext context, An
 /// mutate the list must make the same changes to the animated list in terms
 /// of [AnimatedListState.insertItem] and [AnimatedList.removeItem].
 class ListModel<E> {
-  ListModel({
-    required this.listKey,
-    required this.removedItemBuilder,
-    Iterable<E>? initialItems,
-  }) : _items = List<E>.from(initialItems ?? <E>[]);
+  ListModel({required this.listKey, required this.removedItemBuilder, Iterable<E>? initialItems})
+    : _items = List<E>.from(initialItems ?? <E>[]);
 
   final GlobalKey<AnimatedListState> listKey;
   final RemovedItemBuilder<E> removedItemBuilder;
@@ -143,12 +124,9 @@ class ListModel<E> {
   E removeAt(int index) {
     final E removedItem = _items.removeAt(index);
     if (removedItem != null) {
-      _animatedList!.removeItem(
-        index,
-        (BuildContext context, Animation<double> animation) {
-          return removedItemBuilder(removedItem, context, animation);
-        },
-      );
+      _animatedList!.removeItem(index, (BuildContext context, Animation<double> animation) {
+        return removedItemBuilder(removedItem, context, animation);
+      });
     }
     return removedItem;
   }
@@ -197,9 +175,7 @@ class CardItem extends StatelessWidget {
             height: 80.0,
             child: Card(
               color: Colors.primaries[item % Colors.primaries.length],
-              child: Center(
-                child: Text('Item $item', style: textStyle),
-              ),
+              child: Center(child: Text('Item $item', style: textStyle)),
             ),
           ),
         ),

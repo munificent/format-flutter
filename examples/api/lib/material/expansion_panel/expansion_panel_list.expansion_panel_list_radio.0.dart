@@ -24,11 +24,7 @@ class ExpansionPanelListRadioExampleApp extends StatelessWidget {
 
 // stores ExpansionPanel state information
 class Item {
-  Item({
-    required this.id,
-    required this.expandedValue,
-    required this.headerValue,
-  });
+  Item({required this.id, required this.expandedValue, required this.headerValue});
 
   int id;
   String expandedValue;
@@ -37,11 +33,7 @@ class Item {
 
 List<Item> generateItems(int numberOfItems) {
   return List<Item>.generate(numberOfItems, (int index) {
-    return Item(
-      id: index,
-      headerValue: 'Panel $index',
-      expandedValue: 'This is item number $index',
-    );
+    return Item(id: index, headerValue: 'Panel $index', expandedValue: 'This is item number $index');
   });
 }
 
@@ -57,11 +49,7 @@ class _ExpansionPanelListRadioExampleState extends State<ExpansionPanelListRadio
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        child: _buildPanel(),
-      ),
-    );
+    return SingleChildScrollView(child: Container(child: _buildPanel()));
   }
 
   Widget _buildPanel() {
@@ -69,21 +57,21 @@ class _ExpansionPanelListRadioExampleState extends State<ExpansionPanelListRadio
       initialOpenPanelValue: 2,
       children: _data.map<ExpansionPanelRadio>((Item item) {
         return ExpansionPanelRadio(
-            value: item.id,
-            headerBuilder: (BuildContext context, bool isExpanded) {
-              return ListTile(
-                title: Text(item.headerValue),
-              );
+          value: item.id,
+          headerBuilder: (BuildContext context, bool isExpanded) {
+            return ListTile(title: Text(item.headerValue));
+          },
+          body: ListTile(
+            title: Text(item.expandedValue),
+            subtitle: const Text('To delete this panel, tap the trash can icon'),
+            trailing: const Icon(Icons.delete),
+            onTap: () {
+              setState(() {
+                _data.removeWhere((Item currentItem) => item == currentItem);
+              });
             },
-            body: ListTile(
-                title: Text(item.expandedValue),
-                subtitle: const Text('To delete this panel, tap the trash can icon'),
-                trailing: const Icon(Icons.delete),
-                onTap: () {
-                  setState(() {
-                    _data.removeWhere((Item currentItem) => item == currentItem);
-                  });
-                }));
+          ),
+        );
       }).toList(),
     );
   }

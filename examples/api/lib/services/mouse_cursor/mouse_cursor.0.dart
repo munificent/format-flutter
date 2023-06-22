@@ -14,10 +14,7 @@ class MouseCursorExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('MouseCursor Code Sample')),
-        body: const MouseCursorExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('MouseCursor Code Sample')), body: const MouseCursorExample()),
     );
   }
 }
@@ -33,10 +30,7 @@ class MouseCursorExample extends StatelessWidget {
         child: Container(
           width: 200,
           height: 100,
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            border: Border.all(color: Colors.yellow),
-          ),
+          decoration: BoxDecoration(color: Colors.blue, border: Border.all(color: Colors.yellow)),
         ),
       ),
     );

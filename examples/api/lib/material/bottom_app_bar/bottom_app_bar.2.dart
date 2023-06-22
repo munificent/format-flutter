@@ -19,13 +19,7 @@ class BottomAppBarDemo extends StatefulWidget {
 }
 
 class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
-  static const List<Color> colors = <Color>[
-    Colors.yellow,
-    Colors.orange,
-    Colors.pink,
-    Colors.purple,
-    Colors.cyan,
-  ];
+  static const List<Color> colors = <Color>[Colors.yellow, Colors.orange, Colors.pink, Colors.purple, Colors.cyan];
 
   static final List<Widget> items = List<Widget>.generate(
     colors.length,
@@ -75,10 +69,7 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
 
   void _addNewItem() {
     setState(() {
-      items.insert(
-        0,
-        Container(color: colors[items.length % 5], height: 150.0),
-      );
+      items.insert(0, Container(color: colors[items.length % 5], height: 150.0));
     });
   }
 
@@ -101,27 +92,16 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Bottom App Bar Demo'),
-        ),
+        appBar: AppBar(title: const Text('Bottom App Bar Demo')),
         body: Column(
           children: <Widget>[
-            SwitchListTile(
-              title: const Text('Floating Action Button'),
-              value: _showFab,
-              onChanged: _onShowFabChanged,
-            ),
+            SwitchListTile(title: const Text('Floating Action Button'), value: _showFab, onChanged: _onShowFabChanged),
             SwitchListTile(
               title: const Text('Bottom App Bar Elevation'),
               value: _isElevated,
               onChanged: _onElevatedChanged,
             ),
-            Expanded(
-              child: ListView(
-                controller: _controller,
-                children: items.toList(),
-              ),
-            ),
+            Expanded(child: ListView(controller: _controller, children: items.toList())),
           ],
         ),
         floatingActionButton: _showFab
@@ -140,10 +120,7 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
 }
 
 class _DemoBottomAppBar extends StatelessWidget {
-  const _DemoBottomAppBar({
-    required this.isElevated,
-    required this.isVisible,
-  });
+  const _DemoBottomAppBar({required this.isElevated, required this.isVisible});
 
   final bool isElevated;
   final bool isVisible;
@@ -163,10 +140,7 @@ class _DemoBottomAppBar extends StatelessWidget {
               onPressed: () {
                 final SnackBar snackBar = SnackBar(
                   content: const Text('Yay! A SnackBar!'),
-                  action: SnackBarAction(
-                    label: 'Undo',
-                    onPressed: () {},
-                  ),
+                  action: SnackBarAction(label: 'Undo', onPressed: () {}),
                 );
 
                 // Find the ScaffoldMessenger in the widget tree
@@ -174,16 +148,8 @@ class _DemoBottomAppBar extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               },
             ),
-            IconButton(
-              tooltip: 'Search',
-              icon: const Icon(Icons.search),
-              onPressed: () {},
-            ),
-            IconButton(
-              tooltip: 'Favorite',
-              icon: const Icon(Icons.favorite),
-              onPressed: () {},
-            ),
+            IconButton(tooltip: 'Search', icon: const Icon(Icons.search), onPressed: () {}),
+            IconButton(tooltip: 'Favorite', icon: const Icon(Icons.favorite), onPressed: () {}),
           ],
         ),
       ),

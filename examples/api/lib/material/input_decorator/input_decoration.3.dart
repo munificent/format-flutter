@@ -15,10 +15,7 @@ class InputDecorationExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('InputDecoration Sample')),
-        body: const InputDecorationExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('InputDecoration Sample')), body: const InputDecorationExample()),
     );
   }
 }
@@ -30,11 +27,7 @@ class InputDecorationExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: 'abc',
-      decoration: const InputDecoration(
-        prefix: Text('Prefix'),
-        suffix: Text('Suffix'),
-        border: OutlineInputBorder(),
-      ),
+      decoration: const InputDecoration(prefix: Text('Prefix'), suffix: Text('Suffix'), border: OutlineInputBorder()),
     );
   }
 }

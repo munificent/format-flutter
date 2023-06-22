@@ -61,20 +61,13 @@ class _FocusListenerContainerState extends State<FocusListenerContainer> {
     final OutlinedBorder effectiveBorder = widget.border ?? const RoundedRectangleBorder();
     return ListenableBuilder(
       listenable: _focusNode,
-      child: Focus(
-        focusNode: _focusNode,
-        skipTraversal: true,
-        canRequestFocus: false,
-        child: widget.child,
-      ),
+      child: Focus(focusNode: _focusNode, skipTraversal: true, canRequestFocus: false, child: widget.child),
       builder: (BuildContext context, Widget? child) {
         return Container(
           padding: widget.padding,
           decoration: ShapeDecoration(
             color: _focusNode.hasFocus ? widget.focusedColor : null,
-            shape: effectiveBorder.copyWith(
-              side: _focusNode.hasFocus ? widget.focusedSide : null,
-            ),
+            shape: effectiveBorder.copyWith(side: _focusNode.hasFocus ? widget.focusedSide : null),
           ),
           child: child,
         );
@@ -130,35 +123,21 @@ class ListenableBuilderExample extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: MyField(label: 'Company'),
-                  ),
+                  const Padding(padding: EdgeInsets.only(bottom: 8), child: MyField(label: 'Company')),
                   FocusListenerContainer(
                     padding: const EdgeInsets.all(8),
                     border: const RoundedRectangleBorder(
-                      side: BorderSide(
-                        strokeAlign: BorderSide.strokeAlignOutside,
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
+                      side: BorderSide(strokeAlign: BorderSide.strokeAlignOutside),
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
                     ),
                     // The border side will get wider when the subtree has focus.
-                    focusedSide: const BorderSide(
-                      width: 4,
-                      strokeAlign: BorderSide.strokeAlignOutside,
-                    ),
+                    focusedSide: const BorderSide(width: 4, strokeAlign: BorderSide.strokeAlignOutside),
                     // The container background will change color to this when
                     // the subtree has focus.
                     focusedColor: Colors.blue.shade50,
                     child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text('Owner:'),
-                        MyField(label: 'First Name'),
-                        MyField(label: 'Last Name'),
-                      ],
+                      children: <Widget>[Text('Owner:'), MyField(label: 'First Name'), MyField(label: 'Last Name')],
                     ),
                   ),
                 ],

@@ -16,19 +16,14 @@ class AppBarMediumApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: const Color(0xff6750A4),
-      ),
+      theme: ThemeData(useMaterial3: true, colorSchemeSeed: const Color(0xff6750A4)),
       home: Material(
         child: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar.medium(
               leading: IconButton(icon: const Icon(Icons.menu), onPressed: () {}),
               title: const Text('Medium App Bar'),
-              actions: <Widget>[
-                IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
-              ],
+              actions: <Widget>[IconButton(icon: const Icon(Icons.more_vert), onPressed: () {})],
             ),
             // Just some content big enough to have something to scroll.
             SliverToBoxAdapter(
@@ -37,10 +32,7 @@ class AppBarMediumApp extends StatelessWidget {
                   height: 1200,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(8, 100, 8, 100),
-                    child: Text(
-                      'Here be scrolling content...',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
+                    child: Text('Here be scrolling content...', style: Theme.of(context).textTheme.headlineSmall),
                   ),
                 ),
               ),

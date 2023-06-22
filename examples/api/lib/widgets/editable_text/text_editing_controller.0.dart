@@ -13,9 +13,7 @@ class TextEditingControllerExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: TextEditingControllerExample(),
-    );
+    return const MaterialApp(home: TextEditingControllerExample());
   }
 }
 
@@ -54,10 +52,7 @@ class _TextEditingControllerExampleState extends State<TextEditingControllerExam
       body: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(6),
-        child: TextFormField(
-          controller: _controller,
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-        ),
+        child: TextFormField(controller: _controller, decoration: const InputDecoration(border: OutlineInputBorder())),
       ),
     );
   }

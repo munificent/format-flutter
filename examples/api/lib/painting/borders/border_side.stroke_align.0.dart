@@ -58,11 +58,7 @@ class _StrokeAlignExampleState extends State<StrokeAlignExample> with TickerProv
           children: <Widget>[
             BorderedBox(
               shape: StadiumBorder(
-                side: BorderSide(
-                  color: borderColor,
-                  width: borderWidth,
-                  strokeAlign: (animation.value * 2) - 1,
-                ),
+                side: BorderSide(color: borderColor, width: borderWidth, strokeAlign: (animation.value * 2) - 1),
               ),
             ),
             Row(
@@ -70,20 +66,12 @@ class _StrokeAlignExampleState extends State<StrokeAlignExample> with TickerProv
               children: <Widget>[
                 BorderedBox(
                   shape: CircleBorder(
-                    side: BorderSide(
-                      color: borderColor,
-                      width: borderWidth,
-                      strokeAlign: (animation.value * 2) - 1,
-                    ),
+                    side: BorderSide(color: borderColor, width: borderWidth, strokeAlign: (animation.value * 2) - 1),
                   ),
                 ),
                 BorderedBox(
                   shape: OvalBorder(
-                    side: BorderSide(
-                      color: borderColor,
-                      width: borderWidth,
-                      strokeAlign: (animation.value * 2) - 1,
-                    ),
+                    side: BorderSide(color: borderColor, width: borderWidth, strokeAlign: (animation.value * 2) - 1),
                   ),
                 ),
               ],
@@ -93,21 +81,13 @@ class _StrokeAlignExampleState extends State<StrokeAlignExample> with TickerProv
               children: <Widget>[
                 BorderedBox(
                   shape: BeveledRectangleBorder(
-                    side: BorderSide(
-                      color: borderColor,
-                      width: borderWidth,
-                      strokeAlign: (animation.value * 2) - 1,
-                    ),
+                    side: BorderSide(color: borderColor, width: borderWidth, strokeAlign: (animation.value * 2) - 1),
                   ),
                 ),
                 BorderedBox(
                   shape: BeveledRectangleBorder(
                     borderRadius: BorderRadius.circular(cornerRadius),
-                    side: BorderSide(
-                      color: borderColor,
-                      width: borderWidth,
-                      strokeAlign: (animation.value * 2) - 1,
-                    ),
+                    side: BorderSide(color: borderColor, width: borderWidth, strokeAlign: (animation.value * 2) - 1),
                   ),
                 ),
               ],
@@ -117,21 +97,13 @@ class _StrokeAlignExampleState extends State<StrokeAlignExample> with TickerProv
               children: <Widget>[
                 BorderedBox(
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: borderColor,
-                      width: borderWidth,
-                      strokeAlign: (animation.value * 2) - 1,
-                    ),
+                    side: BorderSide(color: borderColor, width: borderWidth, strokeAlign: (animation.value * 2) - 1),
                   ),
                 ),
                 BorderedBox(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(cornerRadius),
-                    side: BorderSide(
-                      color: borderColor,
-                      width: borderWidth,
-                      strokeAlign: (animation.value * 2) - 1,
-                    ),
+                    side: BorderSide(color: borderColor, width: borderWidth, strokeAlign: (animation.value * 2) - 1),
                   ),
                 ),
               ],
@@ -141,11 +113,7 @@ class _StrokeAlignExampleState extends State<StrokeAlignExample> with TickerProv
               children: <Widget>[
                 BorderedBox(
                   shape: StarBorder(
-                    side: BorderSide(
-                      color: borderColor,
-                      width: borderWidth,
-                      strokeAlign: (animation.value * 2) - 1,
-                    ),
+                    side: BorderSide(color: borderColor, width: borderWidth, strokeAlign: (animation.value * 2) - 1),
                   ),
                 ),
                 BorderedBox(
@@ -153,22 +121,14 @@ class _StrokeAlignExampleState extends State<StrokeAlignExample> with TickerProv
                     pointRounding: 1,
                     innerRadiusRatio: 0.5,
                     points: 8,
-                    side: BorderSide(
-                      color: borderColor,
-                      width: borderWidth,
-                      strokeAlign: (animation.value * 2) - 1,
-                    ),
+                    side: BorderSide(color: borderColor, width: borderWidth, strokeAlign: (animation.value * 2) - 1),
                   ),
                 ),
                 BorderedBox(
                   shape: StarBorder.polygon(
                     sides: 6,
                     pointRounding: 0.5,
-                    side: BorderSide(
-                      color: borderColor,
-                      width: borderWidth,
-                      strokeAlign: (animation.value * 2) - 1,
-                    ),
+                    side: BorderSide(color: borderColor, width: borderWidth, strokeAlign: (animation.value * 2) - 1),
                   ),
                 ),
               ],
@@ -181,22 +141,12 @@ class _StrokeAlignExampleState extends State<StrokeAlignExample> with TickerProv
 }
 
 class BorderedBox extends StatelessWidget {
-  const BorderedBox({
-    super.key,
-    required this.shape,
-  });
+  const BorderedBox({super.key, required this.shape});
 
   final ShapeBorder shape;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      height: 50,
-      decoration: ShapeDecoration(
-        color: const Color(0xff012677),
-        shape: shape,
-      ),
-    );
+    return Container(width: 100, height: 50, decoration: ShapeDecoration(color: const Color(0xff012677), shape: shape));
   }
 }

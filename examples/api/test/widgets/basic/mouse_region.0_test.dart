@@ -9,9 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('MouseRegion detects mouse entries, exists, and location', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(home: example.MouseRegionApp()),
-    );
+    await tester.pumpWidget(const MaterialApp(home: example.MouseRegionApp()));
 
     expect(find.text('0 Entries\n0 Exits'), findsOneWidget);
     expect(find.text('The cursor is here: (0.00, 0.00)'), findsOneWidget);
@@ -24,9 +22,7 @@ void main() {
     expect(find.text('1 Entries\n0 Exits'), findsOneWidget);
     expect(find.text('The cursor is here: (400.00, 328.00)'), findsOneWidget);
 
-    await gesture.moveTo(
-      tester.getCenter(find.byType(ColoredBox)) + const Offset(50.0, 30.0),
-    );
+    await gesture.moveTo(tester.getCenter(find.byType(ColoredBox)) + const Offset(50.0, 30.0));
     await tester.pump();
 
     expect(find.text('The cursor is here: (450.00, 358.00)'), findsOneWidget);

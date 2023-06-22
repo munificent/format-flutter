@@ -27,12 +27,7 @@ class DialogExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('showDialog Sample')),
-      body: Center(
-        child: OutlinedButton(
-          onPressed: () => _dialogBuilder(context),
-          child: const Text('Open Dialog'),
-        ),
-      ),
+      body: Center(child: OutlinedButton(onPressed: () => _dialogBuilder(context), child: const Text('Open Dialog'))),
     );
   }
 
@@ -50,18 +45,14 @@ class DialogExample extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
+              style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
               child: const Text('Disable'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
+              style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
               child: const Text('Enable'),
               onPressed: () {
                 Navigator.of(context).pop();

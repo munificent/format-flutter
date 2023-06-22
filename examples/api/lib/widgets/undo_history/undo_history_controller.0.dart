@@ -15,9 +15,7 @@ class UndoHistoryControllerExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
-    );
+    return const MaterialApp(home: MyHomePage());
   }
 }
 
@@ -43,12 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              maxLines: 4,
-              controller: _controller,
-              focusNode: _focusNode,
-              undoController: _undoController,
-            ),
+            TextField(maxLines: 4, controller: _controller, focusNode: _focusNode, undoController: _undoController),
             ValueListenableBuilder<UndoHistoryValue>(
               valueListenable: _undoController,
               builder: (BuildContext context, UndoHistoryValue value, Widget? child) {

@@ -13,9 +13,7 @@ class SizeTransitionExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SizeTransitionExample(),
-    );
+    return const MaterialApp(home: SizeTransitionExample());
   }
 }
 
@@ -29,14 +27,9 @@ class SizeTransitionExample extends StatefulWidget {
 /// [AnimationController]s can be created with `vsync: this` because of
 /// [TickerProviderStateMixin].
 class _SizeTransitionExampleState extends State<SizeTransitionExample> with TickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 3),
-    vsync: this,
-  )..repeat();
-  late final Animation<double> _animation = CurvedAnimation(
-    parent: _controller,
-    curve: Curves.fastOutSlowIn,
-  );
+  late final AnimationController _controller = AnimationController(duration: const Duration(seconds: 3), vsync: this)
+    ..repeat();
+  late final Animation<double> _animation = CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
 
   @override
   void dispose() {
@@ -51,9 +44,7 @@ class _SizeTransitionExampleState extends State<SizeTransitionExample> with Tick
         sizeFactor: _animation,
         axis: Axis.horizontal,
         axisAlignment: -1,
-        child: const Center(
-          child: FlutterLogo(size: 200.0),
-        ),
+        child: const Center(child: FlutterLogo(size: 200.0)),
       ),
     );
   }

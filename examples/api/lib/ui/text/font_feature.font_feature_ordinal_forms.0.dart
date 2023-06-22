@@ -31,12 +31,7 @@ class ExampleWidget extends StatelessWidget {
     // (https://www.google.com/fonts).
     return const Text(
       '1st, 2nd, 3rd, 4th...',
-      style: TextStyle(
-        fontFamily: 'Piazzolla',
-        fontFeatures: <FontFeature>[
-          FontFeature.ordinalForms(),
-        ],
-      ),
+      style: TextStyle(fontFamily: 'Piazzolla', fontFeatures: <FontFeature>[FontFeature.ordinalForms()]),
     );
   }
 }

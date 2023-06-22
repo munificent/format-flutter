@@ -4,23 +4,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_api_samples/widgets/text_magnifier/text_magnifier.0.dart'
-    as example;
+import 'package:flutter_api_samples/widgets/text_magnifier/text_magnifier.0.dart' as example;
 import 'package:flutter_test/flutter_test.dart';
 
-List<TextSelectionPoint> _globalize(
-    Iterable<TextSelectionPoint> points, RenderBox box) {
+List<TextSelectionPoint> _globalize(Iterable<TextSelectionPoint> points, RenderBox box) {
   return points.map<TextSelectionPoint>((TextSelectionPoint point) {
-    return TextSelectionPoint(
-      box.localToGlobal(point.point),
-      point.direction,
-    );
+    return TextSelectionPoint(box.localToGlobal(point.point), point.direction);
   }).toList();
 }
 
 RenderEditable _findRenderEditable<T extends State<StatefulWidget>>(WidgetTester tester) {
-  return (tester.state(find.byType(TextField))
-          as TextSelectionGestureDetectorBuilderDelegate)
+  return (tester.state(find.byType(TextField)) as TextSelectionGestureDetectorBuilderDelegate)
       .editableTextKey
       .currentState!
       .renderEditable;
@@ -29,15 +23,11 @@ RenderEditable _findRenderEditable<T extends State<StatefulWidget>>(WidgetTester
 Offset _textOffsetToPosition<T extends State<StatefulWidget>>(WidgetTester tester, int offset) {
   final RenderEditable renderEditable = _findRenderEditable(tester);
 
-  final List<TextSelectionPoint> endpoints = renderEditable
-      .getEndpointsForSelection(
-        TextSelection.collapsed(offset: offset),
-      )
-      .map<TextSelectionPoint>((TextSelectionPoint point) => TextSelectionPoint(
-            renderEditable.localToGlobal(point.point),
-            point.direction,
-          ))
-      .toList();
+  final List<TextSelectionPoint> endpoints = renderEditable.getEndpointsForSelection(
+    TextSelection.collapsed(offset: offset),
+  ).map<TextSelectionPoint>(
+    (TextSelectionPoint point) => TextSelectionPoint(renderEditable.localToGlobal(point.point), point.direction),
+  ).toList();
 
   return endpoints[0].point + const Offset(0.0, -2.0);
 }
@@ -59,10 +49,7 @@ void main() {
     await testGesture.up();
     await tester.pumpAndSettle();
 
-    final TextSelection selection = tester
-        .firstWidget<TextField>(find.byType(TextField))
-        .controller!
-        .selection;
+    final TextSelection selection = tester.firstWidget<TextField>(find.byType(TextField)).controller!.selection;
 
     final RenderEditable renderEditable = _findRenderEditable(tester);
     final List<TextSelectionPoint> endpoints = _globalize(
@@ -74,12 +61,7 @@ void main() {
 
     final TestGesture gesture = await tester.startGesture(handlePos);
 
-    await gesture.moveTo(
-      _textOffsetToPosition(
-        tester,
-        defaultText.length - 2,
-      ),
-    );
+    await gesture.moveTo(_textOffsetToPosition(tester, defaultText.length - 2));
     await tester.pump();
   }
 
@@ -89,12 +71,8 @@ void main() {
     await showMagnifier(tester, 'e');
     expect(find.byType(example.CustomMagnifier), findsOneWidget);
 
-    await expectLater(
-      find.byType(example.TextMagnifierExampleApp),
-      matchesGoldenFile('text_magnifier.0_test.png'),
-    );
-  }, variant: const TargetPlatformVariant(<TargetPlatform>{ TargetPlatform.iOS, TargetPlatform.android }));
-
+    await expectLater(find.byType(example.TextMagnifierExampleApp), matchesGoldenFile('text_magnifier.0_test.png'));
+  }, variant: const TargetPlatformVariant(<TargetPlatform>{TargetPlatform.iOS, TargetPlatform.android}));
 
   for (final TextDirection textDirection in TextDirection.values) {
     testWidgets('should show custom magnifier in $textDirection', (WidgetTester tester) async {

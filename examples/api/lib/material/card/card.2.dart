@@ -20,13 +20,7 @@ class CardExamplesApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(title: const Text('Card Examples')),
         body: const Column(
-          children: <Widget>[
-            Spacer(),
-            ElevatedCardExample(),
-            FilledCardExample(),
-            OutlinedCardExample(),
-            Spacer(),
-          ],
+          children: <Widget>[Spacer(), ElevatedCardExample(), FilledCardExample(), OutlinedCardExample(), Spacer()],
         ),
       ),
     );
@@ -45,13 +39,7 @@ class ElevatedCardExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Card(
-        child: SizedBox(
-          width: 300,
-          height: 100,
-          child: Center(child: Text('Elevated Card')),
-        ),
-      ),
+      child: Card(child: SizedBox(width: 300, height: 100, child: Center(child: Text('Elevated Card')))),
     );
   }
 }
@@ -71,11 +59,7 @@ class FilledCardExample extends StatelessWidget {
       child: Card(
         elevation: 0,
         color: Theme.of(context).colorScheme.surfaceVariant,
-        child: const SizedBox(
-          width: 300,
-          height: 100,
-          child: Center(child: Text('Filled Card')),
-        ),
+        child: const SizedBox(width: 300, height: 100, child: Center(child: Text('Filled Card'))),
       ),
     );
   }
@@ -96,16 +80,10 @@ class OutlinedCardExample extends StatelessWidget {
       child: Card(
         elevation: 0,
         shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Theme.of(context).colorScheme.outline,
-          ),
+          side: BorderSide(color: Theme.of(context).colorScheme.outline),
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
-        child: const SizedBox(
-          width: 300,
-          height: 100,
-          child: Center(child: Text('Outlined Card')),
-        ),
+        child: const SizedBox(width: 300, height: 100, child: Center(child: Text('Outlined Card'))),
       ),
     );
   }

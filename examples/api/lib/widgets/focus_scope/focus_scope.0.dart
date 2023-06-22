@@ -13,9 +13,7 @@ class FocusScopeExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: FocusScopeExample(),
-    );
+    return const MaterialApp(home: FocusScopeExample());
   }
 }
 
@@ -45,17 +43,10 @@ class Pane extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Center(
-            child: child,
-          ),
+          Center(child: child),
           Align(
             alignment: Alignment.topLeft,
-            child: IconButton(
-              autofocus: true,
-              focusNode: focusNode,
-              onPressed: onPressed,
-              icon: icon,
-            ),
+            child: IconButton(autofocus: true, focusNode: focusNode, onPressed: onPressed, icon: icon),
           ),
         ],
       ),
@@ -115,10 +106,7 @@ class _FocusScopeExampleState extends State<FocusScopeExample> {
                   onPressed: () => debugPrint('You pressed the other button!'),
                   child: const Text('ANOTHER BUTTON TO FOCUS'),
                 ),
-                DefaultTextStyle(
-                  style: Theme.of(context).textTheme.displayMedium!,
-                  child: const Text('BACKDROP'),
-                ),
+                DefaultTextStyle(style: Theme.of(context).textTheme.displayMedium!, child: const Text('BACKDROP')),
               ],
             ),
           ),
@@ -143,10 +131,7 @@ class _FocusScopeExampleState extends State<FocusScopeExample> {
             // yourself that the hidden components do/don't get focus.
             backgroundColor: Colors.green,
             onPressed: backdropIsVisible ? null : () => setState(() => backdropIsVisible = true),
-            child: DefaultTextStyle(
-              style: Theme.of(context).textTheme.displayMedium!,
-              child: const Text('FOREGROUND'),
-            ),
+            child: DefaultTextStyle(style: Theme.of(context).textTheme.displayMedium!, child: const Text('FOREGROUND')),
           ),
         ),
       ],

@@ -31,12 +31,7 @@ class ExampleWidget extends StatelessWidget {
     // (https://www.google.com/fonts).
     return const Text(
       'Call 311-555-2368 now!',
-      style: TextStyle(
-        fontFamily: 'Piazzolla',
-        fontFeatures: <FontFeature>[
-          FontFeature.oldstyleFigures(),
-        ],
-      ),
+      style: TextStyle(fontFamily: 'Piazzolla', fontFeatures: <FontFeature>[FontFeature.oldstyleFigures()]),
     );
   }
 }

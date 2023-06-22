@@ -13,9 +13,7 @@ class RelativePositionedTransitionExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: RelativePositionedTransitionExample(),
-    );
+    return const MaterialApp(home: RelativePositionedTransitionExample());
   }
 }
 
@@ -30,10 +28,8 @@ class RelativePositionedTransitionExample extends StatefulWidget {
 /// [TickerProviderStateMixin].
 class _RelativePositionedTransitionExampleState extends State<RelativePositionedTransitionExample>
     with TickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 2),
-    vsync: this,
-  )..repeat(reverse: true);
+  late final AnimationController _controller = AnimationController(duration: const Duration(seconds: 2), vsync: this)
+    ..repeat(reverse: true);
 
   @override
   void dispose() {
@@ -55,20 +51,9 @@ class _RelativePositionedTransitionExampleState extends State<RelativePositioned
               size: biggest,
               rect: RectTween(
                 begin: const Rect.fromLTWH(0, 0, bigLogo, bigLogo),
-                end: Rect.fromLTWH(
-                  biggest.width - smallLogo,
-                  biggest.height - smallLogo,
-                  smallLogo,
-                  smallLogo,
-                ),
-              ).animate(CurvedAnimation(
-                parent: _controller,
-                curve: Curves.elasticInOut,
-              )),
-              child: const Padding(
-                padding: EdgeInsets.all(8),
-                child: FlutterLogo(),
-              ),
+                end: Rect.fromLTWH(biggest.width - smallLogo, biggest.height - smallLogo, smallLogo, smallLogo),
+              ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticInOut)),
+              child: const Padding(padding: EdgeInsets.all(8), child: FlutterLogo()),
             ),
           ],
         );

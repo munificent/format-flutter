@@ -33,8 +33,12 @@ class _SearchBarAppState extends State<SearchBarApp> {
               return SearchBar(
                 controller: controller,
                 padding: const MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
-                onTap: () { controller.openView(); },
-                onChanged: (_) { controller.openView(); },
+                onTap: () {
+                  controller.openView();
+                },
+                onChanged: (_) {
+                  controller.openView();
+                },
                 leading: const Icon(Icons.search),
                 trailing: <Widget>[
                   Tooltip(
@@ -49,7 +53,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                       icon: const Icon(Icons.wb_sunny_outlined),
                       selectedIcon: const Icon(Icons.brightness_2_outlined),
                     ),
-                  )
+                  ),
                 ],
               );
             },
@@ -65,7 +69,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
                   },
                 );
               });
-            }),
+            },
+          ),
         ),
       ),
     );

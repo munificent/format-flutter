@@ -13,9 +13,7 @@ class AppBarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SliverAppBarExample(),
-    );
+    return const MaterialApp(home: SliverAppBarExample());
   }
 }
 
@@ -43,32 +41,19 @@ class _SliverAppBarExampleState extends State<SliverAppBarExample> {
             snap: _snap,
             floating: _floating,
             expandedHeight: 160.0,
-            flexibleSpace: const FlexibleSpaceBar(
-              title: Text('SliverAppBar'),
-              background: FlutterLogo(),
-            ),
+            flexibleSpace: const FlexibleSpaceBar(title: Text('SliverAppBar'), background: FlutterLogo()),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(
-              height: 20,
-              child: Center(
-                child: Text('Scroll to see the SliverAppBar in effect.'),
-              ),
-            ),
+            child: SizedBox(height: 20, child: Center(child: Text('Scroll to see the SliverAppBar in effect.'))),
           ),
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Container(
-                  color: index.isOdd ? Colors.white : Colors.black12,
-                  height: 100.0,
-                  child: Center(
-                    child: Text('$index', textScaleFactor: 5),
-                  ),
-                );
-              },
-              childCount: 20,
-            ),
+            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+              return Container(
+                color: index.isOdd ? Colors.white : Colors.black12,
+                height: 100.0,
+                child: Center(child: Text('$index', textScaleFactor: 5)),
+              );
+            }, childCount: 20),
           ),
         ],
       ),

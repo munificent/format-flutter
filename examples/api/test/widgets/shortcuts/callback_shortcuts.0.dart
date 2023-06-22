@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('CallbackShortcutsApp increments and decrements', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.CallbackShortcutsApp(),
-    );
+    await tester.pumpWidget(const example.CallbackShortcutsApp());
 
     expect(find.text('count: 0'), findsOneWidget);
 

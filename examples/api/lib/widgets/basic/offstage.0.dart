@@ -14,12 +14,8 @@ class OffstageApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Offstage Sample')),
-        body: const Center(
-          child: OffstageExample(),
-        ),
-      ),
+      home:
+          Scaffold(appBar: AppBar(title: const Text('Offstage Sample')), body: const Center(child: OffstageExample())),
     );
   }
 }
@@ -45,13 +41,7 @@ class _OffstageExampleState extends State<OffstageExample> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Offstage(
-          offstage: _offstage,
-          child: FlutterLogo(
-            key: _key,
-            size: 150.0,
-          ),
-        ),
+        Offstage(offstage: _offstage, child: FlutterLogo(key: _key, size: 150.0)),
         Text('Flutter logo is offstage: $_offstage'),
         ElevatedButton(
           child: const Text('Toggle Offstage Value'),
@@ -63,14 +53,13 @@ class _OffstageExampleState extends State<OffstageExample> {
         ),
         if (_offstage)
           ElevatedButton(
-              child: const Text('Get Flutter Logo size'),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Flutter Logo size is ${_getFlutterLogoSize()}'),
-                  ),
-                );
-              }),
+            child: const Text('Get Flutter Logo size'),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Flutter Logo size is ${_getFlutterLogoSize()}')),
+              );
+            },
+          ),
       ],
     );
   }

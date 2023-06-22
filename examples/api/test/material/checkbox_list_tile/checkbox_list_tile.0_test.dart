@@ -9,9 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('CheckboxListTile can be checked', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.CheckboxListTileApp(),
-    );
+    await tester.pumpWidget(const example.CheckboxListTileApp());
 
     CheckboxListTile checkboxListTile = tester.widget(find.byType(CheckboxListTile));
     expect(checkboxListTile.value, isFalse);

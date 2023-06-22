@@ -21,10 +21,7 @@ class SegmentedControlApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      home: SegmentedControlExample(),
-    );
+    return const CupertinoApp(theme: CupertinoThemeData(brightness: Brightness.light), home: SegmentedControlExample());
   }
 }
 
@@ -57,26 +54,14 @@ class _SegmentedControlExampleState extends State<SegmentedControlExample> {
             });
           },
           children: const <Sky, Widget>{
-            Sky.midnight: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text('Midnight'),
-            ),
-            Sky.viridian: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text('Viridian'),
-            ),
-            Sky.cerulean: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text('Cerulean'),
-            ),
+            Sky.midnight: Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text('Midnight')),
+            Sky.viridian: Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text('Viridian')),
+            Sky.cerulean: Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text('Cerulean')),
           },
         ),
       ),
       child: Center(
-        child: Text(
-          'Selected Segment: ${_selectedSegment.name}',
-          style: const TextStyle(color: CupertinoColors.white),
-        ),
+        child: Text('Selected Segment: ${_selectedSegment.name}', style: const TextStyle(color: CupertinoColors.white)),
       ),
     );
   }

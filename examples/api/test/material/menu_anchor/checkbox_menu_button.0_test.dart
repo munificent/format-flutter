@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Can open menu and show message', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.MenuApp(),
-    );
+    await tester.pumpWidget(const example.MenuApp());
 
     await tester.tap(find.byType(TextButton));
     await tester.pump();

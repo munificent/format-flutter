@@ -26,9 +26,7 @@ class CupertinoIndicatorExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text('CupertinoActivityIndicator Sample'),
-      ),
+      navigationBar: CupertinoNavigationBar(middle: Text('CupertinoActivityIndicator Sample')),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -48,10 +46,7 @@ class CupertinoIndicatorExample extends StatelessWidget {
                 // Cupertino activity indicator with custom radius and color.
                 CupertinoActivityIndicator(radius: 20.0, color: CupertinoColors.activeBlue),
                 SizedBox(height: 10),
-                Text(
-                  'radius: 20.0\ncolor: CupertinoColors.activeBlue',
-                  textAlign: TextAlign.center,
-                ),
+                Text('radius: 20.0\ncolor: CupertinoColors.activeBlue', textAlign: TextAlign.center),
               ],
             ),
             Column(
@@ -61,10 +56,7 @@ class CupertinoIndicatorExample extends StatelessWidget {
                 // animation.
                 CupertinoActivityIndicator(radius: 20.0, animating: false),
                 SizedBox(height: 10),
-                Text(
-                  'radius: 20.0\nanimating: false',
-                  textAlign: TextAlign.center,
-                ),
+                Text('radius: 20.0\nanimating: false', textAlign: TextAlign.center),
               ],
             ),
           ],

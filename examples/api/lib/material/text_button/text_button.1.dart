@@ -11,13 +11,7 @@ void main() {
 }
 
 class SelectableButton extends StatefulWidget {
-  const SelectableButton({
-    super.key,
-    required this.selected,
-    this.style,
-    required this.onPressed,
-    required this.child,
-  });
+  const SelectableButton({super.key, required this.selected, this.style, required this.onPressed, required this.child});
 
   final bool selected;
   final ButtonStyle? style;
@@ -73,22 +67,18 @@ class _HomeState extends State<Home> {
         child: SelectableButton(
           selected: selected,
           style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.selected)) {
-                  return Colors.white;
-                }
-                return null; // defer to the defaults
-              },
-            ),
-            backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.selected)) {
-                  return Colors.indigo;
-                }
-                return null; // defer to the defaults
-              },
-            ),
+            foregroundColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+              if (states.contains(MaterialState.selected)) {
+                return Colors.white;
+              }
+              return null; // defer to the defaults
+            }),
+            backgroundColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+              if (states.contains(MaterialState.selected)) {
+                return Colors.indigo;
+              }
+              return null; // defer to the defaults
+            }),
           ),
           onPressed: () {
             setState(() {

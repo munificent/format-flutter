@@ -45,9 +45,7 @@ class _EditableTextToolbarBuilderExampleAppState extends State<EditableTextToolb
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Custom toolbar, default-looking buttons'),
-        ),
+        appBar: AppBar(title: const Text('Custom toolbar, default-looking buttons')),
         body: Center(
           child: Column(
             children: <Widget>[
@@ -63,26 +61,11 @@ class _EditableTextToolbarBuilderExampleAppState extends State<EditableTextToolb
                       context,
                       // These buttons just close the menu when clicked.
                       <ContextMenuButtonItem>[
-                        ContextMenuButtonItem(
-                          label: 'One',
-                          onPressed: () => ContextMenuController.removeAny(),
-                        ),
-                        ContextMenuButtonItem(
-                          label: 'Two',
-                          onPressed: () => ContextMenuController.removeAny(),
-                        ),
-                        ContextMenuButtonItem(
-                          label: 'Three',
-                          onPressed: () => ContextMenuController.removeAny(),
-                        ),
-                        ContextMenuButtonItem(
-                          label: 'Four',
-                          onPressed: () => ContextMenuController.removeAny(),
-                        ),
-                        ContextMenuButtonItem(
-                          label: 'Five',
-                          onPressed: () => ContextMenuController.removeAny(),
-                        ),
+                        ContextMenuButtonItem(label: 'One', onPressed: () => ContextMenuController.removeAny()),
+                        ContextMenuButtonItem(label: 'Two', onPressed: () => ContextMenuController.removeAny()),
+                        ContextMenuButtonItem(label: 'Three', onPressed: () => ContextMenuController.removeAny()),
+                        ContextMenuButtonItem(label: 'Four', onPressed: () => ContextMenuController.removeAny()),
+                        ContextMenuButtonItem(label: 'Five', onPressed: () => ContextMenuController.removeAny()),
                       ],
                     ).toList(),
                   );
@@ -100,10 +83,7 @@ class _EditableTextToolbarBuilderExampleAppState extends State<EditableTextToolb
 ///
 /// Displays its children in a scrollable grid.
 class _MyTextSelectionToolbar extends StatelessWidget {
-  const _MyTextSelectionToolbar({
-    required this.anchor,
-    required this.children,
-  });
+  const _MyTextSelectionToolbar({required this.anchor, required this.children});
 
   final Offset anchor;
   final List<Widget> children;
@@ -119,11 +99,7 @@ class _MyTextSelectionToolbar extends StatelessWidget {
             width: 200.0,
             height: 200.0,
             color: Colors.cyanAccent.withOpacity(0.5),
-            child: GridView.count(
-              padding: const EdgeInsets.all(12.0),
-              crossAxisCount: 2,
-              children: children,
-            ),
+            child: GridView.count(padding: const EdgeInsets.all(12.0), crossAxisCount: 2, children: children),
           ),
         ),
       ],

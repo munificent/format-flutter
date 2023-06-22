@@ -31,12 +31,7 @@ class ExampleWidget extends StatelessWidget {
     // (https://www.google.com/fonts).
     return const Text(
       'CALL 311-555-2368 NOW!',
-      style: TextStyle(
-        fontFamily: 'Sorts Mill Goudy',
-        fontFeatures: <FontFeature>[
-          FontFeature.liningFigures(),
-        ],
-      ),
+      style: TextStyle(fontFamily: 'Sorts Mill Goudy', fontFeatures: <FontFeature>[FontFeature.liningFigures()]),
     );
   }
 }

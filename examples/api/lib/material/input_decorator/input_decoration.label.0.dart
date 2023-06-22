@@ -15,10 +15,7 @@ class LabelExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('InputDecoration.label Sample')),
-        body: const LabelExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('InputDecoration.label Sample')), body: const LabelExample()),
     );
   }
 }
@@ -31,23 +28,12 @@ class LabelExample extends StatelessWidget {
     return const Center(
       child: TextField(
         decoration: InputDecoration(
-          label: Text.rich(
-            TextSpan(
-              children: <InlineSpan>[
-                WidgetSpan(
-                  child: Text(
-                    'Username',
-                  ),
-                ),
-                WidgetSpan(
-                  child: Text(
-                    '*',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          label: Text.rich(TextSpan(
+            children: <InlineSpan>[
+              WidgetSpan(child: Text('Username')),
+              WidgetSpan(child: Text('*', style: TextStyle(color: Colors.red))),
+            ],
+          )),
         ),
       ),
     );

@@ -13,9 +13,7 @@ class LoadingBuilderExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: LoadingBuilderExample(),
-    );
+    return const MaterialApp(home: LoadingBuilderExample());
   }
 }
 
@@ -25,11 +23,7 @@ class LoadingBuilderExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(),
-        borderRadius: BorderRadius.circular(20),
-      ),
+      decoration: BoxDecoration(color: Colors.white, border: Border.all(), borderRadius: BorderRadius.circular(20)),
       child: Image.network(
         'https://flutter.github.io/assets-for-api-docs/assets/widgets/falcon.jpg',
         loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {

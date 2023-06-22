@@ -13,9 +13,7 @@ class TransformationControllerExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: TransformationControllerExample(),
-    );
+    return const MaterialApp(home: TransformationControllerExample());
   }
 }
 
@@ -45,10 +43,9 @@ class _TransformationControllerExampleState extends State<TransformationControll
 
   void _animateResetInitialize() {
     _controllerReset.reset();
-    _animationReset = Matrix4Tween(
-      begin: _transformationController.value,
-      end: Matrix4.identity(),
-    ).animate(_controllerReset);
+    _animationReset = Matrix4Tween(begin: _transformationController.value, end: Matrix4.identity()).animate(
+      _controllerReset,
+    );
     _animationReset!.addListener(_onAnimateReset);
     _controllerReset.forward();
   }
@@ -72,10 +69,7 @@ class _TransformationControllerExampleState extends State<TransformationControll
   @override
   void initState() {
     super.initState();
-    _controllerReset = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
+    _controllerReset = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
   }
 
   @override
@@ -88,10 +82,7 @@ class _TransformationControllerExampleState extends State<TransformationControll
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Controller demo'),
-      ),
+      appBar: AppBar(automaticallyImplyLeading: false, title: const Text('Controller demo')),
       body: Center(
         child: InteractiveViewer(
           boundaryMargin: const EdgeInsets.all(double.infinity),

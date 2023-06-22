@@ -18,9 +18,7 @@ class CustomMultiChildLayoutApp extends StatelessWidget {
         // TRY THIS: Try changing the direction here and hot-reloading to
         // see the layout change.
         textDirection: TextDirection.ltr,
-        child: Scaffold(
-          body: CustomMultiChildLayoutExample(),
-        ),
+        child: Scaffold(body: CustomMultiChildLayoutExample()),
       ),
     );
   }
@@ -31,11 +29,7 @@ class CustomMultiChildLayoutApp extends StatelessWidget {
 ///
 /// Will relayout if the text direction changes.
 class _CascadeLayoutDelegate extends MultiChildLayoutDelegate {
-  _CascadeLayoutDelegate({
-    required this.colors,
-    required this.overlap,
-    required this.textDirection,
-  });
+  _CascadeLayoutDelegate({required this.colors, required this.overlap, required this.textDirection});
 
   final Map<String, Color> colors;
   final double overlap;
@@ -54,10 +48,7 @@ class _CascadeLayoutDelegate extends MultiChildLayoutDelegate {
     }
     for (final String color in colors.keys) {
       // layoutChild must be called exactly once for each child.
-      final Size currentSize = layoutChild(
-        color,
-        BoxConstraints(maxHeight: size.height, maxWidth: columnWidth),
-      );
+      final Size currentSize = layoutChild(color, BoxConstraints(maxHeight: size.height, maxWidth: columnWidth));
       // positionChild must be called to change the position of a child from
       // what it was in the previous layout. Each child starts at (0, 0) for the
       // first layout.
@@ -95,11 +86,7 @@ class CustomMultiChildLayoutExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomMultiChildLayout(
-      delegate: _CascadeLayoutDelegate(
-        colors: _colors,
-        overlap: 30.0,
-        textDirection: Directionality.of(context),
-      ),
+      delegate: _CascadeLayoutDelegate(colors: _colors, overlap: 30.0, textDirection: Directionality.of(context)),
       children: <Widget>[
         // Create all of the colored boxes in the colors map.
         for (final MapEntry<String, Color> entry in _colors.entries)

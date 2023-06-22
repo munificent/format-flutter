@@ -27,10 +27,7 @@ class ContextMenuApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      home: ContextMenuExample(),
-    );
+    return const CupertinoApp(theme: CupertinoThemeData(brightness: Brightness.light), home: ContextMenuExample());
   }
 }
 
@@ -40,22 +37,14 @@ class ContextMenuExample extends StatelessWidget {
   // Or just do this inline in the builder below?
   static Animation<Decoration> _boxDecorationAnimation(Animation<double> animation) {
     return _tween.animate(
-      CurvedAnimation(
-        parent: animation,
-        curve: Interval(
-          0.0,
-          CupertinoContextMenu.animationOpensAt,
-        ),
-      ),
+      CurvedAnimation(parent: animation, curve: Interval(0.0, CupertinoContextMenu.animationOpensAt)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('CupertinoContextMenu Sample'),
-      ),
+      navigationBar: const CupertinoNavigationBar(middle: Text('CupertinoContextMenu Sample')),
       child: Center(
         child: SizedBox(
           width: 100,
@@ -97,13 +86,12 @@ class ContextMenuExample extends StatelessWidget {
               final Animation<Decoration> boxDecorationAnimation = _boxDecorationAnimation(animation);
 
               return Container(
-                decoration:
-                    animation.value < CupertinoContextMenu.animationOpensAt ? boxDecorationAnimation.value : null,
+                decoration: animation.value < CupertinoContextMenu.animationOpensAt
+                    ? boxDecorationAnimation.value
+                    : null,
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: CupertinoColors.systemYellow,
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
+                  decoration:
+                      BoxDecoration(color: CupertinoColors.systemYellow, borderRadius: BorderRadius.circular(20.0)),
                   child: const FlutterLogo(size: 500.0),
                 ),
               );

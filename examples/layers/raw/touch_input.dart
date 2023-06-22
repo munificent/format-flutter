@@ -28,11 +28,7 @@ ui.Picture paint(ui.Rect paintBounds) {
 
   // The commands draw a circle in the center of the screen.
   final ui.Size size = paintBounds.size;
-  canvas.drawCircle(
-    size.center(ui.Offset.zero),
-    size.shortestSide * 0.45,
-    ui.Paint()..color = color,
-  );
+  canvas.drawCircle(size.center(ui.Offset.zero), size.shortestSide * 0.45, ui.Paint()..color = color);
 
   // When we're done issuing painting commands, we end the recording an receive
   // a Picture, which is an immutable record of the commands we've issued. You

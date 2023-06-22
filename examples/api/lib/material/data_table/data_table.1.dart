@@ -14,10 +14,7 @@ class DataTableExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('DataTable Sample')),
-        body: const DataTableExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('DataTable Sample')), body: const DataTableExample()),
     );
   }
 }
@@ -38,11 +35,7 @@ class _DataTableExampleState extends State<DataTableExample> {
     return SizedBox(
       width: double.infinity,
       child: DataTable(
-        columns: const <DataColumn>[
-          DataColumn(
-            label: Text('Number'),
-          ),
-        ],
+        columns: const <DataColumn>[DataColumn(label: Text('Number'))],
         rows: List<DataRow>.generate(
           numItems,
           (int index) => DataRow(

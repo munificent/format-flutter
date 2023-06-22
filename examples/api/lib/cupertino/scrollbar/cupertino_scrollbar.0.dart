@@ -13,10 +13,7 @@ class ScrollbarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      home: ScrollbarExample(),
-    );
+    return const CupertinoApp(theme: CupertinoThemeData(brightness: Brightness.light), home: ScrollbarExample());
   }
 }
 
@@ -26,9 +23,7 @@ class ScrollbarExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('CupertinoScrollbar Sample'),
-      ),
+      navigationBar: const CupertinoNavigationBar(middle: Text('CupertinoScrollbar Sample')),
       child: CupertinoScrollbar(
         thickness: 6.0,
         thicknessWhileDragging: 10.0,
@@ -37,12 +32,7 @@ class ScrollbarExample extends StatelessWidget {
         child: ListView.builder(
           itemCount: 120,
           itemBuilder: (BuildContext context, int index) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Item $index'),
-              ),
-            );
+            return Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text('Item $index')));
           },
         ),
       ),

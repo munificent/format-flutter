@@ -7,9 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('AppLifecycleListener example', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.AppLifecycleListenerExample(),
-    );
+    await tester.pumpWidget(const example.AppLifecycleListenerExample());
 
     expect(find.text('Do Not Allow Exit'), findsOneWidget);
     expect(find.text('Allow Exit'), findsOneWidget);

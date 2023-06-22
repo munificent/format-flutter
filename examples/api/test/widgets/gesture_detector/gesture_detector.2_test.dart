@@ -3,17 +3,11 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_api_samples/widgets/gesture_detector/gesture_detector.2.dart'
-    as example;
+import 'package:flutter_api_samples/widgets/gesture_detector/gesture_detector.2.dart' as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-
-  void expectBorders(
-    WidgetTester tester, {
-    required bool expectGreenHasBorder,
-    required bool expectYellowHasBorder,
-  }) {
+  void expectBorders(WidgetTester tester, {required bool expectGreenHasBorder, required bool expectYellowHasBorder}) {
     final Finder containerFinder = find.byType(Container);
     final Finder greenFinder = containerFinder.first;
     final Finder yellowFinder = containerFinder.last;
@@ -35,9 +29,7 @@ void main() {
   }
 
   testWidgets('Only the green Container shows a red border when tapped', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.NestedGestureDetectorsApp(),
-    );
+    await tester.pumpWidget(const example.NestedGestureDetectorsApp());
 
     final Finder greenFinder = find.byType(Container).first;
     final Offset greenTopLeftCorner = tester.getTopLeft(greenFinder);
@@ -64,9 +56,7 @@ void main() {
   });
 
   testWidgets('Only the yellow Container shows a red border when tapped', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.NestedGestureDetectorsApp(),
-    );
+    await tester.pumpWidget(const example.NestedGestureDetectorsApp());
 
     final Finder yellowFinder = find.byType(Container).last;
     final Offset yellowTopLeftCorner = tester.getTopLeft(yellowFinder);

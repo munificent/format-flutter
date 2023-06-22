@@ -4,14 +4,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_api_samples/services/system_chrome/system_chrome.set_system_u_i_overlay_style.0.dart' as example;
+import 'package:flutter_api_samples/services/system_chrome/system_chrome.set_system_u_i_overlay_style.0.dart'
+    as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('AppBar.systemOverlayStyle can change system overlays styles.', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.SystemOverlayStyleApp(),
-    );
+    await tester.pumpWidget(const example.SystemOverlayStyleApp());
 
     final SystemUiOverlayStyle? firstStyle = SystemChrome.latestStyle;
 

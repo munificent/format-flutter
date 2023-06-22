@@ -31,12 +31,7 @@ class ExampleWidget extends StatelessWidget {
     // (https://www.google.com/fonts).
     return const Text(
       'One million is: 1,000,000.00',
-      style: TextStyle(
-        fontFamily: 'Source Code Pro',
-        fontFeatures: <FontFeature>[
-          FontFeature.slashedZero(),
-        ],
-      ),
+      style: TextStyle(fontFamily: 'Source Code Pro', fontFeatures: <FontFeature>[FontFeature.slashedZero()]),
     );
   }
 }

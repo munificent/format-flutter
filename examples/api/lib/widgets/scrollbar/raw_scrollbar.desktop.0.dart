@@ -14,12 +14,8 @@ class ScrollbarApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Scrollbar Sample')),
-        body: const Center(
-          child: DesktopExample(),
-        ),
-      ),
+      home:
+          Scaffold(appBar: AppBar(title: const Text('Scrollbar Sample')), body: const Center(child: DesktopExample())),
     );
   }
 }
@@ -36,10 +32,11 @@ class _DesktopExampleState extends State<DesktopExample> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-      return Row(
-        children: <Widget>[
-          SizedBox(
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Row(
+          children: <Widget>[
+            SizedBox(
               width: constraints.maxWidth / 2,
               // When running this sample on desktop, two scrollbars will be
               // visible here. One is the default scrollbar and the other is the
@@ -54,15 +51,13 @@ class _DesktopExampleState extends State<DesktopExample> {
                   itemBuilder: (BuildContext context, int index) {
                     return SizedBox(
                       height: 50,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Scrollable 1 : Index $index'),
-                      ),
+                      child: Padding(padding: const EdgeInsets.all(8.0), child: Text('Scrollable 1 : Index $index')),
                     );
                   },
                 ),
-              )),
-          SizedBox(
+              ),
+            ),
+            SizedBox(
               width: constraints.maxWidth / 2,
               // When running this sample on desktop, one scrollbar will be
               // visible here. The default scrollbar is hidden by setting the
@@ -79,17 +74,16 @@ class _DesktopExampleState extends State<DesktopExample> {
                     itemBuilder: (BuildContext context, int index) {
                       return SizedBox(
                         height: 50,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Scrollable 2 : Index $index'),
-                        ),
+                        child: Padding(padding: const EdgeInsets.all(8.0), child: Text('Scrollable 2 : Index $index')),
                       );
                     },
                   ),
                 ),
-              )),
-        ],
-      );
-    });
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

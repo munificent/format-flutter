@@ -17,9 +17,7 @@ class SingleActivatorExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('SingleActivator Sample')),
-        body: const Center(
-          child: SingleActivatorExample(),
-        ),
+        body: const Center(child: SingleActivatorExample()),
       ),
     );
   }
@@ -55,12 +53,7 @@ class _SingleActivatorExampleState extends State<SingleActivatorExample> {
         },
         child: Focus(
           autofocus: true,
-          child: Column(
-            children: <Widget>[
-              const Text('Add to the counter by pressing Ctrl+C'),
-              Text('count: $count'),
-            ],
-          ),
+          child: Column(children: <Widget>[const Text('Add to the counter by pressing Ctrl+C'), Text('count: $count')]),
         ),
       ),
     );

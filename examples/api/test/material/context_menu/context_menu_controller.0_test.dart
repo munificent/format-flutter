@@ -11,9 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('showing and hiding the custom context menu in the whole app', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.ContextMenuControllerExampleApp(),
-    );
+    await tester.pumpWidget(const example.ContextMenuControllerExampleApp());
 
     expect(BrowserContextMenu.enabled, !kIsWeb);
 
@@ -21,11 +19,8 @@ void main() {
 
     // Right clicking the middle of the app shows the custom context menu.
     final Offset center = tester.getCenter(find.byType(Scaffold));
-    final TestGesture gesture = await tester.startGesture(
-      center,
-      kind: PointerDeviceKind.mouse,
-      buttons: kSecondaryMouseButton,
-    );
+    final TestGesture gesture =
+        await tester.startGesture(center, kind: PointerDeviceKind.mouse, buttons: kSecondaryMouseButton);
     await tester.pump();
     await gesture.up();
     await tester.pumpAndSettle();

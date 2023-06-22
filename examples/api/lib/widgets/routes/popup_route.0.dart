@@ -13,9 +13,7 @@ class PopupRouteApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: PopupRouteExample(),
-    );
+    return const MaterialApp(home: PopupRouteExample());
   }
 }
 
@@ -65,10 +63,7 @@ class DismissibleDialog<T> extends PopupRoute<T> {
         child: UnconstrainedBox(
           child: Container(
             padding: const EdgeInsets.all(20.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
             child: Column(
               children: <Widget>[
                 Text('Dismissible Dialog', style: Theme.of(context).textTheme.headlineSmall),

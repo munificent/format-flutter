@@ -3,15 +3,12 @@
 // found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_api_samples/widgets/interactive_viewer/interactive_viewer.builder.0.dart'
-    as example;
+import 'package:flutter_api_samples/widgets/interactive_viewer/interactive_viewer.builder.0.dart' as example;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('has correct items on screen', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.IVBuilderExampleApp(),
-    );
+    await tester.pumpWidget(const example.IVBuilderExampleApp());
 
     final Finder positionedFinder = find.byType(Positioned);
     final Finder zeroFinder = find.text('0 x 0');

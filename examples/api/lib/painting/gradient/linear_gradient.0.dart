@@ -41,12 +41,7 @@ class MoodyGradient extends StatelessWidget {
             tileMode: TileMode.mirror,
           ),
         ),
-        child: const Center(
-          child: Text(
-            'From Night to Day',
-            style: TextStyle(fontSize: 24, color: Colors.white),
-          ),
-        ),
+        child: const Center(child: Text('From Night to Day', style: TextStyle(fontSize: 24, color: Colors.white))),
       ),
     );
   }

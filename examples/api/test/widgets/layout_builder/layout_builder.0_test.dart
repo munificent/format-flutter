@@ -8,19 +8,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('has two containers when wide', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.LayoutBuilderExampleApp(),
-    );
+    await tester.pumpWidget(const example.LayoutBuilderExampleApp());
 
     final Finder containerFinder = find.byType(Container);
     expect(containerFinder, findsNWidgets(2));
   });
   testWidgets('has one container when narrow', (WidgetTester tester) async {
     await tester.pumpWidget(
-      ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: const example.LayoutBuilderExampleApp(),
-      ),
+      ConstrainedBox(constraints: const BoxConstraints(maxWidth: 400), child: const example.LayoutBuilderExampleApp()),
     );
 
     final Finder containerFinder = find.byType(Container);

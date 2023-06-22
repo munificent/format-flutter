@@ -13,9 +13,7 @@ class RestorablePushReplacementExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: RestorablePushReplacementExample(),
-    );
+    return const MaterialApp(home: RestorablePushReplacementExample());
   }
 }
 
@@ -29,17 +27,13 @@ class RestorablePushReplacementExample extends StatefulWidget {
 class _RestorablePushReplacementExampleState extends State<RestorablePushReplacementExample> {
   @pragma('vm:entry-point')
   static Route<void> _myRouteBuilder(BuildContext context, Object? arguments) {
-    return MaterialPageRoute<void>(
-      builder: (BuildContext context) => const RestorablePushReplacementExample(),
-    );
+    return MaterialPageRoute<void>(builder: (BuildContext context) => const RestorablePushReplacementExample());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sample Code'),
-      ),
+      appBar: AppBar(title: const Text('Sample Code')),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.restorablePushReplacement(context, _myRouteBuilder),
         tooltip: 'Increment Counter',

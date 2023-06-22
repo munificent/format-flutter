@@ -14,10 +14,7 @@ class AutofillGroupExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('AutofillGroup Sample')),
-        body: const AutofillGroupExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('AutofillGroup Sample')), body: const AutofillGroupExample()),
     );
   }
 }
@@ -51,14 +48,8 @@ class _AutofillGroupExampleState extends State<AutofillGroupExample> {
         AutofillGroup(
           child: Column(
             children: <Widget>[
-              TextField(
-                controller: shippingAddress1,
-                autofillHints: const <String>[AutofillHints.streetAddressLine1],
-              ),
-              TextField(
-                controller: shippingAddress2,
-                autofillHints: const <String>[AutofillHints.streetAddressLine2],
-              ),
+              TextField(controller: shippingAddress1, autofillHints: const <String>[AutofillHints.streetAddressLine1]),
+              TextField(controller: shippingAddress2, autofillHints: const <String>[AutofillHints.streetAddressLine2]),
             ],
           ),
         ),
@@ -78,18 +69,8 @@ class _AutofillGroupExampleState extends State<AutofillGroupExample> {
           AutofillGroup(
             child: Column(
               children: <Widget>[
-                TextField(
-                  controller: billingAddress1,
-                  autofillHints: const <String>[
-                    AutofillHints.streetAddressLine1,
-                  ],
-                ),
-                TextField(
-                  controller: billingAddress2,
-                  autofillHints: const <String>[
-                    AutofillHints.streetAddressLine2,
-                  ],
-                ),
+                TextField(controller: billingAddress1, autofillHints: const <String>[AutofillHints.streetAddressLine1]),
+                TextField(controller: billingAddress2, autofillHints: const <String>[AutofillHints.streetAddressLine2]),
               ],
             ),
           ),
@@ -99,15 +80,10 @@ class _AutofillGroupExampleState extends State<AutofillGroupExample> {
         AutofillGroup(
           child: Column(
             children: <Widget>[
-              TextField(
-                controller: creditCardNumber,
-                autofillHints: const <String>[AutofillHints.creditCardNumber],
-              ),
+              TextField(controller: creditCardNumber, autofillHints: const <String>[AutofillHints.creditCardNumber]),
               TextField(
                 controller: creditCardSecurityCode,
-                autofillHints: const <String>[
-                  AutofillHints.creditCardSecurityCode,
-                ],
+                autofillHints: const <String>[AutofillHints.creditCardSecurityCode],
               ),
             ],
           ),
@@ -115,10 +91,7 @@ class _AutofillGroupExampleState extends State<AutofillGroupExample> {
         const Text('Contact Phone Number'),
         // The phone number field can still be autofilled despite lacking an
         // `AutofillScope`.
-        TextField(
-          controller: phoneNumber,
-          autofillHints: const <String>[AutofillHints.telephoneNumber],
-        ),
+        TextField(controller: phoneNumber, autofillHints: const <String>[AutofillHints.telephoneNumber]),
       ],
     );
   }

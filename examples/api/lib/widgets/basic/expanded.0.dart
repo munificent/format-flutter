@@ -14,12 +14,7 @@ class ExpandedApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Expanded Column Sample'),
-        ),
-        body: const ExpandedExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('Expanded Column Sample')), body: const ExpandedExample()),
     );
   }
 }
@@ -32,22 +27,9 @@ class ExpandedExample extends StatelessWidget {
     return Center(
       child: Column(
         children: <Widget>[
-          Container(
-            color: Colors.blue,
-            height: 100,
-            width: 100,
-          ),
-          Expanded(
-            child: Container(
-              color: Colors.amber,
-              width: 100,
-            ),
-          ),
-          Container(
-            color: Colors.blue,
-            height: 100,
-            width: 100,
-          ),
+          Container(color: Colors.blue, height: 100, width: 100),
+          Expanded(child: Container(color: Colors.amber, width: 100)),
+          Container(color: Colors.blue, height: 100, width: 100),
         ],
       ),
     );

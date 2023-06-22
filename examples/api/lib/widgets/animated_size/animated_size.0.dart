@@ -16,9 +16,7 @@ class AnimatedSizeExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('AnimatedSize Sample')),
-        body: const Center(
-          child: AnimatedSizeExample(),
-        ),
+        body: const Center(child: AnimatedSizeExample()),
       ),
     );
   }
@@ -48,11 +46,8 @@ class _AnimatedSizeExampleState extends State<AnimatedSizeExample> {
       onTap: () => _updateSize(),
       child: ColoredBox(
         color: Colors.amberAccent,
-        child: AnimatedSize(
-          curve: Curves.easeIn,
-          duration: const Duration(seconds: 1),
-          child: FlutterLogo(size: _size),
-        ),
+        child:
+            AnimatedSize(curve: Curves.easeIn, duration: const Duration(seconds: 1), child: FlutterLogo(size: _size)),
       ),
     );
   }

@@ -13,9 +13,7 @@ class FocusExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: FocusExample(),
-    );
+    return const MaterialApp(home: FocusExample());
   }
 }
 
@@ -53,22 +51,14 @@ class _FocusExampleState extends State<FocusExample> {
 
     children.add(Padding(
       padding: const EdgeInsets.all(2.0),
-      child: ActionChip(
-        focusNode: childFocusNodes.last,
-        label: Text('CHILD ${children.length}'),
-        onPressed: () {},
-      ),
+      child: ActionChip(focusNode: childFocusNodes.last, label: Text('CHILD ${children.length}'), onPressed: () {}),
     ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Wrap(
-          children: children,
-        ),
-      ),
+      body: Center(child: Wrap(children: children)),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {

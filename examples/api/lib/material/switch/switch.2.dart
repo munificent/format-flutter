@@ -15,12 +15,7 @@ class SwitchApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Switch Sample')),
-        body: const Center(
-          child: SwitchExample(),
-        ),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('Switch Sample')), body: const Center(child: SwitchExample())),
     );
   }
 }
@@ -36,14 +31,12 @@ class _SwitchExampleState extends State<SwitchExample> {
   bool light0 = true;
   bool light1 = true;
 
-  final MaterialStateProperty<Icon?> thumbIcon = MaterialStateProperty.resolveWith<Icon?>(
-    (Set<MaterialState> states) {
-      if (states.contains(MaterialState.selected)) {
-        return const Icon(Icons.check);
-      }
-      return const Icon(Icons.close);
-    },
-  );
+  final MaterialStateProperty<Icon?> thumbIcon = MaterialStateProperty.resolveWith<Icon?>((Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
+      return const Icon(Icons.check);
+    }
+    return const Icon(Icons.close);
+  });
 
   @override
   Widget build(BuildContext context) {

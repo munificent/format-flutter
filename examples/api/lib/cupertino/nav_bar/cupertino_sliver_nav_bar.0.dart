@@ -13,10 +13,7 @@ class SliverNavBarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      home: SliverNavBarExample(),
-    );
+    return const CupertinoApp(theme: CupertinoThemeData(brightness: Brightness.light), home: SliverNavBarExample());
   }
 }
 
@@ -47,14 +44,11 @@ class SliverNavBarExample extends StatelessWidget {
                 const Text('Drag me up', textAlign: TextAlign.center),
                 CupertinoButton.filled(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute<Widget>(
-                        builder: (BuildContext context) {
-                          return const NextPage();
-                        },
-                      ),
-                    );
+                    Navigator.push(context, CupertinoPageRoute<Widget>(
+                      builder: (BuildContext context) {
+                        return const NextPage();
+                      },
+                    ));
                   },
                   child: const Text('Go to Next Page'),
                 ),
@@ -79,9 +73,7 @@ class NextPage extends StatelessWidget {
           CupertinoSliverNavigationBar(
             backgroundColor: CupertinoColors.systemYellow,
             border: Border(
-              bottom: BorderSide(
-                color: brightness == Brightness.light ? CupertinoColors.black : CupertinoColors.white,
-              ),
+              bottom: BorderSide(color: brightness == Brightness.light ? CupertinoColors.black : CupertinoColors.white),
             ),
             // The middle widget is visible in both collapsed and expanded states.
             middle: const Text('Contacts Group'),

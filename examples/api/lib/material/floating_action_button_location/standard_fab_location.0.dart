@@ -13,9 +13,7 @@ class StandardFabLocationExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: StandardFabLocationExample(),
-    );
+    return const MaterialApp(home: StandardFabLocationExample());
   }
 }
 
@@ -33,9 +31,7 @@ class StandardFabLocationExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home page'),
-      ),
+      appBar: AppBar(title: const Text('Home page')),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           debugPrint('FAB pressed.');

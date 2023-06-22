@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('InputDecorator prefixIcon alignment', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.PrefixIconExampleApp(),
-    );
+    await tester.pumpWidget(const example.PrefixIconExampleApp());
     expect(tester.getCenter(find.byIcon(Icons.person)).dy, 32.0);
   });
 }

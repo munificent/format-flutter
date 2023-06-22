@@ -55,11 +55,7 @@ class _SliverAnimatedGridSampleState extends State<SliverAnimatedGridSample> {
   // [AnimatedGridState.removeItem] method's
   // [AnimatedGridRemovedItemBuilder] parameter.
   Widget _buildRemovedItem(int item, BuildContext context, Animation<double> animation) {
-    return CardItem(
-      animation: animation,
-      removing: true,
-      item: item,
-    );
+    return CardItem(animation: animation, removing: true, item: item);
   }
 
   // Insert the "next item" into the list model.
@@ -90,10 +86,7 @@ class _SliverAnimatedGridSampleState extends State<SliverAnimatedGridSample> {
         body: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
-              title: const Text(
-                'SliverAnimatedGrid',
-                style: TextStyle(fontSize: 30),
-              ),
+              title: const Text('SliverAnimatedGrid', style: TextStyle(fontSize: 30)),
               expandedHeight: 60,
               centerTitle: true,
               backgroundColor: Colors.amber[900],
@@ -141,11 +134,8 @@ typedef RemovedItemBuilder = Widget Function(int item, BuildContext context, Ani
 // mutate the list must make the same changes to the animated list in terms
 // of [AnimatedGridState.insertItem] and [AnimatedGrid.removeItem].
 class ListModel<E> {
-  ListModel({
-    required this.listKey,
-    required this.removedItemBuilder,
-    Iterable<E>? initialItems,
-  }) : _items = List<E>.from(initialItems ?? <E>[]);
+  ListModel({required this.listKey, required this.removedItemBuilder, Iterable<E>? initialItems})
+    : _items = List<E>.from(initialItems ?? <E>[]);
 
   final GlobalKey<SliverAnimatedGridState> listKey;
   final RemovedItemBuilder removedItemBuilder;
@@ -201,11 +191,7 @@ class CardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 2.0,
-        right: 2.0,
-        top: 2.0,
-      ),
+      padding: const EdgeInsets.only(left: 2.0, right: 2.0, top: 2.0),
       child: ScaleTransition(
         scale: CurvedAnimation(parent: animation, curve: removing ? Curves.easeInOut : Curves.bounceOut),
         child: GestureDetector(
@@ -214,12 +200,7 @@ class CardItem extends StatelessWidget {
             height: 80.0,
             child: Card(
               color: selected ? Colors.black12 : Colors.primaries[item % Colors.primaries.length],
-              child: Center(
-                child: Text(
-                  (item + 1).toString(),
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-              ),
+              child: Center(child: Text((item + 1).toString(), style: Theme.of(context).textTheme.headlineMedium)),
             ),
           ),
         ),

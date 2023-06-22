@@ -16,12 +16,8 @@ class CheckboxExampleApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: const Color(0xff6750a4)),
       title: 'Checkbox Sample',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Checkbox Sample')),
-        body: const Center(
-          child: CheckboxExample(),
-        ),
-      ),
+      home:
+          Scaffold(appBar: AppBar(title: const Text('Checkbox Sample')), body: const Center(child: CheckboxExample())),
     );
   }
 }
@@ -60,12 +56,7 @@ class _CheckboxExampleState extends State<CheckboxExample> {
             });
           },
         ),
-        Checkbox(
-          isError: true,
-          tristate: true,
-          value: isChecked,
-          onChanged: null,
-        ),
+        Checkbox(isError: true, tristate: true, value: isChecked, onChanged: null),
       ],
     );
   }

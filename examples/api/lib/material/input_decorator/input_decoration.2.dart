@@ -15,10 +15,7 @@ class InputDecorationExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('InputDecoration Sample')),
-        body: const InputDecorationExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('InputDecoration Sample')), body: const InputDecorationExample()),
     );
   }
 }
@@ -29,11 +26,7 @@ class InputDecorationExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const TextField(
-      decoration: InputDecoration(
-        hintText: 'Hint Text',
-        errorText: 'Error Text',
-        border: OutlineInputBorder(),
-      ),
+      decoration: InputDecoration(hintText: 'Hint Text', errorText: 'Error Text', border: OutlineInputBorder()),
     );
   }
 }

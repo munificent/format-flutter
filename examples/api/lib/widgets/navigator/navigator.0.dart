@@ -31,11 +31,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.headlineMedium!,
-      child: Container(
-        color: Colors.white,
-        alignment: Alignment.center,
-        child: const Text('Home Page'),
-      ),
+      child: Container(color: Colors.white, alignment: Alignment.center, child: const Text('Home Page')),
     );
   }
 }
@@ -64,10 +60,7 @@ class CollectPersonalInfoPage extends StatelessWidget {
 }
 
 class ChooseCredentialsPage extends StatelessWidget {
-  const ChooseCredentialsPage({
-    super.key,
-    required this.onSignupComplete,
-  });
+  const ChooseCredentialsPage({super.key, required this.onSignupComplete});
 
   final VoidCallback onSignupComplete;
 

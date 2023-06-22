@@ -79,10 +79,8 @@ class _MyCheckboxMenuState extends State<MyCheckboxMenu> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text(
-                      _showingMessage ? widget.message : '',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
+                    child:
+                        Text(_showingMessage ? widget.message : '', style: Theme.of(context).textTheme.headlineSmall),
                   ),
                 ],
               ),
@@ -101,8 +99,6 @@ class MenuApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: MyCheckboxMenu(message: kMessage)),
-    );
+    return const MaterialApp(home: Scaffold(body: MyCheckboxMenu(message: kMessage)));
   }
 }

@@ -15,10 +15,7 @@ class FocusNodeExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('FocusNode Sample')),
-        body: const FocusNodeExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('FocusNode Sample')), body: const FocusNodeExample()),
     );
   }
 }
@@ -116,9 +113,6 @@ class FocusNodeExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    return DefaultTextStyle(
-      style: textTheme.headlineMedium!,
-      child: const ColorfulButton(),
-    );
+    return DefaultTextStyle(style: textTheme.headlineMedium!, child: const ColorfulButton());
   }
 }

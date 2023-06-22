@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Can open cupertino context menu', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.ContextMenuApp(),
-    );
+    await tester.pumpWidget(const example.ContextMenuApp());
 
     final Offset logo = tester.getCenter(find.byType(FlutterLogo));
     expect(find.text('Favorite'), findsNothing);

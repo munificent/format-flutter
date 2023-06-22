@@ -39,11 +39,7 @@ class GlowingOverscrollIndicatorExample extends StatelessWidget {
         slivers: <Widget>[
           const SliverAppBar(title: Text('Custom PaintOffset')),
           SliverToBoxAdapter(
-            child: Container(
-              color: Colors.amberAccent,
-              height: 100,
-              child: const Center(child: Text('Glow all day!')),
-            ),
+            child: Container(color: Colors.amberAccent, height: 100, child: const Center(child: Text('Glow all day!'))),
           ),
           const SliverFillRemaining(child: FlutterLogo()),
         ],

@@ -24,9 +24,7 @@ class _OfExampleAppState extends State<OfExampleApp> {
       _counter++;
     });
     if (_counter % 10 == 0) {
-      _scaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(
-        content: Text('A multiple of ten!'),
-      ));
+      _scaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(content: Text('A multiple of ten!')));
     }
   }
 
@@ -40,21 +38,13 @@ class _OfExampleAppState extends State<OfExampleApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text(
-                'You have pushed the button this many times:',
-              ),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+              const Text('You have pushed the button this many times:'),
+              Text('$_counter', style: Theme.of(context).textTheme.headlineMedium),
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _incrementCounter,
-          tooltip: 'Increment',
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton:
+            FloatingActionButton(onPressed: _incrementCounter, tooltip: 'Increment', child: const Icon(Icons.add)),
       ),
     );
   }

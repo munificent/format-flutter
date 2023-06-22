@@ -39,13 +39,7 @@ class ImageClipExample extends StatelessWidget {
             child: const Align(
               child: Padding(
                 padding: EdgeInsets.all(10.0),
-                child: Text(
-                  'PUFFIN',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                  ),
-                ),
+                child: Text('PUFFIN', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white)),
               ),
             ),
           ),

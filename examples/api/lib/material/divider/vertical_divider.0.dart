@@ -14,10 +14,7 @@ class VerticalDividerExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('VerticalDivider Sample')),
-        body: const DividerExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('VerticalDivider Sample')), body: const DividerExample()),
     );
   }
 }
@@ -33,25 +30,13 @@ class DividerExample extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.deepPurpleAccent,
-              ),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.deepPurpleAccent),
             ),
           ),
-          const VerticalDivider(
-            width: 20,
-            thickness: 1,
-            indent: 20,
-            endIndent: 0,
-            color: Colors.grey,
-          ),
+          const VerticalDivider(width: 20, thickness: 1, indent: 20, endIndent: 0, color: Colors.grey),
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.deepOrangeAccent,
-              ),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.deepOrangeAccent),
             ),
           ),
         ],

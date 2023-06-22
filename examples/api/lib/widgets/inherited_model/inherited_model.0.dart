@@ -15,19 +15,12 @@ class InheritedModelApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: InheritedModelExample(),
-    );
+    return const MaterialApp(home: InheritedModelExample());
   }
 }
 
 class LogoModel extends InheritedModel<LogoAspect> {
-  const LogoModel({
-    super.key,
-    this.backgroundColor,
-    this.large,
-    required super.child,
-  });
+  const LogoModel({super.key, this.backgroundColor, this.large, required super.child});
 
   final Color? backgroundColor;
   final bool? large;
@@ -76,13 +69,7 @@ class _InheritedModelExampleState extends State<InheritedModelExample> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Center(
-            child: LogoModel(
-              backgroundColor: color,
-              large: large,
-              child: const BackgroundWidget(
-                child: LogoWidget(),
-              ),
-            ),
+            child: LogoModel(backgroundColor: color, large: large, child: const BackgroundWidget(child: LogoWidget())),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -90,10 +77,7 @@ class _InheritedModelExampleState extends State<InheritedModelExample> {
               ElevatedButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Rebuilt Background'),
-                      duration: Duration(milliseconds: 500),
-                    ),
+                    const SnackBar(content: Text('Rebuilt Background'), duration: Duration(milliseconds: 500)),
                   );
                   setState(() {
                     if (color == Colors.blue) {
@@ -108,10 +92,7 @@ class _InheritedModelExampleState extends State<InheritedModelExample> {
               ElevatedButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Rebuilt LogoWidget'),
-                      duration: Duration(milliseconds: 500),
-                    ),
+                    const SnackBar(content: Text('Rebuilt LogoWidget'), duration: Duration(milliseconds: 500)),
                   );
                   setState(() {
                     large = !large;
@@ -120,7 +101,7 @@ class _InheritedModelExampleState extends State<InheritedModelExample> {
                 child: const Text('Resize Logo'),
               ),
             ],
-          )
+          ),
         ],
       ),
     );

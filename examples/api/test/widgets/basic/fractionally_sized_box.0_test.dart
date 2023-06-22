@@ -12,9 +12,7 @@ void main() {
     const double widthFactor = 0.5;
     const double heightFactor = 0.5;
 
-    await tester.pumpWidget(
-      const example.FractionallySizedBoxApp(),
-    );
+    await tester.pumpWidget(const example.FractionallySizedBoxApp());
 
     final FractionallySizedBox fractionallySizedBox = tester.widget(find.byType(FractionallySizedBox));
     expect(fractionallySizedBox.widthFactor, widthFactor);

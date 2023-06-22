@@ -14,10 +14,7 @@ class ContextMenuApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      home: ContextMenuExample(),
-    );
+    return const CupertinoApp(theme: CupertinoThemeData(brightness: Brightness.light), home: ContextMenuExample());
   }
 }
 
@@ -27,9 +24,7 @@ class ContextMenuExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('CupertinoContextMenu Sample'),
-      ),
+      navigationBar: const CupertinoNavigationBar(middle: Text('CupertinoContextMenu Sample')),
       child: Center(
         child: SizedBox(
           width: 100,
@@ -67,10 +62,7 @@ class ContextMenuExample extends StatelessWidget {
                 child: const Text('Delete'),
               ),
             ],
-            child: const ColoredBox(
-              color: CupertinoColors.systemYellow,
-              child: FlutterLogo(size: 500.0),
-            ),
+            child: const ColoredBox(color: CupertinoColors.systemYellow, child: FlutterLogo(size: 500.0)),
           ),
         ),
       ),

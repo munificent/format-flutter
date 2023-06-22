@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('CupertinoTextField has initial text', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.SearchTextFieldApp(),
-    );
+    await tester.pumpWidget(const example.SearchTextFieldApp());
 
     expect(find.byType(CupertinoSearchTextField), findsOneWidget);
     expect(find.text('initial text'), findsOneWidget);

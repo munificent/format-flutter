@@ -16,21 +16,14 @@ class OrderedTraversalPolicyExampleApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('OrderedTraversalPolicy Sample')),
-        body: const Center(
-          child: OrderedTraversalPolicyExample(),
-        ),
+        body: const Center(child: OrderedTraversalPolicyExample()),
       ),
     );
   }
 }
 
 class DemoButton extends StatelessWidget {
-  const DemoButton({
-    super.key,
-    required this.name,
-    this.autofocus = false,
-    required this.order,
-  });
+  const DemoButton({super.key, required this.name, this.autofocus = false, required this.order});
 
   final String name;
   final bool autofocus;
@@ -45,11 +38,7 @@ class DemoButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FocusTraversalOrder(
       order: NumericFocusOrder(order),
-      child: TextButton(
-        autofocus: autofocus,
-        onPressed: () => _handleOnPressed(),
-        child: Text(name),
-      ),
+      child: TextButton(autofocus: autofocus, onPressed: () => _handleOnPressed(), child: Text(name)),
     );
   }
 }
@@ -64,18 +53,10 @@ class OrderedTraversalPolicyExample extends StatelessWidget {
       child: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[DemoButton(name: 'Six', order: 6)]),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              DemoButton(name: 'Six', order: 6),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              DemoButton(name: 'Five', order: 5),
-              DemoButton(name: 'Four', order: 4),
-            ],
+            children: <Widget>[DemoButton(name: 'Five', order: 5), DemoButton(name: 'Four', order: 4)],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

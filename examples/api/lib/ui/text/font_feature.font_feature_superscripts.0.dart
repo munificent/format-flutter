@@ -31,12 +31,7 @@ class ExampleWidget extends StatelessWidget {
     // (https://www.google.com/fonts).
     return const Text(
       'The isotope 238U decays to 206Pb',
-      style: TextStyle(
-        fontFamily: 'Sorts Mill Goudy',
-        fontFeatures: <FontFeature>[
-          FontFeature.superscripts(),
-        ],
-      ),
+      style: TextStyle(fontFamily: 'Sorts Mill Goudy', fontFeatures: <FontFeature>[FontFeature.superscripts()]),
     );
   }
 }

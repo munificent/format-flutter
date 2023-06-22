@@ -9,9 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Content is reordered after a drag', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.ReorderableApp(),
-    );
+    await tester.pumpWidget(const example.ReorderableApp());
 
     bool item1IsBeforeItem2() {
       final Iterable<Text> texts = tester.widgetList<Text>(find.byType(Text));

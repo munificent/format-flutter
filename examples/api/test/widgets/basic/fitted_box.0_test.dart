@@ -14,9 +14,7 @@ void main() {
   });
 
   testWidgets('FittedBox scales the image to fill the parent container', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.FittedBoxApp(),
-    );
+    await tester.pumpWidget(const example.FittedBoxApp());
 
     final Size containerSize = tester.getSize(find.byType(Container));
     expect(containerSize, const Size(300, 400));

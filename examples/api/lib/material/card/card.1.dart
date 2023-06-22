@@ -13,12 +13,7 @@ class CardExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Card Sample')),
-        body: const CardExample(),
-      ),
-    );
+    return MaterialApp(home: Scaffold(appBar: AppBar(title: const Text('Card Sample')), body: const CardExample()));
   }
 }
 
@@ -39,11 +34,7 @@ class CardExample extends StatelessWidget {
           onTap: () {
             debugPrint('Card tapped.');
           },
-          child: const SizedBox(
-            width: 300,
-            height: 100,
-            child: Text('A card that can be tapped'),
-          ),
+          child: const SizedBox(width: 300, height: 100, child: Text('A card that can be tapped')),
         ),
       ),
     );

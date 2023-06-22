@@ -14,10 +14,7 @@ class ConstrainedExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Constrained Sample')),
-        body: const ConstrainedExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('Constrained Sample')), body: const ConstrainedExample()),
     );
   }
 }
@@ -46,10 +43,7 @@ class ConstrainedExample extends StatelessWidget {
                   Container(
                     height: 26,
                     color: row % 2 + column % 2 == 1 ? Colors.white : Colors.grey.withOpacity(0.1),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('$row x $column'),
-                    ),
+                    child: Align(alignment: Alignment.centerLeft, child: Text('$row x $column')),
                   ),
               ],
             ),

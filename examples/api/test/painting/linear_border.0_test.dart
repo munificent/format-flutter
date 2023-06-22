@@ -9,18 +9,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Smoke Test', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.ExampleApp(),
-    );
+    await tester.pumpWidget(const example.ExampleApp());
     expect(find.byType(example.Home), findsOneWidget);
 
     // Scroll the interpolation example into view
 
-    await tester.scrollUntilVisible(
-      find.byIcon(Icons.play_arrow),
-      500.0,
-      scrollable: find.byType(Scrollable),
-    );
+    await tester.scrollUntilVisible(find.byIcon(Icons.play_arrow), 500.0, scrollable: find.byType(Scrollable));
     expect(find.byIcon(Icons.play_arrow), findsOneWidget);
 
     // Run the interpolation example

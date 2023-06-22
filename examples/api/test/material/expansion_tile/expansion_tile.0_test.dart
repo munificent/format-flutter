@@ -10,9 +10,7 @@ void main() {
   testWidgets('When expansion tiles are expanded tile numbers are revealed', (WidgetTester tester) async {
     const int totalTiles = 3;
 
-    await tester.pumpWidget(
-      const example.ExpansionTileApp(),
-    );
+    await tester.pumpWidget(const example.ExpansionTileApp());
 
     expect(find.byType(ExpansionTile), findsNWidgets(totalTiles));
 

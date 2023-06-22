@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Default and customized cupertino activity indicators', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.CupertinoIndicatorApp(),
-    );
+    await tester.pumpWidget(const example.CupertinoIndicatorApp());
 
     // Cupertino activity indicator with default properties.
     final Finder firstIndicator = find.byType(CupertinoActivityIndicator).at(0);

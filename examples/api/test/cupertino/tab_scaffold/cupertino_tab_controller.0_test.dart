@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Can switch tabs using CupertinoTabController', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.TabControllerApp(),
-    );
+    await tester.pumpWidget(const example.TabControllerApp());
 
     expect(find.text('Content of tab 0'), findsOneWidget);
     await tester.tap(find.byIcon(CupertinoIcons.star_circle_fill));

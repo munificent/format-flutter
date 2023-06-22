@@ -63,18 +63,12 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
                   return Container(
                     alignment: Alignment.centerLeft,
                     constraints: const BoxConstraints(minWidth: 100),
-                    child: Text(
-                      item,
-                      style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.w600),
-                    ),
+                    child: Text(item, style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.w600)),
                   );
                 }).toList();
               },
               items: cities.keys.map<DropdownMenuItem<String>>((String item) {
-                return DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(item),
-                );
+                return DropdownMenuItem<String>(value: item, child: Text(item));
               }).toList(),
             ),
           ),

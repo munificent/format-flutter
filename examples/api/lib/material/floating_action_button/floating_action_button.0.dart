@@ -11,19 +11,16 @@ void main() {
 }
 
 class FloatingActionButtonExampleApp extends StatelessWidget {
-  const FloatingActionButtonExampleApp({ super.key });
+  const FloatingActionButtonExampleApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: const FloatingActionButtonExample(),
-    );
+    return MaterialApp(theme: ThemeData(useMaterial3: true), home: const FloatingActionButtonExample());
   }
 }
 
 class FloatingActionButtonExample extends StatefulWidget {
-  const FloatingActionButtonExample({ super.key });
+  const FloatingActionButtonExample({super.key});
 
   @override
   State<FloatingActionButtonExample> createState() => _FloatingActionButtonExampleState();
@@ -42,9 +39,7 @@ class _FloatingActionButtonExampleState extends State<FloatingActionButtonExampl
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('FloatingActionButton Sample'),
-      ),
+      appBar: AppBar(title: const Text('FloatingActionButton Sample')),
       body: const Center(child: Text('Press the button below!')),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

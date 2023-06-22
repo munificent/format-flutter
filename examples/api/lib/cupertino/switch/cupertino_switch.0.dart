@@ -13,10 +13,7 @@ class CupertinoSwitchApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      home: CupertinoSwitchExample(),
-    );
+    return const CupertinoApp(theme: CupertinoThemeData(brightness: Brightness.light), home: CupertinoSwitchExample());
   }
 }
 
@@ -33,9 +30,7 @@ class _CupertinoSwitchExampleState extends State<CupertinoSwitchExample> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('CupertinoSwitch Sample'),
-      ),
+      navigationBar: const CupertinoNavigationBar(middle: Text('CupertinoSwitch Sample')),
       child: Center(
         child: CupertinoSwitch(
           // This bool value toggles the switch.

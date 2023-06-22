@@ -11,9 +11,7 @@ void main() {
     const String titleText = 'Modal BottomSheet';
     const String closeText = 'Close BottomSheet';
 
-    await tester.pumpWidget(
-      const example.BottomSheetApp(),
-    );
+    await tester.pumpWidget(const example.BottomSheetApp());
 
     expect(find.text(titleText), findsNothing);
     expect(find.text(closeText), findsNothing);

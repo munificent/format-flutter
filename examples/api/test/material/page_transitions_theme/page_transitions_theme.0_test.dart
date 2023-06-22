@@ -8,9 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('MaterialApp defines a custom PageTransitionsTheme', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.PageTransitionsThemeApp(),
-    );
+    await tester.pumpWidget(const example.PageTransitionsThemeApp());
 
     final Finder homePage = find.byType(example.HomePage);
     expect(homePage, findsOneWidget);

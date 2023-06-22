@@ -67,20 +67,13 @@ class _ScrollNotificationDemoState extends State<ScrollNotificationDemo> {
       slivers: <Widget>[
         SliverList.separated(
           itemCount: 50,
-          itemBuilder: (_,int index) {
+          itemBuilder: (_, int index) {
             return Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 20.0,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
               child: Text('Item $index'),
             );
           },
-          separatorBuilder: (_, __) => const Divider(
-            indent: 20,
-            endIndent: 20,
-            thickness: 2,
-          ),
+          separatorBuilder: (_, __) => const Divider(indent: 20, endIndent: 20, thickness: 2),
         ),
       ],
     );
@@ -89,17 +82,11 @@ class _ScrollNotificationDemoState extends State<ScrollNotificationDemo> {
       // If we are not using a ScrollController to listen to scrolling,
       // let's use a NotificationListener. Similar, but with a different
       // handler that provides information on what scrolling is occurring.
-      body = NotificationListener<ScrollNotification>(
-        onNotification: _handleScrollNotification,
-        child: body,
-      );
+      body = NotificationListener<ScrollNotification>(onNotification: _handleScrollNotification, child: body);
     }
 
     return MaterialApp(
-      theme: ThemeData.from(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
-      ),
+      theme: ThemeData.from(useMaterial3: true, colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey)),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Listening to a ScrollPosition'),
@@ -114,17 +101,9 @@ class _ScrollNotificationDemoState extends State<ScrollNotificationDemo> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     const Text('with:'),
-                    Radio<bool>(
-                      value: true,
-                      groupValue: _useController,
-                      onChanged: _handleRadioChange,
-                    ),
+                    Radio<bool>(value: true, groupValue: _useController, onChanged: _handleRadioChange),
                     const Text('ScrollController'),
-                    Radio<bool>(
-                      value: false,
-                      groupValue: _useController,
-                      onChanged: _handleRadioChange,
-                    ),
+                    Radio<bool>(value: false, groupValue: _useController, onChanged: _handleRadioChange),
                     const Text('NotificationListener'),
                   ],
                 ),

@@ -12,19 +12,13 @@ void main() {
   final Size size = measureWidget(const SizedBox(width: 640, height: 480));
 
   // Just displays the size calculated above.
-  runApp(
-    WidgetsApp(
-      title: 'BuildOwner Sample',
-      color: const Color(0xff000000),
-      builder: (BuildContext context, Widget? child) {
-        return Scaffold(
-          body: Center(
-            child: Text(size.toString()),
-          ),
-        );
-      },
-    ),
-  );
+  runApp(WidgetsApp(
+    title: 'BuildOwner Sample',
+    color: const Color(0xff000000),
+    builder: (BuildContext context, Widget? child) {
+      return Scaffold(body: Center(child: Text(size.toString())));
+    },
+  ));
 }
 
 Size measureWidget(Widget widget) {

@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 
 class AdaptedListItem extends StatelessWidget {
-  const AdaptedListItem({ super.key, required this.name });
+  const AdaptedListItem({super.key, required this.name});
 
   final String name;
 
@@ -13,12 +13,7 @@ class AdaptedListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Container(
-          width: 32.0,
-          height: 32.0,
-          margin: const EdgeInsets.all(8.0),
-          color: Colors.lightBlueAccent.shade100,
-        ),
+        Container(width: 32.0, height: 32.0, margin: const EdgeInsets.all(8.0), color: Colors.lightBlueAccent.shade100),
         Text(name),
       ],
     );
@@ -26,7 +21,7 @@ class AdaptedListItem extends StatelessWidget {
 }
 
 class AdaptedGridItem extends StatelessWidget {
-  const AdaptedGridItem({ super.key, required this.name });
+  const AdaptedGridItem({super.key, required this.name});
 
   final String name;
 
@@ -35,22 +30,13 @@ class AdaptedGridItem extends StatelessWidget {
     return Card(
       child: Column(
         children: <Widget>[
-          Expanded(
-            child: Container(
-              color: Colors.lightBlueAccent.shade100,
-            ),
-          ),
+          Expanded(child: Container(color: Colors.lightBlueAccent.shade100)),
           Container(
             margin: const EdgeInsets.only(left: 8.0),
             child: Row(
               children: <Widget>[
-                Expanded(
-                  child: Text(name),
-                ),
-                const IconButton(
-                  icon: Icon(Icons.more_vert),
-                  onPressed: null,
-                ),
+                Expanded(child: Text(name)),
+                const IconButton(icon: Icon(Icons.more_vert), onPressed: null),
               ],
             ),
           ),
@@ -65,7 +51,7 @@ const double _kMaxTileWidth = 150.0;
 const double _kGridViewBreakpoint = 450.0;
 
 class AdaptiveContainer extends StatelessWidget {
-  const AdaptiveContainer({ super.key, required this.names });
+  const AdaptiveContainer({super.key, required this.names});
 
   final List<String> names;
 
@@ -93,9 +79,7 @@ void main() {
   runApp(MaterialApp(
     title: 'Media Query Example',
     home: Scaffold(
-      appBar: AppBar(
-        title: const Text('Media Query Example'),
-      ),
+      appBar: AppBar(title: const Text('Media Query Example')),
       body: Material(child: AdaptiveContainer(names: _kNames)),
     ),
   ));

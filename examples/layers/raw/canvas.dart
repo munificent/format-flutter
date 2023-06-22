@@ -54,29 +54,37 @@ ui.Picture paint(ui.Rect paintBounds) {
 
   // Shifts the coordinate space of and rotates the current transform.
   canvas.translate(mid.dx, mid.dy);
-  canvas.rotate(math.pi/4);
+  canvas.rotate(math.pi / 4);
 
-  final ui.Gradient yellowBlue = ui.Gradient.linear(
-    ui.Offset(-radius, -radius),
-    ui.Offset.zero,
-    <ui.Color>[const ui.Color(0xFFFFFF00), const ui.Color(0xFF0000FF)],
-  );
+  final ui.Gradient yellowBlue = ui.Gradient.linear(ui.Offset(-radius, -radius), ui.Offset.zero, <ui.Color>[
+    const ui.Color(0xFFFFFF00),
+    const ui.Color(0xFF0000FF),
+  ]);
 
   // Draws a yellow-bluish rectangle.
-  canvas.drawRect(
-    ui.Rect.fromLTRB(-radius, -radius, radius, radius),
-    ui.Paint()..shader = yellowBlue,
-  );
+  canvas.drawRect(ui.Rect.fromLTRB(-radius, -radius, radius, radius), ui.Paint()..shader = yellowBlue);
 
   // Transforms that occur after this point apply only to the
   // yellow circle.
 
   // Scale x and y by 0.5.
   final Float64List scaleMatrix = Float64List.fromList(<double>[
-      0.5, 0.0, 0.0, 0.0,
-      0.0, 0.5, 0.0, 0.0,
-      0.0, 0.0, 1.0, 0.0,
-      0.0, 0.0, 0.0, 1.0,
+    0.5,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.5,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
   ]);
   canvas.transform(scaleMatrix);
 

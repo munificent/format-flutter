@@ -31,12 +31,7 @@ class ExampleWidget extends StatelessWidget {
     // (https://www.google.com/fonts).
     return const Text(
       'Queer & Romantic',
-      style: TextStyle(
-        fontFamily: 'BioRhyme Expanded',
-        fontFeatures: <FontFeature>[
-          FontFeature.swash(),
-        ],
-      ),
+      style: TextStyle(fontFamily: 'BioRhyme Expanded', fontFeatures: <FontFeature>[FontFeature.swash()]),
     );
   }
 }

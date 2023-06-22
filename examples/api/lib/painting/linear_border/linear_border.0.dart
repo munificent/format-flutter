@@ -17,10 +17,7 @@ class ExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light(useMaterial3: true),
-      home: const Directionality(
-        textDirection: TextDirection.ltr, // Or try rtl.
-        child: Home(),
-      ),
+      home: const Directionality(textDirection: TextDirection.ltr, // Or try rtl. child: Home()),
     );
   }
 }
@@ -99,26 +96,17 @@ class _HomeState extends State<Home> {
                 subtitle: 'Standard button widgets',
                 children: <Widget>[
                   TextButton(
-                    style: TextButton.styleFrom(
-                      side: primarySide3,
-                      shape: LinearBorder.bottom(),
-                    ),
+                    style: TextButton.styleFrom(side: primarySide3, shape: LinearBorder.bottom()),
                     onPressed: () {},
                     child: const Text('Text'),
                   ),
                   OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: primarySide3,
-                      shape: LinearBorder.bottom(),
-                    ),
+                    style: OutlinedButton.styleFrom(side: primarySide3, shape: LinearBorder.bottom()),
                     onPressed: () {},
                     child: const Text('Outlined'),
                   ),
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      side: primarySide3,
-                      shape: LinearBorder.bottom(),
-                    ),
+                    style: ElevatedButton.styleFrom(side: primarySide3, shape: LinearBorder.bottom()),
                     onPressed: () {},
                     child: const Text('Elevated'),
                   ),
@@ -135,34 +123,22 @@ class _HomeState extends State<Home> {
                 subtitle: 'Convenience constructors',
                 children: <Widget>[
                   TextButton(
-                    style: TextButton.styleFrom(
-                      side: primarySide0,
-                      shape: LinearBorder.start(),
-                    ),
+                    style: TextButton.styleFrom(side: primarySide0, shape: LinearBorder.start()),
                     onPressed: () {},
                     child: const Text('Start()'),
                   ),
                   TextButton(
-                    style: TextButton.styleFrom(
-                      side: primarySide0,
-                      shape: LinearBorder.end(),
-                    ),
+                    style: TextButton.styleFrom(side: primarySide0, shape: LinearBorder.end()),
                     onPressed: () {},
                     child: const Text('End()'),
                   ),
                   TextButton(
-                    style: TextButton.styleFrom(
-                      side: primarySide0,
-                      shape: LinearBorder.top(),
-                    ),
+                    style: TextButton.styleFrom(side: primarySide0, shape: LinearBorder.top()),
                     onPressed: () {},
                     child: const Text('Top()'),
                   ),
                   TextButton(
-                    style: TextButton.styleFrom(
-                      side: primarySide0,
-                      shape: LinearBorder.bottom(),
-                    ),
+                    style: TextButton.styleFrom(side: primarySide0, shape: LinearBorder.bottom()),
                     onPressed: () {},
                     child: const Text('Bottom()'),
                   ),
@@ -179,34 +155,19 @@ class _HomeState extends State<Home> {
                 subtitle: 'Size and alignment parameters',
                 children: <Widget>[
                   TextButton(
-                    style: TextButton.styleFrom(
-                      side: primarySide2,
-                      shape: LinearBorder.bottom(
-                        size: 0.5,
-                      ),
-                    ),
+                    style: TextButton.styleFrom(side: primarySide2, shape: LinearBorder.bottom(size: 0.5)),
                     onPressed: () {},
                     child: const Text('Center'),
                   ),
                   TextButton(
-                    style: TextButton.styleFrom(
-                      side: primarySide2,
-                      shape: LinearBorder.bottom(
-                        size: 0.75,
-                        alignment: -1,
-                      ),
-                    ),
+                    style:
+                        TextButton.styleFrom(side: primarySide2, shape: LinearBorder.bottom(size: 0.75, alignment: -1)),
                     onPressed: () {},
                     child: const Text('Start'),
                   ),
                   TextButton(
-                    style: TextButton.styleFrom(
-                      side: primarySide2,
-                      shape: LinearBorder.bottom(
-                        size: 0.75,
-                        alignment: 1,
-                      ),
-                    ),
+                    style:
+                        TextButton.styleFrom(side: primarySide2, shape: LinearBorder.bottom(size: 0.75, alignment: 1)),
                     onPressed: () {},
                     child: const Text('End'),
                   ),
@@ -223,10 +184,7 @@ class _HomeState extends State<Home> {
                   TextButton(
                     style: TextButton.styleFrom(
                       side: primarySide0,
-                      shape: const LinearBorder(
-                        top: LinearBorderEdge(),
-                        bottom: LinearBorderEdge(),
-                      ),
+                      shape: const LinearBorder(top: LinearBorderEdge(), bottom: LinearBorderEdge()),
                     ),
                     onPressed: () {},
                     child: const Text('Horizontal'),
@@ -234,10 +192,7 @@ class _HomeState extends State<Home> {
                   TextButton(
                     style: TextButton.styleFrom(
                       side: primarySide0,
-                      shape: const LinearBorder(
-                        start: LinearBorderEdge(),
-                        end: LinearBorderEdge(),
-                      ),
+                      shape: const LinearBorder(start: LinearBorderEdge(), end: LinearBorderEdge()),
                     ),
                     onPressed: () {},
                     child: const Text('Vertical'),
@@ -245,10 +200,7 @@ class _HomeState extends State<Home> {
                   TextButton(
                     style: TextButton.styleFrom(
                       side: primarySide0,
-                      shape: const LinearBorder(
-                        start: LinearBorderEdge(),
-                        bottom: LinearBorderEdge(),
-                      ),
+                      shape: const LinearBorder(start: LinearBorderEdge(), bottom: LinearBorderEdge()),
                     ),
                     onPressed: () {},
                     child: const Text('Corner'),
@@ -271,10 +223,7 @@ class _HomeState extends State<Home> {
                     },
                   ),
                   TextButton(
-                    style: TextButton.styleFrom(
-                      side: primarySide3,
-                      shape: shape,
-                    ),
+                    style: TextButton.styleFrom(side: primarySide3, shape: shape),
                     onPressed: () {},
                     child: const Text('Press Play'),
                   ),

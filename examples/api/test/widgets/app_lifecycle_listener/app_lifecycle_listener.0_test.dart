@@ -7,9 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('AppLifecycleListener example', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.AppLifecycleListenerExample(),
-    );
+    await tester.pumpWidget(const example.AppLifecycleListenerExample());
 
     expect(find.textContaining('Current State:'), findsOneWidget);
     expect(find.textContaining('State History:'), findsOneWidget);

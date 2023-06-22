@@ -18,9 +18,7 @@ class IconButtonApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(colorSchemeSeed: const Color(0xff6750a4), useMaterial3: true),
       title: 'Icon Button Types',
-      home: const Scaffold(
-        body: ButtonTypesExample(),
-      ),
+      home: const Scaffold(body: ButtonTypesExample()),
     );
   }
 }
@@ -33,12 +31,7 @@ class ButtonTypesExample extends StatelessWidget {
     return const Padding(
       padding: EdgeInsets.all(4.0),
       child: Row(
-        children: <Widget>[
-          Spacer(),
-          ButtonTypesGroup(enabled: true),
-          ButtonTypesGroup(enabled: false),
-          Spacer(),
-        ],
+        children: <Widget>[Spacer(), ButtonTypesGroup(enabled: true), ButtonTypesGroup(enabled: false), Spacer()],
       ),
     );
   }

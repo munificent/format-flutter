@@ -53,7 +53,10 @@ class _HomeState extends State<Home> {
                 // Changing the SharedAppData's value for 'foo' causes the
                 // widgets that depend on 'foo' to be rebuilt.
                 SharedAppData.setValue<String, String?>(
-                    context, 'foo', 'FOO $_fooVersion'); // no need to call setState()
+                  context,
+                  'foo',
+                  'FOO $_fooVersion',
+                ); // no need to call setState()
               },
             ),
             const SizedBox(height: 16),
@@ -62,7 +65,10 @@ class _HomeState extends State<Home> {
               onPressed: () {
                 _barVersion += 1;
                 SharedAppData.setValue<String, String?>(
-                    context, 'bar', 'BAR $_barVersion'); // no need to call setState()
+                  context,
+                  'bar',
+                  'BAR $_barVersion',
+                ); // no need to call setState()
               },
             ),
           ],

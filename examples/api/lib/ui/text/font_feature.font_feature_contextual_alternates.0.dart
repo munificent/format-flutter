@@ -31,12 +31,7 @@ class ExampleWidget extends StatelessWidget {
     // (https://www.google.com/fonts).
     return const Text(
       "Ooohh, we weren't going to tell him that.",
-      style: TextStyle(
-        fontFamily: 'Barriecito',
-        fontFeatures: <FontFeature>[
-          FontFeature.contextualAlternates(),
-        ],
-      ),
+      style: TextStyle(fontFamily: 'Barriecito', fontFeatures: <FontFeature>[FontFeature.contextualAlternates()]),
     );
   }
 }

@@ -56,10 +56,8 @@ class _NestedGestureDetectorsExampleState extends State<NestedGestureDetectorsEx
             onTapCancel: () => debugPrint('Green onTapCancel'),
             child: Container(
               alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: _winner == _OnTapWinner.green ? highlightBorder : null,
-                color: Colors.green,
-              ),
+              decoration:
+                  BoxDecoration(border: _winner == _OnTapWinner.green ? highlightBorder : null, color: Colors.green),
               child: GestureDetector(
                 // Setting behavior to transparent or opaque as no impact on
                 // parent-child hit testing. A tap on 'Yellow' is also in
@@ -104,9 +102,7 @@ class _NestedGestureDetectorsExampleState extends State<NestedGestureDetectorsEx
               ),
               const SizedBox(width: 8),
               ElevatedButton(
-                child: Text(
-                  'Set Yellow behavior to ${_isYellowTranslucent ? 'opaque' : 'translucent'}',
-                ),
+                child: Text('Set Yellow behavior to ${_isYellowTranslucent ? 'opaque' : 'translucent'}'),
                 onPressed: () {
                   setState(() => _isYellowTranslucent = !_isYellowTranslucent);
                 },

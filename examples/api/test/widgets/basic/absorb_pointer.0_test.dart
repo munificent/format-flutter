@@ -10,9 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('AbsorbPointer prevents hit testing on its child', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const example.AbsorbPointerApp(),
-    );
+    await tester.pumpWidget(const example.AbsorbPointerApp());
 
     // Get the center of the stack.
     final Offset center = tester.getCenter(find.byType(Stack).first);

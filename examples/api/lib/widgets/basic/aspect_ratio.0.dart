@@ -14,10 +14,7 @@ class AspectRatioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('AspectRatio Sample')),
-        body: const AspectRatioExample(),
-      ),
+      home: Scaffold(appBar: AppBar(title: const Text('AspectRatio Sample')), body: const AspectRatioExample()),
     );
   }
 }
@@ -32,12 +29,7 @@ class AspectRatioExample extends StatelessWidget {
       alignment: Alignment.center,
       width: double.infinity,
       height: 100.0,
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Container(
-          color: Colors.green,
-        ),
-      ),
+      child: AspectRatio(aspectRatio: 16 / 9, child: Container(color: Colors.green)),
     );
   }
 }
